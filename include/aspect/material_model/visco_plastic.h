@@ -291,7 +291,7 @@ namespace aspect
         /**
          * Map to associate lookup index with phase names.
          */
-        std::unordered_map<std::string, unsigned int> lookup_index_map;
+        std::unordered_map<std::string, int> lookup_index_map;
 
         /**
          * Object for computing the equation of state.

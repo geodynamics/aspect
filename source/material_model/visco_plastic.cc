@@ -36,11 +36,6 @@ namespace aspect
     ViscoPlastic<dim>::initialize()
     {
       equation_of_state_lookup.initialize();
-
-      const std::vector<std::string> transition_lookup_phases = phase_function_lookup.get_phase_names();
-      for (unsigned int i = 0; i < transition_lookup_phases.size(); ++i) {
-        lookup_index_map[transition_lookup_phases[i]] = i;
-      }      
     }
 
     template <int dim>
@@ -145,41 +140,29 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (enable_material_lookup) {
-      std::vector<std::vector<double>> volume_fractions_lookup(in.n_evaluation_points(), std::vector<double>(equation_of_state_lookup.number_of_lookups()));
-
-      std::vector<EquationOfStateOutputs<dim>> eos_outputs_lookup (in.n_evaluation_points(), equation_of_state_lookup.number_of_lookups());
-      // We need to make a copy of the material model inputs because we want to use the adiabatic pressure
-      // rather than the real pressure for the equations of state (to avoid numerical instabilities).
-      MaterialModel::MaterialModelInputs<dim> eos_in_lookup(in);
-      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-        eos_in_lookup.pressure[i] = this->get_adiabatic_conditions().pressure(in.position[i]);
-
-      // Evaluate the equation of state properties over all evaluation points
-      equation_of_state_lookup.evaluate(eos_in_lookup, eos_outputs_lookup);
-      
-      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+      if (enable_material_lookup)
         {
-          // Calculate volume fractions from mass fractions
-          // If there is only one lookup table, set the mass and volume fractions to 1
-          std::vector<double> mass_fractions;
-          if (equation_of_state_lookup.number_of_lookups() == 1)
-            mass_fractions.push_back(1.0);
-          else
+          // Loop through evaluation points to calculate the volume fractions of each phase phase,
+          // which will be used when setting phase function values based on dominant phases later on
+          std::vector<std::vector<double>> volume_fractions_lookup(in.n_evaluation_points(), std::vector<double>(equation_of_state_lookup.number_of_lookups()));
+
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
             {
-              // We only want to compute mass/volume fractions for fields that are chemical compositions.
-              std::vector<double> chemical_compositions;
-              const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
-
-              for (unsigned int c = 0; c < in.composition[i].size(); ++c)
-                if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
-                  chemical_compositions.push_back(in.composition[i][c]);
-
-              mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
+              // If there is only one lookup table, set the mass and volume fractions to 1
+              if (equation_of_state_lookup.number_of_lookups() == 1)
+                {
+                  volume_fractions_lookup[i].push_back(1.0);
+                }
+              else
+                {
+                  // We only want to compute mass/volume fractions for fields that are chemical compositions.
+                  // mass fractions are volume fractions because viscoplastic is incompressible
+                  volume_fractions_lookup[i] = MaterialModel::MaterialUtilities::compute_only_composition_fractions(in.composition[i],this->introspection().chemical_composition_field_indices());
+                }
             }
-          // mass fractions are volume fractions because lookup is incompressible
-          volume_fractions_lookup[i] = mass_fractions;
-          MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs_lookup[i], mass_fractions, volume_fractions_lookup[i], i, out);
+
+          // fill additional outputs if they exist
+          equation_of_state_lookup.fill_additional_outputs(in, volume_fractions_lookup, out);
         }
       
       // fill additional outputs if they exist
@@ -190,6 +173,9 @@ namespace aspect
 
       EquationOfStateOutputs<dim> eos_outputs (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition)+1);
       EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
+
+      // Store which components do not represent volumetric compositions (e.g. strain components).
+      const ComponentMask volumetric_compositions = rheology->get_volumetric_composition_mask();
 
       std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
 
@@ -226,53 +212,26 @@ namespace aspect
 
             }
 
-          if ((enable_material_lookup) & this->simulator_is_past_initialization() & (out.additional_outputs.size()>1))
+          if ((enable_material_lookup) & (out.additional_outputs.size()>0))
             {
-              const std::vector<unsigned int> n_phases_per_composition = phase_function_lookup.n_phases_for_each_composition();
-              unsigned int n_phase_transition_cur = 0;
-              unsigned int n_phase_cur = 0;
-              for (unsigned int c=0; c<(in.composition[i].size()+1); ++c)
+              const unsigned int n_fields = in.composition[i].size()+1; // with background
+              for (unsigned int c=0; c<n_fields; ++c)
                 {
-                  const std::vector<std::string> phase_names = equation_of_state_lookup.get_phase_names(c);
-                  unsigned int index_of_lookup_phase;
-
-                  std::vector<std::string> transition_lookup_names(transition_lookup_phases.begin() + n_phase_cur, transition_lookup_phases.begin()+ n_phase_cur + n_phases_per_composition[c]);
-                  const MaterialModel::NamedAdditionalMaterialOutputs<dim> *result
-                    = dynamic_cast<const MaterialModel::NamedAdditionalMaterialOutputs<dim> *> (out.additional_outputs[2].get());
+                  const std::vector<std::string> dominant_phase_names = equation_of_state_lookup.get_phase_names(c);
+                  const MaterialModel::PhaseOutputs<dim> *result
+                    = out.template get_additional_output<PhaseOutputs<dim>>();
 
                   if (result)
                     {
                       std::vector<double> dominant_phase_index_vals = result->get_nth_output(0); //
-                      std::string name_dominant_phase = phase_names[static_cast<int>(dominant_phase_index_vals[i])];
-                      std::vector<std::string>::iterator it = std::find(transition_lookup_names.begin(),
-                                                                        transition_lookup_names.end(),
-                                                                        name_dominant_phase);
+                      std::string name_dominant_phase = dominant_phase_names[static_cast<int>(dominant_phase_index_vals[i])];
 
-                      if (it != transition_lookup_names.end())
+                      int index_of_lookup_phase = lookup_index_map.at(name_dominant_phase);
+                      if (index_of_lookup_phase>0)
                         {
-                          index_of_lookup_phase = std::distance(transition_lookup_names.begin(), it);
+                          // key to assign phase functions based on dominant lookup table phase
+                          phase_function_values[index_of_lookup_phase] = 1;
                         }
-                      else
-                        {
-                          Assert(this->get_timestep_number()==0, ExcMessage("ASPECT did not find the name of current phase in lookup table."));
-                        }
-                      phase_function_values[n_phase_transition_cur+index_of_lookup_phase] = 1;
-
-                    }
-
-                  // Each lookup only stores the index for the individual lookup, so we have to know
-                  // how to convert from the indices of the individual lookup to the index in the
-                  // list_of_dominant_phases vector. Here we fill the global_index_of_lookup_phase
-                  // object to contain the global indices.
-                  if (n_phases_per_composition[c]==1)
-                    {
-                      n_phase_transition_cur += 0;
-                      n_phase_cur += 1;
-                    }
-                  else
-                    {
-                      n_phase_transition_cur += (n_phases_per_composition[c]-1);
-                      n_phase_cur += n_phases_per_composition[c];
                     }
                 }
             }
@@ -450,10 +409,9 @@ namespace aspect
           MaterialUtilities::PhaseFunctionLookup<dim>::declare_parameters(prm);
 
           // Lookup table setting
-          prm.declare_entry ("Material lookup setting", "off",
-                             Patterns::Anything (),
-                             "Whether to set material lookup on, off, or "
-                             "have a hybrid setting. ");
+          prm.declare_entry ("Material lookup setting", "false",
+                             Patterns::Bool (),
+                             "Whether to set material lookup or not");
 
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
 
@@ -539,16 +497,7 @@ namespace aspect
           // For lookup tables: check if compositional fields represent a composition
           const std::vector<CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
-          // All chemical compositional fields are assumed to represent mass fractions.
-          // If the field type is unspecified (has not been set in the input file),
-          // we have to assume it also represents a chemical composition for reasons of
-          // backwards compatibility.
-          composition_mask = std::make_unique<ComponentMask>(this->n_compositional_fields(), false);
-          for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
-            if (composition_descriptions[c].type == CompositionalFieldDescription::chemical_composition || composition_descriptions[c].type == CompositionalFieldDescription::unspecified)
-              composition_mask->set(c, true);
-
-          const unsigned int n_chemical_fields = composition_mask->n_selected_components();
+          const unsigned int n_chemical_fields = this->introspection().n_chemical_composition_fields();
 
           // Do some error checking
           AssertThrow((equation_of_state_lookup.number_of_lookups() == 1) ||
@@ -580,7 +529,37 @@ namespace aspect
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
+<<<<<<< HEAD
           rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+=======
+          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function.n_phases_for_each_composition()));
+
+          // a vector of phase names for each composition based on those in the lookup table
+          // transition lookup phases can be a vector of vectors of different sizes
+          const std::vector<std::vector<std::string>> &transition_lookup_phases = phase_function_lookup.get_phase_names();
+
+          const std::vector<unsigned int> &n_phases_per_composition = phase_function_lookup.n_phases_for_each_composition();
+
+          // need to assign phase functions based on phase names, which differ in length by one
+          unsigned int counter_phase_function_index = 0;
+          for (unsigned int c = 0; c < (n_phases_per_composition.size()); ++c)
+            {
+              for (unsigned int n = 0; n < n_phases_per_composition[c]; ++n)
+                {
+                  if (n>0)
+                    {
+                      lookup_index_map[transition_lookup_phases[c][n]] = counter_phase_function_index;
+                      counter_phase_function_index += 1;
+                    }
+                  else
+                    {
+                      // if phase function should be 0 then set negative index to ignore it later
+                      lookup_index_map[transition_lookup_phases[c][n]] = -1;
+                    }
+                }
+            }
+
+>>>>>>> 21f4fdd3c (slim down visco plastic lookup formulation)
         }
         prm.leave_subsection();
       }
@@ -604,17 +583,18 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
-      
-      if (enable_material_lookup) {
-      equation_of_state_lookup.create_additional_named_outputs(out);
-      if (this->introspection().composition_type_exists(CompositionalFieldDescription::density)
-          && out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+
+      if (enable_material_lookup)
         {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
+          equation_of_state_lookup.create_additional_named_outputs(out);
+          if (this->introspection().composition_type_exists(CompositionalFieldDescription::density)
+              && out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+            {
+              const unsigned int n_points = out.n_evaluation_points();
+              out.additional_outputs.push_back(
+                std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
+            }
         }
-      }
     }
 
   }
