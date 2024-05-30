@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/melt_simple.h>
+#include <aspect/material_model/melt_model/melt_simple_fraction.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
@@ -49,43 +50,43 @@ namespace aspect
       return model_is_compressible;
     }
 
-    template <int dim>
-    double
-    MeltSimple<dim>::
-    melt_fraction (const double temperature,
-                   const double pressure) const
-    {
-      // anhydrous melting of peridotite after Katz, 2003
-      const double T_solidus  = A1 + 273.15
-                                + A2 * pressure
-                                + A3 * pressure * pressure;
-      const double T_lherz_liquidus = B1 + 273.15
-                                      + B2 * pressure
-                                      + B3 * pressure * pressure;
-      const double T_liquidus = C1 + 273.15
-                                + C2 * pressure
-                                + C3 * pressure * pressure;
+    // template <int dim>
+    // double
+    // MeltSimple<dim>::
+    // melt_fraction (const double temperature,
+    //                const double pressure) const
+    // {
+    //   // anhydrous melting of peridotite after Katz, 2003
+    //   const double T_solidus  = A1 + 273.15
+    //                             + A2 * pressure
+    //                             + A3 * pressure * pressure;
+    //   const double T_lherz_liquidus = B1 + 273.15
+    //                                   + B2 * pressure
+    //                                   + B3 * pressure * pressure;
+    //   const double T_liquidus = C1 + 273.15
+    //                             + C2 * pressure
+    //                             + C3 * pressure * pressure;
 
-      // melt fraction for peridotite with clinopyroxene
-      double peridotite_melt_fraction;
-      if (temperature < T_solidus || pressure > 1.3e10)
-        peridotite_melt_fraction = 0.0;
-      else if (temperature > T_lherz_liquidus)
-        peridotite_melt_fraction = 1.0;
-      else
-        peridotite_melt_fraction = std::pow((temperature - T_solidus) / (T_lherz_liquidus - T_solidus),beta);
+    //   // melt fraction for peridotite with clinopyroxene
+    //   double peridotite_melt_fraction;
+    //   if (temperature < T_solidus || pressure > 1.3e10)
+    //     peridotite_melt_fraction = 0.0;
+    //   else if (temperature > T_lherz_liquidus)
+    //     peridotite_melt_fraction = 1.0;
+    //   else
+    //     peridotite_melt_fraction = std::pow((temperature - T_solidus) / (T_lherz_liquidus - T_solidus),beta);
 
-      // melt fraction after melting of all clinopyroxene
-      const double R_cpx = r1 + r2 * std::max(0.0, pressure);
-      const double F_max = M_cpx / R_cpx;
+    //   // melt fraction after melting of all clinopyroxene
+    //   const double R_cpx = r1 + r2 * std::max(0.0, pressure);
+    //   const double F_max = M_cpx / R_cpx;
 
-      if (peridotite_melt_fraction > F_max && temperature < T_liquidus)
-        {
-          const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
-          peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
-        }
-      return peridotite_melt_fraction;
-    }
+    //   if (peridotite_melt_fraction > F_max && temperature < T_liquidus)
+    //     {
+    //       const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
+    //       peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
+    //     }
+    //   return peridotite_melt_fraction;
+    // }
 
 
     template <int dim>
@@ -96,6 +97,7 @@ namespace aspect
                     const double maximum_melt_fraction,
                     const NonlinearDependence::Dependence dependence) const
     {
+
       double entropy_gradient = 0.0;
 
       // calculate latent heat of melting
@@ -133,7 +135,7 @@ namespace aspect
           const double R_cpx = r1 + r2 * std::max(0.0, pressure);
           const double F_max = M_cpx / R_cpx;
 
-          if (melt_fraction(temperature, pressure) > F_max)
+          if (melt_simple_fraction.melt_fraction(temperature, pressure) > F_max)
             {
               const double T_max = std::pow(F_max,1.0/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
               const double dF_max_dp = - M_cpx * std::pow(r1 + r2 * pressure,-2) * r2;
@@ -160,7 +162,7 @@ namespace aspect
           else
             AssertThrow(false, ExcMessage("not implemented"));
 
-          if (melt_fraction(temperature, pressure) >= maximum_melt_fraction)
+          if (melt_simple_fraction.melt_fraction(temperature, pressure) >= maximum_melt_fraction)
             entropy_gradient = melt_fraction_derivative * peridotite_melting_entropy_change;
         }
       return entropy_gradient;
@@ -174,8 +176,8 @@ namespace aspect
                     std::vector<double> &melt_fractions) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
-        melt_fractions[q] = this->melt_fraction(in.temperature[q],
-                                                this->get_adiabatic_conditions().pressure(in.position[q]));
+        melt_fractions[q] = melt_simple_fraction.melt_fraction(in.temperature[q],
+                                                               this->get_adiabatic_conditions().pressure(in.position[q]));
     }
 
 
@@ -203,6 +205,7 @@ namespace aspect
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      //this->melt_simple_fraction = std::make_unique<MeltModel::MeltSimpleFraction<dim>>();
 
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
@@ -241,13 +244,13 @@ namespace aspect
                 {
                   // solidus is lowered by previous melting events (fractional melting)
                   const double solidus_change = (maximum_melt_fraction - old_porosity) * depletion_solidus_change;
-                  const double eq_melt_fraction = melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
+                  const double eq_melt_fraction = melt_simple_fraction.melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
                   porosity_change = eq_melt_fraction - old_porosity;
                 }
               else
                 {
                   // batch melting
-                  porosity_change = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
+                  porosity_change = melt_simple_fraction.melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
                                     - std::max(maximum_melt_fraction, 0.0);
                   porosity_change = std::max(porosity_change, 0.0);
 
@@ -259,7 +262,7 @@ namespace aspect
                     // (peridotite field), which decreases as melt freezes, reaches the same value as the equilibrium
                     // melt fraction, whatever happens earlier. An exception is when the melt fraction is zero; in this case
                     // all melt should freeze.
-                    const double eq_melt_fraction = melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]));
+                    const double eq_melt_fraction = melt_simple_fraction.melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]));
 
                     // If the porosity change is not negative, there is no freezing, and the change in porosity
                     // is covered by the melting relation above.
@@ -430,6 +433,9 @@ namespace aspect
       {
         prm.enter_subsection("Melt simple");
         {
+          // Melt Fraction Parameters
+          MeltModel::MeltSimpleFraction<dim>::declare_parameters(prm);
+
           prm.declare_entry ("Reference solid density", "3000.",
                              Patterns::Double (0.),
                              "Reference density of the solid $\\rho_{s,0}$. "
@@ -582,92 +588,11 @@ namespace aspect
                              "Scaling with depletion is linear. Only active when fractional melting "
                              "is used. "
                              "Units: \\si{\\kelvin}.");
-          prm.declare_entry ("A1", "1085.7",
-                             Patterns::Double (),
-                             "Constant parameter in the quadratic "
-                             "function that approximates the solidus "
-                             "of peridotite. "
-                             "Units: \\si{\\degreeCelsius}.");
-          prm.declare_entry ("A2", "1.329e-7",
-                             Patterns::Double (),
-                             "Prefactor of the linear pressure term "
-                             "in the quadratic function that approximates "
-                             "the solidus of peridotite. "
-                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
-          prm.declare_entry ("A3", "-5.1e-18",
-                             Patterns::Double (),
-                             "Prefactor of the quadratic pressure term "
-                             "in the quadratic function that approximates "
-                             "the solidus of peridotite. "
-                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
-          prm.declare_entry ("B1", "1475.0",
-                             Patterns::Double (),
-                             "Constant parameter in the quadratic "
-                             "function that approximates the lherzolite "
-                             "liquidus used for calculating the fraction "
-                             "of peridotite-derived melt. "
-                             "Units: \\si{\\degreeCelsius}.");
-          prm.declare_entry ("B2", "8.0e-8",
-                             Patterns::Double (),
-                             "Prefactor of the linear pressure term "
-                             "in the quadratic function that approximates "
-                             "the  lherzolite liquidus used for "
-                             "calculating the fraction of peridotite-"
-                             "derived melt. "
-                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
-          prm.declare_entry ("B3", "-3.2e-18",
-                             Patterns::Double (),
-                             "Prefactor of the quadratic pressure term "
-                             "in the quadratic function that approximates "
-                             "the  lherzolite liquidus used for "
-                             "calculating the fraction of peridotite-"
-                             "derived melt. "
-                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
-          prm.declare_entry ("C1", "1780.0",
-                             Patterns::Double (),
-                             "Constant parameter in the quadratic "
-                             "function that approximates the liquidus "
-                             "of peridotite. "
-                             "Units: \\si{\\degreeCelsius}.");
-          prm.declare_entry ("C2", "4.50e-8",
-                             Patterns::Double (),
-                             "Prefactor of the linear pressure term "
-                             "in the quadratic function that approximates "
-                             "the liquidus of peridotite. "
-                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
-          prm.declare_entry ("C3", "-2.0e-18",
-                             Patterns::Double (),
-                             "Prefactor of the quadratic pressure term "
-                             "in the quadratic function that approximates "
-                             "the liquidus of peridotite. "
-                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
-          prm.declare_entry ("r1", "0.5",
-                             Patterns::Double (),
-                             "Constant in the linear function that "
-                             "approximates the clinopyroxene reaction "
-                             "coefficient. "
-                             "Units: non-dimensional.");
-          prm.declare_entry ("r2", "8e-11",
-                             Patterns::Double (),
-                             "Prefactor of the linear pressure term "
-                             "in the linear function that approximates "
-                             "the clinopyroxene reaction coefficient. "
-                             "Units: \\si{\\per\\pascal}.");
-          prm.declare_entry ("beta", "1.5",
-                             Patterns::Double (),
-                             "Exponent of the melting temperature in "
-                             "the melt fraction calculation. "
-                             "Units: non-dimensional.");
           prm.declare_entry ("Peridotite melting entropy change", "-300.",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
                              "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
-          prm.declare_entry ("Mass fraction cpx", "0.15",
-                             Patterns::Double (),
-                             "Mass fraction of clinopyroxene in the "
-                             "peridotite to be molten. "
-                             "Units: non-dimensional.");
         }
         prm.leave_subsection();
       }
@@ -708,6 +633,10 @@ namespace aspect
           depletion_density_change   = prm.get_double ("Depletion density change");
           depletion_solidus_change   = prm.get_double ("Depletion solidus change");
 
+          // Melt Fraction
+          melt_simple_fraction.initialize_simulator (this->get_simulator());
+          melt_simple_fraction.parse_parameters(prm);
+
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
 
@@ -732,21 +661,8 @@ namespace aspect
                                  "'Freezing rate' chosen in the material model, which is currently "
                                  + Utilities::to_string(1.0/freezing_rate) + "."));
 
-          A1              = prm.get_double ("A1");
-          A2              = prm.get_double ("A2");
-          A3              = prm.get_double ("A3");
-          B1              = prm.get_double ("B1");
-          B2              = prm.get_double ("B2");
-          B3              = prm.get_double ("B3");
-          C1              = prm.get_double ("C1");
-          C2              = prm.get_double ("C2");
-          C3              = prm.get_double ("C3");
-          r1              = prm.get_double ("r1");
-          r2              = prm.get_double ("r2");
-          beta            = prm.get_double ("beta");
           peridotite_melting_entropy_change
             = prm.get_double ("Peridotite melting entropy change");
-          M_cpx           = prm.get_double ("Mass fraction cpx");
         }
         prm.leave_subsection();
       }
