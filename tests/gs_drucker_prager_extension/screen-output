@@ -1,0 +1,69 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 3,909 (2,210+297+297+1,105)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+51 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.110562
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 7.46226e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.53299e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 7.78592e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 6.64146e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+14 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 5.45317e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 6.17989e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+13 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 4.19013e-06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 3.48204e-06
+
+
+   Postprocessing:
+     RMS, max velocity:                                 2.03e-11 m/s, 2.45e-11 m/s
+     Mass fluxes through boundary parts:                0.00054 kg/s, 0.00054 kg/s, 0 kg/s, -0.00108 kg/s
+     Writing graphical output:                          output-gs_drucker_prager_extension/solution/solution-00000
+     Writing particle output:                           output-gs_drucker_prager_extension/particles/particles-00000
+     Average density / Average viscosity / Total mass:  2700 kg/m^3, 4.647e+25 Pa s, 1.08e+12 kg
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

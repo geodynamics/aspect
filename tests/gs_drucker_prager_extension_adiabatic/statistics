@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Outward mass flux through boundary with indicator 0 ("left") (kg/s)
+# 16: Outward mass flux through boundary with indicator 1 ("right") (kg/s)
+# 17: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
+# 18: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
+# 19: Visualization file name
+# 20: Number of advected particles
+# 21: Particle file name
+# 22: Average density (kg/m^3)
+# 23: Average viscosity (Pa s)
+# 24: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 256 2507 297 1105 10 0 86 920 300 1.87953988e-11 2.05836043e-11 5.40000000e-04 5.40000000e-04 0.00000000e+00 -1.08000261e-03 output-gs_drucker_prager_extension_adiabatic/solution/solution-00000 10000 output-gs_drucker_prager_extension_adiabatic/particles/particles-00000 2.70000000e+03 1.81648176e+25 1.08000000e+12 

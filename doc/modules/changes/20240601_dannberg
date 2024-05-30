@@ -1,0 +1,7 @@
+New: The grain size material model now has the option
+to apply plastic yielding (Drucker-Prager yield
+criterion) to limit the viscosity. This can be switched
+on through a new input parameter. At the moment, grain
+size evolution is not affected by plastic yielding.
+<br>
+(Juliane Dannberg, 2024/06/01)
