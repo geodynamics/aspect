@@ -162,6 +162,28 @@ namespace aspect
       };
 
       /**
+       * Adapt the previous class BaseVariablePostprocessor for the case of surface output,
+       * so output on the surface of the model domain. The only difference with the previous
+       * class is that each output variable name is prepended with the string 'surface_'.
+       */
+      template <int dim>
+      class SurfaceBaseVariablePostprocessor: public VisualizationPostprocessors::SurfaceOnlyVisualization<dim>, public BaseVariablePostprocessor<dim>
+      {
+        public:
+
+          std::vector<std::string> get_names () const override
+          {
+            std::vector<std::string> solution_names = BaseVariablePostprocessor<dim>::get_names();
+
+            for (std::string &name : solution_names)
+              name = "surface_" + name;
+
+            return solution_names;
+          }
+
+      };
+
+      /**
        * This Postprocessor will generate the output variables of mesh velocity and
        * mesh displacement for when a deforming mesh is used.
        */
@@ -778,6 +800,17 @@ namespace aspect
                                          base_variables.get_physical_units(),
                                          visualization_field_names_and_units);
 
+      SurfaceBaseVariablePostprocessor<dim> surface_base_variables;
+      if (output_base_variables_on_mesh_surface)
+        {
+          surface_base_variables.initialize_simulator (this->get_simulator());
+
+          // Insert surface base variable names into set of all output field names
+          track_output_field_names_and_units(surface_base_variables.get_names(),
+                                             surface_base_variables.get_physical_units(),
+                                             visualization_field_names_and_units);
+        }
+
       std::unique_ptr<MeshDeformationPostprocessor<dim>> mesh_deformation_velocity;
       std::unique_ptr<MeshDeformationPostprocessor<dim>> mesh_deformation_displacement;
 
@@ -787,20 +820,13 @@ namespace aspect
                                 base_variables);
 
       // Also create an object for outputting information that lives on
-      // the faces of the mesh. If there are postprocessors derived from
-      // the VisualizationPostprocessors::SurfaceOnlyVisualization class, then
-      // we will use this object for viz purposes.
+      // the faces of the mesh.
       DataOutFaces<dim> data_out_faces;
       data_out_faces.attach_dof_handler (this->get_dof_handler());
-      const bool have_face_viz_postprocessors
-        = (std::find_if (postprocessors.begin(),
-                         postprocessors.end(),
-                         [](const std::unique_ptr<VisualizationPostprocessors::Interface<dim>> &p)
-      {
-        return (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
-                (p.get()) != nullptr);
-      })
-      != postprocessors.end());
+
+      if (output_base_variables_on_mesh_surface)
+        data_out_faces.add_data_vector (this->get_solution(),
+                                        surface_base_variables);
 
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
@@ -832,6 +858,8 @@ namespace aspect
                                     *mesh_deformation_displacement);
         }
 
+      bool have_face_viz_postprocessors = false;
+
       // then for each additional selected output variable
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization
@@ -862,8 +890,13 @@ namespace aspect
                     data_out.add_data_vector (this->get_solution(),
                                               *viz_postprocessor);
                   else
-                    data_out_faces.add_data_vector (this->get_solution(),
-                                                    *viz_postprocessor);
+                    {
+                      data_out_faces.add_data_vector (this->get_solution(),
+                                                      *viz_postprocessor);
+                      // Apart from the base variables, other postprocessors
+                      // output on the mesh surface.
+                      have_face_viz_postprocessors = true;
+                    }
                 }
               else if (const VisualizationPostprocessors::CellDataVectorCreator<dim> *
                        cell_data_creator
@@ -892,9 +925,14 @@ namespace aspect
                                               cell_data.first,
                                               DataOut<dim>::type_cell_data);
                   else
-                    data_out_faces.add_data_vector (*cell_data_vectors.back(),
-                                                    cell_data.first,
-                                                    DataOutFaces<dim>::type_cell_data);
+                    {
+                      data_out_faces.add_data_vector(*cell_data_vectors.back(),
+                                                     cell_data.first,
+                                                     DataOutFaces<dim>::type_cell_data);
+                      // Apart from the base variables, other postprocessors
+                      // output on the mesh surface.
+                      have_face_viz_postprocessors = true;
+                    }
                 }
               else
                 // A viz postprocessor not derived from either DataPostprocessor
@@ -992,7 +1030,7 @@ namespace aspect
       // Then do the same again for the face data case. We won't print the
       // output file name to screen (too much clutter on the screen already)
       // but still put it into the statistics file
-      if (have_face_viz_postprocessors)
+      if (output_base_variables_on_mesh_surface || have_face_viz_postprocessors)
         {
           data_out_faces.build_patches (mapping,
                                         subdivisions);
@@ -1264,6 +1302,14 @@ namespace aspect
                              "displacement, you can obtain the deformed mesh by using the 'warp by vector' "
                              "ParaView filter.");
 
+          prm.declare_entry("Output base variables on mesh surface", "false",
+                            Patterns::Bool(),
+                            "Whether or not to also output the base variables velocity, fluid pressure "
+                            "(when present), fluid velocity (when present), pressure, "
+                            "temperature and compositional fields (when present) on the surface "
+                            "of the mesh. The mesh surface includes not only the top boundary, "
+                            "but all boundaries of the domain. ");
+
           // Finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors.
           // Also add a number of removed plugins that are now combined in 'material properties'
@@ -1369,6 +1415,8 @@ namespace aspect
           output_mesh_velocity = prm.get_bool("Output mesh velocity");
           output_mesh_displacement = prm.get_bool("Output mesh displacement");
           output_undeformed_mesh = prm.get_bool("Output undeformed mesh");
+
+          output_base_variables_on_mesh_surface = prm.get_bool("Output base variables on mesh surface");
 
           // now also see which derived quantities we are to compute
           viz_names = Utilities::split_string_list(prm.get("List of output variables"));
