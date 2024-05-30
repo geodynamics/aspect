@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/material_model/melt_model/melt_simple_fraction.h>
+#include <aspect/material_model/melt_model/katz2003_mantle_melting.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
@@ -35,12 +35,12 @@ namespace aspect
     namespace MeltModel
     {
       template <int dim>
-      MeltSimpleFraction<dim>::MeltSimpleFraction()
+      Katz2003MantleMelting<dim>::Katz2003MantleMelting()
         = default;
 
       template <int dim>
       double
-      MeltSimpleFraction<dim>::
+      Katz2003MantleMelting<dim>::
       melt_fraction (const double temperature,
                      const double pressure) const
       {
@@ -78,7 +78,7 @@ namespace aspect
 
       template <int dim>
       void
-      MeltSimpleFraction<dim>::declare_parameters (ParameterHandler &prm)
+      Katz2003MantleMelting<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("A1", "1085.7",
                            Patterns::Double (),
@@ -165,7 +165,7 @@ namespace aspect
 
       template <int dim>
       void
-      MeltSimpleFraction<dim>::parse_parameters (ParameterHandler &prm)
+      Katz2003MantleMelting<dim>::parse_parameters (ParameterHandler &prm)
       {
         A1    = prm.get_double ("A1");
         A2    = prm.get_double ("A2");
@@ -194,7 +194,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   namespace MeltModel \
   { \
-    template class MeltSimpleFraction<dim>; \
+    template class Katz2003MantleMelting<dim>; \
   }
 
     ASPECT_INSTANTIATE(INSTANTIATE)

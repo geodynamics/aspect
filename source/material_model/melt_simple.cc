@@ -20,7 +20,7 @@
 
 
 #include <aspect/material_model/melt_simple.h>
-#include <aspect/material_model/melt_model/melt_simple_fraction.h>
+#include <aspect/material_model/melt_model/katz2003_mantle_melting.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
@@ -95,7 +95,7 @@ namespace aspect
           const double R_cpx = r1 + r2 * std::max(0.0, pressure);
           const double F_max = M_cpx / R_cpx;
 
-          if (melt_simple_fraction.melt_fraction(temperature, pressure) > F_max)
+          if (katz2003_model.melt_fraction(temperature, pressure) > F_max)
             {
               const double T_max = std::pow(F_max,1.0/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
               const double dF_max_dp = - M_cpx * std::pow(r1 + r2 * pressure,-2) * r2;
@@ -122,7 +122,7 @@ namespace aspect
           else
             AssertThrow(false, ExcMessage("not implemented"));
 
-          if (melt_simple_fraction.melt_fraction(temperature, pressure) >= maximum_melt_fraction)
+          if (katz2003_model.melt_fraction(temperature, pressure) >= maximum_melt_fraction)
             entropy_gradient = melt_fraction_derivative * peridotite_melting_entropy_change;
         }
       return entropy_gradient;
@@ -136,7 +136,7 @@ namespace aspect
                     std::vector<double> &melt_fractions) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
-        melt_fractions[q] = melt_simple_fraction.melt_fraction(in.temperature[q],
+        melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
                                                                this->get_adiabatic_conditions().pressure(in.position[q]));
     }
 
@@ -203,13 +203,13 @@ namespace aspect
                 {
                   // solidus is lowered by previous melting events (fractional melting)
                   const double solidus_change = (maximum_melt_fraction - old_porosity) * depletion_solidus_change;
-                  const double eq_melt_fraction = melt_simple_fraction.melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
+                  const double eq_melt_fraction = katz2003_model.melt_fraction(in.temperature[i] - solidus_change, this->get_adiabatic_conditions().pressure(in.position[i]));
                   porosity_change = eq_melt_fraction - old_porosity;
                 }
               else
                 {
                   // batch melting
-                  porosity_change = melt_simple_fraction.melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
+                  porosity_change = katz2003_model.melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]))
                                     - std::max(maximum_melt_fraction, 0.0);
                   porosity_change = std::max(porosity_change, 0.0);
 
@@ -221,7 +221,7 @@ namespace aspect
                     // (peridotite field), which decreases as melt freezes, reaches the same value as the equilibrium
                     // melt fraction, whatever happens earlier. An exception is when the melt fraction is zero; in this case
                     // all melt should freeze.
-                    const double eq_melt_fraction = melt_simple_fraction.melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]));
+                    const double eq_melt_fraction = katz2003_model.melt_fraction(in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]));
 
                     // If the porosity change is not negative, there is no freezing, and the change in porosity
                     // is covered by the melting relation above.
@@ -393,7 +393,7 @@ namespace aspect
         prm.enter_subsection("Melt simple");
         {
           // Melt Fraction Parameters
-          MeltModel::MeltSimpleFraction<dim>::declare_parameters(prm);
+          MeltModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
 
           prm.declare_entry ("Reference solid density", "3000.",
                              Patterns::Double (0.),
@@ -593,8 +593,8 @@ namespace aspect
           depletion_solidus_change   = prm.get_double ("Depletion solidus change");
 
           // Melt Fraction
-          melt_simple_fraction.initialize_simulator (this->get_simulator());
-          melt_simple_fraction.parse_parameters(prm);
+          katz2003_model.initialize_simulator (this->get_simulator());
+          katz2003_model.parse_parameters(prm);
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)
             AssertThrow(false, ExcMessage("Error: Material model Melt simple with Thermal viscosity exponent can not have reference_T=0."));
