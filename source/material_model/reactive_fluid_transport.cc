@@ -56,10 +56,6 @@ namespace aspect
     tian_equilibrium_bound_water_content (const MaterialModel::MaterialModelInputs<dim> &in,
                                           unsigned int q) const
     {
-      // Pressure, which must be in GPa for the parametrization, or GPa^-1
-      const double pressure = in.pressure[q]<=0 ? 1e-12 : in.pressure[q]/1.e9;
-      const double inverse_pressure = std::pow(pressure, -1);
-
       // Create arrays that will store the values of the polynomials at the current pressure
       std::vector<double> LR_values(4);
       std::vector<double> csat_values(4);
@@ -71,6 +67,12 @@ namespace aspect
       // Td polynomials are defined in equations 15, B3, B11, and B19.
       for (unsigned int i = 0; i<devolatilization_enthalpy_changes.size(); ++i)
         {
+          // Pressure, which must be in GPa for the parametrization, or GPa^-1. The polynomials for each lithology
+          // breaks down above certain pressures, make sure that we cap the pressure just before this break down.
+          // Introduce minimum pressure to avoid a division by 0.
+          const double minimum_pressure = 1e-12;
+          const double pressure = std::min(std::max(minimum_pressure, in.pressure[q]/1.e9), pressure_cutoffs[i]);
+          const double inverse_pressure = 1.0/pressure;
           for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)
             {
               LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure, devolatilization_enthalpy_changes[i].size() - 1 - j);

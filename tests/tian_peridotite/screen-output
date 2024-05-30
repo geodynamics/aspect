@@ -31,8 +31,8 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54103e-16, 0, 1.39664e-16, 8.51473e-17, 0, 0, 0, 4.64648e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.64648e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54103e-16, 0, 1.39664e-16, 8.51473e-17, 0, 0, 0, 4.64647e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.64647e-10
 
 
    Postprocessing:
@@ -63,7 +63,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.181e-05, 0.000574823, 0.000145666, 1.02675e-16, 0, 0, 0, 0.000630417
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.181e-05, 0.000574823, 0.000145666, 9.16123e-17, 0, 0, 0, 0.000630417
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000630417
 
    Solving temperature system... 4 iterations.
@@ -76,7 +76,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.66691e-08, 2.35667e-06, 3.02875e-07, 1.25585e-16, 0, 0, 0, 2.19117e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.66691e-08, 2.35667e-06, 3.02875e-07, 1.22071e-16, 0, 0, 0, 2.19117e-06
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.35667e-06
 
 

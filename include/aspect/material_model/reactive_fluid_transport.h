@@ -179,6 +179,11 @@ namespace aspect
         std::vector<double> csat_sediment_poly_coeffs {-0.150662, 0.301807, 1.01867};
         std::vector<double> Td_sediment_poly_coeffs {2.83277, -24.7593, 85.9090, 524.898};
 
+        // The polynomials breakdown above certain pressures, 10 GPa for peridotite, 26 GPa for gabbro, 16 GPa for MORB,
+        // and 50 GPa for sediment. These cutoff pressures were determined by extending the pressure range in Tian et al. (2019)
+        // and observing where the maximum allowed water contents jump towards infinite values.
+        const std::vector<double> pressure_cutoffs {10, 26, 16, 50};
+
         std::vector<std::vector<double>> devolatilization_enthalpy_changes {LR_peridotite_poly_coeffs, LR_gabbro_poly_coeffs, \
                                                                              LR_MORB_poly_coeffs, LR_sediment_poly_coeffs
                                                                             };
