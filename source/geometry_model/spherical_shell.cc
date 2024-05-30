@@ -210,7 +210,12 @@ namespace aspect
       normal_vector(const typename Triangulation<dim, dim>::face_iterator &face,
                     const Point<dim> &p) const
       {
-        // TODO: Deal with pull back and push forward
+        // We calculate radial, rather than *normal*, vectors here if a face is
+        // at the boundary. This is as described in the documentation of this
+        // function.
+
+        // TODO: Add an input parameter that determines whether we use this
+        //   or the "geometrically correct" behavior.
         return SphericalManifold<dim>::normal_vector (face, p);
       }
 
