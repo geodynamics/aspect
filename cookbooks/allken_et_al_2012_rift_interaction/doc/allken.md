@@ -38,10 +38,10 @@ is at the center of the 2012 publication.
 In {cite}`allken:etal:2012` the authors focus on the effect of viscosity of the lower layer, the
 offset between the rift basins and the amount of strain weakening on the efficiency of rift linkage and rift
 propagation and the style of extension. Their models predict three main modes of rift interaction: 1) oblique
-to transform linking graben systems for small to moderate rift offset and low lower layer viscosity, 2) 
+to transform linking graben systems for small to moderate rift offset and low lower layer viscosity, 2)
 propagating but non linking and overlapping primary grabens for larger offset and intermediate lower layer
 viscosity, and 3) formation of multiple graben systems with inefficient rift propagation for high lower
-layer viscosity. 
+layer viscosity.
 
 ```{figure-md} fig:allken-result1
 <img src="vx.png" style="width:60%" />
