@@ -800,7 +800,7 @@ namespace aspect
                                          base_variables.get_physical_units(),
                                          visualization_field_names_and_units);
 
-      internal::SurfaceBaseVariablePostprocessor<dim> surface_base_variables;
+      SurfaceBaseVariablePostprocessor<dim> surface_base_variables;
       if (output_base_variables_on_mesh_surface)
         {
           surface_base_variables.initialize_simulator (this->get_simulator());
