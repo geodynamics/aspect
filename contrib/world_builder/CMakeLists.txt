@@ -387,8 +387,8 @@ if (NOT MSVC AND NOT APPLE)
       endif()
 
    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-   SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++14 -pthread -pedantic -fPIC -Wall -Wextra -Wpointer-arith -Wwrite-strings -Wsign-compare 
-   -Woverloaded-virtual -Wno-parentheses -Wcast-qual -fstrict-aliasing -Wmaybe-uninitialized -Werror=maybe-uninitialized>)
+     SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++14 -pthread -pedantic -fPIC -Wall -Wextra -Wpointer-arith -Wwrite-strings -Wsign-compare 
+     -Woverloaded-virtual -Wno-parentheses -Wcast-qual -fstrict-aliasing -Wmaybe-uninitialized -Werror=maybe-uninitialized>)
    else()
       # gcc linux
 
@@ -433,18 +433,15 @@ if (NOT MSVC AND NOT APPLE)
    endif()
    IF ( CMAKE_BUILD_TYPE STREQUAL Coverage )
      if(NOT ${CMAKE_VERSION} VERSION_LESS "3.13.0") # Preventing issues with older cmake compilers which do not support VERSION_GREATER_EQUAL
-     SET(WB_LINKER_OPTIONS -lstdc++ --coverage -fprofile-arcs -ftest-coverage)
+     SET(WB_LINKER_OPTIONS --coverage -fprofile-arcs -ftest-coverage)
      else()
-      SET(WB_LINKER_OPTIONS "-lstdc++ --coverage -fprofile-arcs -ftest-coverage")
+      SET(WB_LINKER_OPTIONS "--coverage -fprofile-arcs -ftest-coverage")
      endif()
-   else()
-     SET(WB_LINKER_OPTIONS -lstdc++)
    endif()
 
    SET(WB_VISU_LINKER_OPTIONS "-pthread")
 elseif(APPLE)
-    SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++14 -Wpointer-arith -Wwrite-strings -Wsynth -Wsign-compare -Woverloaded-virtual -Wno-literal-range -Wno-parentheses -Wno-unused-local-typedefs -Wcast-qual -fstrict-aliasing -stdlib=libc++ -Wuninitialized -Werror=uninitialized -Wdangling-else>)
-    SET(WB_LINKER_OPTIONS -lc++)
+    SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++14 -Wpointer-arith -Wwrite-strings -Wsynth -Wsign-compare -Woverloaded-virtual -Wno-literal-range -Wno-parentheses -Wno-unused-local-typedefs -Wcast-qual -fstrict-aliasing -Wuninitialized -Werror=uninitialized -Wdangling-else>)
 else()
     #MSVS
     SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:CXX>:/W3 /EHsc /std:c++14>)
