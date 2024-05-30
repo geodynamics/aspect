@@ -13,7 +13,7 @@ set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 2
 set CFL number                             = 0.5
 set Maximum time step                      = 20e3
-set Output directory                       = output-initial_conditions_continental_rift_initial_topography
+set Output directory                       = output-initial_conditions_continental_rift_initial_topography_with_craton
 set Pressure normalization                 = no
 set Adiabatic surface temperature          = 1573
 
@@ -44,13 +44,14 @@ subsection Geometry model
 
 end
 
-# Globally refine the mesh to 2.5 km spacing, and then
-# adaptively refine the mesh to 1.25 km spacing above y=50 km
-# and between x=40 and x=160 km. These values ensure areas
+
+# Globally refine the mesh to 5 km spacing, and then
+# adaptively refine the mesh to 2.5 km spacing for the crustal layers.
+# These values ensure areas
 # undergoing brittle deformation are in the high-resolution
 # region.
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0
+  set Initial adaptive refinement        = 1
   set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
@@ -58,7 +59,7 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
-    set Function expression = if ( y>=50e3 && x>=40.e3 && x<=160.e3, 4, 3)
+    set Function expression = if ( y>= 155e3, 4, 3)
   end
 end
 
@@ -148,7 +149,7 @@ subsection Initial composition model
     # The thicknesses of the lithospheric layer within a polygon
     set Lithospheric polygon layer thicknesses         = 20e3, 15e3 , 115.e3
     # The segments making up the polygon
-    set Lithospheric polygons                          = 550e3 > 3000e3
+    set Lithospheric polygons                          = 350e3 > 3000e3
     # The half width of the transition from polygon to reference lithosphere
     set Half width of polygon smoothing                = 10e3
   end
@@ -284,7 +285,7 @@ subsection Material model
 
     # Density values of 1 are assigned to "strain" fields, which are not taken into
     # account when computing material properties.
-    set Densities                     = 3300, 1.0, 1.0, 2700,  2900, 3300
+    set Densities                     = 3300, 1.0, 1.0, 2700,  2900, 3200
     set Thermal expansivities         = 2e-5
 
     # Harmonic viscosity averaging
