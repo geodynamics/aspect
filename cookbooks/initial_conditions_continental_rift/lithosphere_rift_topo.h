@@ -93,7 +93,7 @@ namespace aspect
         double topo_rift_amplitude;
 
         /**
-         * The product of density, gravitational accelleration constant and thickness of the
+         * The product of density, gravitational acceleration constant and thickness of the
          * reference lithospheric column used in computing the topography based on isostasy.
          */
         double ref_rgh;

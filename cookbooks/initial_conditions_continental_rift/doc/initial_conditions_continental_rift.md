@@ -49,7 +49,7 @@ In addition to a rift centre, other deviations from the reference
 lithospheric thicknesses can also be prescribed. In the above snippet,
 these are specified as polygons (multiple polygons are allowed) with
 their own layer thicknesses. The transition from reference lithosphere
-to polgyon lithosphere is implemented as a hyperbolic tangent with a
+to polygon lithosphere is implemented as a hyperbolic tangent with a
 centre point and a half-width.
 
 
@@ -70,8 +70,6 @@ adiabatic surface temperature matches the LAB temperature.
 <img src="Initial_temperature_with_craton.*" style="width:60.0%" />
 
  The initial temperature distribution.
-
-```{literalinclude} initial_topography.prm
 ```
 
 ```{literalinclude} initial_composition_strain.prm
@@ -89,6 +87,7 @@ with a hyperbolic tangent.
 <img src="Initial_strain_with_craton.*" style="width:60.0%" />
 
  The initial plastic strain distribution.
+```
 
 ```{literalinclude} initial_topography.prm
 ```
