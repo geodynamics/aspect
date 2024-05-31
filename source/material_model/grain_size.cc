@@ -826,52 +826,37 @@ namespace aspect
               composition[grain_size_index] = std::max(min_grain_size,composition[grain_size_index]);
             }
 
-          // set up an integer that tells us which phase transition has been crossed inside of the cell
+          // Set up an integer that tells us which phase transition has been crossed inside of the cell.
           int crossed_transition(-1);
 
           // Figure out if the material in the current cell underwent a phase change.
-          // We need to consider if the adiabatic profile is already calculated. If so
-          // use the default position of the phase change, and the deviation in temperature
-          // and pressure to compute if the phase change happens at the current pressure.
-          // If so, check if the velocity is in the direction of the phase change to determine
-          // whether we already crossed phase transition 'phase'. After the check 'phase' will
-          // be -1 if we crossed no transition, or the number of the transition, if we crossed it.
-          // If the adiabatic profile is not yet available, use the default position of the
-          // transition and do not worry about pressure deviations.
-          if (this->get_adiabatic_conditions().is_initialized())
-            for (unsigned int phase=0; phase<transition_depths.size(); ++phase)
-              {
-                // first, get the pressure at which the phase transition occurs normally
-                const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[phase]);
-                const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(transition_depths[phase] + transition_widths[phase]);
-                const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(transition_depths[phase] - transition_widths[phase]);
-                const double transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
-                const double pressure_width = 0.5 * (this->get_adiabatic_conditions().pressure(transition_plus_width)
-                                                     - this->get_adiabatic_conditions().pressure(transition_minus_width));
+          // To do so, check if a grain has moved further than the distance from the phase transition and
+          // if the velocity is in the direction of the phase change. After the check 'crossed_transition' will
+          // be -1 if we crossed no transition, or the index of the phase transition, if we crossed it.
+          for (unsigned int phase=0; phase<transition_depths.size(); ++phase)
+            {
+              const Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i])
+                                                       /this->get_gravity_model().gravity_vector(in.position[i]).norm();
+              const double timestep = this->simulator_is_past_initialization()
+                                      ?
+                                      this->get_timestep()
+                                      :
+                                      0.0;
 
+              // Both distances are positive when they are downward from the transition (since gravity points down)
+              const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - transition_depths[phase];
+              const double distance_moved = in.velocity[i] * vertical_direction * timestep;
 
-                // then calculate the deviation from the transition point (both in temperature
-                // and in pressure)
-                double pressure_deviation = adiabatic_pressure - transition_pressure
-                                            - transition_slopes[phase] * (in.temperature[i] - transition_temperatures[phase]);
-
-                // If we are close to the phase boundary (pressure difference
-                // is smaller than phase boundary width), and the velocity points
-                // away from the phase transition the material has crossed the transition.
-                if ((std::abs(pressure_deviation) < pressure_width)
-                    &&
-                    ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i])) * pressure_deviation > 0))
-                  crossed_transition = phase;
-              }
-          else
-            for (unsigned int j=0; j<in.n_evaluation_points(); ++j)
-              for (unsigned int k=0; k<transition_depths.size(); ++k)
-                if ((phase_function(in.position[i], in.temperature[i], adiabatic_pressure, k)
-                     != phase_function(in.position[j], in.temperature[j], in.pressure[j], k))
-                    &&
-                    ((in.velocity[i] * this->get_gravity_model().gravity_vector(in.position[i]))
-                     * ((in.position[i] - in.position[j]) * this->get_gravity_model().gravity_vector(in.position[i])) > 0))
-                  crossed_transition = k;
+              // If we are close to the phase boundary (closer than the distance a grain has moved
+              // within one time step) and the velocity points away from the phase transition,
+              // then the material has crossed the transition.
+              // To make sure we actually reset the grain size of all the material passing through
+              // the transition, we take 110% of the distance a grain has moved for the check.
+              if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition)
+                  &&
+                  distance_moved * distance_from_transition >= 0)
+                crossed_transition = phase;
+            }
 
 
           if (in.requests_property(MaterialProperties::viscosity))
@@ -1074,14 +1059,6 @@ namespace aspect
                              "Clapeyron slope given in Phase transition Clapeyron slopes. "
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: \\si{\\kelvin}.");
-          prm.declare_entry ("Phase transition widths", "",
-                             Patterns::List (Patterns::Double (0.)),
-                             "A list of widths for each phase transition. This is only use to specify "
-                             "the region where the recrystallized grain size is assigned after material "
-                             "has crossed a phase transition and should accordingly be chosen similar "
-                             "to the maximum cell width expected at the phase transition."
-                             "List must have the same number of entries as Phase transition depths. "
-                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Phase transition Clapeyron slopes", "",
                              Patterns::List (Patterns::Double()),
                              "A list of Clapeyron slopes for each phase transition. A positive "
@@ -1394,12 +1371,9 @@ namespace aspect
                                       (Utilities::split_string_list(prm.get ("Phase transition Clapeyron slopes")));
           recrystallized_grain_size = Utilities::string_to_double
                                       (Utilities::split_string_list(prm.get ("Recrystallized grain size")));
-          transition_widths         = Utilities::string_to_double
-                                      (Utilities::split_string_list(prm.get ("Phase transition widths")));
 
           if (transition_temperatures.size() != transition_depths.size() ||
               transition_slopes.size() != transition_depths.size() ||
-              transition_widths.size() != transition_depths.size() ||
               recrystallized_grain_size.size() != transition_depths.size() )
             AssertThrow(false,
                         ExcMessage("Error: At least one list that gives input parameters for the phase transitions has the wrong size."));

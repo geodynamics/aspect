@@ -1,0 +1,81 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 3,557 (1,666+225+833+833)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+
+Number of active cells: 264 (on 5 levels)
+Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 31+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00000
+     Compositions min/max/mass: 0.002/0.002/6e+07
+     Writing particle output:   output-grain_size_crossed_transition/particles/particles-00000
+
+*** Timestep 1:  t=3221.89 years, dt=3221.89 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00001
+     Compositions min/max/mass: 0.001313/0.002/5.938e+07
+     Writing particle output:   output-grain_size_crossed_transition/particles/particles-00001
+
+*** Timestep 2:  t=6442.31 years, dt=3220.42 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00002
+     Compositions min/max/mass: 0.001/0.002/5.876e+07
+     Writing particle output:   output-grain_size_crossed_transition/particles/particles-00002
+
+*** Timestep 3:  t=9648.75 years, dt=3206.45 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00003
+     Compositions min/max/mass: 0.001/0.002/5.816e+07
+     Writing particle output:   output-grain_size_crossed_transition/particles/particles-00003
+
+*** Timestep 4:  t=10000 years, dt=351.245 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00004
+     Compositions min/max/mass: 0.001/0.002/5.81e+07
+     Writing particle output:   output-grain_size_crossed_transition/particles/particles-00004
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
