@@ -129,27 +129,12 @@ namespace aspect
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
           this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
 
-        // At initialization, the deformation type for cpo is initialized to -1,
-        // but voigt_average_elastic_tensor need a non -1 value to compute the average.
-        // Initialize with the stiffness matrix of olivine to avoid the error.
-        // const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
-        //                                                                     cpo_data_position,
-        //                                                                     data);
-
-        SymmetricTensor<2,6> C_average;
-        C_average[0][0] = stiffness_matrix_olivine[0][0];
-        C_average[0][1] = stiffness_matrix_olivine[0][1];
-        C_average[0][2] = stiffness_matrix_olivine[0][2];
-        C_average[1][1] = stiffness_matrix_olivine[1][1];
-        C_average[1][2] = stiffness_matrix_olivine[1][2];
-        C_average[2][2] = stiffness_matrix_olivine[2][2];
-        C_average[3][3] = stiffness_matrix_olivine[3][3];
-        C_average[4][4] = stiffness_matrix_olivine[4][4];
-        C_average[5][5] = stiffness_matrix_olivine[5][5];
+        // At initialization, the deformation type for cpo is initialized to -1.
+        // Initialize with the stiffness matrix of olivine to avoid errors in the computation.
 
         for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
           {
-            data.push_back(C_average[SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
+            data.push_back(stiffness_matrix_olivine[SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
           }
 
 
