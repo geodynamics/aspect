@@ -2521,19 +2521,32 @@ namespace aspect
       if ((strain_rate.norm() == 0) || (dviscosities_dstrain_rate.norm() == 0))
         return 1;
 
-      // If the correction a:b+b:a is smaller than 2*eta (by at least
-      // the safety factor), then we are on the safe side and can
-      // use the optimal value 1. (We are here assuming the common case
-      // where a is parallel to b, so a:b+b:a = 2a*b and we can drop
-      // the factor of 2 on both sides
+
+      // The factor in the Newton matrix is going to be of the form
+      //   2*eta I + (a \otimes b + b \otimes a)
+      // where a=strain_rate and b=dviscosities_dstrain_rate.
+      //
+      // If a,b are parallel, this simplifies to
+      //   [2*eta + 2 a:b] I =  2 [eta + a:b] I
+      // and we need to make sure that
+      //   [eta + alpha a:b] > (1-safety_factor)*eta
+      // by choosing alpha appropriately.
+
+      // So, first check: If
+      //   [eta + a:b] > (1-safety_factor)*eta
+      // is already satisfied, then we can choose alpha=1
       const double a_colon_b = strain_rate * dviscosities_dstrain_rate;
-      if (a_colon_b < eta * SPD_safety_factor)
+      if (eta + a_colon_b > eta * (1. - SPD_safety_factor))
         return 1.0;
       else
-        // Otherwise we have that the correction a:b+b:a=2a*b is
-        // too large and we have to return a factor smaller than
-        // one.
-        return SPD_safety_factor * std::abs(eta / a_colon_b);
+        {
+          // Otherwise solve the equation above for alpha, which yields
+          //   a:b = -safety_factor*eta / a:b
+          // This can only ever happen if a:b < 0, so we get
+          //   a:b = safety_factor * abs(eta / a:b)
+          Assert (a_colon_b < 0, ExcInternalError());
+          return SPD_safety_factor * std::abs(eta / a_colon_b);
+        }
     }
 
 
