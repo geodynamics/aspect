@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,7 +19,7 @@
 */
 
 
-#include <aspect/material_model/melt_model/katz2003_mantle_melting.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 #include <aspect/utilities.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    namespace MeltModel
+    namespace ReactionModel
     {
       template <int dim>
       Katz2003MantleMelting<dim>::Katz2003MantleMelting()
@@ -110,7 +110,7 @@ namespace aspect
             double melt_fraction_derivative_pressure
               = beta * pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
                 * (dT_solidus_dp * (temperature - T_lherz_liquidus)
-                  + dT_lherz_liquidus_dp * (T_solidus - temperature))
+                   + dT_lherz_liquidus_dp * (T_solidus - temperature))
                 / pow(T_lherz_liquidus - T_solidus,2);
 
             // melt fraction after melting of all clinopyroxene
@@ -122,8 +122,8 @@ namespace aspect
                 const double T_max = std::pow(F_max,1.0/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
                 const double dF_max_dp = - M_cpx * std::pow(r1 + r2 * pressure,-2) * r2;
                 const double dT_max_dp = dT_solidus_dp
-                                        + 1.0/beta * std::pow(F_max,1.0/beta - 1.0) * dF_max_dp * (T_lherz_liquidus - T_solidus)
-                                        + std::pow(F_max,1.0/beta) * (dT_lherz_liquidus_dp - dT_solidus_dp);
+                                         + 1.0/beta * std::pow(F_max,1.0/beta - 1.0) * dF_max_dp * (T_lherz_liquidus - T_solidus)
+                                         + std::pow(F_max,1.0/beta) * (dT_lherz_liquidus_dp - dT_solidus_dp);
 
                 melt_fraction_derivative_temperature
                   = (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
@@ -236,10 +236,10 @@ namespace aspect
                            "peridotite to be molten. "
                            "Units: non-dimensional.");
         prm.declare_entry ("Peridotite melting entropy change", "-300.",
-                            Patterns::Double (),
-                            "The entropy change for the phase transition "
-                            "from solid to melt of peridotite. "
-                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+                           Patterns::Double (),
+                           "The entropy change for the phase transition "
+                           "from solid to melt of peridotite. "
+                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
       }
 
       template <int dim>
@@ -260,7 +260,7 @@ namespace aspect
         beta  = prm.get_double ("beta");
         M_cpx = prm.get_double ("Mass fraction cpx");
         peridotite_melting_entropy_change
-            = prm.get_double ("Peridotite melting entropy change");
+          = prm.get_double ("Peridotite melting entropy change");
       }
     }
   }
@@ -273,7 +273,7 @@ namespace aspect
   namespace MaterialModel
   {
 #define INSTANTIATE(dim) \
-  namespace MeltModel \
+  namespace ReactionModel \
   { \
     template class Katz2003MantleMelting<dim>; \
   }
