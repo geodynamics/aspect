@@ -129,6 +129,7 @@ namespace aspect
             else if (integrator_substep == 1)
               {
                 k[1] = dt * ((*old_velocity) + (*velocity)) * 0.5;
+
                 Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
                   old_location[i] = properties[property_indices[0] + i];
@@ -160,6 +161,7 @@ namespace aspect
             else if (integrator_substep == 2)
               {
                 k[2] = dt * (*old_velocity + *velocity) * 0.5;
+
                 Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
                   old_location[i] = properties[property_indices[0] + i];
@@ -187,9 +189,7 @@ namespace aspect
                   }
 
                 for (unsigned int i=0; i<dim; ++i)
-                  {
-                    properties[property_indices[3] + i] = k[2][i];
-                  }
+                  properties[property_indices[3] + i] = k[2][i];
 
                 it->set_location(new_location);
               }
@@ -199,8 +199,10 @@ namespace aspect
 
                 Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
+                  old_location[i] = properties[property_indices[0] + i];
+
+                for (unsigned int i=0; i<dim; ++i)
                   {
-                    old_location[i] = properties[property_indices[0] + i];
                     k[0][i] = properties[property_indices[1] + i];
                     k[1][i] = properties[property_indices[2] + i];
                     k[2][i] = properties[property_indices[3] + i];
@@ -217,7 +219,7 @@ namespace aspect
             else
               {
                 Assert(false,
-                       ExcMessage("The RK4 integrator should never continue after four integration steps."));
+                       ExcMessage("The RK4 integrator should never continue after four integration stages."));
               }
           }
       }
