@@ -62,6 +62,16 @@ namespace aspect
         // The reaction rates are stored in additional outputs
         this->get_material_model().create_additional_named_outputs(material_outputs);
 
+        // Get the indices of those compositions that correspond to stress tensor elements.
+        stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
+
+        // Get the indices of all compositions that do not correspond to stress tensor elements.
+        std::vector<unsigned int> all_field_indices(this->n_compositional_fields());
+        std::iota (std::begin(all_field_indices), std::end(all_field_indices), 0);
+        set_difference(all_field_indices.begin(), all_field_indices.end(),
+                       stress_field_indices.begin(), stress_field_indices.end(),
+                       std::inserter(non_stress_field_indices, non_stress_field_indices.begin()));
+
         // Connect to the signal after particles are restored at the beginning of
         // a nonlinear iteration of iterative advection schemes.
         this->get_signals().post_restore_particles.connect(
@@ -170,12 +180,13 @@ namespace aspect
                       for (unsigned int d = 0; d < dim; ++d)
                         material_inputs.velocity[0][d] = old_solution[this->introspection().component_indices.velocities[d]];
 
-                      // For the ve_stress_* fields, we use the values on the particles. After they have been restored,
-                      // their properties have the values of the previous timestep.
-                      for (unsigned int n = 0; n < this->n_compositional_fields(); ++n)
+                      // Fill the non-stress composition inputs with the old_solution.
+                      for (const unsigned int &n : non_stress_field_indices)
                         material_inputs.composition[0][n] = old_solution[this->introspection().component_indices.compositional_fields[n]];
+                      // Fill the ve_stress_* composition inputs with the values on the particles.
+                      // After the particles have been restored, their properties have the values of the previous timestep.
                       for (unsigned int n = 0; n < 2*SymmetricTensor<2,dim>::n_independent_components; ++n)
-                        material_inputs.composition[0][n] = particle->get_properties()[data_position + n];
+                        material_inputs.composition[0][stress_field_indices[n]] = particle->get_properties()[data_position + n];
 
                       Tensor<2,dim> grad_u;
                       for (unsigned int d=0; d<dim; ++d)
@@ -264,12 +275,12 @@ namespace aspect
         for (unsigned int d = 0; d < dim; ++d)
           material_inputs.velocity[0][d] = solution[this->introspection().component_indices.velocities[d]];
 
-        // Instead of using the material model inputs, we use the ve_stress_* stored on particles. Other fields are copied from
-        // the solution.
-        for (unsigned int n = 0; n < this->n_compositional_fields(); ++n)
+        // Fill the non-stress composition inputs with the solution.
+        for (const unsigned int &n : non_stress_field_indices)
           material_inputs.composition[0][n] = solution[this->introspection().component_indices.compositional_fields[n]];
+        // For the stress composition we use the ve_stress_* stored on the particles.
         for (unsigned int n = 0; n < 2*SymmetricTensor<2,dim>::n_independent_components; ++n)
-          material_inputs.composition[0][n] = particle->get_properties()[data_position + n];
+          material_inputs.composition[0][stress_field_indices[n]] = particle->get_properties()[data_position + n];
 
         Tensor<2,dim> grad_u;
         for (unsigned int d=0; d<dim; ++d)

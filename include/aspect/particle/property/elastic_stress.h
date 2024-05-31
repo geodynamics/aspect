@@ -105,6 +105,18 @@ namespace aspect
            */
           mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
           mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
+
+          /**
+           * The indices of the compositional fields that represent components of the
+           * viscoelastic stress tensors.
+           */
+          std::vector<unsigned int> stress_field_indices;
+
+          /**
+          * The indices of the compositional fields that do not represent components of the
+          * viscoelastic stress tensors.
+          */
+          std::vector<unsigned int> non_stress_field_indices;
       };
     }
   }
