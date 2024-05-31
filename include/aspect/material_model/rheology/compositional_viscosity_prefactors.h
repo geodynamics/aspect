@@ -74,13 +74,16 @@ namespace aspect
            * The viscosity prefactors or terms used to calculate the viscosity
            * prefactors, which are read in from the input file by the
            * parse_parameters() function. Users can choose between different schemes.
-           * none: no prefactor multiplication
-           * hk04_olivine_hydration: calculate the water fugacity from
-           * Hirth & Kohlstaedt 2004 10.1029/138GM06. using the compositional field
-           * 'bound_fluid'.
+           * none: no viscosity change
+           * hk04_olivine_hydration: calculate the viscosity change due to hydrogen
+           * incorporation into olvine using Hirth & Kohlstaedt 2004 10.1029/138GM06.
+           * This method requires a composition called 'bound_fluid' which is required
+           * by the reactive fluid transport material model to weaken the viscosity with
+           * elevated ratios of H/Si ppm in the solid.
            * The prefactor for a given compositional field is multiplied with a
            * base_viscosity value provided by the material model, which
            * is then returned to the material model.
+           * Constant values
            */
           enum ViscosityPrefactorScheme
           {
@@ -91,13 +94,13 @@ namespace aspect
           // Initialize variables for the water fugacity calculation, from HK04
           std::vector<double> water_fugacity_exponents;
           // From Hirth & Kohlstaedt 2004, equation 6
-          const double activation_energy_H2O = 40e3;
-          const double activation_volume_H2O = 10e-6;
+          const double activation_energy_H2O = 40e3; // J/mol/K
+          const double activation_volume_H2O = 10e-6; // m^3/mol
 
           // We calculate the Molar mass of olivine using the molar mass of fayalite (203.79) and the
           // molar mass of forsterite (140.693), and a mass fraction of 90% forsterite.
-          const double M_olivine = 147.0027;
-          const double M_H2O = 18.01528; // Molar mass of H2O
+          const double M_olivine = 0.14727; // kg/mol
+          const double M_H2O = 0.01801528; // Molar mass of H2O kg/mol
       };
     }
   }

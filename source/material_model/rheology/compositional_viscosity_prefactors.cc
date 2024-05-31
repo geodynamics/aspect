@@ -46,18 +46,18 @@ namespace aspect
                                                                 const unsigned int composition_index,
                                                                 const unsigned int q) const
       {
-        double prefactor;
+        double prefactor = 1;
         switch (viscosity_prefactor_scheme)
           {
             case none:
             {
-              prefactor = 1;
               break;
             }
             case hk04_olivine_hydration:
             {
-              // We query the bound_fluid composition and use the wt% at each point to compute the water fugacity
-              // of olivine assuming 90% Forsterite and 10% Fayalite from Hirth and Kohlstaedt 2004 10.1029/138GM06.
+              // We use the atomic H_Si_ratio_ppm composition (C_OH) at each point to compute the water fugacity
+              // of olivine assuming a composition of 90 mol% Forsterite and 10 mol% Fayalite from Hirth and
+              // Kohlstaedt 2004 10.1029/138GM06.
               const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
               const double A_H2O = 26 / std::pow(1e6, water_fugacity_exponents[composition_index]);
               const double weight_fraction_H2O = in.composition[q][bound_fluid_idx]; // mass fraction of bound water
@@ -88,8 +88,10 @@ namespace aspect
         prm.declare_entry ("Viscosity prefactor scheme", "none",
                            Patterns::Selection("none|HK04 olivine hydration"),
                            "Select what type of viscosity multiplicative prefactor scheme to apply. "
-                           "Allowed entires are 'none', and 'HK04 olivine hydration'."
-                           "Units: none.");
+                           "Allowed entries are 'none', and 'HK04 olivine hydration'. HK04 olivine "
+                           "hydration calculates the viscosity change due to hydrogen incorporation "
+                           "into olivine following Hirth & Kohlstaedt 2004 (10.1029/138GM06). none "
+                           "does not modify the viscosity. Units: none.");
       }
 
 
