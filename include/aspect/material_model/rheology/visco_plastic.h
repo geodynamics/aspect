@@ -34,6 +34,9 @@
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/simulator_access.h>
+#include <aspect/postprocess/melt_statistics.h>
+#include <aspect/melt.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 
 #include<deal.II/fe/component_mask.h>
 
@@ -113,7 +116,7 @@ namespace aspect
     {
 
       template <int dim>
-      class ViscoPlastic : public ::aspect::SimulatorAccess<dim>
+      class ViscoPlastic : public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
       {
         public:
           /**
@@ -200,6 +203,9 @@ namespace aspect
                                     MaterialModel::MaterialModelOutputs<dim> &out,
                                     const IsostrainViscosities &isostrain_viscosities) const;
 
+          void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                               std::vector<double> &melt_fractions) const override;
+
           /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
            */
@@ -241,6 +247,11 @@ namespace aspect
            */
           std::vector<double> minimum_viscosity;
           std::vector<double> maximum_viscosity;
+
+          /*
+          * Object for computing the melt parameters
+          */
+          ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
 
           /**
            * Enumeration for selecting which type of viscous flow law to use.
@@ -303,6 +314,11 @@ namespace aspect
            * Whether to include Peierls creep in the constitutive formulation.
            */
           bool use_peierls_creep;
+
+          /**
+           * Whether to include melting calculations.
+           */
+          bool include_melt;
 
           /**
            * Object for computing Peierls creep viscosities.
