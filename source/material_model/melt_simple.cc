@@ -20,7 +20,7 @@
 
 
 #include <aspect/material_model/melt_simple.h>
-#include <aspect/material_model/melt_model/katz2003_mantle_melting.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/utilities.h>
@@ -49,7 +49,7 @@ namespace aspect
     {
       return model_is_compressible;
     }
-    
+
     template <int dim>
     void
     MeltSimple<dim>::
@@ -58,7 +58,7 @@ namespace aspect
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
-                                                               this->get_adiabatic_conditions().pressure(in.position[q]));
+                                                         this->get_adiabatic_conditions().pressure(in.position[q]));
     }
 
 
@@ -314,7 +314,7 @@ namespace aspect
         prm.enter_subsection("Melt simple");
         {
           // Melt Fraction Parameters
-          MeltModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
+          ReactionModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
 
           prm.declare_entry ("Reference solid density", "3000.",
                              Patterns::Double (0.),

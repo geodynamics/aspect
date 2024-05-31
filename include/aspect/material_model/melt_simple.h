@@ -25,7 +25,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
-#include <aspect/material_model/melt_model/katz2003_mantle_melting.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 
 namespace aspect
 {
@@ -142,7 +142,10 @@ namespace aspect
         double freezing_rate;
         double melting_time_scale;
 
-        MeltModel::Katz2003MantleMelting<dim> katz2003_model;
+        /*
+        * Object for computing the melt parameters
+        */
+        ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
 
     };
 

@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_melt_katz2003_mantle_melting_h
-#define _aspect_material_model_melt_katz2003_mantle_melting_h
+#ifndef _aspect_material_reaction_melt_katz2003_mantle_melting_h
+#define _aspect_material_reaction_melt_katz2003_mantle_melting_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -32,20 +32,20 @@ namespace aspect
   {
     using namespace dealii;
 
-    namespace MeltModel
+    namespace ReactionModel
     {
 
-       /**
-     * A melt model that calculates melt fraction and entropy change
-     * according to the melting model for dry peridotite of Katz, 2003. 
-     * This also includes a computation of the latent heat of melting (if the latent heat
-     * heating model is active).
-     * 
-     * These functions can be used in the calculation of melting and melt transport
-     * in the melt_simple material model and can be extended to other material models
-     *
-     * @ingroup MeltModel
-     */
+      /**
+      * A melt model that calculates melt fraction and entropy change
+      * according to the melting model for dry peridotite of Katz, 2003.
+      * This also includes a computation of the latent heat of melting (if the latent heat
+      * heating model is active).
+      *
+      * These functions can be used in the calculation of melting and melt transport
+      * in the melt_simple material model and can be extended to other material models
+      *
+      * @ingroup ReactionModel
+      */
       template <int dim>
       class Katz2003MantleMelting : public ::aspect::SimulatorAccess<dim>
       {
@@ -76,23 +76,23 @@ namespace aspect
           melt_fraction (const double temperature,
                          const double pressure) const;
 
-           /**
-         * Compute the change in entropy due to melting for a given @p temperature
-         * and @p pressure, and under the assumption that a fraction
-         * @p maximum_melt_fraction of the material has already been molten
-         * previously. The entropy change is computed with respect to temperature
-         * or pressure, depending on @p dependence.
-         * This is needed to calculate the latent heat of melt.
-         */
-        double
-        entropy_change (const double temperature,
-                        const double pressure,
-                        const double maximum_melt_fraction,
-                        const NonlinearDependence::Dependence dependence) const;
+          /**
+          * Compute the change in entropy due to melting for a given @p temperature
+          * and @p pressure, and under the assumption that a fraction
+          * @p maximum_melt_fraction of the material has already been molten
+          * previously. The entropy change is computed with respect to temperature
+          * or pressure, depending on @p dependence.
+          * This is needed to calculate the latent heat of melt.
+          */
+          double
+          entropy_change (const double temperature,
+                          const double pressure,
+                          const double maximum_melt_fraction,
+                          const NonlinearDependence::Dependence dependence) const;
         private:
-           /**
-         * Parameters for anhydrous melting of peridotite after Katz, 2003
-         */
+          /**
+          * Parameters for anhydrous melting of peridotite after Katz, 2003
+          */
 
           // for the solidus temperature
           double A1;   // °C
