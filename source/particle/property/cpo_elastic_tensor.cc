@@ -73,7 +73,7 @@ namespace aspect
         AssertThrow(manager.check_plugin_order("crystal preferred orientation","cpo elastic tensor"),
                     ExcMessage("To use the cpo elastic tensor plugin, the cpo plugin needs to be defined before this plugin."));
 
-        cpo_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("cpo"));
+        cpo_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("crystal preferred orientation"));
       }
 
 
@@ -129,9 +129,23 @@ namespace aspect
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
           this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
 
-        const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
-                                                                            cpo_data_position,
-                                                                            data);
+        // At initialization, the deformation type for cpo is initialized to -1,
+        // but voigt_average_elastic_tensor need a non -1 value to compute the average.
+        // Initialize with the stiffness matrix of olivine to avoid the error.
+        // const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
+        //                                                                     cpo_data_position,
+        //                                                                     data);
+
+        SymmetricTensor<2,6> C_average;
+        C_average[0][0] = stiffness_matrix_olivine[0][0];
+        C_average[0][1] = stiffness_matrix_olivine[0][1];
+        C_average[0][2] = stiffness_matrix_olivine[0][2];
+        C_average[1][1] = stiffness_matrix_olivine[1][1];
+        C_average[1][2] = stiffness_matrix_olivine[1][2];
+        C_average[2][2] = stiffness_matrix_olivine[2][2];
+        C_average[3][3] = stiffness_matrix_olivine[3][3];
+        C_average[4][4] = stiffness_matrix_olivine[4][4];
+        C_average[5][5] = stiffness_matrix_olivine[5][5];
 
         for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
           {
