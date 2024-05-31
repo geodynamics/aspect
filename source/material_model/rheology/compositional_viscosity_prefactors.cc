@@ -82,7 +82,7 @@ namespace aspect
                            "for background material and compositional fields, for a total of N+1 "
                            "where N is the number of all compositional fields or only those "
                            "corresponding to chemical compositions. Units: none.");
-        
+
         prm.declare_entry ("Viscosity prefactor scheme", "none",
                            Patterns::Selection("none|water fugacity|"),
                            "Select what type of multiplicative prefactor you want to apply to the viscosity. "
@@ -103,21 +103,21 @@ namespace aspect
             std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
             AssertThrow(this->introspection().compositional_name_exists("bound_fluid"),
                         ExcMessage("The water fugacity pre-exponential factor only works if "
-                                    "there is a compositional field called bound_fluid."));
+                                   "there is a compositional field called bound_fluid."));
             viscosity_prefactor_scheme = water_fugacity;
 
-          std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+            std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
-          // Establish that a background field is required here
-          compositional_field_names.insert(compositional_field_names.begin(), "background");
-          chemical_field_names.insert(chemical_field_names.begin(),"background");
+            // Establish that a background field is required here
+            compositional_field_names.insert(compositional_field_names.begin(), "background");
+            chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-          Utilities::MapParsing::Options options(chemical_field_names, "Exponents for water fugacity");
+            Utilities::MapParsing::Options options(chemical_field_names, "Exponents for water fugacity");
 
-          // Utilities::MapParsing::Options options(compositional_field_names, "background");
-          options.list_of_allowed_keys = compositional_field_names;
-          water_fugacity_exponents = Utilities::MapParsing::parse_map_to_double_array (prm.get("Exponents for water fugacity"),
-                                                                                       options);
+            // Utilities::MapParsing::Options options(compositional_field_names, "background");
+            options.list_of_allowed_keys = compositional_field_names;
+            water_fugacity_exponents = Utilities::MapParsing::parse_map_to_double_array (prm.get("Exponents for water fugacity"),
+                                                                                         options);
           }
       }
     }
