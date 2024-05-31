@@ -157,6 +157,10 @@ namespace aspect
                                               const double viscosity_pre_yield,
                                               const double shear_modulus) const;
 
+          std::vector<SymmetricTensor<2, dim>>
+          retrieve_stress_previous_timestep (const MaterialModel::MaterialModelInputs<dim> &in,
+                                             const std::vector<Point<dim>> &quadrature_positions) const;
+
           /**
            * Compute the elastic time step.
            */

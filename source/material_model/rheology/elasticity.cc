@@ -447,7 +447,7 @@ namespace aspect
       }
 
 
-
+      // Rotate the stresses of the previous timestep $t$ into the current timestep $t+dtc$.
       template <int dim>
       void
       Elasticity<dim>::fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -457,9 +457,8 @@ namespace aspect
         if (in.current_cell.state() == IteratorState::valid
             && in.requests_property(MaterialProperties::reaction_terms))
           {
-            // Get velocity gradients of the current timestep $t+dtc$
-            // and the compositions from the previous timestep $t$,
-            // both at the requested location in in.position.
+            // Get the velocity gradients of the current timestep $t+dtc$
+            // at the requested location in in.position.
             std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
@@ -467,6 +466,7 @@ namespace aspect
             // Get the current velocity gradients, which get
             // updated in each nonlinear iteration.
             // This means we use the rotation tensor W^(t+dtc), not W^(t).
+            // TODO for particles get velocity on the particle?
             std::vector<double> solution_values(this->get_fe().dofs_per_cell);
             in.current_cell->get_dof_values(this->get_current_linearization_point(),
                                             solution_values.begin(),
@@ -484,58 +484,8 @@ namespace aspect
             evaluator->evaluate(solution_values,
                                 EvaluationFlags::gradients);
 
-            // Get the compositional fields from the previous timestep $t$.
-            // The 'old_solution' has been updated to the full stress tensor
-            // of time $t$ by the operator splitting step at the beginning
-            // of the current timestep.
-            std::vector<double> old_solution_values(this->get_fe().dofs_per_cell);
-            in.current_cell->get_dof_values(this->get_old_solution(),
-                                            old_solution_values.begin(),
-                                            old_solution_values.end());
-
-            // Only create the evaluator the first time we get here.
-            // TODO With the field types, we can avoid specifying the stress
-            // as the first fields. However, the FEPointEvaluation evaluators
-            // can select a range of fields, but this has to be a consecutive
-            // range starting from a given index. To avoid having to evaluate
-            // all fields, we still request that the stress fields are listed
-            // in a consecutive order without interruption by other fields.
-            if (!evaluator_composition)
-              evaluator_composition.reset(new FEPointEvaluation<n_independent_components, dim>(this->get_mapping(),
-                                          this->get_fe(),
-                                          update_values,
-                                          this->introspection().component_indices.compositional_fields[stress_field_indices[0]]));
-
-            // Initialize the evaluator for the composition values.
-            evaluator_composition->reinit(in.current_cell, quadrature_positions);
-            evaluator_composition->evaluate(old_solution_values,
-                                            EvaluationFlags::values);
-
-            // Get the composition values representing the viscoelastic stress field tensor components
-            // of the previous timestep from the evaluator.
-            // We assume (and assert in parse_parameters) that the 2*n_independent_components
-            // tensor components are in the correct order and consecutively listed.
-            // These stresses have not yet been rotated or advected to the current timestep.
-            std::vector<SymmetricTensor<2, dim>>
-            stress_t(in.n_evaluation_points(), SymmetricTensor<2, dim>());
-            for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
-              {
-                const Tensor<1,n_independent_components> composition_values = evaluator_composition->get_value(i);
-                stress_t[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&composition_values[0],
-                                                                           &composition_values[0]+n_independent_components);
-              }
-
-            // If we use particles instead of fields to track the stresses, use the MaterialInputs,
-            // which include the stresses stored on the particles.
-            // The reaction terms are computed after particles have been restored to their position and values
-            // at the beginning of the timestep (i.e., the position and values of the previous timestep) and after they
-            // have been updated to the full stress of the previous timestep by the reaction rates.
-            if ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")))
-              for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
-                {
-                  stress_t[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[0]],
-                                                                             &in.composition[i][stress_field_indices[0]]+n_independent_components);
-                }
+            // Get the fully updated stress of the previous timestep $t$.
+            const std::vector<SymmetricTensor<2, dim>> stress_t = retrieve_stress_previous_timestep(in, quadrature_positions);
 
             Assert(out.reaction_terms.size() == in.n_evaluation_points(), ExcMessage("Out reaction terms not equal to n eval points."));
 
@@ -546,18 +496,20 @@ namespace aspect
                 // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
                 const Tensor<2, dim> rotation = 0.5 * (evaluator->get_gradient(i) - transpose(evaluator->get_gradient(i)));
 
-                // Fill reaction terms by:
-                // 1) Subtracting the composition from the previous timestep that is used as stress_t. in.composition holds the current_linearization_point
-                // for the fields, which for the first nonlinear iteration means the extrapolated solution from
-                // the last and previous to last timesteps. In later iterations, it holds the current solution.
-                // This can lead to alternately computing a reaction term that is correct and one that is zero.
-                // Therefore we subtract the old stress stress_t.
-                // 2) Adding stress_0 (i.e., $\tau^{0}$), the combination of the stress tensor stored at the end of the last time step (stress_t)
+                // stress_0 (i.e., $\tau^{0}$) is the sum of the stress tensor stored at the end of the last time step (stress_t)
                 // and the change in that stress generated by local rotation over the computational timestep $\Delta t_c$:
                 // stress_0 = stress_t + dtc * (symmetrize(rotation * stress_t) - symmetrize(stress_t * rotation)).
-                // As stress_0 is the sum of stress_t and the change in stress and we also subtract stress_t,
-                // the total reaction term simplifies to the stress generated by the rotation.
+                // The reaction terms should be filled with the change from the previous stress to the rotated stress_0.
+                // In case fields are used, in.composition holds the current_linearization_point,
+                // which for the first nonlinear iteration means the extrapolated solution from
+                // the last and previous to last timesteps. In later iterations, it holds the current solution.
+                // If we subtract the stress in in.composition from stress_0 to compute the stress change, we would alternately compute
+                // a reaction term that is correct and one that is zero. Therefore we subtract the old stress stress_t we retrieved
+                // above. This means the reaction terms are:
+                // stress_0 - stress_t = stress_t + dtc * (symmetrize(rotation * stress_t) - symmetrize(stress_t * rotation)) - stress_t
+                // = dtc * (symmetrize(rotation * stress_t) - symmetrize(stress_t * rotation)).
                 const SymmetricTensor<2, dim> stress_change = this->get_timestep() * (symmetrize(rotation * Tensor<2, dim>(stress_t[i])) - symmetrize(Tensor<2, dim>(stress_t[i]) * rotation));
+
                 Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_change,
                                                                        &out.reaction_terms[i][stress_field_indices[0]],
                                                                        &out.reaction_terms[i][stress_field_indices[0]]+n_independent_components);
@@ -787,6 +739,76 @@ namespace aspect
 
         return edot_deviator;
       }
+
+      template <int dim>
+      std::vector<SymmetricTensor<2, dim>>
+      Elasticity<dim>::
+      retrieve_stress_previous_timestep (const MaterialModel::MaterialModelInputs<dim> &in,
+                                         const std::vector<Point<dim>> &quadrature_positions) const
+      {
+        std::vector<SymmetricTensor<2, dim>> stress_t(in.n_evaluation_points(), SymmetricTensor<2, dim>());
+
+        // Either get stress_t - the fully updated stress of the previous timestep - from the fields
+        // or from the particles.
+        if (this->get_parameters().compositional_field_methods[stress_field_indices[0]] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+          {
+            // Get the compositional fields from the previous timestep $t$.
+            // The 'old_solution' has been updated to the full stress tensor
+            // of time $t$ by the operator splitting step at the beginning
+            // of the current timestep.
+            std::vector<double> old_solution_values(this->get_fe().dofs_per_cell);
+            in.current_cell->get_dof_values(this->get_old_solution(),
+                                            old_solution_values.begin(),
+                                            old_solution_values.end());
+
+            // Only create the evaluator the first time we get here.
+            // With the field types, we can avoid specifying the stress
+            // as the first fields. However, the FEPointEvaluation evaluators
+            // can select a range of fields, but this has to be a consecutive
+            // range starting from a given index. To avoid having to evaluate
+            // all fields, we still request that the stress fields are listed
+            // in a consecutive order without interruption by other fields.
+            if (!evaluator_composition)
+              evaluator_composition.reset(new FEPointEvaluation<n_independent_components, dim>(this->get_mapping(),
+                                          this->get_fe(),
+                                          update_values,
+                                          this->introspection().component_indices.compositional_fields[stress_field_indices[0]]));
+
+            // Initialize the evaluator for the composition values.
+            evaluator_composition->reinit(in.current_cell, quadrature_positions);
+            evaluator_composition->evaluate(old_solution_values,
+                                            EvaluationFlags::values);
+
+            // Get the composition values representing the viscoelastic stress field tensor components
+            // of the previous timestep from the evaluator.
+            // We assume (and assert in parse_parameters) that the 2*n_independent_components
+            // tensor components are in the correct order and consecutively listed.
+            // These stresses have not yet been rotated or advected to the current timestep.
+            std::vector<SymmetricTensor<2, dim>>
+            stress_t(in.n_evaluation_points(), SymmetricTensor<2, dim>());
+            for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+              {
+                const Tensor<1,n_independent_components> composition_values = evaluator_composition->get_value(i);
+                stress_t[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&composition_values[0],
+                                                                           &composition_values[0]+n_independent_components);
+              }
+          }
+        else
+          {
+            // If we use particles instead of fields to track the stresses, use the MaterialInputs,
+            // which include the stresses stored on the particles.
+            // The computation of the reaction terms (during which this function is called) happens
+            // after the particles have been restored to their position and values
+            // at the beginning of the timestep (i.e., the position and values of the previous timestep) and after they
+            // have been updated to the full stress of the previous timestep by the reaction rates.
+            for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+              stress_t[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[0]],
+                                                                         &in.composition[i][stress_field_indices[0]]+n_independent_components);
+          }
+
+        return stress_t;
+      }
+
     }
   }
 }
