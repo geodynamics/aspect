@@ -120,13 +120,14 @@ namespace aspect
             // after the first advection nonlinear iteration,
             // which is when the viscosity matters for the Stokes system.
             const std::vector<unsigned int> stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
-            for (unsigned int j = 0; j < SymmetricTensor<2, dim>::n_independent_components; ++j)
-              stress_0_advected[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)] = in.composition[i][stress_field_indices[j]];
+            stress_0_advected = (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[0]],
+                                                                              &in.composition[i][stress_field_indices[0]]+SymmetricTensor<2, dim>::n_independent_components));
 
             // The old stresses are only changed in the operator splitting step and have been advected into
             // the current timestep. They are stored in the second set of n_independent_components.
-            for (unsigned int j = 0; j < SymmetricTensor<2, dim>::n_independent_components; ++j)
-              stress_old[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)] = in.composition[i][stress_field_indices[SymmetricTensor<2, dim>::n_independent_components+j]];
+            stress_old = (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[SymmetricTensor<2, dim>::n_independent_components]],
+                                                                       &in.composition[i][stress_field_indices[SymmetricTensor<2, dim>::n_independent_components]]+SymmetricTensor<2, dim>::n_independent_components));
+
 
             // Average the compositional contributions to elastic_shear_moduli here and use
             // a volume-averaged shear modulus in the loop over the compositions below.

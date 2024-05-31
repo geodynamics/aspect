@@ -158,25 +158,25 @@ namespace aspect
 
         if (Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim>>(this->get_material_model()) ||
             Plugins::plugin_type_matches<MaterialModel::Viscoelastic<dim>>(this->get_material_model()))
-            {
-        // When using the visco_plastic or viscoelastic material model,
-        // make sure that no damping is applied. Damping could potentially
-        // improve stability under rapidly changing dynamics, but
-        // so far it has not been necessary.
-          AssertThrow(elastic_damper_viscosity == 0.,
-                                ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
-                                 "that no elastic damping is applied."));
-                                 // An update of the stored stresses is done in an operator splitting step or by the particle property 'elastic stress'.
-          AssertThrow(this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")),
+          {
+            // When using the visco_plastic or viscoelastic material model,
+            // make sure that no damping is applied. Damping could potentially
+            // improve stability under rapidly changing dynamics, but
+            // so far it has not been necessary.
+            AssertThrow(elastic_damper_viscosity == 0.,
                         ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
-                         "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
-                         "for stresses tracked on particles."));
-                         // The discontinuous element is required to accommodate discontinuous
-        // strain rates that feed into the stored stresses.
-          AssertThrow(this->get_parameters().use_discontinuous_composition_discretization,
-              ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
-                         "the use of discontinuous elements for composition."));
-            }
+                                   "that no elastic damping is applied."));
+            // An update of the stored stresses is done in an operator splitting step or by the particle property 'elastic stress'.
+            AssertThrow(this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")),
+                        ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
+                                   "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
+                                   "for stresses tracked on particles."));
+            // The discontinuous element is required to accommodate discontinuous
+            // strain rates that feed into the stored stresses.
+            AssertThrow(this->get_parameters().use_discontinuous_composition_discretization,
+                        ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
+                                   "the use of discontinuous elements for composition."));
+          }
 
         // Check that 3+3 in 2D or 6+6 in 3D stress fields exist.
         AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == 2*SymmetricTensor<2,dim>::n_independent_components),
@@ -391,14 +391,14 @@ namespace aspect
                 // Only at the beginning of the next timestep do we add the stress update of the
                 // current timestep to the stress stored in the compositional fields, giving
                 // $\tau{t+\Delta t_c}$ with $t+\Delta t_c$ being the current timestep.
-                
+
                 const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[0]],
-                &in.composition[i][stress_field_indices[0]]+SymmetricTensor<2,dim>::n_independent_components));
+                                                                &in.composition[i][stress_field_indices[0]]+SymmetricTensor<2,dim>::n_independent_components));
 
                 // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
                 // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
                 const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[SymmetricTensor<2, dim>::n_independent_components]],
-                 &in.composition[i][stress_field_indices[SymmetricTensor<2,dim>::n_independent_components]]+SymmetricTensor<2,dim>::n_independent_components));
+                                                         &in.composition[i][stress_field_indices[SymmetricTensor<2,dim>::n_independent_components]]+SymmetricTensor<2,dim>::n_independent_components));
 
                 // Average effective creep viscosity
                 // Use the viscosity corresponding to the stresses selected above.
@@ -521,9 +521,8 @@ namespace aspect
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               {
                 const Tensor<1,n_independent_components> composition_values = evaluator_composition->get_value(i);
-                for (unsigned int c = 0; c < n_independent_components; ++c)
-                  stress_t[i][SymmetricTensor<2, dim>::unrolled_to_component_indices(c)] =
-                    composition_values[c];
+                stress_t[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&composition_values[0],
+                                                                           &composition_values[0]+n_independent_components);
               }
 
             // If we use particles instead of fields to track the stresses, use the MaterialInputs,
@@ -534,8 +533,8 @@ namespace aspect
             if ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")))
               for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
                 {
-                  for (unsigned int c = 0; c < n_independent_components; ++c)
-                    stress_t[i][SymmetricTensor<2, dim>::unrolled_to_component_indices(c)] = in.composition[i][stress_field_indices[c]];
+                  stress_t[i] = Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[0]],
+                                                                             &in.composition[i][stress_field_indices[0]]+n_independent_components);
                 }
 
             Assert(out.reaction_terms.size() == in.n_evaluation_points(), ExcMessage("Out reaction terms not equal to n eval points."));
@@ -559,10 +558,9 @@ namespace aspect
                 // As stress_0 is the sum of stress_t and the change in stress and we also subtract stress_t,
                 // the total reaction term simplifies to the stress generated by the rotation.
                 const SymmetricTensor<2, dim> stress_change = this->get_timestep() * (symmetrize(rotation * Tensor<2, dim>(stress_t[i])) - symmetrize(Tensor<2, dim>(stress_t[i]) * rotation));
-                for (unsigned int j = 0; j < SymmetricTensor<2, dim>::n_independent_components; ++j)
-                  {
-                    out.reaction_terms[i][j] = stress_change[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)];
-                  }
+                Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_change,
+                                                                       &out.reaction_terms[i][stress_field_indices[0]],
+                                                                       &out.reaction_terms[i][stress_field_indices[0]]+n_independent_components);
               }
           }
       }
@@ -606,18 +604,16 @@ namespace aspect
                 // This stress includes the rotation and advection of the previous timestep,
                 // i.e., the reaction term (which prescribes the change in stress due to rotation
                 // over the previous timestep) has already been applied during the previous timestep.
-                SymmetricTensor<2, dim> stress_0_t;
-                for (unsigned int j = 0; j < SymmetricTensor<2, dim>::n_independent_components; ++j)
-                  stress_0_t[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)] = in.composition[i][stress_field_indices[j]];
+                const SymmetricTensor<2, dim> stress_0_t (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[0]],
+                                                          &in.composition[i][stress_field_indices[0]]+n_independent_components));
 
                 // Get the old stress that is used to interpolate to timestep $t+\Delta t_c$. It is stored on the
                 // second set of n_independent_components fields, e.g. in 2D on field 3, 4 and 5.
                 // The old stress was advected into the previous timestep, but not rotated.
                 // Below we update it to full stress of the previous timestep, so that it can be
                 // advected into the current timestep.
-                SymmetricTensor<2, dim> stress_old;
-                for (unsigned int j = 0; j < SymmetricTensor<2, dim>::n_independent_components; ++j)
-                  stress_old[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)] = in.composition[i][stress_field_indices[SymmetricTensor<2, dim>::n_independent_components+j]];
+                const SymmetricTensor<2, dim>  stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[n_independent_components]],
+                                                           &in.composition[i][stress_field_indices[n_independent_components]]+n_independent_components));
 
                 // $\eta^{t}_{effcreep}$. This viscosity is already scaled with the timestep_ratio dtc/dte.
                 const double effective_creep_viscosity = out.viscosities[i];
@@ -650,18 +646,21 @@ namespace aspect
                 // we therefore divide the change in stress by the current timestep current_dt (= dtc).
                 const double dtc = timestep_ratio * elastic_timestep();
 
-                for (unsigned int j = 0; j < SymmetricTensor<2, dim>::n_independent_components; ++j)
-                  reaction_rate_out->reaction_rates[i][j] = (-stress_0_t[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)]
-                                                             + stress_t[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)])
-                                                            / dtc;
+                const SymmetricTensor<2, dim> stress_update = (stress_t - stress_0_t) / dtc;
+
+                Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_update,
+                                                                       &reaction_rate_out->reaction_rates[i][stress_field_indices[0]],
+                                                                       &reaction_rate_out->reaction_rates[i][stress_field_indices[0]]+n_independent_components);
 
                 // Also update the second set of stresses, stress_old, with the newly computed stress,
                 // which in the rest of the timestep will serve as the old stress advected but not rotated
                 // into the current timestep. This function fill_reaction_rates is only called at the
                 // beginning of the timestep, and so this update only happens once.
-                for (unsigned int j = 0; j < SymmetricTensor<2, dim>::n_independent_components; ++j)
-                  reaction_rate_out->reaction_rates[i][SymmetricTensor<2, dim>::n_independent_components+j] = (-stress_old[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)]
-                      + stress_t[SymmetricTensor<2, dim>::unrolled_to_component_indices(j)]) / dtc;
+                const SymmetricTensor<2, dim> stress_old_update = (stress_t - stress_old) / dtc;
+
+                Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_old_update,
+                                                                       &reaction_rate_out->reaction_rates[i][stress_field_indices[n_independent_components]],
+                                                                       &reaction_rate_out->reaction_rates[i][stress_field_indices[n_independent_components]]+n_independent_components);
               }
           }
       }

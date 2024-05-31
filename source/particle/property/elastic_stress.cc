@@ -400,34 +400,34 @@ namespace aspect
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
 
-          property_information.emplace_back("ve_stress_xx",1);
-          property_information.emplace_back("ve_stress_yy",1);
+        property_information.emplace_back("ve_stress_xx",1);
+        property_information.emplace_back("ve_stress_yy",1);
 
         if (dim == 2)
           {
-              property_information.emplace_back("ve_stress_xy",1);
+            property_information.emplace_back("ve_stress_xy",1);
           }
         else if (dim == 3)
           {
-              property_information.emplace_back("ve_stress_zz",1);
-              property_information.emplace_back("ve_stress_xy",1);
-              property_information.emplace_back("ve_stress_xz",1);
-              property_information.emplace_back("ve_stress_yz",1);
+            property_information.emplace_back("ve_stress_zz",1);
+            property_information.emplace_back("ve_stress_xy",1);
+            property_information.emplace_back("ve_stress_xz",1);
+            property_information.emplace_back("ve_stress_yz",1);
           }
 
-          property_information.emplace_back("ve_stress_xx_old",1);
-          property_information.emplace_back("ve_stress_yy_old",1);
+        property_information.emplace_back("ve_stress_xx_old",1);
+        property_information.emplace_back("ve_stress_yy_old",1);
 
         if (dim == 2)
           {
-              property_information.emplace_back("ve_stress_xy_old",1);
+            property_information.emplace_back("ve_stress_xy_old",1);
           }
         else if (dim == 3)
           {
-              property_information.emplace_back("ve_stress_zz_old",1);
-              property_information.emplace_back("ve_stress_xy_old",1);
-              property_information.emplace_back("ve_stress_xz_old",1);
-              property_information.emplace_back("ve_stress_yz_old",1);
+            property_information.emplace_back("ve_stress_zz_old",1);
+            property_information.emplace_back("ve_stress_xy_old",1);
+            property_information.emplace_back("ve_stress_xz_old",1);
+            property_information.emplace_back("ve_stress_yz_old",1);
           }
 
         return property_information;
