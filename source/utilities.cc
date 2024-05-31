@@ -2536,7 +2536,7 @@ namespace aspect
       //   [eta + a:b] > (1-safety_factor)*eta
       // is already satisfied, then we can choose alpha=1
       const double a_colon_b = strain_rate * dviscosities_dstrain_rate;
-      if (eta + a_colon_b > eta * (1-SPD_safety_factor))
+      if (eta + a_colon_b > eta * (1. - SPD_safety_factor))
         return 1.0;
       else
         {
