@@ -380,7 +380,7 @@ namespace aspect
 
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
-                const SymmetricTensor<2, dim> deviatoric_strain_rate = in.strain_rate[i];
+                const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
 
                 // Get stress from timestep $t$ rotated and advected into the current
                 // timestep $t+\Delta t_c$ from the compositional fields.
@@ -425,7 +425,7 @@ namespace aspect
                 if ((nonlinear_solver == Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes) ||
                     (nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes))
                   elastic_out->viscoelastic_strain_rate[i] = calculate_viscoelastic_strain_rate(
-                                                               deviatoric_strain_rate, stress_0_advected, stress_old, effective_creep_viscosity, average_elastic_shear_moduli[i]);
+                                                               in.strain_rate[i], stress_0_advected, stress_old, effective_creep_viscosity, average_elastic_shear_moduli[i]);
 
                 // Apply the stress update to get the total stress of timestep t.
                 const SymmetricTensor<2, dim> stress = 2. * effective_creep_viscosity * deviatoric_strain_rate + viscosity_ratio * stress_0_advected +
