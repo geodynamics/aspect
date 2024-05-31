@@ -84,7 +84,7 @@ strain, we specify a depth around which the amplitude is smoothed to zero
 with a hyperbolic tangent.
 
 ```{figure-md} fig:initial_strain
-<img src="Initial_strain_with_craton.*" style="width:60.0%" />
+<img src="Initial_plastic_strain_with_craton.*" style="width:60.0%" />
 
  The initial plastic strain distribution.
 ```
