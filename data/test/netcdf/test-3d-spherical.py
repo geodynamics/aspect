@@ -50,9 +50,9 @@ def ascii_to_netcdf(filename):
     
     # Create the data field variable. 
     # Note that the ordering looks wrong, but it is consistent with how the data needs to be
-    # reshaped with the input file ordering
-    vel         = ds.createVariable('s_velocity', np.float64,('longitude', 'latitude', 'radius'), fill_value=np.nan)
-    vel.units   = 'meters_per_sec'
+    # reshaped for reading into Paraview
+    vel         = ds.createVariable('vs_anomaly', np.float64,('latitude', 'longitude', 'radius'), fill_value=np.nan)
+    vel.units   = 'percent'
     
     # Fill the coordinate and field data. We convert phi and theta from spherical coordinate
     # system to geographical
@@ -60,7 +60,7 @@ def ascii_to_netcdf(filename):
     longitudes[:] = np.unique(np.rad2deg(ascii_input[:, 1]))
     latitudes[:]  = 90 - np.unique(np.rad2deg(ascii_input[:, 2]))
     
-    vel[:]        = np.reshape(ascii_input[:, 3], (n_phi, n_theta, n_r))
+    vel[:]        = np.reshape(ascii_input[:, 3], (n_theta, n_phi, n_r))
      
     # Finish and close file
     ds.close()
