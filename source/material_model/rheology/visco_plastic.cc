@@ -581,7 +581,7 @@ namespace aspect
 
         // Melt Parameters
         prm.declare_entry("Include melting", "false",
-                          Patterns::Bool(),
+                          Patterns::Bool (),
                           "Whether to include calculations for melt fraction and transport.");
 
         // Diffusion creep parameters
