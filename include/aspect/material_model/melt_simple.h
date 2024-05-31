@@ -25,6 +25,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 
 namespace aspect
 {
@@ -141,60 +142,11 @@ namespace aspect
         double freezing_rate;
         double melting_time_scale;
 
-        /**
-         * Parameters for anhydrous melting of peridotite after Katz, 2003
-         */
+        /*
+        * Object for computing the melt parameters
+        */
+        ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
 
-        // for the solidus temperature
-        double A1;   // °C
-        double A2; // °C/Pa
-        double A3; // °C/(Pa^2)
-
-        // for the lherzolite liquidus temperature
-        double B1;   // °C
-        double B2;   // °C/Pa
-        double B3; // °C/(Pa^2)
-
-        // for the liquidus temperature
-        double C1;   // °C
-        double C2;  // °C/Pa
-        double C3; // °C/(Pa^2)
-
-        // for the reaction coefficient of pyroxene
-        double r1;     // cpx/melt
-        double r2;     // cpx/melt/GPa
-        double M_cpx;  // mass fraction of pyroxene
-
-        // melt fraction exponent
-        double beta;
-
-        // entropy change upon melting
-        double peridotite_melting_entropy_change;
-
-        /**
-         * Percentage of material that is molten for a given @p temperature and
-         * @p pressure (assuming equilibrium conditions). Melting model after Katz,
-         * 2003, for dry peridotite.
-         */
-        virtual
-        double
-        melt_fraction (const double temperature,
-                       const double pressure) const;
-
-        /**
-         * Compute the change in entropy due to melting for a given @p temperature
-         * and @p pressure, and under the assumption that a fraction
-         * @p maximum_melt_fraction of the material has already been molten
-         * previously. The entropy change is computed with respect to temperature
-         * or pressure, depending on @p dependence.
-         * This is needed to calculate the latent heat of melt.
-         */
-        virtual
-        double
-        entropy_change (const double temperature,
-                        const double pressure,
-                        const double maximum_melt_fraction,
-                        const NonlinearDependence::Dependence dependence) const;
     };
 
   }
