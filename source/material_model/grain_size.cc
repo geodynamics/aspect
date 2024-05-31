@@ -778,7 +778,9 @@ namespace aspect
           int crossed_transition(-1);
 
           const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
-          const Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]) / gravity_norm;
+          Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]);
+          if (gravity_norm > 0.0)
+            vertical_direction /= gravity_norm;
 
           // Figure out if the material in the current cell underwent a phase change.
           // To do so, check if a grain has moved further than the distance from the phase transition and
@@ -1313,8 +1315,8 @@ namespace aspect
             AssertThrow(false,
                         ExcMessage("Error: The list of recrystallized grain sizes has to have as many entries as there are phases."));
 
-          for (unsigned int i=0; i<n_phase_transitions-1; ++i)
-            AssertThrow(phase_function.get_transition_depth(i)<phase_function.get_transition_depth(i+1),
+          for (unsigned int i=1; i<n_phase_transitions; ++i)
+            AssertThrow(phase_function.get_transition_depth(i-1)<phase_function.get_transition_depth(i),
                         ExcMessage("Error: Phase transition depths have to be sorted in ascending order!"));
 
           // grain evolution parameters
