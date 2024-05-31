@@ -29,8 +29,6 @@
 #include <aspect/simulator_signals.h>
 #include <aspect/parameters.h>
 
-
-// TODO: Add constant_viscosity_prefactors to this file at a point when ASPECT is ready to be broken
 namespace aspect
 {
   namespace MaterialModel
@@ -56,14 +54,18 @@ namespace aspect
               prefactor = 1;
               break;
             }
-            case water_fugacity:
+            case hk04_olivine_hydration:
             {
+              // We query the bound_fluid composition and use the wt% at each point to compute the water fugacity
+              // of olivine assuming 90% Forsterite and 10% Fayalite from Hirth and Kohlstaedt 2004 10.1029/138GM06.
               const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-              const double wt_fraction_h2o = in.composition[q][bound_fluid_idx];
-              const double wt_ol = 1 - wt_fraction_h2o; // We need to get wt_h2o from bound water
-              const double COH = (wt_fraction_h2o/M_h2o) / (wt_ol/M_ol) * 1e6;
-              const double point_water_fugacity = COH / A_h2o * \
-                                                  std::exp((E_h2o + in.pressure[q]*V_h2o)/(constants::gas_constant * in.temperature[q]));
+              const double A_H2O = 26 / std::pow(1e6, water_fugacity_exponents[composition_index]);
+              const double weight_fraction_H2O = in.composition[q][bound_fluid_idx]; // mass fraction of bound water
+              const double weight_fraction_ol = 1 - weight_fraction_H2O; // mass fraction of olivine
+              const double COH = (weight_fraction_H2O/M_H2O) / (weight_fraction_ol/M_olivine) * 1e6; // COH in H / Si ppm
+              const double point_water_fugacity = COH / A_H2O * \
+                                                  std::exp((activation_energy_H2O + in.pressure[q]*activation_volume_H2O)/ \
+                                                           (constants::gas_constant * in.temperature[q]));
               prefactor = std::pow(point_water_fugacity, -water_fugacity_exponents[composition_index]);
             }
           }
@@ -84,9 +86,10 @@ namespace aspect
                            "corresponding to chemical compositions. Units: none.");
 
         prm.declare_entry ("Viscosity prefactor scheme", "none",
-                           Patterns::Selection("none|water fugacity|"),
-                           "Select what type of multiplicative prefactor you want to apply to the viscosity. "
-                           "This is applied before yielding. Units: none.");
+                           Patterns::Selection("none|HK04 olivine hydration"),
+                           "Select what type of viscosity multiplicative prefactor scheme to apply. "
+                           "Allowed entires are 'none', and 'HK04 olivine hydration'."
+                           "Units: none.");
       }
 
 
@@ -98,13 +101,13 @@ namespace aspect
         // Retrieve the list of composition names
         if (prm.get ("Viscosity prefactor scheme") == "none")
           viscosity_prefactor_scheme = none;
-        if (prm.get ("Viscosity prefactor scheme") == "water fugacity")
+        if (prm.get ("Viscosity prefactor scheme") == "HK04 olivine hydration")
           {
             std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
             AssertThrow(this->introspection().compositional_name_exists("bound_fluid"),
-                        ExcMessage("The water fugacity pre-exponential factor only works if "
+                        ExcMessage("The HK04 olivine hydration pre-exponential factor only works if "
                                    "there is a compositional field called bound_fluid."));
-            viscosity_prefactor_scheme = water_fugacity;
+            viscosity_prefactor_scheme = hk04_olivine_hydration;
 
             std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 

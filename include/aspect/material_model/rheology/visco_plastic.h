@@ -318,9 +318,7 @@ namespace aspect
           Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
 
           /**
-           * Object for computing the viscosity multiplied by a varying prefactor.
-           * This multiplication step is done just prior to calculating the effective
-           * viscoelastic viscosity or plastic viscosity.
+           * Object for computing the viscosity multiplied by a given prefactor term.
            */
           Rheology::CompositionalViscosityPrefactors<dim> compositional_viscosity_prefactors;
 

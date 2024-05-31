@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 by the authors of the ASPECT code.
+  Copyright (C) 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -36,7 +36,7 @@ namespace aspect
       /**
        * A class that handles multiplication of viscosity for a given compositional
        * field. The multiplication factors for each composition (viscosity
-       * prefactors) are also declared and parsed in this class.
+       * prefactors) are also declared, parsed, and in some cases calculated in this class.
        */
       template <int dim>
       class CompositionalViscosityPrefactors : public ::aspect::SimulatorAccess<dim>
@@ -71,27 +71,33 @@ namespace aspect
 
         private:
           /**
-           * The constant viscosity prefactors, which are read in
-           * from the input file by the parse_parameters() function.
-           * The total number of prefactors will be equal to one
-           * plus the number of compositional fields. The prefactor
-           * for a given compositional field is multiplied with a
+           * The viscosity prefactors or terms used to calculate the viscosity
+           * prefactors, which are read in from the input file by the
+           * parse_parameters() function. Users can choose between different schemes.
+           * none: no prefactor multiplication
+           * hk04_olivine_hydration: calculate the water fugacity from
+           * Hirth & Kohlstaedt 2004 10.1029/138GM06. using the compositional field
+           * 'bound_fluid'.
+           * The prefactor for a given compositional field is multiplied with a
            * base_viscosity value provided by the material model, which
            * is then returned to the material model.
            */
-          std::vector<double> water_fugacity_exponents;
           enum ViscosityPrefactorScheme
           {
             none,
-            water_fugacity
+            hk04_olivine_hydration
           } viscosity_prefactor_scheme;
-          const double A_h2o = 2.6e-5;
-          const double E_h2o = 40e3;
-          const double V_h2o = 10e-6;
-          const double M_h2o = 18.01528;
+
+          // Initialize variables for the water fugacity calculation, from HK04
+          std::vector<double> water_fugacity_exponents;
+          // From Hirth & Kohlstaedt 2004, equation 6
+          const double activation_energy_H2O = 40e3;
+          const double activation_volume_H2O = 10e-6;
+
           // We calculate the Molar mass of olivine using the molar mass of fayalite (203.79) and the
           // molar mass of forsterite (140.693), and a mass fraction of 90% forsterite.
-          const double M_ol = 147.0027;
+          const double M_olivine = 147.0027;
+          const double M_H2O = 18.01528; // Molar mass of H2O
       };
     }
   }
