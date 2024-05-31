@@ -50,7 +50,7 @@ namespace aspect
      * Interface::is_compressible) only if this is specified in the input file,
      * and contains compressibility for both solid and melt.
      *
-     * @ingroup MaterialModel
+     * @ingroup MaterialModels
      */
     template <int dim>
     class MeltSimple : public MaterialModel::MeltInterface<dim>,
