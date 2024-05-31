@@ -1,0 +1,15 @@
+    buildType:
+      default: debugrelease
+      choices:
+        debugrelease:
+          short: DebugRelease
+          long: build debug and release build
+          buildType: DebugRelease
+        debug:
+          short: Debug
+          long: Emit debug information
+          buildType: Debug
+        release:
+          short: Release
+          long: Optimize generated code
+          buildType: Release
