@@ -20,7 +20,8 @@
 
 
 #include <aspect/heating_model/function.h>
-#include <aspect/global.h>
+
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -42,9 +43,13 @@ namespace aspect
     {
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          // return a constant value
+          // convert the position into the selected coordinate system
           const Point<dim> position = material_model_inputs.position[q];
-          heating_model_outputs.heating_source_terms[q] = heating_model_function.value(position)
+          const Utilities::NaturalCoordinate<dim> point =
+            this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+
+          // then compute the heating function value at this position
+          heating_model_outputs.heating_source_terms[q] = heating_model_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()))
                                                           * material_model_outputs.densities[q];
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
@@ -73,6 +78,17 @@ namespace aspect
       {
         prm.enter_subsection("Function");
         {
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2d/3d "
+                             "respectively with theta being the polar angle. `depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
+
           Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
@@ -88,21 +104,23 @@ namespace aspect
       prm.enter_subsection("Heating model");
       {
         prm.enter_subsection("Function");
-        try
-          {
-            heating_model_function.parse_parameters (prm);
-          }
-        catch (...)
-          {
-            std::cerr << "ERROR: FunctionParser failed to parse\n"
-                      << "\t'Heating model.Function'\n"
-                      << "with expression\n"
-                      << "\t'" << prm.get("Function expression") << "'"
-                      << "More information about the cause of the parse error \n"
-                      << "is shown below.\n";
-            throw;
-          }
         {
+          try
+            {
+              heating_model_function.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                        << "\t'Heating model.Function'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'"
+                        << "More information about the cause of the parse error \n"
+                        << "is shown below.\n";
+              throw;
+            }
+
+          coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
         }
         prm.leave_subsection();
       }
