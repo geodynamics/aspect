@@ -16,7 +16,7 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
 MESSAGE(STATUS "===== Configuring ASPECT benchmarks =============")
 
