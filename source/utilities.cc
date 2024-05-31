@@ -483,7 +483,7 @@ namespace aspect
                   AssertThrow((n_expected_values == n_values || n_values == 1),
                               ExcMessage("The key <" + field_name + "> in <"+ options.property_name + "> does not have "
                                          + "the expected number of values. It expects " + std::to_string(n_expected_values)
-                                         + "or 1 values, but we found " + std::to_string(n_values) + " values."));
+                                         + " or 1 values, but we found " + std::to_string(n_values) + " values."));
 
                   // If we expect multiple values for a key, but found exactly one: assume
                   // the one value stands for every expected value. This allows
