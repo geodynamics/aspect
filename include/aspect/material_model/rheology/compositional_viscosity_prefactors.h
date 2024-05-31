@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_rheology_viscosity_prefactors_h
-#define _aspect_material_model_rheology_viscosity_prefactors_h
+#ifndef _aspect_material_model_rheology_compositional_viscosity_prefactors_h
+#define _aspect_material_model_rheology_compositional_viscosity_prefactors_h
 
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
@@ -39,13 +39,13 @@ namespace aspect
        * prefactors) are also declared and parsed in this class.
        */
       template <int dim>
-      class ViscosityPrefactors : public ::aspect::SimulatorAccess<dim>
+      class CompositionalViscosityPrefactors : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
            * Constructor.
            */
-          ViscosityPrefactors();
+          CompositionalViscosityPrefactors();
 
           /**
            * Declare the parameters this function takes through input files.
@@ -64,8 +64,10 @@ namespace aspect
            * Compute the viscosity.
            */
           double
-          compute_viscosity (const double base_viscosity,
-                             const unsigned int composition_index) const;
+          compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
+                             const double base_viscosity,
+                             const unsigned int composition_index,
+                             const unsigned int q) const;
 
         private:
           /**
@@ -77,8 +79,19 @@ namespace aspect
            * base_viscosity value provided by the material model, which
            * is then returned to the material model.
            */
-          std::vector<double> variable_viscosity_prefactors;
-          std::vector<double> weakening_times;
+          std::vector<double> water_fugacity_exponents;
+          enum ViscosityPrefactorScheme
+          {
+            none,
+            water_fugacity
+          } viscosity_prefactor_scheme;
+          const double A_h2o = 2.6e-5;
+          const double E_h2o = 40e3;
+          const double V_h2o = 10e-6;
+          const double M_h2o = 18.01528;
+          // We calculate the Molar mass of olivine using the molar mass of fayalite (203.79) and the
+          // molar mass of forsterite (140.693), and a mass fraction of 90% forsterite.
+          const double M_ol = 147.0027;
       };
     }
   }
