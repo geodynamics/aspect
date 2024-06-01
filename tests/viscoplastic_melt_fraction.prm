@@ -1,5 +1,5 @@
 # This test checks whether the katz2003 mantle melting model in the
-# reactive transport model produces the correct melt fraction output.
+# reactive transport material model produces the correct melt fraction output.
 #
 # Temperature will be held constant throughout model at 1573 K so at 1 GPa
 # melt fraction should be 15% from Katz et. al. 2003 Fig. 4
@@ -13,16 +13,13 @@ set Dimension                              = 2
 # instead of seconds' parameter is set; seconds otherwise.
 set End time                               = 1000
 set Pressure normalization                 = surface
-set Surface pressure                       = 0
-set Resume computation                     = false
-set Start time                             = 0
 set Use years in output instead of seconds = true
 set Output directory                       = output-vp-melt-fraction
 
 
 subsection Boundary temperature model
   set List of model names = initial temperature
-  set Fixed temperature boundary indicators   = 0,3
+  set Fixed temperature boundary indicators   = top, bottom
 
   subsection Initial temperature
     set Maximal temperature = 1573
@@ -78,8 +75,11 @@ subsection Initial composition model
     set Function expression = 0
   end
 end
-# Use a visco plastic material model, which uses the dislocation
-# and diffusion creep mechanisms.
+
+#The reactive fluid transport material model is composited on top
+# of the visco plastic material model. This example uses the default
+# settings of the visco plastic material model for the solid deformation,
+# which are not important for this test case.
 subsection Material model
   set Model name =  reactive fluid transport
   set Material averaging =  harmonic average
@@ -100,8 +100,7 @@ subsection Mesh refinement
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1,2,3
-  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = bottom, top, left, right
 end
 
 subsection Solver parameters
