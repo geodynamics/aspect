@@ -187,18 +187,18 @@ namespace aspect
                                                        n_phase_transitions_per_composition)
                    :
                    numbers::signaling_nan<double>());
-
-              // Step 1c: select what form of viscosity to use (diffusion, dislocation, fk, or composite)
+              // Step 1c: select what form of viscosity to use (diffusion, dislocation, fk, or composite), and apply
+              // pre-exponential weakening, if required.
               switch (viscous_flow_law)
                 {
                   case diffusion:
                   {
-                    non_yielding_viscosity = viscosity_diffusion;
+                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosities(in, viscosity_diffusion, j, i)[0];
                     break;
                   }
                   case dislocation:
                   {
-                    non_yielding_viscosity = viscosity_dislocation;
+                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosities(in, viscosity_dislocation, j, i)[1];
                     break;
                   }
                   case frank_kamenetskii:
@@ -237,7 +237,7 @@ namespace aspect
             non_yielding_viscosity = constant_viscosity_prefactors.compute_viscosity(non_yielding_viscosity, j);
 
             // Step 1f: multiply the viscosity by other prefactors (default value is 1)
-            non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, non_yielding_viscosity, j, i);
+            // non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, non_yielding_viscosity, j, i);
 
             // Step 2: calculate strain weakening factors for the cohesion, friction, and pre-yield viscosity
             // If no strain weakening is applied, the factors are 1.

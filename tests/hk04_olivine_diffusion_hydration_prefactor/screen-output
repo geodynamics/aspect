@@ -7,13 +7,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving solid_2 system ... 0 iterations.
    Solving bound_fluid system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system... 25+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  3141 kg/m^3, 2.462e+23 Pa s, 3.141e+13 kg
-     Writing graphical output:                          output-hk04_olivine_hydration_prefactor/solution/solution-00000
+     Writing graphical output:                          output-hk04_olivine_diffusion_hydration_prefactor/solution/solution-00000
 
 Termination requested by criterion: end time
 

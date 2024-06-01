@@ -63,11 +63,11 @@ namespace aspect
           /**
            * Compute the viscosity.
            */
-          double
-          compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
-                             const double base_viscosity,
-                             const unsigned int composition_index,
-                             const unsigned int q) const;
+          std::vector<double>
+          compute_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
+                               const double base_viscosity,
+                               const unsigned int composition_index,
+                               const unsigned int q) const;
 
         private:
           /**
@@ -91,16 +91,21 @@ namespace aspect
             hk04_olivine_hydration
           } viscosity_prefactor_scheme;
 
+          int number_of_prefactors;
+
           // Initialize variables for the water fugacity calculation, from HK04
-          std::vector<double> water_fugacity_exponents;
+          std::vector<double> diffusion_water_fugacity_exponents;
+          std::vector<double> dislocation_water_fugacity_exponents;
+
           // From Hirth & Kohlstaedt 2004, equation 6
+          const double A_H2O = 2.6e-5; // 1/Pa
           const double activation_energy_H2O = 40e3; // J/mol/K
           const double activation_volume_H2O = 10e-6; // m^3/mol
 
           // We calculate the Molar mass of olivine using the molar mass of fayalite (203.79) and the
           // molar mass of forsterite (140.693), and a mass fraction of 90% forsterite.
-          const double M_olivine = 0.14727; // kg/mol
-          const double M_H2O = 0.01801528; // Molar mass of H2O kg/mol
+          const double molar_mass_olivine = 0.1470027; // kg/mol
+          const double molar_mass_H2O = 0.01801528; // kg/mol
       };
     }
   }

@@ -1,38 +1,33 @@
 # A test case that checks the water fugacity viscous prefactor
 # multiplication scheme in combination with the visco plastic material model.
-# Following the flow law for wet olivine diffusion creep from
+# Following the flow law for wet olivine dislocation creep from
 # Hirth & Kohlstaedt 2004 (10.1029/138GM06), the exact
 # viscosity is calculated in python through:
 # import numpy as np
-# m = 3
-# d = 1e-3 m
-# E = 375e3 J/mol
-# V = 15e-6 m^3/mol
+# n = 3.5
+# E = 520e3 J/mol
+# V = 22e-6 m^3/mol
 # R = 8.3144621
-# P = 10e9 Pa
-# r = 0.7
-# T = 1673 K
-# A_diff = 2.5e7 / 1e6 / 1e6**m / 1e6**r 1/Pa^2/m^3/s
+# P = 1e9 Pa
+# r = 1.2
+# edot_ii = 1e-13
+# T = 1173 K
+# A_disl = 1600 / 1e6 / 1e6**n / 1e6**r 1/Pa^(4.7)/s
 #
-# A_H2O = 26 / 1e6**r 1/Pa
-# activation_energy_H2O = 40e3 J/mol
+# A_H2O = 2.6e-5 1/Pa
+# activation_energy_H2O = 40e3 J/mol/K
 # activation_volume_H2O = 10e-6 m^3/mol
 #
-# M_H2O = 18.01528
-# M_olivine = 147.0027
+# M_H2O = 0.01801528 kg/mol
+# M_olivine = 0.1470027 kg/mol
 #
 # weight_fraction_h2o = 0.01
 # weight_fraction_olivine = 1 - weight_fraction_h2o
 # COH = (wt_fraction_h2o/M_H2O) / (weight_fraction_olivine/M_olivine) * 1e6
 #
 # fH2O = COH / A_H2O * np.exp((activation_energy_H2O + P*activation_volume_H2O)/(R * T))
-# viscosity_analytic = 0.5 * A_diff**(-1) * d**(m) * np.exp((E + P*V) / R / T) * fH2O**(-r)
-#
-# In the background composition, the viscosity should be equal to 2.766e19.
-#
-# In the solid_2 composition, r=0.7 and the viscosity should be equal to 4.924e23.
-# Combined, this should result in an average model viscosity of 2.462e23.
-# The material model should return this viscosity.
+# viscosity_analytic = 0.5 * A_disl**(-1/n) * edot_ii^((1-n)/n) * np.exp((E + P*V) / (n*R*T)) * fH2O**(-r/n)
+# The viscosity should be equal to 1.00291e19, and the material model should return this viscosity.
 
 # Global parameters
 set Dimension                              = 2
@@ -41,7 +36,7 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Surface pressure                       = 10.e9
+set Surface pressure                       = 1.e9
 
 subsection Compositional fields
   set Number of fields = 2
@@ -85,7 +80,7 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-    set Function expression = 1673
+    set Function expression = 1173
   end
 end
 
@@ -97,14 +92,16 @@ subsection Material model
     # Diffusion creep parameters
     # In the background, the water fugacity exponent = 0.7, and this requires
     # a different prefactor due to the dependence of A_diff on the fugacity exponent r.
-    set Viscous flow law                          = diffusion
-    set Prefactors for diffusion creep            = 1.57739e-21, 2.5e-17, 2.5e-17
-    set Stress exponents for diffusion creep      = 1.0
-    set Activation energies for diffusion creep   = 375e3
-    set Activation volumes for diffusion creep    = 15e-6
-    set Grain size                                = 1e-3
-    set Exponents for water fugacity              = 0.7, 0.0, 0.0
-    set Viscosity prefactor scheme                = HK04 olivine hydration
+    set Reference strain rate                          = 1e-13
+    set Minimum strain rate                            = 1e-13
+
+    set Viscous flow law                               = dislocation
+    set Prefactors for dislocation creep               = 1.0095317511683098e-25
+    set Stress exponents for dislocation creep         = 3.5
+    set Activation energies for dislocation creep      = 520e3
+    set Activation volumes for dislocation creep       = 22e-6
+    set Water fugacity exponents for dislocation creep = 0.34285714285714286
+    set Viscosity prefactor scheme                     = HK04 olivine hydration
   end
 end
 
@@ -119,7 +116,7 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = material statistics, visualization
+  set List of postprocessors = material statistics
   subsection Visualization
     set Interpolate output       = false
     set List of output variables = material properties
