@@ -73,7 +73,7 @@ namespace aspect
         AssertThrow(manager.check_plugin_order("crystal preferred orientation","cpo elastic tensor"),
                     ExcMessage("To use the cpo elastic tensor plugin, the cpo plugin needs to be defined before this plugin."));
 
-        cpo_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("cpo"));
+        cpo_data_position = manager.get_data_info().get_position_by_plugin_index(manager.get_plugin_index_by_name("crystal preferred orientation"));
       }
 
 
@@ -125,17 +125,12 @@ namespace aspect
                                                               std::vector<double> &data) const
       {
 
-        // Get a reference to the CPO particle property.
-        const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
-
-        const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
-                                                                            cpo_data_position,
-                                                                            data);
+        // At initialization, the deformation type for cpo is initialized to -1.
+        // Initialize with the stiffness matrix of olivine to avoid errors in the computation.
 
         for (unsigned int i = 0; i < SymmetricTensor<2,6>::n_independent_components ; ++i)
           {
-            data.push_back(C_average[SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
+            data.push_back(stiffness_matrix_olivine[SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
           }
 
 
