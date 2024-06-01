@@ -1,39 +1,18 @@
-# Overview (description from John Nabiloff pyvista_2D_example scripts)
+# This python script uses the pyvista package to do math and plot
+# data from a 2D cylindrical annulus output. The parameter file
+# used to generate the output figures can be made by changing the
+# onset-of-convection cookbook example in the ways described by the
+# comments at the end of this file.
 
-# PyVista is a python-based 3D plotting and mesh analysis package,
-# which is largely achieved through streamlined interface to the
-# VTK package. Documentation for PyVista is located at
-# https://docs.pyvista.org/version/stable/.
+# This script uses TimeReader class.
+# This class reads in .pvd files to extract the time information
+# about a model output and reads .pvtu files for the T,v,p solution.
+# The script also showcases simple mesh operations as well as
+# the thresholding and contouring utilities of pyvista.
 
-# While not inherently designed for plotting 2D data, various
-# workflows can quickly produce high quality 2D plots through a
-# scripting interface, while also allowing users to modify the
-# underlying data (if desired) through standard python libararies
-# (numpy, scipy, etc, etc). At minimum, pyvista thus provides
-# a reliable and streamlined method for reading ASPECT pvtu files
-# into python for further analysis.
-
-# This contribution is designed to showcase this functionality,
-# largely based on work by Dylan Vasey hosted at
-# https://github.com/dyvasey/riftinversion and used in
-# Vasey et al. 2024 (https://doi.org/10.1130/G51489.1).
-
-# Future examples will illustrate how to visualize 3D models
-# and this example will also be updated to highlight additional
-# features for 2D model analysis and visualization.
-
-# Installation Instructions
-# While PyVista can be installed through Anaconda or PIP,
-# the most straightforward way to ensure it works and does not
-# produce conflicts with other python libraries is to create an
-# anaconda environment with the package dependencies found
-# at https://github.com/pyvista/pyvista/blob/main/environment.yml.
-# After downloading this file, create a new anaconda environment
-# using this file with "conda env create -f environment.yml".
-# Once that environment has been created, activate it with
-# "conda activate pyvista-env" and then install pyvist with
-# "conda install -c conda-forge pyvista". You can check
-# to see if pyvista is installed with "import pyvista as pv".
+# For additional overview on the utility of pyvista with ASPECT
+# please read the description from John Nabiloff pyvista_2D_example
+# scripts) in aspect/contrib/python/scripts/pyvista_2D_example.py
 
 # Load modules
 import numpy as np
@@ -41,8 +20,8 @@ import pyvista as pv
 import matplotlib.pyplot as plt
 import os
 
-#   Include the path to the project directory ofyou would like to
-#   visualize and list the model directories within that Input directory + model directory
+#   Include the path to the project directory you would like to
+#   visualize.
 dir = "/2D_annulus_simple_convection"  # [CHANGE THIS TO MATCH YOUR FILE SYSTEM]
 
 #   Time step: initial and final values of the output file numbers
@@ -96,19 +75,20 @@ for ts in range(out_n_min, out_n_max + 1):
     mesh_midmantle = mesh.threshold(
         scalars="r", value=r_inner + 400000, invert=False
     ).threshold(scalars="r", value=r_outer - 400000, invert=True)
+
     #   Compute the mean temperature value of the mid-mantle. This can be used
     #   along with the core and surface temperatures to define the thermal boundary
     #   layers
     mean_mantle_T = np.mean(mesh_midmantle["T"])
+
     #   Create a new point field in the mesh object which is the temperature
     #   deviation from the mean at all points in the domain.
     mesh.point_data["T_dev"] = mesh["T"] - mean_mantle_T
 
-    #    Other calculations can be done if other fields are outputed.
     #    Contours can be drawn and data can be extracted along curves of constant radius
     midmantle_contour = mesh.contour(scalars="r", isosurfaces=[(r_outer + r_inner) / 2])
 
-    # Plot the angular variations of the temperature field
+    #   Plot the angular variations of the temperature field
     fig, ax = plt.subplots(1)
     fig.set_size_inches(12, 3)
     ax.scatter(midmantle_contour["phi"], midmantle_contour["T"])
@@ -130,7 +110,7 @@ for ts in range(out_n_min, out_n_max + 1):
         position_y=0.01,
     )
 
-    # Plot radial velocity
+    #   Plot radial velocity
     pl = pv.Plotter(off_screen=True)
     pl.add_text(str(times[ts]) + " Myrs", position="upper_left", font_size=18)
     #   Add a mesh to the plot with scalar color bar limits, a colormap, and lighting=False since
@@ -159,7 +139,7 @@ for ts in range(out_n_min, out_n_max + 1):
         position_x=0.2,
         position_y=0.01,
     )
-    # Plot angular velocity
+    #   Plot angular velocity
     pl = pv.Plotter(off_screen=True)
     pl.add_text(str(times[ts]) + " Myrs", position="upper_left", font_size=18)
     pl.add_mesh(
@@ -186,7 +166,7 @@ for ts in range(out_n_min, out_n_max + 1):
         position_x=0.2,
         position_y=0.01,
     )
-    # Plot temperature deviation from the mean mantle temperature
+    #   Plot temperature deviation from the mean mantle temperature
     pl = pv.Plotter(off_screen=True)
     pl.add_text(str(times[ts]) + " Myrs", position="upper_left", font_size=18)
     pl.add_mesh(
