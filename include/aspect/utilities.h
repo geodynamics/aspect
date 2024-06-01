@@ -746,6 +746,18 @@ namespace aspect
     std::string parenthesize_if_nonempty (const std::string &s);
 
     /**
+     * Given a string @p s, convert it to a boolean value.
+     */
+    bool
+    string_to_bool(const std::string &s);
+
+    /**
+     * Given a vector of strings @p s, convert it to a vector of boolean values.
+     */
+    std::vector<bool>
+    string_to_bool(const std::vector<std::string> &s);
+
+    /**
      * Returns if a vector of strings @p strings only contains unique
      * entries.
      */

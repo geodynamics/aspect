@@ -1,0 +1,6 @@
+Improved: The limiter for the DG solution can now be selected
+for each compositional field individually, instead of using
+a single setting that applies to all compositional fields.
+If only a single setting is found it will still apply to all fields.
+<br>
+(Rene Gassmoeller, 2024/06/01)

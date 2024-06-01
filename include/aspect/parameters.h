@@ -620,7 +620,7 @@ namespace aspect
     double                         stabilization_gamma;
     double                         discontinuous_penalty;
     bool                           use_limiter_for_discontinuous_temperature_solution;
-    bool                           use_limiter_for_discontinuous_composition_solution;
+    std::vector<bool>              use_limiter_for_discontinuous_composition_solution;
     double                         global_temperature_max_preset;
     double                         global_temperature_min_preset;
     std::vector<double>            global_composition_max_preset;

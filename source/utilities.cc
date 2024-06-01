@@ -2210,6 +2210,28 @@ namespace aspect
 
 
     bool
+    string_to_bool(const std::string &s)
+    {
+      return (s == "true" || s == "yes");
+    }
+
+
+
+    std::vector<bool>
+    string_to_bool(const std::vector<std::string> &s)
+    {
+      std::vector<bool> result;
+      result.reserve(s.size());
+
+      for (auto &i : s)
+        result.push_back(string_to_bool(i));
+
+      return result;
+    }
+
+
+
+    bool
     has_unique_entries (const std::vector<std::string> &strings)
     {
       const std::set<std::string> set_of_strings(strings.begin(),strings.end());

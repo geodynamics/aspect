@@ -1,0 +1,31 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 8,164 (2,178+289+1,089+2,304+2,304)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-discontinuous_composition_bound_preserving_limiter_selected_fields/solution/solution-00000
+     RMS, max velocity:         0.113 m/year, 0.179 m/year
+     Compositions min/max/mass: 0/1/1.224e+11 // 0/1/1.224e+11
+
+*** Timestep 1:  t=25000 years, dt=25000 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving C_2 system ... 4 iterations.
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-discontinuous_composition_bound_preserving_limiter_selected_fields/solution/solution-00001
+     RMS, max velocity:         0.113 m/year, 0.179 m/year
+     Compositions min/max/mass: -0.0009377/1/1.224e+11 // -0.1602/1.081/1.224e+11
+
+Termination requested by criterion: end time
+
+
+
