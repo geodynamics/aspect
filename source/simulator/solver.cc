@@ -182,19 +182,11 @@ namespace aspect
          * @param S_inverse_operator Approximation for the inverse Schur complement,
          * can be chosen as the mass matrix.
          * @param A_inv_operator Preconditioner object for the matrix A.
-         * @param do_solve_A A flag indicating whether we should actually solve with
-         *     the matrix $A$, or only apply one preconditioner step with it.
-         * @param A_block_is_symmetric A flag indicating whether the matrix $A$ is symmetric.
-         * @param A_block_tolerance The tolerance for the CG solver which computes
-         *     the inverse of the A block.
          **/
         BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix     &S,
                                   const LinearAlgebra::BlockSparseMatrix     &Spre,
                                   const SInvOperator                         &S_inverse_operator,
-                                  const AInvOperator                         &A_inv_operator,
-                                  const bool                                  do_solve_A,
-                                  const bool                                  A_block_is_symmetric,
-                                  const double                                A_block_tolerance);
+                                  const AInvOperator                         &A_inv_operator);
 
         /**
          * Matrix vector product with this preconditioner object.
@@ -214,15 +206,6 @@ namespace aspect
         const LinearAlgebra::BlockSparseMatrix &stokes_preconditioner_matrix;
         const SInvOperator                     &S_inv_operator;
         const AInvOperator                     &A_inv_operator;
-
-        /**
-         * Whether to actually invert the $\tilde A$ part of the preconditioner matrix
-         * or to just apply a single preconditioner step with it.
-         **/
-        const bool do_solve_A;
-        const bool A_block_is_symmetric;
-        mutable unsigned int n_iterations_A_;
-        const double A_block_tolerance;
     };
 
 
@@ -231,20 +214,12 @@ namespace aspect
     BlockSchurPreconditioner (const LinearAlgebra::BlockSparseMatrix     &S,
                               const LinearAlgebra::BlockSparseMatrix     &Spre,
                               const SInvOperator                         &S_inv_operator,
-                              const AInvOperator                         &A_inv_operator,
-                              const bool                                  do_solve_A,
-                              const bool                                  A_block_symmetric,
-                              const double                                A_block_tolerance
-                             )
+                              const AInvOperator                         &A_inv_operator)
       :
       stokes_matrix     (S),
       stokes_preconditioner_matrix     (Spre),
       S_inv_operator(S_inv_operator),
-      A_inv_operator  (A_inv_operator),
-      do_solve_A        (do_solve_A),
-      A_block_is_symmetric(A_block_symmetric),
-      n_iterations_A_(0),
-      A_block_tolerance(A_block_tolerance)
+      A_inv_operator  (A_inv_operator)
     {}
 
     template <class AInvOperator, class SInvOperator>
@@ -252,7 +227,7 @@ namespace aspect
     BlockSchurPreconditioner<AInvOperator, SInvOperator>::
     n_iterations_A() const
     {
-      return n_iterations_A_;
+      return A_inv_operator.n_iterations;
     }
 
     template <class AInvOperator, class SInvOperator>
@@ -287,23 +262,88 @@ namespace aspect
         utmp += src.block(0);
       }
 
-      // now either solve with the top left block (if do_solve_A==true)
+      A_inv_operator.vmult(dst.block(0), utmp);
+    }
+
+
+    /**
+      * This class is used in the implementation of the right preconditioner
+      * as an approximation for the inverse of the velocity (A) block.
+      * This operator can either just apply the preconditioner (AMG)
+      * or perform an inner CG solve with the same preconditioner.
+      * Here, the Schur complement is approximated by
+      * the pressure mass matrix weighted by the inverse of viscosity and
+      * the inverse is computed with a CG solve preconditioned by
+      * PreconditionerMp passed to the constructor.
+      */
+    template <class PreconditionerA>
+    class InverseVelocityBlock
+    {
+      public:
+        /**
+           * @param do_solve_A A flag indicating whether we should actually solve with
+           *     the matrix $A$, or only apply one preconditioner step with it.
+           * @param A_block_is_symmetric A flag indicating whether the matrix $A$ is symmetric.
+           * @param A_block_tolerance The tolerance for the CG solver which computes
+           *     the inverse of the A block.
+        */
+        InverseVelocityBlock(const TrilinosWrappers::SparseMatrix &matrix,
+                             const PreconditionerA &preconditioner,
+                             const bool do_solve_A,
+                             const bool A_block_is_symmetric,
+                             const double solver_tolerance);
+
+        void vmult(TrilinosWrappers::MPI::Vector &dst,
+                   const TrilinosWrappers::MPI::Vector &src) const;
+
+        mutable unsigned int n_iterations = 0;
+
+      private:
+        const TrilinosWrappers::SparseMatrix &matrix;
+        const PreconditionerA &preconditioner;
+        const bool do_solve_A;
+        const bool A_block_is_symmetric;
+        const double solver_tolerance;
+    };
+
+
+
+    template <class PreconditionerA>
+    InverseVelocityBlock<PreconditionerA>::InverseVelocityBlock(
+      const TrilinosWrappers::SparseMatrix &matrix,
+      const PreconditionerA &preconditioner,
+      const bool do_solve_A,
+      const bool A_block_is_symmetric,
+      const double solver_tolerance)
+      : matrix (matrix),
+        preconditioner (preconditioner),
+        do_solve_A (do_solve_A),
+        A_block_is_symmetric (A_block_is_symmetric),
+        solver_tolerance (solver_tolerance)
+    {}
+
+
+
+    template <class PreconditionerA>
+    void InverseVelocityBlock<PreconditionerA>::vmult(TrilinosWrappers::MPI::Vector &dst,
+                                                      const TrilinosWrappers::MPI::Vector &src) const
+    {
+      // Either solve with the top left block
       // or just apply one preconditioner sweep (for the first few
       // iterations of our two-stage outer GMRES iteration)
       if (do_solve_A == true)
         {
-          SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
+          SolverControl solver_control(10000, src.l2_norm() * solver_tolerance);
           PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
 
           try
             {
-              dst.block(0) = 0.0;
+              dst = 0.0;
 
               if (A_block_is_symmetric)
                 {
-                  SolverCG<LinearAlgebra::Vector> solver(solver_control,mem);
-                  solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
-                               A_inv_operator);
+                  SolverCG<LinearAlgebra::Vector> solver(solver_control, mem);
+                  solver.solve(matrix, dst, src, preconditioner);
                 }
               else
                 {
@@ -315,29 +355,30 @@ namespace aspect
                   solver(solver_control,
                          mem,
                          SolverBicgstab<LinearAlgebra::Vector>::AdditionalData(/*exact_residual=*/ false));
-                  solver.solve(stokes_matrix.block(0,0), dst.block(0), utmp,
-                               A_inv_operator);
+                  solver.solve(matrix, dst, src, preconditioner);
                 }
-              n_iterations_A_ += solver_control.last_step();
+              n_iterations += solver_control.last_step();
             }
-          // if the solver fails, report the error from processor 0 with some additional
-          // information about its location, and throw a quiet exception on all other
-          // processors
           catch (const std::exception &exc)
             {
+              // if the solver fails, report the error from processor 0 with some additional
+              // information about its location, and throw a quiet exception on all other
+              // processors
               Utilities::throw_linear_solver_failure_exception("iterative (top left) solver",
                                                                "BlockSchurPreconditioner::vmult",
                                                                std::vector<SolverControl> {solver_control},
                                                                exc,
-                                                               src.block(0).get_mpi_communicator());
+                                                               src.get_mpi_communicator());
             }
         }
       else
         {
-          A_inv_operator.vmult (dst.block(0), utmp);
-          n_iterations_A_ += 1;
+          preconditioner.vmult (dst, src);
+          n_iterations += 1;
         }
     }
+
+
 
     /**
       * This class is used in the implementation of the right preconditioner.
@@ -878,32 +919,39 @@ namespace aspect
 
         solver_control_cheap.enable_history_data();
         solver_control_expensive.enable_history_data();
+
         internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase> inverse_weighted_mass_matrix(
           system_preconditioner_matrix.block(1,1),
           *Mp_preconditioner,
           parameters.linear_solver_S_block_tolerance);
 
         // create a cheap preconditioner that consists of only a single V-cycle
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_cheap(
+          system_matrix.block(0,0),
+          *Amg_preconditioner,
+          /* do_solve_A = */ false,
+          stokes_A_block_is_symmetric(),
+          parameters.linear_solver_A_block_tolerance);
+        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
               internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>
               preconditioner_cheap (system_matrix,
                                     system_preconditioner_matrix,
                                     inverse_weighted_mass_matrix,
-                                    *Amg_preconditioner,
-                                    /* do_solve_A = */ false,
-                                    stokes_A_block_is_symmetric(),
-                                    parameters.linear_solver_A_block_tolerance);
+                                    inverse_velocity_block_cheap);
 
         // create an expensive preconditioner that solves for the A block with CG
-        const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
+        internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_expensive(
+          system_matrix.block(0,0),
+          *Amg_preconditioner,
+          /* do_solve_A = */ true,
+          stokes_A_block_is_symmetric(),
+          parameters.linear_solver_A_block_tolerance);
+        const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
               internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>
               preconditioner_expensive (system_matrix,
                                         system_preconditioner_matrix,
                                         inverse_weighted_mass_matrix,
-                                        *Amg_preconditioner,
-                                        /* do_solve_A = */ true,
-                                        stokes_A_block_is_symmetric(),
-                                        parameters.linear_solver_A_block_tolerance);
+                                        inverse_velocity_block_expensive);
 
         // step 1a: try if the simple and fast solver
         // succeeds in n_cheap_stokes_solver_steps steps or less.
