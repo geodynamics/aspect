@@ -550,15 +550,17 @@ endif()
 # Setup targets for ASPECT:
 if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
   add_executable(${TARGET} ${TARGET_SRC})
-  deal_ii_setup_target(${TARGET} DEBUG)
+  target_link_libraries(${TARGET} dealii::dealii_debug)
+
   add_executable(${TARGET}-release ${TARGET_SRC})
-  deal_ii_setup_target(${TARGET}-release RELEASE)
+  target_link_libraries(${TARGET}-release dealii::dealii_release)
+
   set(TARGETS ${TARGET}-release ${TARGET})
   # default for testing:
   set(TARGET ${TARGET})
 else()
   add_executable(${TARGET} ${TARGET_SRC})
-  deal_ii_setup_target(${TARGET})
+  target_link_libraries(${TARGET} dealii::dealii_debug)
 endif()
 
 # This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
