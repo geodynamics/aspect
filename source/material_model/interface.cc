@@ -1222,7 +1222,7 @@ namespace aspect
   \
   template struct MaterialModelInputs<dim>; \
   \
-  template struct MaterialModelOutputs<dim>; \
+  template class MaterialModelOutputs<dim>; \
   \
   template class AdditionalMaterialOutputs<dim>; \
   \

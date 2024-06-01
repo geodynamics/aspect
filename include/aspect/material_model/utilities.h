@@ -43,7 +43,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim> struct MaterialModelOutputs;
+    template <int dim> class MaterialModelOutputs;
     template <int dim> struct EquationOfStateOutputs;
 
     /**
