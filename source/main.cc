@@ -29,7 +29,6 @@
 #include <csignal>
 #include <string>
 #include <thread>
-#include <chrono>
 #include <regex>
 
 #ifdef DEBUG

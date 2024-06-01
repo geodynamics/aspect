@@ -31,7 +31,6 @@
 #include <deal.II/lac/sparsity_tools.h>
 
 #include <deal.II/fe/fe_q.h>
-#include <deal.II/fe/fe_dgq.h>
 #include <deal.II/fe/fe_dgp.h>
 #include <deal.II/fe/fe_values.h>
 
