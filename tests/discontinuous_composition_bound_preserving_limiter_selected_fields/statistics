@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Visualization file name
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+# 17: Minimal value for composition C_1
+# 18: Maximal value for composition C_1
+# 19: Global mass for composition C_1
+# 20: Minimal value for composition C_2
+# 21: Maximal value for composition C_2
+# 22: Global mass for composition C_2
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 4608 0 0 0 33 35 34 output-discontinuous_composition_bound_preserving_limiter_selected_fields/solution/solution-00000 1.12785220e-01 1.78736865e-01  0.00000000e+00 1.00000000e+00 1.22395833e+11  0.00000000e+00 1.00000000e+00 1.22395833e+11 
+1 2.500000000000e+04 2.500000000000e+04 256 2467 1089 4608 0 4 4 26 28 28 output-discontinuous_composition_bound_preserving_limiter_selected_fields/solution/solution-00001 1.12744114e-01 1.78560244e-01 -9.37682603e-04 1.00000001e+00 1.22395787e+11 -1.60230133e-01 1.08097724e+00 1.22395761e+11 
