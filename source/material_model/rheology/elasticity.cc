@@ -51,7 +51,8 @@ namespace aspect
       NamedAdditionalMaterialOutputs<dim>(make_elastic_additional_outputs_names()),
       elastic_shear_moduli(n_points, numbers::signaling_nan<double>()),
       elastic_viscosity(n_points, numbers::signaling_nan<double>()),
-      timestep_ratio(n_points, numbers::signaling_nan<double>())
+      timestep_ratio(n_points, numbers::signaling_nan<double>()),
+      deviatoric_stress(n_points, SymmetricTensor<2,dim>())
     {}
 
 
@@ -480,11 +481,24 @@ namespace aspect
           return;
 
         const double timestep_ratio = calculate_timestep_ratio();
+        const unsigned int n_independent_components = SymmetricTensor<2,dim>::n_independent_components;
+        const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
 
         for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
+            const double eta = out.viscosities[i];
+            const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+            const SymmetricTensor<2,dim> stress_0 (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
+                                                   &in.composition[i][stress_start_index]+n_independent_components));
+            const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
+                                                     &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
+
+            const double elastic_viscosity = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
+
+            // Apply the stress update to get the total deviatoric stress of timestep t.
+            elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
             elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
-            elastic_additional_out->elastic_viscosity[i] = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
+            elastic_additional_out->elastic_viscosity[i] = elastic_viscosity;
             elastic_additional_out->timestep_ratio[i] = timestep_ratio;
           }
       }

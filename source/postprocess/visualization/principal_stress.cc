@@ -137,24 +137,12 @@ namespace aspect
               }
             else
               {
-                // Visco-elastic stresses are stored on the fields
-                const unsigned int n_independent_components = SymmetricTensor<2,dim>::n_independent_components;
-                const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
-                const SymmetricTensor<2,dim> stress_0 (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[q][stress_start_index],
-                                                       &in.composition[q][stress_start_index]+n_independent_components));
-                const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[q][stress_start_index+n_independent_components],
-                                                         &in.composition[q][stress_start_index+n_independent_components]+n_independent_components));
-
+                // Get the total deviatoric stress from the material model.
                 const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
                 Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
 
-                const double elastic_viscosity = elastic_additional_out->elastic_viscosity[q];
-                const double timestep_ratio = elastic_additional_out->timestep_ratio[q];
-
-                // Apply the stress update to get the total deviatoric stress of timestep t.
-                // Both eta and the elastic viscosity have been scaled with the timestep ratio.
-                stress = -(2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
+                stress = -(elastic_additional_out->deviatoric_stress[q]);
               }
 
             if (use_deviatoric_stress == false)

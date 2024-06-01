@@ -66,6 +66,12 @@ namespace aspect
         * MaterialModel::Interface::evaluate() that fills the current object.
         */
         std::vector<double> timestep_ratio;
+
+        /**
+        * The deviatoric stress of the current timestep, so including
+        * the rotation, advection and stress update.
+        */
+        std::vector<SymmetricTensor<2,dim>> deviatoric_stress;
     };
 
 
