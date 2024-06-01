@@ -1,6 +1,6 @@
 ﻿# Mantle convection using tomography data
 
-*This section was contributed by Arushi Saxena, Juliane Dannberg and Ren&eacute; Gassm&ouml;ller*
+*This section was contributed by Arushi Saxena, Juliane Dannberg and Ren&eacute; Gassm&ouml;ller.*
 
 Mantle flow models based on present-day observational constraints can help us to investigate several global and regional tectonic processes.
 This cookbook describes how to set up such a model based on input tomography data and plate boundary locations. These models are typically computationally very expensive in 3D to make meaningful comparisons with the observations, therefore, we explain the workflow for a 2D spherical shell.

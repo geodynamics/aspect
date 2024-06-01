@@ -1,7 +1,7 @@
 (sec:cookbooks-S20RTS)=
 # 3D convection with an Earth-like initial condition
 
-*This section was contributed by Jacqueline Austermann*
+*This section was contributed by Jacqueline Austermann.*
 
 For any model run with ASPECT we have to choose an initial condition for the
 temperature field. If we want to model convection in the Earth's mantle

@@ -1,7 +1,7 @@
 (sec:cookbooks:allken)=
 # Rift interaction in brittle-ductile coupled systems
 
-*This section was contributed by Cedric Thieulot*
+*This section was contributed by Cedric Thieulot.*
 
 The setup for this experiment is based of {cite:t}`allken:etal:2011,allken:etal:2012,allken:etal:2013`.
 The Cartesian domain is $L_x\times L_y\times L_z=210\text{ km}\times 210\text{ km}\times 30\text{ km}$

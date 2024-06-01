@@ -1,6 +1,6 @@
 # Reproducing rheology of Morency and Doin, 2004
 
-*This section was contributed by Jonathan Perry-Houts*
+*This section was contributed by Jonathan Perry-Houts.*
 
 Modeling interactions between the upper mantle and the lithosphere can be
 difficult because of the dynamic range of temperatures and pressures involved.

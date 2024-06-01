@@ -1,6 +1,6 @@
 # Van Keken 2008 corner flow recreation
 
-*This section was contributed by Daniel Douglas, Cedric Thieulot, Wolfgang Bangerth, and Max Rudolph*.
+*This section was contributed by Daniel Douglas, Cedric Thieulot, Wolfgang Bangerth, and Max Rudolph.*
 
 This cookbook recreates a 2D corner flow style subduction model as outlined in {cite:t}`vankeken:etal:2008`. Since ASPECT uses a rectangular mesh by default, prescribed internal velocities along a dipping (slab) produces unstable Stokes solver convergence behavior and an unstable pressure solution. To circumvent this issue, a custom mesh with a $Q_2\times Q_1$ discretization was designed that allows cell edges to align with the internal boundaries defining where internal velocities within the subducting plate are assigned. Further efforts to confirm that this setup can accurately reproduce the results of the 2008 benchmark should be done to move this from the cookbook section to the benchmark section.
 

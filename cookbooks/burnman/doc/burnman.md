@@ -1,7 +1,7 @@
 (sec:cookbooks:burnman)=
 # 2D compressible convection with a reference profile and material properties from BurnMan
 
-*This section was contributed by Juliane Dannberg and Ren&eacute; Gassm&ouml;ller*
+*This section was contributed by Juliane Dannberg and Ren&eacute; Gassm&ouml;ller.*
 
 In this cookbook we will set up a compressible mantle convection model that uses the (truncated) anelastic liquid approximation (see {ref}`sec:methods:approximate-equations:ala` and {ref}`sec:methods:approximate-equations:tala`), together with a reference profile read in from an ASCII data file.
 The data we use here is generated with the open source mineral physics toolkit BurnMan (<https://geodynamics.github.io/burnman/>) using the python example program `simple_adiabat.py`.

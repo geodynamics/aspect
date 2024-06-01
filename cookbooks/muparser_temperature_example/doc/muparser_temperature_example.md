@@ -1,7 +1,7 @@
 (sec:cookbooks:muparser_temperature_example)=
 # Using lazy expression syntax for if-else-statements in function expressions
 
-*This section was contributed by Magali Billen*
+*This section was contributed by Magali Billen.*
 
 This cookbook provides an example to illustrate how to use the lazy-expression
 syntax for multiple, nested, if-else-statements in function expressions in the

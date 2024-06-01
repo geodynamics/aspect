@@ -1,7 +1,7 @@
 (sec:cookbooks:geomio)=
 # Reading in compositional initial composition files generated with geomIO
 
-*This section was contributed by Juliane Dannberg*
+*This section was contributed by Juliane Dannberg.*
 
 :::{note}
 This cookbook is based on a developer version of geomIO from July 2016. In the

@@ -1,7 +1,7 @@
 (sec:cookbooks:prescribed_velocity_ascii)=
 # Prescribing internal velocity constraints with ASCII files
 
-*This section was contributed by Bob Myhill*
+*This section was contributed by Bob Myhill.*
 
 Building on {ref}`sec:cookbooks:prescribed_velocity`, the
 [cookbooks/prescribed_velocity_ascii_data](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/prescribed_velocity_ascii_data) directory contains a plugin which

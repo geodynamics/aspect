@@ -1,7 +1,7 @@
 (sec:cookbooks:gplates)=
 # Using reconstructed surface velocities by GPlates
 
-*This section was contributed by Ren&eacute; Ga&szlig;m&ouml;ller*
+*This section was contributed by Ren&eacute; Ga&szlig;m&ouml;ller.*
 
 In a number of model setups one may want to include a surface velocity
 boundary condition that prescribes the velocity according to a specific
