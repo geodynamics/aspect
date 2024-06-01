@@ -21,12 +21,16 @@
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/utilities.h>
+#include <deal.II/base/tensor.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
 #include <world_builder/grains.h>
 #include <world_builder/world.h>
 #endif
 
+#include <vector>
+#include <cmath>
+#include <ostream>
 namespace aspect
 {
   namespace Particle
@@ -613,12 +617,14 @@ namespace aspect
 
               const std::array<double,4> ref_resolved_shear_stress = reference_resolved_shear_stress_from_deformation_type(deformation_type);
 
-              return compute_derivatives_drex_2004(cpo_index,
+              return compute_derivatives_drex_2004(deformation_type,
+                                                   cpo_index,
                                                    data,
                                                    mineral_i,
                                                    strain_rate_3d,
                                                    velocity_gradient_tensor,
-                                                   ref_resolved_shear_stress);
+                                                   ref_resolved_shear_stress
+                                                  );
               break;
             }
             default:
@@ -643,9 +649,13 @@ namespace aspect
       }
 
 
+      //Tian: adding functions of Olivine-D and Clinopyroxene
+
+
       template <int dim>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-      CrystalPreferredOrientation<dim>::compute_derivatives_drex_2004(const unsigned int cpo_index,
+      CrystalPreferredOrientation<dim>::compute_derivatives_drex_2004(DeformationType deformation_type,
+                                                                      const unsigned int cpo_index,
                                                                       const ArrayView<double> &data,
                                                                       const unsigned int mineral_i,
                                                                       const SymmetricTensor<2,3> &strain_rate_3d,
@@ -677,9 +687,86 @@ namespace aspect
 
         // create shortcuts
         const std::array<double, 4> &tau = ref_resolved_shear_stress;
-
         std::vector<double> strain_energy(n_grains);
         double mean_strain_energy = 0;
+        //debugging init
+        // if (deformation_type== DeformationType::olivine_d_fabric)
+        //   {
+        //     std::cout << "-------------------" <<std::endl;
+        //     std::cout << "\n def_type=olivined" <<std::endl;
+        //   }
+        // else if (deformation_type== DeformationType::clinopyroxene)
+        //   {
+        //     std::cout << "def_type=CPX" <<std::endl;
+        //   }
+
+        // for (int i = 3; i >= 0; i--)
+        //   std::cout << "outRRSS["<<i<<"]"<< ref_resolved_shear_stress[i]<<std::endl;
+        //debugging ends
+
+        // CPX and olivine_d_fabric has different slip systems
+        // first initiate the l and n for olivine A,B,C,E types
+        std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
+        std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+        if (deformation_type == DeformationType::clinopyroxene)
+          {
+            // more accurate way to calculate slip plane <110> normal by doing cross product
+            // First CPX crystal structure info, length unit Angstrom (Å)
+            //see Clinopyroxene on mindat.org at https://www.mindat.org/min-7630.html
+            const Tensor<1,3> vec_a_axis ({9.658, 0., 0.});
+            //const Tensor<1,3> vec_a_axis ({1.658, 0., 0.});
+            const Tensor<1,3> vec_b_axis ({0.,8.795, 0.});
+            const double length_c = 5.294; //[Angstrom]
+            const double angle_beta = 107.42 / 180.* M_PI; //107.42 degrees turns into rad
+            const Tensor<1,3> vec_c_axis ({length_c * std::cos(angle_beta), 0, length_c * std::sin(angle_beta)});
+
+            // tensor 1 is vector b axis minus the vector a axis
+            // Calculate plane110_normal --> crystal axis b minus axis a
+            Tensor<1,3> vec_b_minus_a = vec_b_axis - vec_a_axis;
+            // for (int i = 2; i >= 0; i--)
+            //   std::cout << "vec_b_mins_a["<<i<<"]"<< vec_b_minus_a[i]<<std::endl;
+            // cross product between c*(b-a) to get normal vector for slip plane nsp{110}
+            Tensor<1,3> plane110_normal = cross_product_3d(vec_b_minus_a,vec_c_axis);
+            plane110_normal /= plane110_normal.norm();
+            // for (int i = 2; i >= 0; i--)
+            //   std::cout << "plane110_normal["<<i<<"]"<< plane110_normal[i]<<std::endl;
+
+            // Calculate plane11_0_normal --> crystal axis a minus axis -b
+            Tensor<1,3> vec_a_minus_neg_b = vec_a_axis - (-vec_b_axis);
+            // cross product between (a-(-b))*c to get normal vector for slip plane nsp{110}
+            Tensor<1,3> plane11_0_normal = cross_product_3d(vec_a_minus_neg_b,vec_c_axis);
+            plane11_0_normal /= plane11_0_normal.norm();
+
+            // Calculate slip direction vector 110 a + b
+            Tensor<1,3> sd110 = vec_a_axis + vec_b_axis;
+            sd110 /= sd110.norm();
+            // provide slip systems: n and l vector combinations for bigI in equation5 of Kaminski 2001
+            //std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
+            //std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({0,0,1}),sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+            //std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
+            //std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({0,0,1}),0.5*sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+            //BUG: should not define slip_normal and slip_direction within if statement block again!! once leaving the block it is gone!!!
+            slip_normal_reference =  {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
+            slip_direction_reference = {{Tensor<1,3>({0,0,1}),0.5*sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+          }
+        else if (deformation_type == DeformationType::olivine_d_fabric)
+          {
+            //Olivine axes length in angstrom (Å)
+            Tensor<1,3> olivine_a_axis ({4.816,0.,0.});
+            Tensor<1,3> olivine_b_axis ({0.,10.469,0.});
+            Tensor<1,3> olivine_c_axis ({0.,0.,6.099});
+
+            //crystal axis b minus axis c
+
+            Tensor<1,3> vec_b_minus_c = olivine_b_axis - olivine_c_axis;
+            // cross product between a*(b-c) to get normal vector for nsp{011}
+            Tensor<1,3> plane011_normal = cross_product_3d(olivine_a_axis,vec_b_minus_c);
+            plane011_normal /= plane011_normal.norm();
+            // provide slip systems: n and l vector combinations for bigI in equation5 of Kaminski 2001
+            //std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane011_normal}};
+            //std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
+          }
+
 
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
@@ -689,8 +776,6 @@ namespace aspect
             Tensor<2,3> G;
             Tensor<1,3> w;
             Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
-            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
-            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
 
             // these are variables we only need for olivine, but we need them for both
             // within this if block and the next ones
@@ -705,9 +790,68 @@ namespace aspect
               {
                 const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
                 const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
-                const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
+                const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global); //<Tian?> is outer_product really doing cross product?
                 bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
               }
+
+            //   //quick test for CPX slip-system Tian begin
+            //   //more accurate way to calculate slip plane <110> normal by doing cross product
+            //   // tensor 1 is vector b axis minus the vector a axis
+            //   //Tensor<1,3>()
+            //   auto tensor1 = Tensor<1,3>({rotation_matrix[1][0] - rotation_matrix[0][0],
+            //                                 rotation_matrix[1][1] - rotation_matrix[0][1],
+            //                                 rotation_matrix[1][2] - rotation_matrix[0][2]});
+
+            //   auto tensor2 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+            //   // Calculate plane110_normal
+            //   Tensor<1,3> plane110_normal = cross_product_3d(tensor1,tensor2);
+
+            //   // Normalize plane110_normal
+
+            //   double plane110_normal_norm = plane110_normal.norm();
+
+            //   std::vector<double> acsnsp110_new = {plane110_normal[0] / plane110_normal_norm,
+            //                                        plane110_normal[1] / plane110_normal_norm,
+            //                                        plane110_normal[2] / plane110_normal_norm
+            //                                       };
+
+            //   // Calculate plane11_0_normal   vector axis minus vector b axis
+            //   auto tensor3 = Tensor<1,3>({rotation_matrix[0][0] - (-rotation_matrix[1][0]),
+            //                                 rotation_matrix[0][1] - (-rotation_matrix[1][1]),
+            //                                 rotation_matrix[0][2] - (-rotation_matrix[1][2])
+            // });
+            //   auto tensor4 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+            //   Tensor<1,3> plane11_0_normal = cross_product_3d(tensor3,tensor4);
+
+            //               // Normalize plane11_0_normal
+            //   plane11_0_normal /= plane11_0_normal.norm();
+            //   Tensor<1,3> acsnsp11_0_new = plane11_0_normal;
+
+            //   // Calculate ascsd110_new
+            //  Tensor<1,3> ascsd110_new_temp ({rotation_matrix[1][0] + rotation_matrix[0][0],
+            //                               rotation_matrix[1][1] + rotation_matrix[0][1],
+            //                               rotation_matrix[1][2] + rotation_matrix[0][2]});
+
+            //   auto ascsd110_new = Tensor<1,3> ({ascsd110_new_temp[0]/ascsd110_new_temp.norm(),
+            //                   ascsd110_new_temp[1]/ascsd110_new_temp.norm(),
+            //                   ascsd110_new_temp[2]/ascsd110_new_temp.norm()
+            // });
+
+            //   // Calculate bigI
+            //   //bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
+            //   //std::vector<double> bigI(4, 0.0);
+            //   for (int i1 = 0; i1 < 3; ++i1)
+            //     {
+            //       for (int i2 = 0; i2 < 3; ++i2)
+            //         {
+            //           bigI[0] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[1][i2];
+            //           bigI[1] += strain_rate_nondimensional[i1][i2] * ascsd110_new[0] * acsnsp11_0_new[i2];
+            //           bigI[2] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * acsnsp110_new[i2];
+            //           bigI[3] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[0][i2];
+            //         }
+            //     }
+
+            //   //quick test for CPX slip-system Tian end
 
             if (bigI.norm() < 1e-10)
               {
@@ -717,7 +861,7 @@ namespace aspect
             else
               {
                 // compute the element wise absolute value of the element wise
-                // division of BigI by tau (tau = ref_resolved_shear_stress).
+                // division of bigI by tau (tau = ref_resolved_shear_stress).
                 std::array<double,4> q_abs;
                 for (unsigned int i = 0; i < 4; ++i)
                   {
@@ -750,6 +894,17 @@ namespace aspect
                 // rotation_matrix_transposed = inverse of rotation matrix
                 // (see Engler et al., 2024 book: Intro to Texture analysis chp 2.3.2 The Rotation Matrix)
                 // this transform the crystal reference frame to specimen reference frame
+                // Now compute the crystal rate of deformation tensor.
+                // for (unsigned int i = 0; i < 3; ++i)
+                //   {
+                //     for (unsigned int j = 0; j < 3; ++j)
+                //       {
+                //         G[i][j] = 2.0 * (beta[0] * rotation_matrix[0][i] * rotation_matrix[1][j]
+                //                          + beta[1] * rotation_matrix[0][i] * rotation_matrix[2][j]
+                //                          + beta[2] * rotation_matrix[2][i] * rotation_matrix[1][j]
+                //                          + beta[3] * rotation_matrix[2][i] * rotation_matrix[0][j]);
+                //       }
+                //   }
                 for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
                   {
                     const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
@@ -757,6 +912,17 @@ namespace aspect
                     const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
                     G += 2.0 * beta[slip_system_i] * slip_cross_product;
                   }
+
+                // for (int i1 = 0; i1 < 3; ++i1)
+                //   {
+                //     for (int i2 = 0; i2 < 3; ++i2)
+                //       {
+                //         G[i1][i2] = 2 * (beta[0] * rotation_matrix[2][i1] * rotation_matrix[1][i2] +
+                //                          beta[1] * ascsd110_new[0] * acsnsp11_0_new[i2] +
+                //                          beta[2] * rotation_matrix[2][i1] * acsnsp110_new[i2] +
+                //                          beta[3] * rotation_matrix[2][i1] * rotation_matrix[0][i2]);
+                //       }
+                //   }
               }
 
             // Now calculate the analytic solution to the deformation minimization problem
@@ -780,7 +946,7 @@ namespace aspect
                     bottom = bottom + 2.0* G[i][j] * G[i][j];
                   }
               }
-            // see comment on if all BigI are zero. In that case gamma should be zero.
+            // see comment on if all bigI are zero. In that case gamma should be zero.
             const double gamma = (bottom != 0.0) ? top/bottom : 0.0;
 
             // compute w (equation 8, Kaminiski & Ribe, 2001)
@@ -871,6 +1037,8 @@ namespace aspect
               return DeformationType::olivine_e_fabric;
             case DeformationTypeSelector::enstatite:
               return DeformationType::enstatite;
+            case DeformationTypeSelector::clinopyroxene:
+              return DeformationType::clinopyroxene;
             case DeformationTypeSelector::olivine_karato_2008:
               // construct the material model inputs and outputs
               // Since this function is only evaluating one particle,
@@ -977,10 +1145,10 @@ namespace aspect
             // from Kaminski and Ribe, GRL 2002 and
             // Becker et al., 2007 (http://www-udc.ig.utexas.edu/external/becker/preprints/bke07.pdf)
             case DeformationType::olivine_d_fabric :
-              ref_resolved_shear_stress[0] = 1;
-              ref_resolved_shear_stress[1] = 1;
-              ref_resolved_shear_stress[2] = 3;
-              ref_resolved_shear_stress[3] = max_value;
+              ref_resolved_shear_stress[0] = 3;
+              ref_resolved_shear_stress[1] = 5;
+              ref_resolved_shear_stress[2] = max_value;
+              ref_resolved_shear_stress[3] = 1;
               break;
 
             // Kaminski, Ribe and Browaeys, GJI, 2004 (same as in the matlab code) and
@@ -1000,6 +1168,14 @@ namespace aspect
               ref_resolved_shear_stress[1] = max_value;
               ref_resolved_shear_stress[2] = max_value;
               ref_resolved_shear_stress[3] = 1;
+              break;
+
+            // Tian test CPX
+            case DeformationType::clinopyroxene :
+              ref_resolved_shear_stress[0] = 1;
+              ref_resolved_shear_stress[1] = 5;
+              ref_resolved_shear_stress[2] = 5;
+              ref_resolved_shear_stress[3] = 1.5;
               break;
 
             default:
@@ -1040,7 +1216,7 @@ namespace aspect
                              "The seed used to generate random numbers. This will make sure that "
                              "results are reproducible as long as the problem is run with the "
                              "same number of MPI processes. It is implemented as final seed = "
-                             "user seed + MPI Rank. ");
+                             "user seed + MPI Rank.");
 
           prm.declare_entry ("Number of grains per particle", "50",
                              Patterns::Integer (1),
@@ -1069,7 +1245,7 @@ namespace aspect
 
           prm.enter_subsection("Initial grains");
           {
-            prm.declare_entry("Model name","Uniform grains and random uniform rotations",
+            prm.declare_entry("Model name", "Uniform grains and random uniform rotations",
                               Patterns::Anything(),
                               "The model used to initialize the CPO for all particles. "
                               "Currently 'Uniform grains and random uniform rotations' and 'World Builder' are the only valid option.");
@@ -1078,23 +1254,25 @@ namespace aspect
                                Patterns::List(Patterns::Anything()),
                                "This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. "
                                "The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, "
-                               "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The "
+                               "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite or CPX. Passive sets all RRSS entries to the maximum. The "
                                "Karato 2008 selector selects a fabric based on stress and water content as defined in "
                                "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
 
+            prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
+                               Patterns::List(Patterns::Anything()),
+                               "The RRSS values for CPX (clinopyroxene), used in fabric calculations.");
 
             prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                Patterns::List(Patterns::Double(0)),
                                "The volume fractions for the different minerals. "
-                               "There need to be the same number of values as there are minerals."
+                               "There need to be the same number of values as there are minerals. "
                                "Note that the currently implemented scheme is incompressible and "
-                               "does not allow chemical interaction or the formation of new phases");
+                               "does not allow chemical interaction or the formation of new phases.");
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
 
           prm.enter_subsection("D-Rex 2004");
           {
-
             prm.declare_entry ("Mobility", "50",
                                Patterns::Double(0),
                                "The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.");
@@ -1111,22 +1289,22 @@ namespace aspect
 
             prm.declare_entry ("Exponents p", "1.5",
                                Patterns::Double(0),
-                               "This is exponent p as defined in equation 11 of Kaminski et al., 2004. ");
+                               "This is exponent p as defined in equation 11 of Kaminski et al., 2004.");
 
             prm.declare_entry ("Nucleation efficiency", "5",
                                Patterns::Double(0),
                                "This is the dimensionless nucleation rate as defined in equation 8 of "
-                               "Kaminski et al., 2004. ");
+                               "Kaminski et al., 2004.");
 
             prm.declare_entry ("Threshold GBS", "0.3",
                                Patterns::Double(0),
                                "The Dimensionless Grain Boundary Sliding (GBS) threshold. "
-                               "This is a grain size threshold below which grain deform by GBS and "
+                               "This is a grain size threshold below which grains deform by GBS and "
                                "become strain-free grains.");
           }
           prm.leave_subsection();
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
 
 
@@ -1204,52 +1382,40 @@ namespace aspect
             for (size_t mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
                 if (temp_deformation_type_selector[mineral_i] == "Passive")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::passive;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::passive;
                 else if (temp_deformation_type_selector[mineral_i] == "Olivine: Karato 2008")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_karato_2008;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_karato_2008;
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: A-fabric")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_a_fabric;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_a_fabric;
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: B-fabric")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_b_fabric;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_b_fabric;
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: C-fabric")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_c_fabric;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_c_fabric;
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: D-fabric")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_d_fabric;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_d_fabric;
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: E-fabric")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_e_fabric;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_e_fabric;
                 else if (temp_deformation_type_selector[mineral_i] ==  "Enstatite")
-                  {
-                    deformation_type_selector[mineral_i] = DeformationTypeSelector::enstatite;
-                  }
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::enstatite;
+                else if (temp_deformation_type_selector[mineral_i] ==  "Clinopyroxene")
+                  deformation_type_selector[mineral_i] = DeformationTypeSelector::clinopyroxene;
                 else
                   {
                     AssertThrow(false,
                                 ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
                                            "Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric,"
-                                           "Olivine: E-fabric, Enstatite, Passive."));
+                                           "Olivine: E-fabric, Enstatite, Passive, Clinopyroxene."));
                   }
               }
+
+            CPX_RRSS = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("CPX RRSS")));
+            AssertThrow(CPX_RRSS.size()==4,
+                        ExcMessage("the number of RRSS for CPX has to be equal to four"));
 
             volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
             double volume_fractions_minerals_sum = 0;
             for (auto fraction : volume_fractions_minerals)
-              {
-                volume_fractions_minerals_sum += fraction;
-              }
+              volume_fractions_minerals_sum += fraction;
 
             AssertThrow(std::abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
                         ExcMessage("The sum of the CPO volume fractions should be one."));
@@ -1269,6 +1435,7 @@ namespace aspect
         }
         prm.leave_subsection ();
       }
+
     }
   }
 }

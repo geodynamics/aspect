@@ -1,38 +1,19 @@
 {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [  
         {
-            "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            // Resolved by CMake Tools:
-            "program": "${command:cmake.launchTargetPath}",
-	    // *** replace --test by the name of the .prm file you want to run: ***
-            "args": ["--test"],
-            "stopAtEntry": true,
-	    // *** append to the path here if you want to run inside some directory like /cookbooks/ ***
-            "cwd": "${workspaceFolder}",
-            "environment": [
-                {
-                    // add the directory where our target was built to the PATHs
-                    // it gets resolved by CMake Tools:
-                    "name": "PATH",
-                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
-                },
-                {
-                    "name": "OTHER_VALUE",
-                    "value": "Something something"
-                }
-            ],
+            "name": "Debug",
+            "program": "/Users/tian_bc/repos/github_magmaxt/aspect/build-CPX-test/./aspect",
+            "args": ["/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex-CPX-test/shear_compress_cpo_cpx.prm"]
+            "env": [],
             "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
+            "cwd": "/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex-CPX-test/",
+            "MIMode": "lldb"
         }
     ]
 }
