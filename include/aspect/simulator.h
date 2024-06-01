@@ -2084,6 +2084,12 @@ namespace aspect
       LinearAlgebra::BlockSparseMatrix                          system_matrix;
 
       /**
+       * This vector is used for the weighted BFBT preconditioner. It
+       * stores the inverted lumped velocity mass matrix.
+      */
+      LinearAlgebra::BlockVector                                inverse_lumped_mass_matrix;
+
+      /**
        * An object that contains the entries of preconditioner
        * matrices for the system matrix. It has a size equal to the
        * total number of degrees of freedom, but is only used for the

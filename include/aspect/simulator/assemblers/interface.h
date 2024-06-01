@@ -100,7 +100,8 @@ namespace aspect
                                 const unsigned int        n_compositional_fields,
                                 const unsigned int        stokes_dofs_per_cell,
                                 const bool                add_compaction_pressure,
-                                const bool                rebuild_matrix);
+                                const bool                rebuild_matrix,
+                                const bool                use_bfbt);
           StokesPreconditioner (const StokesPreconditioner &scratch);
 
           ~StokesPreconditioner () override;
@@ -114,6 +115,7 @@ namespace aspect
           std::vector<SymmetricTensor<2,dim>> grads_phi_u;
           std::vector<double>                  div_phi_u;
           std::vector<double>                  phi_p;
+          std::vector<Tensor<1,dim>>           phi_u;
           std::vector<double>                  phi_p_c;
           std::vector<Tensor<1,dim>>          grad_phi_p;
 
@@ -158,7 +160,8 @@ namespace aspect
                         const bool                add_compaction_pressure,
                         const bool                use_reference_density_profile,
                         const bool                rebuild_stokes_matrix,
-                        const bool                rebuild_newton_stokes_matrix);
+                        const bool                rebuild_newton_stokes_matrix,
+                        const bool                use_bfbt);
 
           StokesSystem (const StokesSystem<dim> &scratch);
 
@@ -369,6 +372,7 @@ namespace aspect
           StokesPreconditioner<dim> &operator= (const StokesPreconditioner<dim> &data) = default;
 
           FullMatrix<double> local_matrix;
+          Vector<double> local_inverse_lumped_mass_matrix;
           std::vector<types::global_dof_index> local_dof_indices;
 
           /**
