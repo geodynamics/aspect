@@ -292,9 +292,12 @@ namespace aspect
                                                                                  rheology->viscosity_averaging);
 
               // Fill the material properties that are part of the elastic additional outputs
+              // TODO move to elasticity.cc?
               if (ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
                 {
                   elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
+                  elastic_additional_out->elastic_viscosity[i] = rheology->elastic_rheology.calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
+                  elastic_additional_out->timestep_ratio[i] = rheology->elastic_rheology.calculate_timestep_ratio();
 
                 }
             }

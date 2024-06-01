@@ -52,6 +52,20 @@ namespace aspect
          * the current object.
          */
         std::vector<double> elastic_shear_moduli;
+
+        /**
+        * Elastic viscosity at the evaluation points passed to
+        * the instance of MaterialModel::Interface::evaluate() that fills
+        * the current object.
+        */
+        std::vector<double> elastic_viscosity;
+
+        /**
+        * The ratio of the computational timestep over the elastic timestep
+        * at the evaluation points passed to the instance of
+        * MaterialModel::Interface::evaluate() that fills the current object.
+        */
+        std::vector<double> timestep_ratio;
     };
 
 

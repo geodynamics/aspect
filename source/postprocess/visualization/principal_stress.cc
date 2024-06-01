@@ -160,31 +160,13 @@ namespace aspect
                 const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
                 Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
-                const double shear_modulus = elastic_additional_out->elastic_shear_moduli[q];
 
-                // Retrieve the timestep ratio dtc/dte and the elastic viscosity,
-                // only two material models support elasticity.
-                double timestep_ratio = 0.;
-                double elastic_viscosity = 0.;
-                if (Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim>>(this->get_material_model()))
-                  {
-                    const MaterialModel::ViscoPlastic<dim> &vp = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
-                    elastic_viscosity = vp.get_elastic_viscosity(shear_modulus);
-                    timestep_ratio = vp.get_timestep_ratio();
-                  }
-                else if (Plugins::plugin_type_matches<MaterialModel::Viscoelastic<dim>>(this->get_material_model()))
-                  {
-                    const MaterialModel::Viscoelastic<dim> &ve = Plugins::get_plugin_as_type<const MaterialModel::Viscoelastic<dim>>(this->get_material_model());
-                    elastic_viscosity = ve.get_elastic_viscosity(shear_modulus);
-                    timestep_ratio = ve.get_timestep_ratio();
-                  }
-                else
-                  AssertThrow(false, ExcMessage("The principle stress visualization plugin cannot be used with elasticity for material models other than ViscoPlastic and Viscoelastic."));
+                const double elastic_viscosity = elastic_additional_out->elastic_viscosity[q];
+                const double timestep_ratio = elastic_additional_out->timestep_ratio[q];
 
-                // Apply the stress update to get the total stress of timestep t.
+                // Apply the stress update to get the total deviatoric stress of timestep t.
                 // Both eta and the elastic viscosity have been scaled with the timestep ratio.
-                stress = in.pressure[q] * unit_symmetric_tensor<dim>() -
-                         (2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
+                stress = -(2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
               }
 
             if (use_deviatoric_stress == false)
