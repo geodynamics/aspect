@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Visualization file name
+# 13: Minimal value for composition grain_size
+# 14: Maximal value for composition grain_size
+# 15: Global mass for composition grain_size
+# 16: Number of advected particles
+# 17: Particle file name
+# 18: Average density (kg/m^3)
+# 19: Average viscosity (Pa s)
+# 20: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0 227 600 741 output-grain_size_phase_function/solution/solution-00000 1.00000000e-03 1.00000000e-03 1.00000000e+07 10000 output-grain_size_phase_function/particles/particles-00000 1.00000000e+03 3.19873350e+19 1.00000000e+13 
+1 1.000000000000e+04 1.000000000000e+04 256 2467 1089 1089 0 225 521 693 output-grain_size_phase_function/solution/solution-00001 1.00000000e-03 1.61770049e-03 1.30808174e+07 10000 output-grain_size_phase_function/particles/particles-00001 1.00000000e+03 7.04132651e+19 1.00000000e+13 

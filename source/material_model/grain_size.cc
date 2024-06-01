@@ -108,73 +108,29 @@ namespace aspect
 
 
     template <int dim>
-    double
-    GrainSize<dim>::
-    phase_function (const Point<dim> &position,
-                    const double temperature,
-                    const double pressure,
-                    const unsigned int phase) const
-    {
-      Assert(phase < transition_depths.size(),
-             ExcMessage("Error: Phase index is too large. This phase index does not exist!"));
-
-      // if we already have the adiabatic conditions, we can use them
-      if (this->get_adiabatic_conditions().is_initialized())
-        {
-          // first, get the pressure at which the phase transition occurs normally
-          const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[phase]);
-          const double transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
-
-          // then calculate the deviation from the transition point (both in temperature
-          // and in pressure)
-          const double pressure_deviation = pressure - transition_pressure
-                                            - transition_slopes[phase] * (temperature - transition_temperatures[phase]);
-
-          // last, calculate the percentage of material that has undergone the transition
-          return (pressure_deviation > 0) ? 1 : 0;
-        }
-
-      // if we do not have the adiabatic conditions, we have to use the depth instead
-      // this is less precise, because we do not have the exact pressure gradient, instead we use pressure/depth
-      // (this is for calculating e.g. the density in the adiabatic profile)
-      else
-        {
-          const double depth = this->get_geometry_model().depth(position);
-          const double depth_deviation = (pressure > 0
-                                          ?
-                                          depth - transition_depths[phase]
-                                          - transition_slopes[phase] * (depth / pressure) * (temperature - transition_temperatures[phase])
-                                          :
-                                          depth - transition_depths[phase]
-                                          - transition_slopes[phase] / (this->get_gravity_model().gravity_vector(position).norm() * reference_rho)
-                                          * (temperature - transition_temperatures[phase]));
-
-          return (depth_deviation > 0) ? 1 : 0;
-        }
-    }
-
-
-
-    template <int dim>
     unsigned int
     GrainSize<dim>::
-    get_phase_index (const Point<dim> &position,
-                     const double temperature,
-                     const double pressure) const
+    get_phase_index (const MaterialUtilities::PhaseFunctionInputs<dim> &in) const
     {
       Assert(grain_growth_activation_energy.size()>0,
              ExcMessage("Error: No grain evolution parameters are given!"));
 
-      unsigned int phase_index = 0;
-      if (transition_depths.size()>0)
-        if (phase_function(position, temperature, pressure, transition_depths.size()-1) == 1)
-          phase_index = transition_depths.size();
+      // Since phase transition depth increases monotonically, we only need
+      // to check for the first phase that has not yet undergone the transition
+      // (phase function value lower than 0.5).
+      for (unsigned int j=0; j<n_phase_transitions; ++j)
+        {
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature,
+                                                                   in.pressure,
+                                                                   in.depth,
+                                                                   in.pressure_depth_derivative,
+                                                                   j);
 
-      for (unsigned int j=1; j<transition_depths.size(); ++j)
-        if (phase_function(position, temperature, pressure, j) != phase_function(position, temperature, pressure, j-1))
-          phase_index = j;
+          if (phase_function.compute_value(phase_inputs) < 0.5)
+            return j;
+        }
 
-      return phase_index;
+      return n_phase_transitions;
     }
 
     template <int dim>
@@ -268,10 +224,10 @@ namespace aspect
                        const double                  pressure,
                        const std::vector<double>    &compositional_fields,
                        const SymmetricTensor<2,dim> &strain_rate,
-                       const Tensor<1,dim>          &/*velocity*/,
                        const Point<dim>             &position,
                        const unsigned int            grain_size_index,
-                       const int                     crossed_transition) const
+                       const int                     crossed_transition,
+                       const unsigned int            phase_index) const
     {
       // we want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
       // and it is not correct to use the starting grain size (and introduces instabilities)
@@ -289,9 +245,6 @@ namespace aspect
       // use a sub timestep of 500 yrs, currently fixed timestep
       double grain_growth_timestep = 500 * 3600 * 24 * 365.25;
       double time = 0;
-
-      // find out in which phase we are
-      const unsigned int phase_index = get_phase_index(position, temperature, pressure);
 
       // precompute the partitioning_fraction since its constant during the evolution.
       // this is only used for the pinned_grain_damage formulation
@@ -339,8 +292,8 @@ namespace aspect
           const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
           const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
-          const double current_diffusion_viscosity   = diffusion_viscosity(temperature, adiabatic_temperature, pressure, grain_size, second_strain_rate_invariant, position);
-          current_dislocation_viscosity              = dislocation_viscosity(temperature, adiabatic_temperature, pressure, strain_rate, position, current_diffusion_viscosity, current_dislocation_viscosity);
+          const double current_diffusion_viscosity   = diffusion_viscosity(temperature, adiabatic_temperature, pressure, grain_size, second_strain_rate_invariant, phase_index);
+          current_dislocation_viscosity              = dislocation_viscosity(temperature, adiabatic_temperature, pressure, strain_rate, phase_index, current_diffusion_viscosity, current_dislocation_viscosity);
 
           double current_viscosity;
           if (std::abs(second_strain_rate_invariant) > 1e-30)
@@ -436,11 +389,8 @@ namespace aspect
                          const double adiabatic_pressure,
                          const double grain_size,
                          const double second_strain_rate_invariant,
-                         const Point<dim> &position) const
+                         const unsigned int phase_index) const
     {
-      // find out in which phase we are
-      const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
-
       double energy_term = std::exp((diffusion_activation_energy[phase_index] + diffusion_activation_volume[phase_index] * adiabatic_pressure)
                                     / (diffusion_creep_exponent[phase_index] * constants::gas_constant * temperature));
 
@@ -476,13 +426,11 @@ namespace aspect
                            const double adiabatic_temperature,
                            const double adiabatic_pressure,
                            const SymmetricTensor<2,dim> &strain_rate,
-                           const Point<dim> &position,
+                           const unsigned int phase_index,
                            const double diffusion_viscosity,
                            const double viscosity_guess) const
     {
       // find out in which phase we are
-      const unsigned int phase_index = get_phase_index(position, temperature, adiabatic_pressure);
-
       double energy_term = std::exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * adiabatic_pressure)
                                     / (dislocation_creep_exponent[phase_index] * constants::gas_constant * temperature));
 
@@ -829,14 +777,17 @@ namespace aspect
           // Set up an integer that tells us which phase transition has been crossed inside of the cell.
           int crossed_transition(-1);
 
+          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]);
+          if (gravity_norm > 0.0)
+            vertical_direction /= gravity_norm;
+
           // Figure out if the material in the current cell underwent a phase change.
           // To do so, check if a grain has moved further than the distance from the phase transition and
           // if the velocity is in the direction of the phase change. After the check 'crossed_transition' will
           // be -1 if we crossed no transition, or the index of the phase transition, if we crossed it.
-          for (unsigned int phase=0; phase<transition_depths.size(); ++phase)
+          for (unsigned int phase=0; phase<n_phase_transitions; ++phase)
             {
-              const Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i])
-                                                       /this->get_gravity_model().gravity_vector(in.position[i]).norm();
               const double timestep = this->simulator_is_past_initialization()
                                       ?
                                       this->get_timestep()
@@ -844,7 +795,7 @@ namespace aspect
                                       0.0;
 
               // Both distances are positive when they are downward from the transition (since gravity points down)
-              const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - transition_depths[phase];
+              const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - phase_function.get_transition_depth(phase);
               const double distance_moved = in.velocity[i] * vertical_direction * timestep;
 
               // If we are close to the phase boundary (closer than the distance a grain has moved
@@ -858,6 +809,15 @@ namespace aspect
                 crossed_transition = phase;
             }
 
+          out.densities[i] = density(in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i]);
+          out.thermal_conductivities[i] = k_value;
+          out.compressibilities[i] = compressibility(in.temperature[i], adiabatic_pressure, composition, in.position[i]);
+
+          // We do not fill the phase function index, because that will be done internally in the get_phase_index() function
+          const double depth = this->get_geometry_model().depth(in.position[i]);
+          const double rho_g = out.densities[i] * gravity_norm;
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i], adiabatic_pressure, depth, rho_g, numbers::invalid_unsigned_int);
+          const unsigned int phase_index = get_phase_index(phase_inputs);
 
           if (in.requests_property(MaterialProperties::viscosity))
             {
@@ -880,11 +840,11 @@ namespace aspect
                                                                 adiabatic_pressure,
                                                                 composition[grain_size_index],
                                                                 second_strain_rate_invariant,
-                                                                in.position[i]);
+                                                                phase_index);
 
               if (std::abs(second_strain_rate_invariant) > 1e-30)
                 {
-                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressure, in.strain_rate[i], in.position[i], diff_viscosity);
+                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressure, in.strain_rate[i], phase_index, diff_viscosity);
                   effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
                 }
               else
@@ -902,7 +862,8 @@ namespace aspect
                 {
                   if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                     {
-                      const double f = boundary_area_change_work_fraction[get_phase_index(in.position[i],in.temperature[i],adiabatic_pressure)];
+                      const unsigned int phase_index = get_phase_index(phase_inputs);
+                      const double f = boundary_area_change_work_fraction[phase_index];
                       shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / std::min(std::max(min_eta,disl_viscosity),1e300);
                     }
                   else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
@@ -915,9 +876,7 @@ namespace aspect
                 }
             }
 
-          out.densities[i] = density(in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i]);
-          out.thermal_conductivities[i] = k_value;
-          out.compressibilities[i] = compressibility(in.temperature[i], adiabatic_pressure, composition, in.position[i]);
+
 
           if (in.requests_property(MaterialProperties::reaction_terms))
             for (unsigned int c=0; c<composition.size(); ++c)
@@ -925,7 +884,7 @@ namespace aspect
                 if (this->introspection().name_for_compositional_index(c) == "grain_size")
                   {
                     out.reaction_terms[i][c] = grain_size_change(in.temperature[i], adiabatic_pressure, composition,
-                                                                 in.strain_rate[i], in.velocity[i], in.position[i], c, crossed_transition);
+                                                                 in.strain_rate[i], in.position[i], c, crossed_transition, phase_index);
                     if (advect_log_grainsize)
                       out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
                   }
@@ -1046,29 +1005,9 @@ namespace aspect
                              Patterns::Double (0.),
                              "The value of the reference compressibility. "
                              "Units: \\si{\\per\\pascal}.");
-          prm.declare_entry ("Phase transition depths", "",
-                             Patterns::List (Patterns::Double (0.)),
-                             "A list of depths where phase transitions occur. Values must "
-                             "monotonically increase. "
-                             "Units: \\si{\\meter}.");
-          prm.declare_entry ("Phase transition temperatures", "",
-                             Patterns::List (Patterns::Double (0.)),
-                             "A list of temperatures where phase transitions occur. Higher or lower "
-                             "temperatures lead to phase transition occurring in smaller or greater "
-                             "depths than given in Phase transition depths, depending on the "
-                             "Clapeyron slope given in Phase transition Clapeyron slopes. "
-                             "List must have the same number of entries as Phase transition depths. "
-                             "Units: \\si{\\kelvin}.");
-          prm.declare_entry ("Phase transition Clapeyron slopes", "",
-                             Patterns::List (Patterns::Double()),
-                             "A list of Clapeyron slopes for each phase transition. A positive "
-                             "Clapeyron slope indicates that the phase transition will occur in "
-                             "a greater depth, if the temperature is higher than the one given in "
-                             "Phase transition temperatures and in a smaller depth, if the "
-                             "temperature is smaller than the one given in Phase transition temperatures. "
-                             "For negative slopes the other way round. "
-                             "List must have the same number of entries as Phase transition depths. "
-                             "Units: \\si{\\pascal\\per\\kelvin}.");
+
+          MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
+
           prm.declare_entry ("Grain growth activation energy", "3.5e5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for grain growth $E_g$. "
@@ -1362,26 +1301,23 @@ namespace aspect
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
           reference_compressibility  = prm.get_double ("Reference compressibility");
 
+          // Phase transition parameters
+          phase_function.initialize_simulator (this->get_simulator());
+          phase_function.parse_parameters (prm);
 
-          transition_depths         = Utilities::string_to_double
-                                      (Utilities::split_string_list(prm.get ("Phase transition depths")));
-          transition_temperatures   = Utilities::string_to_double
-                                      (Utilities::split_string_list(prm.get ("Phase transition temperatures")));
-          transition_slopes         = Utilities::string_to_double
-                                      (Utilities::split_string_list(prm.get ("Phase transition Clapeyron slopes")));
+          std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
+          n_phase_transitions = n_phases_for_each_composition[0] - 1;
+
           recrystallized_grain_size = Utilities::string_to_double
                                       (Utilities::split_string_list(prm.get ("Recrystallized grain size")));
 
-          if (transition_temperatures.size() != transition_depths.size() ||
-              transition_slopes.size() != transition_depths.size() ||
-              recrystallized_grain_size.size() != transition_depths.size() )
+          if (recrystallized_grain_size.size() != n_phase_transitions)
             AssertThrow(false,
-                        ExcMessage("Error: At least one list that gives input parameters for the phase transitions has the wrong size."));
+                        ExcMessage("Error: The list of recrystallized grain sizes has to have as many entries as there are phases."));
 
-          if (transition_depths.size()>1)
-            for (unsigned int i=0; i<transition_depths.size()-2; ++i)
-              AssertThrow(transition_depths[i]<transition_depths[i+1],
-                          ExcMessage("Error: Phase transition depths have to be sorted in ascending order!"));
+          for (unsigned int i=1; i<n_phase_transitions; ++i)
+            AssertThrow(phase_function.get_transition_depth(i-1)<phase_function.get_transition_depth(i),
+                        ExcMessage("Error: Phase transition depths have to be sorted in ascending order!"));
 
           // grain evolution parameters
           grain_growth_activation_energy        = Utilities::string_to_double
@@ -1529,7 +1465,7 @@ namespace aspect
             }
           else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
             {
-              AssertThrow(transition_depths.size() == 0,
+              AssertThrow(n_phase_transitions == 0,
                           ExcMessage("Error: Currently, the pinned grain damage formulation is only implemented for one mineral phase."));
             }
           else
@@ -1538,7 +1474,7 @@ namespace aspect
                                    "should follow either of the 'paleowattmeter|paleopiezometer|pinned grain damage' "
                                    "formulations!"));
 
-          AssertThrow(grain_growth_activation_energy.size() == transition_depths.size()+1,
+          AssertThrow(grain_growth_activation_energy.size() == n_phase_transitions+1,
                       ExcMessage("Error: The lists of grain size evolution and flow law parameters need to "
                                  "have exactly one more entry than the number of phase transitions "
                                  "(which is defined by the length of the lists of phase transition depths, ...)!"));
