@@ -4,7 +4,7 @@
 cff-version: 1.2.0
 title: ASPECT
 message: >-
-  If you use this software, please so our website for the latest citation information. https://aspect.geodynamics.org/citing.html?src=www&ver=release
+  If you use this software, please see our website for the latest citation information. https://aspect.geodynamics.org/citing.html?src=www&ver=release
 type: software
 authors:
   - given-names: Wolfgang
@@ -12,14 +12,14 @@ authors:
     affiliation: 'Colorado State University, USA'
     orcid: 'https://orcid.org/0000-0003-2311-9402'
     email: bangerth@colostate.edu
-  - given-names: 'Juliane '
+  - given-names: 'Juliane'
     family-names: Dannberg
     email: judannberg@gmail.com
     affiliation: >-
       GEOMAR Helmholtz Centre for Ocean Research Kiel and
       Kiel University
     orcid: 'https://orcid.org/0000-0003-0357-7115'
-  - given-names: ' Menno'
+  - given-names: Menno
     family-names: Fraters
     email: menno.fraters@tutanota.com
     orcid: 'https://orcid.org/0000-0003-0035-7723'
@@ -33,7 +33,7 @@ authors:
     orcid: 'https://orcid.org/0000-0002-9481-1749'
     email: acglerum@gfz-potsdam.de
     affiliation: 'GFZ Potsdam, Germany'
-  - given-names: ' Timo'
+  - given-names: Timo
     family-names: Heister
     email: timo.heister@gmail.com
     affiliation: Clemson University
@@ -59,10 +59,9 @@ identifiers:
 repository-code: 'https://github.com/geodynamics/aspect'
 url: 'https://aspect.geodynamics.org/'
 abstract: >-
-  ASPECT is a code to simulate convection and tectonic
+  ASPECT -he Advanced Solver for Planetary Evolution, Convection, and Tectonics is a code to simulate convection and tectonic
   processes in Earth and other planetary bodies. It has
-  grown from a pure mantle-convection code into a tool for
-  many geodynamic applications including applications for
+  many applications in mantle and
   inner core convection, lithospheric scale deformation,
   two-phase flow, and numerical methods development. The
   project is supported by CIG (https://geodynamics.org).
