@@ -45,7 +45,7 @@ namespace aspect
        */
       enum class DeformationType
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, clinopyroxene
       };
 
 
@@ -64,7 +64,7 @@ namespace aspect
        */
       enum class DeformationTypeSelector
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008, clinopyroxene
       };
 
       /**
@@ -239,11 +239,13 @@ namespace aspect
            * The planes are ordered from weakest to strongest with relative values,
            * where the inactive plane is infinity strong. So it is a measure of strength
            * on each slip plane.
+           * @param deformation_type Represent one of the deformation type
            * @param prevent_nondimensionalization Prevent nondimensializing values internally.
            * Only for unit testing purposes.
            */
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives_drex_2004(const unsigned int cpo_index,
+          compute_derivatives_drex_2004(const DeformationType deformation_type,
+                                        const unsigned int cpo_index,
                                         const ArrayView<double> &data,
                                         const unsigned int mineral_i,
                                         const SymmetricTensor<2,3> &strain_rate_3d,
@@ -615,6 +617,11 @@ namespace aspect
            * Sets which type of initial grain model is used to create the gain sizes and orientations
            */
           CPOInitialGrainsModel initial_grains_model;
+
+          /**
+           * Clinopyroxene Reference Resolved Shear Stress (RRSS), see Fraters and Billen 2021 for details
+          */
+          std::vector<double> CPX_RRSS;
 
           /** @} */
 
