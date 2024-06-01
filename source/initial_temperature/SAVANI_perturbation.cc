@@ -206,6 +206,9 @@ namespace aspect
       // get the degree from the input file (60)
       unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
 
+      // store the max degree into a constant
+      const unsigned int MAX_degree = max_degree;
+
       // lower the maximum order if needed
       if (lower_max_order)
         {
@@ -273,6 +276,8 @@ namespace aspect
                   ++ind;
                 }
             }
+          // skip the higher degree spherical harminic coefficients per layer if a lower max degree is used
+          ind += 0.5*(max_degree+MAX_degree+3)*(MAX_degree-max_degree);
         }
 
 
