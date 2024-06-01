@@ -483,7 +483,6 @@ namespace aspect
             // Get the current velocity gradients, which get
             // updated in each nonlinear iteration.
             // This means we use the rotation tensor W^(t+dtc), not W^(t).
-            // TODO for particles get velocity on the particle?
             std::vector<double> solution_values(this->get_fe().dofs_per_cell);
             in.current_cell->get_dof_values(this->get_current_linearization_point(),
                                             solution_values.begin(),

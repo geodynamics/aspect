@@ -171,9 +171,7 @@ namespace aspect
                                               const double viscosity_pre_yield,
                                               const double shear_modulus) const;
 
-          std::vector<SymmetricTensor<2, dim>>
-          retrieve_stress_previous_timestep (const MaterialModel::MaterialModelInputs<dim> &in,
-                                             const std::vector<Point<dim>> &quadrature_positions) const;
+
 
           /**
            * Compute the elastic time step.
@@ -189,6 +187,15 @@ namespace aspect
           calculate_timestep_ratio() const;
 
         private:
+          /**
+           * Get the stored stress of the previous timestep. For fields, use a
+           * composition evaluator of the old solution. For particles, get the
+           * stress directly from the particles that is stored in in.composition.
+           */
+          std::vector<SymmetricTensor<2, dim>>
+          retrieve_stress_previous_timestep (const MaterialModel::MaterialModelInputs<dim> &in,
+                                             const std::vector<Point<dim>> &quadrature_positions) const;
+
           /**
            * Viscosity of a damper used to stabilize elasticity.
            * A value of 0 Pas is equivalent to not using a damper.
