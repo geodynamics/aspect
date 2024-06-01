@@ -464,6 +464,33 @@ namespace aspect
       }
 
 
+
+
+      template <int dim>
+      void
+      Elasticity<dim>::fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                        const std::vector<double> &average_elastic_shear_moduli,
+                                                        MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        // Create a reference to the structure for the elastic additional outputs
+        MaterialModel::ElasticAdditionalOutputs<dim>
+        *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+
+        if (elastic_additional_out == nullptr || !in.requests_property(MaterialProperties::additional_outputs))
+          return;
+
+        const double timestep_ratio = calculate_timestep_ratio();
+
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          {
+            elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
+            elastic_additional_out->elastic_viscosity[i] = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
+            elastic_additional_out->timestep_ratio[i] = timestep_ratio;
+          }
+      }
+
+
+
       // Rotate the stresses of the previous timestep $t$ into the current timestep $t+dtc$.
       template <int dim>
       void

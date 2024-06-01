@@ -75,19 +75,14 @@ namespace aspect
           // calculate_viscoelastic_viscosity function.
           out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
                                                                                  average_elastic_shear_moduli[i]);
-
-          // Fill the material properties that are part of the elastic additional outputs
-          // TODO move to elasticity.cc?
-          if (ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
-            {
-              elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
-              elastic_additional_out->elastic_viscosity[i] = elastic_rheology.calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
-              elastic_additional_out->timestep_ratio[i] = elastic_rheology.calculate_timestep_ratio();
-            }
         }
 
       // Fill the body force term, viscoelastic strain rate and viscous dissipation.
       elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
+      // Fill the elastic additional outputs with the shear modulus, elastic viscosity
+      // and timestep ratio.
+      // TODO remove in and out?
+      elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
       // Fill the reaction terms to apply the rotation of the stresses into the current timestep.
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
       // Fill the reaction_rates that during operator splitting apply the stress update of the previous

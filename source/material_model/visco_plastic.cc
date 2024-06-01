@@ -290,16 +290,6 @@ namespace aspect
               average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
                                                                                  rheology->elastic_rheology.get_elastic_shear_moduli(),
                                                                                  rheology->viscosity_averaging);
-
-              // Fill the material properties that are part of the elastic additional outputs
-              // TODO move to elasticity.cc?
-              if (ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
-                {
-                  elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
-                  elastic_additional_out->elastic_viscosity[i] = rheology->elastic_rheology.calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
-                  elastic_additional_out->timestep_ratio[i] = rheology->elastic_rheology.calculate_timestep_ratio();
-
-                }
             }
         }
 
@@ -311,6 +301,10 @@ namespace aspect
           // Fill the elastic outputs with the body force term for the RHS, the viscoelastic strain rate
           // and the viscous dissipation.
           rheology->elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
+          // Fill the elastic additional outputs with the shear modulus, elastic viscosity
+          // and timestep ratio.
+          // TODO remove in and out?
+          rheology->elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
           // Fill the reaction terms that account for the rotation of the stresses.
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
           // Fill the reaction_rates that apply the stress update of the previous

@@ -109,6 +109,18 @@ namespace aspect
                                 MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
+          * Given the stress of the previous time step in the material model inputs @p in,
+          * the elastic shear moduli @p average_elastic_shear_moduli a each point,
+          * and the (viscous) viscosities given in the material model outputs object @p out,
+          * fill a material model outputs (ElasticAdditionalOutputs) objects with the
+          * average shear modulus, elastic viscosity and ratio of computational to elastic timestep.
+          */
+          void
+          fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                           const std::vector<double> &average_elastic_shear_moduli,
+                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
            * Given the stress of the previous time step in the material model inputs @p in,
            * the elastic shear moduli @p average_elastic_shear_moduli a each point,
            * and the (viscous) viscosities given in the material model outputs object @p out,
