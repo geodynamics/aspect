@@ -572,7 +572,14 @@ namespace aspect
         (!advection_field.is_temperature()
          && parameters.use_discontinuous_composition_discretization
          && parameters.use_limiter_for_discontinuous_composition_solution[advection_field.compositional_variable]))
-      apply_limiter_to_dg_solutions(advection_field);
+      {
+        apply_limiter_to_dg_solutions(advection_field);
+        // by applying the limiter we have modified the solution to no longer
+        // satisfy the equation. Therefore the residual is meaningless and cannot
+        // converge to zero in nonlinear iterations. Disable residual computation
+        // for this field.
+        return 0.0;
+      }
 
     return initial_residual;
   }
