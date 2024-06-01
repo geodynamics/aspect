@@ -194,10 +194,6 @@ namespace aspect
         void vmult (LinearAlgebra::BlockVector       &dst,
                     const LinearAlgebra::BlockVector &src) const;
 
-        unsigned int n_iterations_A() const;
-        unsigned int n_iterations_S() const;
-
-
       private:
         /**
          * References to the various matrix object this preconditioner works on.
@@ -216,27 +212,11 @@ namespace aspect
                               const SInvOperator                         &S_inv_operator,
                               const AInvOperator                         &A_inv_operator)
       :
-      stokes_matrix     (S),
-      stokes_preconditioner_matrix     (Spre),
-      S_inv_operator(S_inv_operator),
-      A_inv_operator  (A_inv_operator)
+      stokes_matrix (S),
+      stokes_preconditioner_matrix (Spre),
+      S_inv_operator (S_inv_operator),
+      A_inv_operator (A_inv_operator)
     {}
-
-    template <class AInvOperator, class SInvOperator>
-    unsigned int
-    BlockSchurPreconditioner<AInvOperator, SInvOperator>::
-    n_iterations_A() const
-    {
-      return A_inv_operator.n_iterations;
-    }
-
-    template <class AInvOperator, class SInvOperator>
-    unsigned int
-    BlockSchurPreconditioner<AInvOperator, SInvOperator>::
-    n_iterations_S() const
-    {
-      return S_inv_operator.n_iterations;
-    }
 
 
 
@@ -271,21 +251,20 @@ namespace aspect
       * as an approximation for the inverse of the velocity (A) block.
       * This operator can either just apply the preconditioner (AMG)
       * or perform an inner CG solve with the same preconditioner.
-      * Here, the Schur complement is approximated by
-      * the pressure mass matrix weighted by the inverse of viscosity and
-      * the inverse is computed with a CG solve preconditioned by
-      * PreconditionerMp passed to the constructor.
       */
     template <class PreconditionerA>
     class InverseVelocityBlock
     {
       public:
         /**
-           * @param do_solve_A A flag indicating whether we should actually solve with
-           *     the matrix $A$, or only apply one preconditioner step with it.
-           * @param A_block_is_symmetric A flag indicating whether the matrix $A$ is symmetric.
-           * @param A_block_tolerance The tolerance for the CG solver which computes
-           *     the inverse of the A block.
+         * Constructor.
+         * @param matrix The matrix that contains A (from the system matrix)
+         * @param preconditioner The preconditioner to be used
+         * @param do_solve_A A flag indicating whether we should actually solve with
+         *     the matrix $A$, or only apply one preconditioner step with it.
+         * @param A_block_is_symmetric A flag indicating whether the matrix $A$ is symmetric.
+         * @param A_block_tolerance The tolerance for the CG solver which computes
+         *     the inverse of the A block.
         */
         InverseVelocityBlock(const TrilinosWrappers::SparseMatrix &matrix,
                              const PreconditionerA &preconditioner,
@@ -296,9 +275,10 @@ namespace aspect
         void vmult(TrilinosWrappers::MPI::Vector &dst,
                    const TrilinosWrappers::MPI::Vector &src) const;
 
-        mutable unsigned int n_iterations = 0;
+        unsigned int n_iterations() const;
 
       private:
+        mutable unsigned int n_iterations_;
         const TrilinosWrappers::SparseMatrix &matrix;
         const PreconditionerA &preconditioner;
         const bool do_solve_A;
@@ -315,7 +295,8 @@ namespace aspect
       const bool do_solve_A,
       const bool A_block_is_symmetric,
       const double solver_tolerance)
-      : matrix (matrix),
+      : n_iterations_ (0),
+        matrix (matrix),
         preconditioner (preconditioner),
         do_solve_A (do_solve_A),
         A_block_is_symmetric (A_block_is_symmetric),
@@ -357,7 +338,7 @@ namespace aspect
                          SolverBicgstab<LinearAlgebra::Vector>::AdditionalData(/*exact_residual=*/ false));
                   solver.solve(matrix, dst, src, preconditioner);
                 }
-              n_iterations += solver_control.last_step();
+              n_iterations_ += solver_control.last_step();
             }
           catch (const std::exception &exc)
             {
@@ -374,8 +355,16 @@ namespace aspect
       else
         {
           preconditioner.vmult (dst, src);
-          n_iterations += 1;
+          n_iterations_ += 1;
         }
+    }
+
+
+
+    template <class PreconditionerA>
+    unsigned int InverseVelocityBlock<PreconditionerA>::n_iterations() const
+    {
+      return n_iterations_;
     }
 
 
@@ -391,6 +380,12 @@ namespace aspect
     class InverseWeightedMassMatrix
     {
       public:
+        /**
+         * Constructor.
+         * @param mp_matrix Matrix approximating S to be used in the inner solve
+         * @param mp_preconditioner The preconditioner for @p mp_matrix
+         * @param solver_tolerance The relative solver tolerance for the inner solve
+         */
         InverseWeightedMassMatrix(const TrilinosWrappers::SparseMatrix &mp_matrix,
                                   const PreconditionerMp &mp_preconditioner,
                                   const double solver_tolerance);
@@ -398,9 +393,10 @@ namespace aspect
         void vmult(TrilinosWrappers::MPI::Vector &dst,
                    const TrilinosWrappers::MPI::Vector &src) const;
 
-        mutable unsigned int n_iterations = 0;
+        unsigned int n_iterations() const;
 
       private:
+        mutable unsigned int n_iterations_;
         const TrilinosWrappers::SparseMatrix &mp_matrix;
         const PreconditionerMp &mp_preconditioner;
         const double solver_tolerance;
@@ -413,7 +409,8 @@ namespace aspect
       const TrilinosWrappers::SparseMatrix &mp_matrix,
       const PreconditionerMp &mp_preconditioner,
       const double solver_tolerance)
-      : mp_matrix (mp_matrix),
+      : n_iterations_ (0),
+        mp_matrix (mp_matrix),
         mp_preconditioner (mp_preconditioner),
         solver_tolerance (solver_tolerance)
     {}
@@ -438,7 +435,7 @@ namespace aspect
                            dst,
                            src,
                            mp_preconditioner);
-              n_iterations += solver_control.last_step();
+              n_iterations_ += solver_control.last_step();
             }
           // if the solver fails, report the error from processor 0 with some additional
           // information about its location, and throw a quiet exception on all other
@@ -452,6 +449,14 @@ namespace aspect
                                                                src.get_mpi_communicator());
             }
         }
+    }
+
+
+
+    template <class PreconditionerMp>
+    unsigned int InverseWeightedMassMatrix<PreconditionerMp>::n_iterations() const
+    {
+      return n_iterations_;
     }
 
   }
@@ -1035,8 +1040,8 @@ namespace aspect
             catch (const std::exception &exc)
               {
                 signals.post_stokes_solver(*this,
-                                           inverse_weighted_mass_matrix.n_iterations,
-                                           preconditioner_cheap.n_iterations_A()+preconditioner_expensive.n_iterations_A(),
+                                           inverse_weighted_mass_matrix.n_iterations(),
+                                           inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
                                            solver_control_cheap,
                                            solver_control_expensive);
 
@@ -1058,8 +1063,8 @@ namespace aspect
 
         // signal successful solver
         signals.post_stokes_solver(*this,
-                                   inverse_weighted_mass_matrix.n_iterations,
-                                   preconditioner_cheap.n_iterations_A()+preconditioner_expensive.n_iterations_A(),
+                                   inverse_weighted_mass_matrix.n_iterations(),
+                                   inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
                                    solver_control_cheap,
                                    solver_control_expensive);
 
