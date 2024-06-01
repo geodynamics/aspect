@@ -507,7 +507,7 @@ namespace aspect
       rheology->create_plastic_outputs(out);
 
       if (this->get_parameters().enable_elasticity)
-        rheology->elastic_rheology.create_elastic_outputs(out);
+        rheology->elastic_rheology.create_elastic_additional_outputs(out);
     }
 
   }

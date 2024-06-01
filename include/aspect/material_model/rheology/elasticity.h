@@ -91,10 +91,10 @@ namespace aspect
 
           /**
            * Create the additional material model output objects that contain the
-           * elastic shear moduli and reaction rates.
+           * elastic shear moduli, elastic viscosity, timestep ratio and reaction rates.
            */
           void
-          create_elastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+          create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,

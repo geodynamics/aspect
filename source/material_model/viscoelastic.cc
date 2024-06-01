@@ -223,7 +223,7 @@ namespace aspect
     void
     Viscoelastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      elastic_rheology.create_elastic_outputs(out);
+      elastic_rheology.create_elastic_additional_outputs(out);
     }
   }
 }

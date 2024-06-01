@@ -305,7 +305,7 @@ namespace aspect
 
       template <int dim>
       void
-      Elasticity<dim>::create_elastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+      Elasticity<dim>::create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         if (out.template get_additional_output<ElasticAdditionalOutputs<dim>>() == nullptr)
           {
