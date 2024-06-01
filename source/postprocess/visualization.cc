@@ -537,6 +537,21 @@ namespace aspect
         }
       else if (output_format == "vtu")
         {
+          // Pass time step number and time as metadata into the output file
+          DataOutBase::VtkFlags vtk_flags;
+          vtk_flags.cycle = this->get_timestep_number();
+          vtk_flags.time = time_in_years_or_seconds;
+
+          // Also describe the physical units if we have them. Postprocessors do
+          // describe them, but it's a slight hassle to get at the information:
+          vtk_flags.physical_units = visualization_field_names_and_units;
+
+          // Finally, set or do not set whether we want to describe cells
+          // with curved edges and faces:
+          vtk_flags.write_higher_order_cells = write_higher_order_output;
+
+          data_out.set_flags(vtk_flags);
+
           // Write master files (.pvtu,.pvd,.visit) on the master process
           const int my_id = Utilities::MPI::this_mpi_process(
                               this->get_mpi_communicator());
@@ -561,22 +576,6 @@ namespace aspect
           const std::string filename = this->get_output_directory() + "solution/"
                                        + solution_file_prefix + "."
                                        + Utilities::int_to_string(my_file_id, 4) + ".vtu";
-
-          // Pass time step number and time as metadata into the output file
-          DataOutBase::VtkFlags vtk_flags;
-          vtk_flags.cycle = this->get_timestep_number();
-          vtk_flags.time = time_in_years_or_seconds;
-
-          // Also describe the physical units if we have them. Postprocessors do
-          // describe them, but it's a slight hassle to get at the information:
-          vtk_flags.physical_units = visualization_field_names_and_units;
-
-          // Finally, set or do not set whether we want to describe cells
-          // with curved edges and faces:
-          vtk_flags.write_higher_order_cells = write_higher_order_output;
-
-          data_out.set_flags(vtk_flags);
-
 
           // Write as many files as processes. For this case we support writing in a
           // background thread and to a temporary location, so we first write everything
