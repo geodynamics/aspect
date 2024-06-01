@@ -119,7 +119,6 @@ namespace aspect
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
           switch (fluid_solid_reaction_scheme)
             {
               case no_reaction:
@@ -135,6 +134,7 @@ namespace aspect
                 // The fluid volume fraction in equilibrium with the solid
                 // at any point (stored in the melt_fractions vector) is
                 // equal to the sum of the bound fluid content and porosity.
+                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                 melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
                 break;
               }
@@ -143,6 +143,7 @@ namespace aspect
                 // The bound fluid content is calculated using parametrized phase
                 // diagrams for four different rock types: sediment, MORB, gabbro, and
                 // peridotite.
+                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                 const unsigned int sediment_idx = this->introspection().compositional_index_for_name("sediment");
                 const unsigned int MORB_idx = this->introspection().compositional_index_for_name("MORB");
                 const unsigned int gabbro_idx = this->introspection().compositional_index_for_name("gabbro");
@@ -252,7 +253,6 @@ namespace aspect
         }
 
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
-      const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
 
       // Fill reaction rate outputs if the model uses operator splitting.
       // Specifically, change the porosity (representing the amount of free water)
@@ -270,8 +270,12 @@ namespace aspect
                 if (in.composition[q][porosity_idx] + porosity_change < 0)
                   porosity_change = -in.composition[q][porosity_idx];
 
-                if (c == bound_fluid_idx && this->get_timestep_number() > 0)
-                  reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
+                if (fluid_solid_reaction_scheme != katz2003)
+                  {
+                    const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+                    if (c == bound_fluid_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
+                  }
                 else if (c == porosity_idx && this->get_timestep_number() > 0)
                   reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
                 else
@@ -279,7 +283,6 @@ namespace aspect
               }
         }
     }
-
 
 
     template <int dim>
@@ -370,8 +373,6 @@ namespace aspect
       }
       prm.leave_subsection();
     }
-
-
 
     template <int dim>
     void
@@ -477,9 +478,12 @@ namespace aspect
                       ExcMessage("Material model Reactive Fluid Transport only "
                                  "works if there is a compositional field called porosity."));
 
-          AssertThrow(this->introspection().compositional_name_exists("bound_fluid"),
-                      ExcMessage("Material model Reactive Fluid Transport only "
-                                 "works if there is a compositional field called bound_fluid."));
+          if (fluid_solid_reaction_scheme != katz2003)
+            {
+              AssertThrow(this->introspection().compositional_name_exists("bound_fluid"),
+                          ExcMessage("Material model Reactive Fluid Transport only "
+                                     "works if there is a compositional field called bound_fluid."));
+            }
         }
         prm.leave_subsection();
       }

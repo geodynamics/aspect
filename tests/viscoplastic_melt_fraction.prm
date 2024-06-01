@@ -1,6 +1,10 @@
-# tests the melt fraction calculation in the visco plastic material
+# This test checks whether the katz2003 mantle melting model in the
+# reactive transport model produces the correct melt fraction output.
+#
+# Temperature will be held constant throughout model at 1573 K so at 1 GPa
+# melt fraction should be 15% from Katz et. al. 2003 Fig. 4
 
-set Adiabatic surface temperature          = 1623
+set Adiabatic surface temperature          = 1573
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
@@ -17,12 +21,12 @@ set Output directory                       = output-vp-melt-fraction
 
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators = top, bottom
-  set Model name = initial temperature
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0,3
 
   subsection Initial temperature
-    set Maximal temperature = 2773
-    set Minimal temperature = 273
+    set Maximal temperature = 1573
+    set Minimal temperature = 1573
   end
 end
 
@@ -34,8 +38,8 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent  = 500e3
-    set Y extent  = 500e3
+    set X extent  = 100e3
+    set Y extent  = 100e3
   end
 end
 
@@ -45,20 +49,13 @@ subsection Gravity model
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
-    set Magnitude = 1e-4
+    set Magnitude = 10
   end
 end
 
 subsection Compositional fields
-  set Number of fields = 2
-  set Names of fields = porosity, bound_fluid
-end
-
-subsection Initial composition model
-  set Model name = function
-  subsection Function
-    set Function expression = 0; 0.01
-  end
+  set Number of fields = 1
+  set Names of fields = porosity
 end
 
 # The composition is not fixed on any boundary
@@ -71,12 +68,16 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function constants  = bw = 500e3, Tmax = 2773, Tmin = 273
-    set Function expression = x*(Tmax-Tmin)/bw+Tmin
-    set Variable names      = x,y
+    set Function expression = 1573
   end
 end
 
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
 # Use a visco plastic material model, which uses the dislocation
 # and diffusion creep mechanisms.
 subsection Material model
@@ -110,12 +111,12 @@ subsection Solver parameters
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, melt statistics
-  subsection Visualization
-    set List of output variables = melt fraction
-    set Write higher order output = false
-    set Interpolate output = true
-    set Write in background thread = true
-    set Number of grouped files = 0
-  end
+  set List of postprocessors = visualization, melt statistics, pressure statistics,  composition statistics
+    subsection Visualization
+      set Interpolate output = false
+      set Number of grouped files       = 0
+      set Output format                 = gnuplot
+      set List of output variables      = melt fraction
+      set Time between graphical output = 0
+    end
 end

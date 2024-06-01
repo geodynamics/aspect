@@ -2,7 +2,7 @@
 --                             This is ASPECT                              --
 -- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
 -----------------------------------------------------------------------------
---     . version 2.6.0-pre (katz2003-melt-fraction-reactive-fluid-transport, cb8494bd0)
+--     . version 2.6.0-pre (katz2003-melt-fraction-reactive-fluid-transport, 28bcb1bf3)
 --     . using deal.II 9.5.1
 --     .       with 32 bit indices and vectorization level 2 (256 bits)
 --     . using Trilinos 13.2.0
@@ -14,55 +14,56 @@
 
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=cb8494bd0&src=code
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=28bcb1bf3&src=code
 -----------------------------------------------------------------------------
 Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
+Number of degrees of freedom: 17,989 (9,539+4,225+4,225)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving bound_fluid system ... 0 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output:    output-vp-melt-fraction/solution/solution-00000
-     Melt fraction min/total/max: 0, 1.042e+11, 1
+     Melt fraction min/total/max: 0, 8.956e+08, 0.3137
+     Pressure min/avg/max:        -5.341e-05 Pa, 1.576e+09 Pa, 3.152e+09 Pa
+     Compositions min/max/mass:   0/0/0
 
 *** Timestep 1:  t=1000 years, dt=1000 years
-   Solving temperature system... 6 iterations.
+   Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving bound_fluid system ... 0 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
-     Melt fraction min/total/max: 0, 1.042e+11, 1
+     Writing graphical output:    output-vp-melt-fraction/solution/solution-00001
+     Melt fraction min/total/max: 0, 8.956e+08, 0.3137
+     Pressure min/avg/max:        -2.837e-05 Pa, 1.576e+09 Pa, 3.152e+09 Pa
+     Compositions min/max/mass:   0/0/0
 
 Termination requested by criterion: end time
 
 
 +----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      17.7s |            |
+| Total wallclock time elapsed since start     |      16.4s |            |
 |                                              |            |            |
 | Section                          | no. calls |  wall time | % of total |
 +----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |         2 |      2.12s |        12% |
-| Assemble composition system      |         4 |       5.5s |        31% |
-| Assemble temperature system      |         2 |       2.7s |        15% |
-| Build composition preconditioner |         2 |    0.0202s |      0.11% |
-| Build temperature preconditioner |         2 |    0.0133s |         0% |
-| Initialization                   |         1 |     0.551s |       3.1% |
-| Postprocessing                   |         2 |     0.817s |       4.6% |
-| Setup dof systems                |         1 |     0.149s |      0.84% |
-| Setup initial conditions         |         1 |     0.933s |       5.3% |
-| Setup matrices                   |         1 |     0.723s |       4.1% |
-| Solve Stokes system              |         2 |      3.48s |        20% |
-| Solve composition system         |         2 |   0.00244s |         0% |
-| Solve temperature system         |         2 |   0.00405s |         0% |
+| Assemble Stokes system           |         2 |      2.69s |        16% |
+| Assemble composition system      |         2 |      2.98s |        18% |
+| Assemble temperature system      |         2 |      3.91s |        24% |
+| Build temperature preconditioner |         2 |    0.0185s |      0.11% |
+| Initialization                   |         1 |      1.02s |       6.2% |
+| Postprocessing                   |         2 |      1.26s |       7.7% |
+| Setup dof systems                |         1 |      0.31s |       1.9% |
+| Setup initial conditions         |         1 |      1.15s |         7% |
+| Setup matrices                   |         1 |      1.66s |        10% |
+| Solve Stokes system              |         2 |     0.418s |       2.5% |
+| Solve temperature system         |         2 |   0.00234s |         0% |
 +----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 18s
+-- Total wallclock time elapsed including restarts: 16s
 -----------------------------------------------------------------------------
 -- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=cb8494bd0&src=code
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=28bcb1bf3&src=code
 -----------------------------------------------------------------------------

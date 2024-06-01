@@ -241,7 +241,7 @@ namespace aspect
          * This model requires that 4 compositional fields named after the 4 different rock
          * types exist in the input file.
          *
-         * The Katz2003 model implements the mantle melting model from
+         * The Katz2003 model implements anhydrous the mantle melting model from
          * Katz et. al., 2003 G3, doi:10.1029/2002GC000433.
          */
         enum ReactionScheme
