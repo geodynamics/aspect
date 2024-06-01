@@ -245,25 +245,17 @@ namespace aspect
 
           /**
            * Enumeration for selecting which type of viscous flow law to use.
-           * Select between diffusion, dislocation, frank_kamenetskii or composite.
+           * Select between diffusion, dislocation, frank_kamenetskii, composite,
+           * or the minimum of the diffusion and dislocation viscosities.
            */
           enum ViscosityScheme
           {
             diffusion,
             dislocation,
             frank_kamenetskii,
-            composite
+            composite,
+            minimum_diffusion_dislocation
           } viscous_flow_law;
-
-          /**
-           * Whether to take the minimum of the diffusion and dislocation
-           * creep viscosities (if true), or to compute a composite (if false)
-           * as (viscosity_diffusion * viscosity_dislocation) / (viscosity_diffusion + viscosity_dislocation).
-           * The outcome of either option is a pre-yield viscous creep viscosity that can
-           * be modified by Peierls creep, a user-set prefactor and strain weakening,
-           * before elastic and/or plastic contributions to the viscosity are computed.
-           */
-          bool use_minimum_creep_viscosity;
 
           /**
            * Enumeration for selecting which type of yield mechanism to use.

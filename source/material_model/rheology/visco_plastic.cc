@@ -208,7 +208,7 @@ namespace aspect
                    :
                    numbers::signaling_nan<double>());
 
-              // Step 1c: select which form of viscosity to use (diffusion, dislocation, fk, or composite), and apply
+              // Step 1c: select which form of viscosity to use (diffusion, dislocation, their minimum or composite, or fk), and apply
               // pre-exponential weakening, if required.
               switch (viscous_flow_law)
                 {
@@ -238,11 +238,18 @@ namespace aspect
                                                               CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
                     const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
-                    if (use_minimum_creep_viscosity)
-                      non_yielding_viscosity = std::min(viscosity_diffusion, viscosity_dislocation);
-                    else
-                      non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
-                                               (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
+                    non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
+                                             (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
+                    break;
+                  }
+                  case minimum_diffusion_dislocation:
+                  {
+                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
+                                                              CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
+                                                                CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+
+                    non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
                     break;
                   }
                   default:
@@ -586,18 +593,15 @@ namespace aspect
                            "viscosity at that point.  Select a weighted harmonic, arithmetic, "
                            "geometric, or maximum composition.");
         prm.declare_entry ("Viscous flow law", "composite",
-                           Patterns::Selection("diffusion|dislocation|frank kamenetskii|composite"),
-                           "Select what type of viscosity law to use between diffusion, "
-                           "dislocation, frank kamenetskii, and composite options. Soon there will be an option "
-                           "to select a specific flow law for each assigned composition ");
-        prm.declare_entry ("Use minimum of diffusion and dislocation creep viscosity", "false",
-                           Patterns::Bool(),
-                           "Whether to take the minimum of the diffusion and dislocation creep "
-                           "viscosity (true) or use a composite of both viscosities (false). "
+                           Patterns::Selection("diffusion|dislocation|frank kamenetskii|composite|minimum diffusion dislocation"),
+                           "Select what type of viscosity law to use between the options diffusion, "
+                           "dislocation, frank kamenetskii, composite and the minimum of diffusion and dislocation. "
+                           "Soon there will be an option "
+                           "to select a specific flow law for each assigned composition, "
                            "When the full strain rate is used to compute each viscosity "
                            "instead of the properly partitioned diffusion and dislocation creep "
                            "strain rates, it is recommended to take the minimum of the creep "
-                           "viscosities.");
+                           "viscosities instead of their composite.");
         prm.declare_entry ("Yield mechanism", "drucker",
                            Patterns::Selection("drucker|limiter"),
                            "Select what type of yield mechanism to use between Drucker Prager "
@@ -735,10 +739,10 @@ namespace aspect
           viscous_flow_law = dislocation;
         else if (prm.get ("Viscous flow law") == "frank kamenetskii")
           viscous_flow_law = frank_kamenetskii;
+        else if (prm.get ("Viscous flow law") == "minimum diffusion dislocation")
+          viscous_flow_law = minimum_diffusion_dislocation;
         else
           AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
-
-        use_minimum_creep_viscosity = prm.get_bool ("Use minimum of diffusion and dislocation creep viscosity");
 
         if (prm.get("Yield mechanism") == "drucker")
           yield_mechanism = drucker_prager;
