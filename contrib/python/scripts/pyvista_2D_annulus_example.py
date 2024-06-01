@@ -185,10 +185,8 @@ for ts in range(out_n_min, out_n_max + 1):
     pl.close()
 
 
-#   A model to run that can utalize this scripts can be created by modifying
-#   the onset-of-convection cookbook at:
+#   ASPECT model output that can utilize this script can be created by making the following changes to the onset-of-convection cookbook:
 #   https://aspect-documentation.readthedocs.io/en/latest/user/cookbooks/cookbooks/onset_of_convection/doc/onset_of_convection.html
-#   and making the following changes to the parameter file: (< is original file, and > is modified version)
 
 # <   set Model name = box
 # ---
