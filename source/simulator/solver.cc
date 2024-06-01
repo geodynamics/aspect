@@ -263,70 +263,6 @@ namespace aspect
       return S_inv_operator.n_iterations;
     }
 
-    /**
-      * This class is used in the implementation of the right preconditioner.
-      * Here, the Schur complement is approximated by
-      * the pressure mass matrix weighted by the inverse of viscosity.
-      */
-    template <class PreconditionerMp>
-    class InverseWeightedMassMatrix
-    {
-      public:
-        InverseWeightedMassMatrix(
-          const TrilinosWrappers::SparseMatrix &mp_mat,
-          const PreconditionerMp &mp_pre,
-          const double S_tolerance)
-          :mp_matrix(mp_mat)
-          ,mp_preconditioner(mp_pre)
-          ,S_block_tolerance(S_tolerance)
-        {}
-
-
-        void vmult(TrilinosWrappers::MPI::Vector &dst,
-                   const TrilinosWrappers::MPI::Vector &src) const
-        {
-          // Trilinos reports a breakdown
-          // in case src=dst=0, even
-          // though it should return
-          // convergence without
-          // iterating. We simply skip
-          // solving in this case.
-          if (src.l2_norm() > 1e-50)
-            {
-              SolverControl solver_control(1000, src.l2_norm() * S_block_tolerance);
-              PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
-              SolverCG<LinearAlgebra::Vector> solver(solver_control,mem);
-              try
-                {
-                  dst = 0.0;
-                  solver.solve(mp_matrix,
-                               dst,
-                               src,
-                               mp_preconditioner);
-                  n_iterations += solver_control.last_step();
-                }
-              // if the solver fails, report the error from processor 0 with some additional
-              // information about its location, and throw a quiet exception on all other
-              // processors
-              catch (const std::exception &exc)
-                {
-                  Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
-                                                                   "BlockSchurPreconditioner::vmult",
-                                                                   std::vector<SolverControl> {solver_control},
-                                                                   exc,
-                                                                   src.get_mpi_communicator());
-                }
-            }
-        }
-
-        mutable unsigned int n_iterations = 0;
-
-      private:
-        const TrilinosWrappers::SparseMatrix &mp_matrix;
-        const PreconditionerMp &mp_preconditioner;
-        const double S_block_tolerance;
-    };
-
 
 
     template <class AInvOperator, class SInvOperator>
@@ -400,6 +336,80 @@ namespace aspect
         {
           A_inv_operator.vmult (dst.block(0), utmp);
           n_iterations_A_ += 1;
+        }
+    }
+
+    /**
+      * This class is used in the implementation of the right preconditioner.
+      * Here, the Schur complement is approximated by
+      * the pressure mass matrix weighted by the inverse of viscosity and
+      * the inverse is computed with a CG solve preconditioned by
+      * PreconditionerMp passed to the constructor.
+      */
+    template <class PreconditionerMp>
+    class InverseWeightedMassMatrix
+    {
+      public:
+        InverseWeightedMassMatrix(const TrilinosWrappers::SparseMatrix &mp_matrix,
+                                  const PreconditionerMp &mp_preconditioner,
+                                  const double solver_tolerance);
+
+        void vmult(TrilinosWrappers::MPI::Vector &dst,
+                   const TrilinosWrappers::MPI::Vector &src) const;
+
+        mutable unsigned int n_iterations = 0;
+
+      private:
+        const TrilinosWrappers::SparseMatrix &mp_matrix;
+        const PreconditionerMp &mp_preconditioner;
+        const double solver_tolerance;
+    };
+
+
+
+    template <class PreconditionerMp>
+    InverseWeightedMassMatrix<PreconditionerMp>::InverseWeightedMassMatrix(
+      const TrilinosWrappers::SparseMatrix &mp_matrix,
+      const PreconditionerMp &mp_preconditioner,
+      const double solver_tolerance)
+      : mp_matrix (mp_matrix),
+        mp_preconditioner (mp_preconditioner),
+        solver_tolerance (solver_tolerance)
+    {}
+
+
+
+    template <class PreconditionerMp>
+    void InverseWeightedMassMatrix<PreconditionerMp>::vmult(TrilinosWrappers::MPI::Vector &dst,
+                                                            const TrilinosWrappers::MPI::Vector &src) const
+    {
+      // Trilinos reports a breakdown in case src=dst=0, even though it should return
+      // convergence without iterating. We simply skip solving in this case.
+      if (src.l2_norm() > 1e-50)
+        {
+          SolverControl solver_control(1000, src.l2_norm() * solver_tolerance);
+          PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
+          SolverCG<LinearAlgebra::Vector> solver(solver_control, mem);
+          try
+            {
+              dst = 0.0;
+              solver.solve(mp_matrix,
+                           dst,
+                           src,
+                           mp_preconditioner);
+              n_iterations += solver_control.last_step();
+            }
+          // if the solver fails, report the error from processor 0 with some additional
+          // information about its location, and throw a quiet exception on all other
+          // processors
+          catch (const std::exception &exc)
+            {
+              Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
+                                                               "BlockSchurPreconditioner::vmult",
+                                                               std::vector<SolverControl> {solver_control},
+                                                               exc,
+                                                               src.get_mpi_communicator());
+            }
         }
     }
 
