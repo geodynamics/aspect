@@ -41,7 +41,6 @@ namespace aspect
         std::vector<std::string> names;
         names.emplace_back("elastic_shear_modulus");
         names.emplace_back("elastic_viscosity");
-        names.emplace_back("timestep_ratio");
         return names;
       }
     }
@@ -62,9 +61,9 @@ namespace aspect
     ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
       (void)idx; // suppress warning in release mode
-      AssertIndexRange (idx, 3);
+      AssertIndexRange (idx, 2);
 
-      // TODO do not output the timestep_ratio,
+      // We do not output the timestep_ratio,
       // as it is constant over the domain at a given timestep.
       switch (idx)
         {
@@ -73,9 +72,6 @@ namespace aspect
 
           case 1:
             return elastic_viscosity;
-
-          case 2:
-            return timestep_ratio;
 
           default:
             AssertThrow(false, ExcInternalError());
