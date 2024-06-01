@@ -1107,17 +1107,17 @@ namespace aspect
         prm.declare_entry ("Use limiter for discontinuous temperature solution", "false",
                            Patterns::Bool (),
                            "Whether to apply the bound preserving limiter as a correction after computing "
-                           "the discontinuous temperature solution. Currently we apply this only to the "
-                           "temperature solution if the 'Global temperature maximum' and "
-                           "'Global temperature minimum' are already defined in the .prm file. "
+                           "the discontinuous temperature solution. The limiter will only have an "
+                           "effect if the 'Global temperature maximum' and "
+                           "'Global temperature minimum' parameters are defined in the .prm file. "
                            "This limiter keeps the discontinuous solution in the range given by "
                            "'Global temperature maximum' and 'Global temperature minimum'.");
         prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
                            Patterns::List(Patterns::Bool()),
                            "Whether to apply the bound preserving limiter as a correction after having "
-                           "the discontinuous composition solution. We apply this limiter only to the "
-                           "compositional solution if the 'Global composition maximum' and "
-                           "'Global composition minimum' are also defined in the .prm file. "
+                           "the discontinuous composition solution. The limiter will only have an "
+                           "effect if the 'Global composition maximum' and "
+                           "'Global composition minimum' parameters are defined in the .prm file. "
                            "This limiter keeps the discontinuous solution in the range given by "
                            "Global composition maximum' and 'Global composition minimum'. "
                            "The number of input values in this parameter separated by ',' has to be "
