@@ -24,6 +24,7 @@
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/material_model/visco_plastic.h>
 #include <aspect/material_model/viscoelastic.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -137,25 +138,12 @@ namespace aspect
             else
               {
                 // Visco-elastic stresses are stored on the fields
-                SymmetricTensor<2, dim> stress_0, stress_old;
-                stress_0[0][0] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress_0[1][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress_0[0][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
-
-                stress_old[0][0] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx_old")];
-                stress_old[1][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy_old")];
-                stress_old[0][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy_old")];
-
-                if (dim == 3)
-                  {
-                    stress_0[2][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress_0[0][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress_0[1][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
-
-                    stress_old[2][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz_old")];
-                    stress_old[0][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz_old")];
-                    stress_old[1][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz_old")];
-                  }
+                const unsigned int n_independent_components = SymmetricTensor<2,dim>::n_independent_components;
+                const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
+                const SymmetricTensor<2,dim> stress_0 (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[q][stress_start_index],
+                                                       &in.composition[q][stress_start_index]+n_independent_components));
+                const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[q][stress_start_index+n_independent_components],
+                                                         &in.composition[q][stress_start_index+n_independent_components]+n_independent_components));
 
                 const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
