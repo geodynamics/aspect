@@ -45,20 +45,20 @@ template <int dim>
 
 The main properties of the material are computed in the function evaluate()
 that takes a struct of type MaterialModelInputs and is supposed to fill a
-MaterialModelOutputs structure. For performance reasons this function is
+MaterialModelOutputs class. For performance reasons this function is
 handling lookups at an arbitrary number of positions, so for each variable
-(for example viscosity), a std::vector is returned. The following members of
-MaterialModelOutputs need to be filled:
+(for example viscosity), a std::vector is returned. Some of the MaterialModelOutputs
+members that need to be filled are:
 
 ```{code-block} c++
-struct MaterialModelOutputs
+class MaterialModelOutputs
 {
-          std::vector<double> viscosities;
-          std::vector<double> densities;
-          std::vector<double> thermal_expansion_coefficients;
-          std::vector<double> specific_heat;
-          std::vector<double> thermal_conductivities;
-          std::vector<double> compressibilities;
+  public:
+    std::vector<double> viscosities;
+    std::vector<double> densities;
+    std::vector<double> thermal_expansion_coefficients;
+    std::vector<double> specific_heat;
+    // more here
 }
 ```
 

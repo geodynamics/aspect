@@ -467,7 +467,7 @@ namespace aspect
 
     // Forward declaration:
     template <int dim>
-    struct AdditionalMaterialOutputs;
+    class AdditionalMaterialOutputs;
 
 
     /**
