@@ -1,0 +1,4 @@
+Changed: The DiffusionDislocation rheology now uses SUNDIALS KINSOL
+routines to calculate the equilibrium partitioning of strain rates.
+<br>
+(Bob Myhill, 2024/05/31)
