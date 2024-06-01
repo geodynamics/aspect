@@ -559,8 +559,8 @@ endif()
 
 # Create the combined set of source files that make up the project
 set(TARGET_SRC
-    ${ASPECT_UNIT_TEST_FILES}
     ${ASPECT_MAIN_FILE}
+    ${ASPECT_UNIT_TEST_FILES}
     ${ASPECT_SOURCE_FILES})
 
 
