@@ -4,9 +4,9 @@
 <VTKFile type="PUnstructuredGrid" version="0.1" byte_order="LittleEndian">
   <PUnstructuredGrid GhostLevel="0">
     <PPointData Scalars="scalars">
-    <PDataArray type="Float32" Name="velocity" NumberOfComponents="3" format="ascii"/>
-    <PDataArray type="Float32" Name="p" format="ascii"/>
-    <PDataArray type="Float32" Name="T" format="ascii"/>
+    <PDataArray type="Float32" Name="velocity" NumberOfComponents="3" format="ascii" units="m/year"/>
+    <PDataArray type="Float32" Name="p" format="ascii" units="Pa"/>
+    <PDataArray type="Float32" Name="T" format="ascii" units="K"/>
     </PPointData>
     <PPoints>
       <PDataArray type="Float32" NumberOfComponents="3"/>
