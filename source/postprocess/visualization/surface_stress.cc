@@ -69,70 +69,36 @@ namespace aspect
         // ...and use it to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2,dim> deviatoric_strain_rate
-              = (this->get_material_model().is_compressible()
-                 ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
+            // Compressive stress is negative by the sign convention
+            // used by the engineering community, and as input and used
+            // internally by ASPECT.
+            // Here, we change the sign of the stress to match the
+            // sign convention used by the geoscience community.
+            SymmetricTensor<2,dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
             const double eta = out.viscosities[q];
 
-            // Compressive stress is positive in geoscience applications
-            SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
-                                            in.pressure[q] * unit_symmetric_tensor<dim>();
+            const SymmetricTensor<2, dim> strain_rate = in.strain_rate[q];
+            const SymmetricTensor<2, dim> deviatoric_strain_rate = (this->get_material_model().is_compressible()
+                                                                    ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
+                                                                    : strain_rate);
 
-            // Add elastic stresses if existent
-            if (this->get_parameters().enable_elasticity == true)
+            // If elasticity is enabled, the visco-elastic stress is stored
+            // in compositional fields and we can retrieve the deviatoric stress
+            // from the material model, otherwise the deviatoric stress
+            // can be computed from the viscosity and strain rate.
+            if (this->get_parameters().enable_elasticity)
               {
-                SymmetricTensor<2, dim> stress_0, stress_old;
+                // Get the total deviatoric stress from the material model.
+                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                stress_0[0][0] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress_0[1][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress_0[0][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
 
-                stress_old[0][0] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx_old")];
-                stress_old[1][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy_old")];
-                stress_old[0][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy_old")];
-
-                if (dim == 3)
-                  {
-                    stress_0[2][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress_0[0][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress_0[1][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
-
-                    stress_old[2][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz_old")];
-                    stress_old[0][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz_old")];
-                    stress_old[1][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz_old")];
-                  }
-
-                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
-
-                const double shear_modulus = elastic_out->elastic_shear_moduli[q];
-
-                // Retrieve the timestep ratio dtc/dte and the elastic viscosity,
-                // only two material models support elasticity.
-                double timestep_ratio = 0.;
-                double elastic_viscosity = 0.;
-                if (Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim>>(this->get_material_model()))
-                  {
-                    const MaterialModel::ViscoPlastic<dim> &vp = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
-                    elastic_viscosity = vp.get_elastic_viscosity(shear_modulus);
-                    timestep_ratio = vp.get_timestep_ratio();
-                  }
-                else if (Plugins::plugin_type_matches<MaterialModel::Viscoelastic<dim>>(this->get_material_model()))
-                  {
-                    const MaterialModel::Viscoelastic<dim> &ve = Plugins::get_plugin_as_type<const MaterialModel::Viscoelastic<dim>>(this->get_material_model());
-                    elastic_viscosity = ve.get_elastic_viscosity(shear_modulus);
-                    timestep_ratio = ve.get_timestep_ratio();
-                  }
-                else
-                  AssertThrow(false, ExcMessage("The stress component statistics postprocessor cannot be used with elasticity for material models other than ViscoPlastic and Viscoelastic."));
-
-                // The total stress of timestep t.
-                // Both eta and the elastic viscosity have been scaled with the timestep ratio.
-                stress = in.pressure[q] * unit_symmetric_tensor<dim>() - (2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
+                stress -= elastic_additional_out->deviatoric_stress[q];
+              }
+            else
+              {
+                stress -= 2. * eta * deviatoric_strain_rate;
               }
 
             for (unsigned int d=0; d<dim; ++d)

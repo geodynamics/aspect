@@ -75,50 +75,18 @@ namespace aspect
 
             const double eta = out.viscosities[q];
 
-            // Compressive stress is positive in geoscience applications
-            SymmetricTensor<2, dim> stress = -2. * eta * deviatoric_strain_rate +
-                                             in.pressure[q] * unit_symmetric_tensor<dim>();
+            // Compressive stress is positive in geoscience applications.
+            SymmetricTensor<2, dim> deviatoric_stress = -2. * eta * deviatoric_strain_rate;
 
             if (this->get_parameters().enable_elasticity == true)
               {
-                // Visco-elastic stresses are stored on the fields
-                SymmetricTensor<2, dim> stress_0, stress_old;
-                stress_0[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress_0[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress_0[0][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                // Get the total deviatoric stress from the material model.
+                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                stress_old[0][0] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx_old")];
-                stress_old[1][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy_old")];
-                stress_old[0][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy_old")];
+                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
 
-                if (dim == 3)
-                  {
-                    stress_0[2][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress_0[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress_0[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
-
-                    stress_old[2][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz_old")];
-                    stress_old[0][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz_old")];
-                    stress_old[1][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz_old")];
-                  }
-
-                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
-
-                Assert(elastic_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'shear stress' postprocessor, but they have not been created."));
-                const double shear_modulus = elastic_out->elastic_shear_moduli[q];
-
-                const MaterialModel::ViscoPlastic<dim> &vp = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
-                const double elastic_viscosity = vp.get_elastic_viscosity(shear_modulus);
-                const double timestep_ratio = vp.get_timestep_ratio();
-
-                // Apply the stress update to get the total stress of timestep t.
-                // Both eta and the elastic viscosity have been scaled with the timestep ratio.
-                stress = in.pressure[q] * unit_symmetric_tensor<dim>() -
-                         (2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
+                deviatoric_stress = -(elastic_additional_out->deviatoric_stress[q]);
               }
-
-            // Compute the deviatoric stress
-            const SymmetricTensor<2, dim> deviatoric_stress = deviator(stress);
 
             // Compute the second moment invariant of the deviatoric stress
             const double stress_invariant = std::sqrt(std::fabs(second_invariant(deviatoric_stress)));
