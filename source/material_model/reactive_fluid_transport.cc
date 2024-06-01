@@ -360,7 +360,7 @@ namespace aspect
                              "the two phases, or the solid phase is insoluble (zero solubility) and all "
                              "of the bound fluid is released into the fluid phase, tian approximation "
                              "use polynomials to describe hydration and dehydration reactions for four different "
-                             "rock compositions as defined in Tian et al., 2019, or the Katz et. al.W 2003 mantle "
+                             "rock compositions as defined in Tian et al., 2019, or the Katz et. al. 2003 mantle "
                              "melting model.");
 
           // read in melting model parameters
