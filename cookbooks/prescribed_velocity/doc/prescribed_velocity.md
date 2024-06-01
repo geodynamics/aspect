@@ -1,7 +1,7 @@
 (sec:cookbooks:prescribed_velocity)=
 # Prescribed internal velocity constraints
 
-*This section was contributed by Jonathan Perry-Houts*
+*This section was contributed by Jonathan Perry-Houts.*
 
 In cases where it is desirable to investigate the behavior of one part of the
 model domain but the controlling physics of another part is difficult to

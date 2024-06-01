@@ -1,6 +1,6 @@
 # Using a free surface in a model with a crust
 
-*This section was contributed by William Durkin*.
+*This section was contributed by William Durkin.*
 
 This cookbook is a modification of the previous example that explores changes
 in the way topography develops when a highly viscous crust is added. In this
