@@ -40,34 +40,39 @@ namespace aspect
         = default;
 
       template <int dim>
-      std::vector<double>
-      CompositionalViscosityPrefactors<dim>::compute_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
-                                                                  const double base_viscosity,
-                                                                  const unsigned int composition_index,
-                                                                  const unsigned int q) const
+      double
+      CompositionalViscosityPrefactors<dim>::compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                                const double base_viscosity,
+                                                                const unsigned int composition_index,
+                                                                const unsigned int q,
+                                                                const ModifiedFlowLaws &modified_flow_laws) const
       {
-        std::vector<double> factored_viscosities(number_of_prefactors, base_viscosity);
+        double factored_viscosities = base_viscosity;
         switch (viscosity_prefactor_scheme)
           {
             case none:
             {
+              factored_viscosities = base_viscosity;
               break;
             }
             case hk04_olivine_hydration:
             {
               // We calculate the atomic H/Si ppm (C_OH) at each point to compute the water fugacity of
-              // olivine assuming a composition of 90 wt% Forsterite and 10 wt% Fayalite from Hirth
+              // olivine assuming a composition of 90 mol% Forsterite and 10 mol% Fayalite from Hirth
               // and Kohlstaedt 2004 10.1029/138GM06.
               const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
               const double weight_fraction_H2O = in.composition[q][bound_fluid_idx]; // mass fraction of bound water
               const double weight_fraction_olivine = 1 - weight_fraction_H2O; // mass fraction of olivine
               const double COH = (weight_fraction_H2O/molar_mass_H2O) / (weight_fraction_olivine/molar_mass_olivine) * 1e6; // COH in H / Si ppm
-              const double point_water_fugacity = COH / A_H2O * \
-                                                  std::exp((activation_energy_H2O + in.pressure[q]*activation_volume_H2O)/ \
+              const double point_water_fugacity = COH / A_H2O *
+                                                  std::exp((activation_energy_H2O + in.pressure[q]*activation_volume_H2O)/
                                                            (constants::gas_constant * in.temperature[q]));
-
-              factored_viscosities[0] = base_viscosity*std::pow(point_water_fugacity, -diffusion_water_fugacity_exponents[composition_index]);
-              factored_viscosities[1] = base_viscosity*std::pow(point_water_fugacity, -dislocation_water_fugacity_exponents[composition_index]);
+              const double r = modified_flow_laws == diffusion
+                               ?
+                               -diffusion_water_fugacity_exponents[composition_index]
+                               :
+                               -dislocation_water_fugacity_exponents[composition_index];
+              factored_viscosities = base_viscosity*std::pow(point_water_fugacity, r);
               break;
             }
           }
@@ -79,17 +84,13 @@ namespace aspect
       void
       CompositionalViscosityPrefactors<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.declare_entry("Number of prefactors", "2",
-                          Patterns::List(Patterns::Integer(1)),
-                          "The number of flow laws to apply viscosity multiplicative prefactors. "
-                          "Default value is 2, for diffusion creep and dislocation creep. ");
-
         prm.declare_entry ("Water fugacity exponents for diffusion creep", "0.0",
                            Patterns::List(Patterns::Double(0)),
                            "List of water fugacity exponents for diffusion creep for "
                            "background material and compositional fields, for a total of N+1 "
                            "where N is the number of all compositional fields or only those "
-                           "corresponding to chemical compositions. Note, the water fugacity exponent "
+                           "corresponding to chemical compositions. This is only applied when using the "
+                           "Viscosity prefactor scheme 'HK04 olivine hydration'. Note, the water fugacity exponent "
                            "required by ASPECT for diffusion creep is r/n, where n is the stress exponent "
                            "for diffusion creep, which typically is 1. Units: none.");
 
@@ -98,7 +99,8 @@ namespace aspect
                            "List of water fugacity exponents for dislocation creep for "
                            "background material and compositional fields, for a total of N+1 "
                            "where N is the number of all compositional fields or only those "
-                           "corresponding to chemical compositions. Note, the water fugacity exponent "
+                           "corresponding to chemical compositions. This is only applied when using the "
+                           "Viscosity prefactor scheme 'HK04 olivine hydration'. Note, the water fugacity exponent "
                            "required by ASPECT for dislocation creep is r/n, where n is the stress exponent "
                            "for dislocation creep, which typically is 3.5. Units: none.");
 
@@ -117,8 +119,6 @@ namespace aspect
       void
       CompositionalViscosityPrefactors<dim>::parse_parameters (ParameterHandler &prm)
       {
-        number_of_prefactors = prm.get_integer ("Number of prefactors");
-
         if (prm.get ("Viscosity prefactor scheme") == "none")
           viscosity_prefactor_scheme = none;
         if (prm.get ("Viscosity prefactor scheme") == "HK04 olivine hydration")
@@ -137,15 +137,13 @@ namespace aspect
             compositional_field_names.insert(compositional_field_names.begin(), "background");
             chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-            Utilities::MapParsing::Options options1(chemical_field_names, "Water fugacity exponents for diffusion creep");
-            Utilities::MapParsing::Options options2(chemical_field_names, "Water fugacity exponents for dislocation creep");
+            Utilities::MapParsing::Options options(chemical_field_names, "Water fugacity exponents for diffusion creep");
 
-            options1.list_of_allowed_keys = compositional_field_names;
-            options2.list_of_allowed_keys = compositional_field_names;
+            options.list_of_allowed_keys = compositional_field_names;
             diffusion_water_fugacity_exponents = Utilities::MapParsing::parse_map_to_double_array (prm.get("Water fugacity exponents for diffusion creep"),
-                                                 options1);
+                                                 options);
             dislocation_water_fugacity_exponents = Utilities::MapParsing::parse_map_to_double_array (prm.get("Water fugacity exponents for dislocation creep"),
-                                                   options2);
+                                                   options);
           }
       }
     }

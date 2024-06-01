@@ -116,7 +116,7 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = material statistics
+  set List of postprocessors = material statistics, visualization
   subsection Visualization
     set Interpolate output       = false
     set List of output variables = material properties

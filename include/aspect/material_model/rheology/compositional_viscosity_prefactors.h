@@ -60,14 +60,23 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          // The flow laws that can be
+          // currently modified.
+          enum ModifiedFlowLaws
+          {
+            diffusion,
+            dislocation
+          } modified_flow_laws;
+
           /**
            * Compute the viscosity.
            */
-          std::vector<double>
-          compute_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
-                               const double base_viscosity,
-                               const unsigned int composition_index,
-                               const unsigned int q) const;
+          double
+          compute_viscosity (const MaterialModel::MaterialModelInputs<dim> &in,
+                             const double base_viscosity,
+                             const unsigned int composition_index,
+                             const unsigned int q,
+                             const ModifiedFlowLaws &modified_flow_laws) const;
 
         private:
           /**
@@ -76,22 +85,20 @@ namespace aspect
            * parse_parameters() function. Users can choose between different schemes.
            * none: no viscosity change
            * hk04_olivine_hydration: calculate the viscosity change due to hydrogen
-           * incorporation into olvine using Hirth & Kohlstaedt 2004 10.1029/138GM06.
-           * This method requires a composition called 'bound_fluid' which is required
-           * by the reactive fluid transport material model to weaken the viscosity with
-           * elevated ratios of H/Si ppm in the solid.
+           * incorporation into olivine using Hirth & Kohlstaedt 2004 10.1029/138GM06.
+           * This method requires a composition called 'bound_fluid' which tracks the wt%
+           * water in the solid, which is used to compute an atomic ratio of H/Si ppm
+           * assuming 90 mol% forsterite and 10 mol% fayalite, and finally calculates
+           * a water fugacity.
            * The prefactor for a given compositional field is multiplied with a
-           * base_viscosity value provided by the material model, which
-           * is then returned to the material model.
-           * Constant values
+           * base_viscosity value provided by the material model, which is then returned
+           * to the material model.
            */
           enum ViscosityPrefactorScheme
           {
             none,
-            hk04_olivine_hydration
+            hk04_olivine_hydration,
           } viscosity_prefactor_scheme;
-
-          int number_of_prefactors;
 
           // Initialize variables for the water fugacity calculation, from HK04
           std::vector<double> diffusion_water_fugacity_exponents;
@@ -102,8 +109,9 @@ namespace aspect
           const double activation_energy_H2O = 40e3; // J/mol/K
           const double activation_volume_H2O = 10e-6; // m^3/mol
 
-          // We calculate the Molar mass of olivine using the molar mass of fayalite (203.79) and the
-          // molar mass of forsterite (140.693), and a mass fraction of 90% forsterite.
+          // We calculate the molar mass of olivine using the molar mass of fayalite (0.20379 kg/mol)
+          // and the molar mass of forsterite (0.140693 kg/mol), and a mole fraction of 90% forsterite
+          // in olivine.
           const double molar_mass_olivine = 0.1470027; // kg/mol
           const double molar_mass_H2O = 0.01801528; // kg/mol
       };
