@@ -15,20 +15,13 @@ set Start time                             = 0
 set Use years in output instead of seconds = true
 set Output directory                       = output-vp-melt-fraction
 
-# subsection Compositional fields
-#   set Number of fields = 2
-#   set Names of fields = peridotite, porosity
-# end
 
 subsection Boundary temperature model
-  set List of model names = initial temperature
-  set Fixed temperature boundary indicators   = 0,3
+  set Fixed temperature boundary indicators = top, bottom
+  set Model name = initial temperature
 
   subsection Initial temperature
-    # Temperature at the inner boundary (core mantle boundary). Units: K.
-    set Maximal temperature = 3773
-
-    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Maximal temperature = 2773
     set Minimal temperature = 273
   end
 end
@@ -41,8 +34,8 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent  = 500000
-    set Y extent  = 500000
+    set X extent  = 500e3
+    set Y extent  = 500e3
   end
 end
 
@@ -60,49 +53,18 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function constants  = l=250000
-    set Function expression = if(x < l, 1873, 1623)
+    set Function constants  = bw = 500e3, Tmax = 2773, Tmin = 273
+    set Function expression = x*(Tmax-Tmin)/bw+Tmin
     set Variable names      = x,y
   end
 end
-
-# subsection Initial composition model
-#   set Model name = function
-
-#   subsection Function
-#     set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);if(x<200000,0.3,0.0)
-#     set Variable names      = x,y
-#   end
-# end
 
 # Use a visco plastic material model, which uses the dislocation
 # and diffusion creep mechanisms.
 subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
-
-    # set Stress exponents for diffusion creep      = 1, 1
-    # set Prefactors for diffusion creep            = 4.5e-15, 4.5e-15
-    # set Activation energies for diffusion creep   = 375e3, 375e3
-    # set Activation volumes for diffusion creep    = 10e-6, 10e-6
-    # set Grain size                                = 1e-3
-    # set Grain size exponents for diffusion creep  = 3, 3
-
-    # set Stress exponents for dislocation creep    = 3.5, 3.5
-    # set Prefactors for dislocation creep          = 7.4e-15, 7.4e-15
-    # set Activation energies for dislocation creep = 530e3, 530e3
-    # set Activation volumes for dislocation creep  = 14e-6, 14e-6
-
-    # set Densities                                 = 3300
-    # set Reference temperature                     = 1573
-    # set Cohesions                                 = 1e50
-    # set Maximum yield stress                      = 1e14
-    # set Angles of internal friction               = 0
-    # set Maximum viscosity                         = 1e26
-    # set Minimum viscosity                         = 1e18
-    # set Thermal expansivities                     = 2.5e-5
-
-    set Include melting                           = true
+    set Include melting = true
   end
 end
 
@@ -120,10 +82,6 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       =
 end
 
-# subsection Melt settings
-#   set Include melt transport                  = true
-# end
-
 subsection Solver parameters
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = true
@@ -131,10 +89,9 @@ subsection Solver parameters
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, boundary pressures, pressure statistics, velocity statistics, temperature statistics, melt statistics
+  set List of postprocessors = visualization, melt statistics
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, stress second invariant, stress, shear stress, strain rate tensor, heat flux map, depth,  named additional outputs
-    set Time between graphical output = 1000
+    set List of output variables = melt fraction
     set Write higher order output = false
     set Interpolate output = true
     set Write in background thread = true

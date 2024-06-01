@@ -25,6 +25,9 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
+#include <aspect/postprocess/melt_statistics.h>
+#include <aspect/melt.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 
 #include<deal.II/fe/component_mask.h>
 
@@ -178,12 +181,15 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
     {
       public:
 
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
+        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                             std::vector<double> &melt_fractions) const override;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -246,12 +252,22 @@ namespace aspect
          */
         std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
 
+        /*
+        * Object for computing the melt parameters
+        */
+        ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
+
         std::vector<double> thermal_diffusivities;
 
         /**
          * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
          */
         bool define_conductivities;
+
+        /**
+        * Whether to include melting calculations.
+        */
+        bool include_melt;
 
         std::vector<double> thermal_conductivities;
 

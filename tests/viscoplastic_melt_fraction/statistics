@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Visualization file name
+# 9: Minimal melt fraction
+# 10: Total melt volume
+# 11: Maximal melt fraction
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 output-vp-melt-fraction-official-test/solution/solution-00000 0.00000000e+00 1.04226446e+11 1.00000000e+00 
+1 1.000000000000e+03 1.000000000000e+03 1024 9539 4225 6                                                            "" 0.00000000e+00 1.04226444e+11 1.00000000e+00 

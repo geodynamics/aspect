@@ -91,17 +91,6 @@ namespace aspect
       ViscoPlastic<dim>::ViscoPlastic ()
         = default;
 
-      template <int dim>
-      void
-      ViscoPlastic<dim>::
-      melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                      std::vector<double> &melt_fractions) const
-      {
-        for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
-          melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
-                                                           this->get_adiabatic_conditions().pressure(in.position[q]));
-      }
-
 
       template <int dim>
       IsostrainViscosities
@@ -579,10 +568,6 @@ namespace aspect
                            "large negative dynamic pressure, resulting in solver convergence "
                            "issue and in some cases a viscosity of zero.");
 
-        // Melt Parameters
-        prm.declare_entry("Include melting", "false",
-                          Patterns::Bool (),
-                          "Whether to include calculations for melt fraction and transport.");
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
@@ -595,9 +580,6 @@ namespace aspect
 
         // Peierls creep parameters
         Rheology::PeierlsCreep<dim>::declare_parameters(prm);
-
-        // Melt Fraction Parameters
-        ReactionModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
 
         prm.declare_entry ("Include Peierls creep", "false",
                            Patterns::Bool (),
@@ -754,14 +736,6 @@ namespace aspect
         options.property_name = "Stress limiter exponents";
         options.allow_multiple_values_per_key = false;
         options.check_values_per_key = false;
-
-        //Melt parameters
-        include_melt = prm.get_bool("Include melting");
-        if (include_melt)
-          {
-            katz2003_model.initialize_simulator (this->get_simulator());
-            katz2003_model.parse_parameters(prm);
-          }
 
         exponents_stress_limiter = Utilities::MapParsing::parse_map_to_double_array (prm.get("Stress limiter exponents"),
                                                                                      options);

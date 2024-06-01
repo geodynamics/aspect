@@ -125,7 +125,16 @@ namespace aspect
       return plastic_yielding;
     }
 
-
+    template <int dim>
+    void
+    ViscoPlastic<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
+        melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
+                                                         this->get_adiabatic_conditions().pressure(in.position[q]));
+    }
 
     template <int dim>
     void
@@ -363,6 +372,14 @@ namespace aspect
                              "those corresponding to chemical compositions. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+
+          // Melt Parameters
+          prm.declare_entry("Include melting", "false",
+                            Patterns::Bool (),
+                            "Whether to include calculations for melt fraction and transport.");
+
+          // Melt Fraction Parameters
+          ReactionModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
         }
         prm.leave_subsection();
       }
@@ -429,6 +446,14 @@ namespace aspect
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
           rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+
+          //Melt parameters
+          include_melt = prm.get_bool("Include melting");
+          if (include_melt)
+            {
+              katz2003_model.initialize_simulator (this->get_simulator());
+              katz2003_model.parse_parameters(prm);
+            }
         }
         prm.leave_subsection();
       }
