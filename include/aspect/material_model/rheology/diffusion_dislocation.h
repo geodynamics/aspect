@@ -91,6 +91,33 @@ namespace aspect
                                             const SymmetricTensor<2,dim> &strain_rate) const;
 
           /**
+           * Compute the derivative of the natural logarithm of the strain rate
+           * with respect to the natural logarithm of the stress
+           * at the current evaluation point (log stress) estimated by KINSOL.
+           */
+          void
+          compute_log_strain_rate_deriv(const Vector<double> &evaluation_point,
+                                        double pressure,
+                                        double temperature,
+                                        const Rheology::DiffusionCreepParameters diffusion_creep_parameters,
+                                        const Rheology::DislocationCreepParameters dislocation_creep_parameters,
+                                        double &log_strain_rate_deriv) const;
+
+          /**
+           * Compute the residual of the natural logarithm of the strain rate
+           * at the current evaluation point (log stress) estimated by KINSOL.
+           */
+          void
+          compute_log_strain_rate_residual(
+            const Vector<double> &evaluation_point,
+            Vector<double> &residual,
+            double pressure,
+            double temperature,
+            const Rheology::DiffusionCreepParameters diffusion_creep_parameters,
+            const Rheology::DislocationCreepParameters dislocation_creep_parameters,
+            double log_edot_ii) const;
+
+          /**
            * Compute the viscosity based on the composite viscous creep law,
            * averaging over all compositional fields according to their
            * volume fractions.
