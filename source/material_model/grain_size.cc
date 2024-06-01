@@ -866,7 +866,7 @@ namespace aspect
                       phase_function_values[k] = phase_function.compute_value(phase_inputs);
                     }
 
-                  // In the grain szie material model, viscosity does not depend on composition,
+                  // In the grain size material model, viscosity does not depend on composition,
                   // so we set the compositional index for the Drucker-Prager parameters to 0.
                   const Rheology::DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(0,
                                                                                       phase_function_values,
