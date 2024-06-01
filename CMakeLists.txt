@@ -59,17 +59,24 @@ else()
   message(STATUS "Setting up ASPECT for ${CMAKE_BUILD_TYPE} mode.")
 endif()
 
+
 # Set the name of the project and main target. If we are generating
 # ASPECT debug and release mode, we have the debug build as 'aspect'
 # and we populate a list of all targets (by default they are the same):
 set(TARGET "aspect")
 set(TARGETS "aspect")
 
-file(GLOB_RECURSE TARGET_SRC
-     "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+
+# ##############################################################################
+# Collect source files
+
+file(GLOB_RECURSE ASPECT_SOURCE_FILES    "source/*.cc" "include/*.h")
+list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cc)
+file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
+set(ASPECT_MAIN_FILE "source/main.cc")
 
 # Special treatment of some files for unity builds. We move the following
-# files to the end of the list of all .cc files (TARGET_SRC). This ordering is
+# files to the end of the list of all .cc files (ASPECT_SOURCE_FILES). This ordering is
 # required to not have specializations (for example helper_functions.cc)
 # appear after explicit class instantiation (for example core.cc) of the same
 # class that happen to be included in the same unity cxx file.
@@ -78,14 +85,16 @@ set(UNITY_LAST_FILES
 
 foreach(_source_file ${UNITY_LAST_FILES})
   set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
-  list(FIND TARGET_SRC ${_full_name} _index)
+  list(FIND ASPECT_SOURCE_FILES ${_full_name} _index)
   if(_index EQUAL -1)
     message(FATAL_ERROR "could not find ${_full_name}.")
   endif()
 
-  list(REMOVE_ITEM TARGET_SRC ${_full_name})
-  list(APPEND TARGET_SRC ${_full_name})
+  list(REMOVE_ITEM ASPECT_SOURCE_FILES ${_full_name})
+  list(APPEND ASPECT_SOURCE_FILES ${_full_name})
 endforeach()
+
+
 
 # Set up include directories. Put the ASPECT header files
 # to the front of the list, whereas the 'catch' headers can
@@ -196,7 +205,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
     endif()
   else()
     file(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
-    list(APPEND TARGET_SRC ${wb_files})
+    list(APPEND ASPECT_SOURCE_FILES ${wb_files})
     add_definitions(-DWB_WITH_MPI)
 
     # generate config.cc and include it:
@@ -213,13 +222,13 @@ if(ASPECT_WITH_WORLD_BUILDER)
         "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
 
     foreach(_source_file ${UNITY_WB_LAST_FILES})
-      list(FIND TARGET_SRC ${_source_file} _index)
+      list(FIND ASPECT_SOURCE_FILES ${_source_file} _index)
       if(_index EQUAL -1)
         message(FATAL_ERROR "could not find ${_source_file}.")
       endif()
 
-      list(REMOVE_ITEM TARGET_SRC ${_source_file})
-      list(APPEND TARGET_SRC ${_source_file})
+      list(REMOVE_ITEM ASPECT_SOURCE_FILES ${_source_file})
+      list(APPEND ASPECT_SOURCE_FILES ${_source_file})
     endforeach()
 
     foreach(_source_file ${wb_files})
@@ -546,6 +555,15 @@ if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   message(STATUS "  DEAL_II_CXX_FLAGS_DEBUG: ${DEAL_II_CXX_FLAGS_DEBUG}")
   message(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
 endif()
+
+
+# Create the combined set of source files that make up the project
+set(TARGET_SRC
+    ${ASPECT_MAIN_FILE}
+    ${ASPECT_UNIT_TEST_FILES}
+    ${ASPECT_SOURCE_FILES})
+
+
 
 # Setup targets for ASPECT:
 if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
