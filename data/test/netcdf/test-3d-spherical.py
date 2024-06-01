@@ -1,12 +1,13 @@
 '''Create example NetCDF file from an input ASCII file
 in spherical coordinate system.
-The coordinates columns in the ASCII file are formatted 
+The columns in the ASCII file are formatted
 based on the convention for spherical coordinates in ASPECT,
-i.e., 'r', 'phi', 'theta' in 3D.
+i.e., 'r', 'phi', 'theta' in 3D in the first three columns,
+followed by the data.
 
 see https://unidata.github.io/netcdf4-python/ for more information
 
-These are used in the ASPECT unit tests located in
+These are also used in the ASPECT unit tests located in
 ./unit_tests/netcdf.cc to check that we can load files correctly.
 
 '''
@@ -21,7 +22,7 @@ def ascii_to_netcdf(filename):
     ascii_input = np.loadtxt(filename)
     print (ascii_input.shape)
     
-    ds = nc.Dataset('file-3d-spherical.nc','w', format='NETCDF4') 
+    ds = nc.Dataset('test-3d-spherical.nc','w', format='NETCDF4') 
     
     # Write metadata attributes
     ds.title = 'Spherical 3d example file'
@@ -57,8 +58,8 @@ def ascii_to_netcdf(filename):
     # Fill the coordinate and field data. We convert phi and theta from spherical coordinate
     # system to geographical
     radius[:]     = np.unique(ascii_input[:, 0])
-    longitudes[:] = np.unique(np.rad2deg(ascii_input[:, 1]))
-    latitudes[:]  = 90 - np.unique(np.rad2deg(ascii_input[:, 2]))
+    longitudes[:] = np.unique(ascii_input[:, 1])
+    latitudes[:]  = np.unique(ascii_input[:, 2])
     
     vel[:]        = np.reshape(ascii_input[:, 3], (n_theta, n_phi, n_r))
      
