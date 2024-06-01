@@ -843,6 +843,16 @@ install(FILES ${CMAKE_BINARY_DIR}/aspect-gui
                 WORLD_READ WORLD_EXECUTE)
 endif()
 
+
+
+# A target to create parameters.json after building the ASPECT binary.
+
+add_custom_command(TARGET ${TARGET} POST_BUILD
+  COMMAND sh -c 'echo "" | ./aspect --output-json -- > parameters.json'
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+
+
 #
 ## installation
 #
