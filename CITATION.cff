@@ -59,7 +59,7 @@ identifiers:
 repository-code: 'https://github.com/geodynamics/aspect'
 url: 'https://aspect.geodynamics.org/'
 abstract: >-
-  ASPECT -he Advanced Solver for Planetary Evolution, Convection, and Tectonics is a code to simulate convection and tectonic
+  ASPECT - the Advanced Solver for Planetary Evolution, Convection, and Tectonics is a code to simulate convection and tectonic
   processes in Earth and other planetary bodies. It has
   many applications in mantle and
   inner core convection, lithospheric scale deformation,
