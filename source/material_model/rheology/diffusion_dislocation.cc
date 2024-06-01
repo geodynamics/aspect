@@ -97,14 +97,11 @@ namespace aspect
 
             SUNDIALS::KINSOL<Vector<double>> nonlinear_solver(additional_data);
 
-            // Declare lambda functions
-            // (i) resize a vector to the correct size
             nonlinear_solver.reinit_vector = [&](Vector<double> &x)
             {
               x.reinit(1);
             };
 
-            // (ii) compute the residual vector
             nonlinear_solver.residual =
               [&](const Vector<double> &evaluation_point,
                   Vector<double>       &residual)
@@ -112,7 +109,6 @@ namespace aspect
               compute_log_strain_rate_residual(evaluation_point, residual, pressure, temperature, diffusion_creep_parameters, dislocation_creep_parameters, log_edot_ii);
             };
 
-            // (iii) compute the Jacobian matrix and factorization
             nonlinear_solver.setup_jacobian =
               [&](const Vector<double> &current_u,
                   const Vector<double> & /*current_f*/)
@@ -120,7 +116,6 @@ namespace aspect
               compute_log_strain_rate_deriv(current_u, pressure, temperature, diffusion_creep_parameters, dislocation_creep_parameters, log_strain_rate_deriv);
             };
 
-            // (iv) solve a linear system with the Jacobian.
             nonlinear_solver.solve_with_jacobian = [&](const Vector<double> &rhs,
                                                        Vector<double> &solution,
                                                        const double /*tolerance*/)
@@ -128,10 +123,8 @@ namespace aspect
               solution(0) -= rhs(0)/log_strain_rate_deriv;
             };
 
-            // solve the problem
             nonlinear_solver.solve(log_stress_ii);
 
-            // The effective viscosity, with minimum and maximum bounds
             stress_ii = std::exp(log_stress_ii[0]);
             composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, minimum_viscosity), maximum_viscosity);
           }
