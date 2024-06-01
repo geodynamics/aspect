@@ -55,7 +55,7 @@ identifiers:
     description: concept DOI
   - type: doi
     value: 10.5281/zenodo.8200213
-    description: verson 2.5.0
+    description: version 2.5.0
 repository-code: 'https://github.com/geodynamics/aspect'
 url: 'https://aspect.geodynamics.org/'
 abstract: >-
