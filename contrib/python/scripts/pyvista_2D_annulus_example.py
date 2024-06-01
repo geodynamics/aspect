@@ -11,8 +11,8 @@
 # the thresholding and contouring utilities of pyvista.
 
 # For additional overview on the utility of pyvista with ASPECT
-# please read the description from John Nabiloff pyvista_2D_example
-# scripts) in aspect/contrib/python/scripts/pyvista_2D_example.py
+# please read the description from John Naliboff in
+# contrib/python/scripts/pyvista_2d_example.py.
 
 # Load modules
 import numpy as np
