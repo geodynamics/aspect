@@ -1045,11 +1045,12 @@ namespace aspect
                                    Patterns::List(Patterns::Anything()),
                                    "This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. "
                                    "The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, "
-                                   "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The "
+                                   "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite or CPX. Passive sets all RRSS entries to the maximum. The "
                                    "Karato 2008 selector selects a fabric based on stress and water content as defined in "
                                    "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
-
-
+                prm.declare_entry ("CPX RRSS", "1,2,3,4",
+                                   Patterns::List(Patterns::Anything()),
+                                   "");
                 prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                    Patterns::List(Patterns::Double(0)),
                                    "The volume fractions for the different minerals. "
@@ -1198,15 +1199,21 @@ namespace aspect
                       {
                         deformation_type_selector[mineral_i] = DeformationTypeSelector::enstatite;
                       }
+                    else if (temp_deformation_type_selector[mineral_i] ==  "Clinopyroxene")
+                      {
+                        deformation_type_selector[mineral_i] = DeformationTypeSelector::clinopyroxene;
+                      }
                     else
                       {
                         AssertThrow(false,
                                     ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
                                                "Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric,"
-                                               "Olivine: E-fabric, Enstatite, Passive."));
+                                               "Olivine: E-fabric, Enstatite, Passive, Clinopyroxene."));
                       }
                   }
-
+                CPX_RRSS = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("CPX RRSS")));
+                AssertThrow(CPX_RRSS.size()==4,
+                            ExcMessage("the number of RRSS for CPX has to be equal to four"));
                 volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
                 double volume_fractions_minerals_sum = 0;
                 for (auto fraction : volume_fractions_minerals)

@@ -45,7 +45,7 @@ namespace aspect
        */
       enum class DeformationType
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, clinopyroxene
       };
 
 
@@ -64,7 +64,7 @@ namespace aspect
        */
       enum class DeformationTypeSelector
       {
-        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008
+        passive, olivine_a_fabric, olivine_b_fabric, olivine_c_fabric, olivine_d_fabric, olivine_e_fabric, enstatite, olivine_karato_2008, clinopyroxene
       };
 
       /**
@@ -618,6 +618,11 @@ namespace aspect
            * in Kaminski and Ribe (2001, EPSL).
            */
           double mobility;
+
+          /**
+           * CPX RRSS todo
+          */
+          std::vector<double> CPX_RRSS;
 
           /** @} */
 
