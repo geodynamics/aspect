@@ -20,6 +20,7 @@
 
 #include <aspect/material_model/reactive_fluid_transport.h>
 #include <aspect/simulator_access.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/base/parameter_handler.h>
@@ -167,6 +168,12 @@ namespace aspect
                 melt_fractions[q] = std::max(in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx] - average_eq_bound_water_content, 0.0);
                 break;
               }
+              case katz2003:
+              {
+                melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
+                                                                 this->get_adiabatic_conditions().pressure(in.position[q]));
+                break;
+              }
               default:
               {
                 AssertThrow(false, ExcNotImplemented());
@@ -283,6 +290,8 @@ namespace aspect
       {
         prm.enter_subsection("Reactive Fluid Transport Model");
         {
+
+
           prm.declare_entry("Base model","visco plastic",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model incorporating the "
@@ -345,13 +354,17 @@ namespace aspect
                              Patterns::Double (0),
                              "The maximum allowed weight percent that the sediment composition can hold.");
           prm.declare_entry ("Fluid-solid reaction scheme", "no reaction",
-                             Patterns::Selection("no reaction|zero solubility|tian approximation"),
+                             Patterns::Selection("no reaction|zero solubility|tian approximation|katz2003"),
                              "Select what type of scheme to use for reactions between fluid and solid phases. "
                              "The current available options are models where no reactions occur between "
                              "the two phases, or the solid phase is insoluble (zero solubility) and all "
                              "of the bound fluid is released into the fluid phase, tian approximation "
                              "use polynomials to describe hydration and dehydration reactions for four different "
-                             "rock compositions as defined in Tian et al., 2019.");
+                             "rock compositions as defined in Tian et al., 2019, or the Katz et. al.W 2003 mantle "
+                             "melting model.");
+
+          // read in melting model parameters
+          ReactionModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
         }
         prm.leave_subsection();
       }
@@ -420,6 +433,12 @@ namespace aspect
                           ExcMessage("The Tian approximation only works "
                                      "if there is a compositional field called peridotite."));
               fluid_solid_reaction_scheme = tian_approximation;
+            }
+          else if (prm.get ("Fluid-solid reaction scheme") == "katz2003")
+            {
+              fluid_solid_reaction_scheme = katz2003;
+              katz2003_model.initialize_simulator (this->get_simulator());
+              katz2003_model.parse_parameters(prm);
             }
           else
             AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
