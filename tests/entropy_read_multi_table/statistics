@@ -1,0 +1,39 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Visualization file name
+# 18: RMS velocity (m/year)
+# 19: Max. velocity (m/year)
+# 20: Minimal temperature (K)
+# 21: Average temperature (K)
+# 22: Maximal temperature (K)
+# 23: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 24: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 25: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 26: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 27: Minimal value for composition percent_bas
+# 28: Maximal value for composition percent_bas
+# 29: Global mass for composition percent_bas
+# 30: Minimal value for composition entropy_bas
+# 31: Maximal value for composition entropy_bas
+# 32: Global mass for composition entropy_bas
+# 33: Minimal value for composition entropy_haz
+# 34: Maximal value for composition entropy_haz
+# 35: Global mass for composition entropy_haz
+# 36: Minimal value for composition density_field
+# 37: Maximal value for composition density_field
+# 38: Global mass for composition density_field
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 36 2 1 0 0 0 4294967294 4294967294 0 0 output-entropy_read_multi_table/solution/solution-00000 0.00000000e+00 0.00000000e+00 1.56029000e+03 1.56029000e+03 1.56029000e+03 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.00000000e-01 2.00000000e-01 3.38000000e+07 2.50000000e+03 2.50000000e+03 4.22500000e+11 2.50000000e+03 2.50000000e+03 4.22500000e+11 3.74396667e+03 3.74396667e+03 6.32730367e+11 

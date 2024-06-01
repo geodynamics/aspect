@@ -1,4 +1,4 @@
-# A box model for convection under early-Earth conditions, with plasticity,
+# A 2-D annulus model for convection under early-Earth conditions, with plasticity,
 # reference viscosity profile, and p-T dependent conductivity
 
 set Dimension                              = 2

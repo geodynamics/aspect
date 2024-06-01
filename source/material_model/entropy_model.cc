@@ -28,6 +28,7 @@
 #include <iostream>
 #include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/steinberger.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 
 namespace aspect
 {
@@ -76,7 +77,7 @@ namespace aspect
                               "'projected density field' approximation "
                               "for the mass conservation equation, which is not selected."));
 
-      AssertThrow (this->introspection().compositional_name_exists("entropy"),
+      AssertThrow (this->introspection().composition_type_exists(CompositionalFieldDescription::Type::entropy),
                    ExcMessage("The 'entropy model' material model requires the existence of a compositional field "
                               "named 'entropy'. This field does not exist."));
 
@@ -85,9 +86,11 @@ namespace aspect
                              "iterates over the advection equations but a non iterating solver scheme was selected. "
                              "Please check the consistency of your solver scheme."));
 
-      AssertThrow(material_file_names.size() == 1,
+      AssertThrow(material_file_names.size() == 1 || SimulatorAccess<dim>::get_end_time () == 0,
                   ExcMessage("The 'entropy model' material model can only handle one composition, "
                              "and can therefore only read one material lookup table."));
+
+
 
       for (unsigned int i = 0; i < material_file_names.size(); ++i)
         {
@@ -161,7 +164,18 @@ namespace aspect
                                 MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       const unsigned int projected_density_index = this->introspection().compositional_index_for_name("density_field");
-      const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
+      //TODO : need to make it work for more than one field
+      const std::vector<unsigned int> &entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+      const unsigned int entropy_index = entropy_indices[0];
+      const std::vector<unsigned int> &composition_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::chemical_composition);
+
+      AssertThrow(composition_indices.size() == material_file_names.size() - 1,
+                  ExcMessage("The 'entropy model' material model assumes that there exists a background field in addition to the compositional fields, "
+                             "and therefore it requires one more lookup table than there are chemical compositional fields."));
+
+      EquationOfStateOutputs<dim> eos_outputs (material_file_names.size());
+      std::vector<double> volume_fractions (material_file_names.size());
+      std::vector<double> mass_fractions (material_file_names.size());
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -173,14 +187,38 @@ namespace aspect
           const double entropy = in.composition[i][entropy_index];
           const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5;
 
-          out.densities[i] = entropy_reader[0]->density(entropy,pressure);
-          out.thermal_expansion_coefficients[i] = entropy_reader[0]->thermal_expansivity(entropy,pressure);
-          out.specific_heat[i] = entropy_reader[0]->specific_heat(entropy,pressure);
+          // Loop over all material files, and store the looked-up values for all compositions.
+          for (unsigned int j=0; j<material_file_names.size(); ++j)
+            {
+              eos_outputs.densities[j] = entropy_reader[j]->density(entropy, pressure);
+              eos_outputs.thermal_expansion_coefficients[j] = entropy_reader[j]->thermal_expansivity(entropy,pressure);
+              eos_outputs.specific_heat_capacities[j] = entropy_reader[j]->specific_heat(entropy,pressure);
 
-          const Tensor<1, 2> density_gradient = entropy_reader[0]->density_gradient(entropy,pressure);
-          const Tensor<1, 2> pressure_unit_vector({0.0, 1.0});
-          out.compressibilities[i] = (density_gradient * pressure_unit_vector) / out.densities[i];
+              const Tensor<1, 2> pressure_unit_vector({0.0, 1.0});
+              eos_outputs.compressibilities[j] = ((entropy_reader[j]->density_gradient(entropy,pressure)) * pressure_unit_vector) / eos_outputs.densities[j];
+            }
 
+          // Calculate volume fractions from mass fractions
+          // If there is only one lookup table, set the mass and volume fractions to 1
+          if (material_file_names.size() == 1)
+            mass_fractions [0] = 1.0;
+
+          else
+            {
+              // We only want to compute mass/volume fractions for fields that are chemical compositions.
+              mass_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i], this->introspection().chemical_composition_field_indices());
+            }
+
+          volume_fractions = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
+                                                                            eos_outputs.densities,
+                                                                            true);
+
+          out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+
+          out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+
+          out.compressibilities[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
 
           // Thermal conductivity can be pressure temperature dependent
           const double temperature_lookup =  entropy_reader[0]->temperature(entropy,pressure);
@@ -261,8 +299,16 @@ namespace aspect
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
-              seismic_out->vp[i] = entropy_reader[0]->seismic_vp(entropy, pressure);
-              seismic_out->vs[i] = entropy_reader[0]->seismic_vs(entropy, pressure);
+
+              std::vector<double> vp (material_file_names.size());
+              std::vector<double> vs (material_file_names.size());
+              for (unsigned int j=0; j<material_file_names.size(); ++j)
+                {
+                  vp[j] = entropy_reader[j]->seismic_vp(entropy,pressure);
+                  vs[j] = entropy_reader[j]->seismic_vs(entropy,pressure);
+                }
+              seismic_out->vp[i] = MaterialUtilities::average_value (volume_fractions, vp, MaterialUtilities::arithmetic);
+              seismic_out->vs[i] = MaterialUtilities::average_value (volume_fractions, vs, MaterialUtilities::arithmetic);
             }
         }
     }
@@ -286,7 +332,7 @@ namespace aspect
                              "files located in the `data/' subdirectory of ASPECT.");
           prm.declare_entry ("Material file name", "material_table.txt",
                              Patterns::List (Patterns::Anything()),
-                             "The file name of the material data.");
+                             "The file name of the material data. The first material data file is intended for the background composition. ");
           prm.declare_entry ("Reference viscosity", "1e22",
                              Patterns::Double(0),
                              "The viscosity that is used in this model. "
