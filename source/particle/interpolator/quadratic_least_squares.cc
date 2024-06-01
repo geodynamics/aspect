@@ -607,12 +607,12 @@ namespace aspect
                 std::vector<bool> quadratic_least_squares_limiter_parsed;
                 if (quadratic_least_squares_limiter_split.size() == 1)
                   {
-                    quadratic_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, internal::string_to_bool(quadratic_least_squares_limiter_split[0]));
+                    quadratic_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(quadratic_least_squares_limiter_split[0]));
                   }
                 else if (quadratic_least_squares_limiter_split.size() == n_property_components - n_internal_components)
                   {
                     for (const auto &component: quadratic_least_squares_limiter_split)
-                      quadratic_least_squares_limiter_parsed.push_back(internal::string_to_bool(component));
+                      quadratic_least_squares_limiter_parsed.push_back(Utilities::string_to_bool(component));
                   }
                 else
                   {
@@ -627,12 +627,12 @@ namespace aspect
                 std::vector<bool> boundary_extrapolation_parsed;
                 if (boundary_extrapolation_split.size() == 1)
                   {
-                    boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, internal::string_to_bool(boundary_extrapolation_split[0]));
+                    boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(boundary_extrapolation_split[0]));
                   }
                 else if (boundary_extrapolation_split.size() == n_property_components - n_internal_components)
                   {
                     for (const auto &component: boundary_extrapolation_split)
-                      boundary_extrapolation_parsed.push_back(internal::string_to_bool(component));
+                      boundary_extrapolation_parsed.push_back(Utilities::string_to_bool(component));
                   }
                 else
                   {

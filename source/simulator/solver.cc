@@ -534,7 +534,7 @@ namespace aspect
         ||
         (!advection_field.is_temperature()
          && parameters.use_discontinuous_composition_discretization
-         && parameters.use_limiter_for_discontinuous_composition_solution))
+         && parameters.use_limiter_for_discontinuous_composition_solution[advection_field.compositional_variable]))
       apply_limiter_to_dg_solutions(advection_field);
 
     return initial_residual;

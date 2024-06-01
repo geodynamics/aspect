@@ -477,9 +477,12 @@ namespace aspect
     if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
       map->initialize(MappingQGeneric<dim>(4), triangulation);
 
+    bool dg_limiter_enabled = parameters.use_limiter_for_discontinuous_temperature_solution;
+    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+      dg_limiter_enabled = dg_limiter_enabled || parameters.use_limiter_for_discontinuous_composition_solution[c];
+
     // Check that DG limiters are only used with cartesian mapping
-    if (parameters.use_limiter_for_discontinuous_temperature_solution ||
-        parameters.use_limiter_for_discontinuous_composition_solution)
+    if (dg_limiter_enabled)
       AssertThrow(geometry_model->natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian,
                   ExcMessage("The limiter for the discontinuous temperature and composition solutions "
                              "has not been tested in non-Cartesian geometries and currently requires "

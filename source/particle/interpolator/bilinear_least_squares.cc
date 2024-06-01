@@ -34,14 +34,6 @@ namespace aspect
   {
     namespace Interpolator
     {
-      namespace internal
-      {
-        bool string_to_bool(const std::string &s)
-        {
-          return (s == "true" || s == "yes");
-        }
-      }
-
       template <int dim>
       std::vector<std::vector<double>>
       BilinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
@@ -337,12 +329,12 @@ namespace aspect
                 std::vector<bool> linear_least_squares_limiter_parsed;
                 if (linear_least_squares_limiter_split.size() == 1)
                   {
-                    linear_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, internal::string_to_bool(linear_least_squares_limiter_split[0]));
+                    linear_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(linear_least_squares_limiter_split[0]));
                   }
                 else if (linear_least_squares_limiter_split.size() == n_property_components - n_internal_components)
                   {
                     for (const auto &component: linear_least_squares_limiter_split)
-                      linear_least_squares_limiter_parsed.push_back(internal::string_to_bool(component));
+                      linear_least_squares_limiter_parsed.push_back(Utilities::string_to_bool(component));
                   }
                 else
                   {
@@ -358,12 +350,12 @@ namespace aspect
                 std::vector<bool> boundary_extrapolation_parsed;
                 if (boundary_extrapolation_split.size() == 1)
                   {
-                    boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, internal::string_to_bool(boundary_extrapolation_split[0]));
+                    boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(boundary_extrapolation_split[0]));
                   }
                 else if (boundary_extrapolation_split.size() == n_property_components - n_internal_components)
                   {
                     for (const auto &component: boundary_extrapolation_split)
-                      boundary_extrapolation_parsed.push_back(internal::string_to_bool(component));
+                      boundary_extrapolation_parsed.push_back(Utilities::string_to_bool(component));
                   }
                 else
                   {
