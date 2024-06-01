@@ -199,7 +199,7 @@ namespace aspect
                       // Add the reaction_rates * timestep = update to the corresponding stress
                       // tensor components
                       for (unsigned int p = 0; p < 2*SymmetricTensor<2,dim>::n_independent_components ; ++p)
-                        particle->get_properties()[data_position + p] += reaction_rate_outputs->reaction_rates[0][p] * this->get_timestep();
+                        particle->get_properties()[data_position + p] += reaction_rate_outputs->reaction_rates[0][stress_field_indices[p]] * this->get_timestep();
                     }
                 }
             }
@@ -289,9 +289,9 @@ namespace aspect
 
         this->get_material_model().evaluate (material_inputs,material_outputs);
 
-        // For the second set of stresses, the ve_stress_*_old fields, the update will be zero
-        for (unsigned int i = 0; i < 2*SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][i];
+        // Apply the stress rotation to the ve_stress_* fields, not the ve_stress_*_old fields.
+        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
+          particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][stress_field_indices[i]];
       }
 
 
