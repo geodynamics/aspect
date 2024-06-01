@@ -284,8 +284,6 @@ namespace aspect
             if (this->get_parameters().enable_elasticity)
               {
                 // Step 3a: calculate viscoelastic (effective) viscosity
-                // The preyield viscoelastic viscosity is scaled with the
-                // timestep ratio in the calculate_viscoelsatic_viscosity function.
                 non_yielding_viscosity = elastic_rheology.calculate_viscoelastic_viscosity(non_yielding_viscosity, elastic_shear_modulus);
 
                 if (use_reference_strainrate == true)
@@ -542,8 +540,8 @@ namespace aspect
 
         if (this->get_parameters().enable_elasticity)
           {
-            // Set a mask for the 2*n_independent_components fields representing the viscoelastic
-            // stress tensor components.
+            // Set a mask (false) for the 2*n_independent_components fields representing the viscoelastic
+            // stress tensor components so that they are excluded from the volume fraction computation.
             const std::vector<unsigned int> &stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
             for (auto it = stress_field_indices.begin(); it != stress_field_indices.end(); ++it)
               composition_mask.set(*it, false);

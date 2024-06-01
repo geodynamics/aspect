@@ -93,9 +93,6 @@ namespace aspect
       // Fill the reaction_rates that during operator splitting apply the stress update of the previous
       // timestep to the advected and rotated stress computed in the previous timestep ($\tau^{0adv}$)
       // to obtain $\tau^{t}$.
-      if (this->get_parameters().use_operator_splitting ||
-          ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
-        elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
     }
 
 

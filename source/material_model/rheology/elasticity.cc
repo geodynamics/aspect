@@ -549,8 +549,7 @@ namespace aspect
       {
         ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
-        if (reaction_rate_out == nullptr ||
-            (!this->get_parameters().use_operator_splitting && !((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")))))
+        if (reaction_rate_out == nullptr)
           return;
 
         // At the moment when the reaction rates are required (at the beginning of the timestep),
@@ -561,7 +560,7 @@ namespace aspect
         // This means that we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
         // previous timestep. At later moments during the current timestep, 'solution' will hold
         // the current_linearization_point instead of the solution of the previous timestep.
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0)
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_rates))
           {
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               {

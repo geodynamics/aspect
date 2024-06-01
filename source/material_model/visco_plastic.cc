@@ -316,11 +316,7 @@ namespace aspect
           // Fill the reaction_rates that apply the stress update of the previous
           // timestep to the advected and rotated stress computed in the previous timestep ($\tau^{0}$)
           // to obtain $\tau^{t}$.
-          // Only fill them if operator splitting is used for fields or when the particles track
-          // the visco-elastic stresses.
-          if (this->get_parameters().use_operator_splitting ||
-              ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
-            rheology->elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
+          rheology->elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
         }
     }
 
