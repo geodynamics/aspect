@@ -125,10 +125,6 @@ namespace aspect
                                                               std::vector<double> &data) const
       {
 
-        // Get a reference to the CPO particle property.
-        const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
-
         // At initialization, the deformation type for cpo is initialized to -1.
         // Initialize with the stiffness matrix of olivine to avoid errors in the computation.
 
