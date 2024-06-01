@@ -95,6 +95,18 @@ namespace aspect
 
           /**
            * @copydoc Manifold::normal_vector()
+           *
+           * We fudge here, but for a good reason. What the function is supposed
+           * to compute is the normal vector to the surface. This *should* be the
+           * normal to the surface with topography, but instead we return the
+           * normal to the undeformed surface -- i.e., the radial direction. This
+           * is, in particular, used to compute no-flux boundary conditions,
+           * for which we want to impose a boundary
+           * condition that allows for plate-like motion -- that is, we need
+           * to allow *horizontal motion*, even if that is not tangential to
+           * the surface along the slopes of mountains or ocean trenches. Using
+           * the radial direction, i.e., the normal vector to the undeformed surface
+           * (= a radial vector) allows for exactly this.
            */
           virtual Tensor<1, dim>
           normal_vector(
