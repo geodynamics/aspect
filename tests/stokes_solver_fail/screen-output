@@ -37,7 +37,7 @@ Additional information:
     void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
     VectorType&, const VectorType&, const PreconditionerType&) [with
     MatrixType = aspect::internal::StokesBlock; PreconditionerType =
-    aspect::internal::BlockSchurPreconditioner<dealii::TrilinosWrappers::PreconditionAMG,
+    aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG>,
     aspect::internal::InverseWeightedMassMatrix<dealii::TrilinosWrappers::PreconditionBase>
     >; VectorType = dealii::TrilinosWrappers::MPI::BlockVector]
     The violated condition was:
