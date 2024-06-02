@@ -1938,38 +1938,38 @@ namespace aspect
           }
         pcout << std::endl;
       }
-    catch (...)
+    catch (ExcNonlinearSolverNoConvergence &)
       {
-        pcout << "WARNING: The nonlinear solver in the current timestep failed to converge." << std::endl
+        pcout << "\nWARNING: The nonlinear solver in the current timestep failed to converge." << std::endl
               << "Acting according to the parameter 'Nonlinear solver failure strategy'..." << std::endl;
 
-        if (parameters.nonlinear_solver_failure_strategy
-            == Parameters<dim>::NonlinearSolverFailureStrategy::continue_with_next_timestep)
+        switch (parameters.nonlinear_solver_failure_strategy)
           {
-            // do nothing and continue
+            case Parameters<dim>::NonlinearSolverFailureStrategy::continue_with_next_timestep:
+            {
+              // do nothing and continue
+              break;
+            }
+            case Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size:
+            {
+              if (timestep_number == 0)
+                {
+                  pcout << "Error: We can not cut the timestep in step 0, so we are aborting."
+                        << std::endl;
+                  throw;
+                }
+              time_stepping_manager.template get_matching_plugin<TimeStepping::RepeatOnNonlinearFail<dim>>().nonlinear_solver_has_failed();
+              break;
+            }
+            case Parameters<dim>::NonlinearSolverFailureStrategy::abort_program:
+            {
+              // rethrow the current exception
+              throw;
+            }
+            default:
+              AssertThrow(false, ExcNotImplemented());
           }
-        else if (parameters.nonlinear_solver_failure_strategy
-                 == Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size)
-          {
-            if (timestep_number == 0)
-              {
-                pcout << "Error: We can not cut the timestep in step 0, so we are aborting."
-                      << std::endl;
-                throw;
-              }
-
-            time_stepping_manager.template get_matching_plugin<TimeStepping::RepeatOnNonlinearFail<dim>>().nonlinear_solver_has_failed();
-          }
-        else if (parameters.nonlinear_solver_failure_strategy
-                 == Parameters<dim>::NonlinearSolverFailureStrategy::abort_program)
-          {
-            // rethrow the current exception
-            throw;
-          }
-        else
-          AssertThrow(false, ExcNotImplemented());
       }
-
   }
 
 

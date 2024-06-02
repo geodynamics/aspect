@@ -27,6 +27,15 @@ namespace aspect
   namespace TimeStepping
   {
     template <int dim>
+    RepeatOnNonlinearFail<dim>::RepeatOnNonlinearFail()
+      : nonlinear_solver_just_failed (false),
+        maximum_number_of_repeats (10),
+        current_number_of_repeats (0)
+    {}
+
+
+
+    template <int dim>
     double
     RepeatOnNonlinearFail<dim>::execute()
     {

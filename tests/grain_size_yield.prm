@@ -4,6 +4,7 @@ include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield.prm
 # Global parameters
 set Dimension                              = 2
 set Adiabatic surface temperature          = 273
+set Nonlinear solver failure strategy = continue with next timestep
 
 # Material model (values for background material)
 subsection Material model

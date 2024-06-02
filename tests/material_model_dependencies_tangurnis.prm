@@ -10,6 +10,7 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Nonlinear solver failure strategy = continue with next timestep
 
 # Evaluate the nonlinear dependencies of the material model used here
 

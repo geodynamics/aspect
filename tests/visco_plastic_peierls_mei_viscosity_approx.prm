@@ -43,6 +43,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_peierls_mei_exact.prm
 
+set Nonlinear solver failure strategy = continue with next timestep
 
 # Material model (values for background material)
 subsection Material model

@@ -13,6 +13,7 @@ set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
+set Nonlinear solver failure strategy = continue with next timestep
 set Surface pressure                       = 3.e9
 
 # Model geometry (100x100 km, 10 km spacing)

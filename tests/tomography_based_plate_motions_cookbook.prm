@@ -7,6 +7,7 @@ set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/tomogr
 set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/world_builder_smac_cratons_faults_2D.json
 set Output directory                       = output
 set Max nonlinear iterations               = 1
+set Nonlinear solver failure strategy = continue with next timestep
 
 subsection Mesh refinement
   set Initial adaptive refinement = 1

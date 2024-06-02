@@ -8,6 +8,7 @@ set CFL number                             = .5
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-9
 set Max nonlinear iterations               = 2
+set Nonlinear solver failure strategy = continue with next timestep
 set Pressure normalization                 = no
 
 ############### Parameters describing the model

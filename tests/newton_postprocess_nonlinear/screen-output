@@ -65,7 +65,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
      RMS, max velocity:         0.135 m/year, 0.22 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0004
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
 
 
 

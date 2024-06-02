@@ -4,4 +4,6 @@ set Dimension                              = 2
 
 include $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/entropy_conduction.prm
 
+set Nonlinear solver failure strategy = continue with next timestep
+
 set End time = 1e7

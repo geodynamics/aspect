@@ -136,7 +136,8 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.03433e-13, 3.05528e-15, 3.05528e-15, 2.96625e-12
       Relative nonlinear residual (total system) after nonlinear iteration 16: 2.96625e-12
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      Compositions min/max/mass: -6.975e-09/1.392e-08/-1.261e-06 // -6.975e-09/1.392e-08/-1.261e-06
 
@@ -211,7 +212,8 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.36863e-14, 9.03182e-17, 9.03182e-17, 1.55617e-12
       Relative nonlinear residual (total system) after nonlinear iteration 10: 1.55617e-12
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      Compositions min/max/mass: -6.228e-09/1.267e-08/-2.182e-06 // -6.228e-09/1.267e-08/-2.182e-06
 

@@ -8,6 +8,7 @@ set Adiabatic surface temperature          = 0
 set CFL number                             = 0.5
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
+set Nonlinear solver failure strategy = continue with next timestep
 
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2

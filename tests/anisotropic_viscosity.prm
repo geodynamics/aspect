@@ -18,6 +18,7 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 1
+set Nonlinear solver failure strategy = continue with next timestep
 
 # no gravity. the pressure will equal just the dynamic component
 subsection Gravity model
