@@ -31,7 +31,7 @@ end
 
 # Use material averaging (required for GMG Stokes solver)
 subsection Material model
-  set Material averaging = project to Q1 only viscosity
+  set Material averaging = harmonic average only viscosity
 end
 
 # Post processing

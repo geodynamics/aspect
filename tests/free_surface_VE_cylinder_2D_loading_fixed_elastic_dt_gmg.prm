@@ -16,7 +16,7 @@ set End time = 30
 
 subsection Material model
   set Model name = viscoelastic
-  set Material averaging = project to Q1 only viscosity
+  set Material averaging = harmonic average only viscosity
 
   subsection Viscoelastic
     set Use fixed elastic time step = true
