@@ -207,7 +207,8 @@ subsection Postprocess
 end
 
 subsection Checkpointing
-  set Time between checkpoint = 1
+  set Time between checkpoint = 0
+  set Steps between checkpoint = 1
 end
 
 subsection Solver parameters
