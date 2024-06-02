@@ -1029,6 +1029,9 @@ namespace aspect
         }
       rhs.compress(VectorOperation::add);
 
+      // clear the level constraints of the previous time step
+      mg_constrained_dofs.clear_user_constraints();
+
       // setup GMG, following deal.II step-37:
       const unsigned int n_levels = sim.triangulation.n_global_levels();
 
