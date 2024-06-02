@@ -420,8 +420,7 @@ namespace aspect
   template <int dim>
   double Simulator<dim>::solve_advection (const AdvectionField &advection_field)
   {
-    double advection_solver_tolerance = -1;
-    unsigned int block_idx = advection_field.block_index(introspection);
+    const unsigned int block_idx = advection_field.block_index(introspection);
 
     std::string field_name = (advection_field.is_temperature()
                               ?
@@ -429,10 +428,7 @@ namespace aspect
                               :
                               introspection.name_for_compositional_index(advection_field.compositional_variable) + " composition");
 
-    if (advection_field.is_temperature())
-      advection_solver_tolerance = parameters.temperature_solver_tolerance;
-    else
-      advection_solver_tolerance = parameters.composition_solver_tolerance;
+    const double advection_solver_tolerance = (advection_field.is_temperature()) ? (parameters.temperature_solver_tolerance) : (parameters.composition_solver_tolerance);
 
     const double tolerance = std::max(1e-50,
                                       advection_solver_tolerance*system_rhs.block(block_idx).l2_norm());
