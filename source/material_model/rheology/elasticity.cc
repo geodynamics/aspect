@@ -39,6 +39,8 @@ namespace aspect
       std::vector<std::string> make_elastic_additional_outputs_names()
       {
         std::vector<std::string> names;
+        // We do not output all the additional output to
+        // visualization output, only the ones listed here.
         names.emplace_back("elastic_shear_modulus");
         names.emplace_back("elastic_viscosity");
         return names;
@@ -64,8 +66,6 @@ namespace aspect
       (void)idx; // suppress warning in release mode
       AssertIndexRange (idx, 2);
 
-      // We do not output the timestep_ratio,
-      // as it is constant over the domain at a given timestep.
       switch (idx)
         {
           case 0:
@@ -110,8 +110,9 @@ namespace aspect
                            "the model to run the user must select 'true' or 'false'.");
         prm.declare_entry ("Fixed elastic time step", "1.e3",
                            Patterns::Double (0.),
-                           "The fixed elastic time step $dte$. Units: years if the "
-                           "'Use years in output instead of seconds' parameter is set; "
+                           "The fixed elastic time step $dte$. It is always used during the first "
+                           "timestep; afterwards on if 'Used fixed elastic time step' is true. "
+                           "Units: years if the 'Use years in output instead of seconds' parameter is set; "
                            "seconds otherwise.");
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),
@@ -184,7 +185,7 @@ namespace aspect
             AssertThrow(elastic_damper_viscosity == 0.,
                         ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
                                    "that no elastic damping is applied."));
-            // An update of the stored stresses is done in an operator splitting step or by the particle property 'elastic stress'.
+            // An update of the stored stresses is done in an operator splitting step for fields or by the particle property 'elastic stress'.
             AssertThrow(this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")),
                         ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
                                    "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
@@ -205,9 +206,9 @@ namespace aspect
         std::vector<std::string> stress_field_names = this->introspection().get_names_for_fields_of_type(CompositionalFieldDescription::stress);
         std::vector<unsigned int> stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
 
-        // As long as the FEPointEvaluation requires a consecutive range of indices
+        // We require a consecutive range of indices (for example for FEPointEvaluation)
         // to extract the fields representing the viscoelastic stress tensor components,
-        // check that they are listed without interruption by other fields.
+        // so check that they are listed without interruption by other fields.
         // They do not, however, have to be the first fields listed.
         AssertThrow(((stress_field_indices[2*n_independent_components-1] - stress_field_indices[0]) == (2*n_independent_components-1)),
                     ExcMessage("Rheology model Elasticity requires that the compositional fields representing stress tensor components are listed in consecutive order."));
@@ -308,6 +309,8 @@ namespace aspect
       void
       Elasticity<dim>::create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
+        // Create the ElasticAdditionalOutputs that include the average shear modulus, elastic
+        // viscosity, timestep ratio and total deviatoric stress of the current timestep.
         if (out.template get_additional_output<ElasticAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
@@ -411,7 +414,6 @@ namespace aspect
                 // Only at the beginning of the next timestep do we add the stress update of the
                 // current timestep to the stress stored in the compositional fields, giving
                 // $\tau{t+\Delta t_c}$ with $t+\Delta t_c$ being the current timestep.
-
                 const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                                 &in.composition[i][stress_start_index]+n_independent_components));
 
@@ -489,7 +491,7 @@ namespace aspect
           {
             const double eta = out.viscosities[i];
             const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
-            const SymmetricTensor<2,dim> stress_0 (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
+            const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                    &in.composition[i][stress_start_index]+n_independent_components));
             const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
                                                      &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
@@ -497,7 +499,7 @@ namespace aspect
             const double elastic_viscosity = calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
 
             // Apply the stress update to get the total deviatoric stress of timestep t.
-            elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
+            elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0_advected + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
             elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
             elastic_additional_out->elastic_viscosity[i] = elastic_viscosity;
             elastic_additional_out->timestep_ratio[i] = timestep_ratio;
@@ -705,6 +707,8 @@ namespace aspect
         return dte;
       }
 
+
+
       template <int dim>
       double
       Elasticity<dim>::calculate_timestep_ratio() const
@@ -800,6 +804,8 @@ namespace aspect
 
         return edot_deviator;
       }
+
+
 
       template <int dim>
       std::vector<SymmetricTensor<2, dim>>

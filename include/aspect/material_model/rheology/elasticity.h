@@ -34,9 +34,9 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * Additional output fields for the elastic shear modulus to be added to
-     * the MaterialModel::MaterialModelOutputs structure and filled in the
-     * MaterialModel::Interface::evaluate() function.
+     * Additional output fields for the elastic shear modulus and other
+     * elastic outputs to be added to the MaterialModel::MaterialModelOutputs
+     * structure and filled in the MaterialModel::Interface::evaluate() function.
      */
     template <int dim>
     class ElasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
@@ -69,7 +69,9 @@ namespace aspect
 
         /**
         * The deviatoric stress of the current timestep, so including
-        * the rotation, advection and stress update.
+        * the rotation, advection and stress update, at the evaluation points
+        * passed to the instance of MaterialModel::Interface::evaluate()
+        * that fills the current object.
         */
         std::vector<SymmetricTensor<2,dim>> deviatoric_stress;
     };
@@ -96,8 +98,9 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * Create the additional material model output objects that contain the
-           * elastic shear moduli, elastic viscosity, timestep ratio and reaction rates.
+           * Create the two additional material model output objects that contain the
+           * elastic shear moduli, elastic viscosity, ratio of computational to elastic timestep,
+           * and deviatoric stress of the current timestep and the reaction rates.
            */
           void
           create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
@@ -119,7 +122,8 @@ namespace aspect
           * the elastic shear moduli @p average_elastic_shear_moduli a each point,
           * and the (viscous) viscosities given in the material model outputs object @p out,
           * fill a material model outputs (ElasticAdditionalOutputs) objects with the
-          * average shear modulus, elastic viscosity and ratio of computational to elastic timestep.
+          * average shear modulus, elastic viscosity, ratio of computational to elastic timestep,
+          * and the deviatoric stress of the current timestep.
           */
           void
           fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -158,7 +162,7 @@ namespace aspect
           get_elastic_shear_moduli () const;
 
           /**
-           * Calculates the effective elastic viscosity (this is the equivalent viscosity of
+           * Calculate the effective elastic viscosity (this is the equivalent viscosity of
            * a material which was unstressed at the end of the previous timestep).
            */
           double
@@ -189,8 +193,6 @@ namespace aspect
                                               const double viscosity_pre_yield,
                                               const double shear_modulus) const;
 
-
-
           /**
            * Compute the elastic time step.
            */
@@ -208,7 +210,7 @@ namespace aspect
           /**
            * Get the stored stress of the previous timestep. For fields, use a
            * composition evaluator of the old solution. For particles, get the
-           * stress directly from the particles that is stored in in.composition.
+           * stress directly from the particles, which is available from in.composition.
            */
           std::vector<SymmetricTensor<2, dim>>
           retrieve_stress_previous_timestep (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -234,7 +236,7 @@ namespace aspect
           bool use_fixed_elastic_time_step;
 
           /**
-           * Double for fixed elastic time step value, read from parameter file
+           * Double for fixed elastic time step value, read from parameter file.
            */
           double fixed_elastic_time_step;
 
@@ -249,8 +251,8 @@ namespace aspect
 
           /**
            * We cache the evaluators that are necessary to evaluate the velocity
-           * gradients and the old compositions. They are required to compute the elastic stresses, but
-           * are not provided by the material model.
+           * gradients and the old compositions. They are required to compute the elastic stresses,
+           * but are not provided by the material model.
            * By caching the evaluators, we can avoid recreating them every time we need them.
            */
           mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;

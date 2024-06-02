@@ -72,7 +72,8 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
-         * The plastic yield stress.
+         * The current plastic yield stress, depending on composition,
+         * pressure, and strain.
          */
         std::vector<double> yield_stresses;
 
