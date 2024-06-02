@@ -1,0 +1,15 @@
+base_dir = "/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex_olivine_branch_CPO_based_on_yijun/"
+experiment_dirs = ["out_drex_olivineD-girdle/"]
+compressed = false
+
+[pole_figures]
+    elastisity_header = false #not yet implemented
+    small_figure = true
+    no_description_text = true #false
+    color_scale = "Batlow"
+    times = [1.0,1e5,3e5]
+    particle_ids = [0]
+    axes = ["AAxis","BAxis","CAxis"]
+    minerals = ["Olivine","Enstatite"]
+    grain_data_file_prefix = "weighted_CPO"
+    particle_data_dir = "particles_cpo"
