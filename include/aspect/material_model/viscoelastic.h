@@ -46,7 +46,7 @@ namespace aspect
      * format, which is designed to minimize mislabeling stress tensor components
      * as distinct 'compositional rock types' (or vice versa). For 2D models,
      * 3+3 consecutive compositional fields must be labeled ve_stress_xx, ve_stress_yy,
-     * ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old. 
+     * ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old.
      * In 3D, 6+6 consecutive compositional fields must be labeled
      * ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz,
      * ve_stress_xx_old, ve_stress_yy_old, ve_stress_zz_old, ve_stress_xy_old,

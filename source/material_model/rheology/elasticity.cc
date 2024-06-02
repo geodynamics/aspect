@@ -492,7 +492,7 @@ namespace aspect
             const double eta = out.viscosities[i];
             const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
             const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
-                                                   &in.composition[i][stress_start_index]+n_independent_components));
+                                                            &in.composition[i][stress_start_index]+n_independent_components));
             const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
                                                      &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
