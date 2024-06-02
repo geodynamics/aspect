@@ -348,7 +348,7 @@ namespace aspect
          * Go through the list of all heating models that have been selected
          * in the input file (and are consequently currently active) and see
          * if one of them has the type specified by the template
-         * argument or can be casted to that type. If so, return a reference
+         * argument or can be cast to that type. If so, return a reference
          * to it. If no heating model is active that matches the given type,
          * throw an exception.
          *
