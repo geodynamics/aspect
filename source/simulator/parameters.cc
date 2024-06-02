@@ -1111,7 +1111,12 @@ namespace aspect
                            "effect if the 'Global temperature maximum' and "
                            "'Global temperature minimum' parameters are defined in the .prm file. "
                            "This limiter keeps the discontinuous solution in the range given by "
-                           "'Global temperature maximum' and 'Global temperature minimum'.");
+                           "'Global temperature maximum' and 'Global temperature minimum'. "
+                           "Because this limiter modifies the solution it no longer "
+                           "satisfies the assembled equation. Therefore, "
+                           "the nonlinear residual for this field is meaningless, and in nonlinear "
+                           "solvers we will ignore the residual for this field to evaluate "
+                           "if the nonlinear solver has converged.");
         prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
                            Patterns::List(Patterns::Bool()),
                            "Whether to apply the bound preserving limiter as a correction after having "
@@ -1124,7 +1129,12 @@ namespace aspect
                            "one or the number of the compositional fields. When only one value "
                            "is supplied, this same value is assumed for all compositional fields, otherwise "
                            "each value represents if the limiter should be applied to the respective "
-                           "compositional field.");
+                           "compositional field. "
+                           "Because this limiter modifies the solution it no longer "
+                           "satisfies the assembled equation. Therefore, "
+                           "the nonlinear residual for this field is meaningless, and in nonlinear "
+                           "solvers we will ignore the residual for this field to evaluate "
+                           "if the nonlinear solver has converged.");
         prm.declare_entry ("Global temperature maximum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::Double (),
