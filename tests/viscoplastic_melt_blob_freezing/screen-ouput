@@ -1,0 +1,78 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 2.6.0-pre (add-katz2003-rft, 7cfa9628c)
+--     . using deal.II 9.5.1
+--     .       with 32 bit indices and vectorization level 2 (256 bits)
+--     . using Trilinos 13.2.0
+--     . using p4est 2.3.2
+--     . using Geodynamic World Builder 0.6.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=7cfa9628c&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/1.257e+08 // 0/0/0
+     Writing graphical output:  output-viscoplastic-melt-blob-freezing/solution/solution-00000
+
+*** Timestep 1:  t=1 years, dt=1 years
+   Solving composition reactions... in 20 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 1.372e-12/0.09878/6.206e+07 // -0.1265/-1.406e-12/-7.096e+07
+     Writing graphical output:  output-viscoplastic-melt-blob-freezing/solution/solution-00001
+
+*** Timestep 2:  t=2 years, dt=1 years
+   Solving composition reactions... in 20 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 6.775e-13/0.04879/3.065e+07 // -0.189/-2.1e-12/-1.06e+08
+     Writing graphical output:  output-viscoplastic-melt-blob-freezing/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      46.5s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble composition system      |         6 |      14.1s |        30% |
+| Assemble temperature system      |         3 |      6.44s |        14% |
+| Build composition preconditioner |         5 |    0.0369s |         0% |
+| Build temperature preconditioner |         3 |    0.0246s |         0% |
+| Initialization                   |         1 |      1.04s |       2.2% |
+| Interpolate Stokes solution      |         3 |      1.16s |       2.5% |
+| Postprocessing                   |         3 |      2.53s |       5.4% |
+| Setup dof systems                |         1 |     0.446s |      0.96% |
+| Setup initial conditions         |         1 |      2.45s |       5.3% |
+| Setup matrices                   |         1 |      2.77s |         6% |
+| Solve composition reactions      |         2 |      13.4s |        29% |
+| Solve composition system         |         5 |   0.00727s |         0% |
+| Solve temperature system         |         3 |   0.00487s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 47s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=7cfa9628c&src=code
+-----------------------------------------------------------------------------

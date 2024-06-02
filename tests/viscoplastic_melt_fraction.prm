@@ -51,8 +51,8 @@ subsection Gravity model
 end
 
 subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields = porosity
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
 end
 
 # The composition is not fixed on any boundary
@@ -72,7 +72,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 0
+    set Function expression = 0;0
   end
 end
 
@@ -87,7 +87,6 @@ subsection Material model
     set Base model = visco plastic
     set Fluid-solid reaction scheme = katz2003
   end
-
 end
 
 subsection Mesh refinement
