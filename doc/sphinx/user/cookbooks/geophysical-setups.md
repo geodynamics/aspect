@@ -112,6 +112,7 @@ cookbooks/allken_et_al_2012_rift_interaction/doc/allken.md
 cookbooks/inclusions/doc/inclusions.md
 cookbooks/subduction_initiation/doc/subduction_initiation.md
 cookbooks/vankeken_subduction/doc/vankeken_subduction.md
+cookbooks/2d_annulus_visualization/doc/2d_annulus_visualization.md
 cookbooks/tomography_based_plate_motions/doc/tomography_based_plate_motions.md
 cookbooks/future/README.md
 :::
