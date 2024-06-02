@@ -1,0 +1,373 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 2.6.0-pre (add_iterated_Advection_DG_tests, d34caedeb)
+--     . using deal.II 9.4.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 13.0.0
+--     . using p4est 2.8.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&dg=1&sha=d34caedeb&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 16,212 (4,290+561+2,145+4,608+4,608)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving test system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 58+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.3194e-16, 2.02653e-16, 6.06492e-17, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving test system ... 0 iterations.
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.3194e-16, 2.02653e-16, 6.06492e-17, 5.23138e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.23138e-13
+
+
+   Postprocessing:
+     Compositions min/max/mass: 8.166e-23/0.2/6.283e+07 // 0/1/4.824e+09
+
+*** Timestep 1:  t=13251 years, dt=13251 years
+   Solving temperature system... 14 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 4 iterations.
+   Solving Stokes system... 53+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.108621, 0.0587329, 0.00292982, 0.131943
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.131943
+
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 4 iterations.
+   Solving Stokes system... 47+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00443791, 0.00285113, 0.000162597, 0.0058187
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0058187
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000368735, 0.000210653, 1.18993e-05, 0.00049859
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00049859
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.52488e-05, 1.34327e-05, 7.97794e-07, 3.48705e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 3.48705e-05
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71801e-06, 8.75332e-07, 5.35039e-08, 2.40065e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 2.40065e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: 4.985e-23/0.2/6.283e+07 // -0.00035/1.038/4.824e+09
+
+*** Timestep 2:  t=26110 years, dt=12859.1 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 50+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0238436, 0.00538406, 0.000338154, 0.0286638
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0286638
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 44+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.00119829, 0.000490365, 3.04656e-05, 0.00170201
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00170201
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 37+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.22701e-05, 1.83628e-05, 1.03246e-06, 6.29257e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.29257e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 31+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.89971e-06, 8.38621e-07, 4.79904e-08, 2.85742e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 2.85742e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -4.571e-20/0.2001/6.283e+07 // -0.0007026/1.066/4.824e+09
+
+*** Timestep 3:  t=38522.2 years, dt=12412.2 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0138161, 0.0074338, 0.000404206, 0.0183946
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0183946
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000582107, 0.000233663, 1.31405e-05, 0.00089936
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00089936
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.49253e-05, 9.79633e-06, 5.61315e-07, 3.96484e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.96484e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.11897e-06, 4.29921e-07, 2.52706e-08, 1.79181e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.79181e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -3.399e-17/0.2003/6.283e+07 // -0.001054/1.085/4.824e+09
+
+*** Timestep 4:  t=50507 years, dt=11984.8 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 49+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0150813, 0.00820001, 0.0004038, 0.0205456
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0205456
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000491007, 0.000165717, 1.12946e-05, 0.000788446
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000788446
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.14215e-05, 7.29458e-06, 4.44537e-07, 3.57654e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.57654e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.6857e-07, 3.14334e-07, 1.97206e-08, 1.62905e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.62905e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -1.286e-15/0.2007/6.283e+07 // -0.001419/1.096/4.824e+09
+
+*** Timestep 5:  t=62100 years, dt=11593 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 49+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.015807, 0.00860456, 0.00038808, 0.0218472
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0218472
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 42+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000504392, 0.000146921, 1.20401e-05, 0.000820906
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000820906
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.16683e-05, 6.53571e-06, 4.16483e-07, 3.74063e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.74063e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.97236e-07, 2.84935e-07, 1.86795e-08, 1.7414e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.7414e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -6.668e-15/0.2012/6.283e+07 // -0.001778/1.1/4.824e+09
+
+*** Timestep 6:  t=73010.9 years, dt=10910.9 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 4 iterations.
+   Solving Stokes system... 49+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0154389, 0.00854241, 0.000357843, 0.0219443
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0219443
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000495946, 0.000133338, 1.20665e-05, 0.000818032
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000818032
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 36+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.069e-05, 5.82142e-06, 3.71806e-07, 3.66802e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.66802e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 30+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.50535e-07, 2.55854e-07, 1.66091e-08, 1.71646e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.71646e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -1.675e-14/0.202/6.283e+07 // -0.002131/1.099/4.824e+09
+
+*** Timestep 7:  t=83267.4 years, dt=10256.5 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 4 iterations.
+   Solving Stokes system... 49+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.015111, 0.00830732, 0.000329948, 0.0219795
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0219795
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000468317, 0.000124395, 1.16684e-05, 0.000784273
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000784273
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 35+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.89326e-05, 5.24063e-06, 3.24594e-07, 3.4378e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.4378e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 29+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.60301e-07, 2.30907e-07, 1.42241e-08, 1.60622e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.60622e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -3.106e-14/0.2031/6.283e+07 // -0.002475/1.108/4.824e+09
+
+*** Timestep 8:  t=92948.5 years, dt=9681.09 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 4 iterations.
+   Solving Stokes system... 49+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.015232, 0.00811169, 0.000311904, 0.0220619
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0220619
+
+   Solving temperature system... 11 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 41+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000425625, 0.000118315, 1.11389e-05, 0.000725196
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000725196
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 35+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6677e-05, 4.74169e-06, 2.79515e-07, 3.12822e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 3.12822e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 29+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.51815e-07, 2.07845e-07, 1.18976e-08, 1.47437e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.47437e-06
+
+
+   Postprocessing:
+     Compositions min/max/mass: -4.45e-14/0.2044/6.284e+07 // -0.002767/1.115/4.824e+09
+
+*** Timestep 9:  t=100000 years, dt=7051.5 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.0103042, 0.00537656, 0.000203411, 0.014726
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.014726
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 3 iterations.
+   Solving Stokes system... 40+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000204491, 6.08811e-05, 5.73174e-06, 0.000362335
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000362335
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 3 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 33+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.41223e-06, 1.87341e-06, 1.06157e-07, 1.28987e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.28987e-05
+
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 2 iterations.
+   Solving test system ... 2 iterations.
+   Solving Stokes system... 26+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.37385e-07, 6.58971e-08, 3.53897e-09, 5.11533e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.11533e-07
+
+
+   Postprocessing:
+     Compositions min/max/mass: -5.714e-14/0.2056/6.284e+07 // -0.003013/1.119/4.824e+09
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      16.2s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |        39 |     0.767s |       4.7% |
+| Assemble composition system      |        78 |      10.3s |        64% |
+| Assemble temperature system      |        39 |      1.56s |       9.6% |
+| Build Stokes preconditioner      |         1 |    0.0328s |       0.2% |
+| Build composition preconditioner |        78 |     0.942s |       5.8% |
+| Build temperature preconditioner |        39 |    0.0967s |       0.6% |
+| Initialization                   |         1 |     0.216s |       1.3% |
+| Postprocessing                   |        10 |    0.0277s |      0.17% |
+| Setup dof systems                |         1 |    0.0168s |       0.1% |
+| Setup initial conditions         |         1 |    0.0407s |      0.25% |
+| Setup matrices                   |         1 |     0.339s |       2.1% |
+| Solve Stokes system              |        39 |      1.52s |       9.4% |
+| Solve composition system         |        78 |     0.187s |       1.2% |
+| Solve temperature system         |        39 |    0.0547s |      0.34% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 16s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&dg=1&sha=d34caedeb&src=code
+-----------------------------------------------------------------------------
