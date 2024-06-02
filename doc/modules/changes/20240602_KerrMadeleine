@@ -1,0 +1,3 @@
+Added: The Function expression plug-in for the Gravity model can now evaluate functions in multiple coordinate systems. The plug-in was amended to read in entries to the "Coordinate system" parameter in the Function subsection and Gravity Model section of the parameter file. There are three added tests for the Gravity model function plug-in to ensure the cartesian, spherical, and depth coordinate systems evaluate functions as expected in a 2D cylindrical annulus.
+<br>
+(Madeleine Kerr, 2024/06/02)
