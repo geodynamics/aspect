@@ -257,12 +257,6 @@ namespace aspect
           static constexpr unsigned int n_independent_components = SymmetricTensor<2, dim>::n_independent_components;
           mutable std::unique_ptr<FEPointEvaluation<n_independent_components, dim>> evaluator_composition;
 
-          /**
-           * The names and indices of the compositional fields that represent components of the
-           * viscoelastic stress tensors.
-           */
-          std::vector<std::string> stress_field_names;
-          std::vector<unsigned int> stress_field_indices;
       };
     }
   }
