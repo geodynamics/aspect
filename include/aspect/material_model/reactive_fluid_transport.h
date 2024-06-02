@@ -144,6 +144,8 @@ namespace aspect
         // the permeability, and how much the solid viscosity changes in the presence
         // of fluids.
         double shear_to_bulk_viscosity_ratio;
+        double min_compaction_visc;
+        double max_compaction_visc;
         double reference_permeability;
         double alpha_phi;
 

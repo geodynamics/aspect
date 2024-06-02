@@ -239,7 +239,7 @@ namespace aspect
                   // Limit the porosity to be no smaller than 1e-8 when
                   // calculating fluid effects on viscosities.
                   porosity = std::max(porosity,1e-8);
-                  fluid_out->compaction_viscosities[q] = out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity;
+                  fluid_out->compaction_viscosities[q] = std::max(std::min(out.viscosities[q] * shear_to_bulk_viscosity_ratio * phi_0/porosity, max_compaction_visc), min_compaction_visc);
                 }
             }
         }
@@ -299,6 +299,13 @@ namespace aspect
                              "permeability $\\phi_0=0.05$. The bulk viscosity additionally "
                              "scales with $\\phi_0/\\phi$. The shear viscosity is read in "
                              "from the base model. Units: dimensionless.");
+          prm.declare_entry ("Minimum compaction viscosity", "0",
+                             Patterns::Double (0),
+                             "Lower cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
+          prm.declare_entry ("Maximum compaction viscosity",
+                             boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                             Patterns::Double (0),
+                             "Upper cutoff for the compaction viscosity. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Reference fluid viscosity", "10",
                              Patterns::Double (0),
                              "The value of the constant melt/fluid viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
@@ -375,6 +382,8 @@ namespace aspect
 
           reference_rho_f                   = prm.get_double ("Reference fluid density");
           shear_to_bulk_viscosity_ratio     = prm.get_double ("Shear to bulk viscosity ratio");
+          max_compaction_visc               = prm.get_double ("Maximum compaction viscosity");
+          min_compaction_visc               = prm.get_double ("Minimum compaction viscosity");
           eta_f                             = prm.get_double ("Reference fluid viscosity");
           reference_permeability            = prm.get_double ("Reference permeability");
           alpha_phi                         = prm.get_double ("Exponential fluid weakening factor");
