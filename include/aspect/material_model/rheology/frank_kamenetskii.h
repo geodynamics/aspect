@@ -40,7 +40,7 @@ namespace aspect
        * A: prefactor of viscosity, E: adjusted viscosity ratio,
        * ref_T: reference temperature, T: temperature. F: prefactor of pressure,
        * ref_P: reference pressure, rho: density, g: gravity, h, model depth
-       * 
+       *
        * Refer to Noack and Breuer, 2013, GJI. doi: 10.1093/gji/ggt248 Eq. 2.10 for reference.
        */
 
