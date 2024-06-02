@@ -284,7 +284,6 @@ namespace aspect
         }
     }
 
-
     template <int dim>
     void
     ReactiveFluidTransport<dim>::declare_parameters (ParameterHandler &prm)
@@ -293,8 +292,6 @@ namespace aspect
       {
         prm.enter_subsection("Reactive Fluid Transport Model");
         {
-
-
           prm.declare_entry("Base model","visco plastic",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model incorporating the "

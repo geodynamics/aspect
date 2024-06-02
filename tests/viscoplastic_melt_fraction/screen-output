@@ -1,21 +1,4 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 2.6.0-pre (katz2003-melt-fraction-reactive-fluid-transport, 28bcb1bf3)
---     . using deal.II 9.5.1
---     .       with 32 bit indices and vectorization level 2 (256 bits)
---     . using Trilinos 13.2.0
---     . using p4est 2.3.2
---     . using Geodynamic World Builder 0.6.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=28bcb1bf3&src=code
------------------------------------------------------------------------------
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 17,989 (9,539+4,225+4,225)
 
@@ -25,9 +8,9 @@ Number of degrees of freedom: 17,989 (9,539+4,225+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing graphical output:    output-vp-melt-fraction/solution/solution-00000
+     Writing graphical output:    output-viscoplastic_melt_fraction/solution/solution-00000
      Melt fraction min/total/max: 0, 8.956e+08, 0.3137
-     Pressure min/avg/max:        -5.341e-05 Pa, 1.576e+09 Pa, 3.152e+09 Pa
+     Pressure min/avg/max:        -0.0007496 Pa, 1.576e+09 Pa, 3.152e+09 Pa
      Compositions min/max/mass:   0/0/0
 
 *** Timestep 1:  t=1000 years, dt=1000 years
@@ -36,34 +19,12 @@ Number of degrees of freedom: 17,989 (9,539+4,225+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing graphical output:    output-vp-melt-fraction/solution/solution-00001
+     Writing graphical output:    output-viscoplastic_melt_fraction/solution/solution-00001
      Melt fraction min/total/max: 0, 8.956e+08, 0.3137
-     Pressure min/avg/max:        -2.837e-05 Pa, 1.576e+09 Pa, 3.152e+09 Pa
+     Pressure min/avg/max:        -5.817e-05 Pa, 1.576e+09 Pa, 3.152e+09 Pa
      Compositions min/max/mass:   0/0/0
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      16.4s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |         2 |      2.69s |        16% |
-| Assemble composition system      |         2 |      2.98s |        18% |
-| Assemble temperature system      |         2 |      3.91s |        24% |
-| Build temperature preconditioner |         2 |    0.0185s |      0.11% |
-| Initialization                   |         1 |      1.02s |       6.2% |
-| Postprocessing                   |         2 |      1.26s |       7.7% |
-| Setup dof systems                |         1 |      0.31s |       1.9% |
-| Setup initial conditions         |         1 |      1.15s |         7% |
-| Setup matrices                   |         1 |      1.66s |        10% |
-| Solve Stokes system              |         2 |     0.418s |       2.5% |
-| Solve temperature system         |         2 |   0.00234s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 16s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=28bcb1bf3&src=code
------------------------------------------------------------------------------
