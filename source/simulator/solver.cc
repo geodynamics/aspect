@@ -883,6 +883,12 @@ namespace aspect
           *Mp_preconditioner,
           parameters.linear_solver_S_block_tolerance);
 
+        if (parameters.output_verbosity >= Parameters<dim>::OutputVerbosity::maximum)
+          {
+            solver_control_cheap.log_history(true);
+            solver_control_expensive.log_history(true);
+          }
+
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>

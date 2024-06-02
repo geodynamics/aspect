@@ -167,7 +167,8 @@ namespace aspect
 
     computing_timer (mpi_communicator,
                      pcout,
-                     TimerOutput::never,
+                     (parameters.output_verbosity >= Parameters<dim>::OutputVerbosity::detailed)
+                     ? TimerOutput::every_call : TimerOutput::never,
                      TimerOutput::wall_times),
     total_walltime_until_last_snapshot(0.),
     initial_topography_model(InitialTopographyModel::create_initial_topography_model<dim>(prm)),
@@ -251,6 +252,10 @@ namespace aspect
         // we already printed the header to the screen, so here we just dump it
         // into the log file.
         print_aspect_header(log_file_stream);
+
+        // enable deallog if desired (on rank 0)
+        if (parameters.output_verbosity >= Parameters<dim>::OutputVerbosity::maximum)
+          deallog.depth_console(5);
       }
 
     // now that we have output set up, we can start timer sections
