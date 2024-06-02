@@ -10,5 +10,4 @@ visualizing-results/index.md
 checkpoint-restart.md
 run-faster/index.md
 parameters-overview/index.md
-gui/index.md
 :::
