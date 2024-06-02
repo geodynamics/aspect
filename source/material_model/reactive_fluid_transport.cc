@@ -275,11 +275,19 @@ namespace aspect
                     const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                     if (c == bound_fluid_idx && this->get_timestep_number() > 0)
                       reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
+                    else if (c == porosity_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
+                    else
+                      reaction_rate_out->reaction_rates[q][c] = 0.0;
                   }
-                else if (c == porosity_idx && this->get_timestep_number() > 0)
-                  reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
                 else
-                  reaction_rate_out->reaction_rates[q][c] = 0.0;
+                  {
+                    if (c == porosity_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
+                    else
+                      reaction_rate_out->reaction_rates[q][c] = 0.0;
+                  }
+
               }
         }
     }
