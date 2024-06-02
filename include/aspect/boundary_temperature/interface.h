@@ -378,7 +378,7 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "boundary temperature model in the input file."));
 
-      for (auto &p : boundary_temperature_objects)
+      for (const auto &p : boundary_temperature_objects)
         if (Plugins::plugin_type_matches<BoundaryTemperatureType>(*p))
           return Plugins::get_plugin_as_type<BoundaryTemperatureType>(*p);
 

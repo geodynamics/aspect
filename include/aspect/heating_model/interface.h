@@ -423,14 +423,12 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "heating model in the input file."));
 
-      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator heating_model;
-      for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-           p = heating_model_objects.begin();
-           p != heating_model_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<HeatingModelType>(*(*p)))
-          return Plugins::get_plugin_as_type<HeatingModelType>(*(*p));
+      for (const auto &p : heating_model_objects)
+        if (Plugins::plugin_type_matches<HeatingModelType>(*p))
+          return Plugins::get_plugin_as_type<HeatingModelType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
+      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator heating_model;
       return Plugins::get_plugin_as_type<HeatingModelType>(*(*heating_model));
     }
 
