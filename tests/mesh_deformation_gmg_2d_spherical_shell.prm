@@ -63,7 +63,7 @@ end
 
 subsection Material model
   set Model name = simple
-  set Material averaging = harmonic average only viscosity 
+  set Material averaging = harmonic average only viscosity
 
   subsection Simple model
     set Reference density = 3340
