@@ -75,23 +75,18 @@ list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main
 file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
 set(ASPECT_MAIN_FILE "source/main.cc")
 
-# Special treatment of some files for unity builds. We move the following
-# files to the end of the list of all .cc files (ASPECT_SOURCE_FILES). This ordering is
-# required to not have specializations (for example helper_functions.cc)
-# appear after explicit class instantiation (for example core.cc) of the same
-# class that happen to be included in the same unity cxx file.
-set(UNITY_LAST_FILES
+# Special treatment of some files for unity builds. We need to exclude them
+# because otherwise template class instantiations split across several
+# .cc files (for example Simulator<dim> in core.cc, helper_functions.cc,
+# solver_schemes.cc, etc. might end up in the same unity file. This would
+# lead to errors with duplicate instantiations. The only reliable option
+# is to exclude the files that instantiate the whole class.
+set(UNITY_SEPARATE_FILES
   "source/simulator/core.cc;source/volume_of_fluid/handler.cc")
 
-foreach(_source_file ${UNITY_LAST_FILES})
+foreach(_source_file ${UNITY_SEPARATE_FILES})
   set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
-  list(FIND ASPECT_SOURCE_FILES ${_full_name} _index)
-  if(_index EQUAL -1)
-    message(FATAL_ERROR "could not find ${_full_name}.")
-  endif()
-
-  list(REMOVE_ITEM ASPECT_SOURCE_FILES ${_full_name})
-  list(APPEND ASPECT_SOURCE_FILES ${_full_name})
+  set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
 endforeach()
 
 
@@ -215,9 +210,9 @@ if(ASPECT_WITH_WORLD_BUILDER)
     file(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
 
     # Move some file to the end for unity builds to make sure other file come
-    # "before". Note: The current design keeps all ASPECT files (including
-    # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
-    # many issues with non-unique namespace names like Utilities.
+    # "before". Note: The current design keeps all ASPECT files before all GWB
+    # files. Mixing them will causes many issues with non-unique namespace
+    # names like Utilities.
     set(UNITY_WB_LAST_FILES
         "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/parameters.cc")
 
