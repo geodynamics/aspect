@@ -36,9 +36,12 @@ namespace aspect
       /**
        * A class that computes a Frank-Kamenetskii viscosity approximation
        * of the form:
-       * viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)))
+       * viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)) + F * (P-ref_P)/(rho*g*h))
        * A: prefactor of viscosity, E: adjusted viscosity ratio,
-       * ref_T: reference temperature, T: temperature.
+       * ref_T: reference temperature, T: temperature. F: prefactor of pressure,
+       * ref_P: reference pressure, rho: density, g: gravity, h, model depth
+       * 
+       * Refer to Noack and Breuer, 2013, GJI. doi: 10.1093/gji/ggt248 Eq. 2.10 for reference.
        */
 
       template <int dim>
