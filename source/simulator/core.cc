@@ -1496,7 +1496,6 @@ namespace aspect
     solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     old_old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
-    unlimited_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     current_linearization_point.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
     if (parameters.use_operator_splitting)
@@ -1680,7 +1679,7 @@ namespace aspect
       // Next set up whatever is necessary to transfer the solution from old
       // to new mesh:
       std::vector<const LinearAlgebra::BlockVector *> x_system
-        = { &solution, &old_solution, &unlimited_solution };
+        = { &solution, &old_solution };
 
       if (parameters.mesh_deformation_enabled)
         x_system.push_back(&mesh_deformation->mesh_velocity);
@@ -1738,17 +1737,15 @@ namespace aspect
 
       LinearAlgebra::BlockVector distributed_system;
       LinearAlgebra::BlockVector old_distributed_system;
-      LinearAlgebra::BlockVector unlimited_distributed_system;
       LinearAlgebra::BlockVector distributed_mesh_velocity;
 
       distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
       old_distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
-      unlimited_distributed_system.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
       if (parameters.mesh_deformation_enabled)
         distributed_mesh_velocity.reinit(introspection.index_sets.system_partitioning, mpi_communicator);
 
       std::vector<LinearAlgebra::BlockVector *> system_tmp
-        = { &distributed_system, &old_distributed_system, &unlimited_distributed_system};
+        = { &distributed_system, &old_distributed_system};
 
       if (parameters.mesh_deformation_enabled)
         system_tmp.push_back(&distributed_mesh_velocity);
@@ -1774,9 +1771,6 @@ namespace aspect
 
       constraints.distribute (old_distributed_system);
       old_solution = old_distributed_system;
-
-      constraints.distribute (unlimited_distributed_system);
-      unlimited_solution     = unlimited_distributed_system;
 
       // We need the current linearization point at the start of the new time step
       // when we set the boundary conditions for advected fields (to determine parts
