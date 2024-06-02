@@ -207,21 +207,20 @@ namespace aspect
                                "'single Advection, iterated defect correction Stokes' "));
 
         // Functionality to average the additional RHS terms over the cell is not implemented.
+        // Also, there is no option implemented in this rheology module to project to Q1 the viscosity
+        // in the elastic force term for the RHS.
         // Consequently, it is only possible to use elasticity with the Material averaging schemes
-        // 'none', 'harmonic average only viscosity', 'geometric average only viscosity', and
-        // 'project to Q1 only viscosity'.
+        // 'none', 'harmonic average only viscosity', and 'geometric average only viscosity'.
+        // TODO: Find a way to include 'project to Q1 only viscosity'.
         AssertThrow((this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::none
                      ||
                      this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::harmonic_average_only_viscosity
                      ||
-                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::geometric_average_only_viscosity
-                     ||
-                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::project_to_Q1_only_viscosity),
+                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::geometric_average_only_viscosity),
                     ExcMessage("Material models with elasticity can only be used with the material "
-                               "averaging schemes 'none', 'harmonic average only viscosity', "
-                               "'geometric average only viscosity', and 'project to Q1 only viscosity'. "
-                               "This parameter ('Material averaging') is located within the 'Material "
-                               "model' subsection."));
+                               "averaging schemes 'none', 'harmonic average only viscosity' and "
+                               "'geometric average only viscosity'. This parameter ('Material averaging') "
+                               "is located within the 'Material model' subsection."));
       }
 
 
@@ -285,14 +284,8 @@ namespace aspect
         if (in.requests_property(MaterialProperties::additional_outputs))
           {
             // The viscosity should be averaged if material averaging is applied.
-            // Here the averaging scheme "project to Q1 (only viscosity)"  is
-            // excluded, because there is no way to know the quadrature formula
-            // used for evaluation.
-            // TODO: find a way to include "project to Q1 (only viscosity)" as well.
             std::vector<double> effective_creep_viscosities;
-            if (this->get_parameters().material_averaging != MaterialAveraging::none &&
-                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1 &&
-                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1_only_viscosity)
+            if (this->get_parameters().material_averaging != MaterialAveraging::none)
               {
                 MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
                                                    this->introspection().n_compositional_fields);
