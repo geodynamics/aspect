@@ -548,7 +548,20 @@ namespace aspect
 
           // Finally, set or do not set whether we want to describe cells
           // with curved edges and faces:
+#if DEAL_II_VERSION_GTE(9,6,0)
           vtk_flags.write_higher_order_cells = write_higher_order_output;
+#else
+          // In versions of deal.II up to 9.5 (and perhaps later, see
+          // https://github.com/dealii/dealii/issues/17091), higher
+          // order output on lines fails with an
+          // ExcNotImplemented(). So just back down to regular linear
+          // interpolation if that is the case. This is only the case
+          // if we are in 2d and using surface output (DataOutFaces).
+          if (std::is_same<DataOutType,DataOutFaces<dim>>::value && (dim==2))
+            vtk_flags.write_higher_order_cells = false;
+          else
+            vtk_flags.write_higher_order_cells = write_higher_order_output;
+#endif
 
           data_out.set_flags(vtk_flags);
 
