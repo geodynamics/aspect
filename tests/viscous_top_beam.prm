@@ -7,6 +7,8 @@
 # The test uses a vertical beam instead of the one in the original
 # benchmark to check the directions of computed stress in the
 # postprocessors.
+#
+# In addition, elasticity is switched off.
 
 # Global parameters
 set Dimension                              = 2
@@ -71,6 +73,7 @@ end
 subsection Compositional fields
   set Number of fields = 4
   set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam
+  set Types of fields = generic, generic, generic, chemical composition
 end
 
 # Spatial domain of different compositional fields

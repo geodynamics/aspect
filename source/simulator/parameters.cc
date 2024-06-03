@@ -1903,7 +1903,17 @@ namespace aspect
             // choosing "chemical composition" as the standard field name
             // stress, strain, grain_size, porosity, density
             if (names_of_compositional_fields[i].find("stress") != std::string::npos)
-              x_compositional_field_types[i] = "stress";
+              {
+                x_compositional_field_types[i] = "stress";
+                // Fields that are of stress type will not be taken into
+                // account by the viscoplastic and viscoelastic material model
+                // when material properties are computed. Force the user to set a field type
+                // for fields with 'stress' in their name if elasticity is not enabled.
+                AssertThrow(enable_elasticity,
+                            ExcMessage("Even though elasticity is not enabled, ASPECT deduced a stress field type from the name of a compositional field. "
+                                       "Please specify the compositional field types explicitly. "
+                                       "At the moment the type of field " + names_of_compositional_fields[i] + " is unspecified."));
+              }
             else if ((names_of_compositional_fields[i].find("strain") != std::string::npos)
                      || (std::regex_match(names_of_compositional_fields[i],std::regex("s[1-3][1-3]"))))
               x_compositional_field_types[i] = "strain";
