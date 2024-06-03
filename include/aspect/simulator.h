@@ -344,6 +344,15 @@ namespace aspect
         unsigned int block_index(const Introspection<dim> &introspection) const;
 
         /**
+         * Look up the block index where the sparsity pattern for this field
+         * is stored. This can be different than block_index() as several fields
+         * can use the same pattern (typically in the first compositional field
+         * if all fields are compatible). See Introspection::block_indices
+         * for more information.
+         */
+        unsigned int sparsity_pattern_block_index(const Introspection<dim> &introspection) const;
+
+        /**
          * Returns an index that runs from 0 (temperature field) to n (nth
          * compositional field), and uniquely identifies the current advection
          * field among the list of all advection fields. Can be used to index

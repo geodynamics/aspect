@@ -64,8 +64,12 @@ namespace aspect
       b.temperature = fevs.variable("temperature").block_index;
 
       unsigned int n_compositional_fields = fevs.variable("compositions").n_components();
+      const unsigned int first_composition_block_index = fevs.variable("compositions").block_index;
       for (unsigned int i=0; i<n_compositional_fields; ++i)
-        b.compositional_fields.push_back(fevs.variable("compositions").block_index+i);
+        {
+          b.compositional_fields.push_back(fevs.variable("compositions").block_index+i);
+          b.compositional_field_sparsity_pattern.push_back(first_composition_block_index);
+        }
 
       return b;
     }

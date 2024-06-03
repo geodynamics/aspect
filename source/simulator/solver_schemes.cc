@@ -280,7 +280,7 @@ namespace aspect
 
               // Release the contents of the matrix block we used again:
               const unsigned int block_idx = adv_field.block_index(introspection);
-              if (adv_field.compositional_variable!=0)
+              if (adv_field.sparsity_pattern_block_index(introspection)!=block_idx)
                 system_matrix.block(block_idx, block_idx).clear();
 
               // No need to call the post_advection_solver signal here: It is

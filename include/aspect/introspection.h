@@ -205,7 +205,9 @@ namespace aspect
         unsigned int       pressure;
         unsigned int       temperature;
         std::vector<unsigned int> compositional_fields;
+        std::vector<unsigned int> compositional_field_sparsity_pattern;
       };
+
       /**
        * A variable that enumerates the vector blocks of the finite element
        * that correspond to each of the variables in this problem.
@@ -225,6 +227,7 @@ namespace aspect
         const FEValuesExtractors::Scalar              temperature;
         const std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
+
       /**
        * A variable that contains extractors for every block of the finite
        * element used in the overall description.
@@ -248,6 +251,7 @@ namespace aspect
         unsigned int       temperature;
         unsigned int       compositional_fields;
       };
+
       /**
        * A variable that enumerates the base elements of the finite element
        * that correspond to each of the variables in this problem.
@@ -267,6 +271,7 @@ namespace aspect
         unsigned int       temperature;
         unsigned int       compositional_fields;
       };
+
       /**
        * A variable that enumerates the polynomial degree of the finite element
        * that correspond to each of the variables in this problem.
@@ -300,6 +305,7 @@ namespace aspect
         Quadrature<dim>       compositional_fields;
         Quadrature<dim>       system;
       };
+
       /**
        * A variable that enumerates the polynomial degree of the finite element
        * that correspond to each of the variables in this problem.
@@ -322,6 +328,7 @@ namespace aspect
         Quadrature<dim-1>       compositional_fields;
         Quadrature<dim-1>       system;
       };
+
       /**
        * A variable that enumerates the polynomial degree of the finite element
        * that correspond to each of the variables in this problem.
@@ -342,6 +349,7 @@ namespace aspect
         ComponentMask              temperature;
         std::vector<ComponentMask> compositional_fields;
       };
+
       /**
        * A variable that contains component masks for each of the variables in
        * this problem. Component masks are a deal.II concept, see the deal.II
