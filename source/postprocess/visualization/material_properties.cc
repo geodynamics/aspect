@@ -142,6 +142,7 @@ namespace aspect
                                                      input_data.template get_cell<dim>(),
                                                      Quadrature<dim>(),
                                                      this->get_mapping(),
+                                                     in.requested_properties,
                                                      out);
 
         std::vector<double> melt_fractions(n_quadrature_points);

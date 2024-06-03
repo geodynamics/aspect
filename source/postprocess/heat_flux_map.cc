@@ -146,6 +146,7 @@ namespace aspect
                                                          cell,
                                                          fe_volume_values.get_quadrature(),
                                                          fe_volume_values.get_mapping(),
+                                                         in.requested_properties,
                                                          out);
 
               simulator_access.get_heating_model_manager().evaluate(in, out, heating_out);

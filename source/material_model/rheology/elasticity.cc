@@ -304,6 +304,7 @@ namespace aspect
                                            in.current_cell,
                                            this->introspection().quadratures.velocities,
                                            this->get_mapping(),
+                                           in.requested_properties,
                                            out_copy);
 
                 effective_creep_viscosities = out_copy.viscosities;
@@ -382,6 +383,7 @@ namespace aspect
                                            in.current_cell,
                                            this->introspection().quadratures.compositional_fields,
                                            this->get_mapping(),
+                                           in.requested_properties,
                                            out_copy);
 
                 effective_creep_viscosities = out_copy.viscosities;

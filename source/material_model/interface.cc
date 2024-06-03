@@ -846,6 +846,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
+                    const MaterialProperties::Property &requested_properties,
                     MaterialModelOutputs<dim>     &values_out)
       {
         if (operation == none)
@@ -853,6 +854,8 @@ namespace aspect
 
         FullMatrix<double> projection_matrix;
         FullMatrix<double> expansion_matrix;
+
+        const bool average_viscosity = requested_properties & MaterialProperties::Property::viscosity;
 
         if (operation == project_to_Q1
             ||
@@ -881,31 +884,34 @@ namespace aspect
           viscosity_before_averaging = values_out.viscosities;
 
         // compute the average of viscosity
-        if (operation == harmonic_average_only_viscosity)
-          average_property (harmonic_average, projection_matrix, expansion_matrix,
-                            values_out.viscosities);
-
-        else if (operation == geometric_average_only_viscosity)
-          average_property (geometric_average, projection_matrix, expansion_matrix,
-                            values_out.viscosities);
-
-        else if (operation == project_to_Q1_only_viscosity)
-          average_property (project_to_Q1, projection_matrix, expansion_matrix,
-                            values_out.viscosities);
-
-        else
-          average_property (operation, projection_matrix, expansion_matrix,
-                            values_out.viscosities);
-
-        // calculate the weight of viscosity derivative at each
-        // quadrature point
-        if (derivatives != nullptr)
+        if (average_viscosity)
           {
-            for (unsigned int q = 0; q < values_out.n_evaluation_points(); ++q)
-              derivatives->viscosity_derivative_averaging_weights[q] =
-                compute_viscosity_derivative_averaging_weight(
-                  operation, values_out.viscosities[q], viscosity_before_averaging[q],
-                  1. / values_out.n_evaluation_points());
+            if (operation == harmonic_average_only_viscosity)
+              average_property (harmonic_average, projection_matrix, expansion_matrix,
+                                values_out.viscosities);
+
+            else if (operation == geometric_average_only_viscosity)
+              average_property (geometric_average, projection_matrix, expansion_matrix,
+                                values_out.viscosities);
+
+            else if (operation == project_to_Q1_only_viscosity)
+              average_property (project_to_Q1, projection_matrix, expansion_matrix,
+                                values_out.viscosities);
+
+            else
+              average_property (operation, projection_matrix, expansion_matrix,
+                                values_out.viscosities);
+
+            // calculate the weight of viscosity derivative at each
+            // quadrature point
+            if (derivatives != nullptr)
+              {
+                for (unsigned int q = 0; q < values_out.n_evaluation_points(); ++q)
+                  derivatives->viscosity_derivative_averaging_weights[q] =
+                    compute_viscosity_derivative_averaging_weight(
+                      operation, values_out.viscosities[q], viscosity_before_averaging[q],
+                      1. / values_out.n_evaluation_points());
+              }
           }
 
         if (operation == harmonic_average_only_viscosity ||
@@ -928,9 +934,9 @@ namespace aspect
         average_property (operation, projection_matrix, expansion_matrix,
                           values_out.entropy_derivative_temperature);
 
-        // the reaction terms are unfortunately stored in reverse
-        // indexing. it's also not quite clear whether these should
-        // really be averaged, so avoid this for now
+        // The reaction terms are unfortunately stored in reverse
+        // indexing. It's also not quite clear whether these should
+        // really be averaged, so avoid this for now.
 
         // average all additional outputs
         for (unsigned int i=0; i<values_out.additional_outputs.size(); ++i)
@@ -1247,7 +1253,8 @@ namespace aspect
                   const DoFHandler<dim>::active_cell_iterator &cell, \
                   const Quadrature<dim>     &quadrature_formula, \
                   const Mapping<dim>        &mapping, \
-                  MaterialModelOutputs<dim>      &values_out); \
+                  const MaterialProperties::Property &requested_properties, \
+                  MaterialModelOutputs<dim> &values_out); \
   }
 
 
