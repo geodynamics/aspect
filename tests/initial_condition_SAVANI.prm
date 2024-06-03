@@ -47,8 +47,8 @@ subsection Initial temperature model
     set Thermal expansion coefficient in initial temperature scaling = 4e-5
     set Reference temperature                 = 1600
     set Remove degree 0 from perturbation     = true
-    set Specify a lower maximum order         = true
-    set Maximum order                         = 40
+    set Specify a lower maximum degree        = true
+    set Maximum degree                        = 40
   end
 end
 
