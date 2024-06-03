@@ -48,6 +48,11 @@ authors:
     email: john.naliboff@gmail.com
     affiliation: New Mexico Tech
     orcid: 'https://orcid.org/0000-0002-5697-7203'
+  - given-names: Cedric
+    family-names: Thieulot
+    email: c.thieulot@uu.nl
+    affiliation: Utrecht University
+    orcid: 'https://orcid.org/0000-0002-0624-3922
   - {}
 identifiers:
   - type: doi
