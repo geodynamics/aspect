@@ -31,6 +31,7 @@
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
 #include <aspect/material_model/rheology/peierls_creep.h>
 #include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
+#include <aspect/material_model/rheology/compositional_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/simulator_access.h>
@@ -315,6 +316,11 @@ namespace aspect
            * viscoelastic viscosity or plastic viscosity.
            */
           Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
+
+          /**
+           * Object for computing the viscosity multiplied by a given prefactor term.
+           */
+          Rheology::CompositionalViscosityPrefactors<dim> compositional_viscosity_prefactors;
 
           /*
            * Object for computing plastic stresses, viscosities, and additional outputs

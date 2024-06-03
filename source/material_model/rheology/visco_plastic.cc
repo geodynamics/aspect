@@ -188,17 +188,20 @@ namespace aspect
                    :
                    numbers::signaling_nan<double>());
 
-              // Step 1c: select what form of viscosity to use (diffusion, dislocation, fk, or composite)
+              // Step 1c: select which form of viscosity to use (diffusion, dislocation, fk, or composite), and apply
+              // pre-exponential weakening, if required.
               switch (viscous_flow_law)
                 {
                   case diffusion:
                   {
-                    non_yielding_viscosity = viscosity_diffusion;
+                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
+                                                                                                  CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
                     break;
                   }
                   case dislocation:
                   {
-                    non_yielding_viscosity = viscosity_dislocation;
+                    non_yielding_viscosity = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
+                                                                                                  CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     break;
                   }
                   case frank_kamenetskii:
@@ -211,8 +214,12 @@ namespace aspect
                   }
                   case composite:
                   {
-                    non_yielding_viscosity = (viscosity_diffusion * viscosity_dislocation)/
-                                             (viscosity_diffusion + viscosity_dislocation);
+                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
+                                                              CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
+                                                                CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+                    non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
+                                             (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
                     break;
                   }
                   default:
@@ -591,6 +598,9 @@ namespace aspect
         // Constant viscosity prefactor parameters
         Rheology::ConstantViscosityPrefactors<dim>::declare_parameters(prm);
 
+        // Variable viscosity prefactor parameters
+        Rheology::CompositionalViscosityPrefactors<dim>::declare_parameters(prm);
+
         // Drucker Prager plasticity parameters
         Rheology::DruckerPrager<dim>::declare_parameters(prm);
 
@@ -730,6 +740,9 @@ namespace aspect
         // Constant viscosity prefactor parameters
         constant_viscosity_prefactors.initialize_simulator (this->get_simulator());
         constant_viscosity_prefactors.parse_parameters(prm);
+
+        compositional_viscosity_prefactors.initialize_simulator (this->get_simulator());
+        compositional_viscosity_prefactors.parse_parameters(prm);
 
         // Plasticity parameters
         drucker_prager_plasticity.initialize_simulator (this->get_simulator());
