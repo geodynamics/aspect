@@ -383,8 +383,7 @@ namespace aspect
           return Plugins::get_plugin_as_type<BoundaryTemperatureType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator boundary_temperature_model;
-      return Plugins::get_plugin_as_type<BoundaryTemperatureType>(*(*boundary_temperature_model));
+      return Plugins::get_plugin_as_type<BoundaryTemperatureType>(**(boundary_temperature_objects.begin()));
     }
 
 

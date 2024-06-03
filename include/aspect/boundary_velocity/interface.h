@@ -358,8 +358,7 @@ namespace aspect
             return Plugins::get_plugin_as_type<BoundaryVelocityType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      typename std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>>::const_iterator boundary_velocity_model;
-      return Plugins::get_plugin_as_type<BoundaryVelocityType>(*(*boundary_velocity_model));
+      return Plugins::get_plugin_as_type<BoundaryVelocityType>(**(boundary_velocity_objects.begin()));
     }
 
 
