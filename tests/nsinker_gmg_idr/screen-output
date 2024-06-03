@@ -14,8 +14,6 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
     Stokes solver: 9+0 iterations.
     Schur complement preconditioner: 25+0 iterations.
     A block preconditioner: 25+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999954
-
 
    Postprocessing:
      System matrix memory consumption:  0.05 MB
