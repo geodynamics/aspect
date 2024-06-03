@@ -280,14 +280,12 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "initial temperature model in the input file."));
 
-      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator initial_temperature_model;
-      for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-           p = initial_temperature_objects.begin();
-           p != initial_temperature_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<InitialTemperatureType>(*(*p)))
-          return Plugins::get_plugin_as_type<InitialTemperatureType>(*(*p));
+      for (const auto &p : initial_temperature_objects)
+        if (Plugins::plugin_type_matches<InitialTemperatureType>(*p))
+          return Plugins::get_plugin_as_type<InitialTemperatureType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
+      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator initial_temperature_model;
       return Plugins::get_plugin_as_type<InitialTemperatureType>(*(*initial_temperature_model));
     }
 

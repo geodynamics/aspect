@@ -346,15 +346,13 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "boundary composition model in the input file."));
 
-      typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator boundary_composition_model;
-      for (typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator
-           p = boundary_composition_objects.begin();
-           p != boundary_composition_objects.end(); ++p)
-        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*(*p)))
-          return Plugins::get_plugin_as_type<BoundaryCompositionType>(*(*p));
+      for (const auto &p : boundary_composition_objects)
+        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*p))
+          return Plugins::get_plugin_as_type<BoundaryCompositionType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<BoundaryCompositionType>(*(*boundary_composition_model));
+      typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator iterator;
+      return Plugins::get_plugin_as_type<BoundaryCompositionType>(*(*iterator));
     }
 
 
