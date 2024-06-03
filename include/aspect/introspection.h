@@ -205,6 +205,14 @@ namespace aspect
         unsigned int       pressure;
         unsigned int       temperature;
         std::vector<unsigned int> compositional_fields;
+
+        /**
+         * This variable contains the block for each compositional field
+         * where the matrix/sparsity pattern is copied from when we need to
+         * (temporarily) create a matrix. This way, we only need to store a
+         * single sparsity pattern and reuse it for all compositional fields
+         * (assuming they have an identical FiniteElement).
+         */
         std::vector<unsigned int> compositional_field_sparsity_pattern;
       };
 
