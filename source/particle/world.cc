@@ -310,17 +310,14 @@ namespace aspect
                       {
                         std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
 
-                        const std::vector<double> particle_properties =
-                          property_manager->initialize_late_particle(new_particle.second.get_location(),
-                                                                     *particle_handler,
-                                                                     *interpolator,
-                                                                     cell);
-
                         typename ParticleHandler<dim>::particle_iterator particle = particle_handler->insert_particle(new_particle.second,
                                                                                     typename parallel::distributed::Triangulation<dim>::cell_iterator (&this->get_triangulation(),
                                                                                         new_particle.first.first,
                                                                                         new_particle.first.second));
-                        particle->set_properties(particle_properties);
+
+                        property_manager->initialize_late_particle(particle,
+                                                                   *particle_handler,
+                                                                   *interpolator);
                       }
                   }
 

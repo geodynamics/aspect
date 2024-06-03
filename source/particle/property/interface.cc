@@ -396,14 +396,15 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<double>
-      Manager<dim>::initialize_late_particle (const Point<dim> &particle_location,
+      void
+      Manager<dim>::initialize_late_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                               const ParticleHandler<dim> &particle_handler,
-                                              const Interpolator::Interface<dim> &interpolator,
-                                              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+                                              const Interpolator::Interface<dim> &interpolator) const
       {
         if (property_information.n_components() == 0)
-          return {};
+          return;
+
+        const Point<dim> particle_location = particle->get_location();
 
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());
@@ -430,17 +431,6 @@ namespace aspect
 
                 case aspect::Particle::Property::interpolate:
                 {
-                  typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell;
-
-                  if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
-                    {
-                      found_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(),
-                                                                                this->get_triangulation(),
-                                                                                particle_location)).first;
-                    }
-                  else
-                    found_cell = cell;
-
                   std::vector<std::vector<double>> interpolated_properties;
 
                   try
@@ -448,7 +438,7 @@ namespace aspect
                       interpolated_properties = interpolator.properties_at_points(particle_handler,
                                                                                   std::vector<Point<dim>> (1,particle_location),
                                                                                   ComponentMask(property_information.n_components(),true),
-                                                                                  found_cell);
+                                                                                  particle->get_surrounding_cell());
                     }
                   // interpolators that throw exceptions usually do not result in
                   // anything good, because they result in an unwinding of the stack
@@ -481,17 +471,6 @@ namespace aspect
 
                 case aspect::Particle::Property::interpolate_respect_boundary:
                 {
-                  typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell;
-
-                  if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
-                    {
-                      found_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(),
-                                                                                this->get_triangulation(),
-                                                                                particle_location)).first;
-                    }
-                  else
-                    found_cell = cell;
-
                   const auto &manager = this->get_boundary_composition_manager();
                   const auto &fixed_boundaries = manager.get_fixed_composition_boundary_indicators();
 
@@ -499,6 +478,7 @@ namespace aspect
                   bool cell_at_fixed_boundary = false;
                   unsigned int boundary_face = numbers::invalid_unsigned_int;
                   double minimum_face_distance = std::numeric_limits<double>::max();
+                  const auto &cell = particle->get_surrounding_cell();
                   for (const unsigned int f : cell->face_indices())
                     if (cell->at_boundary(f) && fixed_boundaries.count(cell->face(f)->boundary_id()) == 1)
                       {
@@ -517,7 +497,7 @@ namespace aspect
                       const std::vector<std::vector<double>> interpolated_properties = interpolator.properties_at_points(particle_handler,
                                                                                         std::vector<Point<dim>> (1,particle_location),
                                                                                         ComponentMask(property_information.n_components(),true),
-                                                                                        found_cell);
+                                                                                        cell);
                       for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
                         particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
                     }
@@ -546,7 +526,7 @@ namespace aspect
 
         Assert (particle_properties.size() == property_information.n_components(), ExcInternalError());
 
-        return particle_properties;
+        particle->set_properties(particle_properties);
       }
 
 

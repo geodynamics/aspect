@@ -589,11 +589,10 @@ namespace aspect
            * collection that were created later than the initial particle
            * generation.
            */
-          std::vector<double>
-          initialize_late_particle (const Point<dim> &particle_location,
+          void
+          initialize_late_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                     const ParticleHandler<dim> &particle_handler,
-                                    const Interpolator::Interface<dim> &interpolator,
-                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
+                                    const Interpolator::Interface<dim> &interpolator) const;
 
           /**
            * Update function for particle properties. This function is
