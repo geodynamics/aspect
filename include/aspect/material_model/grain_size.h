@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
 
@@ -493,6 +494,16 @@ namespace aspect
          */
         mutable std::unique_ptr<FEPointEvaluation<1, dim>> temperature_evaluator;
         mutable std::unique_ptr<FEPointEvaluation<1, dim>> pressure_evaluator;
+
+      private:
+        /*
+         * Object for computing plastic stresses, viscosities, and additional outputs,
+         * as well as an object for the required input parameters.
+         */
+        bool enable_drucker_prager_rheology;
+        bool use_adiabatic_pressure_for_yielding;
+        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+        Rheology::DruckerPragerParameters drucker_prager_parameters;
     };
 
   }

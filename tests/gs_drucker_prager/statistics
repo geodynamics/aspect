@@ -1,0 +1,14 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Visualization file name
+# 11: Average density (kg/m^3)
+# 12: Average viscosity (Pa s)
+# 13: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 2145 0 0 output-gs_drucker_prager/solution/solution-00000 2.70000000e+03 9.08453352e+21 8.10000000e+07 

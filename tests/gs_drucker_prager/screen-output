@@ -4,26 +4,16 @@
 
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
-Number of active cells: 100 (on 1 levels)
-Number of degrees of freedom: 1,444 (882+121+441)
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
-*** Timestep 0:  t=0 years, dt=0 years
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+2 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
-
+   Solving grain_size system ... 0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                 0.000408 m/year, 0.000691 m/year
-     Mass fluxes through boundary parts:                1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
-     Average density / Average viscosity / Total mass:  3302 kg/m^3, 1.578e+21 Pa s, 3.302e+13 kg
-
-
-
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
+     Writing graphical output:                          output-gs_drucker_prager/solution/solution-00000
+     Average density / Average viscosity / Total mass:  2700 kg/m^3, 9.085e+21 Pa s, 8.1e+07 kg
 
 Termination requested by criterion: end time
 

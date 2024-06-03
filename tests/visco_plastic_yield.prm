@@ -89,7 +89,7 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = velocity statistics, mass flux statistics
+  set List of postprocessors = velocity statistics, mass flux statistics, material statistics
 end
 
 subsection Solver parameters

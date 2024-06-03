@@ -23,6 +23,7 @@
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/heating_model/shear_heating.h>
+#include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -103,6 +104,9 @@ namespace aspect
           else
             AssertThrow (false, ExcNotImplemented());
         }
+
+      AssertThrow( (grain_size_evolution_formulation != Formulation::paleopiezometer || !this->get_heating_model_manager().shear_heating_enabled()),
+                   ExcMessage("Shear heating output should not be used with the Paleopiezometer grain damage formulation."));
     }
 
 
@@ -753,9 +757,6 @@ namespace aspect
     GrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      AssertThrow( (grain_size_evolution_formulation != Formulation::paleopiezometer || !this->get_heating_model_manager().shear_heating_enabled()),
-                   ExcMessage("Shear heating output should not be used with the Paleopiezometer grain damage formulation."));
-
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one, because of oscillations
@@ -826,7 +827,7 @@ namespace aspect
               Assert(std::isfinite(in.strain_rate[i].norm()),
                      ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                 "not filled by the caller."));
-              const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
+              const SymmetricTensor<2,dim> shear_strain_rate = deviator(in.strain_rate[i]);
               const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
 
               const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
@@ -849,6 +850,61 @@ namespace aspect
                 }
               else
                 effective_viscosity = diff_viscosity;
+
+              if (enable_drucker_prager_rheology)
+                {
+                  // Calculate non-yielding (viscous) stress magnitude.
+                  const double non_yielding_stress = 2. * effective_viscosity * second_strain_rate_invariant;
+
+                  // The following handles phases
+                  std::vector<unsigned int> n_phases = {n_phase_transitions+1};
+                  std::vector<double> phase_function_values(n_phase_transitions, 0.0);
+
+                  for (unsigned int k=0; k<n_phase_transitions; ++k)
+                    {
+                      phase_inputs.phase_index = k;
+                      phase_function_values[k] = phase_function.compute_value(phase_inputs);
+                    }
+
+                  // In the grain size material model, viscosity does not depend on composition,
+                  // so we set the compositional index for the Drucker-Prager parameters to 0.
+                  const Rheology::DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(0,
+                                                                                      phase_function_values,
+                                                                                      n_phases);
+                  const double pressure_for_yielding = use_adiabatic_pressure_for_yielding
+                                                       ?
+                                                       adiabatic_pressure
+                                                       :
+                                                       std::max(in.pressure[i],0.0);
+
+                  const double yield_stress = drucker_prager_plasticity.compute_yield_stress(drucker_prager_parameters.cohesion,
+                                                                                             drucker_prager_parameters.angle_internal_friction,
+                                                                                             pressure_for_yielding,
+                                                                                             drucker_prager_parameters.max_yield_stress);
+
+                  // Apply plastic yielding:
+                  // If the non-yielding stress is greater than the yield stress,
+                  // rescale the viscosity back to yield surface
+                  if (non_yielding_stress >= yield_stress)
+                    {
+                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(drucker_prager_parameters.cohesion,
+                                                                                        drucker_prager_parameters.angle_internal_friction,
+                                                                                        pressure_for_yielding,
+                                                                                        second_strain_rate_invariant,
+                                                                                        drucker_prager_parameters.max_yield_stress,
+                                                                                        effective_viscosity);
+                    }
+
+                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+
+                  if (plastic_out != nullptr)
+                    {
+                      plastic_out->cohesions[i] = drucker_prager_parameters.cohesion;
+                      plastic_out->friction_angles[i] = drucker_prager_parameters.angle_internal_friction;
+                      plastic_out->yield_stresses[i] = yield_stress;
+                      plastic_out->yielding[i] = non_yielding_stress >= yield_stress ? 1 : 0;
+                    }
+                }
 
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
@@ -1242,6 +1298,7 @@ namespace aspect
                              Patterns::Bool (),
                              "This parameter determines whether to use bilinear interpolation "
                              "to compute material properties (slower but more accurate).");
+
           prm.enter_subsection("Grain damage partitioning");
           {
             prm.declare_entry ("Temperature for minimum grain damage partitioning", "1600",
@@ -1271,6 +1328,25 @@ namespace aspect
                                "coefficient is high.");
           }
           prm.leave_subsection();
+
+          // Drucker Prager plasticity parameters
+          prm.declare_entry ("Use Drucker-Prager rheology", "false",
+                             Patterns::Bool(),
+                             "This parameter determines whether to apply plastic yielding "
+                             "according to a Drucker-Prager rheology after computing the viscosity "
+                             "from the (grain-size dependent) visous creep flow laws (if true) "
+                             "or not (if false).");
+          prm.declare_entry ("Use adiabatic pressure for yield stress", "false",
+                             Patterns::Bool (),
+                             "Whether to use the adiabatic pressure (if true) instead of the full "
+                             "(non-negative) pressure (if false) when calculating the yield stress. "
+                             "Using the adiabatic pressure (which is analogous to the depth-dependent "
+                             "von Mises model) can be useful to avoid the strong non-linearity associated "
+                             "with dynamic pressure variations affecting the yield strength, which can "
+                             "make the problem ill-posed. However, dynamic pressure can affect the "
+                             "localization of the strain rate and the resulting deformation, and neglecting "
+                             "it therefore changes the solution.");
+          Rheology::DruckerPrager<dim>::declare_parameters(prm);
         }
         prm.leave_subsection();
       }
@@ -1509,6 +1585,14 @@ namespace aspect
             AssertThrow (false, ExcNotImplemented());
 
           use_bilinear_interpolation = prm.get_bool ("Bilinear interpolation");
+
+          // Plasticity parameters
+          enable_drucker_prager_rheology = prm.get_bool ("Use Drucker-Prager rheology");
+          use_adiabatic_pressure_for_yielding = prm.get_bool ("Use adiabatic pressure for yield stress");
+          drucker_prager_plasticity.initialize_simulator (this->get_simulator());
+
+          std::vector<unsigned int> n_phases = {n_phase_transitions+1};
+          drucker_prager_plasticity.parse_parameters(prm, std::make_unique<std::vector<unsigned int>> (n_phases));
         }
         prm.leave_subsection();
       }
@@ -1577,6 +1661,13 @@ namespace aspect
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+        }
+
+      if (enable_drucker_prager_rheology && out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
         }
     }
   }
