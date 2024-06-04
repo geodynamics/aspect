@@ -4,6 +4,7 @@
 ---
 maxdepth: 2
 ---
+authors.md
 intro.md
 methods/index.md
 install/index.md
