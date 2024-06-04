@@ -868,9 +868,7 @@ namespace aspect
       rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
       solution.reinit(mesh_locally_owned, sim.mpi_communicator);
 
-      typename DoFHandler<dim>::active_cell_iterator cell = mesh_deformation_dof_handler.begin_active(),
-                                                     endc= mesh_deformation_dof_handler.end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
         if (cell->is_locally_owned())
           {
             cell->get_dof_indices (cell_dof_indices);
@@ -1307,23 +1305,26 @@ namespace aspect
       typename DoFHandler<dim>::active_cell_iterator
       fscell = mesh_deformation_dof_handler.begin_active();
 
-      for (; cell!=endc; ++cell, ++fscell)
-        if (cell->is_locally_owned())
-          {
-            cell->get_dof_indices (cell_dof_indices);
+      for (const auto &cell : sim.dof_handler.active_cell_iterators())
+        {
+          if (cell->is_locally_owned())
+            {
+              cell->get_dof_indices (cell_dof_indices);
 
-            fe_values.reinit (cell);
-            fs_fe_values.reinit (fscell);
-            fs_fe_values[extract_vel].get_function_values(fs_mesh_velocity, velocity_values);
-            for (unsigned int j=0; j<n_q_points; ++j)
-              for (unsigned int dir=0; dir<dim; ++dir)
-                {
-                  const unsigned int support_point_index
-                    = sim.finite_element.component_to_system_index(/*velocity component=*/ sim.introspection.component_indices.velocities[dir],
-                                                                                           /*dof index within component=*/ j);
-                  distributed_mesh_velocity[cell_dof_indices[support_point_index]] = velocity_values[j][dir];
-                }
-          }
+              fe_values.reinit (cell);
+              fs_fe_values.reinit (fscell);
+              fs_fe_values[extract_vel].get_function_values(fs_mesh_velocity, velocity_values);
+              for (unsigned int j=0; j<n_q_points; ++j)
+                for (unsigned int dir=0; dir<dim; ++dir)
+                  {
+                    const unsigned int support_point_index
+                      = sim.finite_element.component_to_system_index(/*velocity component=*/ sim.introspection.component_indices.velocities[dir],
+                                                                                             /*dof index within component=*/ j);
+                    distributed_mesh_velocity[cell_dof_indices[support_point_index]] = velocity_values[j][dir];
+                  }
+            }
+          ++fscell;
+        }
 
       distributed_mesh_velocity.compress(VectorOperation::insert);
       mesh_velocity = distributed_mesh_velocity;
