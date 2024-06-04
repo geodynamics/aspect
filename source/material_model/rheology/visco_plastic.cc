@@ -140,25 +140,25 @@ namespace aspect
           {
             // Step 1: viscous behavior
             double non_yielding_viscosity = numbers::signaling_nan<double>();
+
+            // Choice of activation volume depends on whether there is an adiabatic temperature
+            // gradient used when calculating the viscosity. This allows the same activation volume
+            // to be used in incompressible and compressible models.
+            const double temperature_for_viscosity = (this->simulator_is_past_initialization())
+                                                     ?
+                                                     in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i]
+                                                     :
+                                                     this->get_adiabatic_conditions().temperature(in.position[i]);
+
+            AssertThrow(temperature_for_viscosity != 0, ExcMessage(
+                          "The temperature used in the calculation of the visco-plastic rheology is zero. "
+                          "This is not allowed, because this value is used to divide through. It is probably "
+                          "being caused by the temperature being zero somewhere in the model. The relevant "
+                          "values for debugging are: temperature (" + Utilities::to_string(in.temperature[i]) +
+                          "), adiabatic_temperature_gradient_for_viscosity ("
+                          + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
+                          + Utilities::to_string(in.pressure[i]) + ")."));
             {
-
-              // Choice of activation volume depends on whether there is an adiabatic temperature
-              // gradient used when calculating the viscosity. This allows the same activation volume
-              // to be used in incompressible and compressible models.
-              const double temperature_for_viscosity = (this->simulator_is_past_initialization())
-                                                       ?
-                                                       in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i]
-                                                       :
-                                                       this->get_adiabatic_conditions().temperature(in.position[i]);
-
-              AssertThrow(temperature_for_viscosity != 0, ExcMessage(
-                            "The temperature used in the calculation of the visco-plastic rheology is zero. "
-                            "This is not allowed, because this value is used to divide through. It is probably "
-                            "being caused by the temperature being zero somewhere in the model. The relevant "
-                            "values for debugging are: temperature (" + Utilities::to_string(in.temperature[i]) +
-                            "), adiabatic_temperature_gradient_for_viscosity ("
-                            + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
-                            + Utilities::to_string(in.pressure[i]) + ")."));
 
               // Step 1a: compute viscosity from diffusion creep law, at least if it is going to be used
 
@@ -245,7 +245,11 @@ namespace aspect
 
             // Step 2: calculate strain weakening factors for the cohesion, friction, and pre-yield viscosity
             // If no strain weakening is applied, the factors are 1.
-            const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(in.composition[i], j);
+            std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(in.composition[i], j);
+
+            if (strain_rheology.use_temperature_activated_strain_softening)
+              weakening_factors = strain_rheology.apply_temperature_dependence_to_strain_weakening_factors(weakening_factors,temperature_for_viscosity,j);
+
             // Apply strain weakening to the viscous viscosity.
             non_yielding_viscosity *= weakening_factors[2];
 
