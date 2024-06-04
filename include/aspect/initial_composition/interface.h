@@ -282,13 +282,12 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "initial composition model in the input file."));
 
-      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator initial_composition_model;
       for (const auto &p : initial_composition_objects)
         if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
           return Plugins::get_plugin_as_type<InitialCompositionType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<InitialCompositionType>(*(*initial_composition_model));
+      return Plugins::get_plugin_as_type<InitialCompositionType>(**(initial_composition_objects.begin()));
     }
 
 
