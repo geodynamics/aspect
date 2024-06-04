@@ -42,11 +42,7 @@ namespace aspect
       if (this->get_dof_handler().n_locally_owned_dofs() == 0)
         return;
 
-      // the values of the compositional fields are stored as block vectors for each field
-      // we have to extract them in this structure
-      std::vector<double> composition_values (quadrature.size());
-
-      const unsigned int dofs_per_cell = simulator_access.get_fe().dofs_per_cell;
+      const unsigned int dofs_per_cell = this->get_fe().dofs_per_cell;
       std::vector<types::global_dof_index> local_dof_indices(dofs_per_cell);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -57,9 +53,10 @@ namespace aspect
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               {
+                const unsigned int component_idx = this->introspection().component_indices.compositional_fields[c];
                 for (unsigned int i=0; i<dofs_per_cell; ++i)
                   {
-                    if (fe.system_to_component_index(i).first == component_idx)
+                    if (this->get_fe().system_to_component_index(i).first == component_idx)
                       {
                         const double composition_value = this->get_solution()[local_dof_indices[i]];
                         // if the composition exceeds the threshold, cell is marked for refinement
@@ -70,6 +67,8 @@ namespace aspect
                           }
                       }
                   }
+                if (refine)
+                  break;
               }
 
             if (refine)
