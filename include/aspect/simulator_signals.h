@@ -204,6 +204,18 @@ namespace aspect
     boost::signals2::signal<void (typename parallel::distributed::Triangulation<dim> &)>  post_resume_load_user_data;
 
     /**
+     * This signal is called whenever the pressure scaling is computed, see
+     * Simulator::compute_pressure_scaling_factor(), and allows inspection
+     * and/or modification of the computed factor.
+     *
+     * The argument @p pressure_scaling contains the computed pressure scaling (the ratio
+     * of the reference viscosity @p reference_viscosity computed by averaging
+     * the viscosity in the domain and the length scale @p length_scale reported
+     * by the geometry model) and can be used to modify the scaling factor.
+     */
+    boost::signals2::signal<void (double &pressure_scaling, const double reference_viscosity, const double length_scale)>  modify_pressure_scaling;
+
+    /**
      * A signal that is called at the beginning of the program. It
      * gives user extensions the ability to declare additional
      * parameters via the provided argument. User extensions connected to
