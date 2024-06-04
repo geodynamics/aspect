@@ -49,9 +49,9 @@ subsection Checkpointing
 end
 
 subsection Compositional fields
-  set Number of fields = 7
-  set Names of fields = porosity, bound_fluid, peridotite, gabbro, MORB, sediment, weak_zone
-  set Compositional field methods = darcy field, static, static, static, static, static, static
+  set Number of fields = 8
+  set Names of fields = porosity, bound_fluid, peridotite, gabbro, MORB, sediment, weak_zone1, weak_zone2
+  set Compositional field methods = darcy field, static, static, static, static, static, static, static
   # set Compositional field methods = darcy field, field, field, field, field, field, field
 end
 
@@ -60,10 +60,14 @@ subsection Temperature field
 end
 
 subsection Initial composition model
-  set List of model names = world builder
+  set List of model names = world builder, function
   subsection World builder
-    set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment, weak_zone
+    set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment, weak_zone1
   end
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x, y
+    set Function expression = 0;0;0;0;0;0;0;if(x<=50e3 & y>=450e3, 1, 0)
 end
 
 subsection Boundary composition model
@@ -76,8 +80,8 @@ subsection Geometry model
   subsection Box
     set X extent      = 1000e3
     set Y extent      = 500e3
-    set Y repetitions = 1
-    set X repetitions = 2
+    set Y repetitions = 10
+    set X repetitions = 5
   end
 end
 
@@ -132,7 +136,8 @@ subsection Material model
                                                             gabbro:4.5e-15, \
                                                             MORB:4.5e-15, \
                                                             sediment:4.5e-15, \
-                                                            weak_zone:4.5e-15
+                                                            weak_zone1:4.5e-15, \
+                                                            weak_zone2:4.5e-15
 
     set Stress exponents for diffusion creep              = 1.0
 
@@ -143,7 +148,8 @@ subsection Material model
                                                             gabbro:8.2e-6, \
                                                             MORB:8.2e-6, \
                                                             sediment:8.2e-6, \
-                                                            weak_zone:8.2e-6
+                                                            weak_zone1:8.2e-6, \
+                                                            weak_zone2:8.2e-6
 
     set Activation energies for diffusion creep           = background:375e3, \
                                                             porosity:375e3, \
@@ -152,7 +158,7 @@ subsection Material model
                                                             gabbro:375e3, \
                                                             MORB:375e3, \
                                                             sediment:375e3, \
-                                                            weak_zone:375e3
+                                                            weak_zone1:375e3
 
     set Prefactors for dislocation creep                  = background:7.4e-15, \
                                                             porosity:7.4e-15, \
@@ -161,7 +167,8 @@ subsection Material model
                                                             gabbro:7.4e-15, \
                                                             MORB:7.4e-15, \
                                                             sediment:7.4e-15, \
-                                                            weak_zone:1e-50
+                                                            weak_zone1:1e-50, \
+                                                            weak_zone2:1e-50
 
     set Stress exponents for dislocation creep            = 3.5
 
@@ -172,7 +179,8 @@ subsection Material model
                                                             gabbro:14e-6, \
                                                             MORB:14e-6, \
                                                             sediment:14e-6, \
-                                                            weak_zone:14e-6
+                                                            weak_zone1:14e-6, \
+                                                            weak_zone2:14e-6
 
     set Activation energies for dislocation creep         = background:530e3, \
                                                             porosity:530e3, \
@@ -181,7 +189,8 @@ subsection Material model
                                                             gabbro:530e3, \
                                                             MORB:530e3, \
                                                             sediment:530e3, \
-                                                            weak_zone:530e3
+                                                            weak_zone1:530e3, \
+                                                            weak_zone2:530e3
 
     set Angles of internal friction                       = 0
 
@@ -192,7 +201,8 @@ subsection Material model
                                                             gabbro:1e50, \
                                                             MORB:1e50, \
                                                             sediment:1e50, \
-                                                            weak_zone:1e6
+                                                            weak_zone1:1e6, \
+                                                            weak_zone2:1e6
 
     set Minimum viscosity                                 = 5e19
     set Maximum viscosity                                 = 5e23
@@ -226,20 +236,13 @@ subsection Mesh refinement
 
   # refine where the porosity is bigger than 1e-6
   subsection Composition threshold
-    set Compositional field thresholds = 1e-6, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0
+    set Compositional field thresholds = 1e-6, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0
   end
 end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, right, left
 end
-
-# subsection Boundary traction model
-#   set Prescribed traction boundary indicators = left: initial lithostatic pressure
-#   subsection Initial lithostatic pressure
-#     set Representative point = 0, 0
-#   end
-# end
 
 subsection Melt settings
   set Include melt transport                  = false
