@@ -22,6 +22,10 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/citation_info.h>
 #include <aspect/utilities.h>
+#include <deal.II/base/tensor.h>
+
+#include <vector>
+#include <cmath>
 
 namespace aspect
 {
@@ -126,7 +130,7 @@ namespace aspect
       CrystalPreferredOrientation<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                          std::vector<double> &data) const
       {
-        // the layout of the data vector per perticle is the following:
+        // the layout of the data vector per particle is the following:
         // 1. M mineral times
         //    1.1  olivine deformation type   -> 1 double, at location
         //                                      => data_position + 0 + mineral_i * (n_grains * 10 + 2)
@@ -608,6 +612,9 @@ namespace aspect
       }
 
 
+      //Tian: adding functions of Olivine-D and Clinopyroxene
+
+
       template <int dim>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
       CrystalPreferredOrientation<dim>::compute_derivatives_drex_2004(const unsigned int cpo_index,
@@ -631,7 +638,7 @@ namespace aspect
           }
 
 
-        // Make the strain-rate and velocity gradient tensor non-dimensional
+        // Make the strain-rate and velocity gradient tensor non-dimensional   
         // by dividing it through the second invariant
         const Tensor<2,3> strain_rate_nondimensional = nondimensionalization_value != 0 ? strain_rate_3d/nondimensionalization_value : strain_rate_3d;
         const Tensor<2,3> velocity_gradient_tensor_nondimensional = nondimensionalization_value != 0 ? velocity_gradient_tensor/nondimensionalization_value : velocity_gradient_tensor;
@@ -642,7 +649,6 @@ namespace aspect
 
         // create shortcuts
         const std::array<double, 4> &tau = ref_resolved_shear_stress;
-
         std::vector<double> strain_energy(n_grains);
         double mean_strain_energy = 0;
 
@@ -666,13 +672,72 @@ namespace aspect
             Tensor<1,4> bigI;
             const Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
             const Tensor<2,3> rotation_matrix_transposed = transpose(rotation_matrix);
-            for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+            // for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+            //   {
+            //     const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
+            //     const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
+            //     const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global); //<Tian?> is outer_product really doing cross product?
+            //     bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
+            //   }
+
+            //quick test for CPX slip-system Tian begin
+            //more accurate way to calculate slip plane <110> normal by doing cross product
+            // tensor 1 is vector b axis minus the vector a axis
+            //Tensor<1,3>()
+            auto tensor1 = Tensor<1,3>({rotation_matrix[1][0] - rotation_matrix[0][0],
+                                          rotation_matrix[1][1] - rotation_matrix[0][1],
+                                          rotation_matrix[1][2] - rotation_matrix[0][2]});
+
+            auto tensor2 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+            // Calculate plane110_normal
+            Tensor<1,3> plane110_normal = cross_product_3d(tensor1,tensor2);
+
+            // Normalize plane110_normal
+
+            double plane110_normal_norm = plane110_normal.norm();
+
+            std::vector<double> acsnsp110_new = {plane110_normal[0] / plane110_normal_norm,
+                                                 plane110_normal[1] / plane110_normal_norm,
+                                                 plane110_normal[2] / plane110_normal_norm
+                                                };
+
+            // Calculate plane11_0_normal   vector axis minus vector b axis 
+            auto tensor3 = Tensor<1,3>({rotation_matrix[0][0] - (-rotation_matrix[1][0]),
+                                          rotation_matrix[0][1] - (-rotation_matrix[1][1]),
+                                          rotation_matrix[0][2] - (-rotation_matrix[1][2])
+          });
+            auto tensor4 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+            Tensor<1,3> plane11_0_normal = cross_product_3d(tensor3,tensor4);
+
+                        // Normalize plane11_0_normal
+            plane11_0_normal /= plane11_0_normal.norm();
+            Tensor<1,3> acsnsp11_0_new = plane11_0_normal;
+
+            // Calculate ascsd110_new
+           Tensor<1,3> ascsd110_new_temp ({rotation_matrix[1][0] + rotation_matrix[0][0],
+                                        rotation_matrix[1][1] + rotation_matrix[0][1],
+                                        rotation_matrix[1][2] + rotation_matrix[0][2]});
+
+            auto ascsd110_new = Tensor<1,3> ({ascsd110_new_temp[0]/ascsd110_new_temp.norm(),
+                            ascsd110_new_temp[1]/ascsd110_new_temp.norm(),
+                            ascsd110_new_temp[2]/ascsd110_new_temp.norm()
+          });
+
+            // Calculate bigI
+            //bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
+            //std::vector<double> bigI(4, 0.0);
+            for (int i1 = 0; i1 < 3; ++i1)
               {
-                const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
-                const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
-                const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
-                bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
+                for (int i2 = 0; i2 < 3; ++i2)
+                  {
+                    bigI[0] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[1][i2];
+                    bigI[1] += strain_rate_nondimensional[i1][i2] * ascsd110_new[0] * acsnsp11_0_new[i2];
+                    bigI[2] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * acsnsp110_new[i2];
+                    bigI[3] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[0][i2];
+                  }
               }
+
+            //quick test for CPX slip-system Tian end
 
             if (bigI.norm() < 1e-10)
               {
@@ -682,7 +747,7 @@ namespace aspect
             else
               {
                 // compute the element wise absolute value of the element wise
-                // division of BigI by tau (tau = ref_resolved_shear_stress).
+                // division of bigI by tau (tau = ref_resolved_shear_stress).
                 std::array<double,4> q_abs;
                 for (unsigned int i = 0; i < 4; ++i)
                   {
@@ -712,14 +777,24 @@ namespace aspect
                 beta[indices.back()] = 0.0;
 
                 // Now compute the crystal rate of deformation tensor.
-                for (unsigned int i = 0; i < 3; ++i)
+                // for (unsigned int i = 0; i < 3; ++i)
+                //   {
+                //     for (unsigned int j = 0; j < 3; ++j)
+                //       {
+                //         G[i][j] = 2.0 * (beta[0] * rotation_matrix[0][i] * rotation_matrix[1][j]
+                //                          + beta[1] * rotation_matrix[0][i] * rotation_matrix[2][j]
+                //                          + beta[2] * rotation_matrix[2][i] * rotation_matrix[1][j]
+                //                          + beta[3] * rotation_matrix[2][i] * rotation_matrix[0][j]);
+                //       }
+                //   }
+                for (int i1 = 0; i1 < 3; ++i1)
                   {
-                    for (unsigned int j = 0; j < 3; ++j)
+                    for (int i2 = 0; i2 < 3; ++i2)
                       {
-                        G[i][j] = 2.0 * (beta[0] * rotation_matrix[0][i] * rotation_matrix[1][j]
-                                         + beta[1] * rotation_matrix[0][i] * rotation_matrix[2][j]
-                                         + beta[2] * rotation_matrix[2][i] * rotation_matrix[1][j]
-                                         + beta[3] * rotation_matrix[2][i] * rotation_matrix[0][j]);
+                        G[i1][i2] = 2 * (beta[0] * rotation_matrix[2][i1] * rotation_matrix[1][i2] +
+                                         beta[1] * ascsd110_new[0] * acsnsp11_0_new[i2] +
+                                         beta[2] * rotation_matrix[2][i1] * acsnsp110_new[i2] +
+                                         beta[3] * rotation_matrix[2][i1] * rotation_matrix[0][i2]);
                       }
                   }
               }
@@ -745,7 +820,7 @@ namespace aspect
                     bottom = bottom + 2.0* G[i][j] * G[i][j];
                   }
               }
-            // see comment on if all BigI are zero. In that case gamma should be zero.
+            // see comment on if all bigI are zero. In that case gamma should be zero.
             const double gamma = (bottom != 0.0) ? top/bottom : 0.0;
 
             // compute w (equation 8, Kaminiski & Ribe, 2001)
@@ -835,6 +910,8 @@ namespace aspect
               return DeformationType::olivine_e_fabric;
             case DeformationTypeSelector::enstatite:
               return DeformationType::enstatite;
+            case DeformationTypeSelector::clinopyroxene:
+              return DeformationType::clinopyroxene;
             case DeformationTypeSelector::olivine_karato_2008:
               // construct the material model inputs and outputs
               // Since this function is only evaluating one particle,
@@ -940,10 +1017,6 @@ namespace aspect
             // from Kaminski and Ribe, GRL 2002 and
             // Becker et al., 2007 (http://www-udc.ig.utexas.edu/external/becker/preprints/bke07.pdf)
             case DeformationType::olivine_d_fabric :
-              ref_resolved_shear_stress[0] = 1;
-              ref_resolved_shear_stress[1] = 1;
-              ref_resolved_shear_stress[2] = 3;
-              ref_resolved_shear_stress[3] = max_value;
               break;
 
             // Kaminski, Ribe and Browaeys, GJI, 2004 (same as in the matlab code) and
@@ -963,6 +1036,14 @@ namespace aspect
               ref_resolved_shear_stress[1] = max_value;
               ref_resolved_shear_stress[2] = max_value;
               ref_resolved_shear_stress[3] = 1;
+              break;
+
+            // Tian test CPX
+            case DeformationType::clinopyroxene :
+              ref_resolved_shear_stress[0] = 1;
+              ref_resolved_shear_stress[1] = 5;
+              ref_resolved_shear_stress[2] = 5;
+              ref_resolved_shear_stress[3] = 1.5;
               break;
 
             default:
@@ -1048,7 +1129,7 @@ namespace aspect
                                    "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite or CPX. Passive sets all RRSS entries to the maximum. The "
                                    "Karato 2008 selector selects a fabric based on stress and water content as defined in "
                                    "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
-                prm.declare_entry ("CPX RRSS", "1,2,3,4",
+                prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                    Patterns::List(Patterns::Anything()),
                                    "");
                 prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",

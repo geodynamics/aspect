@@ -1,0 +1,15 @@
+base_dir = "/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex-CPX-test/"
+experiment_dirs = ["out_shear_compress6_refined10-bugfixed-allCPX-n15-DfabricRRSSCPX/"]
+compressed = false
+
+[pole_figures]
+    elastisity_header = false #not yet implemented
+    small_figure = true
+    no_description_text = false #false
+    color_scale = "Batlow"
+    times = [1.0,6e4,1e5,1.5e5,1.7e5,2e5,3e5,5e5]
+    particle_ids = [0]
+    axes = ["AAxis","BAxis","CAxis"]
+    minerals = ["Olivine","Enstatite"]
+    grain_data_file_prefix = "weighted_CPO"
+    particle_data_dir = "particles_cpo"

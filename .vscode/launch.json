@@ -8,11 +8,11 @@
             "type": "cppdbg",
             "request": "launch",
             "name": "Debug",
-            "program": "/Users/tian_bc/repos/github_magmaxt/aspect/build-CPO-yijun-CPX/./aspect",
-            "args": ["/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex_olivine_branch_CPO_based_on_yijun/shearbox_cpo_olivine_benchmark.prm"],
+            "program": "/Users/tian_bc/repos/github_magmaxt/aspect/build-CPX-test/./aspect",
+            "args": ["/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex-CPX-test/shear_compress_cpo_cpx.prm"]
             "env": [],
             "externalConsole": false,
-            "cwd": "/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex_olivine_branch_CPO_based_on_yijun",
+            "cwd": "/Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex-CPX-test/",
             "MIMode": "lldb"
         }
     ]
