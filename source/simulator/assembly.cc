@@ -1120,14 +1120,17 @@ namespace aspect
                                                 "Assemble composition system"));
 
     const unsigned int block_idx = advection_field.block_index(introspection);
+    const unsigned int sparsity_block_idx = advection_field.sparsity_pattern_block_index(introspection);
 
-    if (!advection_field.is_temperature() && advection_field.compositional_variable!=0)
+    if (!advection_field.is_temperature() && sparsity_block_idx != block_idx)
       {
-        // Allocate the system matrix for the current compositional field by
-        // reusing the Trilinos sparsity pattern from the matrix stored for
-        // composition 0 (this is the place we allocate the matrix at).
-        const unsigned int block0_idx = AdvectionField::composition(0).block_index(introspection);
-        system_matrix.block(block_idx, block_idx).reinit(system_matrix.block(block0_idx, block0_idx));
+        // We need to allocate our matrix in block block_idx with the sparsity
+        // pattern stored in block sparsity_block_idx and we will free the memory
+        // again after solving. This way we can reuse the sparsity pattern and
+        // save memory by only having 1 compositional matrix allocated at a time.
+        // If all compositional fields are the same, only composition 0 is non-empty
+        // at this time.
+        system_matrix.block(block_idx, block_idx).reinit(system_matrix.block(sparsity_block_idx, sparsity_block_idx));
       }
 
     system_matrix.block(block_idx, block_idx) = 0;

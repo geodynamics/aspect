@@ -63,4 +63,8 @@ TEST_CASE("Introspection::1")
   CHECK(introspection.block_indices.compositional_fields[1] == 4);
   CHECK(introspection.block_indices.compositional_fields[2] == 5);
 
+  // sparsity pattern block index:
+  CHECK(introspection.block_indices.compositional_field_sparsity_pattern[0] == 3);
+  CHECK(introspection.block_indices.compositional_field_sparsity_pattern[1] == 3);
+  CHECK(introspection.block_indices.compositional_field_sparsity_pattern[2] == 3);
 }

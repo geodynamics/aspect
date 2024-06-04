@@ -139,6 +139,16 @@ namespace aspect
 
   template <int dim>
   unsigned int
+  Simulator<dim>::AdvectionField::sparsity_pattern_block_index(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return introspection.block_indices.temperature;
+    else
+      return introspection.block_indices.compositional_field_sparsity_pattern[compositional_variable];
+  }
+
+  template <int dim>
+  unsigned int
   Simulator<dim>::AdvectionField::component_index(const Introspection<dim> &introspection) const
   {
     if (this->is_temperature())
