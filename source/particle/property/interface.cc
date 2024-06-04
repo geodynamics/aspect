@@ -272,6 +272,27 @@ namespace aspect
 
       template <int dim>
       void
+      Interface<dim>::custom_late_initialization (const Point<dim> &location,
+                                                  const ParticleHandler<dim> &particle_handler,
+                                                  const Interpolator::Interface<dim> &interpolator,
+                                                  const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                                  const ArrayView<double> &properties) const
+      {
+        // By default, throw an exception. Note that by default this function is
+        // not called, because late_initialization_mode() returns 'interpolate' in the
+        // default implementation.
+        AssertThrow(false,
+                    ExcMessage("You selected a particle property that specifies that "
+                               "a custom initialization function should be called for "
+                               "particle initialization, but no such function is "
+                               "implemented in the current particle property."));
+        return;
+      }
+
+
+
+      template <int dim>
+      void
       Interface<dim>::declare_parameters (ParameterHandler &)
       {}
 
@@ -536,6 +557,20 @@ namespace aspect
                         }
                     }
 
+                  break;
+                }
+                case custom_late_initialization:
+                {
+                  const unsigned int starting_property_index = particle_properties.size();
+                  particle_properties.resize(particle_properties.size() + property_information.get_components_by_plugin_index(property_index));
+                  const unsigned int end_property_index = particle_properties.size();
+
+                  (*p)->custom_late_initialization(particle_location,
+                                                   particle_handler,
+                                                   interpolator,
+                                                   cell,
+                                                   make_array_view(particle_properties[starting_property_index],
+                                                                   particle_properties[end_property_index]));
                   break;
                 }
 
