@@ -377,19 +377,20 @@ namespace aspect
                                              const std::vector<double> &average_elastic_shear_moduli,
                                              MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        // Create a reference to the structure for the elastic outputs
+        // Create a reference to the structure for the elastic outputs.
+        // The structure is created during the Stokes assembly.
         MaterialModel::ElasticOutputs<dim>
         *elastic_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
-        if (elastic_out == nullptr)
-          return;
-
+        // Create a reference to the structure for the prescribed shear heating outputs.
+        // The structure is created during the advection assembly.
         HeatingModel::PrescribedShearHeatingOutputs<dim>
         *heating_out = out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>();
 
-        AssertThrow(heating_out != nullptr,
-                    ExcMessage("The heating model outputs are required for the elastic outputs."));
+        if (elastic_out == nullptr && heating_out == nullptr)
+          return;
 
+        // TODO should a RHS term be a separate MaterialProperties?
         if (in.requests_property(MaterialProperties::additional_outputs))
           {
             // The viscosity should be averaged if material averaging is applied.
@@ -454,15 +455,19 @@ namespace aspect
                 const double timestep_ratio = calculate_timestep_ratio();
                 // The elastic viscosity has also already been scaled with the timestep ratio.
                 const double viscosity_ratio = effective_creep_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]);
-                elastic_out->elastic_force[i] = -1. * (viscosity_ratio * stress_0_advected
-                                                       + (1. - timestep_ratio) * (1. - viscosity_ratio) * stress_old);
 
-                // The viscoelastic strain rate is needed only when the Newton method is selected.
-                const typename Parameters<dim>::NonlinearSolver::Kind nonlinear_solver = this->get_parameters().nonlinear_solver;
-                if ((nonlinear_solver == Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes) ||
-                    (nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes))
-                  elastic_out->viscoelastic_strain_rate[i] = calculate_viscoelastic_strain_rate(
-                                                               in.strain_rate[i], stress_0_advected, stress_old, effective_creep_viscosity, average_elastic_shear_moduli[i]);
+                if (elastic_out != nullptr)
+                  {
+                    elastic_out->elastic_force[i] = -1. * (viscosity_ratio * stress_0_advected
+                                                           + (1. - timestep_ratio) * (1. - viscosity_ratio) * stress_old);
+
+                    // The viscoelastic strain rate is needed only when the Newton method is selected.
+                    const typename Parameters<dim>::NonlinearSolver::Kind nonlinear_solver = this->get_parameters().nonlinear_solver;
+                    if ((nonlinear_solver == Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes) ||
+                        (nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes))
+                      elastic_out->viscoelastic_strain_rate[i] = calculate_viscoelastic_strain_rate(
+                                                                   in.strain_rate[i], stress_0_advected, stress_old, effective_creep_viscosity, average_elastic_shear_moduli[i]);
+                  }
 
                 // Apply the stress update to get the total stress of timestep t.
                 const SymmetricTensor<2, dim> stress = 2. * effective_creep_viscosity * deviatoric_strain_rate + viscosity_ratio * stress_0_advected +
@@ -479,7 +484,8 @@ namespace aspect
 
                 // The shear heating term needs to account for the elastic stress, but only the visco_plastic strain rate.
                 // This is best computed here, and stored for later use by the heating model.
-                heating_out->prescribed_shear_heating_rates[i] = stress * visco_plastic_strain_rate;
+                if (heating_out != nullptr)
+                  heating_out->prescribed_shear_heating_rates[i] = stress * visco_plastic_strain_rate;
               }
 
           }
@@ -617,11 +623,17 @@ namespace aspect
         // At the moment when the reaction rates are required (at the beginning of the timestep),
         // the solution vector 'solution' holds the stress from the previous timestep,
         // advected into the new position of the previous timestep, so $\tau^{t}_{0adv}$.
-        // This is the same as the vector 'old_solution' holds.
-        // MaterialModelInputs are based on 'solution' when calling the MaterialModel for the reaction rates.
-        // This means that we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
-        // previous timestep. At later moments during the current timestep, 'solution' will hold
-        // the current_linearization_point instead of the solution of the previous timestep.
+        // This is the same as the vector 'old_solution' holds. At later moments during the current timestep,
+        // 'solution' will hold the current_linearization_point instead of the solution of the previous timestep.
+        //
+        // In case fields are used to track the stresses, MaterialModelInputs are based on 'solution'
+        // when calling the MaterialModel for the reaction rates. When particles are used, MaterialModelInputs
+        // for this function are filled with the old_solution (including for the strain rate), except for the
+        // compositions that represent the stress tensor components, these are taken directly from the
+        // particles. As the particles are restored to their pre-advection location at the beginning of
+        // each nonlinear iteration, their values and positions correspond to the old solution.
+        // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
+        // previous timestep.
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_rates))
           {
             const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
