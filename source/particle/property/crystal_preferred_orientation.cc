@@ -670,271 +670,359 @@ namespace aspect
         //debugging ends
 
         // CPX and olivine_d_fabric has different slip systems
-        // first initiate the l and n
-        std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
-        std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+        // // first initiate the l and n
+        // std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
+        // std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
         if (deformation_type == DeformationType::clinopyroxene)
           {
-            // more accurate way to calculate slip plane <110> normal by doing cross product
-            // tensor 1 is vector b axis minus the vector a axis
+            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+              {
+                // Compute the Schmidt tensor for this grain (nu), s is the slip system.
+                // We first compute beta_s,nu (equation 5, Kaminski & Ribe, 2001)
+                // Then we use the beta to calculate the Schmidt tensor G_{ij} (Eq. 5, Kaminski & Ribe, 2001)
+                Tensor<2,3> G;
+                Tensor<1,3> w;
+                Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
 
-            // Calculate plane110_normal --> crystal axis b minus axis a
-            Tensor<1,3> vec_b_minus_a = Tensor<1,3>({0,1,0})-Tensor<1,3>({1,0,0});
-            // for (int i = 2; i >= 0; i--)
-            //   std::cout << "vec_b_mins_a["<<i<<"]"<< vec_b_minus_a[i]<<std::endl;
-            // cross product between c*(b-a) to get normal vector for slip plane nsp{110}
-            Tensor<1,3> plane110_normal = cross_product_3d(vec_b_minus_a,Tensor<1,3>({0,0,1}));
-            plane110_normal /= plane110_normal.norm();
-            // for (int i = 2; i >= 0; i--)
-            //   std::cout << "plane110_normal["<<i<<"]"<< plane110_normal[i]<<std::endl;
+                // these are variables we only need for olivine, but we need them for both
+                // within this if block and the next ones
+                // Ordered vector where the first entry is the max/weakest and the last entry is the inactive slip system.
+                std::array<unsigned int,4> indices {};
 
-            // Calculate plane11_0_normal --> crystal axis a minus axis -b
-            Tensor<1,3> vec_a_minus_neg_b = Tensor<1,3>({1,0,0})-Tensor<1,3>({0,-1,0});
-            // cross product between (a-(-b))*c to get normal vector for slip plane nsp{110}
-            Tensor<1,3> plane11_0_normal = cross_product_3d(vec_a_minus_neg_b,Tensor<1,3>({0,0,1}));
-            plane11_0_normal /= plane11_0_normal.norm();
+                // compute G and beta
+                Tensor<1,4> bigI;
+                const Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
+                const Tensor<2,3> rotation_matrix_transposed = transpose(rotation_matrix);
 
-            // Calculate slip direction vector 110 a + b
-            Tensor<1,3> sd110 = Tensor<1,3>({1,0,0})+Tensor<1,3>({0,1,0});
-            sd110 /= sd110.norm();
-            // provide slip systems: n and l vector combinations for bigI in equation5 of Kaminski 2001
-            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
-            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({0,0,1}),sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+                //quick test for CPX slip-system Tian begin
+                //more accurate way to calculate slip plane <110> normal by doing cross product
+                // tensor 1 is vector b axis minus the vector a axis
+                Tensor<1,3> tensor1 ({rotation_matrix[1][0] - rotation_matrix[0][0],
+                                      rotation_matrix[1][1] - rotation_matrix[0][1],
+                                      rotation_matrix[1][2] - rotation_matrix[0][2]
+                                     });
+
+                Tensor<1,3> tensor2 ({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+                // Calculate plane110_normal
+                Tensor<1,3> acsnsp110_new = cross_product_3d(tensor1,tensor2);
+                acsnsp110_new /= acsnsp110_new.norm();
+
+                // Calculate plane11_0_normal   vector axis minus vector b axis
+                Tensor<1,3> tensor3  ({rotation_matrix[0][0] - (-rotation_matrix[1][0]),
+                                       rotation_matrix[0][1] - (-rotation_matrix[1][1]),
+                                       rotation_matrix[0][2] - (-rotation_matrix[1][2])
+                                      });
+                Tensor<1,3> tensor4  ({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+                Tensor<1,3> acsnsp11_0_new = cross_product_3d(tensor3,tensor4);
+
+                // Normalize plane11_0_normal
+                acsnsp11_0_new /= acsnsp11_0_new.norm();
+
+                // Calculate ascsd110_new
+                Tensor<1,3> ascsd110_new  ({rotation_matrix[1][0] + rotation_matrix[0][0],
+                                            rotation_matrix[1][1] + rotation_matrix[0][1],
+                                            rotation_matrix[1][2] + rotation_matrix[0][2]
+                                           });
+                ascsd110_new /= ascsd110_new.norm();
+                ascsd110_new *= 0.5;
+
+
+
+                // Calculate bigI
+                //bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
+                //Tensor<1,4> bigI({0.,0.,0., 0.0});
+                for (int i1 = 0; i1 < 3; ++i1)
+                  {
+                    for (int i2 = 0; i2 < 3; ++i2)
+                      {
+                        bigI[0] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[1][i2];
+                        bigI[1] += strain_rate_nondimensional[i1][i2] * ascsd110_new[0] * acsnsp11_0_new[i2];
+                        bigI[2] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * acsnsp110_new[i2];
+                        bigI[3] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[0][i2];
+                      }
+                  }
+
+                //quick test for CPX slip-system Tian end
+
+                if (bigI.norm() < 1e-10)
+                  {
+                    // In this case there is no shear, only (possibly) a rotation. So \gamma_y and/or G should be zero.
+                    // Which is the default value, so do nothing.
+                  }
+                else
+                  {
+                    // compute the element wise absolute value of the element wise
+                    // division of bigI by tau (tau = ref_resolved_shear_stress).
+                    std::array<double,4> q_abs;
+                    for (unsigned int i = 0; i < 4; ++i)
+                      {
+                        q_abs[i] = std::abs(bigI[i] / tau[i]);
+                      }
+
+                    // here we find the indices starting at the largest value and ending at the smallest value
+                    // and assign them to special variables. Because all the variables are absolute values,
+                    // we can set them to a negative value to ignore them. This should be faster then deleting
+                    // the element, which would require allocation. (not tested)
+                    for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+                      {
+                        indices[slip_system_i] = std::distance(q_abs.begin(),std::max_element(q_abs.begin(), q_abs.end()));
+                        q_abs[indices[slip_system_i]] = -1;
+                      }
+
+                    // compute the ordered beta vector, which is the relative slip rates of the active slip systems.
+                    // Test whether the max element is not equal to zero.
+                    Assert(bigI[indices[0]] != 0.0, ExcMessage("Internal error: bigI is zero."));
+                    beta[indices[0]] = 1.0; // max q_abs, weak system (most deformation) "s=1"
+
+                    const double ratio = tau[indices[0]]/bigI[indices[0]];
+                    for (unsigned int slip_system_i = 1; slip_system_i < 4-1; ++slip_system_i)
+                      {
+                        beta[indices[slip_system_i]] = std::pow(std::abs(ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]])), stress_exponent);
+                      }
+                    beta[indices.back()] = 0.0;
+
+                    for (int i1 = 0; i1 < 3; ++i1)
+                      {
+                        for (int i2 = 0; i2 < 3; ++i2)
+                          {
+                            G[i1][i2] = 2 * (beta[0] * rotation_matrix[2][i1] * rotation_matrix[1][i2] +
+                                             beta[1] * ascsd110_new[0] * acsnsp11_0_new[i2] +
+                                             beta[2] * rotation_matrix[2][i1] * acsnsp110_new[i2] +
+                                             beta[3] * rotation_matrix[2][i1] * rotation_matrix[0][i2]);
+                          }
+                      }
+                  }
+
+                // Now calculate the analytic solution to the deformation minimization problem
+                // compute gamma (equation 7, Kaminiski & Ribe, 2001)
+
+                // Top is the numerator and bottom is the denominator in equation 7.
+                double top = 0;
+                double bottom = 0;
+                for (unsigned int i = 0; i < 3; ++i)
+                  {
+                    // Following the actual Drex implementation we use i+2, which differs
+                    // from the EPSL paper, which says gamma_nu depends on i+1
+                    const unsigned int i_offset = (i==0) ? (i+2) : (i-1);
+
+                    top = top - (velocity_gradient_tensor_nondimensional[i][i_offset]-velocity_gradient_tensor_nondimensional[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
+                    bottom = bottom - (G[i][i_offset]-G[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
+
+                    for (unsigned int j = 0; j < 3; ++j)
+                      {
+                        top = top + 2.0 * G[i][j]*velocity_gradient_tensor_nondimensional[i][j];
+                        bottom = bottom + 2.0* G[i][j] * G[i][j];
+                      }
+                  }
+                // see comment on if all bigI are zero. In that case gamma should be zero.
+                const double gamma = (bottom != 0.0) ? top/bottom : 0.0;
+
+                // compute w (equation 8, Kaminiski & Ribe, 2001)
+                // w is the Rotation rate vector of the crystallographic axes of grain
+                w[0] = 0.5*(velocity_gradient_tensor_nondimensional[2][1]-velocity_gradient_tensor_nondimensional[1][2]) - 0.5*(G[2][1]-G[1][2])*gamma;
+                w[1] = 0.5*(velocity_gradient_tensor_nondimensional[0][2]-velocity_gradient_tensor_nondimensional[2][0]) - 0.5*(G[0][2]-G[2][0])*gamma;
+                w[2] = 0.5*(velocity_gradient_tensor_nondimensional[1][0]-velocity_gradient_tensor_nondimensional[0][1]) - 0.5*(G[1][0]-G[0][1])*gamma;
+
+                // Compute strain energy for this grain (abbreviated Estr)
+                // For olivine: DREX only sums over 1-3. But Christopher Thissen's matlab
+                // code (https://github.com/cthissen/Drex-MATLAB) corrected
+                // this and writes each term using the indices created when calculating bigI.
+                // Note tau = RRSS = (tau_m^s/tau_o), this why we get tau^(p-n)
+                for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+                  {
+                    const double rhos = std::pow(tau[indices[slip_system_i]],exponent_p-stress_exponent) *
+                                        std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
+                    strain_energy[grain_i] += rhos * std::exp(-nucleation_efficiency * rhos * rhos);
+
+                    Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
+                                                                        + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
+                                                                        + ", nucleation_efficiency = " + std::to_string(nucleation_efficiency) + "."));
+                  }
+
+
+                // compute the derivative of the rotation matrix: \frac{\partial a_{ij}}{\partial t}
+                // (Eq. 9, Kaminski & Ribe 2001)
+                deriv_a_cosine_matrices[grain_i] = 0;
+                const double volume_fraction_grain = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
+                if (volume_fraction_grain >= threshold_GBS/n_grains)
+                  {
+                    deriv_a_cosine_matrices[grain_i] = Utilities::Tensors::levi_civita<3>() * w * nondimensionalization_value;
+
+                    // volume averaged strain energy
+                    mean_strain_energy += volume_fraction_grain * strain_energy[grain_i];
+
+                    Assert(isfinite(mean_strain_energy), ExcMessage("mean_strain_energy when adding grain " + std::to_string(grain_i) + " is not finite: " + std::to_string(mean_strain_energy)
+                                                                    + ", volume_fraction_grain = " + std::to_string(volume_fraction_grain) + "."));
+                  }
+                else
+                  {
+                    strain_energy[grain_i] = 0;
+                  }
+              }
           }
-        else if (deformation_type == DeformationType::olivine_d_fabric)
-          {
-            //crystal axis b minus axis c
-            Tensor<1,3> tensor2 = Tensor<1,3>({0,1,0})-Tensor<1,3>({0,0,1});
-            // cross product between a*(b-c) to get normal vector for nsp{011}
-            Tensor<1,3> plane011_normal = cross_product_3d(Tensor<1,3>({0,0,1}),tensor2);
-            plane011_normal /= plane011_normal.norm();
-            // provide slip systems: n and l vector combinations for bigI in equation5 of Kaminski 2001
-            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane011_normal}};
-            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
-          }
+        // else if (deformation_type == DeformationType::olivine_d_fabric)
+        //   {
+        //     //crystal axis b minus axis c
+        //     Tensor<1,3> tensor2 = Tensor<1,3>({0,1,0})-Tensor<1,3>({0,0,1});
+        //     // cross product between a*(b-c) to get normal vector for nsp{011}
+        //     Tensor<1,3> plane011_normal = cross_product_3d(Tensor<1,3>({0,0,1}),tensor2);
+        //     plane011_normal /= plane011_normal.norm();
+        //     // provide slip systems: n and l vector combinations for bigI in equation5 of Kaminski 2001
+        //     std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane011_normal}};
+        //     std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
+        //   }
         else  //Olivine A,B,C,E types
           {
             std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
             std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
-          }
-
-        for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
-          {
-            // Compute the Schmidt tensor for this grain (nu), s is the slip system.
-            // We first compute beta_s,nu (equation 5, Kaminski & Ribe, 2001)
-            // Then we use the beta to calculate the Schmidt tensor G_{ij} (Eq. 5, Kaminski & Ribe, 2001)
-            Tensor<2,3> G;
-            Tensor<1,3> w;
-            Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
-
-            // these are variables we only need for olivine, but we need them for both
-            // within this if block and the next ones
-            // Ordered vector where the first entry is the max/weakest and the last entry is the inactive slip system.
-            std::array<unsigned int,4> indices {};
-
-            // compute G and beta
-            Tensor<1,4> bigI;
-            const Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
-            const Tensor<2,3> rotation_matrix_transposed = transpose(rotation_matrix);
-            for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
-                const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
-                const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
-                const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global); //<Tian?> is outer_product really doing cross product?
-                bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
-              }
+                // Compute the Schmidt tensor for this grain (nu), s is the slip system.
+                // We first compute beta_s,nu (equation 5, Kaminski & Ribe, 2001)
+                // Then we use the beta to calculate the Schmidt tensor G_{ij} (Eq. 5, Kaminski & Ribe, 2001)
+                Tensor<2,3> G;
+                Tensor<1,3> w;
+                Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
 
-            //   //quick test for CPX slip-system Tian begin
-            //   //more accurate way to calculate slip plane <110> normal by doing cross product
-            //   // tensor 1 is vector b axis minus the vector a axis
-            //   //Tensor<1,3>()
-            //   auto tensor1 = Tensor<1,3>({rotation_matrix[1][0] - rotation_matrix[0][0],
-            //                                 rotation_matrix[1][1] - rotation_matrix[0][1],
-            //                                 rotation_matrix[1][2] - rotation_matrix[0][2]});
+                // these are variables we only need for olivine, but we need them for both
+                // within this if block and the next ones
+                // Ordered vector where the first entry is the max/weakest and the last entry is the inactive slip system.
+                std::array<unsigned int,4> indices {};
 
-            //   auto tensor2 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
-            //   // Calculate plane110_normal
-            //   Tensor<1,3> plane110_normal = cross_product_3d(tensor1,tensor2);
-
-            //   // Normalize plane110_normal
-
-            //   double plane110_normal_norm = plane110_normal.norm();
-
-            //   std::vector<double> acsnsp110_new = {plane110_normal[0] / plane110_normal_norm,
-            //                                        plane110_normal[1] / plane110_normal_norm,
-            //                                        plane110_normal[2] / plane110_normal_norm
-            //                                       };
-
-            //   // Calculate plane11_0_normal   vector axis minus vector b axis
-            //   auto tensor3 = Tensor<1,3>({rotation_matrix[0][0] - (-rotation_matrix[1][0]),
-            //                                 rotation_matrix[0][1] - (-rotation_matrix[1][1]),
-            //                                 rotation_matrix[0][2] - (-rotation_matrix[1][2])
-            // });
-            //   auto tensor4 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
-            //   Tensor<1,3> plane11_0_normal = cross_product_3d(tensor3,tensor4);
-
-            //               // Normalize plane11_0_normal
-            //   plane11_0_normal /= plane11_0_normal.norm();
-            //   Tensor<1,3> acsnsp11_0_new = plane11_0_normal;
-
-            //   // Calculate ascsd110_new
-            //  Tensor<1,3> ascsd110_new_temp ({rotation_matrix[1][0] + rotation_matrix[0][0],
-            //                               rotation_matrix[1][1] + rotation_matrix[0][1],
-            //                               rotation_matrix[1][2] + rotation_matrix[0][2]});
-
-            //   auto ascsd110_new = Tensor<1,3> ({ascsd110_new_temp[0]/ascsd110_new_temp.norm(),
-            //                   ascsd110_new_temp[1]/ascsd110_new_temp.norm(),
-            //                   ascsd110_new_temp[2]/ascsd110_new_temp.norm()
-            // });
-
-            //   // Calculate bigI
-            //   //bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
-            //   //std::vector<double> bigI(4, 0.0);
-            //   for (int i1 = 0; i1 < 3; ++i1)
-            //     {
-            //       for (int i2 = 0; i2 < 3; ++i2)
-            //         {
-            //           bigI[0] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[1][i2];
-            //           bigI[1] += strain_rate_nondimensional[i1][i2] * ascsd110_new[0] * acsnsp11_0_new[i2];
-            //           bigI[2] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * acsnsp110_new[i2];
-            //           bigI[3] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[0][i2];
-            //         }
-            //     }
-
-            //   //quick test for CPX slip-system Tian end
-
-            if (bigI.norm() < 1e-10)
-              {
-                // In this case there is no shear, only (possibly) a rotation. So \gamma_y and/or G should be zero.
-                // Which is the default value, so do nothing.
-              }
-            else
-              {
-                // compute the element wise absolute value of the element wise
-                // division of bigI by tau (tau = ref_resolved_shear_stress).
-                std::array<double,4> q_abs;
-                for (unsigned int i = 0; i < 4; ++i)
-                  {
-                    q_abs[i] = std::abs(bigI[i] / tau[i]);
-                  }
-
-                // here we find the indices starting at the largest value and ending at the smallest value
-                // and assign them to special variables. Because all the variables are absolute values,
-                // we can set them to a negative value to ignore them. This should be faster then deleting
-                // the element, which would require allocation. (not tested)
-                for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
-                  {
-                    indices[slip_system_i] = std::distance(q_abs.begin(),std::max_element(q_abs.begin(), q_abs.end()));
-                    q_abs[indices[slip_system_i]] = -1;
-                  }
-
-                // compute the ordered beta vector, which is the relative slip rates of the active slip systems.
-                // Test whether the max element is not equal to zero.
-                Assert(bigI[indices[0]] != 0.0, ExcMessage("Internal error: bigI is zero."));
-                beta[indices[0]] = 1.0; // max q_abs, weak system (most deformation) "s=1"
-
-                const double ratio = tau[indices[0]]/bigI[indices[0]];
-                for (unsigned int slip_system_i = 1; slip_system_i < 4-1; ++slip_system_i)
-                  {
-                    beta[indices[slip_system_i]] = std::pow(std::abs(ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]])), stress_exponent);
-                  }
-                beta[indices.back()] = 0.0;
-
-                // Now compute the crystal rate of deformation tensor.
-                // for (unsigned int i = 0; i < 3; ++i)
-                //   {
-                //     for (unsigned int j = 0; j < 3; ++j)
-                //       {
-                //         G[i][j] = 2.0 * (beta[0] * rotation_matrix[0][i] * rotation_matrix[1][j]
-                //                          + beta[1] * rotation_matrix[0][i] * rotation_matrix[2][j]
-                //                          + beta[2] * rotation_matrix[2][i] * rotation_matrix[1][j]
-                //                          + beta[3] * rotation_matrix[2][i] * rotation_matrix[0][j]);
-                //       }
-                //   }
+                // compute G and beta
+                Tensor<1,4> bigI;
+                const Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
+                const Tensor<2,3> rotation_matrix_transposed = transpose(rotation_matrix);
                 for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
                   {
                     const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
                     const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
-                    const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
-                    G += 2.0 * beta[slip_system_i] * slip_cross_product ;
+                    const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global); //<Tian?> is outer_product really doing cross product?
+                    bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
                   }
 
-                // for (int i1 = 0; i1 < 3; ++i1)
-                //   {
-                //     for (int i2 = 0; i2 < 3; ++i2)
-                //       {
-                //         G[i1][i2] = 2 * (beta[0] * rotation_matrix[2][i1] * rotation_matrix[1][i2] +
-                //                          beta[1] * ascsd110_new[0] * acsnsp11_0_new[i2] +
-                //                          beta[2] * rotation_matrix[2][i1] * acsnsp110_new[i2] +
-                //                          beta[3] * rotation_matrix[2][i1] * rotation_matrix[0][i2]);
-                //       }
-                //   }
-              }
-
-            // Now calculate the analytic solution to the deformation minimization problem
-            // compute gamma (equation 7, Kaminiski & Ribe, 2001)
-
-            // Top is the numerator and bottom is the denominator in equation 7.
-            double top = 0;
-            double bottom = 0;
-            for (unsigned int i = 0; i < 3; ++i)
-              {
-                // Following the actual Drex implementation we use i+2, which differs
-                // from the EPSL paper, which says gamma_nu depends on i+1
-                const unsigned int i_offset = (i==0) ? (i+2) : (i-1);
-
-                top = top - (velocity_gradient_tensor_nondimensional[i][i_offset]-velocity_gradient_tensor_nondimensional[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
-                bottom = bottom - (G[i][i_offset]-G[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
-
-                for (unsigned int j = 0; j < 3; ++j)
+                if (bigI.norm() < 1e-10)
                   {
-                    top = top + 2.0 * G[i][j]*velocity_gradient_tensor_nondimensional[i][j];
-                    bottom = bottom + 2.0* G[i][j] * G[i][j];
+                    // In this case there is no shear, only (possibly) a rotation. So \gamma_y and/or G should be zero.
+                    // Which is the default value, so do nothing.
                   }
-              }
-            // see comment on if all bigI are zero. In that case gamma should be zero.
-            const double gamma = (bottom != 0.0) ? top/bottom : 0.0;
+                else
+                  {
+                    // compute the element wise absolute value of the element wise
+                    // division of bigI by tau (tau = ref_resolved_shear_stress).
+                    std::array<double,4> q_abs;
+                    for (unsigned int i = 0; i < 4; ++i)
+                      {
+                        q_abs[i] = std::abs(bigI[i] / tau[i]);
+                      }
 
-            // compute w (equation 8, Kaminiski & Ribe, 2001)
-            // w is the Rotation rate vector of the crystallographic axes of grain
-            w[0] = 0.5*(velocity_gradient_tensor_nondimensional[2][1]-velocity_gradient_tensor_nondimensional[1][2]) - 0.5*(G[2][1]-G[1][2])*gamma;
-            w[1] = 0.5*(velocity_gradient_tensor_nondimensional[0][2]-velocity_gradient_tensor_nondimensional[2][0]) - 0.5*(G[0][2]-G[2][0])*gamma;
-            w[2] = 0.5*(velocity_gradient_tensor_nondimensional[1][0]-velocity_gradient_tensor_nondimensional[0][1]) - 0.5*(G[1][0]-G[0][1])*gamma;
+                    // here we find the indices starting at the largest value and ending at the smallest value
+                    // and assign them to special variables. Because all the variables are absolute values,
+                    // we can set them to a negative value to ignore them. This should be faster then deleting
+                    // the element, which would require allocation. (not tested)
+                    for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+                      {
+                        indices[slip_system_i] = std::distance(q_abs.begin(),std::max_element(q_abs.begin(), q_abs.end()));
+                        q_abs[indices[slip_system_i]] = -1;
+                      }
 
-            // Compute strain energy for this grain (abbreviated Estr)
-            // For olivine: DREX only sums over 1-3. But Christopher Thissen's matlab
-            // code (https://github.com/cthissen/Drex-MATLAB) corrected
-            // this and writes each term using the indices created when calculating bigI.
-            // Note tau = RRSS = (tau_m^s/tau_o), this why we get tau^(p-n)
-            for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
-              {
-                const double rhos = std::pow(tau[indices[slip_system_i]],exponent_p-stress_exponent) *
-                                    std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
-                strain_energy[grain_i] += rhos * std::exp(-nucleation_efficiency * rhos * rhos);
+                    // compute the ordered beta vector, which is the relative slip rates of the active slip systems.
+                    // Test whether the max element is not equal to zero.
+                    Assert(bigI[indices[0]] != 0.0, ExcMessage("Internal error: bigI is zero."));
+                    beta[indices[0]] = 1.0; // max q_abs, weak system (most deformation) "s=1"
 
-                Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
-                                                                    + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
-                                                                    + ", nucleation_efficiency = " + std::to_string(nucleation_efficiency) + "."));
-              }
+                    const double ratio = tau[indices[0]]/bigI[indices[0]];
+                    for (unsigned int slip_system_i = 1; slip_system_i < 4-1; ++slip_system_i)
+                      {
+                        beta[indices[slip_system_i]] = std::pow(std::abs(ratio * (bigI[indices[slip_system_i]]/tau[indices[slip_system_i]])), stress_exponent);
+                      }
+                    beta[indices.back()] = 0.0;
+
+                    // Now compute the crystal rate of deformation tensor.
+                    // for (unsigned int i = 0; i < 3; ++i)
+                    //   {
+                    //     for (unsigned int j = 0; j < 3; ++j)
+                    //       {
+                    //         G[i][j] = 2.0 * (beta[0] * rotation_matrix[0][i] * rotation_matrix[1][j]
+                    //                          + beta[1] * rotation_matrix[0][i] * rotation_matrix[2][j]
+                    //                          + beta[2] * rotation_matrix[2][i] * rotation_matrix[1][j]
+                    //                          + beta[3] * rotation_matrix[2][i] * rotation_matrix[0][j]);
+                    //       }
+                    //   }
+                    for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+                      {
+                        const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
+                        const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
+                        const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
+                        G += 2.0 * beta[slip_system_i] * slip_cross_product ;
+                      }
+                  }
+
+                // Now calculate the analytic solution to the deformation minimization problem
+                // compute gamma (equation 7, Kaminiski & Ribe, 2001)
+
+                // Top is the numerator and bottom is the denominator in equation 7.
+                double top = 0;
+                double bottom = 0;
+                for (unsigned int i = 0; i < 3; ++i)
+                  {
+                    // Following the actual Drex implementation we use i+2, which differs
+                    // from the EPSL paper, which says gamma_nu depends on i+1
+                    const unsigned int i_offset = (i==0) ? (i+2) : (i-1);
+
+                    top = top - (velocity_gradient_tensor_nondimensional[i][i_offset]-velocity_gradient_tensor_nondimensional[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
+                    bottom = bottom - (G[i][i_offset]-G[i_offset][i])*(G[i][i_offset]-G[i_offset][i]);
+
+                    for (unsigned int j = 0; j < 3; ++j)
+                      {
+                        top = top + 2.0 * G[i][j]*velocity_gradient_tensor_nondimensional[i][j];
+                        bottom = bottom + 2.0* G[i][j] * G[i][j];
+                      }
+                  }
+                // see comment on if all bigI are zero. In that case gamma should be zero.
+                const double gamma = (bottom != 0.0) ? top/bottom : 0.0;
+
+                // compute w (equation 8, Kaminiski & Ribe, 2001)
+                // w is the Rotation rate vector of the crystallographic axes of grain
+                w[0] = 0.5*(velocity_gradient_tensor_nondimensional[2][1]-velocity_gradient_tensor_nondimensional[1][2]) - 0.5*(G[2][1]-G[1][2])*gamma;
+                w[1] = 0.5*(velocity_gradient_tensor_nondimensional[0][2]-velocity_gradient_tensor_nondimensional[2][0]) - 0.5*(G[0][2]-G[2][0])*gamma;
+                w[2] = 0.5*(velocity_gradient_tensor_nondimensional[1][0]-velocity_gradient_tensor_nondimensional[0][1]) - 0.5*(G[1][0]-G[0][1])*gamma;
+
+                // Compute strain energy for this grain (abbreviated Estr)
+                // For olivine: DREX only sums over 1-3. But Christopher Thissen's matlab
+                // code (https://github.com/cthissen/Drex-MATLAB) corrected
+                // this and writes each term using the indices created when calculating bigI.
+                // Note tau = RRSS = (tau_m^s/tau_o), this why we get tau^(p-n)
+                for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
+                  {
+                    const double rhos = std::pow(tau[indices[slip_system_i]],exponent_p-stress_exponent) *
+                                        std::pow(std::abs(gamma*beta[indices[slip_system_i]]),exponent_p/stress_exponent);
+                    strain_energy[grain_i] += rhos * std::exp(-nucleation_efficiency * rhos * rhos);
+
+                    Assert(isfinite(strain_energy[grain_i]), ExcMessage("strain_energy[" + std::to_string(grain_i) + "] is not finite: " + std::to_string(strain_energy[grain_i])
+                                                                        + ", rhos (" + std::to_string(slip_system_i) + ") = " + std::to_string(rhos)
+                                                                        + ", nucleation_efficiency = " + std::to_string(nucleation_efficiency) + "."));
+                  }
 
 
-            // compute the derivative of the rotation matrix: \frac{\partial a_{ij}}{\partial t}
-            // (Eq. 9, Kaminski & Ribe 2001)
-            deriv_a_cosine_matrices[grain_i] = 0;
-            const double volume_fraction_grain = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
-            if (volume_fraction_grain >= threshold_GBS/n_grains)
-              {
-                deriv_a_cosine_matrices[grain_i] = Utilities::Tensors::levi_civita<3>() * w * nondimensionalization_value;
+                // compute the derivative of the rotation matrix: \frac{\partial a_{ij}}{\partial t}
+                // (Eq. 9, Kaminski & Ribe 2001)
+                deriv_a_cosine_matrices[grain_i] = 0;
+                const double volume_fraction_grain = get_volume_fractions_grains(cpo_index,data,mineral_i,grain_i);
+                if (volume_fraction_grain >= threshold_GBS/n_grains)
+                  {
+                    deriv_a_cosine_matrices[grain_i] = Utilities::Tensors::levi_civita<3>() * w * nondimensionalization_value;
 
-                // volume averaged strain energy
-                mean_strain_energy += volume_fraction_grain * strain_energy[grain_i];
+                    // volume averaged strain energy
+                    mean_strain_energy += volume_fraction_grain * strain_energy[grain_i];
 
-                Assert(isfinite(mean_strain_energy), ExcMessage("mean_strain_energy when adding grain " + std::to_string(grain_i) + " is not finite: " + std::to_string(mean_strain_energy)
-                                                                + ", volume_fraction_grain = " + std::to_string(volume_fraction_grain) + "."));
-              }
-            else
-              {
-                strain_energy[grain_i] = 0;
+                    Assert(isfinite(mean_strain_energy), ExcMessage("mean_strain_energy when adding grain " + std::to_string(grain_i) + " is not finite: " + std::to_string(mean_strain_energy)
+                                                                    + ", volume_fraction_grain = " + std::to_string(volume_fraction_grain) + "."));
+                  }
+                else
+                  {
+                    strain_energy[grain_i] = 0;
+                  }
               }
           }
 

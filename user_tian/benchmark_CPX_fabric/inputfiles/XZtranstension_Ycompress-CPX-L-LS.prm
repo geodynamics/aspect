@@ -1,0 +1,169 @@
+set CFL number = 0.01 ##Annotation CFL number
+set Timing output frequency  = 100
+set Dimension                = 3
+set Pressure normalization   = surface
+set Surface pressure         = 0
+set Nonlinear solver scheme  = single Advection, no Stokes
+set End time                 = 5e5
+set Timing output frequency  = 1000
+set Use years in output instead of seconds = false
+
+subsection Compositional fields
+    set Number of fields = 1
+    set Names of fields = water
+    set Compositional field methods = static
+end
+
+subsection Initial composition model
+    set Model name = function
+
+    subsection Function
+        set Variable names      = x,y,z
+        set Function expression = 0
+    end
+end
+
+subsection Gravity model
+    set Model name = vertical
+    subsection Vertical
+        set Magnitude = 0
+    end
+end
+
+subsection Geometry model
+    set Model name = box
+    subsection Box
+        set X extent = 1
+        set Y extent = 1
+        set Z extent = 1
+        set Box origin X coordinate = -0.5
+        set Box origin Y coordinate = -0.5
+        set Box origin Z coordinate = -0.5
+    end
+end
+
+subsection Initial temperature model
+    set Model name = function
+
+    subsection Function
+        set Function expression = 1 ## Annotation: Temperature function
+    end
+end
+
+subsection Boundary temperature model
+    set List of model names = box
+    set Fixed temperature boundary indicators   = bottom, top, left, right, front, back
+
+    subsection Box
+        set Bottom temperature = 1
+        set Left temperature   = 1
+        set Right temperature  = 1
+        set Top temperature    = 1
+        set Front temperature  = 1
+        set Back temperature   = 1
+    end
+end
+
+
+#subsection Boundary velocity model
+#    subsection Function
+#        set Variable names = x,y,z,t
+#        set Function expression = 1*z/1e5;0; if(z>0,-0.5/1e5, 0.5/1e5) ## Annotation set velocity condition
+#    end
+#end
+
+subsection Prescribed Stokes solution
+    set Model name = function
+    subsection Velocity function
+        set Variable names = x,y,z,t
+	#set Function expression = 6*z/1e5;0;-5*z/1e5 ## Annotation set velocity condition
+	#set Function expression = 2*z/1e5;0;if(z>0,-.5*z/1e5, -.5*z/1e5) ## Annotation set velocity condition
+	#set Function expression = 2*z/1e5;if(y>0,.5*y/1e5, .5*y/1e5);if(z>0,-.5*z/1e5, -.5*z/1e5) ## Annotation set velocity condition
+	#set Function expression = 4*z/1e5;if(y>0,-.5*y/1e5, -.5*y/1e5);if(z>0,.5*z/1e5, .5*z/1e5) ## Annotation set velocity condition
+	#set Function expression = 2*z/1e5;if(y>0,-.25*y/1e5, -.25*y/1e5);if(z>0,.25*z/1e5, .25*z/1e5) ## Annotation set velocity condition
+	#set Function expression = 2*z/1e5;if(y>0,-.5*y/1e5, -.5*y/1e5);if(z>0,.5*z/1e5, .5*z/1e5) ## Annotation set velocity condition
+	set Function expression = 1.5*z/1e5;if(y>0,-.5*y/1e5, -.5*y/1e5);if(z>0,.5*z/1e5, .5*z/1e5) ## Annotation set velocity condition	#transtension XZ and compression in Y
+#	set Function expression = 1.5*z/1e5; 0;if(z>0,.5*z/1e5, .5*z/1e5) ## Annotation set velocity condition	#transtension XZ and NO compression in Y
+	#set Function expression = 1.5*z/1e5; 0;if(z>0,-.5*z/1e5, -.5*z/1e5) ## Annotation set velocity condition	#transtension XZ and NO compression in Y
+    end
+end
+
+
+subsection Material model
+    set Model name = simple 
+
+    subsection Simple model
+        set Reference density             = 1
+        set Reference specific heat       = 1
+        set Reference temperature         = 1
+        set Thermal conductivity          = 1
+        set Thermal expansion coefficient = 1e-10
+        set Viscosity                     = 1
+    end
+end
+
+subsection Mesh refinement
+    set Initial global refinement                = 2
+    set Initial adaptive refinement              = 0
+    set Time steps between mesh refinement       = 10000
+end
+
+subsection Postprocess
+    set List of postprocessors = velocity statistics, visualization, particles, crystal preferred orientation
+
+    subsection Visualization
+        set Time between graphical output = 1e4
+        set List of output variables = stress, viscosity, strain rate
+    end
+    subsection Particles
+        set Number of particles = 1
+		set Time between data output = 1e4
+		set Data output format       = vtu
+		set List of particle properties = integrated strain, crystal preferred orientation, cpo elastic tensor, cpo bingham average, integrated strain invariant, velocity, pT path
+		set Exclude output properties = volume fraction, rotation_matrix
+	#set Load balancing strategy = add particles
+        #set Minimum particles per cell = 128
+        #set Maximum particles per cell = 512
+        set Particle generator name = ascii file
+	subsection Generator
+	   subsection Ascii file
+		   	      set Data directory = /Users/tian_bc/Documents/postdoc/postdoc_meetings_workshops/2024-ASPECT-hack/aspect-output/drex_olivine_branch_CPO_based_on_yijun/
+		   	      set Data file name = particle_one.dat
+		   end
+	end
+        subsection Crystal Preferred Orientation
+            set Random number seed = 301
+            set Number of grains per particle = 300 ## Annotation grain count
+            set Property advection method = Backward Euler ## Annotation Property advection method
+            set Property advection tolerance = 1e-15
+            set CPO derivatives algorithm = D-Rex 2004
+            subsection Initial grains
+                set Minerals = Olivine: D-fabric, Clinopyroxene ## Annotation Minerals
+                set Volume fractions minerals = 0.7,0.3 ## Annotation Volume fractions minerals
+            end
+            subsection D-Rex 2004
+                set Mobility = 10 ## 125+-75 Annotation LPO Mobility
+                set Stress exponents = 3.5
+                set Exponents p = 1.5
+                set Nucleation efficiency = 3.2 ## Annotation Nucleation efficientcy
+                set Threshold GBS = 0.3 ## Annotation TGBS
+            end
+        end
+        subsection CPO Bingham Average
+            set Random number seed = 200
+        end
+    end
+    subsection Crystal Preferred Orientation
+        set Time between data output = 1e4
+        set Write in background thread = true
+        set Compress cpo data files = false 
+        set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles
+        set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles
+    end
+end
+set Output directory = out_shear_compress6_refined10-bugfixed-transtenZ-pressY-newhalfssd110
+
+
+subsection Solver parameters
+    set Temperature solver tolerance = 1e-10
+end
