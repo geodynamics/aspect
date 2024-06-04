@@ -471,8 +471,14 @@ namespace aspect
     Utilities::MPI::sum(values, mpi_communicator, values);
 
     const double reference_viscosity = std::exp(values[0]/values[1]);
+    const double length_scale = geometry_model->length_scale();
 
-    return reference_viscosity / geometry_model->length_scale();
+    // Allow the user to inspect and/or overwrite our result:
+    const double result = reference_viscosity / length_scale;
+    if (boost::optional<double> value = signals.modify_pressure_scaling(result, reference_viscosity, length_scale))
+      return *value;
+    else
+      return result;
   }
 
 
