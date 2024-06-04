@@ -26,7 +26,7 @@
 
 #include <vector>
 #include <cmath>
-
+#include <ostream>
 namespace aspect
 {
   namespace Particle
@@ -582,12 +582,14 @@ namespace aspect
 
               const std::array<double,4> ref_resolved_shear_stress = reference_resolved_shear_stress_from_deformation_type(deformation_type);
 
-              return compute_derivatives_drex_2004(cpo_index,
+              return compute_derivatives_drex_2004(deformation_type,
+                                                   cpo_index,
                                                    data,
                                                    mineral_i,
                                                    strain_rate_3d,
                                                    velocity_gradient_tensor,
-                                                   ref_resolved_shear_stress);
+                                                   ref_resolved_shear_stress
+                                                  );
               break;
             }
             default:
@@ -617,7 +619,8 @@ namespace aspect
 
       template <int dim>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-      CrystalPreferredOrientation<dim>::compute_derivatives_drex_2004(const unsigned int cpo_index,
+      CrystalPreferredOrientation<dim>::compute_derivatives_drex_2004(DeformationType deformation_type,
+                                                                      const unsigned int cpo_index,
                                                                       const ArrayView<double> &data,
                                                                       const unsigned int mineral_i,
                                                                       const SymmetricTensor<2,3> &strain_rate_3d,
@@ -638,7 +641,7 @@ namespace aspect
           }
 
 
-        // Make the strain-rate and velocity gradient tensor non-dimensional   
+        // Make the strain-rate and velocity gradient tensor non-dimensional
         // by dividing it through the second invariant
         const Tensor<2,3> strain_rate_nondimensional = nondimensionalization_value != 0 ? strain_rate_3d/nondimensionalization_value : strain_rate_3d;
         const Tensor<2,3> velocity_gradient_tensor_nondimensional = nondimensionalization_value != 0 ? velocity_gradient_tensor/nondimensionalization_value : velocity_gradient_tensor;
@@ -651,6 +654,69 @@ namespace aspect
         const std::array<double, 4> &tau = ref_resolved_shear_stress;
         std::vector<double> strain_energy(n_grains);
         double mean_strain_energy = 0;
+        //debugging init
+        // if (deformation_type== DeformationType::olivine_d_fabric)
+        //   {
+        //     std::cout << "-------------------" <<std::endl;
+        //     std::cout << "\n def_type=olivined" <<std::endl;
+        //   }
+        // else if (deformation_type== DeformationType::clinopyroxene)
+        //   {
+        //     std::cout << "def_type=CPX" <<std::endl;
+        //   }
+
+        // for (int i = 3; i >= 0; i--)
+        //   std::cout << "outRRSS["<<i<<"]"<< ref_resolved_shear_stress[i]<<std::endl;
+        //debugging ends
+
+        // CPX and olivine_d_fabric has different slip systems
+        // first initiate the l and n
+        std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
+        std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+        if (deformation_type == DeformationType::clinopyroxene)
+          {
+            // more accurate way to calculate slip plane <110> normal by doing cross product
+            // tensor 1 is vector b axis minus the vector a axis
+
+            // Calculate plane110_normal --> crystal axis b minus axis a
+            Tensor<1,3> vec_b_minus_a = Tensor<1,3>({0,1,0})-Tensor<1,3>({1,0,0});
+            // for (int i = 2; i >= 0; i--)
+            //   std::cout << "vec_b_mins_a["<<i<<"]"<< vec_b_minus_a[i]<<std::endl;
+            // cross product between c*(b-a) to get normal vector for slip plane nsp{110}
+            Tensor<1,3> plane110_normal = cross_product_3d(vec_b_minus_a,Tensor<1,3>({0,0,1}));
+            plane110_normal /= plane110_normal.norm();
+            // for (int i = 2; i >= 0; i--)
+            //   std::cout << "plane110_normal["<<i<<"]"<< plane110_normal[i]<<std::endl;
+
+            // Calculate plane11_0_normal --> crystal axis a minus axis -b
+            Tensor<1,3> vec_a_minus_neg_b = Tensor<1,3>({1,0,0})-Tensor<1,3>({0,-1,0});
+            // cross product between (a-(-b))*c to get normal vector for slip plane nsp{110}
+            Tensor<1,3> plane11_0_normal = cross_product_3d(vec_a_minus_neg_b,Tensor<1,3>({0,0,1}));
+            plane11_0_normal /= plane11_0_normal.norm();
+
+            // Calculate slip direction vector 110 a + b
+            Tensor<1,3> sd110 = Tensor<1,3>({1,0,0})+Tensor<1,3>({0,1,0});
+            sd110 /= sd110.norm();
+            // provide slip systems: n and l vector combinations for bigI in equation5 of Kaminski 2001
+            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
+            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({0,0,1}),sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+          }
+        else if (deformation_type == DeformationType::olivine_d_fabric)
+          {
+            //crystal axis b minus axis c
+            Tensor<1,3> tensor2 = Tensor<1,3>({0,1,0})-Tensor<1,3>({0,0,1});
+            // cross product between a*(b-c) to get normal vector for nsp{011}
+            Tensor<1,3> plane011_normal = cross_product_3d(Tensor<1,3>({0,0,1}),tensor2);
+            plane011_normal /= plane011_normal.norm();
+            // provide slip systems: n and l vector combinations for bigI in equation5 of Kaminski 2001
+            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane011_normal}};
+            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
+          }
+        else  //Olivine A,B,C,E types
+          {
+            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
+            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+          }
 
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
@@ -660,8 +726,6 @@ namespace aspect
             Tensor<2,3> G;
             Tensor<1,3> w;
             Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
-            std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
-            std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
 
             // these are variables we only need for olivine, but we need them for both
             // within this if block and the next ones
@@ -672,72 +736,72 @@ namespace aspect
             Tensor<1,4> bigI;
             const Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(cpo_index,data,mineral_i,grain_i);
             const Tensor<2,3> rotation_matrix_transposed = transpose(rotation_matrix);
-            // for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
-            //   {
-            //     const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
-            //     const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
-            //     const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global); //<Tian?> is outer_product really doing cross product?
-            //     bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
-            //   }
-
-            //quick test for CPX slip-system Tian begin
-            //more accurate way to calculate slip plane <110> normal by doing cross product
-            // tensor 1 is vector b axis minus the vector a axis
-            //Tensor<1,3>()
-            auto tensor1 = Tensor<1,3>({rotation_matrix[1][0] - rotation_matrix[0][0],
-                                          rotation_matrix[1][1] - rotation_matrix[0][1],
-                                          rotation_matrix[1][2] - rotation_matrix[0][2]});
-
-            auto tensor2 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
-            // Calculate plane110_normal
-            Tensor<1,3> plane110_normal = cross_product_3d(tensor1,tensor2);
-
-            // Normalize plane110_normal
-
-            double plane110_normal_norm = plane110_normal.norm();
-
-            std::vector<double> acsnsp110_new = {plane110_normal[0] / plane110_normal_norm,
-                                                 plane110_normal[1] / plane110_normal_norm,
-                                                 plane110_normal[2] / plane110_normal_norm
-                                                };
-
-            // Calculate plane11_0_normal   vector axis minus vector b axis 
-            auto tensor3 = Tensor<1,3>({rotation_matrix[0][0] - (-rotation_matrix[1][0]),
-                                          rotation_matrix[0][1] - (-rotation_matrix[1][1]),
-                                          rotation_matrix[0][2] - (-rotation_matrix[1][2])
-          });
-            auto tensor4 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
-            Tensor<1,3> plane11_0_normal = cross_product_3d(tensor3,tensor4);
-
-                        // Normalize plane11_0_normal
-            plane11_0_normal /= plane11_0_normal.norm();
-            Tensor<1,3> acsnsp11_0_new = plane11_0_normal;
-
-            // Calculate ascsd110_new
-           Tensor<1,3> ascsd110_new_temp ({rotation_matrix[1][0] + rotation_matrix[0][0],
-                                        rotation_matrix[1][1] + rotation_matrix[0][1],
-                                        rotation_matrix[1][2] + rotation_matrix[0][2]});
-
-            auto ascsd110_new = Tensor<1,3> ({ascsd110_new_temp[0]/ascsd110_new_temp.norm(),
-                            ascsd110_new_temp[1]/ascsd110_new_temp.norm(),
-                            ascsd110_new_temp[2]/ascsd110_new_temp.norm()
-          });
-
-            // Calculate bigI
-            //bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
-            //std::vector<double> bigI(4, 0.0);
-            for (int i1 = 0; i1 < 3; ++i1)
+            for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
               {
-                for (int i2 = 0; i2 < 3; ++i2)
-                  {
-                    bigI[0] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[1][i2];
-                    bigI[1] += strain_rate_nondimensional[i1][i2] * ascsd110_new[0] * acsnsp11_0_new[i2];
-                    bigI[2] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * acsnsp110_new[i2];
-                    bigI[3] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[0][i2];
-                  }
+                const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
+                const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
+                const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global); //<Tian?> is outer_product really doing cross product?
+                bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
               }
 
-            //quick test for CPX slip-system Tian end
+            //   //quick test for CPX slip-system Tian begin
+            //   //more accurate way to calculate slip plane <110> normal by doing cross product
+            //   // tensor 1 is vector b axis minus the vector a axis
+            //   //Tensor<1,3>()
+            //   auto tensor1 = Tensor<1,3>({rotation_matrix[1][0] - rotation_matrix[0][0],
+            //                                 rotation_matrix[1][1] - rotation_matrix[0][1],
+            //                                 rotation_matrix[1][2] - rotation_matrix[0][2]});
+
+            //   auto tensor2 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+            //   // Calculate plane110_normal
+            //   Tensor<1,3> plane110_normal = cross_product_3d(tensor1,tensor2);
+
+            //   // Normalize plane110_normal
+
+            //   double plane110_normal_norm = plane110_normal.norm();
+
+            //   std::vector<double> acsnsp110_new = {plane110_normal[0] / plane110_normal_norm,
+            //                                        plane110_normal[1] / plane110_normal_norm,
+            //                                        plane110_normal[2] / plane110_normal_norm
+            //                                       };
+
+            //   // Calculate plane11_0_normal   vector axis minus vector b axis
+            //   auto tensor3 = Tensor<1,3>({rotation_matrix[0][0] - (-rotation_matrix[1][0]),
+            //                                 rotation_matrix[0][1] - (-rotation_matrix[1][1]),
+            //                                 rotation_matrix[0][2] - (-rotation_matrix[1][2])
+            // });
+            //   auto tensor4 = Tensor<1,3>({rotation_matrix[2][0], rotation_matrix[2][1], rotation_matrix[2][2]});
+            //   Tensor<1,3> plane11_0_normal = cross_product_3d(tensor3,tensor4);
+
+            //               // Normalize plane11_0_normal
+            //   plane11_0_normal /= plane11_0_normal.norm();
+            //   Tensor<1,3> acsnsp11_0_new = plane11_0_normal;
+
+            //   // Calculate ascsd110_new
+            //  Tensor<1,3> ascsd110_new_temp ({rotation_matrix[1][0] + rotation_matrix[0][0],
+            //                               rotation_matrix[1][1] + rotation_matrix[0][1],
+            //                               rotation_matrix[1][2] + rotation_matrix[0][2]});
+
+            //   auto ascsd110_new = Tensor<1,3> ({ascsd110_new_temp[0]/ascsd110_new_temp.norm(),
+            //                   ascsd110_new_temp[1]/ascsd110_new_temp.norm(),
+            //                   ascsd110_new_temp[2]/ascsd110_new_temp.norm()
+            // });
+
+            //   // Calculate bigI
+            //   //bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
+            //   //std::vector<double> bigI(4, 0.0);
+            //   for (int i1 = 0; i1 < 3; ++i1)
+            //     {
+            //       for (int i2 = 0; i2 < 3; ++i2)
+            //         {
+            //           bigI[0] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[1][i2];
+            //           bigI[1] += strain_rate_nondimensional[i1][i2] * ascsd110_new[0] * acsnsp11_0_new[i2];
+            //           bigI[2] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * acsnsp110_new[i2];
+            //           bigI[3] += strain_rate_nondimensional[i1][i2] * rotation_matrix[2][i1] * rotation_matrix[0][i2];
+            //         }
+            //     }
+
+            //   //quick test for CPX slip-system Tian end
 
             if (bigI.norm() < 1e-10)
               {
@@ -787,16 +851,24 @@ namespace aspect
                 //                          + beta[3] * rotation_matrix[2][i] * rotation_matrix[0][j]);
                 //       }
                 //   }
-                for (int i1 = 0; i1 < 3; ++i1)
+                for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
                   {
-                    for (int i2 = 0; i2 < 3; ++i2)
-                      {
-                        G[i1][i2] = 2 * (beta[0] * rotation_matrix[2][i1] * rotation_matrix[1][i2] +
-                                         beta[1] * ascsd110_new[0] * acsnsp11_0_new[i2] +
-                                         beta[2] * rotation_matrix[2][i1] * acsnsp110_new[i2] +
-                                         beta[3] * rotation_matrix[2][i1] * rotation_matrix[0][i2]);
-                      }
+                    const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
+                    const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
+                    const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
+                    G += 2.0 * beta[slip_system_i] * slip_cross_product ;
                   }
+
+                // for (int i1 = 0; i1 < 3; ++i1)
+                //   {
+                //     for (int i2 = 0; i2 < 3; ++i2)
+                //       {
+                //         G[i1][i2] = 2 * (beta[0] * rotation_matrix[2][i1] * rotation_matrix[1][i2] +
+                //                          beta[1] * ascsd110_new[0] * acsnsp11_0_new[i2] +
+                //                          beta[2] * rotation_matrix[2][i1] * acsnsp110_new[i2] +
+                //                          beta[3] * rotation_matrix[2][i1] * rotation_matrix[0][i2]);
+                //       }
+                //   }
               }
 
             // Now calculate the analytic solution to the deformation minimization problem
@@ -1017,6 +1089,10 @@ namespace aspect
             // from Kaminski and Ribe, GRL 2002 and
             // Becker et al., 2007 (http://www-udc.ig.utexas.edu/external/becker/preprints/bke07.pdf)
             case DeformationType::olivine_d_fabric :
+              ref_resolved_shear_stress[0] = 3;
+              ref_resolved_shear_stress[1] = 5;
+              ref_resolved_shear_stress[2] = max_value;
+              ref_resolved_shear_stress[3] = 1;
               break;
 
             // Kaminski, Ribe and Browaeys, GJI, 2004 (same as in the matlab code) and

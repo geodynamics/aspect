@@ -248,11 +248,13 @@ namespace aspect
            * The planes are ordered from weakest to strongest with relative values,
            * where the inactive plane is infinity strong. So it is a measure of strength
            * on each slip plane.
+           * @param deformation_type Represent one of the deformation type
            * @param prevent_nondimensionalization Prevent nondimensializing values internally.
            * Only for unit testing purposes.
            */
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives_drex_2004(const unsigned int cpo_index,
+          compute_derivatives_drex_2004(DeformationType deformation_type,
+                                        const unsigned int cpo_index,
                                         const ArrayView<double> &data,
                                         const unsigned int mineral_i,
                                         const SymmetricTensor<2,3> &strain_rate_3d,
