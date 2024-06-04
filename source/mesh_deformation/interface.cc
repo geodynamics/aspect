@@ -1301,8 +1301,6 @@ namespace aspect
       std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
-      cell = sim.dof_handler.begin_active(), endc= sim.dof_handler.end();
-      typename DoFHandler<dim>::active_cell_iterator
       fscell = mesh_deformation_dof_handler.begin_active();
 
       for (const auto &cell : sim.dof_handler.active_cell_iterators())
