@@ -30,6 +30,7 @@
 #include <aspect/melt.h>
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/material_model/reaction_model/katz2003_mantle_melting.h>
 
 
 
@@ -46,7 +47,7 @@ namespace aspect
      */
 
     template <int dim>
-    class ReactiveFluidTransport : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
+    class ReactiveFluidTransport : public MaterialModel::MeltInterface<dim>, public MaterialModel::MeltFractionModel<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -197,6 +198,12 @@ namespace aspect
         std::vector<std::vector<double>> devolatilization_onset_temperatures {Td_peridotite_poly_coeffs, Td_gabbro_poly_coeffs, \
                                                                                Td_MORB_poly_coeffs, Td_sediment_poly_coeffs
                                                                               };
+
+        /*
+        * Object for computing Katz 2003 melt parameters
+        */
+        ReactionModel::Katz2003MantleMelting<dim> katz2003_model;
+
         /**
          * Enumeration for selecting which type of scheme to use for
          * reactions between fluids and solids. The available
@@ -235,12 +242,16 @@ namespace aspect
          * maximum bound water content > current bound water content
          * This model requires that 4 compositional fields named after the 4 different rock
          * types exist in the input file.
+         *
+         * The Katz2003 model implements anhydrous the mantle melting model from
+         * Katz et. al., 2003 G3, doi:10.1029/2002GC000433.
          */
         enum ReactionScheme
         {
           no_reaction,
           zero_solubility,
-          tian_approximation
+          tian_approximation,
+          katz2003
         }
         fluid_solid_reaction_scheme;
     };

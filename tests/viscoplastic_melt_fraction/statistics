@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Visualization file name
+# 11: Minimal melt fraction
+# 12: Total melt volume
+# 13: Maximal melt fraction
+# 14: Minimal pressure (Pa)
+# 15: Average pressure (Pa)
+# 16: Maximal pressure (Pa)
+# 17: Minimal value for composition porosity
+# 18: Maximal value for composition porosity
+# 19: Global mass for composition porosity
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 4225 0 0 output-viscoplastic_melt_fraction/solution/solution-00000 0.00000000e+00 8.95551643e+08 3.13709146e-01 -7.49588013e-04 1.57608000e+09 3.15216000e+09 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e+03 1.000000000000e+03 1024 9539 4225 4225 0 0 output-viscoplastic_melt_fraction/solution/solution-00001 0.00000000e+00 8.95551643e+08 3.13709146e-01 -5.81741333e-05 1.57608000e+09 3.15216000e+09 0.00000000e+00 0.00000000e+00 0.00000000e+00 

@@ -20,6 +20,7 @@
 
 #include <aspect/material_model/reactive_fluid_transport.h>
 #include <aspect/simulator_access.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/base/parameter_handler.h>
@@ -118,7 +119,6 @@ namespace aspect
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
           switch (fluid_solid_reaction_scheme)
             {
               case no_reaction:
@@ -134,6 +134,7 @@ namespace aspect
                 // The fluid volume fraction in equilibrium with the solid
                 // at any point (stored in the melt_fractions vector) is
                 // equal to the sum of the bound fluid content and porosity.
+                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                 melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
                 break;
               }
@@ -142,6 +143,7 @@ namespace aspect
                 // The bound fluid content is calculated using parametrized phase
                 // diagrams for four different rock types: sediment, MORB, gabbro, and
                 // peridotite.
+                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
                 const unsigned int sediment_idx = this->introspection().compositional_index_for_name("sediment");
                 const unsigned int MORB_idx = this->introspection().compositional_index_for_name("MORB");
                 const unsigned int gabbro_idx = this->introspection().compositional_index_for_name("gabbro");
@@ -165,6 +167,12 @@ namespace aspect
                 // is equal to the sum of the porosity and the change in bound fluid content
                 // (current bound fluid - updated average bound fluid).
                 melt_fractions[q] = std::max(in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx] - average_eq_bound_water_content, 0.0);
+                break;
+              }
+              case katz2003:
+              {
+                melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
+                                                                 this->get_adiabatic_conditions().pressure(in.position[q]));
                 break;
               }
               default:
@@ -245,7 +253,6 @@ namespace aspect
         }
 
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
-      const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
 
       // Fill reaction rate outputs if the model uses operator splitting.
       // Specifically, change the porosity (representing the amount of free water)
@@ -263,17 +270,27 @@ namespace aspect
                 if (in.composition[q][porosity_idx] + porosity_change < 0)
                   porosity_change = -in.composition[q][porosity_idx];
 
-                if (c == bound_fluid_idx && this->get_timestep_number() > 0)
-                  reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
-                else if (c == porosity_idx && this->get_timestep_number() > 0)
-                  reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
+                if (fluid_solid_reaction_scheme != katz2003)
+                  {
+                    const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+                    if (c == bound_fluid_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
+                    else if (c == porosity_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
+                    else
+                      reaction_rate_out->reaction_rates[q][c] = 0.0;
+                  }
                 else
-                  reaction_rate_out->reaction_rates[q][c] = 0.0;
+                  {
+                    if (c == porosity_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
+                    else
+                      reaction_rate_out->reaction_rates[q][c] = 0.0;
+                  }
+
               }
         }
     }
-
-
 
     template <int dim>
     void
@@ -352,20 +369,22 @@ namespace aspect
                              Patterns::Double (0),
                              "The maximum allowed weight percent that the sediment composition can hold.");
           prm.declare_entry ("Fluid-solid reaction scheme", "no reaction",
-                             Patterns::Selection("no reaction|zero solubility|tian approximation"),
+                             Patterns::Selection("no reaction|zero solubility|tian approximation|katz2003"),
                              "Select what type of scheme to use for reactions between fluid and solid phases. "
                              "The current available options are models where no reactions occur between "
                              "the two phases, or the solid phase is insoluble (zero solubility) and all "
                              "of the bound fluid is released into the fluid phase, tian approximation "
                              "use polynomials to describe hydration and dehydration reactions for four different "
-                             "rock compositions as defined in Tian et al., 2019.");
+                             "rock compositions as defined in Tian et al., 2019, or the Katz et. al. 2003 mantle "
+                             "melting model.");
+
+          // read in melting model parameters
+          ReactionModel::Katz2003MantleMelting<dim>::declare_parameters(prm);
         }
         prm.leave_subsection();
       }
       prm.leave_subsection();
     }
-
-
 
     template <int dim>
     void
@@ -430,6 +449,12 @@ namespace aspect
                                      "if there is a compositional field called peridotite."));
               fluid_solid_reaction_scheme = tian_approximation;
             }
+          else if (prm.get ("Fluid-solid reaction scheme") == "katz2003")
+            {
+              fluid_solid_reaction_scheme = katz2003;
+              katz2003_model.initialize_simulator (this->get_simulator());
+              katz2003_model.parse_parameters(prm);
+            }
           else
             AssertThrow(false, ExcMessage("Not a valid fluid-solid reaction scheme"));
 
@@ -467,9 +492,12 @@ namespace aspect
                       ExcMessage("Material model Reactive Fluid Transport only "
                                  "works if there is a compositional field called porosity."));
 
-          AssertThrow(this->introspection().compositional_name_exists("bound_fluid"),
-                      ExcMessage("Material model Reactive Fluid Transport only "
-                                 "works if there is a compositional field called bound_fluid."));
+          if (fluid_solid_reaction_scheme != katz2003)
+            {
+              AssertThrow(this->introspection().compositional_name_exists("bound_fluid"),
+                          ExcMessage("Material model Reactive Fluid Transport only "
+                                     "works if there is a compositional field called bound_fluid."));
+            }
         }
         prm.leave_subsection();
       }
