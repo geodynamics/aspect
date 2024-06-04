@@ -90,15 +90,15 @@ Skipping mesh refinement, because the mesh did not change.
      Compositions min/max/mass: -1.218e+09/1.361e+09/1.701e+20 // -1.361e+09/1.218e+09/-1.701e+20 // -42.83/42.83/6.551e+06 // -0.002961/1.001/3.341e+12 // -0.002178/0.9984/3.645e+11 // -0.002739/1.002/5.067e+11 // -0.0002238/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -5.879e-05 m, 4.809e-05 m
-     RMS, max velocity:         2.29 m/year, 6.61 m/year
+     RMS, max velocity:         2.23 m/year, 6.45 m/year
 
 Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 2:  t=100 years, dt=50 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
-   Solving ve_stress_xx system ... 13 iterations.
-   Solving ve_stress_yy system ... 13 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 12 iterations.
    Solving LM system ... 9 iterations.
    Solving TZ system ... 10 iterations.
@@ -107,10 +107,10 @@ Skipping mesh refinement, because the mesh did not change.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -2.247e+08/1.71e+08/-3.961e+18 // -1.71e+08/2.247e+08/3.961e+18 // -30.99/30.97/3.388e+09 // -0.002945/1.001/3.342e+12 // -0.001663/0.9947/3.624e+11 // -0.002586/1.001/5.077e+11 // -4.143e-05/1/1.242e+11
+     Compositions min/max/mass: -2.365e+08/1.83e+08/-1.755e+18 // -1.83e+08/2.365e+08/1.755e+18 // -38.45/38.44/5.512e+09 // -0.002962/1.001/3.342e+12 // -0.001677/0.9947/3.624e+11 // -0.002603/1.001/5.077e+11 // -4.232e-05/1/1.242e+11
      Temperature min/avg/max:   293 K, 293 K, 293 K
-     Topography min/max:        -6.21e-05 m, 5.215e-05 m
-     RMS, max velocity:         0.142 m/year, 0.39 m/year
+     Topography min/max:        -6.549e-05 m, 5.528e-05 m
+     RMS, max velocity:         0.123 m/year, 0.335 m/year
 
 Skipping mesh refinement, because the mesh did not change.
 
