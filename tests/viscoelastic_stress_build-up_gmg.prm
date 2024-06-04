@@ -87,7 +87,7 @@ subsection Initial composition model
 end
 
 subsection Material model
-  set Material averaging = project to Q1 only viscosity
+  set Material averaging = harmonic average only viscosity
 end
 
 subsection Postprocess
