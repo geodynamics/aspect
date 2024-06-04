@@ -1,0 +1,5 @@
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = basalt_fraction
+  set Types of fields  = chemical composition
+end
