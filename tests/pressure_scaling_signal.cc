@@ -23,12 +23,13 @@
 #include <aspect/simulator_signals.h>
 
 
-void my_signal(double &pressure_scaling, const double reference_viscosity, const double length_scale)
+double my_signal(const double pressure_scaling, const double reference_viscosity, const double length_scale)
 {
   std::cout << "pressure_scaling = " << pressure_scaling
             << " reference_viscosity = " << reference_viscosity
             << " length_scale = " << length_scale << std::endl;
-  pressure_scaling = 42.0;
+  // Now change it to something different:
+  return 42.0;
 }
 
 

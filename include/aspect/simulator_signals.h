@@ -211,9 +211,11 @@ namespace aspect
      * The argument @p pressure_scaling contains the computed pressure scaling (the ratio
      * of the reference viscosity @p reference_viscosity computed by averaging
      * the viscosity in the domain and the length scale @p length_scale reported
-     * by the geometry model) and can be used to modify the scaling factor.
+     * by the geometry model). The return value of this functions will replace
+     * the computed value, therefore no changes are made if you return the value
+     * @p pressure_scaling.
      */
-    boost::signals2::signal<void (double &pressure_scaling, const double reference_viscosity, const double length_scale)>  modify_pressure_scaling;
+    boost::signals2::signal<double (const double pressure_scaling, const double reference_viscosity, const double length_scale)>  modify_pressure_scaling;
 
     /**
      * A signal that is called at the beginning of the program. It

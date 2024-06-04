@@ -464,9 +464,11 @@ namespace aspect
     const double length_scale = geometry_model->length_scale();
 
     // Allow the user to inspect and/or overwrite our result:
-    double result = reference_viscosity / length_scale;
-    signals.modify_pressure_scaling(result, reference_viscosity, length_scale);
-    return result;
+    const double result = reference_viscosity / length_scale;
+    if (boost::optional<double> value = signals.modify_pressure_scaling(result, reference_viscosity, length_scale))
+      return *value;
+    else
+      return result;
   }
 
 
