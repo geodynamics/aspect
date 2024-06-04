@@ -53,10 +53,10 @@ for ts in range(out_n_min, out_n_max + 1):
     mesh = pv.read(dir + "output/solution/solution-" + num_str + ".pvtu")
 
     #   Extract cartesian coordinates of the mesh and x-y velocities
-    mesh.point_data["x"] = [z[0] for z in mesh.points]
-    mesh.point_data["y"] = [z[1] for z in mesh.points]
-    mesh.point_data["vx"] = [z[0] for z in mesh.point_data["velocity"]]
-    mesh.point_data["vy"] = [z[1] for z in mesh.point_data["velocity"]]
+    mesh.point_data["x"] = mesh.points.T[0] # equivalently: [z[0] for z in mesh.points]
+    mesh.point_data["y"] = mesh.points.T[1] # equivalently [z[1] for z in mesh.points]
+    mesh.point_data["vx"] = mesh.point_data["velocity"].T[0]
+    mesh.point_data["vy"] = mesh.point_data["velocity"].T[1]
 
     #   Compute polar coordinates of the mesh and radial
     #   and angular velocities
