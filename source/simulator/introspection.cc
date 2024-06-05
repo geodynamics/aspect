@@ -21,7 +21,7 @@
 
 #include <aspect/introspection.h>
 #include <aspect/global.h>
-
+#include <aspect/utilities.h>
 
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/fe_dgq.h>
@@ -56,14 +56,13 @@ namespace aspect
      */
     template <int dim>
     typename Introspection<dim>::BlockIndices
-    setup_blocks (FEVariableCollection<dim> &fevs)
+    setup_blocks (FEVariableCollection<dim> &fevs, const unsigned int n_compositional_fields)
     {
       typename Introspection<dim>::BlockIndices b;
       b.velocities = fevs.variable("velocity").block_index;
       b.pressure = fevs.variable("pressure").block_index;
       b.temperature = fevs.variable("temperature").block_index;
 
-      unsigned int n_compositional_fields = fevs.variable("compositions").n_components();
       const unsigned int first_composition_block_index = fevs.variable("compositions").block_index;
       for (unsigned int i=0; i<n_compositional_fields; ++i)
         {
@@ -78,14 +77,15 @@ namespace aspect
 
     template <int dim>
     typename Introspection<dim>::BaseElements
-    setup_base_elements (FEVariableCollection<dim> &fevs)
+    setup_base_elements (FEVariableCollection<dim> &fevs, const unsigned int n_compositional_fields)
     {
       typename Introspection<dim>::BaseElements base_elements;
 
       base_elements.velocities = fevs.variable("velocity").base_index;
       base_elements.pressure = fevs.variable("pressure").base_index;
       base_elements.temperature = fevs.variable("temperature").base_index;
-      base_elements.compositional_fields = fevs.variable("compositions").base_index;
+      base_elements.compositional_fields = Utilities::possibly_extend_from_1_to_N(std::vector<unsigned int>({fevs.variable("compositions").base_index}),
+                                                                                  n_compositional_fields, "");
 
       return base_elements;
     }
@@ -247,9 +247,9 @@ namespace aspect
     use_discontinuous_composition_discretization (parameters.use_discontinuous_composition_discretization),
     component_indices (internal::setup_component_indices<dim>(*this)),
     n_blocks(FEVariableCollection<dim>::n_blocks()),
-    block_indices (internal::setup_blocks<dim>(*this)),
+    block_indices (internal::setup_blocks<dim>(*this, parameters.n_compositional_fields)),
     extractors (component_indices),
-    base_elements (internal::setup_base_elements<dim>(*this)),
+    base_elements (internal::setup_base_elements<dim>(*this, parameters.n_compositional_fields)),
     polynomial_degree (internal::setup_polynomial_degree<dim>(parameters)),
     quadratures (internal::setup_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
     face_quadratures (internal::setup_face_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
@@ -334,6 +334,46 @@ namespace aspect
 
 
   template <int dim>
+  std::vector<unsigned int>
+  Introspection<dim>::get_compositional_field_base_element_indices() const
+  {
+    // We are assigning base elements in order, so the first compositional field
+    // gives us the first base element index. Then we find the largest index
+    // in the vector. This is necessary, because the fields could have type A,B,A.
+    std::vector<unsigned int> result;
+    const unsigned int first = this->base_elements.compositional_fields[0];
+    const unsigned int last = *std::max_element(this->base_elements.compositional_fields.begin(), this->base_elements.compositional_fields.end());
+    for (unsigned int i = first; i<=last; ++i)
+      result.emplace_back(i);
+    return result;
+  }
+
+
+
+  template <int dim>
+  std::vector<unsigned int>
+  Introspection<dim>::get_compositional_field_indices_with_base_element(const unsigned int base_element_index) const
+  {
+    std::vector<unsigned int> result;
+    Assert(base_element_index <= get_compositional_field_base_element_indices().back(),
+           ExcMessage("Invalid base_element_index specified."));
+
+    unsigned int idx = 0;
+    for (const auto base_idx : this->base_elements.compositional_fields)
+      {
+        if (base_idx == base_element_index)
+          result.emplace_back(idx);
+
+        ++idx;
+      }
+
+    Assert(result.size() > 0, ExcInternalError("There should be at least one compositional field for a valid base element."));
+    return result;
+  }
+
+
+
+  template <int dim>
   unsigned int
   Introspection<dim>::compositional_index_for_name (const std::string &name) const
   {
@@ -353,7 +393,7 @@ namespace aspect
   Introspection<dim>::name_for_compositional_index (const unsigned int index) const
   {
     // make sure that what we get here is really an index of one of the compositional fields
-    AssertIndexRange(index,composition_names.size());
+    AssertIndexRange(index, composition_names.size());
     return composition_names[index];
   }
 
@@ -487,6 +527,22 @@ namespace aspect
     return false;
   }
 
+
+
+  template <int dim>
+  bool
+  Introspection<dim>::is_composition_component (const unsigned int component_index) const
+  {
+    // All compositions live at the end. Just to be sure, there are no other components
+    // in our system after compositional fields, right?
+    Assert(component_indices.compositional_fields[0] > component_indices.temperature
+           && component_indices.compositional_fields.back() == n_components-1, ExcInternalError());
+
+    if (component_index >= component_indices.compositional_fields[0])
+      return true;
+    else
+      return false;
+  }
 
 }
 

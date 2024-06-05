@@ -67,4 +67,12 @@ TEST_CASE("Introspection::1")
   CHECK(introspection.block_indices.compositional_field_sparsity_pattern[0] == 3);
   CHECK(introspection.block_indices.compositional_field_sparsity_pattern[1] == 3);
   CHECK(introspection.block_indices.compositional_field_sparsity_pattern[2] == 3);
+
+  CHECK(introspection.base_elements.velocities == 0);
+  CHECK(introspection.base_elements.pressure == 1);
+  CHECK(introspection.base_elements.temperature == 2);
+  // All compositional fields have the same FE:
+  CHECK(introspection.base_elements.compositional_fields == std::vector<unsigned int>({3,3,3}));
+  CHECK(introspection.get_compositional_field_base_element_indices() == std::vector<unsigned int>({3}));
+  CHECK(introspection.get_compositional_field_indices_with_base_element(3) == std::vector<unsigned int>({0,1,2}));
 }

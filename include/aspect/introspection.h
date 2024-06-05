@@ -246,18 +246,17 @@ namespace aspect
        * A structure that enumerates the base elements of the finite element
        * that correspond to each of the variables in this problem.
        *
-       * If there are compositional fields, they are all discretized with the
-       * same base element and, consequently, we only need a single index. If
-       * a variable does not exist in the problem (e.g., we do not have
-       * compositional fields), then the corresponding index is set to an
-       * invalid number.
+       * The indices here can be used to access the dealii::FiniteElement
+       * that describes the given variable. We support different finite
+       * elements for compositional fields, but we try to reuse the same
+       * element if possible.
        */
       struct BaseElements
       {
-        unsigned int       velocities;
-        unsigned int       pressure;
-        unsigned int       temperature;
-        unsigned int       compositional_fields;
+        unsigned int              velocities;
+        unsigned int              pressure;
+        unsigned int              temperature;
+        std::vector<unsigned int> compositional_fields;
       };
 
       /**
@@ -441,6 +440,7 @@ namespace aspect
          */
         IndexSet locally_owned_fluid_pressure_dofs;
       };
+
       /**
        * A variable that contains index sets describing which of the globally
        * enumerated degrees of freedom are owned by the current processor in a
@@ -464,6 +464,25 @@ namespace aspect
       /**
        * @}
        */
+
+      /**
+       * Return a vector with all used indices of base elements of the deal.II FiniteElement
+       * that are used for compositional fields. If several fields are the same type, they
+       * share base elements. If you have no compositional fields, the vector has length 0.
+       * If all compositional fields have the same finite element space, the length is 1.
+       */
+      std::vector<unsigned int>
+      get_compositional_field_base_element_indices() const;
+
+      /**
+       * Return a vector with all compositional field indices that belong to a given
+       * base element index as returned by get_compositional_field_base_element_indices().
+       * The indices returned are therefore between 0 and n_compositional_fields-1.
+       * If you have a single compositional field, this function returns {0} when passing
+       * in base_element_index=0.
+       */
+      std::vector<unsigned int>
+      get_compositional_field_indices_with_base_element(const unsigned int base_element_index) const;
 
       /**
        * A function that gets the name of a compositional field as an input
@@ -592,6 +611,16 @@ namespace aspect
        */
       bool
       is_stokes_component (const unsigned int component_index) const;
+
+      /**
+       * A function that gets a component index as an input
+       * parameter and returns if the component is one of the
+       * compositional fields.
+       *
+       * @param component_index The component index to check.
+       */
+      bool
+      is_composition_component (const unsigned int component_index) const;
 
     private:
       /**

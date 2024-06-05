@@ -174,7 +174,7 @@ namespace aspect
     if (this->is_temperature())
       return introspection.base_elements.temperature;
     else
-      return introspection.base_elements.compositional_fields;
+      return introspection.base_elements.compositional_fields[compositional_variable];
   }
 
   template <int dim>
@@ -184,7 +184,11 @@ namespace aspect
     if (this->is_temperature())
       return introspection.extractors.temperature;
     else
-      return introspection.extractors.compositional_fields[compositional_variable];
+      {
+        Assert(compositional_variable < introspection.n_compositional_fields,
+               ExcMessage("Invalid AdvectionField."));
+        return introspection.extractors.compositional_fields[compositional_variable];
+      }
   }
 
   template <int dim>
@@ -1686,55 +1690,80 @@ namespace aspect
 
     pcout << "   Solving composition reactions... " << std::flush;
 
-    // make one fevalues for the composition, and one for the temperature (they might use different finite elements)
-    const Quadrature<dim> quadrature_C(dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).get_unit_support_points());
 
-    FEValues<dim> fe_values_C (*mapping,
-                               dof_handler.get_fe(),
-                               quadrature_C,
-                               update_quadrature_points | update_values | update_gradients);
+    // We want to compute reactions in each support point for all fields (compositional fields and temperature). The reaction
+    // rate for an individual field depends on the values of all other fields, so we have to step them forward in time together.
+    // The rates comes from the material and heating model, otherwise we have a simple ODE in each point on each cell to solve.
+    //
+    // So far so good. Except that fields can have different Finite Element discretizations (degree, continuous/discontinuous)
+    // and will have different support points. We solve this by computing the union of all support points and evaluating all fields
+    // in these points for every cell (if necessary by interpolation). Then we solve the ODEs on each cell together and
+    // write back all values that correspond to support points of that particular field. Field values we computed that are
+    // not actually support points, we just throw away.
+
+    // First compute the union of all support points (temperature and compositions):
+    std::vector<Point<dim>> unique_support_points;
+    // For each field (T or composition) store where each support point is found in the list of indices of support points
+    // unique_support_points. This means index=support_point_index_by_field[0][3] is the index of the third support point
+    // of the temperature field and unique_support_points[index] is its location.
+    std::vector<std::vector<unsigned int>> support_point_index_by_field(1+introspection.n_compositional_fields);
+
+    // Fill in the support_point_index_by_field data structure. This is a bit complicated...
+    {
+      // first fill in temperature:
+      unique_support_points = dof_handler.get_fe().base_element(introspection.base_elements.temperature).get_unit_support_points();
+      for (unsigned int i=0; i<unique_support_points.size(); ++i)
+        support_point_index_by_field[0].push_back(i);
+
+      // Naive n^2 algorithm to merge all compositional fields into the data structure.
+      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        {
+          const auto composition = Simulator<dim>::AdvectionField::composition(c);
+          const std::vector<Point<dim>> &points = dof_handler.get_fe().base_element(composition.base_element(introspection)).get_unit_support_points();
+
+          for (unsigned int i=0; i<points.size(); ++i)
+            {
+              const auto it = std::find(unique_support_points.begin(), unique_support_points.end(), points[i]);
+              if (it != unique_support_points.end())
+                {
+                  // We already have this support point, record its number:
+                  support_point_index_by_field[1+c].push_back(std::distance(unique_support_points.begin(), it));
+                }
+              else
+                {
+                  // This is a new point that needs to be added:
+                  unique_support_points.push_back(points[i]);
+                  support_point_index_by_field[1+c].push_back(unique_support_points.size()-1);
+                }
+            }
+        }
+    }
+
+    const Quadrature<dim> combined_support_points(unique_support_points);
+    FEValues<dim> fe_values (*mapping,
+                             dof_handler.get_fe(),
+                             combined_support_points,
+                             update_quadrature_points | update_values | update_gradients);
 
     std::vector<types::global_dof_index> local_dof_indices (dof_handler.get_fe().dofs_per_cell);
-    MaterialModel::MaterialModelInputs<dim> in_C(quadrature_C.size(), introspection.n_compositional_fields);
-    MaterialModel::MaterialModelOutputs<dim> out_C(quadrature_C.size(), introspection.n_compositional_fields);
-    HeatingModel::HeatingModelOutputs heating_model_outputs_C(quadrature_C.size(), introspection.n_compositional_fields);
-
-    const bool temperature_and_composition_use_same_fe =
-      (parameters.use_discontinuous_composition_discretization == parameters.use_discontinuous_temperature_discretization)
-      &&
-      (parameters.temperature_degree == parameters.composition_degree);
-
-    // temperature element
-    const Quadrature<dim> quadrature_T(dof_handler.get_fe().base_element(introspection.base_elements.temperature).get_unit_support_points());
-
-    FEValues<dim> fe_values_T (*mapping,
-                               dof_handler.get_fe(),
-                               quadrature_T,
-                               update_quadrature_points | update_values | update_gradients);
-
-    MaterialModel::MaterialModelInputs<dim> in_T(quadrature_T.size(), introspection.n_compositional_fields);
-    MaterialModel::MaterialModelOutputs<dim> out_T(quadrature_T.size(), introspection.n_compositional_fields);
-    HeatingModel::HeatingModelOutputs heating_model_outputs_T(quadrature_T.size(), introspection.n_compositional_fields);
+    MaterialModel::MaterialModelInputs<dim> in(combined_support_points.size(), introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(combined_support_points.size(), introspection.n_compositional_fields);
+    HeatingModel::HeatingModelOutputs heating_model_outputs(combined_support_points.size(), introspection.n_compositional_fields);
 
     // add reaction rate outputs
-    material_model->create_additional_named_outputs(out_C);
-    material_model->create_additional_named_outputs(out_T);
+    material_model->create_additional_named_outputs(out);
 
-    MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_C
-      = out_C.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+    MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
+      = out.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
-    MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_T
-      = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
-
-    AssertThrow(reaction_rate_outputs_C != nullptr && reaction_rate_outputs_T != nullptr,
+    AssertThrow(reaction_rate_outputs != nullptr,
                 ExcMessage("You are trying to use the operator splitting solver scheme, "
                            "but the material model you use does not support operator splitting "
                            "(it does not create ReactionRateOutputs, which are required for this "
                            "solver scheme)."));
 
     // some heating models require the additional outputs
-    heating_model_manager.create_additional_material_model_inputs_and_outputs(in_C, out_C);
-    heating_model_manager.create_additional_material_model_inputs_and_outputs(in_T, out_T);
+    heating_model_manager.create_additional_material_model_inputs_and_outputs(in, out);
 
     // Make a loop first over all cells, than over all reaction time steps, and then over
     // all degrees of freedom in each element to compute the reactions. This is possible
@@ -1746,114 +1775,88 @@ namespace aspect
     // interface between cells), as we loop over all cells, and then over all degrees of freedom
     // on each cell. Although this means we do some additional work, the results are still
     // correct, as we never read from distributed_vector inside the loop over all cells.
-    // We initialize the material model inputs objects in_T and in_C using the solution vector
+    // We initialize the material model inputs object in using the solution vector
     // on every cell, compute the update, and then on every cell put the result into the
     // distributed_vector vector. Only after the loop over all cells do we copy distributed_vector
     // back onto the solution vector.
     // So even though we touch some DoF more than once, we always start from the same value, compute the
     // same value, and then overwrite the same value in distributed_vector.
-    // TODO: make this more efficient.
+    // TODO: make this even more efficient.
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
-          fe_values_C.reinit (cell);
-          in_C.reinit(fe_values_C, cell, introspection, solution);
+          fe_values.reinit (cell);
+          in.reinit(fe_values, cell, introspection, solution);
 
-          if (temperature_and_composition_use_same_fe == false)
-            {
-              fe_values_T.reinit (cell);
-              in_T.reinit(fe_values_T, cell, introspection, solution);
-            }
-
-          std::vector<std::vector<double>> accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
-          std::vector<double> accumulated_reactions_T (quadrature_T.size());
+          std::vector<std::vector<double>> accumulated_reactions_C (combined_support_points.size(), std::vector<double> (introspection.n_compositional_fields));
+          std::vector<double> accumulated_reactions_T (combined_support_points.size());
 
           // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
-          // Because temperature and composition might use different finite elements, we loop through their elements
-          // separately, and update the temperature and the compositions for both.
           // We can reuse the same material model inputs and outputs structure for each reaction time step.
           // We store the computed updates to temperature and composition in a separate (accumulated_reactions) vector,
           // so that we can later copy it over to the solution vector.
           for (unsigned int i=0; i<number_of_reaction_steps; ++i)
             {
               // Loop over composition element
-              material_model->fill_additional_material_model_inputs(in_C, solution, fe_values_C, introspection);
+              material_model->fill_additional_material_model_inputs(in, solution, fe_values, introspection);
 
-              material_model->evaluate(in_C, out_C);
-              heating_model_manager.evaluate(in_C, out_C, heating_model_outputs_C);
+              material_model->evaluate(in, out);
+              heating_model_manager.evaluate(in, out, heating_model_outputs);
 
-              for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
+              for (unsigned int j=0; j<combined_support_points.size(); ++j)
                 {
                   for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
                     {
                       // simple forward euler
-                      in_C.composition[j][c] = in_C.composition[j][c]
-                                               + reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[j][c];
-                      accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs_C->reaction_rates[j][c];
+                      in.composition[j][c] = in.composition[j][c]
+                                             + reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
+                      accumulated_reactions_C[j][c] += reaction_time_step_size * reaction_rate_outputs->reaction_rates[j][c];
                     }
-                  in_C.temperature[j] = in_C.temperature[j]
-                                        + reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
+                  in.temperature[j] = in.temperature[j]
+                                      + reaction_time_step_size * heating_model_outputs.rates_of_temperature_change[j];
 
-                  if (temperature_and_composition_use_same_fe)
-                    accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_C.rates_of_temperature_change[j];
-                }
-
-              if (!temperature_and_composition_use_same_fe)
-                {
-                  // loop over temperature element
-                  material_model->fill_additional_material_model_inputs(in_T, solution, fe_values_T, introspection);
-
-                  material_model->evaluate(in_T, out_T);
-                  heating_model_manager.evaluate(in_T, out_T, heating_model_outputs_T);
-
-                  for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
-                    {
-                      // simple forward euler
-                      in_T.temperature[j] = in_T.temperature[j]
-                                            + reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
-                      accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs_T.rates_of_temperature_change[j];
-
-                      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-                        in_T.composition[j][c] = in_T.composition[j][c]
-                                                 + reaction_time_step_size * reaction_rate_outputs_T->reaction_rates[j][c];
-                    }
+                  accumulated_reactions_T[j] += reaction_time_step_size * heating_model_outputs.rates_of_temperature_change[j];
                 }
             }
 
           cell->get_dof_indices (local_dof_indices);
+          const unsigned int component_idx_T = introspection.component_indices.temperature;
 
-          // copy reaction rates and new values for the compositional fields
-          for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.compositional_fields).dofs_per_cell; ++j)
-            for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-              {
-                const unsigned int composition_idx
-                  = dof_handler.get_fe().component_to_system_index(introspection.component_indices.compositional_fields[c],
-                                                                   /*dof index within component=*/ j);
-
-                // skip entries that are not locally owned:
-                if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[composition_idx]))
-                  {
-                    distributed_vector(local_dof_indices[composition_idx]) = in_C.composition[j][c];
-                    distributed_reaction_vector(local_dof_indices[composition_idx]) = accumulated_reactions_C[j][c];
-                  }
-              }
-
-          // copy reaction rates and new values for the temperature field
-          for (unsigned int j=0; j<dof_handler.get_fe().base_element(introspection.base_elements.temperature).dofs_per_cell; ++j)
+          for (unsigned int dof_idx = 0; dof_idx < local_dof_indices.size(); ++dof_idx)
             {
-              const unsigned int temperature_idx
-                = dof_handler.get_fe().component_to_system_index(introspection.component_indices.temperature,
-                                                                 /*dof index within component=*/ j);
-
-              // skip entries that are not locally owned:
-              if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[temperature_idx]))
+              const auto comp_pair = dof_handler.get_fe().system_to_component_index(dof_idx);
+              const unsigned int component_idx = comp_pair.first;
+              if (component_idx>=component_idx_T) // ignore velocity, pressure, etc.
                 {
-                  if (temperature_and_composition_use_same_fe)
-                    distributed_vector(local_dof_indices[temperature_idx]) = in_C.temperature[j];
-                  else
-                    distributed_vector(local_dof_indices[temperature_idx]) = in_T.temperature[j];
+                  // We found a DoF that belongs to component component_idx, which is a temperature or compositional
+                  // field. That means we want to find where this DoF in the computed reactions above to copy it
+                  // back into the global solution vector.
 
-                  distributed_reaction_vector(local_dof_indices[temperature_idx]) = accumulated_reactions_T[j];
+                  // These two variables tell us the how-manyth shape function of which field (and therefore
+                  // field) this DoF is:
+                  const unsigned int index_within = comp_pair.second;
+                  const unsigned int field_index = component_idx-component_idx_T;
+                  // Now we can look up in the support_point_index_by_field data structure where this support
+                  // point is in the list of unique_support_points (and in the Quadrature):
+                  const unsigned int idx = support_point_index_by_field[field_index][index_within];
+
+                  // The final step is grabbing the value from the reaction computation and write it into
+                  // the global vector (if we own it, of course):
+                  if (dof_handler.locally_owned_dofs().is_element(local_dof_indices[dof_idx]))
+                    {
+                      // temperatures and compositions are stored differently:
+                      if (component_idx == component_idx_T)
+                        {
+                          distributed_vector(local_dof_indices[dof_idx]) = in.temperature[idx];
+                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_T[idx];
+                        }
+                      else
+                        {
+                          const unsigned int composition = field_index-1; // 0 is temperature...
+                          distributed_vector(local_dof_indices[dof_idx]) = in.composition[idx][composition];
+                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[idx][composition];
+                        }
+                    }
                 }
             }
         }

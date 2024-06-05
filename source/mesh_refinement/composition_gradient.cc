@@ -19,6 +19,7 @@
 */
 
 
+#include <aspect/simulator.h>
 #include <aspect/mesh_refinement/composition_gradient.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -37,44 +38,50 @@ namespace aspect
                                "compositional fields are active!"));
 
       indicators = 0;
-      Vector<float> this_indicator (indicators.size());
       const double power = 1.0 + dim/2.0;
 
-      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.compositional_fields).get_unit_support_points());
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature,
-                               update_quadrature_points | update_gradients);
-
-      // the values of the compositional fields are stored as block vectors for each field
-      // we have to extract them in this structure
-      std::vector<Tensor<1,dim>> composition_gradients (quadrature.size());
-
-      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+      for (const unsigned int base_element_index : this->introspection().get_compositional_field_base_element_indices())
         {
+          const Quadrature<dim> quadrature (this->get_fe().base_element(base_element_index).get_unit_support_points());
+          const unsigned int dofs_per_cell = quadrature.size();
+          FEValues<dim> fe_values (this->get_mapping(),
+                                   this->get_fe(),
+                                   quadrature,
+                                   update_quadrature_points | update_gradients);
+
+          // the values of the compositional fields are stored as block vectors for each field
+          // we have to extract them in this structure
+          std::vector<Tensor<1,dim>> composition_gradients (quadrature.size());
+
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
                 const unsigned int idx = cell->active_cell_index();
                 fe_values.reinit(cell);
-                fe_values[this->introspection().extractors.compositional_fields[c]].get_function_gradients (this->get_solution(),
-                    composition_gradients);
 
-                // For each composition dof, write into the output vector the
-                // composition gradient. Note that quadrature points and dofs
-                // are enumerated in the same order.
-                for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)
-                  this_indicator[idx] += composition_gradients[j].norm();
+                for (const unsigned int c : this->introspection().get_compositional_field_indices_with_base_element(base_element_index))
+                  {
+                    const typename Simulator<dim>::AdvectionField composition = Simulator<dim>::AdvectionField::composition(c);
+                    fe_values[composition.scalar_extractor(this->introspection())].get_function_gradients (this->get_solution(),
+                        composition_gradients);
 
-                // Scale gradient in each cell with the correct power of h. Otherwise,
-                // error indicators do not reduce when refined if there is a density
-                // jump. We need at least order 1 for the error not to grow when
-                // refining, so anything >1 should work. (note that the gradient
-                // itself scales like 1/h, so multiplying it with any factor h^s, s>1
-                // will yield convergence of the error indicators to zero as h->0)
-                this_indicator[idx] *= std::pow(cell->diameter(), power);
+                    // Some up the indicators for this composition on this cell. Note that quadrature points and dofs
+                    // are enumerated in the same order.
+                    double this_indicator = 0.0;
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      this_indicator += composition_gradients[j].norm();
+
+                    // Scale gradient in each cell with the correct power of h. Otherwise,
+                    // error indicators do not reduce when refined if there is a density
+                    // jump. We need at least order 1 for the error not to grow when
+                    // refining, so anything >1 should work. (note that the gradient
+                    // itself scales like 1/h, so multiplying it with any factor h^s, s>1
+                    // will yield convergence of the error indicators to zero as h->0)
+                    this_indicator *= std::pow(cell->diameter(), power);
+
+                    indicators[idx] += composition_scaling_factors[c] * this_indicator;
+                  }
               }
-          indicators.add(composition_scaling_factors[c], this_indicator);
         }
     }
 
