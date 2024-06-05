@@ -192,7 +192,8 @@ namespace aspect
             assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
           }
 
-        if (i > 0 && parameters.use_discontinuous_composition_discretization)
+        if (i > 0 && parameters.use_discontinuous_composition_discretization
+            && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field)
           {
             // TODO should these only be set when method is fem_field?
             assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
