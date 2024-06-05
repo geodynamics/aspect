@@ -1,6 +1,6 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/test/gmg/mesh_deformation_spherical_shell_2d.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/mesh-deformation/ascii-data/spherical_shell_2d.txt.
 
 Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 192 (on 3 levels)

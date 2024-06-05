@@ -45,8 +45,8 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: ascii data
   subsection Ascii data model
-    set Data directory = $ASPECT_SOURCE_DIR/data/test/gmg/
-    set Data file name = mesh_deformation_spherical_shell_2d.txt
+    set Data directory = $ASPECT_SOURCE_DIR/data/mesh-deformation/ascii-data/
+    set Data file name = spherical_shell_2d.txt
   end
 end
 
