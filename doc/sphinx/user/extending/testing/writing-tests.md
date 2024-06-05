@@ -52,7 +52,7 @@ which a pull request was developed and from which the output was taken. If
 this has been confirmed to be the source of a failed test run, a file that
 contains the differences between the test output you submitted as part of your
 pull request and the "reference" tester output will be available
-from GitHub (You will have to click on the link labelled "Details"
+from GitHub (You will have to click on the link labeled "Details"
 next to the line that tells you if tests have failed; for the jenkins tester
 that will bring you to a new page, where you have to go to the
 "Artifacts" tab in the top right corner. Depending on the tester,

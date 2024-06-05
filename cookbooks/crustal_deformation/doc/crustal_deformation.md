@@ -77,7 +77,7 @@ If we now set this parameter to 1 and allow the simulation to evolve for
 500kyr, a central graben or plateau (depending on the nature of the boundary
 conditions) develops and deepens/thickens over time, nicely showcasing the
 unique capabilities of the code to handle free surface large deformation,
-localised strain rates through visco-plasticity and adaptive mesh refinement
+localized strain rates through visco-plasticity and adaptive mesh refinement
 as shown in {numref}`fig:extcompr`.
 
 ```{figure-md} fig:meshes

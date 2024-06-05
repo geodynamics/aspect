@@ -70,7 +70,7 @@ python3 convert_gravity_ascii_to_vtu_map.py gravity-00000 181 91
 
 The first argument is the ascii file, while the following two arguments are
 the number of longitude and latitude points as specified in the `prm` file.
-The resulting `gravity-00000_map.vtu` file is then visualised with ParaView
+The resulting `gravity-00000_map.vtu` file is then visualized with ParaView
 and is shown in {numref}`fig:grav_mantle4`/{numref}`fig:grav_mantle5`. Note that on a modern laptop the calculations
 resulting from running the provided `prm` file in the cookbook folder takes a
 bit less than 2 hours on a single thread: about 1250&nbsp;s are spent in the

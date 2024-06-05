@@ -38,7 +38,7 @@ being widely distributed:
 
 :::{note}
 You can select other formats for output than VTU, see the run-time parameters in {ref}`parameters:Postprocess/Visualization`. However, none of the numerous formats currently implemented in deal.II other than
-the VTK/VTU formats allows for splitting up data over multiple files in case of parallel computattions, thus making subsequent visualization of the entire volume impossible. Furthermore, given
+the VTK/VTU formats allow for splitting up data over multiple files in case of parallel computations, thus making subsequent visualization of the entire volume impossible. Furthermore, given
 the amount of data ASPECT can produce, the compression that is part of the VTU format is
 an important part of keeping data manageable.
 :::

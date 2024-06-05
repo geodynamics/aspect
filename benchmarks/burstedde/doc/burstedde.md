@@ -120,7 +120,7 @@ is set to a very small value (deviating from the default value), in order to
 ensure that the solver can solve the system accurately enough to make sure
 that the iteration error is smaller than the discretization error.
 
-Expected analytical solutions at two locations are summarised in
+Expected analytical solutions at two locations are summarized in
 {numref}`tab:burstedde-table` and can be deduced from equations
 {math:numref}`eq:burstedde-velocity` and {math:numref}`eq:burstedde-pressure`.
 {numref}`fig:burstedde-benchmark` shows that the analytical
@@ -143,7 +143,7 @@ Burstedde benchmark: Results for the 3D polynomial Stokes benchmark, obtained wi
 
 ```
 
-The convergence of the numerical error of this benchmark has been analysed by
+The convergence of the numerical error of this benchmark has been analyzed by
 playing with the mesh refinement level in the input file, and results can be
 found in {numref}`fig:burstedde:errors`. The velocity shows cubic error convergence, while
 the pressure shows quadratic convergence in the $L_1$ and $L_2$ norms, as one

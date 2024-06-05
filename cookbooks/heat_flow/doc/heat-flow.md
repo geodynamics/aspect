@@ -41,7 +41,7 @@ exercise is described in [this presentation (last slide)](https://www.dropbox.co
 cookbook.*
 
 In order to complete this assignment, you will need to run models with ASPECT
-in the virtual machine, analyse these models, and visualize and discuss your
+in the virtual machine, analyze these models, and visualize and discuss your
 model results in a report. For each of the two settings, discuss the setup of
 the model and the model results as detailed below. You can use resources and
 data from elsewhere, but you will need to reference these in your report.
@@ -110,7 +110,7 @@ line follow an isotherm (line of constant temperature)? Why/why not?
 
 In the second setup, you will analyze the heat flux of one ocean island.
 
-In order to do that, pick your favourite ocean island from the list below.
+In order to do that, pick your favorite ocean island from the list below.
 Find out on what tectonic plate the island is located on, and how old the
 ocean floor is where the hot spot is located.
 

@@ -23,7 +23,7 @@ The composition of plate boundary geometry ("faults") and cratons ("continents")
 ```
 
 ## Computed material properties
-A common practice in mantle convection models using tomography data is to use a different model for the uppermost mantle structure because of the limited seimic resolution to accurately resolve the lithospheric structure and slabs. For this cookbook, we use a temperature model, TM1 {cite}`osei:etal:2018`, located in `cookbooks/tomography_based_plate_motions/input_data/upper_mantle_TM1_2D.txt`. The user can control the depth until which we want to use this temperature model using the `uppermost mantle thickness` parameter.
+A common practice in mantle convection models using tomography data is to use a different model for the uppermost mantle structure because of the limited seismic resolution to accurately resolve the lithospheric structure and slabs. For this cookbook, we use a temperature model, TM1 {cite}`osei:etal:2018`, located in `cookbooks/tomography_based_plate_motions/input_data/upper_mantle_TM1_2D.txt`. The user can control the depth until which we want to use this temperature model using the `uppermost mantle thickness` parameter.
 {numref}`fig:Vs_temperatures` shows the input Vs anomalies and the computed temperatures in the model.
 
 ```{figure-md} fig:Vs_temperatures

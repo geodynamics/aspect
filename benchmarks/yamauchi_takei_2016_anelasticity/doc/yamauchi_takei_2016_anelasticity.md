@@ -83,11 +83,11 @@ J_{U}(P,T)^{-1} = \mu_U(P,T) = \mu_U^0 + \frac{\partial{\mu_U}}{\partial{T}}(T -
 where $\mu_U^0$ is the unrelaxed shear modulus at surface pressure-temperature
 conditions, the differential terms are assumed to be constant and the
 pressure, $P$, in GPa is linearly related to the depth, $z$, in km by
-$\frac{z}{30}$. The normalised shear wave period, $\tau_S^{\prime}$, in
+$\frac{z}{30}$. The normalized shear wave period, $\tau_S^{\prime}$, in
 {math:numref}`eqn:compliance` is equal to $\frac{\tau_S}{2\pi\tau_M}$,
 where $\tau_S = 100~\text{ s}$ is the shear wave period and
-$\tau_M = \frac{\eta}{\mu_U}$ is the normalised Maxwell relaxation timescale.
-$\tau_P^{\prime}$ represents the normalised shear-wave period associated with
+$\tau_M = \frac{\eta}{\mu_U}$ is the normalized Maxwell relaxation timescale.
+$\tau_P^{\prime}$ represents the normalized shear-wave period associated with
 the center of the high frequency relaxation peak, assumed to be
 $6 \times 10^{-5}$. The shear viscosity, $\eta$, is
 ```{math}

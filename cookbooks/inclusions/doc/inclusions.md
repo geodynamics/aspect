@@ -43,7 +43,7 @@ for simple shear and 'PS' stands for pure shear.
 ```
 
 In the paper the authors also look at the case of a power-law rheology for the matrix.
-Instead of trying to reproduce their results exectly, let us simply create a test case for such an experiment.
+Instead of trying to reproduce their results exactly, let us simply create a test case for such an experiment.
 We then replace the simple material model by the Visco Plastic material model,
 select the dislocation creep flow law, set the
 activation volume and activation energy to zero, and set the cohesion to a very large value
