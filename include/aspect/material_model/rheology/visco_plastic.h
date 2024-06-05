@@ -110,7 +110,7 @@ namespace aspect
       std::vector<double> current_cohesions;
 
       /**
-       * The strain rate invariant 
+       * The strain rate invariant
       */
       double strain_rate_invariant;
     };
@@ -230,7 +230,6 @@ namespace aspect
            * Object for computing viscoelastic viscosities and stresses.
            */
           Rheology::Elasticity<dim> elastic_rheology;
-
 
         private:
 

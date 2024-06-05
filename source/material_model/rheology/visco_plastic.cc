@@ -136,7 +136,7 @@ namespace aspect
                              min_strain_rate);
 
         output_parameters.strain_rate_invariant = edot_ii;
-        
+
         // Calculate viscosities for each of the individual compositional phases
         for (unsigned int j=0; j < volume_fractions.size(); ++j)
           {
