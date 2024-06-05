@@ -6,9 +6,9 @@
 The setup for this experiment is based of {cite:t}`allken:etal:2011,allken:etal:2012,allken:etal:2013`.
 The Cartesian domain is $L_x\times L_y\times L_z=210\text{ km}\times 210\text{ km}\times 30\text{ km}$
 in size (see {numref}`fig:allken-setup`).
-It is a simple 2-layer crustal model consisting of $h_{uc}=15~\text{ km}$ of upper crust (characterised by a Mohr-Coulomb rheology with cohesion
+It is a simple 2-layer crustal model consisting of $h_{uc}=15~\text{ km}$ of upper crust (characterized by a Mohr-Coulomb rheology with cohesion
 $C_0=20\text{ MPa}$ and angle of friction $\phi_0=16^o$) and $h_{lc}=15~\text{ km}$ of lower crust
-(characterised by a Newtonian viscous rheology with a viscosity $\eta_{lc}=10^{20}~\text{ Pa.s}$).
+(characterized by a Newtonian viscous rheology with a viscosity $\eta_{lc}=10^{20}~\text{ Pa.s}$).
 The flow is assumed to be incompressible and isothermal.
 Both materials have the same density $\rho=2800\text{ kg}/\text{m}^3$ and the gravity is vertical with magnitude $9.81\text{ m}/\text{s}^2$.
 
@@ -28,7 +28,7 @@ Strain weakening is an essential part of this experiment: both cohesion and angl
 between strains $\varepsilon_1=0.25$ and $\varepsilon_2=1.25$ to reach a maximum weakening factor of $R=C_0/C_{sw}=\phi_0/\phi_{sw}=4$
 (i.e. $C_{sw}=5\text{ MPa}$ and $\phi_{sw}=4^o$).
 
-Two weak zones are placed at the base of the upper crust and are characterised by a prescribed strain value of $\varepsilon_2$. As shown
+Two weak zones are placed at the base of the upper crust and are characterized by a prescribed strain value of $\varepsilon_2$. As shown
 in {numref}`fig:allken-setup` they are offset by a distance $\Delta$ which is a multiple (between 2 and 6) of $h_{uc}$.
 The cross section of the two weak zones is $4\text{ km}\times 2\text{ km}$ and they are $50\text{ km}$ long.
 Results after $1\text{ Myr}$ of extension are shown in {numref}`fig:allken-result1`, {numref}`fig:allken-result2`, {numref}`fig:allken-result3` and {numref}`fig:allken-result4`.

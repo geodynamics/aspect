@@ -40,7 +40,7 @@ Here, the boundary conditions for velocity and temperature are subdivided into d
 
 We require that one of these boundary conditions hold at each point for both velocity and temperature, i.e., $\Gamma_{0,\mathbf u}\cup\Gamma_{{\text{prescribed}}\mathbf u}\cup\Gamma_{\parallel,\mathbf u}\cup\Gamma_{{\text{traction}}\mathbf u}=\Gamma$ and $\Gamma_{D,T}\cup\Gamma_{N,T}=\Gamma$.
 
-Boundary conditions have to be imposed for the compositional fields only at those parts of the boundary where flow points inward, see equation {math:numref}`eq:gamma-in-composition`, but not where it is either tangential to theboundary or points outward.
+Boundary conditions have to be imposed for the compositional fields only at those parts of the boundary where flow points inward, see equation {math:numref}`eq:gamma-in-composition`, but not where it is either tangential to the boundary or points outward.
 The difference in treatment between temperature and compositional boundary conditions is due to the fact that the temperature equation contains a (possibly small) diffusion component, whereas the compositional equations do not.
 
 There are other equations that ASPECT can optionally solve.
