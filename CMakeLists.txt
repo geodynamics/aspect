@@ -162,8 +162,13 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
   endif()
 
-  # add source and include dirs:
+  # Add the WorldBuilder include dirs. This includes both the WorldBuilder
+  # header files, as well as where the cmake run we do below puts the
+  # WorldBuilder config.h file.
   include_directories("${WORLD_BUILDER_SOURCE_DIR}/include/")
+  include_directories("${CMAKE_BINARY_DIR}/world_builder/include")
+
+
   include("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
 
   message(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
