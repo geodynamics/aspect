@@ -61,9 +61,9 @@ namespace aspect
               // olivine assuming a composition of 90 mol% Forsterite and 10 mol% Fayalite from Hirth
               // and Kohlstaedt 2004 10.1029/138GM06.
               const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-              const double weight_fraction_H2O = in.composition[q][bound_fluid_idx]; // mass fraction of bound water
-              const double weight_fraction_olivine = 1 - weight_fraction_H2O; // mass fraction of olivine
-              const double COH = (weight_fraction_H2O/molar_mass_H2O) / (weight_fraction_olivine/molar_mass_olivine) * 1e6; // COH in H / Si ppm
+              const double mass_fraction_H2O = std::max(minimum_mass_fraction_water_for_dry_creep[composition_index], in.composition[q][bound_fluid_idx]); // mass fraction of bound water
+              const double mass_fraction_olivine = 1 - mass_fraction_H2O; // mass fraction of olivine
+              const double COH = (mass_fraction_H2O/molar_mass_H2O) / (mass_fraction_olivine/molar_mass_olivine) * 1e6; // COH in H / Si ppm
               const double point_water_fugacity = COH / A_H2O *
                                                   std::exp((activation_energy_H2O + in.pressure[q]*activation_volume_H2O)/
                                                            (constants::gas_constant * in.temperature[q]));
@@ -84,6 +84,14 @@ namespace aspect
       void
       CompositionalViscosityPrefactors<dim>::declare_parameters (ParameterHandler &prm)
       {
+        prm.declare_entry ("Minimum mass fraction bound water content for fugacity", "6.15e-6",
+                           Patterns::List(Patterns::Double(0)),
+                           "The minimum water content for the HK04 olivine hydration viscosity "
+                           "prefactor scheme. This acts as the cutoff between 'dry' creep and 'wet' creep "
+                           "for olivine, and the default value is chosen based on the value reported by "
+                           "Hirth & Kohlstaedt 2004. For a mass fraction of bound water beneath this value, "
+                           "this value is used instead to compute the water fugacity. Units: \\si{\\kg} / \\si{\\kg} %.");
+
         prm.declare_entry ("Water fugacity exponents for diffusion creep", "0.0",
                            Patterns::List(Patterns::Double(0)),
                            "List of water fugacity exponents for diffusion creep for "
@@ -144,6 +152,8 @@ namespace aspect
                                                  options);
             dislocation_water_fugacity_exponents = Utilities::MapParsing::parse_map_to_double_array (prm.get("Water fugacity exponents for dislocation creep"),
                                                    options);
+            minimum_mass_fraction_water_for_dry_creep = Utilities::MapParsing::parse_map_to_double_array (prm.get("Minimum mass fraction bound water content for fugacity"),
+                                                        options);
           }
       }
     }
