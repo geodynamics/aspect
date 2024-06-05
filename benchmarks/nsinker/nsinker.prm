@@ -39,7 +39,7 @@ subsection Geometry model
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left,right,bottom,front,back
+  set Zero velocity boundary indicators = left,right,bottom,top,front,back
 end
 
 subsection Material model
