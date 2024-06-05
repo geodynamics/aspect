@@ -68,6 +68,20 @@ else()
     "CMAKE_BUILD_TYPE must either be 'Release', 'Debug', or 'DebugRelease', but is set to '${CMAKE_BUILD_TYPE}'.")
 endif()
 
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
+   "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
+  set(ASPECT_BUILD_DEBUG "ON")
+else()
+  set(ASPECT_BUILD_DEBUG "OFF")
+endif()
+
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Release" OR
+   "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
+  set(ASPECT_BUILD_RELEASE "ON")
+else()
+  set(ASPECT_BUILD_RELEASE "OFF")
+endif()
+
 
 
 
@@ -255,8 +269,9 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set(WB_ENABLE_PYTHON OFF)
     set(WB_MAKE_FORTRAN_WRAPPER OFF)
 
-    if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
-      # First for debug mode...
+    # First for debug mode...
+    if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
+      set(_build_type ${CMAKE_BUILD_TYPE})
       set(CMAKE_BUILD_TYPE Debug)
 
       message (STATUS "")
@@ -266,8 +281,12 @@ if(ASPECT_WITH_WORLD_BUILDER)
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
       target_compile_options(WorldBuilderDebug PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
 
+      set(CMAKE_BUILD_TYPE ${_build_type})
+    endif()
 
-      # ...then for release mode
+    # ...then for release mode
+    if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
+      set(_build_type ${CMAKE_BUILD_TYPE})
       set(CMAKE_BUILD_TYPE Release)
 
       message (STATUS "")
@@ -278,24 +297,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
       target_compile_definitions(WorldBuilderRelease PUBLIC "NDEBUG")
       target_compile_options(WorldBuilderRelease PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
 
-      set(CMAKE_BUILD_TYPE DebugRelease)
-
-    elseif(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-
-      message (STATUS "")
-      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
-
-      add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      target_compile_options(WorldBuilder PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
-
-    elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
-
-      message (STATUS "")
-      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
-
-      add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      target_compile_definitions(WorldBuilder PUBLIC "NDEBUG")
-      target_compile_options(WorldBuilder PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+      set(CMAKE_BUILD_TYPE ${_build_type})
     endif()
 
   else()
@@ -715,17 +717,17 @@ set(TARGET_SRC
 
 
 # Setup targets for ASPECT:
-if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   add_executable(${TARGET} ${TARGET_SRC})
   deal_ii_setup_target(${TARGET} DEBUG)
+endif()
+
+if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   add_executable(${TARGET}-release ${TARGET_SRC})
   deal_ii_setup_target(${TARGET}-release RELEASE)
   set(TARGETS ${TARGET}-release ${TARGET})
   # default for testing:
   set(TARGET ${TARGET})
-else()
-  add_executable(${TARGET} ${TARGET_SRC})
-  deal_ii_setup_target(${TARGET})
 endif()
 
 # This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
@@ -791,14 +793,14 @@ endif()
 
 if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
   message(STATUS "Linking ASPECT against WorldBuilder")
-  if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+  if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
     target_include_directories(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
-    target_include_directories(${TARGET}-release PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
     target_link_libraries(${TARGET} WorldBuilderDebug)
+  endif()
+
+  if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
+    target_include_directories(${TARGET}-release PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
     target_link_libraries(${TARGET}-release WorldBuilderRelease)
-  else()
-    target_include_directories(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
-    target_link_libraries(${TARGET} WorldBuilder)
   endif()
 endif()
 
