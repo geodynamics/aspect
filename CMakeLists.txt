@@ -17,10 +17,18 @@
 # <http://www.gnu.org/licenses/>.
 
 cmake_minimum_required(VERSION 3.13.4)
+project(aspect CXX)
 
 message(STATUS "====================================================")
 message(STATUS "============ Configuring ASPECT ====================")
 message(STATUS "====================================================")
+
+
+
+# ####################################################################
+# First figure out some global stuff
+# ####################################################################
+
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/CMakeCache.txt)
   message(FATAL_ERROR  "Detected the file\n"
@@ -38,73 +46,45 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   "begin a build in a different directory.")
 endif()
 
-#
-# Setup CMAKE_BUILD_TYPE:
-#
-
-set(CMAKE_BUILD_TYPE
-  "DebugRelease"
-  CACHE STRING
-  "Choose the type of build, options are: Debug, Release and DebugRelease."
+# Set up CMAKE_BUILD_TYPE. Newer cmake versions (such as 3.29) set it
+# to DebugRelease in the call to project() above, whereas older ones
+# set it to the empty string or not at all. So if it's empty, set it
+# to DebugRelease.
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
+  set(CMAKE_BUILD_TYPE
+      "DebugRelease"
+      CACHE STRING
+      "Choose the type of build, options are: Debug, Release and DebugRelease."
+      FORCE
   )
+endif()
 
-# This is a strict check. But it is better to only have a known number of
-# options for CMAKE_BUILD_TYPE...
-if( NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Release" AND
-    NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND
-    NOT "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Release" OR
+   "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
+   "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
+  message(STATUS "Setting up ASPECT for ${CMAKE_BUILD_TYPE} mode.")
+else()
   message(FATAL_ERROR
     "CMAKE_BUILD_TYPE must either be 'Release', 'Debug', or 'DebugRelease', but is set to '${CMAKE_BUILD_TYPE}'.")
-else()
-  message(STATUS "Setting up ASPECT for ${CMAKE_BUILD_TYPE} mode.")
 endif()
 
 
-# Set the name of the project and main target. If we are generating
-# ASPECT debug and release mode, we have the debug build as 'aspect'
-# and we populate a list of all targets (by default they are the same):
-set(TARGET "aspect")
-set(TARGETS "aspect")
 
 
 # ##############################################################################
-# Collect source files
+# Find external libraries
+# ##############################################################################
 
-file(GLOB_RECURSE ASPECT_SOURCE_FILES    "source/*.cc" "include/*.h")
-list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cc)
-file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
-set(ASPECT_MAIN_FILE "source/main.cc")
-
-# Special treatment of some files for unity builds. We need to exclude them
-# because otherwise template class instantiations split across several
-# .cc files (for example Simulator<dim> in core.cc, helper_functions.cc,
-# solver_schemes.cc, etc. might end up in the same unity file. This would
-# lead to errors with duplicate instantiations. The only reliable option
-# is to exclude the files that instantiate the whole class.
-set(UNITY_SEPARATE_FILES
-  "source/simulator/core.cc;source/volume_of_fluid/handler.cc")
-
-foreach(_source_file ${UNITY_SEPARATE_FILES})
-  set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
-  set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
-endforeach()
-
-
-
-# Set up include directories. Put the ASPECT header files
-# to the front of the list, whereas the 'catch' headers can
-# be preempted by the system
-include_directories(BEFORE ${CMAKE_BINARY_DIR}/include include)
-include_directories(AFTER  contrib/catch)
-
-# Generate compile_commands.json for tooling (VS Code, etc.)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+message(STATUS "")
+message(STATUS "===== Configuring external libraries ===============")
 
 list(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/cmake/modules
   )
 
+
+# deal.II first
 find_package(deal.II 9.5.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} $ENV{DEAL_II_DIR}
   )
@@ -148,12 +128,104 @@ if(NOT _DEALII_GOOD)
 endif()
 
 deal_ii_initialize_cached_variables()
-project(${TARGET} CXX)
 
-set(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
 
+# zlib
+set(ZLIB_DIR "" CACHE PATH "An optional hint to a ZLIB installation")
+if("${ZLIB_DIR}" STREQUAL "")
+  set(ZLIB_DIR "$ENV{ZLIB_DIR}" CACHE PATH "An optional hint to a ZLIB installation" FORCE)
+endif()
+find_package(ZLIB)
+if(${ZLIB_FOUND})
+  message(STATUS "Using ASPECT_WITH_ZLIB = 'ON'")
+  set(ASPECT_WITH_ZLIB ON)
+else()
+  message(STATUS "Using ASPECT_WITH_ZLIB = 'OFF'")
+  set(ASPECT_WITH_ZLIB OFF)
+endif()
+
+# PerpleX
+find_package(PerpleX QUIET
+  HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})
+if(${PerpleX_FOUND})
+  message(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
+  set(ASPECT_WITH_PERPLEX ON)
+else()
+  set(ASPECT_WITH_PERPLEX OFF)
+endif()
+
+# libdap so that ASPECT can connect to the OPeNDAP servers
+set(ASPECT_WITH_LIBDAP OFF CACHE BOOL "Check if the user wants to compile ASPECT with the libdap libraries.")
+message(STATUS "Using ASPECT_WITH_LIBDAP = '${ASPECT_WITH_LIBDAP}'")
+if(ASPECT_WITH_LIBDAP)
+  find_package(LIBDAP)
+  if(${LIBDAP_FOUND})
+    include_directories(${LIBDAP_INCLUDE_DIRS})
+    message(STATUS "LIBDAP found at ${LIBDAP_LIBRARY}\n")
+  else()
+    message(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
+  endif()
+endif()
+
+
+# FastScape library and link it to ASPECT if requested
+set(ASPECT_WITH_FASTSCAPE OFF CACHE BOOL "Whether the user wants to compile ASPECT with the landscape evolution code FastScape, or not.")
+message(STATUS "Using ASPECT_WITH_FASTSCAPE = '${ASPECT_WITH_FASTSCAPE}'")
+if(ASPECT_WITH_FASTSCAPE)
+  find_library(FASTSCAPE NAMES fastscapelib_fortran PATHS $ENV{FASTSCAPE_DIR} ${FASTSCAPE_DIR} PATH_SUFFIXES lib NO_DEFAULT_PATH)
+  if(FASTSCAPE)
+     message(STATUS "FastScape library found at ${FASTSCAPE_DIR}")
+
+    # Get the fastscape source path so we can check the version.
+    file(STRINGS "${FASTSCAPE_DIR}/Makefile" _fastscape_makefile)
+    foreach(_line ${_fastscape_makefile})
+        if("${_line}" MATCHES "^CMAKE_SOURCE_DIR")
+          string(REPLACE "CMAKE_SOURCE_DIR = " "" FASTSCAPE_SOURCE_DIR ${_line})
+        endif()
+    endforeach()
+
+    # Now get the version from setup.py
+    message(STATUS "Parsing '${FASTSCAPE_SOURCE_DIR}/setup.py' for version information")
+    file(STRINGS "${FASTSCAPE_SOURCE_DIR}/setup.py" _fastscape_info)
+    foreach(_line ${_fastscape_info})
+      string(STRIP ${_line} _line)
+      if("${_line}" MATCHES "^version")
+        string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
+      endif()
+    endforeach()
+
+    # Throw an error if the version is too old.
+    if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
+      message(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")
+    endif()
+  else()
+     message(FATAL_ERROR "Trying to link with FastScape but libfastscapelib_fortran.so was not found in ${FASTSCAPE_DIR}")
+  endif()
+endif()
+
+
+# NetCDF (c including parallel)
+set(ASPECT_WITH_NETCDF ON CACHE BOOL "Check if the user wants to compile ASPECT with the NetCDF libraries.")
+
+if(ASPECT_WITH_NETCDF)
+  find_package(NETCDF)
+  if(${NETCDF_FOUND})
+    message(STATUS "Using ASPECT_WITH_NETCDF = '${ASPECT_WITH_NETCDF}'")
+    message(STATUS "  NETCDF_INCLUDE_DIR: ${NETCDF_INCLUDE_DIR}")
+    message(STATUS "  NETCDF_LIBRARY: ${NETCDF_LIBRARY}")
+    message(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
+  else()
+    message(STATUS "NetCDF not found. Disabling ASPECT_WITH_NETCDF. You can specify a hint to your installation directory with NETCDF_DIR.")
+    set(ASPECT_WITH_NETCDF OFF CACHE BOOL "" FORCE)
+  endif()
+else()
+  message(STATUS "Using ASPECT_WITH_NETCDF = 'OFF'")
+endif()
+
+
+# WorldBuilder
 set(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
-message(STATUS "ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
+message(STATUS "Using ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
 if(ASPECT_WITH_WORLD_BUILDER)
   # Check whether we can find the WorldBuilder.
   set(WORLD_BUILDER_SOURCE_DIR "" CACHE PATH "Provide an external World Builder directory to be compiled with ASPECT. If the path is not provided or the World Builder is not found in the provided location, the version in the contrib folder is used.")
@@ -183,27 +255,50 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set(WB_ENABLE_PYTHON OFF)
 
     if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+      # First for debug mode...
       set(CMAKE_BUILD_TYPE Debug)
+
+      message (STATUS "")
+      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
+
       set(WB_TARGET "WorldBuilderDebug")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
       target_compile_options(WorldBuilderDebug PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
 
+
+      # ...then for release mode
       set(CMAKE_BUILD_TYPE Release)
+
+      message (STATUS "")
+      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
+
       set(WB_TARGET "WorldBuilderRelease")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
       target_compile_definitions(WorldBuilderRelease PUBLIC "NDEBUG")
       target_compile_options(WorldBuilderRelease PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
 
       set(CMAKE_BUILD_TYPE DebugRelease)
+
     elseif(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+
+      message (STATUS "")
+      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
+
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
       target_compile_options(WorldBuilder PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+
     elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
+
+      message (STATUS "")
+      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
+
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
       target_compile_definitions(WorldBuilder PUBLIC "NDEBUG")
       target_compile_options(WorldBuilder PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
     endif()
+
   else()
+
     file(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/world_builder/*.cc")
     list(APPEND ASPECT_SOURCE_FILES ${wb_files})
     add_definitions(-DWB_WITH_MPI)
@@ -243,6 +338,59 @@ if(ASPECT_WITH_WORLD_BUILDER)
   endif()
 endif()
 
+
+
+# ##############################################################################
+# Configuring the ASPECT targets themselves
+# ##############################################################################
+
+message(STATUS "")
+message(STATUS "===== Configuring ASPECT build targets =============")
+
+
+
+# ##############################################################################
+# Collect source files
+
+file(GLOB_RECURSE ASPECT_SOURCE_FILES    "source/*.cc" "include/*.h")
+list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main.cc)
+file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
+set(ASPECT_MAIN_FILE "source/main.cc")
+
+# Special treatment of some files for unity builds. We need to exclude them
+# because otherwise template class instantiations split across several
+# .cc files (for example Simulator<dim> in core.cc, helper_functions.cc,
+# solver_schemes.cc, etc. might end up in the same unity file. This would
+# lead to errors with duplicate instantiations. The only reliable option
+# is to exclude the files that instantiate the whole class.
+set(UNITY_SEPARATE_FILES
+  "source/simulator/core.cc;source/volume_of_fluid/handler.cc")
+
+foreach(_source_file ${UNITY_SEPARATE_FILES})
+  set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
+  set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
+endforeach()
+
+
+
+# Set up include directories. Put the ASPECT header files
+# to the front of the list, whereas the 'catch' headers can
+# be preempted by the system
+include_directories(BEFORE ${CMAKE_BINARY_DIR}/include include)
+include_directories(AFTER  contrib/catch)
+
+# Generate compile_commands.json for tooling (VS Code, etc.)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+
+# Set the name of the project and main target. If we are generating
+# ASPECT debug and release mode, we have the debug build as 'aspect'
+# and we populate a list of all targets (by default they are the same):
+set(TARGET "aspect")
+set(TARGETS "aspect")
+
+set(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
 
 
 # load in version info and export it
@@ -590,116 +738,58 @@ if(DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
   endif()
 endif()
 
-# find zlib if it is installed in a non-standard location
-set(ZLIB_DIR "" CACHE PATH "An optional hint to a ZLIB installation")
-if("${ZLIB_DIR}" STREQUAL "")
-  set(ZLIB_DIR "$ENV{ZLIB_DIR}" CACHE PATH "An optional hint to a ZLIB installation" FORCE)
-endif()
-find_package(ZLIB)
-include_directories(${ZLIB_INCLUDE_DIR})
-foreach(_T ${TARGETS})
-  target_link_libraries(${_T} ${ZLIB_LIBRARY})
-endforeach()
 
-find_package(PerpleX QUIET
-  HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})
+# ##############################################################################
+# Make sure we correctly link with external libraries
+# ##############################################################################
+
+# zlib
+if(${ZLIB_FOUND})
+  message(STATUS "Linking ASPECT against zlib")
+  include_directories(${ZLIB_INCLUDE_DIR})
+  foreach(_T ${TARGETS})
+    target_link_libraries(${_T} ${ZLIB_LIBRARY})
+  endforeach()
+endif()
+
+# PerpleX
 if(${PerpleX_FOUND})
-  message(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
+  message(STATUS "Linking ASPECT against PerpleX")
   include_directories(${PerpleX_INCLUDE_DIR})
   foreach(_T ${TARGETS})
     target_link_libraries(${_T} ${PerpleX_LIBRARIES})
   endforeach()
-  set(ASPECT_WITH_PERPLEX ON)
-else()
-  set(ASPECT_WITH_PERPLEX OFF)
 endif()
 
-
-# Find the libdap package so that ASPECT can connect to the OPeNDAP servers
-# Author: Kodi Neumiller
-set(ASPECT_WITH_LIBDAP OFF CACHE BOOL "Check if the user wants to compile ASPECT with the libdap libraries.")
-message(STATUS "Using ASPECT_WITH_LIBDAP = '${ASPECT_WITH_LIBDAP}'")
-if(ASPECT_WITH_LIBDAP)
-  find_package(LIBDAP)
-  if(${LIBDAP_FOUND})
-    include_directories(${LIBDAP_INCLUDE_DIRS})
-    foreach(_T ${TARGETS})
-      target_link_libraries(${_T} ${LIBDAP_LIBRARIES})
-    endforeach()
-    message(STATUS "LIBDAP found at ${LIBDAP_LIBRARY}\n")
-  else()
-    message(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
-  endif()
+# libdap
+if(${LIBDAP_FOUND})
+  message(STATUS "Linking ASPECT against libdap")
+  include_directories(${LIBDAP_INCLUDE_DIRS})
+  foreach(_T ${TARGETS})
+    target_link_libraries(${_T} ${LIBDAP_LIBRARIES})
+  endforeach()
 endif()
 
-
-# Check for FastScape library and link it to ASPECT if requested
-set(ASPECT_WITH_FASTSCAPE OFF CACHE BOOL "Whether the user wants to compile ASPECT with the landscape evolution code FastScape, or not.")
-message(STATUS "Using ASPECT_WITH_FASTSCAPE = '${ASPECT_WITH_FASTSCAPE}'")
-if(ASPECT_WITH_FASTSCAPE)
-  find_library(FASTSCAPE NAMES fastscapelib_fortran PATHS $ENV{FASTSCAPE_DIR} ${FASTSCAPE_DIR} PATH_SUFFIXES lib NO_DEFAULT_PATH)
-  if(FASTSCAPE)
-     message(STATUS "FastScape library found at ${FASTSCAPE_DIR}")
-
-    # Get the fastscape source path so we can check the version.
-    file(STRINGS "${FASTSCAPE_DIR}/Makefile" _fastscape_makefile)
-    foreach(_line ${_fastscape_makefile})
-        if("${_line}" MATCHES "^CMAKE_SOURCE_DIR")
-          string(REPLACE "CMAKE_SOURCE_DIR = " "" FASTSCAPE_SOURCE_DIR ${_line})
-        endif()
-    endforeach()
-
-    # Now get the version from setup.py
-    message(STATUS "Parsing '${FASTSCAPE_SOURCE_DIR}/setup.py' for version information")
-    file(STRINGS "${FASTSCAPE_SOURCE_DIR}/setup.py" _fastscape_info)
-    foreach(_line ${_fastscape_info})
-        string(STRIP ${_line} _line)
-        if("${_line}" MATCHES "^version")
-          string(REGEX REPLACE "[^0-9.]" "" FASTSCAPE_VERSION ${_line})
-        endif()
-    endforeach()
-
-    # Throw an error if the version is too old.
-    if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
-      message(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")
-    endif()
-
-    foreach(_T ${TARGETS})
-      target_link_libraries(${_T} ${FASTSCAPE})
-    endforeach()
-  else()
-     message(FATAL_ERROR "Trying to link with FastScape but libfastscapelib_fortran.so was not found in ${FASTSCAPE_DIR}")
-  endif()
+# Fastscape
+if (FASTSCAPE)
+  message(STATUS "Linking ASPECT against Fastscape")
+  foreach(_T ${TARGETS})
+    target_link_libraries(${_T} ${FASTSCAPE})
+  endforeach()
 endif()
 
-
-#
-# NetCDF (c including parallel)
-#
-
-set(ASPECT_WITH_NETCDF ON CACHE BOOL "Check if the user wants to compile ASPECT with the NetCDF libraries.")
-
-if(ASPECT_WITH_NETCDF)
-  find_package(NETCDF)
-  if(${NETCDF_FOUND})
-    include_directories(${NETCDF_INCLUDE_DIRS})
-    foreach(_T ${TARGETS})
-      target_link_libraries(${_T} ${NETCDF_LIBRARIES})
-    endforeach()
-
-    message(STATUS "Using ASPECT_WITH_NETCDF = '${ASPECT_WITH_NETCDF}'")
-    message(STATUS "  NETCDF_INCLUDE_DIR: ${NETCDF_INCLUDE_DIR}")
-    message(STATUS "  NETCDF_LIBRARY: ${NETCDF_LIBRARY}")
-    message(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
-  else()
-    message(STATUS "NetCDF not found. Disabling ASPECT_WITH_NETCDF. You can specify a hint to your installation directory with NETCDF_DIR.")
-    set(ASPECT_WITH_NETCDF OFF CACHE BOOL "" FORCE)
-  endif()
-else()
-  message(STATUS "NetCDF support disabled.")
+# NetCDF
+if(${NETCDF_FOUND})
+  message(STATUS "Linking ASPECT against NetCDF")
+  include_directories(${NETCDF_INCLUDE_DIRS})
+  foreach(_T ${TARGETS})
+    target_link_libraries(${_T} ${NETCDF_LIBRARIES})
+  endforeach()
 endif()
+
 
 if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
+  message(STATUS "Linking ASPECT against WorldBuilder")
   if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
     target_include_directories(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
     target_include_directories(${TARGET}-release PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
@@ -712,8 +802,10 @@ if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILD
 endif()
 
 
+
+# Some systems need to explicitly link to some libraries to use dlopen
 if(ASPECT_USE_SHARED_LIBS)
-  # some systems need to explicitly link to some libraries to use dlopen
+  message(STATUS "Linking ASPECT against dlopen")
   foreach(_T ${TARGETS})
     target_link_libraries(${_T} ${CMAKE_DL_LIBS})
   endforeach()
@@ -820,6 +912,60 @@ else()
 endif()
 
 
+#
+## installation
+#
+# binary:
+install(TARGETS ${TARGETS}
+  RUNTIME DESTINATION bin
+  COMPONENT runtime)
+
+# make sure we have the rpath to our dependencies set:
+
+foreach(_T ${TARGETS})
+  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+endforeach()
+
+# headers:
+install(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
+  DESTINATION include
+  COMPONENT includes
+  FILES_MATCHING PATTERN "*.h")
+
+# examples:
+set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL "If ON all cookbooks and benchmarks will be built and installed.")
+
+if(ASPECT_INSTALL_EXAMPLES)
+  add_subdirectory(benchmarks)
+  add_subdirectory(cookbooks)
+
+  install(DIRECTORY cookbooks/
+    DESTINATION cookbooks
+    COMPONENT examples
+    FILES_MATCHING PATTERN "*")
+  install(DIRECTORY benchmarks/
+    DESTINATION benchmarks
+    COMPONENT examples
+    FILES_MATCHING PATTERN "*")
+endif()
+
+# data files:
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
+  DESTINATION data
+  COMPONENT data)
+
+# cmake stuff:
+install(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
+        DESTINATION "lib/cmake/Aspect/")
+
+install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
+
+message(STATUS "Writing configuration details into detailed.log...")
+
+
+message(STATUS "")
+MESSAGE(STATUS "===== Configuring ASPECT documentation =============")
+
 ###########################################################
 # Having configured most of the compilation phase, now also
 # deal with other parts of the system.
@@ -871,55 +1017,9 @@ add_custom_command(TARGET ${TARGET} POST_BUILD
 
 
 
-#
-## installation
-#
-# binary:
-install(TARGETS ${TARGETS}
-  RUNTIME DESTINATION bin
-  COMPONENT runtime)
+message(STATUS "")
+MESSAGE(STATUS "===== Writing final configuration =============")
 
-# make sure we have the rpath to our dependencies set:
-
-foreach(_T ${TARGETS})
-  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
-endforeach()
-
-# headers:
-install(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
-  DESTINATION include
-  COMPONENT includes
-  FILES_MATCHING PATTERN "*.h")
-
-# examples:
-set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL "If ON all cookbooks and benchmarks will be built and installed.")
-
-if(ASPECT_INSTALL_EXAMPLES)
-  add_subdirectory(benchmarks)
-  add_subdirectory(cookbooks)
-
-  install(DIRECTORY cookbooks/
-    DESTINATION cookbooks
-    COMPONENT examples
-    FILES_MATCHING PATTERN "*")
-  install(DIRECTORY benchmarks/
-    DESTINATION benchmarks
-    COMPONENT examples
-    FILES_MATCHING PATTERN "*")
-endif()
-
-# data files:
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
-  DESTINATION data
-  COMPONENT data)
-
-# cmake stuff:
-install(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
-        DESTINATION "lib/cmake/Aspect/")
-
-install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
-
-message(STATUS "Writing configuration details into detailed.log...")
 include(cmake/write_config)
 
 # print "info" if run for the first time:
