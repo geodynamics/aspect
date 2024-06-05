@@ -1,11 +1,11 @@
 # This cookbook simulates a kinematically-driven 2D subduction system containing
 # distinct lithologies for the mantle wedge and subducting sediment,
 # mid-ocean ridge basalt (MORB), gabbro, peridotite. Lithologies within the slab
-# are prescribed an initial hydration state after a period of equilibration, and
+# are prescribed to an initial hydration state after a period of equilibration, and
 # subsequently dehydrate as they subduct. This cookbook utlizes the existing melt framework
 # within ASPECT which governs the mechanical coupling of a solid and fluid phase (see
-# https://doi.org/10.1093/gji/ggw329) but introduces solid-fluid reactions
-# (i.e partitioning of fluid into/out of the solid) that are governed by an approximation
+# https://doi.org/10.1093/gji/ggw329) but introduces solid-volatile reactions
+# that are governed by an approximation
 # published by Tian et al., 2019 (https://doi.org/10.1029/2019GC008488).
 # In detail, the model simulates the upper 20 km of a subducting slab with a dip
 # of 45 degrees and a convergence rate of 5 cm/yr. The Cartesian box is rotated
@@ -15,8 +15,8 @@
 # that is already subducted. For stability, the slab first subducts for 100 kyr before
 # the hydration is added, and the slab surface temperature diffuses to the mantle over
 # 10 km perpendicular to the slab surface. From the slab surface to the base of the model,
-# the composition is comprised of a 5km thick layer of sediment with 3 wt% water,
-# below is a 7km thick layer of MORB with 2 wt% water, and below that is an
+# the composition is comprised of a 5 km thick layer of sediment with 3 wt% water,
+# below is a 7 km thick layer of MORB with 2 wt% water, and below that is an
 # 8 km thick layer of gabbro with 1 wt% water.
 
 set Adiabatic surface temperature              = 1600
@@ -24,8 +24,10 @@ set Nonlinear solver scheme                    = iterated Advection and Stokes
 # We choose a low number of iterations and less restrictive nonlinear solver tolerance
 # for model efficiency. During the initial pulse of dehydration (for 3 time steps),
 # solvers do not quite converge to 1e-4, but achieve the convergence criteria for the
-# rest of the model run time. For a production model, one would choose a tolerance
-# of 1e-5, or even stricter if possible.
+# rest of the model run time. For a production model, a tolerance of at least 1e-5
+# should be selected. Reaching these tolerances may require on the order of
+# 50-100 nonlinear iterations, and the maximum number of nonlinear iterations
+# will need to be increased accordingly.
 set Max nonlinear iterations                   = 25
 set Nonlinear solver tolerance                 = 1e-4
 set Dimension                                  = 2
@@ -34,11 +36,11 @@ set End time                                   = 2e6
 set Surface pressure                           = 1e9
 set Maximum time step                          = 1000
 set Use operator splitting                     = true
-set Output directory                           = output-coupled-two-phase-tian-parameterization-kinematic-slab
+set Output directory                           = output_coupled_two_phase_tian_parameterization_kinematic_slab
 
 # Checkpoint the model so that a restart can be done if needed.
 subsection Checkpointing
-  set Steps between checkpoint = 200
+  set Steps between checkpoint = 20
 end
 
 subsection Discretization
@@ -82,8 +84,8 @@ subsection Compositional fields
 end
 
 # Initially, the interior of the model is just the periodite mantle.
-# The composition evolves through the composition boundary conditions
-# specified below.
+# The composition (4 lithologies, porosity, bound_fluid)
+# evolves through the composition boundary conditions specified below.
 subsection Initial composition model
   set Model name = function
   subsection Function
@@ -92,20 +94,24 @@ subsection Initial composition model
 end
 
 # The slab begins at the left most boundary, at first consisting solely of dry
-# lithologic layers. After 100 kyr, the incoming sediment is hydrated to 3 wt% water,
-# MORB to 2 wt% water, and gabbro to 1 wt% water.
+# lithologic layers. After 100 kyr, the incoming sediment is hydrated
+# (initial_bound_) variablesto 3 wt% water, MORB to 2 wt% water, and gabbro
+# to 1 wt% water.
 subsection Boundary composition model
   set Fixed composition boundary indicators         = left
   set List of model names                           = function
   subsection Function
-    set Function constants  = initial_porosity=0, initial_bound_sed=0.03, initial_bound_MORB=0.02, initial_bound_gabbro=0.01, \
+    set Function constants  = initial_porosity=0, initial_bound_sediment=0.03, initial_bound_MORB=0.02, initial_bound_gabbro=0.01, \
                               sediment_min=0, sediment_max=5e3, MORB_min=5e3, MORB_max=12e3, gabbro_min=12e3, gabbro_max=20e3, \
                               onset_time=100e3, slab_thickness=20e3
     set Function expression = initial_porosity; \
                               if( t<=onset_time, 0, \
-                              if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sed, \
-                              if( (y<=slab_thickness - MORB_min) & (y>slab_thickness - MORB_max), initial_bound_MORB, \
-                              if( (y<=slab_thickness - gabbro_min) & (y>slab_thickness - gabbro_max), initial_bound_gabbro, 0.0)))); \
+                                  if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sed, \
+                                      if( (y<=slab_thickness - MORB_min) & (y>slab_thickness - MORB_max), initial_bound_MORB, \
+                                          if( (y<=slab_thickness - gabbro_min) & (y>slab_thickness - gabbro_max), initial_bound_gabbro, 0.0) \
+                                        ) \
+                                    ) \
+                                ); \
                               if(y>slab_thickness, 1, 0); \
                               if(y<=8e3, 1, 0); \
                               if(y>8e3 & y<=15e3, 1, 0); \
@@ -229,6 +235,9 @@ subsection Material model
   subsection Visco Plastic
     # Use the composite flow law to simulate dislocation and diffusion creep
     # of dry olivine with the parameters from Hirth & Kohlstaedt 2004 (10.1029/138GM06).
+    # This will be inconsistent with the physical state of the model (the solid is hydrated),
+    # but ongoing work will introduce a more self-consistent coupling between the hydration
+    # state and the rheology.
     set Viscosity averaging scheme                      = harmonic
     set Viscous flow law                                = composite
 

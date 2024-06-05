@@ -7,11 +7,13 @@
 
 include $ASPECT_SOURCE_DIR/cookbooks/tian_parameterization_kinematic_slab/coupled-two-phase-tian-parameterization-kinematic-slab.prm
 
-set Output directory = output-uncoupled-two-phase-tian-parameterization-kinematic-slab
+set Output directory = output_uncoupled_two_phase_tian_parameterization_kinematic_slab
 
+subsection Solver parameters
   subsection Stokes solver parameters
-    # Lower solver tolerance to improve efficiency. Since the problem is simpler (i.e
-    # no compaction), we can get away with this.
+    # As the system of equations being solved is simpler, the linear solver tolerance can be reduced
+    # to improve efficiency. Note that in production models this value should be tested and decreased
+    # until it no longer has an effect on the model results when using the "iterated Advection and Stokes"
     set Linear solver tolerance             = 1e-8
     set Number of cheap Stokes solver steps = 1000
   end

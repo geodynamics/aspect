@@ -22,8 +22,8 @@ schematic diagram showing where the model is in the context of a generic subduct
 :::{note}
 The low fluid viscosity and high contrast in density between the solid and fluid phases leads to large fluid
 velocities on the order of m/yr. Combined with the need for high resolution around the fluid to resolve compaction
-viscosity gradients means that this cookbook requires more computational power than some other cookbooks within
-ASPECT.
+viscosity gradients means that this cookbook requires more computational resources than some other cookbooks within
+ASPECT. In detail, this simulation was run on 128 processors for approximately 2 hours.
 :::
 
 ```{figure-md} fig:schematic-diagram-overview
@@ -40,19 +40,20 @@ Schematic diagram showing the model design.
 
 ## The input file
 This cookbook includes two input files, one which advects the porosity (free fluid) compositional field through the
-darcy velocity, and one which advects the porosity compositional field according to the coupled two-phase reactions
-solved for in the Reactive Fluid Transport model. Both models feature dehydration and rehydration reactions using
-the Tian parameterization and both input files can be found at [cookbooks/tian_parameterization_kinematic_slab](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tian_parameterization_kinematic_slab/). One
+darcy velocity, and one which advects the porosity compositional field according to the fluid velocities obtained by solving the fully coupled two-phase flow system of equations. Both models feature dehydration and rehydration reactions using the Tian parameterization and both input files can be found at [cookbooks/tian_parameterization_kinematic_slab](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tian_parameterization_kinematic_slab/). One
 important problem in models that track the partitioning of fluid into/out of a solid phase is that these
 interactions can be much faster than the time step of the model. To model these type of processes, ASPECT uses
 operator splitting (see also {ref}`sec:benchmark:operator-splitting`): Reactions are solved on a different time
 scale than advection. For this model, this means that at the beginning of each time step, all hydration/dehydration
 reactions are solved using several shorter sub-time steps. In the input file, we have to choose both the size of
-these sub-time steps and the rate (or characteristic time scale) of the solid-fluid reactions, and they have to be
+these sub-time steps and the rate (or characteristic time scale) of the solid-fluid reactions, which must be
 consistent in the sense that the operator splitting time step can not be larger than the reaction time scale. We
 choose a conservative value for the fluid-solid reaction time scale of 50 kyr for model stability and computational
 efficiency. For a production model one would likely want to reduce this value to be as low as possible without
-affecting model convergence.
+affecting model convergence, since in reality the timescale for the fluid-solid reactions is likely much lower than
+the advection time step. For example, at 573 K it has been estimated that to fully serpentinize a 1 km line of
+mantle would take ~ 10 kyr, and this timescale seems to decrease with increasing temperature {cite:t}`macdonald_fyfe_1985`. However, smaller time scales would lead to very large changes in porosity that make the
+nonlinear solver converge less reliably unless much smaller advection time steps/higher resolution are enforced.
 
 ## Model Evolution
 As the slab 'subducts' across the base of the model, the hot ambient mantle heats the slab leading to progressive
@@ -109,3 +110,8 @@ can partition into the peridotite mantle.
 this dip will impact the magnitude of the slab-orthogonal component of gravity which has a large control on the
 fluid pathways. Varying the convergence rate will influence how much heat is able to conduct from the mantle into
 the slab and affect the timing of dehydration.
+
+It is worth reiterating that to extend this model towards a production simulation, the nonlinear solver tolerance
+should be stricter (at least 1e-5), and reaction rates should be reduced. This cookbook serves as a base model
+that showcases the use of tian approximation in the reactive two-phase fluid material model, and these
+simplifications were made in this cookbook to make the model more user-friendly.
