@@ -66,7 +66,7 @@ namespace aspect
      *
      * The overview below directly follows Moresi et al. (2003) eqns. 23-32.
      * However, an important distinction between this material model and
-     * the studies above is the option to use of compositional fields, rather than
+     * the studies above is the option to use compositional fields, rather than
      * particles, to track individual components of the viscoelastic stress
      * tensor. Calculating viscoelastic stresses with particles is also implemented,
      * and can be switched on by using particles with the particle property
@@ -175,35 +175,6 @@ namespace aspect
         /**
          * @}
          */
-
-        /**
-         * @name Functions used in dealing with run-time parameters
-         * @{
-         */
-
-        /**
-         * @name The elastic viscosity
-         * @{
-         */
-        double get_elastic_viscosity (const double shear_modulus) const;
-        /**
-         * @}
-         */
-
-        /**
-         * @name The elastic timestep
-         * @{
-         */
-        double get_elastic_timestep () const;
-        /**
-         * @}
-         */
-
-        /**
-         * Return the ratio between the computational and elastic timestep;
-         * the elastic timestep can be larger than the computational timestep.
-         */
-        double get_timestep_ratio() const;
 
         /**
          * @name Functions used in dealing with run-time parameters

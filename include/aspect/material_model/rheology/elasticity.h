@@ -107,7 +107,7 @@ namespace aspect
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,
-           * the elastic shear moduli @p average_elastic_shear_moduli a each point,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
            * and the (viscous) viscosities given in the material model outputs object @p out,
            * fill a material model outputs objects with the elastic force terms, viscoelastic
            * strain rate and viscous dissipation.

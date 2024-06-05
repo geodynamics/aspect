@@ -81,45 +81,13 @@ namespace aspect
       elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
       // Fill the elastic additional outputs with the shear modulus, elastic viscosity
       // and timestep ratio.
-      // TODO remove in and out?
       elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
       // Fill the reaction terms to apply the rotation of the stresses into the current timestep.
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
       // Fill the reaction_rates that during operator splitting apply the stress update of the previous
       // timestep to the advected and rotated stress computed in the previous timestep ($\tau^{0adv}$)
       // to obtain $\tau^{t}$.
-    }
-
-
-
-    template <int dim>
-    double
-    Viscoelastic<dim>::
-    get_elastic_viscosity(const double shear_modulus) const
-    {
-      // This viscosity has already been scaled with the timestep ratio
-      // $\frac{\Delta t_c}{\Delta t_{el}}$.
-      return elastic_rheology.calculate_elastic_viscosity(shear_modulus);
-    }
-
-
-
-    template <int dim>
-    double
-    Viscoelastic<dim>::
-    get_elastic_timestep() const
-    {
-      return elastic_rheology.elastic_timestep();
-    }
-
-
-
-    template <int dim>
-    double
-    Viscoelastic<dim>::
-    get_timestep_ratio() const
-    {
-      return elastic_rheology.calculate_timestep_ratio();
+      elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
     }
 
 

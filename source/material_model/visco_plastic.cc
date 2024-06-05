@@ -280,8 +280,6 @@ namespace aspect
           // Fill plastic outputs if they exist.
           // The values in isostrain_viscosities only make sense when the calculate_isostrain_viscosities function
           // has been called.
-          // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
-          // the ElasticAdditionalOutputs.
           rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
 
           if (this->get_parameters().enable_elasticity)
@@ -303,7 +301,6 @@ namespace aspect
           rheology->elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
           // Fill the elastic additional outputs with the shear modulus, elastic viscosity
           // and timestep ratio.
-          // TODO remove in and out?
           rheology->elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
           // Fill the reaction terms that account for the rotation of the stresses.
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
@@ -311,58 +308,6 @@ namespace aspect
           // timestep to the advected and rotated stress computed in the previous timestep ($\tau^{0}$)
           // to obtain $\tau^{t}$.
           rheology->elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
-        }
-    }
-
-
-
-    template <int dim>
-    double
-    ViscoPlastic<dim>::
-    get_elastic_viscosity(const double shear_modulus) const
-    {
-      if (this->get_parameters().enable_elasticity)
-        {
-          // This viscosity has already been scaled with the timestep ratio.
-          return rheology->elastic_rheology.calculate_elastic_viscosity(shear_modulus);
-        }
-      else
-        {
-          AssertThrow(false, ExcMessage("The material model is asked for the elastic viscosity, but elasticity is not enabled."));
-        }
-    }
-
-
-
-    template <int dim>
-    double
-    ViscoPlastic<dim>::
-    get_elastic_timestep() const
-    {
-      if (this->get_parameters().enable_elasticity)
-        {
-          return rheology->elastic_rheology.elastic_timestep();
-        }
-      else
-        {
-          AssertThrow(false, ExcMessage("The material model is asked for the elastic time step, but elasticity is not enabled."));
-        }
-    }
-
-
-
-    template <int dim>
-    double
-    ViscoPlastic<dim>::
-    get_timestep_ratio() const
-    {
-      if (this->get_parameters().enable_elasticity)
-        {
-          return rheology->elastic_rheology.calculate_timestep_ratio();
-        }
-      else
-        {
-          AssertThrow(false, ExcMessage("The material model is asked for the ratio of the computational over the elastic time step, but elasticity is not enabled."));
         }
     }
 
