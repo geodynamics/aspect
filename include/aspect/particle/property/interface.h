@@ -293,7 +293,12 @@ namespace aspect
          * updated over time its update function is called as usual, if not
          * the property will remain zero throughout the model run.
          */
-        initialize_to_zero
+        initialize_to_zero,
+        /**
+         * Allow the property plugins to define their own initialization
+         * behavior.
+        */
+        custom_initialization
       };
 
       /**
@@ -453,6 +458,30 @@ namespace aspect
           virtual
           InitializationModeForLateParticles
           late_initialization_mode () const;
+
+          /**
+           * Initialization function for particles that are added later
+           * during the simulation. This function is only called if the
+           * late_initialization_mode() function specifies that a custom
+           * initialization is necessary.
+           *
+           * @param [in] position The current particle position.
+           * @param [in] particle_handler A reference to the particle handler
+           * giving access to the collection of existing particles.
+           * @param [in] interpolator A reference to the particle interpolator
+           * plugin.
+           * @param [in] cell A cell iterator pointing to the cell the current particle
+           * lives in.
+           * @param [in,out] properties The properties of the particle
+           * that are to be initialized within the call of this function.
+           */
+          virtual
+          void
+          custom_late_initialization (const Point<dim> &position,
+                                      const ParticleHandler<dim> &particle_handler,
+                                      const Interpolator::Interface<dim> &interpolator,
+                                      const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                      const ArrayView<double> &properties) const;
 
           /**
            * Set up the information about the names and number of components

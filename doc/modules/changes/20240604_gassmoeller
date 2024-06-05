@@ -1,0 +1,5 @@
+Added: The particle property plugins can now specify a custom
+function to initialize properties of particles that are
+added during simulations.
+<br>
+(Rene Gassmoeller, 2024/06/04)
