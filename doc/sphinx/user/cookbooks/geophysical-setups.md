@@ -111,6 +111,7 @@ cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction
 cookbooks/allken_et_al_2012_rift_interaction/doc/allken.md
 cookbooks/inclusions/doc/inclusions.md
 cookbooks/subduction_initiation/doc/subduction_initiation.md
+cookbooks/dynamic_subduction_with_two_phases/doc/dynamic_subduction_with_two_phases.md
 cookbooks/vankeken_subduction/doc/vankeken_subduction.md
 cookbooks/tomography_based_plate_motions/doc/tomography_based_plate_motions.md
 cookbooks/future/README.md

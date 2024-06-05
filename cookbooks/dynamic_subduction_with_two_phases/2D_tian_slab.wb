@@ -1,0 +1,80 @@
+// Composition 1 is bound fluid
+// Composition 2 is peridotite
+// Composition 3 is gabbro
+// Composition 4 is MORB
+// Composition 5 is sediment
+// Composition 6 is weak zone
+{
+  "version": "0.6",
+  "gravity model":{"model":"uniform", "magnitude":10},
+  "cross section":[[0,0],[50e3,0]],
+  "surface temperature":273, "potential mantle temperature":1573,
+  "thermal expansion coefficient":3.1e-5, "specific heat":1000, "thermal diffusivity":1.0e-6,
+  "features":
+  [
+    {"model": "mantle layer", "name": "peridotite mantle", "coordinates": [[-500e3, 100e3], [-500e3, -100e3], [2000e3, -100e3], [2000e3, 100e3]],
+     "min depth": 0, "max depth":10000e3, 
+     "composition models": 
+     [{"model": "uniform", "min depth":0.0, "max depth":10000e3, "compositions": [2]}]},
+
+     {"model": "oceanic plate", "name": "Overriding Plate",
+     "coordinates": [[300e3, -100e3], [300e3, 100e3], [2000e3, 100e3], [2000e3, -100e3]],
+     "min depth": 0,
+     "max depth": 100e3,
+     "composition models": [{"model": "uniform", "compositions": [2], "min depth":0, "max depth": 100e3}],
+     "temperature models": [{"model": "half space model", "ridge coordinates": [[[1500e3,-100e3],[1500e3,100e3]]],
+     "spreading velocity": 0.05, "min depth": 0, "max depth":100e3}]
+   },
+
+    {"model": "oceanic plate", "name": "Subducting Plate",
+      "coordinates": [[300e3, -100e3], [300e3, 100e3], [-500e3, 100e3], [-500e3, -100e3]],
+      "min depth": 0,
+      "max depth": 150e3,
+      "composition models": 
+      [
+        {"model": "uniform", "compositions": [1], "min depth":0.0, "max depth": 10e3, "fractions": [0.02]},
+        {"model": "uniform", "compositions": [1], "min depth":10e3, "max depth": 20e3, "fractions": [0.01]},
+        {"model": "uniform", "compositions": [1], "min depth":20e3, "max depth": 30e3, "fractions": [0.005]},
+        {"model": "uniform", "compositions": [5], "min depth":0.0, "max depth": 10e3, "operation":"add"},
+        {"model": "uniform", "compositions": [4], "min depth":10e3, "max depth": 20e3, "operation":"add"},
+        {"model": "uniform", "compositions": [3], "min depth":20e3, "max depth": 30e3, "operation":"add"}],
+
+      "temperature models": [{"model": "half space model", "ridge coordinates": [[[-500e3,-100e3],[-500e3,100e3]]],
+      "spreading velocity": 0.05, "min depth": 0, "max depth": 150e3, "bottom temperature": -1}]
+    },
+    {"model":"subducting plate", "name":"Interface",
+
+      "coordinates":[[310e3,-100e3],[310e3,100e3]], 
+      "dip point":[1e7,0],"max depth":50e3,
+	    "segments":[{"length":150e3,"thickness":[150e3],"top truncation":[-50e3],"angle":[0,45]}],
+
+	    "composition models":[
+        {"model":"uniform", "compositions":[6], "min distance slab top":0, "max distance slab top":20e3}]
+	 }, 
+
+    {"model":"subducting plate", "name":"Slab",   
+
+      "coordinates":[[300e3,-100e3],[300e3,100e3]], 
+      "dip point":[1e7,0],"max depth":1000e3,
+	    "segments":[{"length":150e3,"thickness":[150e3],"top truncation":[-50e3],"angle":[0,45]}],
+
+	    "composition models":[
+        {"model":"uniform", "compositions":[1], "min distance slab top":0, "max distance slab top":10e3, "fractions": [0.02]},
+        {"model":"uniform", "compositions":[1], "min distance slab top":10e3, "max distance slab top":20e3, "fractions": [0.01]},
+        {"model":"uniform", "compositions":[1], "min distance slab top":20e3, "max distance slab top":30e3, "fractions": [0.005]},
+        {"model":"uniform", "compositions":[5], "min distance slab top":0, "max distance slab top":10e3, "operation":"add"},
+        {"model":"uniform", "compositions":[4], "min distance slab top":10e3, "max distance slab top":20e3, "operation":"add"},
+        {"model":"uniform", "compositions":[3], "min distance slab top":20e3, "max distance slab top":30e3, "operation":"add"}],
+    
+        "temperature models":[{"model":"mass conserving", 
+	      "reference model name": "half space model",
+		    "density":3300, "thermal conductivity":3.3, "adiabatic heating":true,
+		    "plate velocity":0.05,
+		    "ridge coordinates":[[[-500e3,-100e3],[-500e3,100e3]]],
+	 	    "coupling depth":80e3, 
+		    "forearc cooling factor":5.0,
+		    "taper distance":0, 
+	 	    "min distance slab top":-200e3, "max distance slab top":300e3}] 
+	 }  
+  ]
+}
