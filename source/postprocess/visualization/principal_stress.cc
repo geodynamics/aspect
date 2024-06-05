@@ -22,8 +22,6 @@
 
 #include <deal.II/base/symmetric_tensor.h>
 #include <aspect/material_model/rheology/elasticity.h>
-#include <aspect/material_model/visco_plastic.h>
-#include <aspect/material_model/viscoelastic.h>
 #include <aspect/utilities.h>
 
 namespace aspect

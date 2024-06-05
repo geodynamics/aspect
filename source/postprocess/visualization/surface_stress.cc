@@ -20,8 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/surface_stress.h>
-#include <aspect/material_model/visco_plastic.h>
-#include <aspect/material_model/viscoelastic.h>
+#include <aspect/material_model/rheology/elasticity.h>
 
 namespace aspect
 {
