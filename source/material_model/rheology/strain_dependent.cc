@@ -377,11 +377,12 @@ namespace aspect
       }
 
 
+
       template <int dim>
       std::array<double, 3>
       StrainDependent<dim>::
-      compute_strain_weakening_factors(const unsigned int j,
-                                       const std::vector<double> &composition) const
+      compute_strain_weakening_factors(const std::vector<double> &composition,
+                                       const unsigned int j) const
       {
         double viscous_weakening = 1.0;
         std::pair<double, double> brittle_weakening (1.0, 1.0);
@@ -449,6 +450,19 @@ namespace aspect
         return weakening_factors;
 
       }
+
+
+
+      template <int dim>
+      std::array<double, 3>
+      StrainDependent<dim>::
+      compute_strain_weakening_factors(const unsigned int j,
+                                       const std::vector<double> &composition) const
+      {
+        return compute_strain_weakening_factors(composition,j);
+      }
+
+
 
       template <int dim>
       double
