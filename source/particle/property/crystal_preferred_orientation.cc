@@ -711,16 +711,16 @@ namespace aspect
                   }
                 beta[indices.back()] = 0.0;
 
-                // Now compute the crystal rate of deformation tensor.
-                for (unsigned int i = 0; i < 3; ++i)
+                // Now compute the crystal rate of deformation tensor. equation 4 of Kaminski&Ribe 2001
+                // rotation_matrix_transposed = inverse of rotation matrix
+                // (see Engler et al., 2024 book: Intro to Texture analysis chp 2.3.2 the rotAtion MAtrix)
+                // this transform the crystal reference frame to specimen reference frame
+                for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
                   {
-                    for (unsigned int j = 0; j < 3; ++j)
-                      {
-                        G[i][j] = 2.0 * (beta[0] * rotation_matrix[0][i] * rotation_matrix[1][j]
-                                         + beta[1] * rotation_matrix[0][i] * rotation_matrix[2][j]
-                                         + beta[2] * rotation_matrix[2][i] * rotation_matrix[1][j]
-                                         + beta[3] * rotation_matrix[2][i] * rotation_matrix[0][j]);
-                      }
+                    const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
+                    const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
+                    const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
+                    G += 2.0 * beta[slip_system_i] * slip_cross_product ;
                   }
               }
 
