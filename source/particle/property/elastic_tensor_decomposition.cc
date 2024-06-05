@@ -114,7 +114,7 @@ namespace aspect
           // To do this we need to find the eigenvectors which are closest to each other and average those.
           // The next function looks for the smallest angle and returns the corresponding vector index for
           // that vector.
-          int vector_index_signed = 0.;
+          int vector_index_signed = 0;
           for (unsigned int i1 = 0; i1 < 3; i1++)
             {
               vector_index_signed = 0;
@@ -132,7 +132,7 @@ namespace aspect
                   // store this if the angle is smaller
                   if (angle < smallest_angle)
                     {
-                      vector_index_signed = std::copysign(1.0, dv_dot_product)*i2;
+                      vector_index_signed = (dv_dot_product < 0.0) ? -i2 : i2;
                       smallest_angle = angle;
                     }
                 }
