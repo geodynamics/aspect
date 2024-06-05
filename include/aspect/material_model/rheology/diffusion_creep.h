@@ -48,6 +48,11 @@ namespace aspect
         double activation_volume;
         double stress_exponent;
         double grain_size_exponent;
+
+        /**
+         * Constructor. Initializes all values to NaN.
+         */
+        DiffusionCreepParameters();
       };
 
       template <int dim>

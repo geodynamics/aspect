@@ -32,9 +32,19 @@ namespace aspect
   {
     namespace Rheology
     {
+      DruckerPragerParameters::DruckerPragerParameters()
+        : angle_internal_friction (numbers::signaling_nan<double>()),
+          cohesion  (numbers::signaling_nan<double>()),
+          max_yield_stress (numbers::signaling_nan<double>())
+      {}
+
+
+
       template <int dim>
       DruckerPrager<dim>::DruckerPrager ()
         = default;
+
+
 
       template <int dim>
       const DruckerPragerParameters

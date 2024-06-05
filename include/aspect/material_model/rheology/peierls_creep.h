@@ -51,6 +51,11 @@ namespace aspect
         double glide_parameter_q;
         double fitting_parameter;
         double stress_cutoff;
+
+        /**
+         * Constructor. Initializes all values to NaN.
+         */
+        PeierlsCreepParameters();
       };
 
       /**

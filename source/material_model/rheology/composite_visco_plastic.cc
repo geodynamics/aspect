@@ -137,6 +137,7 @@ namespace aspect
         Rheology::DislocationCreepParameters dislocation_creep_parameters;
         Rheology::PeierlsCreepParameters peierls_creep_parameters;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
+
         double eta_diff = maximum_viscosity;
         double eta_disl = maximum_viscosity;
         double eta_prls = maximum_viscosity;
