@@ -1,0 +1,36 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Nonlinear iteration number
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+# 17: Minimal temperature (K)
+# 18: Average temperature (K)
+# 19: Maximal temperature (K)
+# 20: Average nondimensional temperature (K)
+# 21: Visualization file name
+# 22: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 23: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 24: Number of advected particles
+# 25: Particle file name
+# 26: Mobility
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 0 0 0 0 16 154 84 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 1 0 0 0 16 156 90 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 2 0 0 0 15 158 85 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 3 0 0 0 14 127 80 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 4 0 0 0 13 153 75 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 5 0 0 0 13 140 75 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 6 0 0 0 13 167 75 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 7 0 0 0 13 142 75 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 8 0 0 0 12 134 70 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                         "" 0.00000000e+00 0.00000000e+00  0                                                           "" 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 48 552 240 480 9 0 0 0 12 123 70 1.30678462e-02 2.82680195e-02 3.00000000e+02 2.06745340e+03 3.70000000e+03 5.19839236e-01 output-cookbook_mantle_convection_annulus/solution/solution-00000 9.32654848e+06 1.85052632e+07 48 output-cookbook_mantle_convection_annulus/particles/particles-00000 3.98946605e-01 
