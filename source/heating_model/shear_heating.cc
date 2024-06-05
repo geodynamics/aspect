@@ -20,8 +20,6 @@
 
 
 #include <aspect/heating_model/shear_heating.h>
-#include <aspect/material_model/visco_plastic.h>
-#include <aspect/material_model/viscoelastic.h>
 
 
 namespace aspect
