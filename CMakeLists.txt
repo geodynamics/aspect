@@ -55,6 +55,7 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
       "DebugRelease"
       CACHE STRING
       "Choose the type of build, options are: Debug, Release and DebugRelease."
+      FORCE
   )
 endif()
 
