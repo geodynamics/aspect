@@ -525,6 +525,7 @@ namespace aspect
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (out.n_evaluation_points(), this->n_compositional_fields()));
         }
+      base_model->create_additional_named_outputs(out);
     }
   }
 }

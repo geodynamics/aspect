@@ -110,12 +110,12 @@ subsection Solver parameters
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, melt statistics, pressure statistics,  composition statistics
+  set List of postprocessors = visualization, melt statistics, pressure statistics, composition statistics
     subsection Visualization
       set Interpolate output = false
       set Number of grouped files       = 0
       set Output format                 = gnuplot
-      set List of output variables      = melt fraction
+      set List of output variables      = melt fraction, named additional outputs
       set Time between graphical output = 0
     end
 end
