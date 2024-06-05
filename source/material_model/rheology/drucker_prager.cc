@@ -72,6 +72,14 @@ namespace aspect
       {
         const double sin_phi = std::sin(angle_internal_friction);
         const double cos_phi = std::cos(angle_internal_friction);
+
+        // The expression below differs from Eq. 9 of Glerum et al, 2018.
+        // There are actually three different ways of choosing this parameter, which
+        // correspond to the Drucker-Prager yield surface either
+        // circumscribing (Glerum et al 2018), middle circumscribing or
+        // inscribing the Mohr-Coulomb yield surface.
+        // See for instance Owen & Hinton, Finite Elements in Plasticity, 1980.
+        // Here the middle circumscribing approach is taken.
         const double stress_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
 
         // Initial yield stress (no stabilization terms)
