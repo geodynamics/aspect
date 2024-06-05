@@ -12,4 +12,5 @@ cookbooks/index.md
 benchmarks/index.md
 extending/index.md
 answers.md
+authors.md
 :::
