@@ -112,6 +112,74 @@ namespace aspect
     }
   }
 
+  namespace Plugins
+  {
+    using namespace dealii;
+
+
+    class InterfaceBase
+    {
+      public:
+        /**
+         * Destructor. Made virtual to enforce that derived classes also have
+         * virtual destructors.
+         */
+        virtual ~InterfaceBase();
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         *
+         * The default implementation of this function does nothing, but
+         * plugins that derive from this class (via the <code>Interface</code>
+         * classes of their respective plugin systems) may overload it
+         * if they want something to happen upon startup of the
+         * Simulator object to which the plugin contributes.
+         */
+        virtual
+        void
+        initialize ();
+
+        /**
+         * A function that is called at the beginning of each time step.
+         *
+         * The default implementation of this function does nothing, but
+         * plugins that derive from this class (via the <code>Interface</code>
+         * classes of their respective plugin systems) may overload it
+         * if they want something to happen upon startup of the
+         * Simulator object to which the plugin contributes.
+         */
+        virtual
+        void
+        update ();
+
+        /**
+         * Declare the parameters the plugin takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters. On
+         * the other hand, most plugins do have run-time parameters, and
+         * they may then overload this function.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters. On
+         * the other hand, most plugins do have run-time parameters, and
+         * they may then overload this function.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+  }
+
   namespace internal
   {
     /**
@@ -121,6 +189,8 @@ namespace aspect
     namespace Plugins
     {
       using namespace dealii;
+
+
 
       /**
        * An internal class that is used in the definition of the

@@ -38,35 +38,6 @@ namespace aspect
   {
     template <int dim>
     void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
     Interface<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> & /*outputs*/) const
     {}
