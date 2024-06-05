@@ -265,7 +265,7 @@ namespace aspect
           // The formula below will calculate the total number of the spherical harmonic coefficients from
           // the degree at max_degree_to_use+1 to the degree at max_degree_data_file.
           // The formula below will be zero if the spherical harmonics are summed up to the degree at max_degree_data_file.
-          ind += 0.5*(max_degree_to_use+max_degree_data_file+3)*(max_degree_data_file-max_degree_to_use);
+          ind += (max_degree_to_use+max_degree_data_file+3)*(max_degree_data_file-max_degree_to_use)/2;
         }
 
       // We need to reorder the spline_values because the coefficients are given from
