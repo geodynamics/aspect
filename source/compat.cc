@@ -323,12 +323,6 @@ namespace aspect
 
   namespace internal
   {
-    // The pull_back function fails regularly in the compute_chart_points
-    // method, and, instead of throwing an exception, returns a point outside
-    // the unit cell. The individual coordinates of that point are given by the
-    // value below.
-    static constexpr double invalid_pull_back_coordinate = 20.0;
-
     // Rotate a given unit vector u around the axis dir
     // where the angle is given by the length of dir.
     // This is the exponential map for a sphere.
