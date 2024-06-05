@@ -207,13 +207,13 @@ namespace aspect
       const unsigned int max_degree_data_file = spherical_harmonics_lookup->maxdegree();
 
       // set the max degree used for the calculation to the max degree from the input data file as default
-      unsigned int max_degree_used = max_degree_data_file;
+      unsigned int max_degree_to_use = max_degree_data_file;
 
       // lower the maximum degree of the calculation if needed
       if (lower_max_degree)
         {
           AssertThrow(specified_max_degree <= max_degree_data_file, ExcMessage("Specifying a maximum degree higher than the degree of spherical harmonic data is not allowed"));
-          max_degree_used = specified_max_degree;
+          max_degree_to_use = specified_max_degree;
         }
 
       const int num_spline_knots = 28; // The tomography models are parameterized by 28 layers
@@ -236,10 +236,10 @@ namespace aspect
 
       // Evaluate the spherical harmonics at this position. Since they are the
       // same for all depth splines, do it once to avoid multiple evaluations.
-      std::vector<std::vector<double>> cosine_components(max_degree_used+1, std::vector<double>(max_degree_used+1, 0.0));
-      std::vector<std::vector<double>> sine_components(max_degree_used+1, std::vector<double>(max_degree_used+1, 0.0));
+      std::vector<std::vector<double>> cosine_components(max_degree_to_use+1, std::vector<double>(max_degree_to_use+1, 0.0));
+      std::vector<std::vector<double>> sine_components(max_degree_to_use+1, std::vector<double>(max_degree_to_use+1, 0.0));
 
-      for (unsigned int degree_l = 0; degree_l < max_degree_used+1; ++degree_l)
+      for (unsigned int degree_l = 0; degree_l < max_degree_to_use+1; ++degree_l)
         {
           for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
             {
@@ -256,7 +256,7 @@ namespace aspect
 
       for (unsigned int depth_interp = 0; depth_interp < num_spline_knots; ++depth_interp)
         {
-          for (unsigned int degree_l = 0; degree_l < max_degree_used+1; ++degree_l)
+          for (unsigned int degree_l = 0; degree_l < max_degree_to_use+1; ++degree_l)
             {
               for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
                 {
@@ -276,8 +276,11 @@ namespace aspect
                   ++ind;
                 }
             }
-          // skip the higher degree spherical harminic coefficients per layer if a lower max degree is used
-          ind += 0.5*(max_degree_used+max_degree_data_file+3)*(max_degree_data_file-max_degree_used);
+          // Skip the higher degree spherical harminic coefficients per layer if a lower max degree is used.
+          // The formula below will calculate the total number of the spherical harmonic coefficients from
+          // the degree at max_degree_to_use+1 to the degree at max_degree_data_file.
+          // The formula below will be zero if the spherical harmonics are summed up to the degree at max_degree_data_file.
+          ind += 0.5*(max_degree_to_use+max_degree_data_file+3)*(max_degree_data_file-max_degree_to_use);
         }
 
 
