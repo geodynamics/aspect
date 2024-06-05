@@ -1226,7 +1226,7 @@ namespace aspect
   std::unique_ptr<Interface<dim>> \
   create_material_model<dim> (ParameterHandler &prm); \
   \
-  template struct MaterialModelInputs<dim>; \
+  template class MaterialModelInputs<dim>; \
   \
   template class MaterialModelOutputs<dim>; \
   \
