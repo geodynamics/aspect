@@ -15,4 +15,4 @@
 # 15: Average viscosity (Pa s)
 # 16: Total mass (kg)
 # 17: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 1 0 0 13 15 14 3.19836000e+03 1.00290993e+19 3.19836000e+13 output-hk04_olivine_dislocation_hydration_prefactor/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 1 0 0 14 16 15 3.19836000e+03 2.62814004e+20 3.19836000e+13 output-hk04_olivine_composite_hydration_prefactor/solution/solution-00000 
