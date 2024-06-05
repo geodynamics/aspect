@@ -203,14 +203,17 @@ namespace aspect
     {
       const unsigned int dim = 3;
 
-      // get the degree from the input file (60)
-      unsigned int max_degree = spherical_harmonics_lookup->maxdegree();
+      // get the max degree from the input data file (60)
+      const unsigned int max_degree_data_file = spherical_harmonics_lookup->maxdegree();
 
-      // lower the maximum order if needed
-      if (lower_max_order)
+      // set the max degree used for the calculation to the max degree from the input data file as default
+      unsigned int max_degree_to_use = max_degree_data_file;
+
+      // lower the maximum degree of the calculation if needed
+      if (lower_max_degree)
         {
-          AssertThrow(max_order <= max_degree, ExcMessage("Specifying a maximum order higher than the order of spherical harmonic data is not allowed"));
-          max_degree = max_order;
+          AssertThrow(specified_max_degree <= max_degree_data_file, ExcMessage("Specifying a maximum degree higher than the degree of spherical harmonic data is not allowed"));
+          max_degree_to_use = specified_max_degree;
         }
 
       const int num_spline_knots = 28; // The tomography models are parameterized by 28 layers
@@ -233,10 +236,10 @@ namespace aspect
 
       // Evaluate the spherical harmonics at this position. Since they are the
       // same for all depth splines, do it once to avoid multiple evaluations.
-      std::vector<std::vector<double>> cosine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
-      std::vector<std::vector<double>> sine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
+      std::vector<std::vector<double>> cosine_components(max_degree_to_use+1, std::vector<double>(max_degree_to_use+1, 0.0));
+      std::vector<std::vector<double>> sine_components(max_degree_to_use+1, std::vector<double>(max_degree_to_use+1, 0.0));
 
-      for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
+      for (unsigned int degree_l = 0; degree_l < max_degree_to_use+1; ++degree_l)
         {
           for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
             {
@@ -253,7 +256,7 @@ namespace aspect
 
       for (unsigned int depth_interp = 0; depth_interp < num_spline_knots; ++depth_interp)
         {
-          for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
+          for (unsigned int degree_l = 0; degree_l < max_degree_to_use+1; ++degree_l)
             {
               for (unsigned int order_m = 0; order_m < degree_l+1; ++order_m)
                 {
@@ -273,6 +276,11 @@ namespace aspect
                   ++ind;
                 }
             }
+          // Skip the higher degree spherical harminic coefficients per layer if a lower max degree is used.
+          // The formula below will calculate the total number of the spherical harmonic coefficients from
+          // the degree at max_degree_to_use+1 to the degree at max_degree_data_file.
+          // The formula below will be zero if the spherical harmonics are summed up to the degree at max_degree_data_file.
+          ind += (max_degree_to_use+max_degree_data_file+3)*(max_degree_data_file-max_degree_to_use)/2;
         }
 
 
@@ -408,16 +416,16 @@ namespace aspect
                              "of 660km, but your closest spherical depth layers are only at 500km and "
                              "750km (due to a coarse resolution) it will only zero out heterogeneities "
                              "down to 500km. Similar caution has to be taken when using adaptive meshing.");
-          prm.declare_entry ("Specify a lower maximum order","false",
+          prm.declare_entry ("Specify a lower maximum degree","false",
                              Patterns::Bool (),
-                             "Option to use a lower maximum order when reading the data file of spherical "
+                             "Option to use a lower maximum degree when reading the data file of spherical "
                              "harmonic coefficients. This is probably used for the faster tests or when the "
-                             "users only want to see the spherical harmonic pattern up to a certain order.");
-          prm.declare_entry ("Maximum order","20",
+                             "users only want to see the spherical harmonic pattern up to a certain degree.");
+          prm.declare_entry ("Maximum degree","20",
                              Patterns::Integer (0),
-                             "The maximum order the users specify when reading the data file of spherical harmonic "
-                             "coefficients, which must be smaller than the maximum order the data file stored. "
-                             "This parameter will be used only if 'Specify a lower maximum order' is set to true.");
+                             "The maximum degree the users specify when reading the data file of spherical harmonic "
+                             "coefficients, which must be smaller than the maximum degree the data file stored. "
+                             "This parameter will be used only if 'Specify a lower maximum degree' is set to true.");
           aspect::Utilities::AsciiDataProfile<dim>::declare_parameters(prm,
                                                                        "$ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/",
                                                                        "vs_to_density_Steinberger.txt",
@@ -452,8 +460,8 @@ namespace aspect
           zero_out_degree_0       = prm.get_bool ("Remove degree 0 from perturbation");
           reference_temperature   = prm.get_double ("Reference temperature");
           no_perturbation_depth   = prm.get_double ("Remove temperature heterogeneity down to specified depth");
-          lower_max_order         = prm.get_bool ("Specify a lower maximum order");
-          max_order               = prm.get_integer ("Maximum order");
+          lower_max_degree         = prm.get_bool ("Specify a lower maximum degree");
+          specified_max_degree               = prm.get_integer ("Maximum degree");
 
           if (prm.get("Vs to density scaling method") == "file")
             vs_to_density_method = file;
