@@ -126,7 +126,7 @@ namespace aspect
       CrystalPreferredOrientation<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                          std::vector<double> &data) const
       {
-        // the layout of the data vector per perticle is the following:
+        // the layout of the data vector per particle is the following:
         // 1. M mineral times
         //    1.1  olivine deformation type   -> 1 double, at location
         //                                      => data_position + 0 + mineral_i * (n_grains * 10 + 2)
