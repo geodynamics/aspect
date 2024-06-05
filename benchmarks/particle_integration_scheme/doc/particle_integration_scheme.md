@@ -8,7 +8,7 @@ This benchmark is designed to test the convergence of various particle integrati
 :label: eq:flow
 \mathbf{u}_x(t) = 1 + e^t \quad \text{and} \quad \mathbf{u}_y(t) = 1 + e^t.
 ```
-The final position analytic position is represented by {math:numref}`eq:fposition` and the distance between the initial and final position is defined by {math:numref}`eq:fidistance`.
+The final analytic position is represented by {math:numref}`eq:fposition` and the distance between the initial and final position is defined by {math:numref}`eq:fidistance`.
 
 ```{math}
 :label: eq:fposition
