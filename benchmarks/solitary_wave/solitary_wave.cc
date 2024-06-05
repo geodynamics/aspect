@@ -744,17 +744,13 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       // do the same stuff we do in depth average
       std::vector<double> volume(max_points,0.0);
       std::vector<double> pressure(max_points,0.0);
       std::vector<double> p_c(n_q_points);
       double local_max_pressure = 0.0;
 
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
@@ -850,10 +846,6 @@ namespace aspect
 
       std::vector<double> compositional_values(n_q_points);
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       // The idea here is to first find the maximum, and then use the analytical solution of the
       // solitary wave to calculate a phase shift for every point.
       // This has to be done separately for points left and right of the maximum, as the analytical
@@ -866,7 +858,7 @@ namespace aspect
         double local_max_porosity = -std::numeric_limits<double>::max();
         double local_max_z_location = std::numeric_limits<double>::quiet_NaN();
 
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
@@ -890,11 +882,10 @@ namespace aspect
 
 
       // iterate over all points and calculate the phase shift
-      cell = this->get_dof_handler().begin_active();
       double phase_shift_integral = 0.0;
       unsigned int number_of_points = 0;
 
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);

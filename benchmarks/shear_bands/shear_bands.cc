@@ -631,24 +631,20 @@ namespace aspect
       std::vector<double>         porosity_values (quadrature_formula.size());
       const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell != endc; ++cell)
-        {
-          if (!cell->is_locally_owned())
-            continue;
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
 
-          fe_values.reinit (cell);
-          fe_values[this->introspection().extractors.compositional_fields[porosity_idx]].get_function_values (this->get_solution(), porosity_values);
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.compositional_fields[porosity_idx]].get_function_values (this->get_solution(), porosity_values);
 
-          for (unsigned int q = 0; q < n_q_points; ++q)
-            {
-              output << fe_values.quadrature_point (q) (0) << " "
-                     << fe_values.quadrature_point (q) (1) << " "
-                     << porosity_values[q] << std::endl;
-            }
-        }
+            for (unsigned int q = 0; q < n_q_points; ++q)
+              {
+                output << fe_values.quadrature_point (q) (0) << " "
+                       << fe_values.quadrature_point (q) (1) << " "
+                       << porosity_values[q] << std::endl;
+              }
+          }
 
       std::string filename = this->get_output_directory() + "shear_bands_" +
                              Utilities::int_to_string(max_lvl) +
@@ -761,10 +757,7 @@ namespace aspect
       double local_velocity_divergence_max = 0.0;
       double local_velocity_divergence_min = 0.0;
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
