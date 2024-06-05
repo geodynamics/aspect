@@ -204,7 +204,7 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 if(MAKE_PYTHON_WRAPPER)
   set(CMAKE_SWIG_OUTDIR ${PROJECT_BINARY_DIR}/lib)
 endif()
-if(CMAKE_Fortran_COMPILER)
+if(WB_MAKE_FORTRAN_WRAPPER)
   set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/mod)
 endif()
 
@@ -231,7 +231,7 @@ include_directories("include/" "tests/" "${CMAKE_CURRENT_BINARY_DIR}/include")
 # Add source directory
 file(GLOB_RECURSE SOURCES_CXX "source/world_builder/*.cc" "${PROJECT_BINARY_DIR}/source/world_builder/*.cc")
 
-if(CMAKE_Fortran_COMPILER)
+if(WB_MAKE_FORTRAN_WRAPPER)
   file(GLOB_RECURSE SOURCES_FORTRAN "source/world_builder/*.f90")
 endif()
 
@@ -561,7 +561,7 @@ install(CODE "message(Installing...)")
 install(TARGETS ${WB_TARGET} EXPORT WorldBuilder DESTINATION bin)
 install(EXPORT WorldBuilder  DESTINATION bin)
 
-if(CMAKE_Fortran_COMPILER)
+if(WB_MAKE_FORTRAN_WRAPPER)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mod/worldbuilder.mod DESTINATION include)
 endif()
 

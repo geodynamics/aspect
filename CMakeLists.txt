@@ -253,6 +253,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set(WB_ENABLE_APPS OFF)
     set(WB_ENABLE_HELPER_TARGETS OFF)
     set(WB_ENABLE_PYTHON OFF)
+    set(WB_MAKE_FORTRAN_WRAPPER OFF)
 
     if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
       # First for debug mode...
