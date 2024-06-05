@@ -46,25 +46,25 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   "begin a build in a different directory.")
 endif()
 
-#
-# Setup CMAKE_BUILD_TYPE:
-#
-
-set(CMAKE_BUILD_TYPE
-  "DebugRelease"
-  CACHE STRING
-  "Choose the type of build, options are: Debug, Release and DebugRelease."
+# Set up CMAKE_BUILD_TYPE. Newer cmake versions (such as 3.29) set it
+# to DebugRelease in the call to project() above, whereas older ones
+# set it to the empty string or not at all. So if it's empty, set it
+# to DebugRelease.
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
+  set(CMAKE_BUILD_TYPE
+      "DebugRelease"
+      CACHE STRING
+      "Choose the type of build, options are: Debug, Release and DebugRelease."
   )
+endif()
 
-# This is a strict check. But it is better to only have a known number of
-# options for CMAKE_BUILD_TYPE...
-if( NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Release" AND
-    NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND
-    NOT "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Release" OR
+   "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
+   "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
+  message(STATUS "Setting up ASPECT for ${CMAKE_BUILD_TYPE} mode.")
+else()
   message(FATAL_ERROR
     "CMAKE_BUILD_TYPE must either be 'Release', 'Debug', or 'DebugRelease', but is set to '${CMAKE_BUILD_TYPE}'.")
-else()
-  message(STATUS "Setting up ASPECT for ${CMAKE_BUILD_TYPE} mode.")
 endif()
 
 
