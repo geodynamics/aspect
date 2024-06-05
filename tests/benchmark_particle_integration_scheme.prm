@@ -1,0 +1,7 @@
+# A benchmark of particle integration schemes in Gassmoller 2018
+#  See the benchmark folder for more information.
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/particle_integration_scheme/circle.prm
+
+set End time = 0.1
