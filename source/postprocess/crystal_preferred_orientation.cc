@@ -176,6 +176,8 @@ namespace aspect
       const Particle::Property::Manager<dim> &manager = this->get_particle_world().get_property_manager();
       const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world().get_particle_handler();
 
+      const bool cpo_elastic_decomposition_plugin_exists = manager.plugin_name_exists("elastic tensor decomposition");
+
       // Get a reference to the CPO particle property.
       const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
         manager.template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
@@ -208,7 +210,14 @@ namespace aspect
       std::stringstream string_stream_content_raw;
       std::stringstream string_stream_content_draw_volume_weighting;
 
-      string_stream_master << "id x y" << (dim == 3 ? " z" : "") << " olivine_deformation_type" << std::endl;
+      string_stream_master << "id x y" << (dim == 3 ? " z" : "") << " olivine_deformation_type"
+                           << (cpo_elastic_decomposition_plugin_exists ? (std::string(" full_norm_square ")
+                                                                          + "triclinic_norm_square_p1 triclinic_norm_square_p2 triclinic_norm_square_p3 "
+                                                                          + "monoclinic_norm_square_p1 monoclinic_norm_square_p2 monoclinic_norm_square_p3 "
+                                                                          + "orthohombic_norm_square_p1 orthohombic_norm_square_p2 orthohombic_norm_square_p3 "
+                                                                          + "tetragonal_norm_square_p1 tetragonal_norm_square_p2 tetragonal_norm_square_p3 "
+                                                                          + "hexagonal_norm_square_p1 hexagonal_norm_square_p2 hexagonal_norm_square_p3 "
+                                                                          + "isotropic_norm_square") : "") << std::endl;
 
       // get particle data
       const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world().get_property_manager().get_data_info();
@@ -326,8 +335,29 @@ namespace aspect
                                                           i_grain);
                 }
             }
+
+          const unsigned int lpo_hex_data_position = property_information.n_fields() == 0 || cpo_elastic_decomposition_plugin_exists == false
+                                                     ?
+                                                     0
+                                                     :
+                                                     property_information.get_position_by_field_name("cpo elastic axis e1");
+
           // write master file
-          string_stream_master << id << " " << position << " " << properties[cpo_data_position] << std::endl;
+          string_stream_master << id << " " << position << " " << properties[cpo_data_position];
+
+          if (cpo_elastic_decomposition_plugin_exists == true)
+            {
+              string_stream_master << " " << properties[lpo_hex_data_position+12] << " " << properties[lpo_hex_data_position+13]
+                                   << " " << properties[lpo_hex_data_position+14] << " " << properties[lpo_hex_data_position+15]
+                                   << " " << properties[lpo_hex_data_position+16] << " " << properties[lpo_hex_data_position+17]
+                                   << " " << properties[lpo_hex_data_position+18] << " " << properties[lpo_hex_data_position+19]
+                                   << " " << properties[lpo_hex_data_position+20] << " " << properties[lpo_hex_data_position+21]
+                                   << " " << properties[lpo_hex_data_position+22] << " " << properties[lpo_hex_data_position+23]
+                                   << " " << properties[lpo_hex_data_position+24] << " " << properties[lpo_hex_data_position+25]
+                                   << " " << properties[lpo_hex_data_position+26] << " " << properties[lpo_hex_data_position+27]
+                                   << " " << properties[lpo_hex_data_position+28];
+            }
+          string_stream_master << std::endl;
 
           // write content file
           if (compute_raw_euler_angles == true)
