@@ -19,9 +19,11 @@
 */
 
 #include "common.h"
+#include <aspect/particle/property/elastic_tensor_decomposition.h>
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/particle/property/cpo_elastic_tensor.h>
 #include <deal.II/base/parameter_handler.h>
+#include <aspect/utilities.h>
 
 
 /**
@@ -1446,4 +1448,857 @@ TEST_CASE("CPO elastic tensor")
     {
       CHECK(array_plus_100[cpo_data_position + i] == tensor[dealii::SymmetricTensor<2,6>::unrolled_to_component_indices(i)]);
     }
+}
+
+
+
+
+TEST_CASE("LPO elastic tensor decomposition")
+{
+  using namespace dealii;
+  using namespace aspect::Particle::Property;
+  using namespace aspect::Particle::Property::Utilities;
+  {
+    auto elastic_composition_class = ElasticTensorDecomposition<3>();
+
+    // the matrix from Browaeys and Chevrot, 2004, Geophys. J. Int. (doi: 10.1111/j.1365-246X.2004.02415.x)
+    // Note that the computed norms are not in the papers, but are an extra check.
+    SymmetricTensor<2,6> full_elastic_matrix;
+    full_elastic_matrix[0][0] = 192;
+    full_elastic_matrix[0][1] = 66;
+    full_elastic_matrix[0][2] = 60;
+    full_elastic_matrix[1][1] = 160;
+    full_elastic_matrix[1][2] = 56;
+    full_elastic_matrix[2][2] = 272;
+    full_elastic_matrix[3][3] = 60;
+    full_elastic_matrix[4][4] = 62;
+    full_elastic_matrix[5][5] = 49;
+
+    SymmetricTensor<2,6> reference_isotropic_matrix;
+    reference_isotropic_matrix[0][0] = 194.7;
+    reference_isotropic_matrix[0][1] = 67.3;
+    reference_isotropic_matrix[0][2] = 67.3;
+    reference_isotropic_matrix[1][1] = 194.7;
+    reference_isotropic_matrix[1][2] = 67.3;
+    reference_isotropic_matrix[2][2] = 194.7;
+    reference_isotropic_matrix[3][3] = 63.7;
+    reference_isotropic_matrix[4][4] = 63.7;
+    reference_isotropic_matrix[5][5] = 63.7;
+
+    SymmetricTensor<2,6> reference_hex_matrix;
+    reference_hex_matrix[0][0] = -21.7;
+    reference_hex_matrix[1][1] = -21.7;
+    reference_hex_matrix[2][2] = 77.3;
+    reference_hex_matrix[1][2] = -9.3;
+    reference_hex_matrix[0][2] = -9.3;
+    reference_hex_matrix[0][1] = 1.7;
+    reference_hex_matrix[3][3] = -2.7;
+    reference_hex_matrix[4][4] = -2.7;
+    reference_hex_matrix[5][5] = -11.7;
+
+    SymmetricTensor<2,6> reference_T_matrix;
+    reference_T_matrix[0][0] = 3;
+    reference_T_matrix[1][1] = 3;
+    reference_T_matrix[0][1] = -3;
+    reference_T_matrix[5][5] = -3;
+
+    SymmetricTensor<2,6> reference_O_matrix;
+    reference_O_matrix[0][0] = 16;
+    reference_O_matrix[1][1] = -16;
+    reference_O_matrix[1][2] = -2;
+    reference_O_matrix[0][2] = 2;
+    reference_O_matrix[3][3] = -1;
+    reference_O_matrix[4][4] = 1;
+
+    const Tensor<1,21> full_elastic_vector = aspect::Utilities::Tensors::to_voigt_stiffness_vector(full_elastic_matrix);
+    const Tensor<1,21> reference_isotropic_vector = aspect::Utilities::Tensors::to_voigt_stiffness_vector(reference_isotropic_matrix);
+    const Tensor<1,21> reference_hex_vector = aspect::Utilities::Tensors::to_voigt_stiffness_vector(reference_hex_matrix);
+    const Tensor<1,21> reference_T_vector = aspect::Utilities::Tensors::to_voigt_stiffness_vector(reference_T_matrix);
+    const Tensor<1,21> reference_O_vector = aspect::Utilities::Tensors::to_voigt_stiffness_vector(reference_O_matrix);
+
+    // this matrix is already in the SCCSS, so no rotation needed, only the  projection.
+    CHECK(full_elastic_vector.norm_square() == Approx(198012.0));
+    const Tensor<1,21> mono_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_triclinic_to_monoclinic * full_elastic_vector;
+    const Tensor<1,21> tric_vector = full_elastic_vector-mono_and_higher_vector;
+    for (size_t iii = 0; iii < 21; iii++)
+      {
+        CHECK(std::abs(tric_vector[iii]) < 1e-15);
+      }
+    CHECK(tric_vector.norm_square() == Approx(0.0));
+
+    dealii::Tensor<1,9>  mono_and_higher_vector_croped;
+    mono_and_higher_vector_croped[0] = mono_and_higher_vector[0];
+    mono_and_higher_vector_croped[1] = mono_and_higher_vector[1];
+    mono_and_higher_vector_croped[2] = mono_and_higher_vector[2];
+    mono_and_higher_vector_croped[3] = mono_and_higher_vector[3];
+    mono_and_higher_vector_croped[4] = mono_and_higher_vector[4];
+    mono_and_higher_vector_croped[5] = mono_and_higher_vector[5];
+    mono_and_higher_vector_croped[6] = mono_and_higher_vector[6];
+    mono_and_higher_vector_croped[7] = mono_and_higher_vector[7];
+    mono_and_higher_vector_croped[8] = mono_and_higher_vector[8];
+    const Tensor<1,9> ortho_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_monoclinic_to_orthorhombic*mono_and_higher_vector_croped;
+    const Tensor<1,9> mono_vector = mono_and_higher_vector_croped-ortho_and_higher_vector;
+    for (size_t iii = 0; iii < 9; iii++)
+      {
+        CHECK(std::abs(mono_vector[iii]) < 1e-15);
+      }
+    CHECK(mono_vector.norm_square() == Approx(0.0));
+
+    const Tensor<1,9> tetra_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_orthorhombic_to_tetragonal*ortho_and_higher_vector;
+    const Tensor<1,9> ortho_vector = ortho_and_higher_vector-tetra_and_higher_vector;
+    for (size_t iii = 0; iii < 9; iii++)
+      {
+        CHECK(ortho_vector[iii] == Approx(reference_O_vector[iii]));
+      }
+    CHECK(ortho_vector.norm_square() == Approx(536.0));
+
+    const Tensor<1,9> hexa_and_higher_vector = aspect::Particle::Property::Utilities::projection_matrix_tetragonal_to_hexagonal*tetra_and_higher_vector;
+    const Tensor<1,9> tetra_vector = tetra_and_higher_vector-hexa_and_higher_vector;
+    for (size_t iii = 0; iii < 9; iii++)
+      {
+        CHECK(tetra_vector[iii] == Approx(reference_T_vector[iii]));
+      }
+    CHECK(tetra_vector.norm_square() == Approx(72.0));
+
+    const Tensor<1,9> iso_vector = aspect::Particle::Property::Utilities::projection_matrix_hexagonal_to_isotropic*hexa_and_higher_vector;
+    for (size_t iii = 0; iii < 9; iii++)
+      {
+        // something weird is going on with the approx, somehow without a very large
+        // epsilon it thinks for example that "194.6666666667 == Approx( 194.7 )" is false.
+        CHECK(iso_vector[iii] == Approx(reference_isotropic_vector[iii]).epsilon(1e-3));
+      }
+    CHECK(iso_vector.norm_square() == Approx(189529.3333333334));
+
+    const Tensor<1,9> hexa_vector = hexa_and_higher_vector-iso_vector;
+    for (size_t iii = 0; iii < 9; iii++)
+      {
+        // same as above.
+        CHECK(hexa_vector[iii] == Approx(reference_hex_vector[iii]).epsilon(2.5e-2));
+      }
+    CHECK(hexa_vector.norm_square() == Approx(7874.6666666667));
+
+  }
+
+  {
+    // now compute the distribution in a elastic tensor which is not in SCCS.
+    // We will use the result (with the results of the steps in between) from
+    // Cowin and Mehrabadi, 1985, Mech. appl. Math.
+    SymmetricTensor<2,6> full_elastic_matrix;
+    full_elastic_matrix[0][0] = 1769.50;
+    full_elastic_matrix[0][1] = 873.50;
+    full_elastic_matrix[0][2] = 838.22;
+    full_elastic_matrix[0][3] = -17.68;
+    full_elastic_matrix[0][4] = -110.32;
+    full_elastic_matrix[0][5] = 144.92;
+    full_elastic_matrix[1][0] = 873.50;
+    full_elastic_matrix[1][1] = 1846.64;
+    full_elastic_matrix[1][2] = 836.66;
+    full_elastic_matrix[1][3] = -37.60;
+    full_elastic_matrix[1][4] = -32.32;
+    full_elastic_matrix[1][5] = 153.80;
+    full_elastic_matrix[2][0] = 838.22;
+    full_elastic_matrix[2][1] = 836.66;
+    full_elastic_matrix[2][2] = 1603.28;
+    full_elastic_matrix[2][3] = -29.68;
+    full_elastic_matrix[2][4] = -93.52;
+    full_elastic_matrix[2][5] = 22.40;
+    full_elastic_matrix[3][0] = -17.68;
+    full_elastic_matrix[3][1] = -37.60;
+    full_elastic_matrix[3][2] = -29.68;
+    full_elastic_matrix[3][3] = 438.77;
+    full_elastic_matrix[3][4] = 57.68;
+    full_elastic_matrix[3][5] = -50.50;
+    full_elastic_matrix[4][0] = -110.32;
+    full_elastic_matrix[4][1] = -32.32;
+    full_elastic_matrix[4][2] = -93.52;
+    full_elastic_matrix[4][3] = 57.68;
+    full_elastic_matrix[4][4] = 439.79;
+    full_elastic_matrix[4][5] = -34.78;
+    full_elastic_matrix[5][0] = 144.92;
+    full_elastic_matrix[5][1] = 153.80;
+    full_elastic_matrix[5][2] = 22.40;
+    full_elastic_matrix[5][3] = -50.50;
+    full_elastic_matrix[5][4] = -34.78;
+    full_elastic_matrix[5][5] = 501.80;
+    full_elastic_matrix /= 81.;
+
+    SymmetricTensor<2,3> reference_dilatation_matrix;
+    reference_dilatation_matrix[0][0] = 386.80;
+    reference_dilatation_matrix[0][1] = 35.68;
+    reference_dilatation_matrix[0][2] = -26.24;
+    //reference_dilatation_matrix[1][0] = ;
+    reference_dilatation_matrix[1][1] = 395.20;
+    reference_dilatation_matrix[1][2] = -9.44;
+    //reference_dilatation_matrix[2][0] = ;
+    //reference_dilatation_matrix[2][1] = ;
+    reference_dilatation_matrix[2][2] = 364.24;
+    reference_dilatation_matrix /= 9.;
+
+    SymmetricTensor<2,3> reference_voigt_matrix;
+    reference_voigt_matrix[0][0] = 33.47;
+    reference_voigt_matrix[0][1] = 4.4;
+    reference_voigt_matrix[0][2] = -3.14;
+    //reference_voigt_matrix[1][0] = ;
+    reference_voigt_matrix[1][1] = 34.41;
+    reference_voigt_matrix[1][2] = -1.26;
+    //reference_voigt_matrix[2][0] = ;
+    //reference_voigt_matrix[2][1] = ;
+    reference_voigt_matrix[2][2] = 30.64;
+
+    // Q in equation 2.17, but reordered from
+    // largest to smallest eigenvalue.
+    Tensor<2,3> reference_SCCS;
+    reference_SCCS[2][0] = 2./3.;
+    reference_SCCS[2][1] = -1./3.;
+    reference_SCCS[2][2] = 2./3.;
+    reference_SCCS[1][0] = 1./3.;
+    reference_SCCS[1][1] = -2./3.;
+    reference_SCCS[1][2] = -2./3.;
+    reference_SCCS[0][0] = 2./3.;
+    reference_SCCS[0][1] = 2./3.;
+    reference_SCCS[0][2] = -1./3.;
+
+    SymmetricTensor<2,6> reference_rotated_elastic_matrix;
+    reference_rotated_elastic_matrix[0][0] = 18;
+    reference_rotated_elastic_matrix[0][1] = 9.98;
+    reference_rotated_elastic_matrix[0][2] = 10.1;
+    //reference_rotated_elastic_matrix[1][0] = ;
+    reference_rotated_elastic_matrix[1][1] = 20.2;
+    reference_rotated_elastic_matrix[1][2] = 10.07;
+    //reference_rotated_elastic_matrix[2][0] = ;
+    //reference_rotated_elastic_matrix[2][1] = ;
+    reference_rotated_elastic_matrix[2][2] = 27.6;
+    reference_rotated_elastic_matrix[3][3] = 6.23;
+    reference_rotated_elastic_matrix[4][4] = 5.61;
+    reference_rotated_elastic_matrix[5][5] = 4.52;
+
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        for (size_t jjj = 0; jjj < 3; jjj++)
+          {
+            CHECK(reference_dilatation_matrix[iii][jjj] == Approx(dilatation_stiffness_tensor_full[iii][jjj]));
+          }
+      }
+
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        for (size_t jjj = 0; jjj < 3; jjj++)
+          {
+            CHECK(reference_voigt_matrix[iii][jjj] == Approx(voigt_stiffness_tensor_full[iii][jjj]));
+          }
+      }
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_SCCS[iii][0] == Approx(unpermutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_SCCS[iii][1] == Approx(unpermutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_SCCS[iii][2] == Approx(unpermutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_SCCS[iii][0] == Approx(-unpermutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+    // chose the permutation which fits the solution given in the paper.
+    // This is not a even permutation.
+    std::array<unsigned int, 3> permutation = {{2,1,0}};
+    Tensor<2,3> permutated_SCCS;
+    for (size_t j = 0; j < 3; j++)
+      {
+        permutated_SCCS[j] = unpermutated_SCCS[permutation[j]];
+      }
+    SymmetricTensor<2,6> rotated_elastic_matrix = aspect::Utilities::Tensors::rotate_voigt_stiffness_matrix(permutated_SCCS,full_elastic_matrix);
+
+    for (size_t iii = 0; iii < 6; iii++)
+      {
+        for (size_t jjj = 0; jjj < 6; jjj++)
+          {
+            CHECK(reference_rotated_elastic_matrix[iii][jjj] == Approx(rotated_elastic_matrix[iii][jjj]).margin(1e-4).epsilon(7.5e-2));
+          }
+      }
+  }
+  {
+    // This is testing some other elastic matrices of which the properties can
+    // be resonaly predicted (for example, mostly hexagonal) and some coverage
+    // testing: Case 1.
+
+    SymmetricTensor<2,6> full_elastic_matrix;
+    full_elastic_matrix[0][0] = 192;
+    full_elastic_matrix[0][1] = 66;
+    full_elastic_matrix[0][2] = 56;
+    full_elastic_matrix[1][1] = 192;
+    full_elastic_matrix[1][2] = 56;
+    full_elastic_matrix[2][2] = 272;
+    full_elastic_matrix[3][3] = 60;
+    full_elastic_matrix[4][4] = 60;
+    full_elastic_matrix[5][5] = 0.5*(full_elastic_matrix[0][0] + full_elastic_matrix[0][1]);
+
+    std::array<std::array<double,3>,7 > reference_norms;
+    reference_norms[0] = {{0,0,0}}; // no triclinic
+    reference_norms[1] = {{0,0,0}}; // no monoclinic
+    reference_norms[2] = {{12822.0,0,12822.0}}; // orthorhomic dependent on direction (remember, this is basically just one grain)
+    reference_norms[3] = {{1568.0,8712.0,1568.0}}; // tetragonal could be present
+    reference_norms[4] = {{2759.3333333333,8437.3333333333,2759.3333333333}}; // hexagonal is expected
+    reference_norms[5] = {{247182.6666666667,247182.6666666667,247182.6666666667}}; // isotropic should be the same for every permutation
+    reference_norms[6] = {{264332.0,264332.0,264332.0}}; // total should be the same for every direction
+
+    // It is already in a SCCS frame, so they should be
+    // unit vectors. The order is irrelevant.
+    Tensor<2,3> reference_unpermutated_SCCS;
+    reference_unpermutated_SCCS[0][0] = 0;
+    reference_unpermutated_SCCS[0][1] = 0;
+    reference_unpermutated_SCCS[0][2] = 1;
+    reference_unpermutated_SCCS[1][0] = 1;
+    reference_unpermutated_SCCS[1][1] = 0;
+    reference_unpermutated_SCCS[1][2] = 0;
+    reference_unpermutated_SCCS[2][0] = 0;
+    reference_unpermutated_SCCS[2][1] = 1;
+    reference_unpermutated_SCCS[2][2] = 0;
+
+    // Permutation 2 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {1,2,0};
+    Tensor<2,3> reference_hexa_permutated_SCCS;
+    reference_hexa_permutated_SCCS[0][0] = 1;
+    reference_hexa_permutated_SCCS[0][1] = 0;
+    reference_hexa_permutated_SCCS[0][2] = 0;
+    reference_hexa_permutated_SCCS[1][0] = 0;
+    reference_hexa_permutated_SCCS[1][1] = 1;
+    reference_hexa_permutated_SCCS[1][2] = 0;
+    reference_hexa_permutated_SCCS[2][0] = 0;
+    reference_hexa_permutated_SCCS[2][1] = 0;
+    reference_hexa_permutated_SCCS[2][2] = 1;
+
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("unpermutated_SCCS[" << iii << "] = " << unpermutated_SCCS[iii][0] << ":" << unpermutated_SCCS[iii][1] << ":" << unpermutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_unpermutated_SCCS[iii][0] == Approx(unpermutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][1] == Approx(unpermutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][2] == Approx(unpermutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_unpermutated_SCCS[iii][0] == Approx(-unpermutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<double,3> totals = {{0,0,0}};
+    for (size_t iii = 0; iii < 7; iii++)
+      {
+        // also check that the total is equal to the full norm.
+
+        for (size_t jjj = 0; jjj < 3; jjj++)
+          {
+            INFO("i:j = " << iii << ":" << jjj );
+            CHECK(reference_norms[iii][jjj] == Approx(norms[iii][jjj]));
+            if (iii < 6)
+              {
+                totals[jjj] += norms[iii][jjj];
+              }
+          }
+      }
+    for (size_t jjj = 0; jjj < 3; jjj++)
+      {
+        INFO("j = " << jjj );
+        CHECK(totals[jjj] == Approx(norms[6][jjj]));
+      }
+
+    // also check that all the isotropic and totals are the same
+    for (size_t iii = 1; iii < 3; iii++)
+      {
+        CHECK(norms[5][0] == Approx(norms[5][iii]));
+        CHECK(norms[6][0] == Approx(norms[6][iii]));
+      }
+
+    const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
+    Tensor<2,3> hexa_permutated_SCCS;
+    for (size_t index = 0; index < 3; index++)
+      {
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
+      }
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("hexa_permutated_SCCS[" << iii << "] = " << hexa_permutated_SCCS[iii][0] << ":" << hexa_permutated_SCCS[iii][1] << ":" << hexa_permutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_hexa_permutated_SCCS[iii][0] == Approx(hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][1] == Approx(hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][2] == Approx(hexa_permutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_hexa_permutated_SCCS[iii][0] == Approx(-hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][1] == Approx(-hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][2] == Approx(-hexa_permutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+  }
+  {
+    // This is testing some other elastic matrices of which the properties can
+    // be resonaly predicted (for example, mostly hexagonal) and some coverage
+    // testing: Case 2: a more complicated matrix.
+
+    SymmetricTensor<2,6> full_elastic_matrix;
+    full_elastic_matrix[0][0] = 225;
+    full_elastic_matrix[0][1] = 54;
+    full_elastic_matrix[0][2] = 72;
+    full_elastic_matrix[1][1] = 214;
+    full_elastic_matrix[1][2] = 53;
+    full_elastic_matrix[2][2] = 178;
+    full_elastic_matrix[3][3] = 78;
+    full_elastic_matrix[4][4] = 82;
+    full_elastic_matrix[5][5] = 76;
+
+    std::array<std::array<double,3>,7 > reference_norms;
+    reference_norms[0] = {{0,0,0}}; // no triclinic
+    reference_norms[1] = {{0,0,0}}; // no monoclinic
+    reference_norms[2] = {{453.5,1044.0,1113.5}}; // orthorhomic dependent on direction
+    reference_norms[3] = {{91.125,84.5,595.125}}; // tetragonal could be present
+    reference_norms[4] = {{1350.175,766.3,186.175}}; // hexagonal is expected
+    reference_norms[5] = {{222364.2,222364.2,222364.2}}; // isotropic should be the same for every permutation
+    reference_norms[6] = {{224259.0,224259.0,224259.0}}; // total should be the same for every direction
+
+    // It is already in a SCCS frame, so they should be
+    // unit vectors. The order is irrelevant.
+    Tensor<2,3> reference_unpermutated_SCCS;
+    reference_unpermutated_SCCS[0][0] = 1;
+    reference_unpermutated_SCCS[0][1] = 0;
+    reference_unpermutated_SCCS[0][2] = 0;
+    reference_unpermutated_SCCS[1][0] = 0;
+    reference_unpermutated_SCCS[1][1] = 1;
+    reference_unpermutated_SCCS[1][2] = 0;
+    reference_unpermutated_SCCS[2][0] = 0;
+    reference_unpermutated_SCCS[2][1] = 0;
+    reference_unpermutated_SCCS[2][2] = 1;
+
+    // Permutation 1 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {0,1,2};
+    Tensor<2,3> reference_hexa_permutated_SCCS;
+    reference_hexa_permutated_SCCS[0][0] = 1;
+    reference_hexa_permutated_SCCS[0][1] = 0;
+    reference_hexa_permutated_SCCS[0][2] = 0;
+    reference_hexa_permutated_SCCS[1][0] = 0;
+    reference_hexa_permutated_SCCS[1][1] = 1;
+    reference_hexa_permutated_SCCS[1][2] = 0;
+    reference_hexa_permutated_SCCS[2][0] = 0;
+    reference_hexa_permutated_SCCS[2][1] = 0;
+    reference_hexa_permutated_SCCS[2][2] = 1;
+
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("unpermutated_SCCS[" << iii << "] = " << unpermutated_SCCS[iii][0] << ":" << unpermutated_SCCS[iii][1] << ":" << unpermutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_unpermutated_SCCS[iii][0] == Approx(unpermutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][1] == Approx(unpermutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][2] == Approx(unpermutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_unpermutated_SCCS[iii][0] == Approx(-unpermutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<double,3> totals = {{0,0,0}};
+    for (size_t iii = 0; iii < 7; iii++)
+      {
+        // also check that the total is equal to the full norm.
+
+        for (size_t jjj = 0; jjj < 3; jjj++)
+          {
+            INFO("i:j = " << iii << ":" << jjj );
+            CHECK(reference_norms[iii][jjj] == Approx(norms[iii][jjj]));
+            if (iii < 6)
+              {
+                totals[jjj] += norms[iii][jjj];
+              }
+          }
+      }
+    for (size_t jjj = 0; jjj < 3; jjj++)
+      {
+        INFO("j = " << jjj );
+        CHECK(totals[jjj] == Approx(norms[6][jjj]));
+      }
+
+    // also check that all the isotropic and totals are the same
+    for (size_t iii = 1; iii < 3; iii++)
+      {
+        CHECK(norms[5][0] == Approx(norms[5][iii]));
+        CHECK(norms[6][0] == Approx(norms[6][iii]));
+      }
+
+    const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
+    Tensor<2,3> hexa_permutated_SCCS;
+    for (size_t index = 0; index < 3; index++)
+      {
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
+      }
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("hexa_permutated_SCCS[" << iii << "] = " << hexa_permutated_SCCS[iii][0] << ":" << hexa_permutated_SCCS[iii][1] << ":" << hexa_permutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_hexa_permutated_SCCS[iii][0] == Approx(hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][1] == Approx(hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][2] == Approx(hexa_permutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_hexa_permutated_SCCS[iii][0] == Approx(-hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][1] == Approx(-hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][2] == Approx(-hexa_permutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+  }
+
+  {
+    // This is testing some other elastic matrices of which the properties can
+    // be resonaly predicted (for example, mostly hexagonal) and some coverage
+    // testing: Case 3: olivine from experiments as used in D-Rex.
+
+    SymmetricTensor<2,6> full_elastic_matrix;
+    full_elastic_matrix[0][0] = 320.71;
+    full_elastic_matrix[0][1] = 69.84;
+    full_elastic_matrix[0][2] = 71.22;
+    full_elastic_matrix[1][1] = 197.25;
+    full_elastic_matrix[1][2] = 74.8;
+    full_elastic_matrix[2][2] = 234.32;
+    full_elastic_matrix[3][3] = 63.77;
+    full_elastic_matrix[4][4] = 77.67;
+    full_elastic_matrix[5][5] = 78.36;
+
+    std::array<std::array<double,3>,7 > reference_norms;
+    reference_norms[0] = {{0,0,0}}; // no triclinic
+    reference_norms[1] = {{0,0,0}}; // no monoclinic
+    reference_norms[2] = {{4181.95385,689.94905,8020.4222}}; // orthorhomic dependent on direction
+    reference_norms[3] = {{1298.2060125,90.3840125,525.5282}}; // tetragonal could be present
+    reference_norms[4] = {{4364.6051908333,9064.4319908333,1298.8146533333}}; // hexagonal is expected
+    reference_norms[5] = {{282871.5975466666,282871.5975466666,282871.5975466666}}; // isotropic should be the same for every permutation
+    reference_norms[6] = {{292716.3626,292716.3626,292716.3626}}; // total should be the same for every direction
+
+    // It is already in a SCCS frame, so they should be
+    // unit vectors. The order is irrelevant.
+    Tensor<2,3> reference_unpermutated_SCCS;
+    reference_unpermutated_SCCS[0][0] = 1;
+    reference_unpermutated_SCCS[0][1] = 0;
+    reference_unpermutated_SCCS[0][2] = 0;
+    reference_unpermutated_SCCS[1][0] = 0;
+    reference_unpermutated_SCCS[1][1] = 0;
+    reference_unpermutated_SCCS[1][2] = 1;
+    reference_unpermutated_SCCS[2][0] = 0;
+    reference_unpermutated_SCCS[2][1] = 1;
+    reference_unpermutated_SCCS[2][2] = 0;
+
+    // Permutation 2 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {1,2,0};
+    Tensor<2,3> reference_hexa_permutated_SCCS;
+    reference_hexa_permutated_SCCS[0][0] = 0;
+    reference_hexa_permutated_SCCS[0][1] = 0;
+    reference_hexa_permutated_SCCS[0][2] = 1;
+    reference_hexa_permutated_SCCS[1][0] = 0;
+    reference_hexa_permutated_SCCS[1][1] = 1;
+    reference_hexa_permutated_SCCS[1][2] = 0;
+    reference_hexa_permutated_SCCS[2][0] = 1;
+    reference_hexa_permutated_SCCS[2][1] = 0;
+    reference_hexa_permutated_SCCS[2][2] = 0;
+
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("unpermutated_SCCS[" << iii << "] = " << unpermutated_SCCS[iii][0] << ":" << unpermutated_SCCS[iii][1] << ":" << unpermutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_unpermutated_SCCS[iii][0] == Approx(unpermutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][1] == Approx(unpermutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][2] == Approx(unpermutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_unpermutated_SCCS[iii][0] == Approx(-unpermutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<double,3> totals = {{0,0,0}};
+    for (size_t iii = 0; iii < 7; iii++)
+      {
+        // also check that the total is equal to the full norm.
+
+        for (size_t jjj = 0; jjj < 3; jjj++)
+          {
+            INFO("i:j = " << iii << ":" << jjj );
+            CHECK(reference_norms[iii][jjj] == Approx(norms[iii][jjj]));
+            if (iii < 6)
+              {
+                totals[jjj] += norms[iii][jjj];
+              }
+          }
+      }
+    for (size_t jjj = 0; jjj < 3; jjj++)
+      {
+        INFO("j = " << jjj );
+        CHECK(totals[jjj] == Approx(norms[6][jjj]));
+      }
+
+    // also check that all the isotropic and totals are the same
+    for (size_t iii = 1; iii < 3; iii++)
+      {
+        CHECK(norms[5][0] == Approx(norms[5][iii]));
+        CHECK(norms[6][0] == Approx(norms[6][iii]));
+      }
+
+    const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
+    Tensor<2,3> hexa_permutated_SCCS;
+    for (size_t index = 0; index < 3; index++)
+      {
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
+      }
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("hexa_permutated_SCCS[" << iii << "] = " << hexa_permutated_SCCS[iii][0] << ":" << hexa_permutated_SCCS[iii][1] << ":" << hexa_permutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_hexa_permutated_SCCS[iii][0] == Approx(hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][1] == Approx(hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][2] == Approx(hexa_permutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_hexa_permutated_SCCS[iii][0] == Approx(-hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][1] == Approx(-hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][2] == Approx(-hexa_permutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+  }
+
+  {
+    // This is testing some other elastic matrices of which the properties can
+    // be resonaly predicted (for example, mostly hexagonal) and some coverage
+    // testing: Case 4: enstatite from experiments as used in D-Rex.
+
+    SymmetricTensor<2,6> full_elastic_matrix;
+    full_elastic_matrix[0][0] = 236.9;
+    full_elastic_matrix[0][1] = 79.6;
+    full_elastic_matrix[0][2] = 63.2;
+    full_elastic_matrix[1][1] = 180.5;
+    full_elastic_matrix[1][2] = 56.8;
+    full_elastic_matrix[2][2] = 230.4;
+    full_elastic_matrix[3][3] = 84.3;
+    full_elastic_matrix[4][4] = 79.4;
+    full_elastic_matrix[5][5] = 80.1;
+
+    std::array<std::array<double,3>,7 > reference_norms;
+    reference_norms[0] = {{0,0,0}}; // no triclinic
+    reference_norms[1] = {{0,0,0}}; // no monoclinic
+    reference_norms[2] = {{576.245,1514.945,1679.46}}; // orthorhomic dependent on direction
+    reference_norms[3] = {{67.86125,199.00125,483.605}}; // tetragonal could be present
+    reference_norms[4] = {{2076.64175,1006.80175,557.683}}; // hexagonal is expected
+    reference_norms[5] = {{245485.992,245485.992,245485.992}}; // isotropic should be the same for every permutation
+    reference_norms[6] = {{248206.74,248206.74,248206.74}}; // total should be the same for every direction
+
+    // It is already in a SCCS frame, so they should be
+    // unit vectors. The order is irrelevant.
+    Tensor<2,3> reference_unpermutated_SCCS;
+    reference_unpermutated_SCCS[0][0] = 1;
+    reference_unpermutated_SCCS[0][1] = 0;
+    reference_unpermutated_SCCS[0][2] = 0;
+    reference_unpermutated_SCCS[1][0] = 0;
+    reference_unpermutated_SCCS[1][1] = 0;
+    reference_unpermutated_SCCS[1][2] = 1;
+    reference_unpermutated_SCCS[2][0] = 0;
+    reference_unpermutated_SCCS[2][1] = 1;
+    reference_unpermutated_SCCS[2][2] = 0;
+
+    // Permutation 1 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {0,1,2};
+    Tensor<2,3> reference_hexa_permutated_SCCS;
+    reference_hexa_permutated_SCCS[0][0] = 1;
+    reference_hexa_permutated_SCCS[0][1] = 0;
+    reference_hexa_permutated_SCCS[0][2] = 0;
+    reference_hexa_permutated_SCCS[1][0] = 0;
+    reference_hexa_permutated_SCCS[1][1] = 0;
+    reference_hexa_permutated_SCCS[1][2] = 1;
+    reference_hexa_permutated_SCCS[2][0] = 0;
+    reference_hexa_permutated_SCCS[2][1] = 1;
+    reference_hexa_permutated_SCCS[2][2] = 0;
+
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("unpermutated_SCCS[" << iii << "] = " << unpermutated_SCCS[iii][0] << ":" << unpermutated_SCCS[iii][1] << ":" << unpermutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_unpermutated_SCCS[iii][0] == Approx(unpermutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][1] == Approx(unpermutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][2] == Approx(unpermutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_unpermutated_SCCS[iii][0] == Approx(-unpermutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<double,3> totals = {{0,0,0}};
+    for (size_t iii = 0; iii < 7; iii++)
+      {
+        // also check that the total is equal to the full norm.
+
+        for (size_t jjj = 0; jjj < 3; jjj++)
+          {
+            INFO("i:j = " << iii << ":" << jjj );
+            CHECK(reference_norms[iii][jjj] == Approx(norms[iii][jjj]));
+            if (iii < 6)
+              {
+                totals[jjj] += norms[iii][jjj];
+              }
+          }
+      }
+    for (size_t jjj = 0; jjj < 3; jjj++)
+      {
+        INFO("j = " << jjj );
+        CHECK(totals[jjj] == Approx(norms[6][jjj]));
+      }
+
+    // also check that all the isotropic and totals are the same
+    for (size_t iii = 1; iii < 3; iii++)
+      {
+        CHECK(norms[5][0] == Approx(norms[5][iii]));
+        CHECK(norms[6][0] == Approx(norms[6][iii]));
+      }
+
+
+    const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
+    Tensor<2,3> hexa_permutated_SCCS;
+    for (size_t index = 0; index < 3; index++)
+      {
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
+      }
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("hexa_permutated_SCCS[" << iii << "] = " << hexa_permutated_SCCS[iii][0] << ":" << hexa_permutated_SCCS[iii][1] << ":" << hexa_permutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_hexa_permutated_SCCS[iii][0] == Approx(hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][1] == Approx(hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][2] == Approx(hexa_permutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_hexa_permutated_SCCS[iii][0] == Approx(-hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][1] == Approx(-hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][2] == Approx(-hexa_permutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+  }
+
+  {
+    // This is testing some other elastic matrices of which the properties can
+    // be resonaly predicted (for example, mostly hexagonal) and some coverage
+    // testing: Case 4: from http://solidmechanics.org/Text/Chapter3_2/Chapter3_2.php (Be).
+    // This one should have at least in one direction almost all the the anistropy be
+    // hexagonal anisotropy.
+
+    SymmetricTensor<2,6> full_elastic_matrix;
+    full_elastic_matrix[0][0] = 192.3;
+    full_elastic_matrix[0][1] = 26.7;
+    full_elastic_matrix[0][2] = 14;
+    full_elastic_matrix[1][1] = full_elastic_matrix[0][0];
+    full_elastic_matrix[1][2] = full_elastic_matrix[0][2];
+    full_elastic_matrix[2][2] = 336.4;
+    full_elastic_matrix[3][3] = 162.5;
+    full_elastic_matrix[4][4] = full_elastic_matrix[3][3];
+    full_elastic_matrix[5][5] = 0.5*(full_elastic_matrix[0][0] + full_elastic_matrix[0][1]);
+
+    std::array<std::array<double,3>,7 > reference_norms;
+    reference_norms[0] = {{0,0,0}}; // no triclinic
+    reference_norms[1] = {{0,0,0}}; // no monoclinic
+    reference_norms[2] = {{16161.695,0.0,16161.695}}; // orthorhomic dependent on direction
+    reference_norms[3] = {{2786.31125,1425.78,2786.31125}}; // tetragonal could be present
+    reference_norms[4] = {{8079.22575,25601.452,8079.22575}}; // hexagonal is expected
+    reference_norms[5] = {{421517.088,421517.088,421517.088}}; // isotropic should be the same for every permutation
+    reference_norms[6] = {{448544.32,448544.32,448544.32}}; // total should be the same for every direction
+
+    // It is already in a SCCS frame, so they should be
+    // unit vectors. The order is irrelevant.
+    Tensor<2,3> reference_unpermutated_SCCS;
+    reference_unpermutated_SCCS[0][0] = 0;
+    reference_unpermutated_SCCS[0][1] = 0;
+    reference_unpermutated_SCCS[0][2] = 1;
+    reference_unpermutated_SCCS[1][0] = 1;
+    reference_unpermutated_SCCS[1][1] = 0;
+    reference_unpermutated_SCCS[1][2] = 0;
+    reference_unpermutated_SCCS[2][0] = 0;
+    reference_unpermutated_SCCS[2][1] = 1;
+    reference_unpermutated_SCCS[2][2] = 0;
+
+    // Permutation 2 has the highest norm, so reference_unpermutated_SCCS
+    // is permutated by {1,2,0};
+    Tensor<2,3> reference_hexa_permutated_SCCS;
+    reference_hexa_permutated_SCCS[0][0] = 1;
+    reference_hexa_permutated_SCCS[0][1] = 0;
+    reference_hexa_permutated_SCCS[0][2] = 0;
+    reference_hexa_permutated_SCCS[1][0] = 0;
+    reference_hexa_permutated_SCCS[1][1] = 1;
+    reference_hexa_permutated_SCCS[1][2] = 0;
+    reference_hexa_permutated_SCCS[2][0] = 0;
+    reference_hexa_permutated_SCCS[2][1] = 0;
+    reference_hexa_permutated_SCCS[2][2] = 1;
+
+    const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_dilatation_stiffness_tensor(full_elastic_matrix);
+    const SymmetricTensor<2,3> voigt_stiffness_tensor_full = aspect::Particle::Property::Utilities::compute_voigt_stiffness_tensor(full_elastic_matrix);
+    Tensor<2,3> unpermutated_SCCS = aspect::Particle::Property::Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("unpermutated_SCCS[" << iii << "] = " << unpermutated_SCCS[iii][0] << ":" << unpermutated_SCCS[iii][1] << ":" << unpermutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_unpermutated_SCCS[iii][0] == Approx(unpermutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][1] == Approx(unpermutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_unpermutated_SCCS[iii][2] == Approx(unpermutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_unpermutated_SCCS[iii][0] == Approx(-unpermutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][1] == Approx(-unpermutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_unpermutated_SCCS[iii][2] == Approx(-unpermutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+    std::array<std::array<double,3>,7 > norms = aspect::Particle::Property::Utilities::compute_elastic_tensor_SCCS_decompositions(unpermutated_SCCS, full_elastic_matrix);
+    std::array<double,3> totals = {{0,0,0}};
+    for (size_t iii = 0; iii < 7; iii++)
+      {
+        // also check that the total is equal to the full norm.
+
+        for (size_t jjj = 0; jjj < 3; jjj++)
+          {
+            INFO("i:j = " << iii << ":" << jjj );
+            CHECK(reference_norms[iii][jjj] == Approx(norms[iii][jjj]));
+            if (iii < 6)
+              {
+                totals[jjj] += norms[iii][jjj];
+              }
+          }
+      }
+    for (size_t jjj = 0; jjj < 3; jjj++)
+      {
+        INFO("j = " << jjj );
+        CHECK(totals[jjj] == Approx(norms[6][jjj]));
+      }
+
+    // also check that all the isotropic and totals are the same
+    for (size_t iii = 1; iii < 3; iii++)
+      {
+        CHECK(norms[5][0] == Approx(norms[5][iii]));
+        CHECK(norms[6][0] == Approx(norms[6][iii]));
+      }
+
+
+    const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
+    std::array<unsigned int, 3> permutation = aspect::Particle::Property::Utilities::indexed_even_permutation(max_hexagonal_element_index);
+    Tensor<2,3> hexa_permutated_SCCS;
+    for (size_t index = 0; index < 3; index++)
+      {
+        hexa_permutated_SCCS[index] = unpermutated_SCCS[permutation[index]];
+      }
+    for (size_t iii = 0; iii < 3; iii++)
+      {
+        const double epsilon = 1e-3;
+        INFO("hexa_permutated_SCCS[" << iii << "] = " << hexa_permutated_SCCS[iii][0] << ":" << hexa_permutated_SCCS[iii][1] << ":" << hexa_permutated_SCCS[iii][2]);
+        // The direction of the eigenvectors is not important, but they do need to be consistent
+        CHECK((reference_hexa_permutated_SCCS[iii][0] == Approx(hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][1] == Approx(hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+               && reference_hexa_permutated_SCCS[iii][2] == Approx(hexa_permutated_SCCS[iii][2]).epsilon(epsilon)
+               || (reference_hexa_permutated_SCCS[iii][0] == Approx(-hexa_permutated_SCCS[iii][0]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][1] == Approx(-hexa_permutated_SCCS[iii][1]).epsilon(epsilon)
+                   && reference_hexa_permutated_SCCS[iii][2] == Approx(-hexa_permutated_SCCS[iii][2]).epsilon(epsilon))));
+      }
+  }
 }
