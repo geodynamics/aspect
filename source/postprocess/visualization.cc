@@ -23,6 +23,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/simulator.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <deal.II/fe/mapping_q1_eulerian.h>
@@ -1017,6 +1018,8 @@ namespace aspect
       const Mapping<dim> &mapping =
         (output_undeformed_mesh && dynamic_cast<const MappingQ1Eulerian<dim, LinearAlgebra::Vector>*>(&this->get_mapping())) ?
         (linear_mapping) : (this->get_mapping());
+
+      this->get_signals().pre_data_out_build_patches (data_out);
 
       // Now get everything written for the DataOut case, and record this
       // in the statistics file

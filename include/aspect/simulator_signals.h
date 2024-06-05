@@ -27,6 +27,7 @@
 #include <aspect/parameters.h>
 
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/numerics/data_out.h>
 
 #include <boost/signals2.hpp>
 
@@ -287,6 +288,15 @@ namespace aspect
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
                                   aspect::Assemblers::Manager<dim> &)>
     set_assemblers;
+
+    /**
+    * A signal that is called before the build_patches() function is called during
+    * the creation of the visualization output. This signal
+    * allows for registering functions that take a DataOut object and can for example
+    * be used to select only certain cells of the mesh to be built into patches through
+    * calling the DataOut member function set_cell_selection().
+    */
+    boost::signals2::signal<void (DataOut<dim> &)>  pre_data_out_build_patches;
   };
 
 
