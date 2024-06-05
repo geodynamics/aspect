@@ -3,7 +3,7 @@
 ```{admonition} Community Project
 :class: information
 
-ASPECT is a community software project with the list of software developers and contributors available in {ref}`sec:authors`. Contributions to software or documentation by every user are welcome and encouraged. See [here](https://github.com/geodynamics/aspect/blob/main/CONTRIBUTING.md) for how to contribute.
+ASPECT is a community software project. A list of ASPECT developers and contributors is available {ref}`here <sec:authors>`. Contributions to software or documentation by every user are welcome and encouraged. See [here](https://github.com/geodynamics/aspect/blob/main/CONTRIBUTING.md) for how to contribute.
 ```
 
 ```{image} _static/images/aspect_logo.png

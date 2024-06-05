@@ -19,7 +19,7 @@
 
 project = 'ASPECT'
 copyright = '2023'
-author = 'Authors of the ASPECT manual'
+author = 'the authors of the ASPECT manual'
 
 # The full version, including alpha/beta/rc tags
 with open('../../VERSION', 'r') as file:
