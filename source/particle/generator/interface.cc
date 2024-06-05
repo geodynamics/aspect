@@ -32,12 +32,6 @@ namespace aspect
     namespace Generator
     {
       template <int dim>
-      Interface<dim>::Interface()
-        = default;
-
-
-
-      template <int dim>
       void
       Interface<dim>::initialize ()
       {
@@ -188,20 +182,6 @@ namespace aspect
 
         return std::make_pair(cellid, new_particle);
       }
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::declare_parameters (ParameterHandler &)
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::parse_parameters (ParameterHandler &)
-      {}
 
 
 // -------------------------------- Deal with registering models and automating

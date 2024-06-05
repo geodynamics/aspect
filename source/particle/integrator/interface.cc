@@ -30,27 +30,6 @@ namespace aspect
     namespace Integrator
     {
       template <int dim>
-      void
-      Interface<dim>::initialize ()
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::declare_parameters (ParameterHandler &)
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::parse_parameters (ParameterHandler &)
-      {}
-
-
-
-      template <int dim>
       bool
       Interface<dim>::new_integration_step()
       {

@@ -52,24 +52,9 @@ namespace aspect
      * @ingroup AdiabaticConditions
      */
     template <int dim>
-    class Interface: public SimulatorAccess<dim>
+    class Interface: public SimulatorAccess<dim>, public Plugins::InterfaceBase
     {
       public:
-        /**
-         * Destructor. Made virtual to enforce that derived classes also have
-         * virtual destructors.
-         */
-        ~Interface() override;
-
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
-         * the SimulatorAccess (if applicable) is initialized.
-         */
-        virtual
-        void
-        initialize ();
-
         /**
          * Some plugins need to know whether the adiabatic conditions are
          * already calculated. Namely all plugins that are needed to create
@@ -80,14 +65,6 @@ namespace aspect
         virtual
         bool
         is_initialized () const = 0;
-
-        /**
-         * Compute the adiabatic conditions along a vertical transect of the
-         * geometry based on the given material model and other quantities.
-         * This function is called at every new timestep.
-         */
-        virtual
-        void update ();
 
         /**
          * Return the adiabatic temperature at a given point of the domain.
@@ -158,27 +135,6 @@ namespace aspect
         DEAL_II_DEPRECATED
         virtual
         void get_adiabatic_density_derivative_profile(std::vector<double> &values) const;
-
-        /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-
     };
 
 

@@ -532,14 +532,9 @@ namespace aspect
      * which equation is solved.
      */
     template <int dim>
-    class Interface
+    class Interface : public Plugins::InterfaceBase
     {
       public:
-        /**
-         * Destructor
-         */
-        virtual ~Interface () = default;
-
         /**
          * Execute this assembler object. This function performs the primary work
          * of an assembler. More precisely, it uses information for the current

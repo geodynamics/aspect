@@ -244,39 +244,11 @@ namespace aspect
 
 
       template <int dim>
-      void
-      Interface<dim>::initialize ()
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::update ()
-      {}
-
-
-
-      template <int dim>
       std::string
       Interface<dim>::get_physical_units () const
       {
         return physical_units;
       }
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::declare_parameters (ParameterHandler &)
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::parse_parameters (ParameterHandler &)
-      {}
 
 
 

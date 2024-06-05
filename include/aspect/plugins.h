@@ -134,7 +134,7 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~InterfaceBase();
+        virtual ~InterfaceBase() = default;
 
         /**
          * Initialization function. This function is called once at the
