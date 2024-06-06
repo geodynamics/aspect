@@ -425,11 +425,25 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 
-# Set the name of the project and main target. If we are generating
-# ASPECT debug and release mode, we have the debug build as 'aspect'
-# and we populate a list of all targets (by default they are the same):
-set(TARGET "aspect")
-set(TARGETS "aspect")
+# Set the name of the main targets in the form of
+# TARGET_EXE/LIB_DEBUG/RELEASE. Set TARGET_EXE as the debug build,
+# unless we have only release mode enabled.
+if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
+  set(TARGET_EXE_DEBUG "aspect.exe.debug")
+  list(APPEND TARGET_EXECUTABLES "${TARGET_EXE_DEBUG}")
+
+  set(TARGET_EXE "${TARGET_EXE_DEBUG}")
+endif()
+
+if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
+  set(TARGET_EXE_RELEASE "aspect.exe.release")
+  list(APPEND TARGET_EXECUTABLES "${TARGET_EXE_RELEASE}")
+
+  if ("${TARGET_EXE}" STREQUAL "")
+    set(TARGET_EXE "${TARGET_EXE_RELEASE}")
+  endif()
+endif()
+
 
 include(${CMAKE_SOURCE_DIR}/cmake/macro_aspect_query_git_information.cmake)
 ASPECT_QUERY_GIT_INFORMATION("ASPECT")
@@ -515,11 +529,11 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
     message(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
   endif()
 
-  # Finally create a custom target to run them:
+  # Finally create a custom target to run the tests:
   add_custom_target(run_unit_tests
     COMMAND ${CMAKE_BINARY_DIR}/aspect --test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
-    DEPENDS ${TARGET}
+    DEPENDS ${TARGET_EXE}
     COMMENT "Running unit_tests ...")
 endif()
 
@@ -533,8 +547,6 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
 
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
-  set(aspect_binary ${CMAKE_BINARY_DIR}/${TARGET})
-
   # set a flag so we don't need to rerun this configuration step every time:
   set(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
 
@@ -545,7 +557,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
         -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
         -D Aspect_DIR=${CMAKE_BINARY_DIR}
         -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -D ASPECT_BINARY=${aspect_binary}
+        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
         ${CMAKE_CURRENT_SOURCE_DIR}/tests
     OUTPUT_FILE setup_tests.log
     RESULT_VARIABLE test_cmake_result
@@ -559,7 +571,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
   add_custom_target(run_tests
     COMMAND ${CMAKE_COMMAND} --build . --target test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    DEPENDS ${TARGET}
+    DEPENDS ${TARGET_EXE}
     COMMENT "Running tests ...")
 endif()
 
@@ -629,13 +641,13 @@ file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 "message(
 \"###
 #
-#  Project ${TARGET} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
+#  Project ${TARGET_EXE} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
 #      ${DEAL_II_PATH}
 #
 #  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
 #
 #  You can now run
-#      ${_make_command}                - to compile and link ${TARGET}
+#      ${_make_command}                - to compile and link ${TARGET_EXE}
 #      ${_make_command} debug          - to switch the build type to 'Debug'
 #      ${_make_command} release        - to switch the build type to 'Release'
 #      ${_make_command} debugrelease   - to switch the build type to compile both
@@ -732,28 +744,38 @@ set(TARGET_SRC
 
 
 
-# Setup targets for ASPECT:
+# Set up targets for ASPECT executables:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-  add_executable(${TARGET} ${TARGET_SRC})
-  deal_ii_setup_target(${TARGET} DEBUG)
+  add_executable(${TARGET_EXE_DEBUG} ${TARGET_SRC})
+  set_property(TARGET ${TARGET_EXE_DEBUG}
+               PROPERTY OUTPUT_NAME aspect.debug)
+  deal_ii_setup_target(${TARGET_EXE_DEBUG} DEBUG)
 endif()
 
 if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-  add_executable(${TARGET}-release ${TARGET_SRC})
-  deal_ii_setup_target(${TARGET}-release RELEASE)
-  set(TARGETS ${TARGET}-release ${TARGET})
-  # default for testing:
-  set(TARGET ${TARGET})
+  add_executable(${TARGET_EXE_RELEASE} ${TARGET_SRC})
+  set_property(TARGET ${TARGET_EXE_RELEASE}
+               PROPERTY OUTPUT_NAME aspect.release)
+  deal_ii_setup_target(${TARGET_EXE_RELEASE} RELEASE)
 endif()
+
+# Make sure that we have an executable 'aspect' that
+# links to the debug version, or the release version if
+# we did not compile in debug mode. TARGET_EXE describes
+# which target this references,
+add_custom_target(aspect ALL
+                  COMMAND ${CMAKE_COMMAND} -E create_symlink
+                           $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME>  # executable file name
+                           aspect                                        # link name
+                  DEPENDS ${TARGET_EXE}
+                  COMMENT "Creating symlink $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME> -> aspect")
+
 
 # This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
 # does not do so, so do it here. Remove this when we require deal.II 9.6.
-if(DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
-  if(CMAKE_BUILD_TYPE MATCHES Release)
-    add_definitions("-DNDEBUG")
-  endif()
-  if(CMAKE_BUILD_TYPE MATCHES DebugRelease)
-    target_compile_definitions(${TARGET}-release PUBLIC "NDEBUG")
+if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
+  if(DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
+    target_compile_definitions(${TARGET_EXE_RELEASE} PUBLIC "NDEBUG")
   endif()
 endif()
 
@@ -766,7 +788,7 @@ endif()
 if(${ZLIB_FOUND})
   message(STATUS "Linking ASPECT against zlib")
   include_directories(${ZLIB_INCLUDE_DIR})
-  foreach(_T ${TARGETS})
+  foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${ZLIB_LIBRARY})
   endforeach()
 endif()
@@ -775,7 +797,7 @@ endif()
 if(${PerpleX_FOUND})
   message(STATUS "Linking ASPECT against PerpleX")
   include_directories(${PerpleX_INCLUDE_DIR})
-  foreach(_T ${TARGETS})
+  foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${PerpleX_LIBRARIES})
   endforeach()
 endif()
@@ -784,7 +806,7 @@ endif()
 if(${LIBDAP_FOUND})
   message(STATUS "Linking ASPECT against libdap")
   include_directories(${LIBDAP_INCLUDE_DIRS})
-  foreach(_T ${TARGETS})
+  foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${LIBDAP_LIBRARIES})
   endforeach()
 endif()
@@ -792,7 +814,7 @@ endif()
 # Fastscape
 if (FASTSCAPE)
   message(STATUS "Linking ASPECT against Fastscape")
-  foreach(_T ${TARGETS})
+  foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${FASTSCAPE})
   endforeach()
 endif()
@@ -801,7 +823,7 @@ endif()
 if(${NETCDF_FOUND})
   message(STATUS "Linking ASPECT against NetCDF")
   include_directories(${NETCDF_INCLUDE_DIRS})
-  foreach(_T ${TARGETS})
+  foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${NETCDF_LIBRARIES})
   endforeach()
 endif()
@@ -810,20 +832,20 @@ endif()
 if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
   message(STATUS "Linking ASPECT against WorldBuilder")
   if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-    target_include_directories(${TARGET} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
-    target_link_libraries(${TARGET} WorldBuilderDebug)
+    target_include_directories(${TARGET_EXE_DEBUG} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
+    target_link_libraries(${TARGET_EXE_DEBUG} WorldBuilderDebug)
   endif()
 
   if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-    target_include_directories(${TARGET}-release PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
-    target_link_libraries(${TARGET}-release WorldBuilderRelease)
+    target_include_directories(${TARGET_EXE_RELEASE} PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
+    target_link_libraries(${TARGET_EXE_RELEASE} WorldBuilderRelease)
   endif()
 endif()
 
 # Some systems need to explicitly link to some libraries to use dlopen
 if(ASPECT_USE_SHARED_LIBS)
   message(STATUS "Linking ASPECT against dlopen")
-  foreach(_T ${TARGETS})
+  foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${CMAKE_DL_LIBS})
   endforeach()
 endif()
@@ -868,7 +890,7 @@ if(ASPECT_PRECOMPILE_HEADERS)
     message(STATUS "Precompiling common header files.")
     # Use the native cmake support to precompile some common headers
     # from ASPECT and deal.II that are frequently included, but rarely changed.
-    foreach(_T ${TARGETS})
+    foreach(_T ${TARGET_EXECUTABLES})
       TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
         <aspect/global.h> <aspect/plugins.h> <aspect/introspection.h> <aspect/parameters.h>)
       TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
@@ -887,7 +909,7 @@ endif()
 
 if(ASPECT_UNITY_BUILD)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    foreach(_T ${TARGETS})
+    foreach(_T ${TARGET_EXECUTABLES})
       set_property(TARGET ${_T} PROPERTY UNITY_BUILD TRUE)
     endforeach()
     message(STATUS "Combining source files into unity build.")
@@ -896,7 +918,9 @@ if(ASPECT_UNITY_BUILD)
   endif()
 else()
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    set_property(TARGET ${TARGET} PROPERTY UNITY_BUILD FALSE)
+    foreach(_T ${TARGET_EXECUTABLES})
+      set_property(TARGET ${_T} PROPERTY UNITY_BUILD FALSE)
+    endforeach()
   endif()
 
   message(STATUS "Disabling unity build.")
@@ -906,14 +930,14 @@ endif()
 #
 ## installation
 #
-# binary:
-install(TARGETS ${TARGETS}
+# binaries:
+install(TARGETS ${TARGET_EXECUTABLES}
   RUNTIME DESTINATION bin
   COMPONENT runtime)
 
-# make sure we have the rpath to our dependencies set:
 
-foreach(_T ${TARGETS})
+# make sure we have the rpath to our dependencies set:
+foreach(_T ${TARGET_EXECUTABLES})
   set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 endforeach()
 
@@ -1001,8 +1025,8 @@ endif()
 
 # A target to create parameters.json after building the ASPECT binary.
 
-add_custom_command(TARGET ${TARGET} POST_BUILD
-  COMMAND sh -c 'echo "" | ./aspect --output-json -- > parameters.json'
+add_custom_command(TARGET ${TARGET_EXE} POST_BUILD
+  COMMAND sh -c 'echo "" | ./$<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME> --output-json -- > parameters.json'
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 

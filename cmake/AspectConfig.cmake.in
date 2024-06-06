@@ -28,7 +28,8 @@ set(Aspect_VERSION "@ASPECT_PACKAGE_VERSION@")
 set(Aspect_DIR "@CONFIG_DIR@")
 set(ASPECT_WITH_WORLD_BUILDER "@ASPECT_WITH_WORLD_BUILDER@")
 # force our build type to the one that is used by ASPECT:
-set(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
+set(ASPECT_BUILD_DEBUG "@ASPECT_BUILD_DEBUG@")
+set(ASPECT_BUILD_RELEASE "@ASPECT_BUILD_RELEASE@")
 
 
 macro(ASPECT_SETUP_PLUGIN _target)
@@ -43,26 +44,24 @@ macro(ASPECT_SETUP_PLUGIN _target)
   # Note that you can not rename a target or change its filename, but you can
   # modify the suffix. :-)
 
-  set(_targets ${_target})
-  if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+  if(${ASPECT_BUILD_DEBUG} MATCHES "ON")
+    message(STATUS "  setting up DEBUG variant")
     deal_ii_setup_target(${_target} DEBUG)
     set_target_properties(${_target} PROPERTIES SUFFIX ".debug.so")
 
-    get_target_property(_files ${_target} SOURCES)
-    add_library(${_target}.release SHARED ${_files})
+    list(APPEND _target_libs ${_target})
+  endif()
+
+  if(${ASPECT_BUILD_RELEASE} MATCHES "ON")
+    message(STATUS "  setting up RELEASE variant")
+    add_library(${_target}.release SHARED $<TARGET_PROPERTY:${_target},SOURCES>)
     deal_ii_setup_target(${_target}.release RELEASE)
     set_target_properties(${_target}.release PROPERTIES SUFFIX ".so")
 
-    set(_targets ${_target} ${_target}.release)
-  elseif(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    deal_ii_setup_target(${_target} DEBUG)
-    set_target_properties(${_target} PROPERTIES SUFFIX ".debug.so")
-  else()
-    deal_ii_setup_target(${_target} RELEASE)
-    set_target_properties(${_target} PROPERTIES SUFFIX ".release.so")
+    list(APPEND _target_libs ${_target}.release)
   endif()
 
-  foreach(_T ${_targets})
+  foreach(_T ${_target_libs})
     set_property(TARGET ${_T} APPEND PROPERTY
       INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}")
     set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -70,7 +69,7 @@ macro(ASPECT_SETUP_PLUGIN _target)
 
   file(RELATIVE_PATH _relative_path ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
 
-  install(TARGETS ${_targets}
+  install(TARGETS ${_target_libs}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/${_relative_path}
     COMPONENT examples)
 
