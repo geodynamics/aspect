@@ -720,7 +720,7 @@ namespace aspect
                     const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
                     const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
                     const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
-                    G += 2.0 * beta[slip_system_i] * slip_cross_product ;
+                    G += 2.0 * beta[slip_system_i] * slip_cross_product;
                   }
               }
 
