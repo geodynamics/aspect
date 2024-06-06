@@ -213,8 +213,11 @@ namespace aspect
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3));
+            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3));
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3));
+            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3));
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3));
+            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3));
           }
 
         return property_information;
