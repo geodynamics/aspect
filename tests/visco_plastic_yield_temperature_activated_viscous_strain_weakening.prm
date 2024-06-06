@@ -1,4 +1,4 @@
-#this tests the temperature dependence of the viscous strain weakening factor  
+#this tests the temperature dependence of the viscous strain weakening factor
 
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_viscous_strain_weakening.prm
 
@@ -40,4 +40,3 @@ subsection Boundary temperature model
     set Top temperature    =  800
   end
 end
-
