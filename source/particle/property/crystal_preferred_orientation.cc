@@ -23,6 +23,9 @@
 #include <aspect/citation_info.h>
 #include <aspect/utilities.h>
 
+#include <world_builder/grains.h>
+#include <world_builder/world.h>
+
 namespace aspect
 {
   namespace Particle
@@ -123,7 +126,7 @@ namespace aspect
 
       template <int dim>
       void
-      CrystalPreferredOrientation<dim>::initialize_one_particle_property(const Point<dim> &,
+      CrystalPreferredOrientation<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                                          std::vector<double> &data) const
       {
         // the layout of the data vector per particle is the following:
@@ -159,12 +162,33 @@ namespace aspect
             rotation_matrices_grains[mineral_i].resize(n_grains);
 
             // This will be set by the initial grain subsection.
-            bool use_world_builder = false;
-            if (use_world_builder)
+            if ( initial_grains_model == CPOInitialGrainsModel::world_builder)
               {
 #ifdef ASPECT_WITH_WORLD_BUILDER
-                AssertThrow(false,
-                            ExcMessage("Not implemented."));
+                WorldBuilder::grains wb_grains = this->get_world_builder().grains(Utilities::convert_point_to_array(position),
+                                                                                  -this->get_geometry_model().height_above_reference_surface(position),
+                                                                                  mineral_i,
+                                                                                  n_grains);
+                double sum_volume_fractions = 0;
+                for (unsigned int grain_i = 0; grain_i < n_grains ; ++grain_i)
+                  {
+                    sum_volume_fractions += wb_grains.sizes[grain_i];
+                    volume_fractions_grains[mineral_i][grain_i] = wb_grains.sizes[grain_i];
+                    // we are receiving a array<array<double,3>,3> which needs to be unrolled in the correct way
+                    // for a tensor<2,3> it just loops first over the second index and than the first index
+                    for (unsigned int component_i = 0; component_i < 3 ; ++component_i)
+                      {
+                        for (unsigned int component_j = 0; component_j < 3 ; ++component_j)
+                          {
+                            Assert(!std::isnan(wb_grains.rotation_matrices[grain_i][component_i][component_j]), ExcMessage("Error: not a number."));
+                            rotation_matrices_grains[mineral_i][grain_i][component_i][component_j] = wb_grains.rotation_matrices[grain_i][component_i][component_j];
+                          }
+                      }
+
+                  }
+
+                AssertThrow(sum_volume_fractions != 0, ExcMessage("Sum of volumes is equal to zero, which is not supporsed to happen. "
+                                                                  "Make sure that all parts of the domain which contain particles are covered by the world builder."));
 #else
                 AssertThrow(false,
                             ExcMessage("The world builder was requested but not provided. Make sure that aspect is "
@@ -1039,7 +1063,7 @@ namespace aspect
                 prm.declare_entry("Model name","Uniform grains and random uniform rotations",
                                   Patterns::Anything(),
                                   "The model used to initialize the CPO for all particles. "
-                                  "Currently 'Uniform grains and random uniform rotations' is the only valid option.");
+                                  "Currently 'Uniform grains and random uniform rotations' and 'World Builder' are the only valid option.");
 
                 prm.declare_entry ("Minerals", "Olivine: Karato 2008, Enstatite",
                                    Patterns::List(Patterns::Anything()),
@@ -1156,9 +1180,21 @@ namespace aspect
               prm.enter_subsection("Initial grains");
               {
                 const std::string model_name = prm.get("Model name");
-                AssertThrow(model_name == "Uniform grains and random uniform rotations",
-                            ExcMessage("No model named " + model_name + "for CPO particle property initialization. "
-                                       + "Only the model \"Uniform grains and random uniform rotations\" is available."));
+                if (model_name  == "Uniform grains and random uniform rotations")
+                  {
+                    initial_grains_model = CPOInitialGrainsModel::uniform_grains_and_random_uniform_rotations;
+                  }
+                else if (model_name == "World Builder")
+                  {
+                    initial_grains_model = CPOInitialGrainsModel::world_builder;
+                  }
+                else
+                  {
+                    AssertThrow(false,
+                                ExcMessage("No model named " + model_name + "for CPO particle property initialization. "
+                                           + "Only the model \"Uniform grains and random uniform rotations\"  and "
+                                           "\"World Builder\" are available."));
+                  }
 
                 const std::vector<std::string> temp_deformation_type_selector = dealii::Utilities::split_string_list(prm.get("Minerals"));
                 n_minerals = temp_deformation_type_selector.size();

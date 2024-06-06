@@ -86,6 +86,11 @@ namespace aspect
         spin_tensor, drex_2004
       };
 
+      enum class CPOInitialGrainsModel
+      {
+        uniform_grains_and_random_uniform_rotations, world_builder
+      };
+
       /**
        * The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO)
        * on particles. Each ASPECT particle represents many grains. Each grain is assigned a size and a orientation
@@ -618,6 +623,11 @@ namespace aspect
            * in Kaminski and Ribe (2001, EPSL).
            */
           double mobility;
+
+          /**
+           * Sets which type of initial grain model is used to create the gain sizes and orientatoins
+           */
+          CPOInitialGrainsModel initial_grains_model;
 
           /** @} */
 
