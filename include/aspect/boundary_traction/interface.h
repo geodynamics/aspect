@@ -68,12 +68,6 @@ namespace aspect
         boundary_traction (const types::boundary_id boundary_indicator,
                            const Point<dim> &position,
                            const Tensor<1,dim> &normal_vector) const = 0;
-
-      protected:
-        /**
-         * Pointer to the geometry object in use.
-         */
-        const GeometryModel::Interface<dim> *geometry_model;
     };
 
     template <int dim>
