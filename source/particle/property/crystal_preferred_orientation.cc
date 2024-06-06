@@ -162,7 +162,7 @@ namespace aspect
             rotation_matrices_grains[mineral_i].resize(n_grains);
 
             // This will be set by the initial grain subsection.
-            if ( initial_grains_model == CPOInitialGrainsModel::world_builder)
+            if (initial_grains_model == CPOInitialGrainsModel::world_builder)
               {
 #ifdef ASPECT_WITH_WORLD_BUILDER
                 WorldBuilder::grains wb_grains = this->get_world_builder().grains(Utilities::convert_point_to_array(position),
@@ -174,8 +174,8 @@ namespace aspect
                   {
                     sum_volume_fractions += wb_grains.sizes[grain_i];
                     volume_fractions_grains[mineral_i][grain_i] = wb_grains.sizes[grain_i];
-                    // we are receiving a array<array<double,3>,3> which needs to be unrolled in the correct way
-                    // for a tensor<2,3> it just loops first over the second index and than the first index
+                    // we are receiving a array<array<double,3>,3> from the world builder,
+                    // which needs to be copied in the correct way into a tensor<2,3>.
                     for (unsigned int component_i = 0; component_i < 3 ; ++component_i)
                       {
                         for (unsigned int component_j = 0; component_j < 3 ; ++component_j)
@@ -184,10 +184,9 @@ namespace aspect
                             rotation_matrices_grains[mineral_i][grain_i][component_i][component_j] = wb_grains.rotation_matrices[grain_i][component_i][component_j];
                           }
                       }
-
                   }
 
-                AssertThrow(sum_volume_fractions != 0, ExcMessage("Sum of volumes is equal to zero, which is not supporsed to happen. "
+                AssertThrow(sum_volume_fractions != 0, ExcMessage("Sum of volumes is equal to zero, which is not supposed to happen. "
                                                                   "Make sure that all parts of the domain which contain particles are covered by the world builder."));
 #else
                 AssertThrow(false,
@@ -1180,7 +1179,7 @@ namespace aspect
               prm.enter_subsection("Initial grains");
               {
                 const std::string model_name = prm.get("Model name");
-                if (model_name  == "Uniform grains and random uniform rotations")
+                if (model_name == "Uniform grains and random uniform rotations")
                   {
                     initial_grains_model = CPOInitialGrainsModel::uniform_grains_and_random_uniform_rotations;
                   }

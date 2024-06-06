@@ -1,30 +1,15 @@
 # Enable if: ASPECT_WITH_WORLD_BUILDER
 # This test is a copy of world_builder_simple.prm and checks that we can select
-# a subset of compositions for which to evaluate the world builder.
+# a subset of grains for which to evaluate the world builder.
 
+include $ASPECT_SOURCE_DIR/tests/world_builder_select_composition.prm
 set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_select_grains.wb
 set Use years in output instead of seconds = false
 set Adiabatic surface temperature = 1613
 set End time = 0
 set Dimension = 3
- set Nonlinear solver scheme = no Advection, no Stokes
+set Nonlinear solver scheme = no Advection, no Stokes
 
-subsection Adiabatic conditions model
-  subsection Compute profile
-    set Function expression = if(x > 1500000,1.0,0.0);0.0;0.0
-    set Composition reference profile = function
-  end
-end
-
-subsection Boundary velocity model
-  set Zero velocity boundary indicators = 1
-  set Tangential velocity boundary indicators = 0, 2, 3
-end
-
-subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields = Crust, Lithosphere, Continent
-end
 
 subsection Geometry model
   set Model name = box
@@ -37,22 +22,6 @@ subsection Geometry model
     set Box origin Z coordinate = -200e3
     set Box origin Y coordinate = -100e3
     set Box origin X coordinate = -50e3
-  end
-end
-
-subsection Gravity model
-  set Model name = vertical
-end
-
-subsection Initial temperature model
-  set Model name = world builder
-end
-
-subsection Initial composition model
-  set List of model names = world builder
-
-  subsection World builder
-    set List of relevant compositions = Crust
   end
 end
 
@@ -76,7 +45,7 @@ subsection Postprocess
 
   subsection Particles
     set Time between data output = 1e6
-    set Data output format       = vtu
+    set Data output format       = gnuplot
     set List of particle properties = integrated strain invariant, crystal preferred orientation, cpo bingham average, cpo elastic tensor, elastic tensor decomposition
     set Exclude output properties = a_cosine_matrix, volume fraction
     set Particle generator name = random uniform

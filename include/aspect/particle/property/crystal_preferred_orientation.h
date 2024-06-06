@@ -86,6 +86,12 @@ namespace aspect
         spin_tensor, drex_2004
       };
 
+      /**
+       * @brief An enum used to deterime how the initial grain sizes and orientation are set for all particles
+       *
+       * uniform_grains_and_random_uniform_rotations: all particles are set to a uniform grain-size of 1/n_grains
+       * world_builder: all particle grain-sizes and orientations are set by the world builder.
+       */
       enum class CPOInitialGrainsModel
       {
         uniform_grains_and_random_uniform_rotations, world_builder
@@ -625,7 +631,7 @@ namespace aspect
           double mobility;
 
           /**
-           * Sets which type of initial grain model is used to create the gain sizes and orientatoins
+           * Sets which type of initial grain model is used to create the gain sizes and orientations
            */
           CPOInitialGrainsModel initial_grains_model;
 
