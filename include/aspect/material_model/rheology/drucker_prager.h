@@ -54,6 +54,11 @@ namespace aspect
          * Limit maximum yield stress from drucker prager yield criterion.
          */
         double max_yield_stress;
+
+        /**
+         * Constructor. Initializes all values to NaN.
+         */
+        DruckerPragerParameters();
       };
 
       template <int dim>

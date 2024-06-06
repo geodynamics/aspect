@@ -32,6 +32,20 @@ namespace aspect
   {
     namespace Rheology
     {
+      PeierlsCreepParameters::PeierlsCreepParameters()
+        : prefactor (numbers::signaling_nan<double>()),
+          stress_exponent (numbers::signaling_nan<double>()),
+          activation_energy (numbers::signaling_nan<double>()),
+          activation_volume (numbers::signaling_nan<double>()),
+          peierls_stress (numbers::signaling_nan<double>()),
+          glide_parameter_p (numbers::signaling_nan<double>()),
+          glide_parameter_q (numbers::signaling_nan<double>()),
+          fitting_parameter (numbers::signaling_nan<double>()),
+          stress_cutoff (numbers::signaling_nan<double>())
+      {}
+
+
+
       template <int dim>
       PeierlsCreep<dim>::PeierlsCreep ()
         = default;

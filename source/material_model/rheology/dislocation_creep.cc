@@ -32,6 +32,15 @@ namespace aspect
   {
     namespace Rheology
     {
+      DislocationCreepParameters::DislocationCreepParameters()
+        :  prefactor (numbers::signaling_nan<double>()),
+           activation_energy (numbers::signaling_nan<double>()),
+           activation_volume (numbers::signaling_nan<double>()),
+           stress_exponent (numbers::signaling_nan<double>())
+      {}
+
+
+
       template <int dim>
       DislocationCreep<dim>::DislocationCreep ()
         = default;
