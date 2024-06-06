@@ -53,13 +53,13 @@ namespace aspect
     RandomPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      std::size_t seed = point_hash(position);
-      boost::hash_combine(seed,0);
+      //std::size_t seed = point_hash(position);
+      //boost::hash_combine(seed,0);
 
-      if (use_random_seed)
-        boost::hash_combine(seed,time(NULL));
+      //if (use_random_seed)
+      //  boost::hash_combine(seed,time(NULL));
 
-      boost::mt19937 random_number_generator(seed);
+      //boost::mt19937 random_number_generator(seed);
 
       // Uniform distribution on the interval [-magnitude,magnitude). This
       // will be used to generate the random temperature perturbation.

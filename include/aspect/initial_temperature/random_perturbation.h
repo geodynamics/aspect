@@ -65,7 +65,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-
       private:
         /**
          * The maximal magnitude of the random noise.
@@ -80,6 +79,14 @@ namespace aspect
          * the same setup.
          */
         bool use_random_seed;
+
+        /**
+         * A random number generator used by this class to get 
+         * random temperature perturbations. Should return the same
+         * random numbers every time since it is seeded with one.
+         */
+        boost::mt19937 random_number_generator(1);
+
     };
   }
 }
