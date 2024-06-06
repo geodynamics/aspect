@@ -1,0 +1,1 @@
+particle_one.dat contains the information to put one particle in at coordinates (0,0,0).
