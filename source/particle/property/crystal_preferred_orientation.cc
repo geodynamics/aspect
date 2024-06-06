@@ -223,8 +223,8 @@ namespace aspect
 
         // get velocity gradient tensor.
         Tensor<2,dim> velocity_gradient;
-        for (unsigned int d=0; d<dim; ++d)
-          velocity_gradient[d] = gradients[d];
+        for (unsigned int i = 0; i < dim; ++i)
+          velocity_gradient[i] = gradients[this->introspection().component_indices.velocities[i]];
 
         // Calculate strain rate from velocity gradients
         const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
