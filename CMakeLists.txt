@@ -19,9 +19,15 @@
 cmake_minimum_required(VERSION 3.13.4)
 project(aspect CXX)
 
+# load in version info and export it
+file(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
+
+
+message(STATUS "")
 message(STATUS "====================================================")
-message(STATUS "============ Configuring ASPECT ====================")
+message(STATUS "===== Configuring ASPECT ${ASPECT_PACKAGE_VERSION}")
 message(STATUS "====================================================")
+message(STATUS "")
 
 
 
@@ -86,7 +92,7 @@ endif()
 
 
 # ##############################################################################
-# Find external libraries
+# Find external libraries and deal with external tools
 # ##############################################################################
 
 message(STATUS "")
@@ -158,6 +164,7 @@ else()
   set(ASPECT_WITH_ZLIB OFF)
 endif()
 
+
 # PerpleX
 find_package(PerpleX QUIET
   HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})
@@ -167,6 +174,7 @@ if(${PerpleX_FOUND})
 else()
   set(ASPECT_WITH_PERPLEX OFF)
 endif()
+
 
 # libdap so that ASPECT can connect to the OPeNDAP servers
 set(ASPECT_WITH_LIBDAP OFF CACHE BOOL "Check if the user wants to compile ASPECT with the libdap libraries.")
@@ -340,6 +348,36 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set_property(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
   endif()
 endif()
+message(STATUS "")
+
+# Other stuff about external tools:
+set(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
+
+# Check if we can raise floating point exceptions.
+#
+# Note that some library we link with in ASPECT on some platforms will trigger
+# floating point exceptions when converting -numeric_limits<double>::max to a
+# string. The only thing we can do is a configure check and disable the
+# exceptions. This is done here:
+set(ASPECT_USE_FP_EXCEPTIONS ON CACHE BOOL "If ON, floating point exception are raised in debug mode.")
+
+# Clang 6.0 throws random floating point exceptions, which we could not
+# track down. Disable the exceptions for now.
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.0.0)
+  set(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
+endif()
+
+if(ASPECT_USE_FP_EXCEPTIONS)
+  message(STATUS "Determining whether we can use floating point exceptions...")
+  include(${CMAKE_SOURCE_DIR}/cmake/fpe_check.cmake)
+
+  if(HAVE_FP_EXCEPTIONS)
+    message(STATUS "Runtime floating point checks enabled.")
+  else()
+    set(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
+    message(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
+  endif()
+endif()
 
 
 
@@ -393,16 +431,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(TARGET "aspect")
 set(TARGETS "aspect")
 
-set(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
-
-
-# load in version info and export it
-file(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
-
 include(${CMAKE_SOURCE_DIR}/cmake/macro_aspect_query_git_information.cmake)
 ASPECT_QUERY_GIT_INFORMATION("ASPECT")
 configure_file(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
 
+message(STATUS "Writing externally readable configuration information")
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
@@ -780,7 +813,7 @@ if(${NETCDF_FOUND})
   endforeach()
 endif()
 
-
+# WorldBuilder
 if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
   message(STATUS "Linking ASPECT against WorldBuilder")
   if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
@@ -794,8 +827,6 @@ if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILD
   endif()
 endif()
 
-
-
 # Some systems need to explicitly link to some libraries to use dlopen
 if(ASPECT_USE_SHARED_LIBS)
   message(STATUS "Linking ASPECT against dlopen")
@@ -804,32 +835,6 @@ if(ASPECT_USE_SHARED_LIBS)
   endforeach()
 endif()
 
-
-
-# Check if we can raise floating point exceptions.
-#
-# Note that some library we link with in ASPECT on some platforms will trigger
-# floating point exceptions when converting -numeric_limits<double>::max to a
-# string. The only thing we can do is a configure check and disable the
-# exceptions. This is done here:
-set(ASPECT_USE_FP_EXCEPTIONS ON CACHE BOOL "If ON, floating point exception are raised in debug mode.")
-
-# Clang 6.0 throws random floating point exceptions, which we could not
-# track down. Disable the exceptions for now.
-if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.0.0)
-  set(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
-endif()
-
-if(ASPECT_USE_FP_EXCEPTIONS)
-  include(${CMAKE_SOURCE_DIR}/cmake/fpe_check.cmake)
-
-  if(HAVE_FP_EXCEPTIONS)
-    message(STATUS "Runtime floating point checks enabled.")
-  else()
-    set(ASPECT_USE_FP_EXCEPTIONS OFF CACHE BOOL "" FORCE)
-    message(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
-  endif()
-endif()
 
 
 #
@@ -950,7 +955,6 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
 # cmake stuff:
 install(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
         DESTINATION "lib/cmake/Aspect/")
-
 install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
 
 message(STATUS "Writing configuration details into detailed.log...")
@@ -1011,7 +1015,7 @@ add_custom_command(TARGET ${TARGET} POST_BUILD
 
 
 message(STATUS "")
-MESSAGE(STATUS "===== Writing final configuration =============")
+message(STATUS "===== Writing final configuration =============")
 
 include(cmake/write_config)
 
