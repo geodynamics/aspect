@@ -25,7 +25,6 @@
 #include <aspect/initial_temperature/interface.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-// #include <boost/random.hpp>
 #include <random>
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 

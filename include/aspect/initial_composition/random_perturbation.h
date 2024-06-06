@@ -25,7 +25,7 @@
 #include <aspect/initial_composition/interface.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-#include <boost/random.hpp>
+#include <random>
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 namespace aspect
@@ -81,6 +81,13 @@ namespace aspect
          * the same setup.
          */
         bool use_random_seed;
+
+        /**
+         * A random number generator used by this class to get 
+         * random temperature perturbations. Should return the same
+         * random numbers every time since it is seeded with one.
+         */
+        std::mt19937 random_number_generator(1);
     };
   }
 }

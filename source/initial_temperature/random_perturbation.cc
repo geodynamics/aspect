@@ -31,7 +31,6 @@ namespace aspect
   {
     namespace
     {
-      // This is where you would put hash combine function
       template <class T>
       inline void hash_combine(std::size_t& seed1, const T& v)
       {

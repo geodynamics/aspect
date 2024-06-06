@@ -21,7 +21,8 @@
 
 #include <aspect/initial_composition/random_perturbation.h>
 
-#include <boost/functional/hash.hpp>
+// #include <boost/functional/hash.hpp>
+#include <random>
 #include <time.h>
 
 namespace aspect
@@ -30,13 +31,20 @@ namespace aspect
   {
     namespace
     {
+      template <class T>
+      inline void hash_combine(std::size_t& seed1, const T& v)
+      {
+        std::hash<T> hasher;
+        seed1 ^= hasher(v) + 0x9e3779b9 + (seed1<<6) + (seed1>>2);
+      }
+      
       template<int dim>
       std::size_t point_hash(const Point<dim> &position)
       {
         std::size_t hash;
 
         for (unsigned int i = 0; i < dim; ++i)
-          boost::hash_combine(hash,position[i]);
+          hash_combine(hash,position[i]);
 
         return hash;
       }
@@ -49,15 +57,16 @@ namespace aspect
                          const unsigned int compositional_index) const
     {
       std::size_t seed = point_hash(position);
-      boost::hash_combine(seed,compositional_index);
-      if (use_random_seed)
-        boost::hash_combine(seed,time(NULL));
+      hash_combine(seed,compositional_index);
 
-      boost::mt19937 random_number_generator(seed);
+      if (use_random_seed)
+        hash_combine(seed,time(NULL));
+
+      std::mt19937 random_number_generator(seed);
 
       // Uniform distribution on the interval [-magnitude,magnitude). This
       // will be used to generate the random composition perturbation.
-      boost::random::uniform_real_distribution<double> uniform_distribution(-magnitude,magnitude);
+      std::uniform_real_distribution<double> uniform_distribution(-magnitude,magnitude);
       return uniform_distribution(random_number_generator);
     }
 
