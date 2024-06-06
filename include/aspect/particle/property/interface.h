@@ -305,23 +305,9 @@ namespace aspect
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class Interface
+      class Interface : public Plugins::InterfaceBase
       {
         public:
-          /**
-           * Destructor. Made virtual so that derived classes can be created
-           * and destroyed through pointers to the base class.
-           */
-          virtual ~Interface () = default;
-
-          /**
-           * Initialization function. This function is called once at the
-           * beginning of the program after parse_parameters is run.
-           */
-          virtual
-          void
-          initialize ();
-
           /**
            * Initialization function. This function is called once at the
            * creation of every particle for every property to initialize its
@@ -470,34 +456,6 @@ namespace aspect
           virtual
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const = 0;
-
-
-          /**
-           * Declare the parameters this class takes through input files.
-           * Derived classes should overload this function if they actually do
-           * take parameters; this class declares a fall-back function that
-           * does nothing, so that property classes that do not take any
-           * parameters do not have to do anything at all.
-           *
-           * This function is static (and needs to be static in derived
-           * classes) so that it can be called without creating actual objects
-           * (because declaring parameters happens before we read the input
-           * file and thus at a time when we don't even know yet which
-           * property objects we need).
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           * The default implementation in this class does nothing, so that
-           * derived classes that do not need any parameters do not need to
-           * implement it.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
       };
 
       /**

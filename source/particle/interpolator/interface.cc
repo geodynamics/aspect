@@ -38,20 +38,6 @@ namespace aspect
 
 
 
-      template <int dim>
-      void
-      Interface<dim>::declare_parameters (ParameterHandler &)
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::parse_parameters (ParameterHandler &)
-      {}
-
-
-
 // -------------------------------- Deal with registering models and automating
 // -------------------------------- their setup and selection at run time
 

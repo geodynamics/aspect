@@ -33,18 +33,6 @@ namespace aspect
 
     template <int dim>
     void
-    Interface<dim>::initialize ()
-    {}
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-    template <int dim>
-    void
     Interface<dim>::execute (Vector<float> &error_indicators) const
     {
       for (float &error_indicator : error_indicators)
@@ -55,19 +43,6 @@ namespace aspect
     template <int dim>
     void
     Interface<dim>::tag_additional_cells () const
-    {}
-
-
-    template <int dim>
-    void
-    Interface<dim>::declare_parameters (ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (ParameterHandler &)
     {}
 
 

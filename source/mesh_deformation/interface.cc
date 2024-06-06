@@ -155,20 +155,6 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
     bool
     Interface<dim>::needs_surface_stabilization () const
     {
@@ -194,21 +180,6 @@ namespace aspect
     compute_velocity_constraints_on_boundary(const DoFHandler<dim> &/*mesh_deformation_dof_handler*/,
                                              AffineConstraints<double> &/*mesh_velocity_constraints*/,
                                              const std::set<types::boundary_id> &/*boundary_id*/) const
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (ParameterHandler &)
     {}
 
 

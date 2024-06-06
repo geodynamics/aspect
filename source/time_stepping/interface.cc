@@ -37,48 +37,12 @@ namespace aspect
 
 
 
-
-    template <int dim>
-    void
-    Interface<dim>::
-    initialize ()
-    {
-    }
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    update ()
-    {
-    }
-
-
     template <int dim>
     std::pair<Reaction, double>
     Interface<dim>::
     determine_reaction (const TimeStepInfo & /*info*/)
     {
       return std::make_pair<Reaction, double>(Reaction::advance, std::numeric_limits<double>::max());
-    }
-
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::declare_parameters (ParameterHandler &/*prm*/)
-    {
-    }
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    parse_parameters (ParameterHandler &/*prm*/)
-    {
     }
 
 

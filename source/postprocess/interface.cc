@@ -31,35 +31,6 @@ namespace aspect
   {
 // ------------------------------ Interface -----------------------------
 
-
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::declare_parameters (ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (ParameterHandler &)
-    {}
-
-
-
     template <int dim>
     std::list<std::string>
     Interface<dim>::required_other_postprocessors() const

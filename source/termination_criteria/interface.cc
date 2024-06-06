@@ -32,25 +32,10 @@ namespace aspect
 // ------------------------------ Interface -----------------------------
 
     template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-    template <int dim>
-    void
-    Interface<dim>::declare_parameters (ParameterHandler &)
-    {}
-
-    template <int dim>
     double Interface<dim>::check_for_last_time_step (const double time_step) const
     {
       return time_step;
     }
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (ParameterHandler &)
-    {}
 
 
 

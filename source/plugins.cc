@@ -24,11 +24,6 @@ namespace aspect
 {
   namespace Plugins
   {
-    InterfaceBase::~InterfaceBase ()
-    {}
-
-
-
     void
     InterfaceBase::initialize ()
     {}

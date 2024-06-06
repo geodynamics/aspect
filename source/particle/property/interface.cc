@@ -200,13 +200,6 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::initialize ()
-      {}
-
-
-
-      template <int dim>
-      void
       Interface<dim>::initialize_one_particle_property (const Point<dim> &,
                                                         std::vector<double> &) const
       {}
@@ -267,20 +260,6 @@ namespace aspect
       {
         return interpolate;
       }
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::declare_parameters (ParameterHandler &)
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::parse_parameters (ParameterHandler &)
-      {}
 
 
 

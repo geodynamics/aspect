@@ -121,7 +121,7 @@ namespace aspect
        * @ingroup Visualization
        */
       template <int dim>
-      class Interface
+      class Interface : public Plugins::InterfaceBase
       {
         public:
           /**
@@ -146,22 +146,6 @@ namespace aspect
           explicit Interface (const std::string &physical_units = "");
 
           /**
-           * Destructor. Does nothing but is virtual so that derived classes
-           * destructors are also virtual.
-           */
-          virtual ~Interface () = default;
-
-          /**
-           * Initialize function.
-           */
-          virtual void initialize ();
-
-          /**
-           * Update any temporary information needed by the visualization postprocessor.
-           */
-          virtual void update();
-
-          /**
            * Return the string representation of the physical units that a
            * derived class has provided to the constructor of this class.
            *
@@ -175,33 +159,6 @@ namespace aspect
           virtual
           std::string
           get_physical_units () const;
-
-          /**
-           * Declare the parameters this class takes through input files.
-           * Derived classes should overload this function if they actually do
-           * take parameters; this class declares a fall-back function that
-           * does nothing, so that postprocessor classes that do not take any
-           * parameters do not have to do anything at all.
-           *
-           * This function is static (and needs to be static in derived
-           * classes) so that it can be called without creating actual objects
-           * (because declaring parameters happens before we read the input
-           * file and thus at a time when we don't even know yet which
-           * postprocessor objects we need).
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           * The default implementation in this class does nothing, so that
-           * derived classes that do not need any parameters do not need to
-           * implement it.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
 
           /**
            * A function that is used to indicate to the postprocessor manager which

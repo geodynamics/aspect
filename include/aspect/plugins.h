@@ -117,6 +117,16 @@ namespace aspect
     using namespace dealii;
 
 
+    /**
+     * A base class for all plugin systems. The class ensures that a
+     * common set of functions is declared as `virtual` (namely, the
+     * destructor, `initialize()`, `update()`, and
+     * `parse_parameters()`) and implemented with empty bodies so that
+     * derived interface classes do not have to declare these
+     * functions themselves. Furthermore, the class provides an empty,
+     * `static` function `declare_parameters()` that derived classes
+     * can re-implement to declare their parameters.
+     */
     class InterfaceBase
     {
       public:
@@ -124,11 +134,11 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~InterfaceBase();
+        virtual ~InterfaceBase() = default;
 
         /**
          * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
+         * beginning of the program after parse_parameters() is run and after
          * the SimulatorAccess (if applicable) is initialized.
          *
          * The default implementation of this function does nothing, but

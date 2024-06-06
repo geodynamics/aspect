@@ -44,23 +44,9 @@ namespace aspect
        * @ingroup ParticleIntegrators
        */
       template <int dim>
-      class Interface
+      class Interface : public Plugins::InterfaceBase
       {
         public:
-          /**
-           * Destructor. Made virtual so that derived classes can be created
-           * and destroyed through pointers to the base class.
-           */
-          virtual ~Interface () = default;
-
-          /**
-           * Initialization function. This function is called once at the
-           * beginning of the program after parse_parameters is run.
-           */
-          virtual
-          void
-          initialize ();
-
           /**
            * Perform an integration step of moving the particles of one cell
            * by the specified timestep dt. Implementations of this function
@@ -158,27 +144,6 @@ namespace aspect
           void *
           write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
                      void *data) const;
-
-
-          /**
-           * Declare the parameters this class takes through input files. The
-           * default implementation of this function does not describe any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           * The default implementation of this function does not read any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
       };
 
 

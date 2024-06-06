@@ -33,35 +33,6 @@ namespace aspect
   namespace AdiabaticConditions
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-      = default;
-
-    template <int dim>
-    void
-    Interface<dim>::
-    initialize ()
-    {}
-
-    template <int dim>
-    void
-    Interface<dim>::
-    update ()
-    {}
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
-    {}
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
-    {}
-
-
-    template <int dim>
     void Interface<dim>::get_adiabatic_temperature_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();

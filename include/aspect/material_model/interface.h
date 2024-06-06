@@ -1253,7 +1253,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
     template <int dim>
-    class Interface
+    class Interface : public Plugins::InterfaceBase
     {
       public:
         /**
@@ -1263,6 +1263,7 @@ namespace aspect
          * the current class.
          */
         using MaterialModelInputs = MaterialModel::MaterialModelInputs<dim>;
+
         /**
          * A typedef to import the MaterialModelOutputs name into the current
          * class. This typedef primarily exists as a backward compatibility
@@ -1270,27 +1271,6 @@ namespace aspect
          * the current class.
          */
         using MaterialModelOutputs = MaterialModel::MaterialModelOutputs<dim>;
-
-        /**
-         * Destructor. Made virtual to enforce that derived classes also have
-         * virtual destructors.
-         */
-        virtual ~Interface() = default;
-
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
-         * the SimulatorAccess (if applicable) is initialized.
-         */
-        virtual
-        void
-        initialize ();
-
-        /**
-         * Called at the beginning of each time step and allows the material
-         * model to update internal data structures.
-         */
-        virtual void update ();
 
         /**
          * @name Qualitative properties one can ask a material model
@@ -1327,32 +1307,6 @@ namespace aspect
         virtual
         void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                        MaterialModel::MaterialModelOutputs<dim> &out) const = 0;
-        /**
-         * @name Functions used in dealing with run-time parameters
-         * @{
-         */
-        /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-        /**
-         * @}
-         */
 
         /**
          * If this material model can produce additional named outputs

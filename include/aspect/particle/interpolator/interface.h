@@ -47,15 +47,9 @@ namespace aspect
        * @ingroup ParticleInterpolators
        */
       template <int dim>
-      class Interface
+      class Interface : public Plugins::InterfaceBase
       {
         public:
-          /**
-           * Destructor. Made virtual so that derived classes can be created
-           * and destroyed through pointers to the base class.
-           */
-          virtual ~Interface () = default;
-
           /**
            * Perform an interpolation of the properties of the particles in
            * this cell onto a vector of positions in this cell.
@@ -111,26 +105,6 @@ namespace aspect
                                const std::vector<Point<dim>> &positions,
                                const ComponentMask &selected_properties,
                                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
-
-          /**
-           * Declare the parameters this class takes through input files. The
-           * default implementation of this function does not describe any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           * The default implementation of this function does not read any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
       };
 
 

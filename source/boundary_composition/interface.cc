@@ -36,36 +36,6 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
-    {}
-
-
-
-
     // ------------------------------ Manager -----------------------------
     // -------------------------------- Deal with registering boundary_composition models and automating
     // -------------------------------- their setup and selection at run time
