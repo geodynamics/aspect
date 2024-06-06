@@ -18,7 +18,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
-MESSAGE(STATUS "===== Configuring ASPECT benchmarks =============")
+MESSAGE(STATUS "===== Configuring ASPECT benchmarks ================")
 
 SET(Aspect_DIR ${CMAKE_BINARY_DIR})
 

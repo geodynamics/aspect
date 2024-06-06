@@ -26,7 +26,7 @@ file(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)
 message(STATUS "")
 message(STATUS "====================================================")
 message(STATUS "===== Configuring ASPECT ${ASPECT_PACKAGE_VERSION}")
-message(STATUS "============ Configuring ASPECT ====================")
+message(STATUS "====================================================")
 message(STATUS "")
 
 
@@ -95,8 +95,8 @@ endif()
 # Find external libraries and deal with external tools
 # ##############################################################################
 
-message("")
-message("===== Configuring external libraries =====")
+message(STATUS "")
+message(STATUS "===== Configuring external libraries ===============")
 
 list(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}
@@ -282,8 +282,8 @@ if(ASPECT_WITH_WORLD_BUILDER)
       set(_build_type ${CMAKE_BUILD_TYPE})
       set(CMAKE_BUILD_TYPE Debug)
 
-      message("")
-      message("===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode =====")
+      message(STATUS "")
+      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
 
       set(WB_TARGET "WorldBuilderDebug")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
@@ -297,8 +297,8 @@ if(ASPECT_WITH_WORLD_BUILDER)
       set(_build_type ${CMAKE_BUILD_TYPE})
       set(CMAKE_BUILD_TYPE Release)
 
-      message("")
-      message("===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode =====")
+      message(STATUS "")
+      message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
 
       set(WB_TARGET "WorldBuilderRelease")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
@@ -385,8 +385,8 @@ endif()
 # Configuring the ASPECT targets themselves
 # ##############################################################################
 
-message("")
-message("===== Configuring ASPECT build targets =====")
+message(STATUS "")
+message(STATUS "===== Configuring ASPECT build targets =============")
 
 
 
@@ -960,8 +960,8 @@ install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include
 message(STATUS "Writing configuration details into detailed.log...")
 
 
-message("")
-MESSAGE("===== Configuring ASPECT documentation =====")
+message(STATUS "")
+MESSAGE(STATUS "===== Configuring ASPECT documentation =============")
 
 ###########################################################
 # Having configured most of the compilation phase, now also
@@ -1014,8 +1014,8 @@ add_custom_command(TARGET ${TARGET} POST_BUILD
 
 
 
-message("")
-message(STATUS "===== Writing final configuration =============")
+message(STATUS "")
+message(STATUS "===== Writing final configuration ==================")
 
 include(cmake/write_config)
 
