@@ -281,8 +281,9 @@ namespace aspect
       for (unsigned int d=0; d<dim-1; ++d)
         surface_point[d] = position[d];
 
-      std::vector<double> extents = {660e3, 600e3};
-      const double d = extents[dim-1] - (position(dim-1));
+      Assert(dim==2, ExcNotImplemented());
+      const double y_extent = 600e3;
+      const double d = y_extent - (position(dim-1));
       return std::min (std::max (d, 0.), maximal_depth());
     }
 
