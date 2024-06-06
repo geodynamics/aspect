@@ -29,6 +29,9 @@ def main():
     argc = len(sys.argv[0:])
     print(args, argc)
 
+    if (argc < 2):
+        raise Exception("Not enough arguments. Please provide the name of the input ascii file for conversion.")
+
     # The first argument is the name of the file, which is required.
     current_argument = 2
     file_name        = sys.argv[1]
@@ -38,12 +41,9 @@ def main():
     coordinate_system = 'cartesian'
     output_format     = 'aspect'
     
-    if (argc < 2):
-        raise Exception("Not enough arguments. Please provide the name of the input ascii file for conversion.") 
-    
     while (current_argument < argc):
         if (args[current_argument] == '3' or args[current_argument] == '2'):
-            dim    = sys.argv[2]
+            dim = sys.argv[2]
             current_argument += 1
         elif (args[current_argument] == 'spherical' or args[current_argument] == 'cartesian'):
             coordinate_system = sys.argv[3]
@@ -119,7 +119,7 @@ def spherical_coordinate_system(ascii_data, dim, output_format, ofile):
     coords = [ds.createDimension('radius', n_r),
               ds.createDimension('longitude', n_phi)]
     
-    # It is important to have follow the convention here in Paraview for 
+    # It is important to follow the convention here in Paraview for
     # spherical coordinate system visualization.
     # For more details see http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#latitude-coordinate
     radius           = ds.createVariable('radius', np.float64, ('radius'), fill_value=np.nan)
