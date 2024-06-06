@@ -31,8 +31,14 @@ namespace aspect
     namespace
     {
       template<int dim>
-      std::size_t point_hash(const Point<dim> &position)
+      std::size_t point_hash(const Point<dim> &position) 
       {
+        // Generates one combined hash function for a d dimension point
+        // by creating a hash and combining it with each coordinate element
+        // of the Point position (d hash combines total). Returns a single
+        // hash with the combined effect of all elements of a point's position
+        // such that the same d dimensional point object generates the same hash.
+
         std::size_t hash;
 
         for (unsigned int i = 0; i < dim; ++i)
