@@ -203,7 +203,7 @@ namespace aspect
     // important as it does not improve accuracy. Otherwise, these flags
     // correspond to smoothing_on_refinement|smoothing_on_coarsening.
     triangulation (mpi_communicator,
-                   typename Triangulation<dim>::MeshSmoothing
+                   static_cast<typename Triangulation<dim>::MeshSmoothing>
                    (
                      Triangulation<dim>::limit_level_difference_at_vertices |
                      (Triangulation<dim>::eliminate_unrefined_islands |
@@ -214,7 +214,7 @@ namespace aspect
                    ,
                    (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
                     ?
-                    typename parallel::distributed::Triangulation<dim>::Settings
+                    static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
                     (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
                      parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy)
                     :
