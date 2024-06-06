@@ -60,12 +60,12 @@ def main():
     ofilename  = file_name.split('.')[0] + '.nc'
 
     if (coordinate_system == 'cartesian'):
-        cartesian_coodinate_system(ascii_data, int(dim), ofilename)
+        cartesian_coordinate_system(ascii_data, int(dim), ofilename)
     elif (coordinate_system == 'spherical'):
         spherical_coordinate_system (ascii_data, int(dim), output_format, ofilename)
 
 
-def cartesian_coodinate_system(ascii_data, dim, ofile) :
+def cartesian_coordinate_system(ascii_data, dim, ofile) :
 
     ds = nc.Dataset(ofile, 'w', format='NETCDF4')
 
