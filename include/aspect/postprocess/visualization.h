@@ -640,7 +640,7 @@ namespace aspect
           /**
            * A list of pairs (time, pvtu_filename) that have so far been written
            * and that we will pass to DataOutInterface::write_pvd_record to
-           * create a master file that can make the association between
+           * create a description file that can make the association between
            * simulation time and corresponding file name (this is done because
            * there is no way to store the simulation time inside the .pvtu or
            * .vtu files).
@@ -649,7 +649,7 @@ namespace aspect
 
           /**
            * A list of list of filenames, sorted by timestep, that correspond to
-           * what has been created as output. This is used to create a master
+           * what has been created as output. This is used to create a descriptive
            * .visit file for the entire simulation.
            */
           std::vector<std::vector<std::string>> output_file_names_by_timestep;
@@ -683,7 +683,7 @@ namespace aspect
         OutputHistory face_output_history;
 
         /**
-         * Write the various master record files. The master files are used by
+         * Write the various descriptive record files. These files are used by
          * visualization programs to identify which of the output files in a
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
@@ -700,10 +700,10 @@ namespace aspect
          * @param output_history The OutputHistory object to fill.
          */
         template <typename DataOutType>
-        void write_master_files (const DataOutType &data_out,
-                                 const std::string &solution_file_prefix,
-                                 const std::vector<std::string> &filenames,
-                                 OutputHistory                  &output_history) const;
+        void write_description_files (const DataOutType &data_out,
+                                      const std::string &solution_file_prefix,
+                                      const std::vector<std::string> &filenames,
+                                      OutputHistory                  &output_history) const;
 
 
         /**
