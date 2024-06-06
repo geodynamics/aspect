@@ -25,7 +25,8 @@
 #include <aspect/initial_temperature/interface.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-#include <boost/random.hpp>
+// #include <boost/random.hpp>
+#include <random>
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 namespace aspect
@@ -85,7 +86,7 @@ namespace aspect
          * random temperature perturbations. Should return the same
          * random numbers every time since it is seeded with one.
          */
-        boost::mt19937 random_number_generator(1);
+        std::mt19937 random_number_generator(1);
 
     };
   }
