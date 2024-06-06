@@ -272,7 +272,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 1:  t=10 years, dt=10 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0, 0.00130907
+      Relative nonlinear residuals (temperature, compositional fields): 0, 0.00130736
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -282,7 +282,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 2.46417e-16, 3.40399e-06
+      Relative nonlinear residuals (temperature, compositional fields): 2.46417e-16, 3.39288e-06
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 4.23785e-06, norm of the rhs: 2.11893e+07, newton_derivative_scaling_factor: 0
@@ -298,7 +298,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 2:  t=20.1 years, dt=10.1 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 2.07453e-16, 2.28421e-06
+      Relative nonlinear residuals (temperature, compositional fields): 2.07453e-16, 2.28817e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -308,7 +308,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.46692e-16, 2.70445e-09
+      Relative nonlinear residuals (temperature, compositional fields): 1.46692e-16, 2.70691e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 4.94377e-07, norm of the rhs: 2.47189e+06, newton_derivative_scaling_factor: 0
@@ -324,7 +324,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 3:  t=30.301 years, dt=10.201 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 7.33458e-17, 3.11458e-06
+      Relative nonlinear residuals (temperature, compositional fields): 7.33458e-17, 3.11984e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -334,7 +334,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0, 7.09672e-10
+      Relative nonlinear residuals (temperature, compositional fields): 0, 6.94872e-10
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 2.34395e-06, norm of the rhs: 1.17197e+07, newton_derivative_scaling_factor: 0
@@ -350,7 +350,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 4:  t=40.604 years, dt=10.303 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 7.33458e-16, 3.45198e-06
+      Relative nonlinear residuals (temperature, compositional fields): 7.33458e-16, 3.45764e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -360,7 +360,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 7.33458e-16, 1.14863e-09
+      Relative nonlinear residuals (temperature, compositional fields): 7.33458e-16, 1.15975e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 1.872e-06, norm of the rhs: 9.35999e+06, newton_derivative_scaling_factor: 0
@@ -376,7 +376,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 5:  t=51.0101 years, dt=10.406 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 9.39284e-16, 3.61504e-06
+      Relative nonlinear residuals (temperature, compositional fields): 9.39284e-16, 3.62082e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -386,7 +386,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 9.39284e-16, 4.82998e-09
+      Relative nonlinear residuals (temperature, compositional fields): 9.39284e-16, 4.83175e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.20147e-07, norm of the rhs: 3.10074e+06, newton_derivative_scaling_factor: 0
@@ -402,7 +402,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 6:  t=61.5202 years, dt=10.5101 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.31205e-15, 3.71206e-06
+      Relative nonlinear residuals (temperature, compositional fields): 1.31205e-15, 3.71788e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -412,7 +412,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.18266e-15, 7.51482e-09
+      Relative nonlinear residuals (temperature, compositional fields): 1.18266e-15, 7.50958e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 2.86323e-07, norm of the rhs: 1.43161e+06, newton_derivative_scaling_factor: 0
@@ -428,7 +428,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 7:  t=72.1354 years, dt=10.6152 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.28093e-15, 3.78419e-06
+      Relative nonlinear residuals (temperature, compositional fields): 1.28093e-15, 3.79005e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -438,7 +438,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.25333e-15, 8.39189e-09
+      Relative nonlinear residuals (temperature, compositional fields): 1.25333e-15, 8.3844e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.3416e-07, norm of the rhs: 2.6708e+06, newton_derivative_scaling_factor: 0
@@ -454,7 +454,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 8:  t=82.8567 years, dt=10.7214 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.44474e-15, 3.8492e-06
+      Relative nonlinear residuals (temperature, compositional fields): 1.44474e-15, 3.85507e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -464,7 +464,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.51028e-15, 8.07044e-09
+      Relative nonlinear residuals (temperature, compositional fields): 1.51028e-15, 8.06395e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 3.48656e-07, norm of the rhs: 1.74328e+06, newton_derivative_scaling_factor: 0
@@ -480,7 +480,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 9:  t=93.6853 years, dt=10.8286 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.67415e-15, 3.91451e-06
+      Relative nonlinear residuals (temperature, compositional fields): 1.67415e-15, 3.92039e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -490,7 +490,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.64006e-15, 7.48789e-09
+      Relative nonlinear residuals (temperature, compositional fields): 1.64006e-15, 7.48312e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 7.16875e-08, norm of the rhs: 358438, newton_derivative_scaling_factor: 0
@@ -506,7 +506,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 *** Timestep 10:  t=100 years, dt=6.31473 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.51955e-15, 1.81094e-06
+      Relative nonlinear residuals (temperature, compositional fields): 1.51955e-15, 1.46266e-06
    Initial Newton Stokes residual = 5e+12, v = 5e+12, p = 0
 
    Rebuilding Stokes preconditioner...
@@ -516,7 +516,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
 
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 1.34038e-15, 2.08572e-09
+      Relative nonlinear residuals (temperature, compositional fields): 1.34038e-15, 1.6689e-09
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 3.99234e-08, norm of the rhs: 199617, newton_derivative_scaling_factor: 0
