@@ -713,7 +713,7 @@ namespace aspect
 
                 // Now compute the crystal rate of deformation tensor. equation 4 of Kaminski&Ribe 2001
                 // rotation_matrix_transposed = inverse of rotation matrix
-                // (see Engler et al., 2024 book: Intro to Texture analysis chp 2.3.2 the rotAtion MAtrix)
+                // (see Engler et al., 2024 book: Intro to Texture analysis chp 2.3.2 The Rotation Matrix)
                 // this transform the crystal reference frame to specimen reference frame
                 for (unsigned int slip_system_i = 0; slip_system_i < 4; ++slip_system_i)
                   {
