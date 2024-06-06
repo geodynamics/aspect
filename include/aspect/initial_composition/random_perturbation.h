@@ -84,7 +84,7 @@ namespace aspect
 
         /**
          * A random number generator used by this class to get 
-         * random temperature perturbations. Should return the same
+         * random composition perturbations. Should return the same
          * random numbers every time since it is seeded with one.
          */
         std::mt19937 random_number_generator(1);
