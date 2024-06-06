@@ -53,8 +53,8 @@ namespace aspect
     {
       // make sure a thread that may still be running in the background,
       // writing data, finishes
-      if (background_thread_master.joinable())
-        background_thread_master.join ();
+      if (background_thread_main.joinable())
+        background_thread_main.join ();
 
       if (background_thread_content_raw.joinable())
         background_thread_content_raw.join ();
@@ -202,22 +202,22 @@ namespace aspect
         ++output_file_number;
 
       // Now prepare everything for writing the output
-      std::string particle_file_prefix_master = this->get_output_directory() +  "particles_cpo/particles-" + Utilities::int_to_string (output_file_number, 5);
+      std::string particle_file_prefix_main = this->get_output_directory() +  "particles_cpo/particles-" + Utilities::int_to_string (output_file_number, 5);
       std::string particle_file_prefix_content_raw = this->get_output_directory() +  "particles_cpo/CPO-" + Utilities::int_to_string (output_file_number, 5);
       std::string particle_file_prefix_content_draw_volume_weighting = this->get_output_directory() +  "particles_cpo/weighted_CPO-" + Utilities::int_to_string (output_file_number, 5);
 
-      std::stringstream string_stream_master;
+      std::stringstream string_stream_main;
       std::stringstream string_stream_content_raw;
       std::stringstream string_stream_content_draw_volume_weighting;
 
-      string_stream_master << "id x y" << (dim == 3 ? " z" : "") << " olivine_deformation_type"
-                           << (cpo_elastic_decomposition_plugin_exists ? (std::string(" full_norm_square ")
-                                                                          + "triclinic_norm_square_p1 triclinic_norm_square_p2 triclinic_norm_square_p3 "
-                                                                          + "monoclinic_norm_square_p1 monoclinic_norm_square_p2 monoclinic_norm_square_p3 "
-                                                                          + "orthohombic_norm_square_p1 orthohombic_norm_square_p2 orthohombic_norm_square_p3 "
-                                                                          + "tetragonal_norm_square_p1 tetragonal_norm_square_p2 tetragonal_norm_square_p3 "
-                                                                          + "hexagonal_norm_square_p1 hexagonal_norm_square_p2 hexagonal_norm_square_p3 "
-                                                                          + "isotropic_norm_square") : "") << std::endl;
+      string_stream_main << "id x y" << (dim == 3 ? " z" : "") << " olivine_deformation_type"
+                         << (cpo_elastic_decomposition_plugin_exists ? (std::string(" full_norm_square ")
+                                                                        + "triclinic_norm_square_p1 triclinic_norm_square_p2 triclinic_norm_square_p3 "
+                                                                        + "monoclinic_norm_square_p1 monoclinic_norm_square_p2 monoclinic_norm_square_p3 "
+                                                                        + "orthohombic_norm_square_p1 orthohombic_norm_square_p2 orthohombic_norm_square_p3 "
+                                                                        + "tetragonal_norm_square_p1 tetragonal_norm_square_p2 tetragonal_norm_square_p3 "
+                                                                        + "hexagonal_norm_square_p1 hexagonal_norm_square_p2 hexagonal_norm_square_p3 "
+                                                                        + "isotropic_norm_square") : "") << std::endl;
 
       // get particle data
       const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world().get_property_manager().get_data_info();
@@ -342,22 +342,22 @@ namespace aspect
                                                      :
                                                      property_information.get_position_by_field_name("cpo elastic axis e1");
 
-          // write master file
-          string_stream_master << id << " " << position << " " << properties[cpo_data_position];
+          // write main file
+          string_stream_main << id << " " << position << " " << properties[cpo_data_position];
 
           if (cpo_elastic_decomposition_plugin_exists == true)
             {
-              string_stream_master << " " << properties[lpo_hex_data_position+12] << " " << properties[lpo_hex_data_position+13]
-                                   << " " << properties[lpo_hex_data_position+14] << " " << properties[lpo_hex_data_position+15]
-                                   << " " << properties[lpo_hex_data_position+16] << " " << properties[lpo_hex_data_position+17]
-                                   << " " << properties[lpo_hex_data_position+18] << " " << properties[lpo_hex_data_position+19]
-                                   << " " << properties[lpo_hex_data_position+20] << " " << properties[lpo_hex_data_position+21]
-                                   << " " << properties[lpo_hex_data_position+22] << " " << properties[lpo_hex_data_position+23]
-                                   << " " << properties[lpo_hex_data_position+24] << " " << properties[lpo_hex_data_position+25]
-                                   << " " << properties[lpo_hex_data_position+26] << " " << properties[lpo_hex_data_position+27]
-                                   << " " << properties[lpo_hex_data_position+28];
+              string_stream_main << " " << properties[lpo_hex_data_position+12] << " " << properties[lpo_hex_data_position+13]
+                                 << " " << properties[lpo_hex_data_position+14] << " " << properties[lpo_hex_data_position+15]
+                                 << " " << properties[lpo_hex_data_position+16] << " " << properties[lpo_hex_data_position+17]
+                                 << " " << properties[lpo_hex_data_position+18] << " " << properties[lpo_hex_data_position+19]
+                                 << " " << properties[lpo_hex_data_position+20] << " " << properties[lpo_hex_data_position+21]
+                                 << " " << properties[lpo_hex_data_position+22] << " " << properties[lpo_hex_data_position+23]
+                                 << " " << properties[lpo_hex_data_position+24] << " " << properties[lpo_hex_data_position+25]
+                                 << " " << properties[lpo_hex_data_position+26] << " " << properties[lpo_hex_data_position+27]
+                                 << " " << properties[lpo_hex_data_position+28];
             }
-          string_stream_master << std::endl;
+          string_stream_main << std::endl;
 
           // write content file
           if (compute_raw_euler_angles == true)
@@ -481,11 +481,11 @@ namespace aspect
             }
         }
 
-      std::string filename_master = particle_file_prefix_master + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (this->get_mpi_communicator()),4) + ".dat";
+      std::string filename_main = particle_file_prefix_main + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (this->get_mpi_communicator()),4) + ".dat";
       std::string filename_raw = particle_file_prefix_content_raw + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (this->get_mpi_communicator()),4) + ".dat";
       std::string filename_draw_volume_weighting = particle_file_prefix_content_draw_volume_weighting + "." + Utilities::int_to_string(dealii::Utilities::MPI::this_mpi_process (this->get_mpi_communicator()),4) + ".dat";
 
-      std::unique_ptr<std::string> file_contents_master = std::make_unique<std::string>(string_stream_master.str());
+      std::unique_ptr<std::string> file_contents_main = std::make_unique<std::string>(string_stream_main.str());
       std::unique_ptr<std::string> file_contents_raw = std::make_unique<std::string>(string_stream_content_raw.str());
       std::unique_ptr<std::string> file_contents_draw_volume_weighting = std::make_unique<std::string>(string_stream_content_draw_volume_weighting.str());
 
@@ -493,14 +493,14 @@ namespace aspect
         {
           // Wait for all previous write operations to finish, should
           // any be still active,
-          if (background_thread_master.joinable())
-            background_thread_master.join ();
+          if (background_thread_main.joinable())
+            background_thread_main.join ();
 
-          // then continue with writing the master file
-          background_thread_master
-            = std::thread([ my_filename = std::move(filename_master),
+          // then continue with writing the main file
+          background_thread_main
+            = std::thread([ my_filename = std::move(filename_main),
                             my_temporary_output_location = temporary_output_location,
-                            my_file_contents = std::move(file_contents_master)]()
+                            my_file_contents = std::move(file_contents_main)]()
           {
             writer (my_filename, my_temporary_output_location, *my_file_contents, false);
           });
@@ -543,7 +543,7 @@ namespace aspect
         }
       else
         {
-          writer(filename_master,temporary_output_location,*file_contents_master, false);
+          writer(filename_main,temporary_output_location,*file_contents_main, false);
           if (write_raw_cpo.size() != 0)
             writer(filename_raw,temporary_output_location,*file_contents_raw, compress_cpo_data_files);
           if (write_draw_volume_weighted_cpo.size() != 0)
