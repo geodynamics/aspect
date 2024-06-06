@@ -28,6 +28,8 @@
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 
+#include <deal.II/sundials/kinsol.h>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -100,8 +102,8 @@ namespace aspect
             const double current_log_stress_ii,
             const double pressure,
             const double temperature,
-            const Rheology::DiffusionCreepParameters diffusion_creep_parameters,
-            const Rheology::DislocationCreepParameters dislocation_creep_parameters,
+            const Rheology::DiffusionCreepParameters &diffusion_creep_parameters,
+            const Rheology::DislocationCreepParameters &dislocation_creep_parameters,
             const double log_edot_ii) const;
 
           /**
@@ -144,6 +146,7 @@ namespace aspect
           unsigned int n_chemical_composition_fields;
 
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
+          SUNDIALS::KINSOL<Vector<double>>::AdditionalData kinsol_settings;
 
       };
 

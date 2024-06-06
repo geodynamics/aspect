@@ -23,7 +23,6 @@
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/sundials/kinsol.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 
@@ -55,14 +54,16 @@ namespace aspect
         const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
                                         min_strain_rate);
         const double log_edot_ii = std::log(edot_ii);
-        double log_strain_rate_deriv;
 
         // Find effective viscosities for each of the individual phases
         // Viscosities should have the same number of entries as compositional fields
         std::vector<double> composition_viscosities(n_chemical_composition_fields);
         for (unsigned int j=0; j < n_chemical_composition_fields; ++j)
           {
-            // Power law creep equation
+            // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
+            // We use KINSOL to find the second invariant of the stress tensor that satisfies the total strain rate.
+
+            // The power law creep equation is
             // edot_ii_i = A_i * stress_ii_i^{n_i} * d^{-m} \exp\left(-\frac{E_i^\ast + PV_i^\ast}{n_iRT}\right)
             // where ii indicates the square root of the second invariant and
             // i corresponds to diffusion or dislocation creep
@@ -73,22 +74,9 @@ namespace aspect
             // For dislocation creep, viscosity is grain size independent (m=0)
             const Rheology::DislocationCreepParameters dislocation_creep_parameters = dislocation_creep.compute_creep_parameters(j);
 
-            // For diffusion creep, viscosity is grain size dependent
-            const double prefactor_stress_diffusion = diffusion_creep_parameters.prefactor *
-                                                      std::pow(grain_size, -diffusion_creep_parameters.grain_size_exponent) *
-                                                      std::exp(-(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0))/
-                                                               (constants::gas_constant*temperature));
 
-            // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
-            // We use KINSOL to find the second invariant of the stress tensor that satisfies the total strain rate.
-            SUNDIALS::KINSOL<Vector<double>>::AdditionalData additional_data;
-            additional_data.strategy = dealii::SUNDIALS::KINSOL<>::AdditionalData::newton;
-            additional_data.function_tolerance = log_strain_rate_residual_threshold;
-            additional_data.maximum_non_linear_iterations = stress_max_iteration_number;
-            additional_data.maximum_setup_calls = 1;
-
-            SUNDIALS::KINSOL<Vector<double>> nonlinear_solver(additional_data);
-
+            SUNDIALS::KINSOL<Vector<double>> nonlinear_solver(kinsol_settings);
+            double log_strain_rate_deriv;
             nonlinear_solver.reinit_vector = [&](Vector<double> &x)
             {
               x.reinit(1);
@@ -98,7 +86,9 @@ namespace aspect
               [&](const Vector<double> &current_log_stress_ii,
                   Vector<double>       &residual)
             {
-              std::tie(residual(0), log_strain_rate_deriv) = compute_log_strain_rate_residual_and_derivative(current_log_stress_ii[0], pressure, temperature, diffusion_creep_parameters, dislocation_creep_parameters, log_edot_ii);
+              std::tie(residual(0), log_strain_rate_deriv) = compute_log_strain_rate_residual_and_derivative(
+                                                               current_log_stress_ii[0], pressure, temperature, diffusion_creep_parameters, dislocation_creep_parameters, log_edot_ii
+                                                             );
             };
 
             nonlinear_solver.setup_jacobian =
@@ -115,14 +105,25 @@ namespace aspect
               solution(0) = residual(0) / log_strain_rate_deriv;
             };
 
-            // Start with the assumption that all strain is accommodated by diffusion creep:
-            // If the diffusion creep prefactor is very small, that means that the diffusion viscosity is very large.
-            // In this case, use the maximum viscosity instead to compute the starting guess.
-            double stress_ii = (prefactor_stress_diffusion > (0.5 / maximum_viscosity)
-                                ?
-                                edot_ii/prefactor_stress_diffusion
-                                :
-                                0.5 / maximum_viscosity);
+
+            // Our starting guess for the stress assumes that all strain is
+            // accommodated by either diffusion creep, dislocation creep,
+            // or by the maximum viscosity limiter.
+            const double prefactor_stress_diffusion = diffusion_creep_parameters.prefactor *
+                                                      std::pow(grain_size, -diffusion_creep_parameters.grain_size_exponent) *
+                                                      std::exp(-(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0))/
+                                                               (constants::gas_constant*temperature));
+
+            const double prefactor_stress_dislocation = dislocation_creep_parameters.prefactor *
+                                                        std::exp(-(std::max(dislocation_creep_parameters.activation_energy + pressure*dislocation_creep_parameters.activation_volume,0.0))/
+                                                                 (constants::gas_constant*temperature));
+
+            double stress_ii = std::min(
+            {
+              std::pow(edot_ii/prefactor_stress_diffusion, 1./diffusion_creep_parameters.stress_exponent),
+              std::pow(edot_ii/prefactor_stress_dislocation, 1./dislocation_creep_parameters.stress_exponent),
+              0.5 / maximum_viscosity
+            });
 
             // KINSOL works on vectors and so the scalar (log) stress is inserted into
             // a vector of length 1
@@ -142,8 +143,8 @@ namespace aspect
         const double current_log_stress_ii,
         const double pressure,
         const double temperature,
-        const Rheology::DiffusionCreepParameters diffusion_creep_parameters,
-        const Rheology::DislocationCreepParameters dislocation_creep_parameters,
+        const Rheology::DiffusionCreepParameters &diffusion_creep_parameters,
+        const Rheology::DislocationCreepParameters &dislocation_creep_parameters,
         const double log_edot_ii) const
       {
         const std::pair<double, double> log_diff_edot_and_deriv = diffusion_creep.compute_log_strain_rate_and_derivative(current_log_stress_ii, pressure, temperature, diffusion_creep_parameters);
@@ -339,6 +340,11 @@ namespace aspect
         dislocation_creep.initialize_simulator (this->get_simulator());
         dislocation_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_chemical_composition_fields));
 
+        // KINSOL settings
+        kinsol_settings.strategy = dealii::SUNDIALS::KINSOL<>::AdditionalData::newton;
+        kinsol_settings.function_tolerance = log_strain_rate_residual_threshold;
+        kinsol_settings.maximum_non_linear_iterations = stress_max_iteration_number;
+        kinsol_settings.maximum_setup_calls = 1;
       }
     }
   }
