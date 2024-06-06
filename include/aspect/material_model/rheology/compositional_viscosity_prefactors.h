@@ -103,6 +103,7 @@ namespace aspect
           // Initialize variables for the water fugacity calculation, from HK04
           std::vector<double> diffusion_water_fugacity_exponents;
           std::vector<double> dislocation_water_fugacity_exponents;
+          std::vector<double> minimum_mass_fraction_water_for_dry_creep;
 
           // From Hirth & Kohlstaedt 2004, equation 6
           const double A_H2O = 2.6e-5; // 1/Pa
