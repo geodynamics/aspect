@@ -22,19 +22,19 @@
 # compiled into a run-time loadable plugin for Aspect.
 
 
-FIND_PACKAGE(deal.II 9.5.0 QUIET REQUIRED HINTS @DEAL_II_PATH@ @deal.II_DIR@)
-SET(Aspect_INCLUDE_DIRS "@CONFIG_INCLUDE_DIRS@")
-SET(Aspect_VERSION "@ASPECT_PACKAGE_VERSION@")
-SET(Aspect_DIR "@CONFIG_DIR@")
-SET(ASPECT_WITH_WORLD_BUILDER "@ASPECT_WITH_WORLD_BUILDER@")
+find_package(deal.II 9.5.0 QUIET REQUIRED HINTS @DEAL_II_PATH@ @deal.II_DIR@)
+set(Aspect_INCLUDE_DIRS "@CONFIG_INCLUDE_DIRS@")
+set(Aspect_VERSION "@ASPECT_PACKAGE_VERSION@")
+set(Aspect_DIR "@CONFIG_DIR@")
+set(ASPECT_WITH_WORLD_BUILDER "@ASPECT_WITH_WORLD_BUILDER@")
 # force our build type to the one that is used by ASPECT:
-SET(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
+set(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@" CACHE STRING "select debug or release mode" FORCE)
 
 
-MACRO(ASPECT_SETUP_PLUGIN _target)
-  MESSAGE(STATUS "Setting up plugin:")
-  MESSAGE(STATUS "  name <${_target}>")
-  MESSAGE(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
+macro(ASPECT_SETUP_PLUGIN _target)
+  message(STATUS "Setting up plugin:")
+  message(STATUS "  name <${_target}>")
+  message(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
 
   # We create lib${_target}.debug.so, lib${_target}.release.so, or both
   # depending on the compilation mode of ASPECT. Note that the user already
@@ -43,46 +43,46 @@ MACRO(ASPECT_SETUP_PLUGIN _target)
   # Note that you can not rename a target or change its filename, but you can
   # modify the suffix. :-)
 
-  SET(_targets ${_target})
-  IF(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
-    DEAL_II_SETUP_TARGET(${_target} DEBUG)
-    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".debug.so")
+  set(_targets ${_target})
+  if(${CMAKE_BUILD_TYPE} MATCHES "DebugRelease")
+    deal_ii_setup_target(${_target} DEBUG)
+    set_target_properties(${_target} PROPERTIES SUFFIX ".debug.so")
 
-    GET_TARGET_PROPERTY(_files ${_target} SOURCES)
-    ADD_LIBRARY(${_target}.release SHARED ${_files})
-    DEAL_II_SETUP_TARGET(${_target}.release RELEASE)
-    SET_TARGET_PROPERTIES(${_target}.release PROPERTIES SUFFIX ".so")
+    get_target_property(_files ${_target} SOURCES)
+    add_library(${_target}.release SHARED ${_files})
+    deal_ii_setup_target(${_target}.release RELEASE)
+    set_target_properties(${_target}.release PROPERTIES SUFFIX ".so")
 
-    SET(_targets ${_target} ${_target}.release)
-  ELSEIF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    DEAL_II_SETUP_TARGET(${_target} DEBUG)
-    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".debug.so")
-  ELSE()
-    DEAL_II_SETUP_TARGET(${_target} RELEASE)
-    SET_TARGET_PROPERTIES(${_target} PROPERTIES SUFFIX ".release.so")
-  ENDIF()
+    set(_targets ${_target} ${_target}.release)
+  elseif(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    deal_ii_setup_target(${_target} DEBUG)
+    set_target_properties(${_target} PROPERTIES SUFFIX ".debug.so")
+  else()
+    deal_ii_setup_target(${_target} RELEASE)
+    set_target_properties(${_target} PROPERTIES SUFFIX ".release.so")
+  endif()
 
-  FOREACH(_T ${_targets})
-    SET_PROPERTY(TARGET ${_T} APPEND PROPERTY
+  foreach(_T ${_targets})
+    set_property(TARGET ${_T} APPEND PROPERTY
       INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}")
-    SET_PROPERTY(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
-  ENDFOREACH()
+    set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+  endforeach()
 
-  FILE(RELATIVE_PATH _relative_path ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
+  file(RELATIVE_PATH _relative_path ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
 
-  INSTALL(TARGETS ${_targets}
+  install(TARGETS ${_targets}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/${_relative_path}
     COMPONENT examples)
 
   # workarounds for MAC OSX
   IF (APPLE)
     # avoid linker errors about missing functions inside ASPECT:
-    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
-  ENDIF()
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+  endif()
 
   # automatically create a symbolic link to aspect in the current directory:
-  ADD_CUSTOM_COMMAND(
+  add_custom_command(
     TARGET ${_target} POST_BUILD
     COMMAND ln -sf ${Aspect_DIR}/aspect .)
 
-ENDMACRO()
+endmacro()
