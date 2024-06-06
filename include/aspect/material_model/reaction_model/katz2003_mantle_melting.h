@@ -89,10 +89,50 @@ namespace aspect
                           const double pressure,
                           const double maximum_melt_fraction,
                           const NonlinearDependence::Dependence dependence) const;
+
+
+          /**
+           * Compute all the reaction rate variables needed for a reactive transport model based on the
+           * Katz 2003 formulation. Takes the material model inputs @p in to compute the material model outputs @p out.
+           * This function mainly fills the reaction_rate_out object but populates out.reaction_terms,
+           * out.entropy_derivative_pressure and entropy_derivative_temperature
+          */
+          void calculate_reaction_rate_outputs(const typename Interface<dim>::MaterialModelInputs &in,
+                                               typename Interface<dim>::MaterialModelOutputs &out) const;
+
+          /**
+           * Compute all the fluid variables needed for a reactive transport model based on the
+           * Katz 2003 formulation. This function fills melt outputs, the out object should already contain
+           * outputs for the solid and this function uses the inputs @p in and the solid outputs @p out
+           * to fill MeltOutputs. Solid outputs such as out.Thermal_expansion_coefficients are expected
+           * to have already been computed when this function is called. Solid viscosities are also modified
+           * in the out object here because the presence of melt weakens the material.
+          */
+          void calculate_fluid_outputs(const typename Interface<dim>::MaterialModelInputs &in,
+                                       typename Interface<dim>::MaterialModelOutputs &out,
+                                       const double reference_T) const;
+
+
+          double reference_darcy_coefficient () const;
+
         private:
           /**
           * Parameters for anhydrous melting of peridotite after Katz, 2003
           */
+
+          double reference_rho_fluid;
+          double xi_0;
+          double viscosity_fluid;
+          double thermal_bulk_viscosity_exponent;
+          double alpha_phi;
+          double extraction_depth;
+          double melt_compressibility;
+          double melt_bulk_modulus_derivative;
+          double depletion_solidus_change;
+          bool fractional_melting;
+          double freezing_rate;
+          double melting_time_scale;
+          double reference_permeability;
 
           // for the solidus temperature
           double A1;   // °C
