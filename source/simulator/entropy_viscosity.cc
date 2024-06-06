@@ -627,13 +627,7 @@ namespace aspect
                 }
             }
 
-            const double fe_order
-              = (advection_field.is_temperature()
-                 ?
-                 parameters.temperature_degree
-                 :
-                 parameters.composition_degree
-                );
+            const double fe_order = advection_field.polynomial_degree(introspection);
             const double h = cell->diameter();
             const double eps = max_conductivity_on_cell;
 
