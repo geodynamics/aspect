@@ -32,8 +32,9 @@ If you would like to check that muparser is parsing your functions correctly,
 and to plot the values, you may consider running your expressions through
 `pymuparser` (<https://github.com/bobmyhill/pymuparser>),
 which can be installed on your machine using pip
-(`python -m pip install pymuparser`). If you need to use functions in the
-extended library provided by deal.II, Python's `eval` function may be useful,
+(`python -m pip install pymuparser`). This module also allows users to
+define functions not included in MuParser, such as the extended library
+provided by deal.II. Python's `eval` function may also be useful,
 (<https://docs.python.org/3/library/functions.html#eval>)
 but be aware that Python syntax may not be the same as that of deal.II.
 
