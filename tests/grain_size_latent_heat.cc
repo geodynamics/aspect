@@ -132,16 +132,11 @@ namespace aspect
 
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
-              // convert the grain size from log to normal
               std::vector<double> composition (in.composition[i]);
-              if (this->advect_log_grainsize)
-                this->convert_log_grain_size(composition);
-              else
-                for (unsigned int c=0; c<composition.size(); ++c)
-                  composition[c] = std::max(this->min_grain_size,composition[c]);
+              for (unsigned int c=0; c<composition.size(); ++c)
+                composition[c] = std::max(this->min_grain_size,composition[c]);
 
               const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
-
 
               out.densities[i] = this->density(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
 
