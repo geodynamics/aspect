@@ -20,7 +20,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.002781/0.002781/2.781e+07
+     Compositions min/max/mass: 0.002776/0.002776/2.776e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -31,7 +31,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.003472/0.003472/3.472e+07
+     Compositions min/max/mass: 0.003466/0.003466/3.466e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -42,7 +42,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.003828/0.003828/3.828e+07
+     Compositions min/max/mass: 0.003822/0.003822/3.822e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -53,7 +53,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.004072/0.004072/4.072e+07
+     Compositions min/max/mass: 0.004065/0.004065/4.065e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -64,7 +64,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.004267/0.004267/4.267e+07
+     Compositions min/max/mass: 0.004261/0.004261/4.261e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -75,7 +75,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.004436/0.004436/4.436e+07
+     Compositions min/max/mass: 0.00443/0.00443/4.43e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -86,7 +86,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.004587/0.004587/4.587e+07
+     Compositions min/max/mass: 0.004582/0.004582/4.582e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -97,7 +97,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.004725/0.004725/4.725e+07
+     Compositions min/max/mass: 0.00472/0.00472/4.72e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -108,7 +108,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.004852/0.004852/4.852e+07
+     Compositions min/max/mass: 0.004847/0.004847/4.847e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -119,7 +119,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.004971/0.004971/4.971e+07
+     Compositions min/max/mass: 0.004966/0.004966/4.966e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -130,7 +130,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005081/0.005081/5.081e+07
+     Compositions min/max/mass: 0.005077/0.005077/5.077e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -141,7 +141,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005186/0.005186/5.186e+07
+     Compositions min/max/mass: 0.005181/0.005181/5.181e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -152,7 +152,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005284/0.005284/5.284e+07
+     Compositions min/max/mass: 0.005279/0.005279/5.279e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -163,7 +163,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005378/0.005378/5.378e+07
+     Compositions min/max/mass: 0.005373/0.005373/5.373e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -174,7 +174,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005466/0.005466/5.466e+07
+     Compositions min/max/mass: 0.005462/0.005462/5.462e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -185,7 +185,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005551/0.005551/5.551e+07
+     Compositions min/max/mass: 0.005547/0.005547/5.547e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -196,7 +196,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005632/0.005632/5.632e+07
+     Compositions min/max/mass: 0.005628/0.005628/5.628e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -207,7 +207,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.00571/0.00571/5.71e+07
+     Compositions min/max/mass: 0.005706/0.005706/5.706e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -218,7 +218,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005785/0.005785/5.785e+07
+     Compositions min/max/mass: 0.005781/0.005781/5.781e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 
@@ -229,7 +229,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 0.005857/0.005857/5.857e+07
+     Compositions min/max/mass: 0.005853/0.005853/5.853e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.577 m/year, 0.887 m/year
 

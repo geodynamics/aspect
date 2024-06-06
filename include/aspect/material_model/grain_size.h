@@ -28,6 +28,7 @@
 #include <aspect/material_model/rheology/drucker_prager.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
+#include <deal.II/sundials/arkode.h>
 
 #include <array>
 
@@ -409,15 +410,10 @@ namespace aspect
          * Evans, 2007) and the paleopiezometer (Hall and Parmentier, 2003)
          * as described in the parameter use_paleowattmeter.
          */
-        double
-        grain_size_change (const double                  temperature,
-                           const double                  pressure,
-                           const std::vector<double>    &compositional_fields,
-                           const SymmetricTensor<2,dim> &strain_rate,
-                           const Point<dim>             &position,
-                           const unsigned int            grain_size_index,
-                           const int                     crossed_transition,
-                           const unsigned int            phase_index) const;
+        std::vector<std::vector<double>>
+        grain_size_change (const typename Interface<dim>::MaterialModelInputs &in,
+                           const std::vector<double>                          &adiabatic_pressure,
+                           const std::vector<unsigned int>                    &phase_indices) const;
 
         /**
          * Function that returns the phase for a given

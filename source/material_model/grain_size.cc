@@ -222,165 +222,204 @@ namespace aspect
 
 
     template <int dim>
-    double
+    std::vector<std::vector<double>>
     GrainSize<dim>::
-    grain_size_change (const double                  temperature,
-                       const double                  pressure,
-                       const std::vector<double>    &compositional_fields,
-                       const SymmetricTensor<2,dim> &strain_rate,
-                       const Point<dim>             &position,
-                       const unsigned int            grain_size_index,
-                       const int                     crossed_transition,
-                       const unsigned int            phase_index) const
+    grain_size_change (const typename Interface<dim>::MaterialModelInputs &in,
+                       const std::vector<double>                          &pressures,
+                       const std::vector<unsigned int>                    &phase_indices) const
     {
       // we want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
       // and it is not correct to use the starting grain size (and introduces instabilities)
-      const double original_grain_size = compositional_fields[grain_size_index];
-      if ((original_grain_size != original_grain_size) || this->get_timestep() == 0.0
-          || original_grain_size < std::numeric_limits<double>::min())
-        return 0.0;
+      std::vector<std::vector<double>> reaction_terms (in.n_evaluation_points(), std::vector<double>(this->n_compositional_fields(), 0.0));
 
-      // set up the parameters for the sub-timestepping of grain size evolution
-      std::vector<double> current_composition = compositional_fields;
-      double grain_size = original_grain_size;
-      double grain_size_change = 0.0;
-      const double timestep = this->get_timestep();
+      // Set up a vector that tells us which phase transition has been crossed for each point we are evaluating.
+      std::vector<int> crossed_transitions (in.n_evaluation_points(), -1);
 
-      // use a sub timestep of 500 yrs, currently fixed timestep
-      double grain_growth_timestep = 500 * 3600 * 24 * 365.25;
-      double time = 0;
+      using VectorType = Vector<double>;
+      VectorType grain_sizes(in.n_evaluation_points());
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+        grain_sizes[i] = std::max(min_grain_size, in.composition[i][grain_size_index]);
 
-      // precompute the partitioning_fraction since its constant during the evolution.
-      // this is only used for the pinned_grain_damage formulation
-      const double partitioning_fraction = (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-                                           ?
-                                           compute_partitioning_fraction(temperature)
-                                           :
-                                           0.0;
+      const double timestep = this->simulator_is_past_initialization()
+                              ?
+                              this->get_timestep()
+                              :
+                              0.0;
 
-      // we keep the dislocation viscosity of the last iteration as guess
-      // for the next one
-      double current_dislocation_viscosity = 0.0;
+      if (std::all_of(grain_sizes.begin(), grain_sizes.end(), [](double gs)
+      {
+        return gs != gs || gs < std::numeric_limits<double>::min();
+        })
+      || timestep == 0.0)
+      return reaction_terms;
 
-      const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
-                                           ?
-                                           this->get_adiabatic_conditions().temperature(position)
-                                           :
-                                           temperature;
+      SUNDIALS::ARKode<VectorType>::AdditionalData data;
 
-      do
+      data.initial_time = 0.0;
+      data.final_time = this->get_timestep();
+
+      // TODO: make this an input parameter.
+      data.initial_step_size = 0.001 * this->get_timestep();
+      data.output_period = this->get_timestep();
+      data.minimum_step_size = 1.e-6*this->get_timestep();
+      data.maximum_order = 3;
+      data.maximum_non_linear_iterations = 30;
+
+      // Because both tolerances are added, we set the absolute
+      // tolerance to 0.
+      data.relative_tolerance = 1e-3;
+      data.absolute_tolerance = 0;
+
+      SUNDIALS::ARKode<VectorType> ode(data);
+      ode.explicit_function = [&] (const double     /*time*/,
+                                   const VectorType &y,
+                                   VectorType       &grain_size_rates_of_change)
+      {
+        for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+          {
+            const double grain_size = std::max(min_grain_size, y[i]);
+
+            // Precompute the partitioning_fraction since it is constant during the evolution.
+            // This is only used for the pinned_grain_damage formulation.
+            const double partitioning_fraction = (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+                                                 ?
+                                                 compute_partitioning_fraction(in.temperature[i])
+                                                 :
+                                                 0.0;
+
+            // We keep the dislocation viscosity of the last iteration as guess
+            // for the next one.
+            double current_dislocation_viscosity = 0.0;
+
+            const double adiabatic_temperature = this->get_adiabatic_conditions().is_initialized()
+                                                 ?
+                                                 this->get_adiabatic_conditions().temperature(in.position[i])
+                                                 :
+                                                 in.temperature[i];
+
+
+
+            // grain size growth due to Ostwald ripening
+            const double m = grain_growth_exponent[phase_indices[i]];
+
+            double grain_size_growth_rate = grain_growth_rate_constant[phase_indices[i]] / (m * std::pow(grain_size,m-1))
+                                            * std::exp(- (grain_growth_activation_energy[phase_indices[i]] + pressures[i] * grain_growth_activation_volume[phase_indices[i]])
+                                                       / (constants::gas_constant * in.temperature[i]));
+
+            // in the two-phase damage model grain growth depends on the proportion of the two phases
+            if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+              grain_size_growth_rate *= geometric_constant[phase_indices[i]] * phase_distribution /
+                                        std::pow(roughness_to_grain_size, m);
+
+            // grain size reduction in dislocation creep regime
+            const SymmetricTensor<2,dim> shear_strain_rate = in.strain_rate[i] - 1./dim * trace(in.strain_rate[i]) * unit_symmetric_tensor<dim>();
+            const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+
+            const double current_diffusion_viscosity   = diffusion_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], grain_size, second_strain_rate_invariant, phase_indices[i]);
+            current_dislocation_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, pressures[i], in.strain_rate[i], phase_indices[i], current_diffusion_viscosity, current_dislocation_viscosity);
+
+            double current_viscosity;
+            if (std::abs(second_strain_rate_invariant) > 1e-30)
+              current_viscosity = current_dislocation_viscosity * current_diffusion_viscosity / (current_dislocation_viscosity + current_diffusion_viscosity);
+            else
+              current_viscosity = current_diffusion_viscosity;
+
+            const double dislocation_strain_rate = second_strain_rate_invariant
+                                                   * current_viscosity / current_dislocation_viscosity;
+
+            double grain_size_reduction_rate = 0.0;
+
+            if (grain_size_evolution_formulation == Formulation::paleowattmeter)
+              {
+                // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346
+                const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
+                grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_indices[i]] * dislocation_strain_rate * grain_size * grain_size
+                                            / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]]);
+              }
+            else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+              {
+                // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
+                const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
+                grain_size_reduction_rate = 2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size
+                                            * roughness_to_grain_size
+                                            / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]] * phase_distribution);
+              }
+            else if (grain_size_evolution_formulation == Formulation::paleopiezometer)
+              {
+                // paleopiezometer: Hall and Parmentier (2003): Influence of grain size evolution on convective instability. Geochem. Geophys. Geosyst., 4(3).
+                grain_size_reduction_rate = reciprocal_required_strain[phase_indices[i]] * dislocation_strain_rate * grain_size;
+              }
+            else
+              AssertThrow(false, ExcNotImplemented());
+
+            grain_size_rates_of_change[i] = grain_size_growth_rate - grain_size_reduction_rate;
+          }
+      };
+
+
+      ode.solve_ode(grain_sizes);
+
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
-          time += grain_growth_timestep;
-
-          if (timestep - time < 0)
-            {
-              grain_growth_timestep = timestep - (time - grain_growth_timestep);
-              time = timestep;
-            }
-
-          // grain size growth due to Ostwald ripening
-          const double m = grain_growth_exponent[phase_index];
-
-          double grain_size_growth_rate = grain_growth_rate_constant[phase_index] / (m * std::pow(grain_size,m-1))
-                                          * std::exp(- (grain_growth_activation_energy[phase_index] + pressure * grain_growth_activation_volume[phase_index])
-                                                     / (constants::gas_constant * temperature));
-
-          // in the two-phase damage model grain growth depends on the proportion of the two phases
-          if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-            grain_size_growth_rate *= geometric_constant[phase_index] * phase_distribution /
-                                      std::pow(roughness_to_grain_size, m);
-
-          const double grain_size_growth = grain_size_growth_rate * grain_growth_timestep;
-
-          // grain size reduction in dislocation creep regime
-          const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
-          const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
-
-          const double current_diffusion_viscosity   = diffusion_viscosity(temperature, adiabatic_temperature, pressure, grain_size, second_strain_rate_invariant, phase_index);
-          current_dislocation_viscosity              = dislocation_viscosity(temperature, adiabatic_temperature, pressure, strain_rate, phase_index, current_diffusion_viscosity, current_dislocation_viscosity);
-
-          double current_viscosity;
-          if (std::abs(second_strain_rate_invariant) > 1e-30)
-            current_viscosity = current_dislocation_viscosity * current_diffusion_viscosity / (current_dislocation_viscosity + current_diffusion_viscosity);
-          else
-            current_viscosity = current_diffusion_viscosity;
-
-          const double dislocation_strain_rate = second_strain_rate_invariant
-                                                 * current_viscosity / current_dislocation_viscosity;
-
-          double grain_size_reduction = 0.0;
-
-          if (grain_size_evolution_formulation == Formulation::paleowattmeter)
-            {
-              // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346
-              const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
-              const double grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_index] * dislocation_strain_rate * std::pow(grain_size,2)
-                                                       / (geometric_constant[phase_index] * grain_boundary_energy[phase_index]);
-              grain_size_reduction = grain_size_reduction_rate * grain_growth_timestep;
-            }
-          else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-            {
-              // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
-              const double stress = 2.0 * second_strain_rate_invariant * current_viscosity;
-              const double grain_size_reduction_rate = 2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size
-                                                       * roughness_to_grain_size
-                                                       / (geometric_constant[phase_index] * grain_boundary_energy[phase_index] * phase_distribution);
-              grain_size_reduction = grain_size_reduction_rate * grain_growth_timestep;
-            }
-          else if (grain_size_evolution_formulation == Formulation::paleopiezometer)
-            {
-              // paleopiezometer: Hall and Parmentier (2003): Influence of grain size evolution on convective instability. Geochem. Geophys. Geosyst., 4(3).
-              grain_size_reduction = reciprocal_required_strain[phase_index] * dislocation_strain_rate * grain_size * grain_growth_timestep;
-            }
-          else
-            AssertThrow(false, ExcNotImplemented());
-
-          grain_size_change = grain_size_growth - grain_size_reduction;
-
-          // If the change in grain size is very large or small decrease timestep and try
-          // again, or increase timestep and move on.
-          if ((grain_size_change / grain_size < 0.001 && grain_size_growth / grain_size < 0.1
-               && grain_size_reduction / grain_size < 0.1) || grain_size == 0.0)
-            grain_growth_timestep *= 2;
-          else if (grain_size_change / grain_size > 0.1 || grain_size_growth / grain_size > 0.5
-                   || grain_size_reduction / grain_size > 0.5)
-            {
-              grain_size_change = 0.0;
-              time -= grain_growth_timestep;
-
-              grain_growth_timestep /= 2.0;
-            }
-
-          grain_size += grain_size_change;
-          current_composition[grain_size_index] = grain_size;
-
-          Assert(grain_size > 0,
+          Assert(grain_sizes[i] > 0,
                  ExcMessage("The grain size became smaller than zero. This is not valid, "
                             "and likely an effect of a too large sub-timestep, or unrealistic "
                             "input parameters."));
+
+          // reduce grain size to recrystallized_grain_size when crossing phase transitions
+          // if the distance in radial direction a grain moved compared to the last time step
+          // is crossing a phase transition, reduce grain size
+
+          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]);
+          if (gravity_norm > 0.0)
+            vertical_direction /= gravity_norm;
+
+          int crossed_transition = -1;
+
+          // Figure out if the material in the current cell underwent a phase change.
+          // To do so, check if a grain has moved further than the distance from the phase transition and
+          // if the velocity is in the direction of the phase change. After the check 'crossed_transition' will
+          // be -1 if we crossed no transition, or the index of the phase transition, if we crossed it.
+          for (unsigned int phase=0; phase<n_phase_transitions; ++phase)
+            {
+              // Both distances are positive when they are downward from the transition (since gravity points down)
+              const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - phase_function.get_transition_depth(phase);
+              const double distance_moved = in.velocity[i] * vertical_direction * timestep;
+
+              // If we are close to the phase boundary (closer than the distance a grain has moved
+              // within one time step) and the velocity points away from the phase transition,
+              // then the material has crossed the transition.
+              // To make sure we actually reset the grain size of all the material passing through
+              // the transition, we take 110% of the distance a grain has moved for the check.
+              if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition)
+                  &&
+                  distance_moved * distance_from_transition >= 0)
+                crossed_transition = phase;
+            }
+
+          // TODO: recrystallize first, and then do grain size growth/reduction for grains that crossed the transition
+          // in dependence of the distance they have moved
+          double phase_grain_size_reduction = 0.0;
+          if (this->get_timestep_number() > 0)
+            {
+              // check if material has crossed any phase transition, if yes, reset grain size
+              if (crossed_transition != -1)
+                if (recrystallized_grain_size[crossed_transition] > 0.0)
+                  phase_grain_size_reduction = grain_sizes[i] - recrystallized_grain_size[crossed_transition];
+            }
+
+          grain_sizes[i] = std::max(grain_sizes[i], minimum_grain_size);
+          const double grain_size_change = grain_sizes[i] - in.composition[i][grain_size_index] - phase_grain_size_reduction;
+
+          reaction_terms[i][grain_size_index] = grain_size_change;
+
+          if (advect_log_grainsize)
+            reaction_terms[i][grain_size_index] = - grain_size_change / grain_sizes[i];
+          // We do not have to fill the other fields because we have initialized them with zero.
         }
-      while (time < timestep);
 
-      // reduce grain size to recrystallized_grain_size when crossing phase transitions
-      // if the distance in radial direction a grain moved compared to the last time step
-      // is crossing a phase transition, reduce grain size
-
-      // TODO: recrystallize first, and then do grain size growth/reduction for grains that crossed the transition
-      // in dependence of the distance they have moved
-      double phase_grain_size_reduction = 0.0;
-      if (this->introspection().name_for_compositional_index(grain_size_index) == "grain_size"
-          &&
-          this->get_timestep_number() > 0)
-        {
-          // check if material has crossed any phase transition, if yes, reset grain size
-          if (crossed_transition != -1)
-            if (recrystallized_grain_size[crossed_transition] > 0.0)
-              phase_grain_size_reduction = grain_size - recrystallized_grain_size[crossed_transition];
-        }
-
-      grain_size = std::max(grain_size, minimum_grain_size);
-
-      return grain_size - original_grain_size - phase_grain_size_reduction;
+      return reaction_terms;
     }
 
 
@@ -456,6 +495,10 @@ namespace aspect
       const double strain_rate_dependence = (1.0 - dislocation_creep_exponent[phase_index]) / dislocation_creep_exponent[phase_index];
       const SymmetricTensor<2,dim> shear_strain_rate = strain_rate - 1./dim * trace(strain_rate) * unit_symmetric_tensor<dim>();
       const double second_strain_rate_invariant = std::sqrt(std::max(-second_invariant(shear_strain_rate), 0.));
+
+      // If the strain rate is zero, the dislocation viscosity is infinity.
+      if (second_strain_rate_invariant <= std::numeric_limits<double>::min())
+        return std::numeric_limits<double>::min();
 
       // Start the iteration with the full strain rate
       double dis_viscosity;
@@ -757,68 +800,29 @@ namespace aspect
     GrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
+      std::vector<double> adiabatic_pressures (in.n_evaluation_points());
+      std::vector<unsigned int> phase_indices (in.n_evaluation_points());
+
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one, because of oscillations
-          const double adiabatic_pressure = (this->get_adiabatic_conditions().is_initialized())
-                                            ?
-                                            this->get_adiabatic_conditions().pressure(in.position[i])
-                                            :
-                                            in.pressure[i];
-
-          // convert the grain size from log to normal
-          std::vector<double> composition (in.composition[i]);
-          if (advect_log_grainsize)
-            convert_log_grain_size(composition);
-          else
-            {
-              composition[grain_size_index] = std::max(min_grain_size,composition[grain_size_index]);
-            }
-
-          // Set up an integer that tells us which phase transition has been crossed inside of the cell.
-          int crossed_transition(-1);
+          adiabatic_pressures[i] = (this->get_adiabatic_conditions().is_initialized())
+                                   ?
+                                   this->get_adiabatic_conditions().pressure(in.position[i])
+                                   :
+                                   in.pressure[i];
 
           const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
-          Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]);
-          if (gravity_norm > 0.0)
-            vertical_direction /= gravity_norm;
 
-          // Figure out if the material in the current cell underwent a phase change.
-          // To do so, check if a grain has moved further than the distance from the phase transition and
-          // if the velocity is in the direction of the phase change. After the check 'crossed_transition' will
-          // be -1 if we crossed no transition, or the index of the phase transition, if we crossed it.
-          for (unsigned int phase=0; phase<n_phase_transitions; ++phase)
-            {
-              const double timestep = this->simulator_is_past_initialization()
-                                      ?
-                                      this->get_timestep()
-                                      :
-                                      0.0;
-
-              // Both distances are positive when they are downward from the transition (since gravity points down)
-              const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - phase_function.get_transition_depth(phase);
-              const double distance_moved = in.velocity[i] * vertical_direction * timestep;
-
-              // If we are close to the phase boundary (closer than the distance a grain has moved
-              // within one time step) and the velocity points away from the phase transition,
-              // then the material has crossed the transition.
-              // To make sure we actually reset the grain size of all the material passing through
-              // the transition, we take 110% of the distance a grain has moved for the check.
-              if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition)
-                  &&
-                  distance_moved * distance_from_transition >= 0)
-                crossed_transition = phase;
-            }
-
-          out.densities[i] = density(in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i]);
+          out.densities[i] = density(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
           out.thermal_conductivities[i] = k_value;
-          out.compressibilities[i] = compressibility(in.temperature[i], adiabatic_pressure, composition, in.position[i]);
+          out.compressibilities[i] = compressibility(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
 
           // We do not fill the phase function index, because that will be done internally in the get_phase_index() function
           const double depth = this->get_geometry_model().depth(in.position[i]);
           const double rho_g = out.densities[i] * gravity_norm;
-          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i], adiabatic_pressure, depth, rho_g, numbers::invalid_unsigned_int);
-          const unsigned int phase_index = get_phase_index(phase_inputs);
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i], adiabatic_pressures[i], depth, rho_g, numbers::invalid_unsigned_int);
+          phase_indices[i] = get_phase_index(phase_inputs);
 
           if (in.requests_property(MaterialProperties::viscosity))
             {
@@ -836,16 +840,26 @@ namespace aspect
                                                    :
                                                    in.temperature[i];
 
+
+              // convert the grain size from log to normal
+              std::vector<double> composition (in.composition[i]);
+              if (advect_log_grainsize)
+                convert_log_grain_size(composition);
+              else
+                {
+                  composition[grain_size_index] = std::max(min_grain_size,composition[grain_size_index]);
+                }
+
               const double diff_viscosity = diffusion_viscosity(in.temperature[i],
                                                                 adiabatic_temperature,
-                                                                adiabatic_pressure,
+                                                                adiabatic_pressures[i],
                                                                 composition[grain_size_index],
                                                                 second_strain_rate_invariant,
-                                                                phase_index);
+                                                                phase_indices[i]);
 
               if (std::abs(second_strain_rate_invariant) > 1e-30)
                 {
-                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressure, in.strain_rate[i], phase_index, diff_viscosity);
+                  disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressures[i], in.strain_rate[i], phase_indices[i], diff_viscosity);
                   effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
                 }
               else
@@ -873,7 +887,7 @@ namespace aspect
                                                                                       n_phases);
                   const double pressure_for_yielding = use_adiabatic_pressure_for_yielding
                                                        ?
-                                                       adiabatic_pressure
+                                                       adiabatic_pressures[i]
                                                        :
                                                        std::max(in.pressure[i],0.0);
 
@@ -918,8 +932,7 @@ namespace aspect
                 {
                   if (grain_size_evolution_formulation == Formulation::paleowattmeter)
                     {
-                      const unsigned int phase_index = get_phase_index(phase_inputs);
-                      const double f = boundary_area_change_work_fraction[phase_index];
+                      const double f = boundary_area_change_work_fraction[phase_indices[i]];
                       shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / std::min(std::max(min_eta,disl_viscosity),1e300);
                     }
                   else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
@@ -932,22 +945,6 @@ namespace aspect
                 }
             }
 
-
-
-          if (in.requests_property(MaterialProperties::reaction_terms))
-            for (unsigned int c=0; c<composition.size(); ++c)
-              {
-                if (this->introspection().name_for_compositional_index(c) == "grain_size")
-                  {
-                    out.reaction_terms[i][c] = grain_size_change(in.temperature[i], adiabatic_pressure, composition,
-                                                                 in.strain_rate[i], in.position[i], c, crossed_transition, phase_index);
-                    if (advect_log_grainsize)
-                      out.reaction_terms[i][c] = - out.reaction_terms[i][c] / composition[c];
-                  }
-                else
-                  out.reaction_terms[i][c] = 0.0;
-              }
-
           // fill seismic velocities outputs if they exist
           if (use_table_properties)
             if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
@@ -956,6 +953,10 @@ namespace aspect
                 seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
               }
         }
+
+      if (in.requests_property(MaterialProperties::reaction_terms))
+        out.reaction_terms = grain_size_change(in, adiabatic_pressures, phase_indices);
+
 
       /* We separate the calculation of specific heat and thermal expansivity,
        * because they depend on cell-wise averaged values that are only available
@@ -978,13 +979,6 @@ namespace aspect
 
       for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
-          //Use the adiabatic pressure instead of the real one, because of oscillations
-          const double adiabatic_pressure = (this->get_adiabatic_conditions().is_initialized())
-                                            ?
-                                            this->get_adiabatic_conditions().pressure(in.position[i])
-                                            :
-                                            in.pressure[i];
-
           if (!use_table_properties)
             {
               out.thermal_expansion_coefficients[i] = thermal_alpha;
@@ -1004,8 +998,8 @@ namespace aspect
                 {
                   if (material_lookup.size() == 1)
                     {
-                      out.thermal_expansion_coefficients[i] = (1 - out.densities[i] * material_lookup[0]->dHdp(in.temperature[i],adiabatic_pressure)) / in.temperature[i];
-                      out.specific_heat[i] = material_lookup[0]->dHdT(in.temperature[i],adiabatic_pressure);
+                      out.thermal_expansion_coefficients[i] = (1 - out.densities[i] * material_lookup[0]->dHdp(in.temperature[i],adiabatic_pressures[i])) / in.temperature[i];
+                      out.specific_heat[i] = material_lookup[0]->dHdT(in.temperature[i],adiabatic_pressures[i]);
                     }
                   else
                     {
@@ -1015,8 +1009,8 @@ namespace aspect
             }
           else
             {
-              out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient(in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i]);
-              out.specific_heat[i] = specific_heat(in.temperature[i], adiabatic_pressure, in.composition[i], in.position[i]);
+              out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
+              out.specific_heat[i] = specific_heat(in.temperature[i], adiabatic_pressures[i], in.composition[i], in.position[i]);
             }
 
           out.thermal_expansion_coefficients[i] = std::max(std::min(out.thermal_expansion_coefficients[i],max_thermal_expansivity),min_thermal_expansivity);

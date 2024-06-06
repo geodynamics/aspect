@@ -20,7 +20,7 @@
 # which means we expect a grain size of 1.296828e-4 m at x = 1e5 m.
 #
 # If this test runs for 2e6 it produces a grain size of
-# 1.29143027e-04 m at x = 1e5 m, which is close enough.
+# 1.29087e-04 m at x = 1e5 m, which is close enough.
 
 include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
 
