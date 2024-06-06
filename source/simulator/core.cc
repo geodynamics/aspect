@@ -626,6 +626,7 @@ namespace aspect
     // notify different system components that we started the next time step
     // TODO: implement this for all plugins that might need it at one place.
     // Temperature BC are currently updated in compute_current_constraints
+    geometry_model->update();
     material_model->update();
     gravity_model->update();
     heating_model_manager.update();
@@ -636,6 +637,9 @@ namespace aspect
 
     if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();
+
+    if (particle_world.get() != nullptr)
+      particle_world->update();
 
     // do the same for the traction boundary conditions and other things
     // that end up in the bilinear form. we update those that end up in
