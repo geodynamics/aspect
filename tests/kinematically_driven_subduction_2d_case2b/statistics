@@ -1,0 +1,30 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Max depth [m] for composition OP
+# 19: Max depth [m] for composition ML_SP
+# 20: Max depth [m] for composition crust_SP
+# 21: RMS velocity (m/year) for composition OP
+# 22: RMS velocity (m/year) for composition ML_SP
+# 23: RMS velocity (m/year) for composition crust_SP
+# 24: RMS velocity (m/year) for the selected field 
+# 25: Viscous dissipation (W/m) for composition OP
+# 26: Viscous dissipation (W/m) for composition ML_SP
+# 27: Viscous dissipation (W/m) for composition crust_SP
+# 28: Viscous dissipation (W/m)
+0 0.000000000000e+00 0.000000000000e+00 1792 16999 7529 22587 0  0  0  0 201 243 1185 output-kinematically_driven_subduction_2d_case1/solution/solution-00000 1.90421474e-02 5.00371426e-02 7.32812500e+04 1.07047191e+05 7.32812500e+04 1.33821954e-02 3.89596496e-02 3.71727910e-02 3.88521553e-02 6.26258693e+03 7.98743471e+03 1.39397439e+01 1.57386815e+04 
+1 1.000000000000e+05 1.000000000000e+05 1792 16999 7529 22587 0 10 11 11  85  88  550                                                                      "" 1.90351515e-02 5.00371715e-02 7.32812500e+04 1.07047191e+05 7.32812500e+04 1.34260472e-02 3.89226606e-02 3.69759215e-02 3.88041750e-02 6.30679875e+03 8.02261688e+03 1.02735703e+02 1.58159682e+04 
