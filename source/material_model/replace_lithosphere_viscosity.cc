@@ -134,6 +134,13 @@ namespace aspect
     {
       return base_model->is_compressible();
     }
+
+    template <int dim>
+    void
+    ReplaceLithosphereViscosity<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      base_model->create_additional_named_outputs(out);
+    }
   }
 }
 

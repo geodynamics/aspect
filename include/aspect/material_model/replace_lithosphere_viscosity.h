@@ -77,6 +77,9 @@ namespace aspect
          */
         bool is_compressible () const override;
 
+        void
+        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
+
       private:
 
         /**
