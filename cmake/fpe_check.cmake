@@ -7,21 +7,21 @@
 
 INCLUDE (CheckCXXSourceRuns)
 
-SET(_backup_flags ${CMAKE_REQUIRED_FLAGS})
-SET(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
-SET(_backup_includes ${CMAKE_REQUIRED_INCLUDES})
+set(_backup_flags ${CMAKE_REQUIRED_FLAGS})
+set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
+set(_backup_includes ${CMAKE_REQUIRED_INCLUDES})
 
-SET(_build "RELEASE")
-STRING(TOLOWER "${CMAKE_BUILD_TYPE}" _cmake_build_type)
-IF("${_cmake_build_type}" MATCHES "debug")
-  SET(_build "DEBUG")
-ENDIF()
+set(_build "RELEASE")
+string(TOLOWER "${CMAKE_BUILD_TYPE}" _cmake_build_type)
+if("${_cmake_build_type}" MATCHES "debug")
+  set(_build "DEBUG")
+endif()
 
-LIST(APPEND CMAKE_REQUIRED_FLAGS "${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_${_build}}")
-LIST(APPEND CMAKE_REQUIRED_LIBRARIES ${DEAL_II_TARGET_${_build}})
-LIST(APPEND CMAKE_REQUIRED_INCLUDES ${DEAL_II_INCLUDE_DIRS})
+list(APPEND CMAKE_REQUIRED_FLAGS "${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_${_build}}")
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${DEAL_II_TARGET_${_build}})
+list(APPEND CMAKE_REQUIRED_INCLUDES ${DEAL_II_INCLUDE_DIRS})
 
-CHECK_CXX_SOURCE_RUNS("
+check_cxx_source_runs("
 #include <fenv.h>
 #include <limits>
 #include <sstream>
@@ -48,6 +48,6 @@ int main()
 " HAVE_FP_EXCEPTIONS)
 
 
-SET(CMAKE_REQUIRED_FLAGS ${_backup_flags})
-SET(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
-SET(CMAKE_REQUIRED_INCLUDES ${_backup_includes})
+set(CMAKE_REQUIRED_FLAGS ${_backup_flags})
+set(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
+set(CMAKE_REQUIRED_INCLUDES ${_backup_includes})

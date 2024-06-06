@@ -100,219 +100,219 @@
 # For details, consult the ./README file.
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
-MESSAGE("-- This is CTest ${CMAKE_VERSION}")
+cmake_minimum_required(VERSION 3.13.4)
+message("-- This is CTest ${CMAKE_VERSION}")
 
 #
 # TRACK: Default to Experimental:
 #
 
-IF("${TRACK}" STREQUAL "")
-  SET(TRACK "Experimental")
-ENDIF()
+if("${TRACK}" STREQUAL "")
+  set(TRACK "Experimental")
+endif()
 
-IF( NOT "${TRACK}" STREQUAL "Experimental"
+if( NOT "${TRACK}" STREQUAL "Experimental"
     AND NOT "${TRACK}" STREQUAL "Build Tests"
     AND NOT "${TRACK}" STREQUAL "Nightly"
     AND NOT "${TRACK}" STREQUAL "Regression Tests" )
-  MESSAGE(FATAL_ERROR "
+  message(FATAL_ERROR "
 Unknown TRACK \"${TRACK}\" - see the manual for valid values.
 "
     )
-ENDIF()
+endif()
 
-MESSAGE("-- TRACK:                  ${TRACK}")
+message("-- TRACK:                  ${TRACK}")
 
 #
 # CTEST_SOURCE_DIRECTORY:
 #
 
-IF("${CTEST_SOURCE_DIRECTORY}" STREQUAL "")
+if("${CTEST_SOURCE_DIRECTORY}" STREQUAL "")
   #
   # If CTEST_SOURCE_DIRECTORY is not set we just assume that this script
   # resides in the top level source directory
   #
-  SET(CTEST_SOURCE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+  set(CTEST_SOURCE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
   # The code above set the source directory of that of the run_testsuite.cmake
   # script, but we need the directory of aspect, which is simply one level
   # higher
   IF ("${CTEST_SOURCE_DIRECTORY}" MATCHES "/tests")
-    SET(CTEST_SOURCE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../)
-  ENDIF()
+    set(CTEST_SOURCE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../)
+  endif()
 
-  IF(NOT EXISTS ${CTEST_SOURCE_DIRECTORY}/CMakeLists.txt)
-    MESSAGE(FATAL_ERROR "
+  if(NOT EXISTS ${CTEST_SOURCE_DIRECTORY}/CMakeLists.txt)
+    message(FATAL_ERROR "
 Could not find a suitable source directory. Please, set
 CTEST_SOURCE_DIRECTORY manually to the appropriate source directory.
 "
       )
-  ENDIF()
-ENDIF()
+  endif()
+endif()
 
-MESSAGE("-- CTEST_SOURCE_DIRECTORY: ${CTEST_SOURCE_DIRECTORY}")
+message("-- CTEST_SOURCE_DIRECTORY: ${CTEST_SOURCE_DIRECTORY}")
 
 #
 # Read in custom config files:
 #
 
-CTEST_READ_CUSTOM_FILES(${CTEST_SOURCE_DIRECTORY})
+ctest_read_custom_files(${CTEST_SOURCE_DIRECTORY})
 
 #
 # CTEST_BINARY_DIRECTORY:
 #
 
-IF("${CTEST_BINARY_DIRECTORY}" STREQUAL "")
+if("${CTEST_BINARY_DIRECTORY}" STREQUAL "")
   #
   # If CTEST_BINARY_DIRECTORY is not set we just use the current directory
   # except if it is equal to CTEST_SOURCE_DIRECTORY in which case we fail.
   #
-  SET(CTEST_BINARY_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-ENDIF()
+  set(CTEST_BINARY_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 
 #
 # Read in custom config files:
 #
 
-CTEST_READ_CUSTOM_FILES(${CTEST_BINARY_DIRECTORY})
+ctest_read_custom_files(${CTEST_BINARY_DIRECTORY})
 
 # Make sure that for a build test the directory is empty:
-FILE(GLOB _test ${CTEST_BINARY_DIRECTORY}/*)
-IF( "${TRACK}" STREQUAL "Build Tests"
+file(GLOB _test ${CTEST_BINARY_DIRECTORY}/*)
+if( "${TRACK}" STREQUAL "Build Tests"
     AND NOT "${_test}" STREQUAL "" )
-      MESSAGE(FATAL_ERROR "
+      message(FATAL_ERROR "
 TRACK was set to \"Build Tests\" which require an empty build directory.
 But files were found in \"${CTEST_BINARY_DIRECTORY}\"
 "
         )
-ENDIF()
+endif()
 
-MESSAGE("-- CTEST_BINARY_DIRECTORY: ${CTEST_BINARY_DIRECTORY}")
+message("-- CTEST_BINARY_DIRECTORY: ${CTEST_BINARY_DIRECTORY}")
 
 #
 # CTEST_CMAKE_GENERATOR:
 #
 
 # Query Generator from build directory (if possible):
-IF(EXISTS ${CTEST_BINARY_DIRECTORY}/CMakeCache.txt)
-  FILE(STRINGS ${CTEST_BINARY_DIRECTORY}/CMakeCache.txt _generator
+if(EXISTS ${CTEST_BINARY_DIRECTORY}/CMakeCache.txt)
+  file(STRINGS ${CTEST_BINARY_DIRECTORY}/CMakeCache.txt _generator
     REGEX "^CMAKE_GENERATOR:"
     )
-  STRING(REGEX REPLACE "^.*=" "" _generator ${_generator})
-ENDIF()
+  string(REGEX REPLACE "^.*=" "" _generator ${_generator})
+endif()
 
-IF("${CTEST_CMAKE_GENERATOR}" STREQUAL "")
-  IF(NOT "${_generator}" STREQUAL "")
-    SET(CTEST_CMAKE_GENERATOR ${_generator})
-  ELSE()
+if("${CTEST_CMAKE_GENERATOR}" STREQUAL "")
+  if(NOT "${_generator}" STREQUAL "")
+    set(CTEST_CMAKE_GENERATOR ${_generator})
+  else()
     # default to "Unix Makefiles"
-    SET(CTEST_CMAKE_GENERATOR "Unix Makefiles")
-  ENDIF()
-ELSE()
+    set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+  endif()
+else()
   # ensure that CTEST_CMAKE_GENERATOR (that was apparently set) is
   # compatible with the build directory:
-  IF( NOT "${CTEST_CMAKE_GENERATOR}" STREQUAL "${_generator}"
+  if( NOT "${CTEST_CMAKE_GENERATOR}" STREQUAL "${_generator}"
       AND NOT "${_generator}" STREQUAL "" )
-    MESSAGE(FATAL_ERROR "
+    message(FATAL_ERROR "
 The build directory is already set up with Generator \"${_generator}\", but
 CTEST_CMAKE_GENERATOR was set to a different Generator \"${CTEST_CMAKE_GENERATOR}\".
 "
      )
-  ENDIF()
-ENDIF()
+  endif()
+endif()
 
-MESSAGE("-- CTEST_CMAKE_GENERATOR:  ${CTEST_CMAKE_GENERATOR}")
+message("-- CTEST_CMAKE_GENERATOR:  ${CTEST_CMAKE_GENERATOR}")
 
 #
 # CTEST_SITE:
 #
 
-FIND_PROGRAM(HOSTNAME_COMMAND NAMES hostname)
-IF(NOT "${HOSTNAME_COMMAND}" MATCHES "-NOTFOUND")
-  EXEC_PROGRAM(${HOSTNAME_COMMAND} OUTPUT_VARIABLE _hostname)
-  SET(CTEST_SITE "${_hostname}")
-ELSE()
+find_program(HOSTNAME_COMMAND NAMES hostname)
+if(NOT "${HOSTNAME_COMMAND}" MATCHES "-NOTFOUND")
+  exec_program(${HOSTNAME_COMMAND} OUTPUT_VARIABLE _hostname)
+  set(CTEST_SITE "${_hostname}")
+else()
   # Well, no hostname available. What about:
-  SET(CTEST_SITE "BobMorane")
-ENDIF()
+  set(CTEST_SITE "BobMorane")
+endif()
 
-MESSAGE("-- CTEST_SITE:             ${CTEST_SITE}")
+message("-- CTEST_SITE:             ${CTEST_SITE}")
 
-IF( "${TRACK}" STREQUAL "Regression Tests"
+if( "${TRACK}" STREQUAL "Regression Tests"
     AND NOT CTEST_SITE MATCHES "tester" )
-  MESSAGE(FATAL_ERROR "
+  message(FATAL_ERROR "
 I'm sorry ${CTEST_SITE}, I'm afraid I can't do that.
 The TRACK \"Regression Tests\" is not for you.
 "
     )
-ENDIF()
+endif()
 
 #
 # Assemble configuration options, we need it now:
 #
 
-IF("${MAKEOPTS}" STREQUAL "")
-  SET(MAKEOPTS $ENV{MAKEOPTS})
-ENDIF()
+if("${MAKEOPTS}" STREQUAL "")
+  set(MAKEOPTS $ENV{MAKEOPTS})
+endif()
 
-IF(NOT "${CONFIG_FILE}" STREQUAL "")
-  SET(_options "-C${CONFIG_FILE}")
-ENDIF()
+if(NOT "${CONFIG_FILE}" STREQUAL "")
+  set(_options "-C${CONFIG_FILE}")
+endif()
 
-IF("${TRACK}" STREQUAL "Build Tests")
-  SET(TEST_PICKUP_REGEX "^build_tests")
-ENDIF()
+if("${TRACK}" STREQUAL "Build Tests")
+  set(TEST_PICKUP_REGEX "^build_tests")
+endif()
 
 # Pass all relevant variables down to configure:
-GET_CMAKE_PROPERTY(_variables VARIABLES)
+get_cmake_property(_variables VARIABLES)
 
 #
 # CTEST_BUILD_NAME:
 #
 
 # Append compiler information to CTEST_BUILD_NAME:
-IF(NOT EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
-  MESSAGE(FATAL_ERROR "could not find detailed.log")
-ENDIF()
+if(NOT EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
+  message(FATAL_ERROR "could not find detailed.log")
+endif()
 
-IF(EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
-  FILE(STRINGS ${CTEST_BINARY_DIRECTORY}/detailed.log _compiler_id
+if(EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
+  file(STRINGS ${CTEST_BINARY_DIRECTORY}/detailed.log _compiler_id
     REGEX "CMAKE_CXX_COMPILER:"
     )
-  STRING(REGEX REPLACE
+  string(REGEX REPLACE
     "^.*CMAKE_CXX_COMPILER:     \(.*\) on platform.*$" "\\1"
     _compiler_id ${_compiler_id}
     )
-  STRING(REGEX REPLACE "^\(.*\) .*$" "\\1" _compiler_name ${_compiler_id})
-  STRING(REGEX REPLACE "^.* " "" _compiler_version ${_compiler_id})
-  STRING(REGEX REPLACE " " "-" _compiler_id ${_compiler_id})
-  IF( NOT "${_compiler_id}" STREQUAL "" OR
+  string(REGEX REPLACE "^\(.*\) .*$" "\\1" _compiler_name ${_compiler_id})
+  string(REGEX REPLACE "^.* " "" _compiler_version ${_compiler_id})
+  string(REGEX REPLACE " " "-" _compiler_id ${_compiler_id})
+  if( NOT "${_compiler_id}" STREQUAL "" OR
       _compiler_id MATCHES "CMAKE_CXX_COMPILER" )
-    SET(CTEST_BUILD_NAME "${_compiler_id}")
-  ENDIF()
+    set(CTEST_BUILD_NAME "${_compiler_id}")
+  endif()
 
-ENDIF()
+endif()
 
 #
 # Query version information:
 #
 
 IF (NOT EXISTS  ${CTEST_SOURCE_DIRECTORY}/.git)
-    MESSAGE(FATAL_ERROR "Could not find .git directory")
-ENDIF()
+    message(FATAL_ERROR "Could not find .git directory")
+endif()
 
-FIND_PACKAGE(Git)
+find_package(Git)
 
-IF(NOT GIT_FOUND)
-    MESSAGE(FATAL_ERROR "Could not find git.")
-ENDIF()
-
-
+if(NOT GIT_FOUND)
+    message(FATAL_ERROR "Could not find git.")
+endif()
 
 
-#Git_WC_INFO(${CTEST_SOURCE_DIRECTORY} bla)
 
-EXECUTE_PROCESS(
+
+#Git_wc_info(${CTEST_SOURCE_DIRECTORY} bla)
+
+execute_process(
    COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%H %h %ae"
    WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
    OUTPUT_VARIABLE _git_WC_INFO
@@ -320,20 +320,20 @@ EXECUTE_PROCESS(
    OUTPUT_STRIP_TRAILING_WHITESPACE
    )
 
-IF(NOT ${_result} EQUAL 0)
-    MESSAGE(FATAL_ERROR "Could not get git revision.")
-ENDIF()
+if(NOT ${_result} EQUAL 0)
+    message(FATAL_ERROR "Could not get git revision.")
+endif()
 
-STRING(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
+string(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
          "\\1" _git_WC_REV "${_git_WC_INFO}")
 
-STRING(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
+string(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
          "\\2" _git_WC_SHORTREV "${_git_WC_INFO}")
 
-STRING(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
+string(REGEX REPLACE "^\"([^ ]+) ([^ ]+) ([^\"]+)\""
          "\\3" _git_WC_AUTHOR "${_git_WC_INFO}")
 
-EXECUTE_PROCESS(
+execute_process(
    COMMAND ${GIT_EXECUTABLE} symbolic-ref HEAD
    WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
    OUTPUT_VARIABLE _git_WC_BRANCH
@@ -341,10 +341,10 @@ EXECUTE_PROCESS(
    OUTPUT_STRIP_TRAILING_WHITESPACE
    )
 
-STRING(REGEX REPLACE "refs/heads/" ""
+string(REGEX REPLACE "refs/heads/" ""
   _git_WC_BRANCH "${_git_WC_BRANCH}")
 
-SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_git_WC_BRANCH}")
+set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_git_WC_BRANCH}")
 
 
 
@@ -352,7 +352,7 @@ SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_git_WC_BRANCH}")
 # Write revision log:
 #
 
-FILE(WRITE ${CTEST_BINARY_DIRECTORY}/revision.log
+file(WRITE ${CTEST_BINARY_DIRECTORY}/revision.log
 "###
 #
 #  Git information:
@@ -367,36 +367,36 @@ FILE(WRITE ${CTEST_BINARY_DIRECTORY}/revision.log
 # Append config file name to CTEST_BUILD_NAME:
 #
 
-IF(NOT "${CONFIG_FILE}" STREQUAL "")
-  GET_FILENAME_COMPONENT(_conf ${CONFIG_FILE} NAME_WE)
-  STRING(REGEX REPLACE "#.*$" "" _conf ${_conf})
-  SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_conf}")
-ENDIF()
+if(NOT "${CONFIG_FILE}" STREQUAL "")
+  get_filename_component(_conf ${CONFIG_FILE} NAME_WE)
+  string(REGEX REPLACE "#.*$" "" _conf ${_conf})
+  set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_conf}")
+endif()
 
 #
 # Append DESCRIPTION string to CTEST_BUILD_NAME:
 #
 
-IF(NOT "${DESCRIPTION}" STREQUAL "")
-  SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${DESCRIPTION}")
-ENDIF()
+if(NOT "${DESCRIPTION}" STREQUAL "")
+  set(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${DESCRIPTION}")
+endif()
 
-MESSAGE("-- CTEST_BUILD_NAME:       ${CTEST_BUILD_NAME}")
+message("-- CTEST_BUILD_NAME:       ${CTEST_BUILD_NAME}")
 
 #
 # Declare files that should be submitted as notes:
 #
 
-SET(CTEST_NOTES_FILES
+set(CTEST_NOTES_FILES
   ${CTEST_BINARY_DIRECTORY}/revision.log
   ${CTEST_BINARY_DIRECTORY}/detailed.log
   )
 
-MESSAGE("-- CMake Options:          ${_options}")
+message("-- CMake Options:          ${_options}")
 
-IF(NOT "${MAKEOPTS}" STREQUAL "")
-  MESSAGE("-- MAKEOPTS:               ${MAKEOPTS}")
-ENDIF()
+if(NOT "${MAKEOPTS}" STREQUAL "")
+  message("-- MAKEOPTS:               ${MAKEOPTS}")
+endif()
 
 
 ########################################################################
@@ -405,60 +405,60 @@ ENDIF()
 #                                                                      #
 ########################################################################
 
-CTEST_START(Experimental TRACK ${TRACK})
+ctest_start(Experimental TRACK ${TRACK})
 
-MESSAGE("-- Running CTEST_CONFIGURE()")
-CTEST_CONFIGURE(OPTIONS "${_options}" RETURN_VALUE _res)
+message("-- Running ctest_configure()")
+ctest_configure(OPTIONS "${_options}" RETURN_VALUE _res)
 
-IF("${_res}" STREQUAL "0")
+if("${_res}" STREQUAL "0")
   # Only run the build stage if configure was successful:
 
-  MESSAGE("-- Running CTEST_BUILD()")
-  CTEST_BUILD(TARGET ${MAKEOPTS} NUMBER_ERRORS _res)
+  message("-- Running ctest_build()")
+  ctest_build(TARGET ${MAKEOPTS} NUMBER_ERRORS _res)
 
-  IF("${_res}" STREQUAL "0")
+  if("${_res}" STREQUAL "0")
     # Only run tests if the build was successful:
 
-    MESSAGE("-- Running CTEST_TESTS()")
-    CTEST_TEST()
-  ENDIF()
-ENDIF()
+    message("-- Running ctest_tests()")
+    ctest_test()
+  endif()
+endif()
 
 #
 # Inject compiler information and svn revision into xml files:
 #
 
-FILE(STRINGS ${CTEST_BINARY_DIRECTORY}/Testing/TAG _tag LIMIT_COUNT 1)
-SET(_path "${CTEST_BINARY_DIRECTORY}/Testing/${_tag}")
-IF(NOT EXISTS ${_path})
-  MESSAGE(FATAL_ERROR "
+file(STRINGS ${CTEST_BINARY_DIRECTORY}/Testing/TAG _tag LIMIT_COUNT 1)
+set(_path "${CTEST_BINARY_DIRECTORY}/Testing/${_tag}")
+if(NOT EXISTS ${_path})
+  message(FATAL_ERROR "
 Unable to determine test submission files from TAG. Bailing out.
 "
     )
-ENDIF()
+endif()
 
-IF(CMAKE_SYSTEM_NAME MATCHES "Linux")
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
   #
   # Only use the following sed command on GNU userlands:
   #
   # TODO: Come up with a more robust way to inject this that also works on
   # BSD and Mac
   #
-  FILE(GLOB _xml_files ${_path}/*.xml)
-  EXECUTE_PROCESS(COMMAND sed -i -e
+  file(GLOB _xml_files ${_path}/*.xml)
+  execute_process(COMMAND sed -i -e
     s/CompilerName=\\"\\"/CompilerName=\\"${_compiler_name}\\"\\n\\tCompilerVersion=\\"${_compiler_version}\\"/g
     ${_xml_files}
     OUTPUT_QUIET RESULT_VARIABLE  _res
     )
-  IF(NOT "${_res}" STREQUAL "0")
-    MESSAGE(FATAL_ERROR "
+  if(NOT "${_res}" STREQUAL "0")
+    message(FATAL_ERROR "
   \"sed\" failed. Bailing out.
   "
       )
-  ENDIF()
-ENDIF()
+  endif()
+endif()
 
-FILE(WRITE ${_path}/Update.xml
+file(WRITE ${_path}/Update.xml
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <Update mode=\"Client\" Generator=\"ctest-${CTEST_VERSION}\">
 <Site>${CTEST_SITE}</Site>
@@ -470,13 +470,13 @@ FILE(WRITE ${_path}/Update.xml
 </Update>"
   )
 
-IF("${submit}")
-MESSAGE("-- Running CTEST_SUBMIT()")
-CTEST_SUBMIT(RETURN_VALUE _res)
+if("${submit}")
+message("-- Running ctest_submit()")
+ctest_submit(RETURN_VALUE _res)
 
-IF("${_res}" STREQUAL "0")
-  MESSAGE("-- Submission successful. Goodbye!")
-ENDIF()
-ELSE()
-MESSAGE("-- Submission skipped. Run with submit=ON")
-ENDIF()
+if("${_res}" STREQUAL "0")
+  message("-- Submission successful. Goodbye!")
+endif()
+else()
+message("-- Submission skipped. Run with submit=ON")
+endif()
