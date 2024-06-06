@@ -462,12 +462,6 @@ set(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING
   "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
 
 
-# Allow us to make a global "test" target:
-if(POLICY CMP0037)
-  # allow to override "test" target
-  cmake_policy(SET CMP0037 OLD)
-endif()
-
 # This is an empty target but we will make it depend on tests/ and unit_tests/ next:
 add_custom_target(test)
 
@@ -493,14 +487,12 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
     message(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
   endif()
 
-  # Finally hook up that "make test" will execute the tests:
+  # Finally create a custom target to run them:
   add_custom_target(run_unit_tests
     COMMAND ${CMAKE_BINARY_DIR}/aspect --test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
     DEPENDS ${TARGET}
     COMMENT "Running unit_tests ...")
-
-  add_dependencies(test run_unit_tests)
 endif()
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
@@ -535,14 +527,12 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
     message(FATAL_ERROR "ERROR: tests/ project could not be configured.")
   endif()
 
-  # Finally hook up that "make test" will execute the tests:
+  # Finally create a custom target:
   add_custom_target(run_tests
     COMMAND ${CMAKE_COMMAND} --build . --target test
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
     DEPENDS ${TARGET}
     COMMENT "Running tests ...")
-
-  add_dependencies(test run_tests)
 endif()
 
 # Provide the "generate_reference_output" target:
