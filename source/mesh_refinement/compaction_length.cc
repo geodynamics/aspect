@@ -40,7 +40,14 @@ namespace aspect
       if (this->get_dof_handler().n_locally_owned_dofs() == 0)
         return;
 
-      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.compositional_fields).get_unit_support_points());
+      // Use a quadrature in the support points of the porosity to compute the
+      // compaction length at:
+      const typename Simulator<dim>::AdvectionField porosity = Simulator<dim>::AdvectionField::composition(
+                                                                 this->introspection().compositional_index_for_name("porosity"));
+
+      const unsigned int base_element_index = porosity.base_element(this->introspection());
+      const Quadrature<dim> quadrature(this->get_fe().base_element(base_element_index).get_unit_support_points());
+
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature,
@@ -65,7 +72,7 @@ namespace aspect
                         ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
             // for each composition dof, check if the compaction length exceeds the cell size
-            for (unsigned int i=0; i<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++i)
+            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
                 const double compaction_length = std::sqrt((out.viscosities[i] + 4./3. * melt_out->compaction_viscosities[i])
                                                            * melt_out->permeabilities[i] / melt_out->fluid_viscosities[i]);
