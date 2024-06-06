@@ -282,7 +282,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
       set(_build_type ${CMAKE_BUILD_TYPE})
       set(CMAKE_BUILD_TYPE Debug)
 
-      message (STATUS "")
+      message(STATUS "")
       message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
 
       set(WB_TARGET "WorldBuilderDebug")
@@ -297,7 +297,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
       set(_build_type ${CMAKE_BUILD_TYPE})
       set(CMAKE_BUILD_TYPE Release)
 
-      message (STATUS "")
+      message(STATUS "")
       message(STATUS "===== Setting up Geodynamic World Builder version ${WORLD_BUILDER_VERSION} in ${CMAKE_BUILD_TYPE} mode")
 
       set(WB_TARGET "WorldBuilderRelease")
@@ -1015,7 +1015,7 @@ add_custom_command(TARGET ${TARGET} POST_BUILD
 
 
 message(STATUS "")
-message(STATUS "===== Writing final configuration =============")
+message(STATUS "===== Writing final configuration ==================")
 
 include(cmake/write_config)
 

@@ -18,7 +18,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
-MESSAGE(STATUS "===== Configuring ASPECT cookbooks =============")
+MESSAGE(STATUS "===== Configuring ASPECT cookbooks =================")
 
 SET(Aspect_DIR ${CMAKE_BINARY_DIR})
 
