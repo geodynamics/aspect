@@ -258,40 +258,37 @@ namespace aspect
 
     template <int dim>
     void
-    Particles<dim>::write_master_files (const internal::ParticleOutput<dim> &data_out,
-                                        const std::string &solution_file_prefix,
-                                        const std::vector<std::string> &filenames)
+    Particles<dim>::write_description_files (const internal::ParticleOutput<dim> &data_out,
+                                             const std::string &solution_file_prefix,
+                                             const std::vector<std::string> &filenames)
     {
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
-      const std::string
-      pvtu_master_filename = (solution_file_prefix +
-                              ".pvtu");
-      std::ofstream pvtu_master (this->get_output_directory() + "particles/" +
-                                 pvtu_master_filename);
-      data_out.write_pvtu_record (pvtu_master, filenames);
+      const std::string pvtu_filename = (solution_file_prefix +
+                                         ".pvtu");
+      std::ofstream pvtu_file (this->get_output_directory() + "particles/" +
+                               pvtu_filename);
+      data_out.write_pvtu_record (pvtu_file, filenames);
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
-      times_and_pvtu_file_names.emplace_back(time_in_years_or_seconds, "particles/"+pvtu_master_filename);
+      times_and_pvtu_file_names.emplace_back(time_in_years_or_seconds, "particles/"+pvtu_filename);
 
-      const std::string
-      pvd_master_filename = (this->get_output_directory() + "particles.pvd");
-      std::ofstream pvd_master (pvd_master_filename);
+      const std::string pvd_filename = (this->get_output_directory() + "particles.pvd");
+      std::ofstream pvd_file (pvd_filename);
 
-      DataOutBase::write_pvd_record (pvd_master, times_and_pvtu_file_names);
+      DataOutBase::write_pvd_record (pvd_file, times_and_pvtu_file_names);
 
       // finally, do the same for VisIt via the .visit file for this
       // time step, as well as for all time steps together
-      const std::string
-      visit_master_filename = (this->get_output_directory()
-                               + "particles/"
-                               + solution_file_prefix
-                               + ".visit");
-      std::ofstream visit_master (visit_master_filename);
+      const std::string visit_filename = (this->get_output_directory()
+                                          + "particles/"
+                                          + solution_file_prefix
+                                          + ".visit");
+      std::ofstream visit_file (visit_filename);
 
-      DataOutBase::write_visit_record (visit_master, filenames);
+      DataOutBase::write_visit_record (visit_file, filenames);
 
       {
         // the global .visit file needs the relative path because it sits a
@@ -306,14 +303,14 @@ namespace aspect
         output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
-      std::ofstream global_visit_master (this->get_output_directory() +
-                                         "particles.visit");
+      std::ofstream global_visit_file (this->get_output_directory() +
+                                       "particles.visit");
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<times_and_pvtu_file_names.size(); ++timestep)
         times_and_output_file_names.emplace_back(times_and_pvtu_file_names[timestep].first,
                                                  output_file_names_by_timestep[timestep]);
-      DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
+      DataOutBase::write_visit_record (global_visit_file, times_and_output_file_names);
     }
 
     template <int dim>
@@ -396,7 +393,7 @@ namespace aspect
             }
           else if (output_format == "vtu")
             {
-              // Write master files (.pvtu,.pvd,.visit) on the master process
+              // Write descriptive files (.pvtu,.pvd,.visit) on the root process
               const int my_id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
               if (my_id == 0)
@@ -408,7 +405,7 @@ namespace aspect
                     filenames.push_back (particle_file_prefix
                                          + "." + Utilities::int_to_string(i, 4)
                                          + ".vtu");
-                  write_master_files (data_out, particle_file_prefix, filenames);
+                  write_description_files (data_out, particle_file_prefix, filenames);
                 }
 
               const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());

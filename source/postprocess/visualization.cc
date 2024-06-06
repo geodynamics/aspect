@@ -356,10 +356,10 @@ namespace aspect
     template <int dim>
     template <typename DataOutType>
     void
-    Visualization<dim>::write_master_files (const DataOutType &data_out,
-                                            const std::string &solution_file_prefix,
-                                            const std::vector<std::string> &filenames,
-                                            OutputHistory                  &output_history) const
+    Visualization<dim>::write_description_files (const DataOutType &data_out,
+                                                 const std::string &solution_file_prefix,
+                                                 const std::vector<std::string> &filenames,
+                                                 OutputHistory                  &output_history) const
     {
       static_assert (std::is_same<DataOutType,DataOut<dim>>::value ||
                      std::is_same<DataOutType,DataOutFaces<dim>>::value,
@@ -370,11 +370,11 @@ namespace aspect
       const double time_in_years_or_seconds = (this->convert_output_to_years() ?
                                                this->get_time() / year_in_seconds :
                                                this->get_time());
-      const std::string pvtu_master_filename = (solution_file_prefix +
-                                                ".pvtu");
-      std::ofstream pvtu_master (this->get_output_directory() + "solution/" +
-                                 pvtu_master_filename);
-      data_out.write_pvtu_record (pvtu_master, filenames);
+      const std::string pvtu_filename = (solution_file_prefix +
+                                         ".pvtu");
+      std::ofstream pvtu_file (this->get_output_directory() + "solution/" +
+                               pvtu_filename);
+      data_out.write_pvtu_record (pvtu_file, filenames);
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
@@ -383,29 +383,29 @@ namespace aspect
           // in case we output all nonlinear iterations, we only want one
           // entry per time step, so replace the last line with the current iteration
           if (this->get_nonlinear_iteration() == 0)
-            output_history.times_and_pvtu_names.emplace_back(time_in_years_or_seconds, "solution/"+pvtu_master_filename);
+            output_history.times_and_pvtu_names.emplace_back(time_in_years_or_seconds, "solution/"+pvtu_filename);
           else
             output_history.times_and_pvtu_names.back() = (std::make_pair
-                                                          (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+                                                          (time_in_years_or_seconds, "solution/"+pvtu_filename));
         }
       else
-        output_history.times_and_pvtu_names.emplace_back(time_in_years_or_seconds, "solution/"+pvtu_master_filename);
+        output_history.times_and_pvtu_names.emplace_back(time_in_years_or_seconds, "solution/"+pvtu_filename);
 
-      const std::string pvd_master_filename = (this->get_output_directory() +
-                                               (is_cell_data_output ? "solution.pvd" : "solution_surface.pvd"));
-      std::ofstream pvd_master (pvd_master_filename);
+      const std::string pvd_filename = (this->get_output_directory() +
+                                        (is_cell_data_output ? "solution.pvd" : "solution_surface.pvd"));
+      std::ofstream pvd_file (pvd_filename);
 
-      DataOutBase::write_pvd_record (pvd_master, output_history.times_and_pvtu_names);
+      DataOutBase::write_pvd_record (pvd_file, output_history.times_and_pvtu_names);
 
       // finally, do the same for VisIt via the .visit file for this
       // time step, as well as for all time steps together
-      const std::string visit_master_filename = (this->get_output_directory()
-                                                 + "solution/"
-                                                 + solution_file_prefix
-                                                 + ".visit");
-      std::ofstream visit_master (visit_master_filename);
+      const std::string visit_filename = (this->get_output_directory()
+                                          + "solution/"
+                                          + solution_file_prefix
+                                          + ".visit");
+      std::ofstream visit_file (visit_filename);
 
-      DataOutBase::write_visit_record (visit_master, filenames);
+      DataOutBase::write_visit_record (visit_file, filenames);
 
       {
         // the global .visit file needs the relative path because it sits a
@@ -430,14 +430,14 @@ namespace aspect
           output_history.output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
-      std::ofstream global_visit_master (this->get_output_directory() +
-                                         (is_cell_data_output ? "solution.visit" : "solution_surface.visit"));
+      std::ofstream global_visit_file (this->get_output_directory() +
+                                       (is_cell_data_output ? "solution.visit" : "solution_surface.visit"));
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
         times_and_output_file_names.push_back(std::make_pair(output_history.times_and_pvtu_names[timestep].first,
                                                              output_history.output_file_names_by_timestep[timestep]));
-      DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
+      DataOutBase::write_visit_record (global_visit_file, times_and_output_file_names);
     }
 
 
@@ -538,7 +538,7 @@ namespace aspect
 
           data_out.set_flags(vtk_flags);
 
-          // Write master files (.pvtu,.pvd,.visit) on the master process
+          // Write the description files (.pvtu,.pvd,.visit) on the root process
           const int my_id = Utilities::MPI::this_mpi_process(
                               this->get_mpi_communicator());
           if (my_id == 0)
@@ -553,7 +553,7 @@ namespace aspect
                 filenames.push_back(
                   solution_file_prefix + "."
                   + Utilities::int_to_string(i, 4) + ".vtu");
-              write_master_files(data_out, solution_file_prefix, filenames, output_history);
+              write_description_files(data_out, solution_file_prefix, filenames, output_history);
             }
           const unsigned int n_processes = Utilities::MPI::n_mpi_processes(
                                              this->get_mpi_communicator());
