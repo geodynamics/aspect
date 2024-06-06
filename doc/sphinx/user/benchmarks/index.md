@@ -42,6 +42,7 @@ benchmarks/onset-of-convection/doc/onset-of-convection.md
 benchmarks/blankenbach/README.md
 benchmarks/king2dcompressible/README.md
 benchmarks/rayleigh_taylor_instability/doc/rayleigh_taylor_instability.md
+benchmarks/rayleigh_taylor_instability_free_surface/doc/rayleigh_taylor_instability_free_surface.md
 benchmarks/polydiapirs/doc/polydiapirs.md
 benchmarks/sinking_block/doc/sinking_block.md
 benchmarks/solcx/doc/solcx.md
