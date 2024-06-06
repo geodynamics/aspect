@@ -2231,6 +2231,30 @@ namespace aspect
 
 
 
+    unsigned int
+    string_to_unsigned_int(const std::string &s)
+    {
+      const int value = dealii::Utilities::string_to_int(s);
+      AssertThrow (value >= 0, ExcMessage("Negative number in string_to_unsigned_int() detected."));
+      return static_cast<unsigned int>(value);
+    }
+
+
+
+    std::vector<unsigned int>
+    string_to_unsigned_int(const std::vector<std::string> &s)
+    {
+      std::vector<unsigned int> result;
+      result.reserve(s.size());
+
+      for (auto &str : s)
+        result.emplace_back(string_to_unsigned_int(str));
+
+      return result;
+    }
+
+
+
     bool
     has_unique_entries (const std::vector<std::string> &strings)
     {

@@ -612,3 +612,17 @@ TEST_CASE("CPO elastic tensor transform functions")
     REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][2] == Approx(0.0));
   }
 }
+
+TEST_CASE("Utilities::string_to_unsigned_int")
+{
+  CHECK(aspect::Utilities::string_to_unsigned_int("1234") == 1234);
+
+  CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({"234","0","1"}))
+        == std::vector<unsigned int>({234,0,1}));
+
+  CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({"42"}))
+        == std::vector<unsigned int>({42}));
+
+  CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({}))
+        == std::vector<unsigned int>());
+}
