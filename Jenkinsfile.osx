@@ -110,7 +110,7 @@ pipeline
                       -D DEAL_II_CXX_FLAGS='-Werror' \
                       $WORKSPACE/
                     make -j 8
-                    make test
+                    ctest --output-on-failure
                  '''
               githubNotify context: 'Jenkins: OSX', description: 'OK',  status: 'SUCCESS'
             }
