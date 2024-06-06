@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition plastic_strain
+# 14: Maximal value for composition plastic_strain
+# 15: Global mass for composition plastic_strain
+# 16: Minimal value for composition inclusion
+# 17: Maximal value for composition inclusion
+# 18: Global mass for composition inclusion
+# 19: Number of advected particles
+# 20: RMS velocity (m/year)
+# 21: Max. velocity (m/year)
+# 22: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2507 297 2210 2 0 63 67 201 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.26530612e-01 6.37755102e+05 12544 7.69454783e-04 1.25875733e-03 visco_plastic_prescribed_plastic_dilation/solution/solution-00000 
