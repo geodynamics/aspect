@@ -23,6 +23,7 @@
 #define _aspect_initial_composition_random_perturbation_h
 
 #include <aspect/initial_composition/interface.h>
+#include <aspect/simulator_access.h>
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <random>
@@ -42,15 +43,16 @@ namespace aspect
      * @ingroup InitialCompositions
      */
     template <int dim>
-    class RandomPerturbation : public Interface<dim>
+    class RandomPerturbation : public Interface<dim>, public aspect::SimulatorAccess<dim>
+
     {
       public:
+        void initialize () override;
         /**
-         * Return the initial temperature as a function of position.
+         * Return the initial composition as a function of position.
          */
-        virtual
-        double initial_composition (const Point<dim> &position,
-                                    const unsigned int compositional_index) const;
+
+        double initial_composition (const Point<dim> &position, const unsigned int composition_index) const override;
 
         /**
          * Declare the parameters this class takes through input files.
@@ -62,9 +64,8 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          */
-        virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
 
       private:
@@ -83,11 +84,11 @@ namespace aspect
         bool use_random_seed;
 
         /**
-         * A random number generator used by this class to get 
+         * A random number generator used by this class to get
          * random composition perturbations. Should return the same
          * random numbers every time since it is seeded with one.
          */
-        std::mt19937 random_number_generator(1);
+        mutable std::mt19937 random_number_generator;
     };
   }
 }

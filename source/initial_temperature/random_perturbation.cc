@@ -29,31 +29,16 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    namespace
+    template <int dim>
+    void
+    RandomPerturbation<dim>::
+    initialize()
     {
-      template <class T>
-      inline void hash_combine(std::size_t& seed1, const T& v)
-      {
-        std::hash<T> hasher;
-        seed1 ^= hasher(v) + 0x9e3779b9 + (seed1<<6) + (seed1>>2);
-      }
-
-      template<int dim>
-      std::size_t point_hash(const Point<dim> &position) 
-      {
-        // Generates one combined hash function for a d dimension point
-        // by creating a hash and combining it with each coordinate element
-        // of the Point position (d hash combines total). Returns a single
-        // hash with the combined effect of all elements of a point's position
-        // such that the same d dimensional point object generates the same hash.
-
-        std::size_t hash;
-
-        for (unsigned int i = 0; i < dim; ++i)
-          hash_combine(hash,position[i]);
-
-        return hash;
-      }
+      const unsigned int my_rank = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+      if (use_random_seed)
+        random_number_generator.seed(time(NULL)+my_rank);
+      else
+        random_number_generator.seed(9088+my_rank);
     }
 
     template <int dim>
@@ -61,14 +46,6 @@ namespace aspect
     RandomPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      std::size_t seed = point_hash(position);
-      hash_combine(seed,0);
-
-      if (use_random_seed)
-        hash_combine(seed,time(NULL));
-
-      std::mt19937 random_number_generator(seed);
-
       // Uniform distribution on the interval [-magnitude,magnitude). This
       // will be used to generate the random temperature perturbation.
       std::uniform_real_distribution<double> uniform_distribution(-magnitude,magnitude);

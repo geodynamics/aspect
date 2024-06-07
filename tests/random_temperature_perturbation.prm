@@ -41,4 +41,3 @@ end
 subsection Boundary temperature model
   set List of model names = box
 end
-
