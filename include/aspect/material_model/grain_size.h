@@ -327,12 +327,6 @@ namespace aspect
         double min_grain_size;
         double pv_grain_size_scaling;
 
-        /**
-         * Whether to advect the real grain size, or the logarithm of the
-         * grain size. The logarithm reduces jumps.
-         */
-        bool advect_log_grainsize;
-
         double diffusion_viscosity (const double temperature,
                                     const double adiabatic_temperature,
                                     const double adiabatic_pressure,
@@ -425,17 +419,6 @@ namespace aspect
          */
         unsigned int
         get_phase_index (const MaterialUtilities::PhaseFunctionInputs<dim> &in) const;
-
-        /**
-         * Function that takes an object in the same format
-         * as in.composition as argument and converts the
-         * vector that corresponds to the grain size to its
-         * logarithms and limits the grain size to
-         * a global minimum. The input argument @p compositional_fields
-         * is modified in-place.
-         */
-        void
-        convert_log_grain_size (std::vector<double> &compositional_fields) const;
 
 
         /**

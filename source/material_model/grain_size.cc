@@ -137,18 +137,6 @@ namespace aspect
       return n_phase_transitions;
     }
 
-    template <int dim>
-    void
-    GrainSize<dim>::
-    convert_log_grain_size (std::vector<double> &composition) const
-    {
-      // get grain size and limit it to a global minimum
-      double grain_size = composition[grain_size_index];
-      grain_size = std::max(std::exp(-grain_size), min_grain_size);
-
-      composition[grain_size_index] = grain_size;
-    }
-
 
 
     template <int dim>
@@ -413,9 +401,6 @@ namespace aspect
           const double grain_size_change = grain_sizes[i] - in.composition[i][grain_size_index] - phase_grain_size_reduction;
 
           reaction_terms[i][grain_size_index] = grain_size_change;
-
-          if (advect_log_grainsize)
-            reaction_terms[i][grain_size_index] = - grain_size_change / grain_sizes[i];
           // We do not have to fill the other fields because we have initialized them with zero.
         }
 
@@ -840,15 +825,9 @@ namespace aspect
                                                    :
                                                    in.temperature[i];
 
-
-              // convert the grain size from log to normal
+              // Make sure grain size is not negative/too small.
               std::vector<double> composition (in.composition[i]);
-              if (advect_log_grainsize)
-                convert_log_grain_size(composition);
-              else
-                {
-                  composition[grain_size_index] = std::max(min_grain_size,composition[grain_size_index]);
-                }
+              composition[grain_size_index] = std::max(min_grain_size,composition[grain_size_index]);
 
               const double diff_viscosity = diffusion_viscosity(in.temperature[i],
                                                                 adiabatic_temperature,
@@ -1249,10 +1228,7 @@ namespace aspect
                              "Units: none.");
           prm.declare_entry ("Advect logarithm of grain size", "false",
                              Patterns::Bool (),
-                             "This parameter determines whether to advect the logarithm of the grain size "
-                             "or the grain size itself. The equation and the physics are the same, "
-                             "but for problems with high grain size gradients it might "
-                             "be preferable to advect the logarithm. ");
+                             "This option does not exist any more.");
           prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
                              Patterns::DirectoryName (),
                              "The path to the model data. The path may also include the special "
@@ -1498,9 +1474,12 @@ namespace aspect
           if (grain_size_evolution_formulation == Formulation::paleowattmeter)
             boundary_area_change_work_fraction[boundary_area_change_work_fraction.size()-1] /= pv_grain_size_scaling;
 
-
-
-          advect_log_grainsize                   = prm.get_bool ("Advect logarithm of grain size");
+          const bool advect_log_grainsize            = prm.get_bool ("Advect logarithm of grain size");
+          AssertThrow(advect_log_grainsize == false,
+                      ExcMessage("Error: The 'Advect logarithm of grain size' parameter "
+                                 "has been removed. Please remove it from your input file. For models "
+                                 "with large sptial variations in grain size, please advect your "
+                                 "grain size on particles."));
 
           if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
               grain_growth_activation_energy.size() != grain_growth_rate_constant.size() ||
