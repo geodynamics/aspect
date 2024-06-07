@@ -142,7 +142,7 @@ namespace WorldBuilder
     /**
      * Convert point to array
      */
-    template<int dim>
+    template<unsigned int dim>
     std::array<double,dim> convert_point_to_array(const Point<dim> &point);
 
     /**
@@ -202,14 +202,14 @@ namespace WorldBuilder
         inline
         double operator() (const double x) const
         {
-          if (x >= 0 && x <= mx_size_min)
+          if (x >= 0. && x <= static_cast<double>(mx_size_min))
             {
-              const size_t idx = (size_t)x;
-              const double h = x-idx;
+              const size_t idx = static_cast<size_t>(x);
+              const double h = x-static_cast<double>(idx);
               return ((m[idx][0]*h + m[idx][1])*h + m[idx][2])*h + m[idx][3];
             }
-          const size_t idx = std::min((size_t)std::max( (int)x, (int)0),mx_size_min);
-          const double h = x-idx;
+          const size_t idx = std::min(static_cast<size_t>(std::max( static_cast<int>(x), static_cast<int>(0))),mx_size_min);
+          const double h = x-static_cast<double>(idx);
           return (m[idx][1]*h + m[idx][2])*h + m[idx][3];
         }
 
@@ -217,7 +217,7 @@ namespace WorldBuilder
         inline
         double operator() (const double x, const size_t idx, const double h) const
         {
-          return (x >= 0 && x <= mx_size_min)
+          return (x >= 0. && x <= static_cast<double>(mx_size_min))
                  ?
                  ((m[idx][0]*h + m[idx][1])*h + m[idx][2])*h + m[idx][3]
                  :
@@ -246,7 +246,7 @@ namespace WorldBuilder
         double value_outside (const size_t idx, const double h) const
         {
           WBAssert(idx <= mx_size_min, "Internal error: using value_inside outside the range of 0 to " << mx_size_min << ", but value was outside of this range: " << idx << ".");
-          WBAssert(!(idx + h >= 0 && idx + h <= 1.), "Internal error: using value_inside outside the range of 0 to " << mx_size_min << ", but value was outside of this range: " << idx + h << " (h=" << h << ", idx = " << idx << ").");
+          WBAssert(!(static_cast<double>(idx) + h >= 0 && static_cast<double>(idx) + h <= 1.), "Internal error: using value_inside outside the range of 0 to " << mx_size_min << ", but value was outside of this range: " << static_cast<double>(idx) + h << " (h=" << h << ", idx = " << idx << ").");
           return (m[idx][1]*h + m[idx][2])*h + m[idx][3];
         }
 

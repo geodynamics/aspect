@@ -78,7 +78,8 @@ namespace WorldBuilder
       const double &operator[](const bool y_axis) const
       {
         WBAssert(std::fabs((y_axis ? y : x) - *(&x+y_axis)) < std::numeric_limits<double>::epsilon(),
-                 "Internal error: y_axis=" << y_axis << ", x=" << x << ", y=" << y <<", *(&x+y_axis)=" << *(&x+y_axis) << ", ((bool)y_axis ? x : y) - *(&x+y_axis)=" << abs(((bool)y_axis ? x : y) - *(&x+y_axis)));
+                                  "Internal error: y_axis=" << y_axis << ", x=" << x << ", y=" << y <<", *(&x+y_axis)=" << *(&x+y_axis)
+                 << ", ((bool)y_axis ? x : y) - *(&x+y_axis)=" << fabs((y_axis ? x : y) - *(&x+y_axis)));
         return *(&x+y_axis);
       }
     };
