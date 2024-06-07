@@ -110,6 +110,15 @@ namespace aspect
                                            const std::vector<double> &composition) const;
 
           /**
+           * A function that alters the viscous weakening factor based on the
+           * temperature field.
+           */
+          std::array<double, 3>
+          apply_temperature_dependence_to_strain_weakening_factors(const std::array<double, 3> &weakening_factors,
+                                                                   const double temperature,
+                                                                   const unsigned int j) const;
+
+          /**
            * A function that computes the strain healing (reduction in accumulated strain)
            */
           double
@@ -133,6 +142,11 @@ namespace aspect
           double
           calculate_viscous_weakening (const double strain_ii,
                                        const unsigned int j) const;
+
+          /**
+           * Whether to use the temperature-activated viscous strain weakening.
+          */
+          bool use_temperature_activated_strain_softening;
 
           /**
            * A function that fills the reaction terms for the finite strain tensor in
@@ -218,6 +232,22 @@ namespace aspect
            * the prescribed strain interval (viscous or total strain).
            */
           std::vector<double> viscous_strain_weakening_factors;
+
+          /**
+           * The four temperatures that parameterize the temperature-activated strain softening.
+           * These can be different for each compositional field.
+           * ------            -------- 1
+           *       \          /
+           *        \        /
+           *         \______/ _ _ _ _ _ viscous_weakening_factor[2]
+           *
+           * ----------------------------> T
+           *     T0  T1   T2  T3
+           */
+          std::vector<double> viscous_strain_weakening_T0;
+          std::vector<double> viscous_strain_weakening_T1;
+          std::vector<double> viscous_strain_weakening_T2;
+          std::vector<double> viscous_strain_weakening_T3;
 
           /**
            * The healing rate used in the temperature dependent strain healing model.
