@@ -98,6 +98,7 @@ cookbooks/initial-condition-S20RTS/doc/initial-condition-S20RTS.md
 cookbooks/gplates/doc/gplates.md
 cookbooks/burnman/doc/burnman.md
 cookbooks/steinberger/doc/steinberger.md
+cookbooks/multicomponent_steinberger/doc/multicomponent_steinberger.md
 cookbooks/morency_doin_2004/doc/morency_doin_2004.md
 cookbooks/crustal_deformation/doc/crustal_deformation.md
 cookbooks/continental_extension/doc/continental_extension.md
