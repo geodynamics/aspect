@@ -24,7 +24,7 @@
 ############### Global parameters
 include $ASPECT_SOURCE_DIR/tests/rising_melt_blob_freezing.prm
 
-set Output directory                       = output-viscoplastic-melt-blob-freezing
+set Output directory = viscoplastic_melt_blob_freezing
 
 #The reactive fluid transport material model is composited on top
 # of the visco plastic material model. This example uses the default
