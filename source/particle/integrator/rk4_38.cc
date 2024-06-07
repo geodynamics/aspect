@@ -105,7 +105,7 @@ namespace aspect
 #endif
                 k[0] = dt * (*old_velocity);
 
-                Point<dim> new_location = location + 2./3. * k[0];
+                Point<dim> new_location = location + 1./3. * k[0];
 
                 // Check if we crossed a periodic boundary and if necessary adjust positions
                 if (at_periodic_boundary)
@@ -128,7 +128,7 @@ namespace aspect
               }
             else if (integrator_substep == 1)
               {
-                k[1] = dt * ((*old_velocity) + (*velocity)) * 2./3.;
+                k[1] = dt * (2./3. * (*old_velocity) + 1./3. * (*velocity));
 
                 Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
@@ -137,7 +137,7 @@ namespace aspect
                   k[0][i] = properties[property_indices[1] + i];
 
               }
-                Point<dim> new_location = old_location + 2./3. *  k[0] + k[1];
+                Point<dim> new_location = old_location - 1./3. *  k[0] + k[1];
 
                 if (at_periodic_boundary)
                   {
@@ -163,7 +163,7 @@ namespace aspect
               }
             else if (integrator_substep == 2)
               {
-                k[2] = dt * (*old_velocity + *velocity) * 2./3.;
+                k[2] = dt * (1./3. * *old_velocity + 2./3. * *velocity) ;
 
                  Point<dim> old_location;
                 for (unsigned int i=0; i<dim; ++i)
@@ -173,7 +173,7 @@ namespace aspect
                   k[1][i] = properties[property_indices[2] + i];
                   }
 
-                Point<dim> new_location = old_location + k[0]-k[1]+k[2];
+                Point<dim> new_location = old_location + k[0] - k[1]+ k[2];
                 if (at_periodic_boundary)
                   {
                     for (unsigned int i=0; i<dim; ++i)
