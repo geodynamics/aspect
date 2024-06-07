@@ -63,13 +63,8 @@ namespace aspect
                 const dealii::LinearAlgebra::distributed::Vector<double> &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv(out.locally_owned_elements());
-#if DEAL_II_VERSION_GTE(9,5,0)
         rwv.import_elements(in, VectorOperation::insert);
         out.import_elements(rwv,VectorOperation::insert);
-#else
-        rwv.import(in, VectorOperation::insert);
-        out.import(rwv,VectorOperation::insert);
-#endif
       }
 
       void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
