@@ -1064,15 +1064,7 @@ namespace aspect
               }
           }
 
-        // signal successful solver
-        signals.post_stokes_solver(*this,
-                                   inverse_weighted_mass_matrix.n_iterations(),
-                                   inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
-                                   solver_control_cheap,
-                                   solver_control_expensive);
-
-        // distribute hanging node and
-        // other constraints
+        // distribute hanging node and other constraints
         current_stokes_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units
@@ -1082,6 +1074,13 @@ namespace aspect
         // into the ghosted one with all solution components
         solution.block(block_vel) = distributed_stokes_solution.block(0);
         solution.block(block_p) = distributed_stokes_solution.block(1);
+
+        // signal successful solver
+        signals.post_stokes_solver(*this,
+                                   inverse_weighted_mass_matrix.n_iterations(),
+                                   inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
+                                   solver_control_cheap,
+                                   solver_control_expensive);
       }
 
 
