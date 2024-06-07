@@ -41,7 +41,7 @@ namespace big_mpi
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
 namespace dealii
 {
-  template<int dim, class NumberType>
+  template <int dim, class NumberType>
   using MGTransferMF = MGTransferMatrixFree<dim,NumberType>;
 }
 #endif

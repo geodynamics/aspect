@@ -64,7 +64,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template <int dim>
       std::pair<double, double> QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficients) const
       {
         double interpolation_min = std::numeric_limits<double>::max();

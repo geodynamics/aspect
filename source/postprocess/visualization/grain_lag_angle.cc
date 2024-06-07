@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       GrainLagAngle<dim>::execute() const
       {

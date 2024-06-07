@@ -114,7 +114,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       Tensor<1,dim>
       Annulus_velocity (const Point<dim> &pos,
                         const double k,
@@ -139,7 +139,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       double
       Annulus_pressure (const Point<dim> &pos,
                         const double k,
@@ -156,7 +156,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       double
       Annulus_normal_traction (const Point<dim> &pos,
                                const double k,
@@ -172,7 +172,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       double
       Annulus_density (const Point<dim> &pos,
                        const double k,
@@ -200,7 +200,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       Tensor<1,dim>
       Annulus_gravity (const Point<dim> &pos,
                        const double k,

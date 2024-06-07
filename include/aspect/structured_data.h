@@ -770,7 +770,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     using AsciiDataLookup DEAL_II_DEPRECATED = StructuredDataLookup<dim>;
   }
 }

@@ -401,7 +401,7 @@ namespace aspect
       double max_error_T;
   };
 
-  template<int dim>
+  template <int dim>
   ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
   {
     max_error = 0.0;

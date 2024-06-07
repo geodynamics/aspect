@@ -357,7 +357,7 @@ namespace aspect
         {}
 
 
-        template<int dim>
+        template <int dim>
         void
         AdvectionSystem<dim>::
         reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref)

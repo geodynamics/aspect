@@ -542,7 +542,7 @@ void signal_handler(int signal)
 
 
 
-template<int dim>
+template <int dim>
 void
 run_simulator(const std::string &raw_input_as_string,
               const std::string &input_as_string,

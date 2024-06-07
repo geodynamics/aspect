@@ -117,7 +117,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       std::array<std::array<double,3>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices) const
       {

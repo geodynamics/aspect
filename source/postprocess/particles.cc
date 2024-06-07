@@ -35,7 +35,7 @@ namespace aspect
   {
     namespace internal
     {
-      template<int dim>
+      template <int dim>
       void
       ParticleOutput<dim>::build_patches(const dealii::Particles::ParticleHandler<dim> &particle_handler,
                                          const aspect::Particle::Property::ParticlePropertyInformation &property_information,
