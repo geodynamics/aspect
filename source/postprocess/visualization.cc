@@ -557,8 +557,7 @@ namespace aspect
             }
           const unsigned int n_processes = Utilities::MPI::n_mpi_processes(
                                              this->get_mpi_communicator());
-          const unsigned int my_file_id = (
-                                            group_files == 0 ? my_id : my_id % group_files);
+          const unsigned int my_file_id = (group_files == 0 ? my_id : my_id % group_files);
           const std::string filename = this->get_output_directory() + "solution/"
                                        + solution_file_prefix + "."
                                        + Utilities::int_to_string(my_file_id, 4) + ".vtu";
