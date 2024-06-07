@@ -74,12 +74,12 @@ namespace aspect
           // into the final effective viscosity.
           std::vector<double> viscoelastic_viscosities(volume_fractions.size());
           for (unsigned int j=0; j < volume_fractions.size(); ++j)
-          {
-          // The viscoelastic viscosity is scaled with the timestep ratio $\frac{\Delta t_c}{\Delta t_{el}}$ in the
-          // calculate_viscoelastic_viscosity function.
-            viscoelastic_viscosities[j] = elastic_rheology.calculate_viscoelastic_viscosity(viscosities[j],
-                                                                                 average_elastic_shear_moduli[i]);
-          }
+            {
+              // The viscoelastic viscosity is scaled with the timestep ratio $\frac{\Delta t_c}{\Delta t_{el}}$ in the
+              // calculate_viscoelastic_viscosity function.
+              viscoelastic_viscosities[j] = elastic_rheology.calculate_viscoelastic_viscosity(viscosities[j],
+                                                                                              average_elastic_shear_moduli[i]);
+            }
 
           // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.).
           out.viscosities[i] =  MaterialUtilities::average_value(volume_fractions, viscoelastic_viscosities, viscosity_averaging);

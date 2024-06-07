@@ -54,7 +54,6 @@ namespace aspect
       NamedAdditionalMaterialOutputs<dim>(make_elastic_additional_outputs_names()),
       elastic_shear_moduli(n_points, numbers::signaling_nan<double>()),
       elastic_viscosity(n_points, numbers::signaling_nan<double>()),
-      timestep_ratio(n_points, numbers::signaling_nan<double>()),
       deviatoric_stress(n_points, SymmetricTensor<2,dim>())
     {}
 
@@ -176,27 +175,27 @@ namespace aspect
         if (this->convert_output_to_years())
           fixed_elastic_time_step *= year_in_seconds;
 
-            // When using the visco_plastic or viscoelastic material model,
-            // make sure that no damping is applied. Damping could potentially
-            // improve stability under rapidly changing dynamics, but
-            // so far it has not been necessary.
-            AssertThrow(elastic_damper_viscosity == 0.,
-                        ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
-                                   "that no elastic damping is applied."));
-            // An update of the stored stresses is done in an operator splitting step for fields or by the particle property 'elastic stress'.
-            AssertThrow(this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")),
-                        ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
-                                   "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
-                                   "for stresses tracked on particles."));
-            if ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")))
-                                                                           AssertThrow(!this->get_parameters().use_operator_splitting,
-                                                                           ExcMessage("If stresses are tracked on particles, the stress update is applied by the particle property 'elastic stress' "
-                                                                                      "and operator splitting should not be turned on. "));
-            // The discontinuous element is required to accommodate discontinuous
-            // strain rates that feed into the stored stresses.
-            AssertThrow(this->get_parameters().use_discontinuous_composition_discretization,
-                        ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
-                                   "the use of discontinuous elements for composition."));
+        // When using the visco_plastic or viscoelastic material model,
+        // make sure that no damping is applied. Damping could potentially
+        // improve stability under rapidly changing dynamics, but
+        // so far it has not been necessary.
+        AssertThrow(elastic_damper_viscosity == 0.,
+                    ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
+                               "that no elastic damping is applied."));
+        // An update of the stored stresses is done in an operator splitting step for fields or by the particle property 'elastic stress'.
+        AssertThrow(this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")),
+                    ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
+                               "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
+                               "for stresses tracked on particles."));
+        if ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")))
+          AssertThrow(!this->get_parameters().use_operator_splitting,
+                      ExcMessage("If stresses are tracked on particles, the stress update is applied by the particle property 'elastic stress' "
+                                 "and operator splitting should not be turned on. "));
+        // The discontinuous element is required to accommodate discontinuous
+        // strain rates that feed into the stored stresses.
+        AssertThrow(this->get_parameters().use_discontinuous_composition_discretization,
+                    ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
+                               "the use of discontinuous elements for composition."));
 
         // Check that 3+3 in 2D or 6+6 in 3D stress fields exist.
         AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == 2*SymmetricTensor<2,dim>::n_independent_components),
@@ -477,7 +476,7 @@ namespace aspect
                 // and elastic timestep $\frac{\Delta t_c}{\Delta t_{el}}$ with the elastic timestep.
                 const double dtc = timestep_ratio * elastic_timestep();
 
-                // Assume incompressibility. 
+                // Assume incompressibility.
                 const SymmetricTensor<2, dim> visco_plastic_strain_rate = deviatoric_strain_rate - ((stress - stress_0_advected) / (2. * dtc * average_elastic_shear_moduli[i]));
                 // If compressible,
                 // visco_plastic_strain_rate = visco_plastic_strain_rate -
@@ -526,7 +525,6 @@ namespace aspect
             elastic_additional_out->deviatoric_stress[i] = 2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0_advected + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old;
             elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
             elastic_additional_out->elastic_viscosity[i] = elastic_viscosity;
-            elastic_additional_out->timestep_ratio[i] = timestep_ratio;
           }
       }
 
