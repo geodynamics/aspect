@@ -1,21 +1,3 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 2.6.0-pre (add-katz2003-rft, 7cfa9628c)
---     . using deal.II 9.5.1
---     .       with 32 bit indices and vectorization level 2 (256 bits)
---     . using Trilinos 13.2.0
---     . using p4est 2.3.2
---     . using Geodynamic World Builder 0.6.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
-
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=7cfa9628c&src=code
------------------------------------------------------------------------------
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
 
