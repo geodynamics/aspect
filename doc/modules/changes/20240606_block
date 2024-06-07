@@ -1,0 +1,7 @@
+New: Added fluid reaction and properties calculations to the 
+Katz2003MantleMelting model in the ReactionModels module. These calculations
+were taken from MeltSimple and the model now calls Katz2003MantleMelting. Additionally,
+the katz 2003 option in ReactiveFluidTransport calls these calculations, allowing for 
+melting and melt transport to be composited with any material model via ReactiveFluidTransport. 
+<br>
+(Grant Block, 2024/06/06)

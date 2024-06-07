@@ -11,29 +11,20 @@
 # should be cut in half every year (visible in the maximum
 # value of the porosity field).
 
+# This is like the rising_melt_blob_freezing test, except
+# that it uses the reactive fluid transport material model
+# composited with a visco plastic solid material model.
+# Outputs of this test and rising_melt_blob freezing should
+# be identical except for the the solid viscosity. This is because
+# the melt_simple material model uses a simple temperature scaled
+# solid viscosity, and the reactive_fluid_transport model used here
+# composites with a the visco plastic material model, with a different
+# viscosity calculation than the solid in melt_simple.
+
 ############### Global parameters
+include $ASPECT_SOURCE_DIR/tests/rising_melt_blob_freezing.prm
 
-set Dimension                              = 2
-set Start time                             = 0
-set End time                               = 2
-set Use years in output instead of seconds = true
-set Adiabatic surface temperature          = 1600
 set Output directory                       = output-viscoplastic-melt-blob-freezing
-
-# Do not solve for Stokes to speed up test
-# (see rising_melt_blob for the same test that solves Stokes)
-set Nonlinear solver scheme                = single Advection, no Stokes
-
-# number of nonlinear iterations reduced from 50 to 10 to speed up test.
-set Max nonlinear iterations               = 10
-set Maximum time step                      = 1
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
-set Use operator splitting                     = true
-
-subsection Prescribed Stokes solution
-  set Model name = function
-end
 
 #The reactive fluid transport material model is composited on top
 # of the visco plastic material model. This example uses the default
@@ -52,73 +43,6 @@ subsection Material model
     end
   end
 
-end
-
-subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 0.05
-    set Reaction time steps per advection step = 1
-  end
-
-  subsection Stokes solver parameters
-    set Use direct solver for Stokes system = false
-  end
-end
-
-############### Parameters describing the model
-subsection Geometry model
-  set Model name = box
-
-  subsection Box
-    set X extent = 100000
-    set Y extent = 100000
-  end
-end
-
-subsection Melt settings
-  set Include melt transport = true
-
-  # Set to false in order to prescribe Stokes solution
-  set Use discontinuous compaction pressure = false
-end
-
-subsection Compositional fields
-  set Number of fields = 2
-  set Names of fields = porosity, peridotite
-end
-
-subsection Gravity model
-  set Model name = vertical
-
-  subsection Vertical
-    set Magnitude = 10.0
-  end
-end
-
-subsection Initial temperature model
-  set Model name = function
-
-  subsection Function
-    set Function expression       = 293
-  end
-end
-
-subsection Initial composition model
-  set Model name = function
-
-  subsection Function
-    set Variable names      = x,y
-    set Function constants  = pi=3.1415926,x0=50000,y0=50000,c=10000
-    set Function expression = 0.2 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.0
-  end
-end
-
-# The final part of this input file describes how many times the
-# mesh is refined and what to do with the solution once computed
-subsection Mesh refinement
-  set Initial adaptive refinement        = 0
-  set Initial global refinement          = 5
-  set Time steps between mesh refinement = 0
 end
 
 subsection Postprocess

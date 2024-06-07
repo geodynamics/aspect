@@ -264,8 +264,8 @@ namespace aspect
           ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
           // Fill reaction rate outputs if the model uses operator splitting.
-          // Specifically, change the porosity (representing the amount of free water)
-          // based on the water solubility and the water content.
+          // Specifically, change the porosity (representing the amount of free fluid)
+          // based on the water solubility and the fluid content.
           if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
             {
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
@@ -402,8 +402,9 @@ namespace aspect
                              "in its own subsection.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
+                             "The reference temperature $T_0$ for the katz2003 reaction model. "
+                             "The reference temperature is used in both the density and "
+                             "viscosity formulas of this model. Units: \\si{\\kelvin}.");
         }
         prm.leave_subsection();
 
