@@ -1217,15 +1217,7 @@ namespace aspect
                              "Units: \\si{\\meter}.");
           prm.declare_entry ("Lower mantle grain size scaling", "1.0",
                              Patterns::Double (0.),
-                             "A scaling factor for the grain size in the lower mantle. In models where the "
-                             "high grain size contrast between the upper and lower mantle causes numerical "
-                             "problems, the grain size in the lower mantle can be scaled to a larger value, "
-                             "simultaneously scaling the viscosity prefactors and grain growth parameters "
-                             "to keep the same physical behavior. Differences to the original formulation "
-                             "only occur when material with a smaller grain size than the recrystallization "
-                             "grain size cross the upper-lower mantle boundary. "
-                             "The real grain size can be obtained by dividing the model grain size by this value. "
-                             "Units: none.");
+                             "This option does not exist any more.");
           prm.declare_entry ("Advect logarithm of grain size", "false",
                              Patterns::Bool (),
                              "This option does not exist any more.");
@@ -1457,13 +1449,10 @@ namespace aspect
           max_thermal_expansivity               = prm.get_double ("Maximum thermal expansivity");
           max_latent_heat_substeps              = prm.get_integer ("Maximum latent heat substeps");
           min_grain_size                        = prm.get_double ("Minimum grain size");
-          pv_grain_size_scaling                 = prm.get_double ("Lower mantle grain size scaling");
 
           // scale recrystallized grain size, diffusion creep and grain growth prefactor accordingly
-          diffusion_creep_prefactor[diffusion_creep_prefactor.size()-1] *= std::pow(pv_grain_size_scaling,diffusion_creep_grain_size_exponent[diffusion_creep_grain_size_exponent.size()-1]);
-          grain_growth_rate_constant[grain_growth_rate_constant.size()-1] *= std::pow(pv_grain_size_scaling,grain_growth_exponent[grain_growth_exponent.size()-1]);
-          if (recrystallized_grain_size.size()>0)
-            recrystallized_grain_size[recrystallized_grain_size.size()-1] *= pv_grain_size_scaling;
+          diffusion_creep_prefactor[diffusion_creep_prefactor.size()-1] *= std::pow(1.0,diffusion_creep_grain_size_exponent[diffusion_creep_grain_size_exponent.size()-1]);
+          grain_growth_rate_constant[grain_growth_rate_constant.size()-1] *= std::pow(1.0,grain_growth_exponent[grain_growth_exponent.size()-1]);
 
           // prefactors never appear without their exponents. perform some calculations here to save time later
           for (unsigned int i=0; i<diffusion_creep_prefactor.size(); ++i)
@@ -1471,8 +1460,12 @@ namespace aspect
           for (unsigned int i=0; i<dislocation_creep_prefactor.size(); ++i)
             dislocation_creep_prefactor[i] = std::pow(dislocation_creep_prefactor[i],-1.0/dislocation_creep_exponent[i]);
 
-          if (grain_size_evolution_formulation == Formulation::paleowattmeter)
-            boundary_area_change_work_fraction[boundary_area_change_work_fraction.size()-1] /= pv_grain_size_scaling;
+          const double pv_grain_size_scaling         = prm.get_double ("Lower mantle grain size scaling");
+          AssertThrow(pv_grain_size_scaling == 1.0,
+                      ExcMessage("Error: The 'Lower mantle grain size scaling' parameter "
+                                 "has been removed. Please remove it from your input file. For models "
+                                 "with large sptial variations in grain size, please advect your "
+                                 "grain size on particles."));
 
           const bool advect_log_grainsize            = prm.get_bool ("Advect logarithm of grain size");
           AssertThrow(advect_log_grainsize == false,

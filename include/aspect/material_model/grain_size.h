@@ -325,7 +325,6 @@ namespace aspect
         double max_thermal_expansivity;
         unsigned int max_latent_heat_substeps;
         double min_grain_size;
-        double pv_grain_size_scaling;
 
         double diffusion_viscosity (const double temperature,
                                     const double adiabatic_temperature,

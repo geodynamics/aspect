@@ -1,0 +1,8 @@
+Changed: The grain size material model no longer has the
+option to scale the grain size in the lower mantle. This
+option used to be helpful in models where the grain size
+is very different between upper and lower mantle, but
+now that ASPECT has particles, it is more accurate to
+advect the grain size on particles instead.
+<br>
+(Juliane Dannberg, 2024/06/07)
