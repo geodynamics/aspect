@@ -46,7 +46,7 @@
 
 namespace aspect
 {
-  template<int dim>
+  template <int dim>
   struct SimulatorSignals;
 
   namespace Particle

@@ -46,7 +46,7 @@ namespace aspect
        * dimension of zero (the dimension of the particle / point), and a space dimension
        * of dim (the dimension in which this zero-dimensional particle lives).
        */
-      template<int dim>
+      template <int dim>
       class ParticleOutput : public dealii::DataOutInterface<0,dim>
       {
         public:

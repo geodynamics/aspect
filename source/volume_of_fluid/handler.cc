@@ -154,7 +154,7 @@ namespace aspect
 
 
 
-        template<int dim>
+        template <int dim>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem(const VolumeOfFluidSystem &data)
           :
           local_matrix (data.local_matrix),

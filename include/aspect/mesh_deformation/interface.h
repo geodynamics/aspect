@@ -86,7 +86,7 @@ namespace aspect
      * for all non-constrained vertices will be computed by solving a Laplace
      * problem with the given constraints.
      */
-    template<int dim>
+    template <int dim>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -129,7 +129,7 @@ namespace aspect
      * of the surface, the internal nodes and computes the
      * Arbitrary-Lagrangian-Eulerian correction terms.
      */
-    template<int dim>
+    template <int dim>
     class MeshDeformationHandler: public SimulatorAccess<dim>
     {
       public:

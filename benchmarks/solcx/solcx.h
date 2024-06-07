@@ -2894,7 +2894,7 @@ namespace aspect
        * The exact solution for the SolCx benchmark, given the value of the
        * jump in viscosity $\eta_B$.
        */
-      template<int dim>
+      template <int dim>
       class FunctionSolCx : public Function<dim>
       {
         public:

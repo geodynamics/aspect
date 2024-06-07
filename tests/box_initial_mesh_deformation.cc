@@ -29,7 +29,7 @@ namespace aspect
 
   namespace MeshDeformation
   {
-    template<int dim>
+    template <int dim>
     class PrescribedDeformation : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

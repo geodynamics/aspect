@@ -132,7 +132,7 @@ namespace aspect
         return hr*cos(theta) + rho_0 * gravity * (R2 - r);
       }
 
-      template<int dim>
+      template <int dim>
       double
       hollow_sphere_normal_traction(const Point<dim> &pos,
                                     const double mmm)

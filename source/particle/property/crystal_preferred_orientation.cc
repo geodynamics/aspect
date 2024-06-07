@@ -806,7 +806,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template <int dim>
       DeformationType
       CrystalPreferredOrientation<dim>::determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
                                                                    const Point<dim> &position,
@@ -864,7 +864,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template <int dim>
       DeformationType
       CrystalPreferredOrientation<dim>::determine_deformation_type_karato_2008(const double stress, const double water_content) const
       {
@@ -902,7 +902,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template <int dim>
       std::array<double,4>
       CrystalPreferredOrientation<dim>::reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type,
           double max_value) const
@@ -974,7 +974,7 @@ namespace aspect
         return ref_resolved_shear_stress;
       }
 
-      template<int dim>
+      template <int dim>
       unsigned int
       CrystalPreferredOrientation<dim>::get_number_of_grains() const
       {
@@ -983,7 +983,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       unsigned int
       CrystalPreferredOrientation<dim>::get_number_of_minerals() const
       {

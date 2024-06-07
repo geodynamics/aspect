@@ -85,7 +85,7 @@ namespace aspect
         return k*h_r*sin(k*theta)+rho_0*gravity*(outer_radius-r);
       }
 
-      template<int dim>
+      template <int dim>
       double
       Annulus_normal_traction (const Point<dim> &pos,
                                const double k)

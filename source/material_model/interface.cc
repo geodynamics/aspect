@@ -954,7 +954,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     NamedAdditionalMaterialOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1056,7 +1056,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     ReactionRateOutputs<dim>::ReactionRateOutputs (const unsigned int n_points,
                                                    const unsigned int n_comp)
       :
@@ -1066,7 +1066,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     ReactionRateOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1103,7 +1103,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     PrescribedFieldOutputs<dim>::PrescribedFieldOutputs (const unsigned int n_points,
                                                          const unsigned int n_comp)
       :
@@ -1113,7 +1113,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     PrescribedFieldOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1129,7 +1129,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     PrescribedTemperatureOutputs<dim>::PrescribedTemperatureOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1,"prescribed_temperature")),
@@ -1138,7 +1138,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     PrescribedTemperatureOutputs<dim>::get_nth_output(const unsigned int idx) const
     {

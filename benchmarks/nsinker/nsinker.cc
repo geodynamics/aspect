@@ -196,7 +196,7 @@ namespace aspect
     };
 
 
-    template<int dim>
+    template <int dim>
     NSinkerMaterial<dim>::NSinkerMaterial ()
     {
       delta = 200.0;
