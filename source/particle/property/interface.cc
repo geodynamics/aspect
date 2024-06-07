@@ -24,6 +24,7 @@
 #include <aspect/particle/integrator/euler.h>
 #include <aspect/particle/integrator/rk_2.h>
 #include <aspect/particle/integrator/rk_4.h>
+#include <aspect/particle/integrator/rk4_38.h>
 
 
 #include <aspect/boundary_composition/interface.h>
@@ -320,7 +321,9 @@ namespace aspect
               n_integrator_properties = Particle::Integrator::RK4<dim>::n_integrator_properties;
             else if (name == "euler")
               n_integrator_properties = Particle::Integrator::Euler<dim>::n_integrator_properties;
-            else
+            else if (name == "rk4_38")
+              n_integrator_properties = Particle::Integrator::RK4_38<dim>::n_integrator_properties;
+            else 
               AssertThrow(false,
                           ExcMessage("Unknown integrator scheme. The particle property 'Integrator properties' "
                                      "does not know how many particle properties to store for this integration scheme."));
