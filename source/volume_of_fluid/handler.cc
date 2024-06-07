@@ -161,15 +161,12 @@ namespace aspect
           local_rhs (data.local_rhs),
           local_face_rhs (data.local_face_rhs),
           local_face_matrices_ext_ext (data.local_face_matrices_ext_ext),
-          face_contributions_mask(data.face_contributions_mask),
-          local_dof_indices (data.local_dof_indices),
-          neighbor_dof_indices (data.neighbor_dof_indices)
-        {
           // clear the flag that indicates that we have valid data in any
           // of the matrices:
-          for (auto &&flag : face_contributions_mask)
-            flag = false;
-        }
+          face_contributions_mask(data.face_contributions_mask.size(), false),
+          local_dof_indices (data.local_dof_indices),
+          neighbor_dof_indices (data.neighbor_dof_indices)
+        {}
       }
     }
   }
