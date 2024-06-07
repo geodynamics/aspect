@@ -119,9 +119,9 @@ namespace aspect
 
           /**
           * Given the stress of the previous time step in the material model inputs @p in,
-          * the elastic shear moduli @p average_elastic_shear_moduli a each point,
+          * the elastic shear moduli @p average_elastic_shear_moduli at each point,
           * and the (viscous) viscosities given in the material model outputs object @p out,
-          * fill a material model outputs (ElasticAdditionalOutputs) objects with the
+          * fill a material model outputs (ElasticAdditionalOutputs) object with the
           * average shear modulus, elastic viscosity, ratio of computational to elastic timestep,
           * and the deviatoric stress of the current timestep.
           */
@@ -132,7 +132,7 @@ namespace aspect
 
           /**
            * Given the stress of the previous time step in the material model inputs @p in,
-           * the elastic shear moduli @p average_elastic_shear_moduli a each point,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
            * and the (viscous) viscosities given in the material model outputs object @p out,
            * compute an update to the elastic stresses and use it to fill the reaction terms
            * material model output property.

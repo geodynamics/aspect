@@ -16,7 +16,8 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_
 set End time                               = 2e3
 set Output directory                       = viscoelastic_numerical_elastic_time_step_particles
 
-# For particles, the operator splitting is done by the particle property elastic stress.
+# For particles, the stress update is done by the particle property elastic stress,
+# so we do not need the operator splitting.
 set Use operator splitting                 = false
 
 # Model geometry (100x100 km, 5 km spacing)

@@ -98,7 +98,7 @@ namespace aspect
      *
      * The overview below directly follows Moresi et al. (2003) eqns. 23-32.
      * However, an important distinction between this material model and
-     * the studies above is the option to use of compositional fields, rather than
+     * the studies above is the option to use compositional fields, rather than
      * particles, to track individual components of the viscoelastic stress
      * tensor. Calculating viscoelastic stresses with particles is also implemented,
      * and can be switched on by using particles with the particle property
@@ -138,7 +138,7 @@ namespace aspect
      * to account for the differences between the numerical
      * and fixed elastic time step (eqn. 32). A fixed computational time
      * step throughout the model run can be achieved by using a large CFL number and
-     * smaller maximum time step values that restrict the numerical time step to a specific time.
+     * smaller maximum time step values that restrict the numerical time step to a specific value.
      *
      * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
      * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (
@@ -153,7 +153,7 @@ namespace aspect
      * viscosity is reduced relative to the initial viscosity.
      *
      * Elastic effects are introduced into the governing Stokes equations through
-     * an elastic force term (eqn. 30 updated to the version in Farrington et al. 2014)
+     * an elastic force term (eqn. 30 updated to the term in eqn. 5 in Farrington et al. 2014)
      * using stresses from the previous time step rotated and advected into the current
      * time step:
      * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{0adv}$.

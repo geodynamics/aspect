@@ -176,9 +176,6 @@ namespace aspect
         if (this->convert_output_to_years())
           fixed_elastic_time_step *= year_in_seconds;
 
-        if (Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim>>(this->get_material_model()) ||
-            Plugins::plugin_type_matches<MaterialModel::Viscoelastic<dim>>(this->get_material_model()))
-          {
             // When using the visco_plastic or viscoelastic material model,
             // make sure that no damping is applied. Damping could potentially
             // improve stability under rapidly changing dynamics, but
@@ -200,7 +197,6 @@ namespace aspect
             AssertThrow(this->get_parameters().use_discontinuous_composition_discretization,
                         ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
                                    "the use of discontinuous elements for composition."));
-          }
 
         // Check that 3+3 in 2D or 6+6 in 3D stress fields exist.
         AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == 2*SymmetricTensor<2,dim>::n_independent_components),
@@ -481,10 +477,11 @@ namespace aspect
                 // and elastic timestep $\frac{\Delta t_c}{\Delta t_{el}}$ with the elastic timestep.
                 const double dtc = timestep_ratio * elastic_timestep();
 
-                // Assume incompressibility. If compressible,
+                // Assume incompressibility. 
+                const SymmetricTensor<2, dim> visco_plastic_strain_rate = deviatoric_strain_rate - ((stress - stress_0_advected) / (2. * dtc * average_elastic_shear_moduli[i]));
+                // If compressible,
                 // visco_plastic_strain_rate = visco_plastic_strain_rate -
                 //                             1. / 3. * trace(visco_plastic_strain_rate) * unit_symmetric_tensor<dim>();
-                const SymmetricTensor<2, dim> visco_plastic_strain_rate = deviatoric_strain_rate - ((stress - stress_0_advected) / (2. * dtc * average_elastic_shear_moduli[i]));
 
                 // The shear heating term needs to account for the elastic stress, but only the visco_plastic strain rate.
                 // This is best computed here, and stored for later use by the heating model.
@@ -663,7 +660,7 @@ namespace aspect
                 const SymmetricTensor<2, dim>  stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
                                                            &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
-                // $\eta^{t}_{effcreep}$. This viscosity is already scaled with the timestep_ratio dtc/dte.
+                // $\eta^{t}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
                 const double effective_creep_viscosity = out.viscosities[i];
 
                 // $\eta_{el} = G \Delta t_c$.
@@ -779,9 +776,9 @@ namespace aspect
         // $\eta_{el}^{c} = \Delta t_{el} G \frac{\Delta t_c}{\Delta t_{el}} = \Delta t_c G$.
         // Since we already have a function that returns the timestep ratio $\frac{\Delta t_c}{\Delta t_{el}}$,
         // use that instead.
-        // TODO: what to do with the damper? It is asserted to be zero when using
-        // this rheology in the visco_plastic and viscoelastic material models. But should
-        // the scaling apply to the dampened viscosity or the undampened viscosity?
+        // The damper is asserted to be zero when using this rheology at the moment. If the
+        // damper were to be applied, the user should input the damper viscosity over
+        // the computational timestep.
         const double timestep_ratio = calculate_timestep_ratio();
         return shear_modulus*elastic_timestep()*timestep_ratio + elastic_damper_viscosity;
       }
@@ -799,6 +796,9 @@ namespace aspect
         // Scaling both viscosities with the timestep ratio before computing the effective
         // viscoelastic viscosity equals scaling the viscoelastic viscosity computed from
         // the unscaled elastic and viscous viscosity.
+        // If the computational timestep is small compared to the elastic timestep,
+        // the effective viscosity becomes small as well. This reduction is balanced by
+        // an increasing body force term in the right-hand-side of the momentum equation.
         const double timestep_ratio = calculate_timestep_ratio();
         const double elastic_viscosity = calculate_elastic_viscosity(shear_modulus);
         return 1. / (1./elastic_viscosity + 1./(viscosity*timestep_ratio));

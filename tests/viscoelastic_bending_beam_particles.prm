@@ -5,7 +5,8 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
-# For particles, the operator splitting is done by the particle property elastic stress.
+# For particles, the stress update is done by the particle property elastic stress,
+# so we do not use the operator splitting.
 set Use operator splitting                 = false
 
 set End time         = 2e3

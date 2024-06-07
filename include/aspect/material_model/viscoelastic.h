@@ -115,7 +115,7 @@ namespace aspect
      * viscosity is reduced relative to the initial viscosity.
      *
      * Elastic effects are introduced into the governing Stokes equations through
-     * an elastic force term (eqn. 30 updated to the version in Farrington et al. 2014)
+     * an elastic force term (eqn. 30 updated to the term in eqn. 5 in Farrington et al. 2014)
      * using stresses from the previous time step rotated and advected into the current
      * time step:
      * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{0adv}$.

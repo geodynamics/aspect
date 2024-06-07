@@ -133,7 +133,7 @@ namespace aspect
         std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
-         * The viscous dissipation rate due to shear heating.
+         * The viscous dissipation rate contributing to shear heating.
          * If this object is created and filled by the material model
          * it will replace the default viscous dissipation rate
          * computed by the shear heating model.
