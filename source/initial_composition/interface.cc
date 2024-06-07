@@ -131,6 +131,17 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    void
+    Manager<dim>::update()
+    {
+      for (auto &initial_composition_object : initial_composition_objects)
+        initial_composition_object->update();
+    }
+
+
+
     template <int dim>
     double
     Manager<dim>::initial_composition (const Point<dim> &position,

@@ -81,6 +81,20 @@ namespace aspect
       connect_to_signals(this->get_signals());
     }
 
+
+
+    template <int dim>
+    void
+    World<dim>::update()
+    {
+      generator->update();
+      integrator->update();
+      interpolator->update();
+      property_manager->update();
+    }
+
+
+
     template <int dim>
     const Property::Manager<dim> &
     World<dim>::get_property_manager() const
@@ -1336,6 +1350,7 @@ namespace aspect
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
         sim->initialize_simulator (this->get_simulator());
       interpolator->parse_parameters(prm);
+      interpolator->initialize();
     }
   }
 }

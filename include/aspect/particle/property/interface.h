@@ -534,6 +534,13 @@ namespace aspect
           initialize ();
 
           /**
+           * Update function. This function is called once at the
+           * beginning of each timestep.
+           */
+          void
+          update ();
+
+          /**
            * Initialization function for particle properties. This function is
            * called once for each of the particles of a particle
            * collection after it was created.

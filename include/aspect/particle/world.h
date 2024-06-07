@@ -167,6 +167,11 @@ namespace aspect
         void initialize();
 
         /**
+         * Update the particle world.
+        */
+        void update();
+
+        /**
          * Get the particle property manager for this particle world.
          *
          * @return The property manager for this world.

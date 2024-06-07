@@ -121,6 +121,17 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    void
+    Manager<dim>::update()
+    {
+      for (auto &initial_temperature_object : initial_temperature_objects)
+        initial_temperature_object->update();
+    }
+
+
+
     template <int dim>
     double
     Manager<dim>::initial_temperature (const Point<dim> &position) const

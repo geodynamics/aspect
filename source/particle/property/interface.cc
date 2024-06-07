@@ -349,6 +349,16 @@ namespace aspect
 
       template <int dim>
       void
+      Manager<dim>::update ()
+      {
+        for (const auto &p : property_list)
+          p->update();
+      }
+
+
+
+      template <int dim>
+      void
       Manager<dim>::initialize_one_particle (typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         if (property_information.n_components() == 0)
