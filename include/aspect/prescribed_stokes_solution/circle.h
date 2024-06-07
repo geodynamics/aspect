@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup PrescribedStokesSolution
      */
-    template <int dim>
+    template <unsigned int>
     class Circle : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

@@ -70,7 +70,7 @@ namespace aspect
         temperature_dependent
       };
 
-      template <int dim>
+      template <unsigned int>
       class StrainDependent : public ::aspect::SimulatorAccess<dim>
       {
         public:

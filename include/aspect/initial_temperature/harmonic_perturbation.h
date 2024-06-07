@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class HarmonicPerturbation : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

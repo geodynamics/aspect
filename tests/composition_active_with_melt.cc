@@ -31,7 +31,7 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  template <unsigned int>
   class SimpleWithMelt:
     public MaterialModel::MeltInterface<dim>
   {
@@ -104,7 +104,7 @@ namespace aspect
 
   };
 
-  template <int dim>
+  template <unsigned int>
   void
   SimpleWithMelt<dim>::declare_parameters (ParameterHandler &prm)
   {
@@ -131,7 +131,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   SimpleWithMelt<dim>::parse_parameters (ParameterHandler &prm)
   {

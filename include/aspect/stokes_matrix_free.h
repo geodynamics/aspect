@@ -96,7 +96,7 @@ namespace aspect
      * point index.  In other words, you can access the value by
      * <tt>table(cell_batch_index, q_index)[cell_index]</tt>
      */
-    template <int dim, typename number>
+    template <unsigned int, typename number>
     struct OperatorCellData
     {
       /**
@@ -184,7 +184,7 @@ namespace aspect
     /**
      * Operator for the entire Stokes block.
      */
-    template <int dim, int degree_v, typename number>
+    template <unsigned int, int degree_v, typename number>
     class StokesOperator
       : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>
     {
@@ -254,7 +254,7 @@ namespace aspect
     /**
      * Operator for the pressure mass matrix used in the block preconditioner
      */
-    template <int dim, int degree_p, typename number>
+    template <unsigned int, int degree_p, typename number>
     class MassMatrixOperator
       : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
     {
@@ -318,7 +318,7 @@ namespace aspect
      * Operator for the A block of the Stokes matrix. The same class is used for both
      * active and level mesh operators.
      */
-    template <int dim, int degree_v, typename number>
+    template <unsigned int, int degree_v, typename number>
     class ABlockOperator
       : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>
     {
@@ -401,7 +401,7 @@ namespace aspect
    * Base class for the matrix free GMG solver for the Stokes system. The
    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
    */
-  template<int dim>
+  template<unsigned int>
   class StokesMatrixFreeHandler
   {
     public:
@@ -510,7 +510,7 @@ namespace aspect
    * degree by using a pointer to the base class and we can pick the desired
    * velocity degree at runtime.
    */
-  template<int dim, int velocity_degree>
+  template<unsigned int, int velocity_degree>
   class StokesMatrixFreeHandlerImplementation: public StokesMatrixFreeHandler<dim>
   {
     public:

@@ -49,7 +49,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class LoadBalanceStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

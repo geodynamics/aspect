@@ -31,7 +31,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     MaterialModelDerivatives<dim>::
     MaterialModelDerivatives (const unsigned int n_points)
       : viscosity_derivative_wrt_pressure(n_points, numbers::signaling_nan<double>())
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   NewtonHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
@@ -111,7 +111,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   NewtonHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)

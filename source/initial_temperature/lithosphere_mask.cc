@@ -31,7 +31,7 @@ namespace aspect
   {
     namespace LABDepth
     {
-      template <int dim>
+      template <unsigned int>
       LABDepthLookup<dim>::LABDepthLookup ()
         :
         lab_depths(1, 1.0)
@@ -39,7 +39,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       LABDepthLookup<dim>::initialize ()
       {
@@ -54,7 +54,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       LABDepthLookup<dim>::get_lab_depth (const Point<dim> &position) const
       {
@@ -87,7 +87,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       LABDepthLookup<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -107,7 +107,7 @@ namespace aspect
                            "File from which the lithosphere-asthenosphere boundary depth data is read.");
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       LABDepthLookup<dim>::parse_parameters (ParameterHandler &prm)
       {
@@ -127,7 +127,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LithosphereMask<dim>::initialize ()
     {
@@ -136,7 +136,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     LithosphereMask<dim>::initial_temperature (const Point<dim> &position) const
     {
@@ -152,7 +152,7 @@ namespace aspect
       return temperature;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     LithosphereMask<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -172,7 +172,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     LithosphereMask<dim>::parse_parameters (ParameterHandler &prm)
     {

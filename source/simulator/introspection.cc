@@ -34,7 +34,7 @@ namespace aspect
     /**
      * Return a filled ComponentIndices structure.
      */
-    template <int dim>
+    template <unsigned int>
     typename Introspection<dim>::ComponentIndices
     setup_component_indices (FEVariableCollection<dim> &fevs)
     {
@@ -54,7 +54,7 @@ namespace aspect
     /**
      * return filled BlockIndices structure.
      */
-    template <int dim>
+    template <unsigned int>
     typename Introspection<dim>::BlockIndices
     setup_blocks (FEVariableCollection<dim> &fevs)
     {
@@ -76,7 +76,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     typename Introspection<dim>::BaseElements
     setup_base_elements (FEVariableCollection<dim> &fevs)
     {
@@ -92,7 +92,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     typename Introspection<dim>::PolynomialDegree
     setup_polynomial_degree (const Parameters<dim> &parameters)
     {
@@ -107,7 +107,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     typename Introspection<dim>::Quadratures
     setup_quadratures (const Parameters<dim> &parameters,
                        const ReferenceCell reference_cell)
@@ -132,7 +132,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     typename Introspection<dim>::FaceQuadratures
     setup_face_quadratures (const Parameters<dim> &parameters,
                             const ReferenceCell reference_cell)
@@ -157,7 +157,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::shared_ptr<FiniteElement<dim>>
     new_FE_Q_or_DGP(const bool discontinuous,
                     const unsigned int degree)
@@ -170,7 +170,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::shared_ptr<FiniteElement<dim>>
     new_FE_Q_or_DGQ(const bool discontinuous,
                     const unsigned int degree)
@@ -185,7 +185,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::vector<VariableDeclaration<dim>>
   construct_default_variables (const Parameters<dim> &parameters)
   {
@@ -235,7 +235,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   Introspection<dim>::Introspection(const std::vector<VariableDeclaration<dim>> &variable_definition,
                                     const Parameters<dim> &parameters
                                    )
@@ -272,7 +272,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   Introspection<dim>::~Introspection ()
     = default;
 
@@ -292,7 +292,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   Introspection<dim>::Extractors::Extractors (const Introspection<dim>::ComponentIndices &component_indices)
     :
     velocities (component_indices.velocities[0]),
@@ -305,7 +305,7 @@ namespace aspect
 
   namespace
   {
-    template <int dim>
+    template <unsigned int>
     std::vector<ComponentMask>
     make_component_mask_sequence(const FEVariable<dim> &variable)
     {
@@ -321,7 +321,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   Introspection<dim>::ComponentMasks::ComponentMasks (FEVariableCollection<dim> &fevs)
     :
     velocities (fevs.variable("velocity").component_mask),
@@ -332,7 +332,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Introspection<dim>::compositional_index_for_name (const std::string &name) const
   {
@@ -347,7 +347,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::string
   Introspection<dim>::name_for_compositional_index (const unsigned int index) const
   {
@@ -358,7 +358,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<std::string> &
   Introspection<dim>::get_composition_names () const
   {
@@ -368,7 +368,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<CompositionalFieldDescription> &
   Introspection<dim>::get_composition_descriptions () const
   {
@@ -377,7 +377,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<std::string> &
   Introspection<dim>::chemical_composition_field_names () const
   {
@@ -386,7 +386,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<unsigned int> &
   Introspection<dim>::chemical_composition_field_indices () const
   {
@@ -395,7 +395,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Introspection<dim>::n_chemical_composition_fields () const
   {
@@ -404,7 +404,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   Introspection<dim>::composition_type_exists (const CompositionalFieldDescription::Type &type) const
   {
@@ -415,7 +415,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Introspection<dim>::find_composition_type (const typename CompositionalFieldDescription::Type &type) const
   {
@@ -429,7 +429,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   Introspection<dim>::compositional_name_exists (const std::string &name) const
   {
@@ -442,7 +442,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<unsigned int> &
   Introspection<dim>::get_indices_for_fields_of_type (const CompositionalFieldDescription::Type &type) const
   {
@@ -452,7 +452,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<std::string> &
   Introspection<dim>::get_names_for_fields_of_type (const CompositionalFieldDescription::Type &type) const
   {
@@ -462,7 +462,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Introspection<dim>::get_number_of_fields_of_type (const CompositionalFieldDescription::Type &type) const
   {
@@ -472,7 +472,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   Introspection<dim>::is_stokes_component (const unsigned int component_index) const
   {

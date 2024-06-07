@@ -68,7 +68,7 @@ namespace aspect
         return std::exp(t)-1.;
       }
 
-      template<int dim>
+      template<unsigned int>
       double
       density(const Point<dim> &p,
               const double t,
@@ -83,7 +83,7 @@ namespace aspect
       /**
        * The exact solution for the Rigid Shear benchmark.
        */
-      template<int dim>
+      template<unsigned int>
       class FunctionRigidShear : public Function<dim>
       {
         public:
@@ -121,7 +121,7 @@ namespace aspect
      * A material model for the stationary form of the rigid shear benchmark. All properties
      * are defined in dependence of position.
      */
-    template<int dim>
+    template<unsigned int>
     class RigidShearMaterial : public MaterialModel::Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -215,7 +215,7 @@ namespace aspect
     /**
      * Gravity model for the Rigid shear benchmark
      */
-    template <int dim>
+    template <unsigned int>
     class RigidShearGravity : public aspect::GravityModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
@@ -246,7 +246,7 @@ namespace aspect
      * The implementation of error evaluators that correspond to the
      * benchmarks defined in the paper Gassmoeller et al. referenced above.
      */
-    template<int dim>
+    template<unsigned int>
     class RigidShearPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

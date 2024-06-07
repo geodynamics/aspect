@@ -40,7 +40,7 @@ namespace aspect
      * <code> std::vector<std::unique_ptr<FunctorBase<dim>>> </code> to the
      * LateralAveraging::get_averages() function.
      */
-    template <int dim>
+    template <unsigned int>
     class FunctorBase
     {
       public:
@@ -106,7 +106,7 @@ namespace aspect
    *
    * @ingroup Simulator
    */
-  template <int dim>
+  template <unsigned int>
   class LateralAveraging : public SimulatorAccess<dim>
   {
     public:

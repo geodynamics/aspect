@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryVelocityResidualStatistics<dim>::initialize ()
     {
@@ -59,7 +59,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     BoundaryVelocityResidualStatistics<dim>::get_data_velocity (const Point<dim> &p) const
     {
@@ -92,7 +92,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     BoundaryVelocityResidualStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -275,7 +275,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryVelocityResidualStatistics<dim>::declare_parameters (ParameterHandler  &prm)
     {
@@ -328,7 +328,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryVelocityResidualStatistics<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace Assemblers
   {
-    template <int dim>
+    template <unsigned int>
     void VolumeOfFluidAssembler<dim>::local_assemble_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
                                                                              const unsigned int calc_dir,
                                                                              const bool update_from_old,
@@ -133,7 +133,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void VolumeOfFluidAssembler<dim>::local_assemble_boundary_face_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
         const bool update_from_old,
         const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -298,7 +298,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void VolumeOfFluidAssembler<dim>::local_assemble_internal_face_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
         const bool update_from_old,
         const typename DoFHandler<dim>::active_cell_iterator &cell,

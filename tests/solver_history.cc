@@ -25,7 +25,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   void post_stokes_solver (const SimulatorAccess<dim> &,
                            const unsigned int /*number_S_iterations*/,
                            const unsigned int /*number_A_iterations*/,
@@ -36,7 +36,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
     std::cout << "Connecting signals" << std::endl;

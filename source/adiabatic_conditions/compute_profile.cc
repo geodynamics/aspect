@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    template <int dim>
+    template <unsigned int>
     ComputeProfile<dim>::ComputeProfile()
       :
       initialized(false),
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ComputeProfile<dim>::update()
     {
@@ -53,7 +53,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ComputeProfile<dim>::initialize()
     {
@@ -194,7 +194,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     ComputeProfile<dim>::is_initialized() const
     {
@@ -203,7 +203,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double ComputeProfile<dim>::pressure (const Point<dim> &p) const
     {
       return get_property(p,pressures);
@@ -211,7 +211,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double ComputeProfile<dim>::temperature (const Point<dim> &p) const
     {
       return get_property(p,temperatures);
@@ -219,7 +219,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double ComputeProfile<dim>::density (const Point<dim> &p) const
     {
       return get_property(p,densities);
@@ -227,7 +227,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double ComputeProfile<dim>::density_derivative (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
@@ -254,7 +254,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double ComputeProfile<dim>::get_property (const Point<dim> &p,
                                               const std::vector<double> &property) const
     {
@@ -294,7 +294,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ComputeProfile<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -338,7 +338,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ComputeProfile<dim>::parse_parameters (ParameterHandler &prm)
     {

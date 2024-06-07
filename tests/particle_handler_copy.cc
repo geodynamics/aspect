@@ -27,7 +27,7 @@
 
 using namespace aspect;
 
-template <int dim>
+template <unsigned int>
 void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
                                 const bool,
                                 const unsigned int,
@@ -71,7 +71,7 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
 }
 
 
-template <int dim>
+template <unsigned int>
 void signal_connector (SimulatorSignals<dim> &signals)
 {
   std::cout << "Connecting signals" << std::endl;

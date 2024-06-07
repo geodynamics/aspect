@@ -88,7 +88,7 @@ namespace aspect
      *
      * @ingroup TimeStepping
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -126,7 +126,7 @@ namespace aspect
      * A class to handle computation of the next time step (as desired by the user) and
      * checking if the simulation is finished.
      */
-    template <int dim>
+    template <unsigned int>
     class Manager : public SimulatorAccess<dim>
     {
       public:

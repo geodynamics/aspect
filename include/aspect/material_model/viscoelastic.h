@@ -144,7 +144,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class Viscoelastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

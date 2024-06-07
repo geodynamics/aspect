@@ -66,7 +66,7 @@ namespace aspect
     /**
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class TosiMaterial : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -321,7 +321,7 @@ namespace aspect
      * Function to calculate the viscosity according
      * to equation (6) of the paper.
      */
-    template <int dim>
+    template <unsigned int>
     double
     TosiMaterial<dim>::
     viscosity (const double temperature,
@@ -364,7 +364,7 @@ namespace aspect
      * Function to compute the linear viscosity
      * according to equation (7) of Tosi et al. 2015.
      */
-    template <int dim>
+    template <unsigned int>
     double
     TosiMaterial<dim>::
     viscolin(const double etaT,
@@ -380,7 +380,7 @@ namespace aspect
      * Function to compute the plastic viscosity
      * according to equation (8) of the paper.
      */
-    template <int dim>
+    template <unsigned int>
     double
     TosiMaterial<dim>::
     viscoplast(const double etaasterisk,
@@ -392,7 +392,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     TosiMaterial<dim>::
     is_compressible () const
@@ -400,7 +400,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     TosiMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -460,7 +460,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TosiMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -505,7 +505,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class TosiPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -517,7 +517,7 @@ namespace aspect
         execute (TableHandler &statistics) override;
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     TosiPostprocessor<dim>::execute (TableHandler &statistics)
     {

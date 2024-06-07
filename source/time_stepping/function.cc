@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace TimeStepping
   {
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::execute()
     {
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -62,7 +62,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

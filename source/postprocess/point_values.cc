@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     PointValues<dim>::PointValues ()
       :
       // the following value is later read from the input file
@@ -45,7 +45,7 @@ namespace aspect
       use_natural_coordinates (false)
     {}
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     PointValues<dim>::execute (TableHandler &)
     {
@@ -182,7 +182,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PointValues<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -220,7 +220,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PointValues<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -274,7 +274,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void PointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -284,7 +284,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PointValues<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
@@ -296,7 +296,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PointValues<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
@@ -310,7 +310,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PointValues<dim>::set_last_output_time (const double current_time)
     {

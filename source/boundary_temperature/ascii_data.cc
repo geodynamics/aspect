@@ -30,12 +30,12 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -44,7 +44,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::update ()
     {
@@ -53,7 +53,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiData<dim>::boundary_temperature (const types::boundary_id boundary_indicator,
                                           const Point<dim> &position) const
@@ -64,7 +64,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiData<dim>::minimal_temperature (const std::set<types::boundary_id> &) const
     {
@@ -72,7 +72,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiData<dim>::maximal_temperature (const std::set<types::boundary_id> &) const
     {
@@ -80,7 +80,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -94,7 +94,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

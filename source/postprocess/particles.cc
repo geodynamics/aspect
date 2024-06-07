@@ -35,7 +35,7 @@ namespace aspect
   {
     namespace internal
     {
-      template<int dim>
+      template<unsigned int>
       void
       ParticleOutput<dim>::build_patches(const dealii::Particles::ParticleHandler<dim> &particle_handler,
                                          const aspect::Particle::Property::ParticlePropertyInformation &property_information,
@@ -139,21 +139,21 @@ namespace aspect
           }
       }
 
-      template <int dim>
+      template <unsigned int>
       const std::vector<DataOutBase::Patch<0,dim>> &
       ParticleOutput<dim>::get_patches () const
       {
         return patches;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::string>
       ParticleOutput<dim>::get_dataset_names () const
       {
         return dataset_names;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<
       std::tuple<unsigned int,
           unsigned int, std::string,
@@ -164,7 +164,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     Particles<dim>::Particles ()
       :
       // the following value is later read from the input file
@@ -179,7 +179,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Particles<dim>::~Particles ()
     {
       // make sure a thread that may still be running in the background,
@@ -190,7 +190,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     // We need to pass the arguments by value, as this function can be called on a separate thread:
     void Particles<dim>::writer (const std::string &filename, //NOLINT(performance-unnecessary-value-param)
                                  const std::string &temporary_output_location, //NOLINT(performance-unnecessary-value-param)
@@ -256,7 +256,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Particles<dim>::write_description_files (const internal::ParticleOutput<dim> &data_out,
                                              const std::string &solution_file_prefix,
@@ -313,7 +313,7 @@ namespace aspect
       DataOutBase::write_visit_record (global_visit_file, times_and_output_file_names);
     }
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     Particles<dim>::execute (TableHandler &statistics)
     {
@@ -522,7 +522,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Particles<dim>::set_last_output_time (const double current_time)
     {
@@ -542,7 +542,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void Particles<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -555,7 +555,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Particles<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
@@ -569,7 +569,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Particles<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
@@ -587,7 +587,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Particles<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -655,7 +655,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Particles<dim>::parse_parameters (ParameterHandler &prm)
     {

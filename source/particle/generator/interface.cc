@@ -31,7 +31,7 @@ namespace aspect
   {
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::initialize ()
       {
@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &/*particles*/)
       {
@@ -50,7 +50,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
@@ -78,7 +78,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
       Interface<dim>::generate_particle(const Point<dim> &position,
                                         const types::particle_index id) const
@@ -104,7 +104,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Particles::ParticleIterator<dim>
       Interface<dim>::insert_particle_at_position(const Point<dim> &position,
                                                   const types::particle_index id,
@@ -123,7 +123,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
       Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                                          const types::particle_index id)
@@ -198,7 +198,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       register_particle_generator (const std::string &name,
                                    const std::string &description,
@@ -213,7 +213,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::unique_ptr<Interface<dim>>
       create_particle_generator (ParameterHandler &prm)
       {
@@ -234,7 +234,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       declare_parameters (ParameterHandler &prm)
       {
@@ -261,7 +261,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       write_plugin_graph (std::ostream &out)
       {

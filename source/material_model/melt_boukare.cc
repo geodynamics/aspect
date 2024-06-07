@@ -44,7 +44,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     BoukareOutputs<dim>::BoukareOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_boukare_additional_outputs_names()),
@@ -54,7 +54,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     BoukareOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -67,7 +67,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::initialize()
     {
@@ -102,7 +102,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     reference_darcy_coefficient () const
@@ -111,7 +111,7 @@ namespace aspect
       return reference_permeability * std::pow(0.01,3.0) / eta_f;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     MeltBoukare<dim>::
     is_compressible () const
@@ -120,7 +120,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     MeltBoukare<dim>::
     EndmemberProperties::EndmemberProperties(const unsigned int n_endmembers)
       :
@@ -134,7 +134,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::
     fill_endmember_properties (const typename Interface<dim>::MaterialModelInputs &in,
@@ -203,7 +203,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     endmember_thermal_energy (const double temperature,
@@ -222,7 +222,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     endmember_molar_heat_capacity (const double temperature,
@@ -240,7 +240,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     endmember_thermal_pressure (const double temperature,
@@ -255,7 +255,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     endmember_enthalpy_thermal_addition (const double temperature,
@@ -275,7 +275,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     endmember_entropy_thermal_addition (const double temperature,
@@ -295,7 +295,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::
     convert_composition_to_fraction_of_endmembers (const double temperature,
@@ -339,7 +339,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     compute_melt_molar_fraction (const double porosity,
@@ -381,7 +381,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     assert_update_is_within_0_and_1 (const double old_value,
@@ -403,7 +403,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltBoukare<dim>::
     melt_fraction (const double temperature,
@@ -489,7 +489,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -572,7 +572,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
@@ -907,7 +907,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -1101,7 +1101,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -1267,7 +1267,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoukare<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

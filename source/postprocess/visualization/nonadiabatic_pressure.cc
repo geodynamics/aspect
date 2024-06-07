@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       NonadiabaticPressure<dim>::
       NonadiabaticPressure ()
         :
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       NonadiabaticPressure<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

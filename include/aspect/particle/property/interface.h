@@ -304,7 +304,7 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class Interface : public Plugins::InterfaceBase
       {
         public:
@@ -467,7 +467,7 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class IntegratorProperties : public Interface<dim>
       {
         public:
@@ -512,7 +512,7 @@ namespace aspect
        * collection of particles and updates it over time if requested by the
        * user selected properties.
        */
-      template <int dim>
+      template <unsigned int>
       class Manager : public SimulatorAccess<dim>
       {
         public:
@@ -756,7 +756,7 @@ namespace aspect
       /* -------------------------- inline and template functions ---------------------- */
 
 
-      template <int dim>
+      template <unsigned int>
       template <typename ParticlePropertyType, typename>
       inline
       bool
@@ -770,7 +770,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       template <typename ParticlePropertyType, typename>
       inline
       const ParticlePropertyType &

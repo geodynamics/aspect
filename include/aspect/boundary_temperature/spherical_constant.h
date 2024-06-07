@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup BoundaryTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class SphericalConstant : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

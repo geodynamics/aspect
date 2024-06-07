@@ -48,7 +48,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class NSinkerMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -196,7 +196,7 @@ namespace aspect
     };
 
 
-    template<int dim>
+    template<unsigned int>
     NSinkerMaterial<dim>::NSinkerMaterial ()
     {
       delta = 200.0;
@@ -327,7 +327,7 @@ double pressure_scaling_signal(const double /*pressure_scaling*/,
   return 1.0;
 }
 
-template <int dim>
+template <unsigned int>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   signals.modify_pressure_scaling.connect(&pressure_scaling_signal);

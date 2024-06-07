@@ -31,7 +31,7 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  template <unsigned int>
   class Simulator;
 
   struct AdvectionField;
@@ -55,7 +55,7 @@ namespace aspect
          * cell. The ScratchBase class acts as a empty base class for
          * individual scratch objects for the different equations.
          */
-        template <int dim>
+        template <unsigned int>
         struct ScratchBase
         {
           ScratchBase()
@@ -90,7 +90,7 @@ namespace aspect
          * A scratch object to store all necessary information to assemble
          * the Stokes preconditioner terms.
          */
-        template <int dim>
+        template <unsigned int>
         struct StokesPreconditioner: public ScratchBase<dim>
         {
           StokesPreconditioner (const FiniteElement<dim> &finite_element,
@@ -144,7 +144,7 @@ namespace aspect
          * extra data that we need for the time stepping and traction boundaries
          * on the right hand side.
          */
-        template <int dim>
+        template <unsigned int>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
           StokesSystem (const FiniteElement<dim> &finite_element,
@@ -211,7 +211,7 @@ namespace aspect
          * A scratch object to store all necessary information to assemble
          * the terms in the advection equations.
          */
-        template <int dim>
+        template <unsigned int>
         struct AdvectionSystem: public ScratchBase<dim>
         {
           AdvectionSystem (const FiniteElement<dim> &finite_element,
@@ -347,7 +347,7 @@ namespace aspect
          * or references of a generic type and later cast them to their actual
          * derived class.
          */
-        template <int dim>
+        template <unsigned int>
         struct CopyDataBase
         {
           virtual ~CopyDataBase () = default;
@@ -358,7 +358,7 @@ namespace aspect
          * copy data objects. Matrix contributions and degrees of freedom this
          * cell corresponds to.
          */
-        template <int dim>
+        template <unsigned int>
         struct StokesPreconditioner: public CopyDataBase<dim>
         {
           StokesPreconditioner (const unsigned int stokes_dofs_per_cell);
@@ -386,7 +386,7 @@ namespace aspect
          * data from the Stokes preconditioner copy data class, plus some
          * extras like the right hand side contribution.
          */
-        template <int dim>
+        template <unsigned int>
         struct StokesSystem : public StokesPreconditioner<dim>
         {
           StokesSystem (const unsigned int        stokes_dofs_per_cell,
@@ -405,7 +405,7 @@ namespace aspect
          * object also needs to keep track of contributions across faces
          * (mostly for discontinuous elements that contain DG terms).
          */
-        template <int dim>
+        template <unsigned int>
         struct AdvectionSystem: public CopyDataBase<dim>
         {
           /**
@@ -531,7 +531,7 @@ namespace aspect
      * way selecting a certain set of assembler objects effectively controls
      * which equation is solved.
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -617,7 +617,7 @@ namespace aspect
      * This class implements functions that provide information
      * for stabilization mechanisms.
      */
-    template <int dim>
+    template <unsigned int>
     class AdvectionStabilizationInterface
     {
       public:
@@ -678,7 +678,7 @@ namespace aspect
      *   another object to the appropriate set of assemblers declared
      *   in this class.
      */
-    template <int dim>
+    template <unsigned int>
     class Manager
     {
       public:

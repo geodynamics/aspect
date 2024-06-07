@@ -34,7 +34,7 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim> class Simulator;
+  template <unsigned int> class Simulator;
 
 
   /**
@@ -61,7 +61,7 @@ namespace aspect
      *
      * @ingroup TerminationCriteria
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -111,7 +111,7 @@ namespace aspect
      *
      * @ingroup TerminationCriteria
      */
-    template <int dim>
+    template <unsigned int>
     class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:

@@ -40,7 +40,7 @@ namespace aspect
      * Converts a function with a certain number of components into a Function@<dim@>
      * with optionally having additional zero components.
      **/
-    template <int dim>
+    template <unsigned int>
     class VectorFunctionFromVectorFunctionObject : public Function<dim>
     {
       public:
@@ -138,7 +138,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double Simulator<dim>::assemble_and_solve_temperature (const double &initial_residual,
                                                          double *residual)
   {
@@ -219,7 +219,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::vector<double>
   Simulator<dim>::assemble_and_solve_composition (const std::vector<double> &initial_residual,
                                                   std::vector<double> *residual)
@@ -356,7 +356,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::assemble_and_solve_stokes (const double &initial_nonlinear_residual,
                                              double *nonlinear_residual)
@@ -425,7 +425,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
                                                             const bool use_picard)
   {
@@ -759,7 +759,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_single_advection_single_stokes ()
   {
     assemble_and_solve_temperature();
@@ -778,7 +778,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_no_advection_iterated_stokes ()
   {
     double initial_stokes_residual = 0.0;
@@ -817,7 +817,7 @@ namespace aspect
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
@@ -884,7 +884,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
@@ -952,7 +952,7 @@ namespace aspect
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
@@ -1061,7 +1061,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_no_advection_single_stokes ()
   {
     assemble_and_solve_stokes();
@@ -1076,7 +1076,7 @@ namespace aspect
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_first_timestep_only_single_stokes ()
   {
     if (timestep_number == 0)
@@ -1091,7 +1091,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_iterated_advection_and_stokes ()
   {
     double initial_temperature_residual = 0;
@@ -1174,7 +1174,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_single_advection_iterated_stokes ()
   {
     // solve the temperature and composition systems once...
@@ -1221,7 +1221,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_iterated_advection_and_newton_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
@@ -1330,7 +1330,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_single_advection_and_iterated_newton_stokes ()
   {
     // First assemble and solve the temperature and compositional fields
@@ -1435,7 +1435,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_single_advection_no_stokes ()
   {
     assemble_and_solve_temperature();
@@ -1488,7 +1488,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::solve_no_advection_no_stokes ()
   {
     if (parameters.run_postprocessors_on_nonlinear_iterations)

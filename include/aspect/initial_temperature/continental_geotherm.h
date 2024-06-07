@@ -35,7 +35,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class ContinentalGeotherm : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

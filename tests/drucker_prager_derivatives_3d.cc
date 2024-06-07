@@ -33,7 +33,7 @@
 
 #include <iostream>
 
-template<int dim>
+template<unsigned int>
 void f(const aspect::SimulatorAccess<dim> &simulator_access,
        aspect::Assemblers::Manager<dim> &)
 {
@@ -248,7 +248,7 @@ void f(const aspect::SimulatorAccess<2> &,
   AssertThrow(false,dealii::ExcInternalError());
 }
 
-template <int dim>
+template <unsigned int>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   using namespace dealii;

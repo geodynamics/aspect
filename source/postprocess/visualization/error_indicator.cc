@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       ErrorIndicator<dim>::
       ErrorIndicator ()
         :
@@ -37,7 +37,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ErrorIndicator<dim>::execute() const
       {

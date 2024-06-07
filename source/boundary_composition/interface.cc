@@ -40,13 +40,13 @@ namespace aspect
     // -------------------------------- Deal with registering boundary_composition models and automating
     // -------------------------------- their setup and selection at run time
 
-    template <int dim>
+    template <unsigned int>
     Manager<dim>::~Manager()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::update ()
     {
@@ -68,7 +68,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_boundary_composition (const std::string &name,
                                                  const std::string &description,
@@ -82,7 +82,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -173,7 +173,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Manager<dim>::boundary_composition (const types::boundary_id boundary_indicator,
                                         const Point<dim> &position,
@@ -192,7 +192,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<std::string> &
     Manager<dim>::get_active_boundary_composition_names () const
     {
@@ -200,7 +200,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_boundary_composition_conditions () const
     {
@@ -209,7 +209,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::set<types::boundary_id> &
     Manager<dim>::get_fixed_composition_boundary_indicators() const
     {
@@ -218,7 +218,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::allows_fixed_composition_on_outflow_boundaries() const
     {
@@ -227,7 +227,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -338,7 +338,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {

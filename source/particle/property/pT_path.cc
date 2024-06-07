@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       PTPath<dim>::initialize()
       {
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       PTPath<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                     std::vector<double> &data) const
@@ -63,7 +63,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       PTPath<dim>::update_particle_property(const unsigned int data_position,
                                             const Vector<double> &solution,
@@ -76,7 +76,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       PTPath<dim>::need_update() const
       {
@@ -85,7 +85,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       PTPath<dim>::get_needed_update_flags () const
       {
@@ -94,7 +94,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       PTPath<dim>::get_property_information() const
       {

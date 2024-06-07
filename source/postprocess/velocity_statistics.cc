@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {

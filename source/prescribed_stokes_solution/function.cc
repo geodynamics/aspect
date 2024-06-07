@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    template <int dim>
+    template <unsigned int>
     Function<dim>::Function ()
       :
       prescribed_velocity_function (dim),
@@ -36,7 +36,7 @@ namespace aspect
       prescribed_fluid_velocity_function (dim)
     {}
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::stokes_solution (const Point<dim> &position, Vector<double> &value) const
     {
@@ -76,7 +76,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::update()
     {
@@ -100,7 +100,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -136,7 +136,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

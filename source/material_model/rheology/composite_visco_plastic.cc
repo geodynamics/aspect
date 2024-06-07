@@ -62,13 +62,13 @@ namespace aspect
       //}
 
 
-      template <int dim>
+      template <unsigned int>
       CompositeViscoPlastic<dim>::CompositeViscoPlastic ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       CompositeViscoPlastic<dim>::compute_viscosity (const double pressure,
                                                      const double temperature,
@@ -116,7 +116,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       CompositeViscoPlastic<dim>::compute_composition_viscosity (const double pressure,
                                                                  const double temperature,
@@ -280,7 +280,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<double, double>
       CompositeViscoPlastic<dim>::compute_strain_rate_and_derivative (const double creep_stress,
                                                                       const double pressure,
@@ -309,7 +309,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CompositeViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -370,7 +370,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CompositeViscoPlastic<dim>::parse_parameters (ParameterHandler &prm,
                                                     const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)

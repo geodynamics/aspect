@@ -87,7 +87,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     register_material_model (const std::string &name,
                              const std::string &description,
@@ -101,7 +101,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_material_model (const std::string &model_name)
     {
@@ -110,7 +110,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_material_model (ParameterHandler &prm)
     {
@@ -136,7 +136,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const NonlinearDependence::ModelDependence &
     Interface<dim>::
     get_model_dependence() const
@@ -146,7 +146,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::
     create_additional_named_outputs (MaterialModelOutputs &/*outputs*/) const
@@ -156,7 +156,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::
     fill_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &input,
@@ -171,7 +171,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ()
     {
@@ -179,7 +179,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -212,7 +212,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &out)
     {
@@ -221,7 +221,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
       :
@@ -238,7 +238,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     MaterialModelInputs<dim>::MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
                                                   const Introspection<dim> &introspection,
                                                   const bool compute_strain_rate)
@@ -277,7 +277,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     MaterialModelInputs<dim>::MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                                                   const typename DoFHandler<dim>::active_cell_iterator &cell_x,
                                                   const Introspection<dim> &introspection,
@@ -300,7 +300,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     MaterialModelInputs<dim>::MaterialModelInputs(const MaterialModelInputs &source)
       :
       position(source.position),
@@ -320,7 +320,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MaterialModelInputs<dim>::reinit(const FEValuesBase<dim,dim> &fe_values,
                                      const typename DoFHandler<dim>::active_cell_iterator &cell_x,
@@ -360,7 +360,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     unsigned int
     MaterialModelInputs<dim>::n_evaluation_points() const
     {
@@ -369,7 +369,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     MaterialModelInputs<dim>::requests_property(const MaterialProperties::Property &property) const
     {
@@ -380,7 +380,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const unsigned int n_points,
                                                     const unsigned int n_comp)
       :
@@ -396,7 +396,7 @@ namespace aspect
     {}
 
 
-    template <int dim>
+    template <unsigned int>
     MaterialModelOutputs<dim>::MaterialModelOutputs(const MaterialModelOutputs<dim> &source)
       :
       viscosities(source.viscosities),
@@ -417,7 +417,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     unsigned int
     MaterialModelOutputs<dim>::n_evaluation_points() const
     {
@@ -720,7 +720,7 @@ namespace aspect
        * Then, the operation $X=EM^{-1}F$ is the operation we seek.
        * This function computes the matrices $E$ and $M^{-1}F$.
        */
-      template <int dim>
+      template <unsigned int>
       void compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
                                       const Quadrature<dim>   &quadrature_formula,
                                       const Mapping<dim>      &mapping,
@@ -813,7 +813,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void average (const AveragingOperation operation,
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
@@ -918,7 +918,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     NamedAdditionalMaterialOutputs<dim>::
     NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names)
       :
@@ -927,7 +927,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     NamedAdditionalMaterialOutputs<dim>::
     NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names,
                                    const unsigned int n_points)
@@ -938,14 +938,14 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     NamedAdditionalMaterialOutputs<dim>::
     ~NamedAdditionalMaterialOutputs()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<std::string> &
     NamedAdditionalMaterialOutputs<dim>::get_names() const
     {
@@ -954,7 +954,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     std::vector<double>
     NamedAdditionalMaterialOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -969,7 +969,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     PrescribedPlasticDilation<dim>::PrescribedPlasticDilation (const unsigned int n_points)
       : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "prescribed_dilation")),
         dilation(n_points, numbers::signaling_nan<double>())
@@ -977,7 +977,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
     {
       (void)idx;
@@ -1000,7 +1000,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     SeismicAdditionalOutputs<dim>::SeismicAdditionalOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_seismic_additional_outputs_names()),
@@ -1010,7 +1010,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     SeismicAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1056,7 +1056,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     ReactionRateOutputs<dim>::ReactionRateOutputs (const unsigned int n_points,
                                                    const unsigned int n_comp)
       :
@@ -1066,7 +1066,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     std::vector<double>
     ReactionRateOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1095,7 +1095,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     PhaseOutputs<dim>::PhaseOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_phase_outputs_names(), n_points)
@@ -1103,7 +1103,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     PrescribedFieldOutputs<dim>::PrescribedFieldOutputs (const unsigned int n_points,
                                                          const unsigned int n_comp)
       :
@@ -1113,7 +1113,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     std::vector<double>
     PrescribedFieldOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1129,7 +1129,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     PrescribedTemperatureOutputs<dim>::PrescribedTemperatureOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1,"prescribed_temperature")),
@@ -1138,7 +1138,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     std::vector<double>
     PrescribedTemperatureOutputs<dim>::get_nth_output(const unsigned int idx) const
     {

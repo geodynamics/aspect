@@ -38,7 +38,7 @@ namespace aspect
        * field. The multiplication factors for each composition (viscosity
        * prefactors) are also declared, parsed, and in some cases calculated in this class.
        */
-      template <int dim>
+      template <unsigned int>
       class CompositionalViscosityPrefactors : public ::aspect::SimulatorAccess<dim>
       {
         public:

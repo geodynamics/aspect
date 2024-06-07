@@ -39,7 +39,7 @@ namespace aspect
      *
      * @ingroup PrescribedStokesSolution
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiData : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
     {
       public:

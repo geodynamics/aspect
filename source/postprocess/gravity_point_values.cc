@@ -41,7 +41,7 @@ namespace aspect
   namespace Postprocess
   {
 
-    template <int dim>
+    template <unsigned int>
     GravityPointValues<dim>::GravityPointValues ()
       :
       // the following value is later read from the input file
@@ -56,7 +56,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GravityPointValues<dim>::initialize ()
     {
@@ -173,7 +173,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     GravityPointValues<dim>::execute (TableHandler &)
     {
@@ -571,7 +571,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GravityPointValues<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -693,7 +693,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GravityPointValues<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -756,7 +756,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void GravityPointValues<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -769,7 +769,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GravityPointValues<dim>::set_last_output_time (const double current_time)
     {
@@ -789,7 +789,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GravityPointValues<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
@@ -802,7 +802,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GravityPointValues<dim>::load (const std::map<std::string, std::string> &status_strings)
     {

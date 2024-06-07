@@ -37,7 +37,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::vector<double>,std::vector<double>>
     Geoid<dim>::to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const
     {
@@ -80,7 +80,7 @@ namespace aspect
       return std::make_pair(coecos,coesin);
     }
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::vector<double>,std::vector<double>>
     Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
     {
@@ -165,7 +165,7 @@ namespace aspect
       return std::make_pair(SH_density_coecos,SH_density_coesin);
     }
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double>>>, std::pair<double, std::pair<std::vector<double>,std::vector<double>>>>
     Geoid<dim>::topography_contribution(const double &/*outer_radius*/,
                                         const double &/*inner_radius*/) const
@@ -388,7 +388,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     Geoid<dim>::execute (TableHandler &)
     {
@@ -880,7 +880,7 @@ namespace aspect
                                                 filename);
     }
 
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     Geoid<dim>::required_other_postprocessors() const
     {
@@ -894,7 +894,7 @@ namespace aspect
       return deps;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     Geoid<dim>::evaluate (const Point<dim> &/*p*/) const
     {
@@ -923,7 +923,7 @@ namespace aspect
       return value;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Geoid<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -988,7 +988,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Geoid<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -1016,7 +1016,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Geoid<dim>::initialize ()
     {

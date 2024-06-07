@@ -37,7 +37,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class VolumeOfFluidSpecifiedSolutionDiff : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -86,7 +86,7 @@ namespace aspect
         std::unique_ptr<Functions::ParsedFunction<dim>> trueSolLS;
     };
 
-    template <int dim>
+    template <unsigned int>
     VolumeOfFluidSpecifiedSolutionDiff<dim>::VolumeOfFluidSpecifiedSolutionDiff ()
       : initialized(false),
         error_eval_interval (std::numeric_limits<double>::quiet_NaN ()),
@@ -95,7 +95,7 @@ namespace aspect
     {
     }
 
-    template <int dim>
+    template <unsigned int>
     double VolumeOfFluidSpecifiedSolutionDiff<dim>::get_next_t (const double curr_time,
                                                                 const double interval)
     {
@@ -103,7 +103,7 @@ namespace aspect
       return (i + 1) * interval;
     }
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string, std::string>
     VolumeOfFluidSpecifiedSolutionDiff<dim>::execute (TableHandler &)
     {
@@ -168,7 +168,7 @@ namespace aspect
       return std::make_pair (label_string, result_string);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     VolumeOfFluidSpecifiedSolutionDiff<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -196,7 +196,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     VolumeOfFluidSpecifiedSolutionDiff<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -221,7 +221,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     std::vector<std::string> VolumeOfFluidSpecifiedSolutionDiff<dim>::error_abrev ()
     {
       std::vector<std::string> names (1, "IEstL1");
@@ -229,7 +229,7 @@ namespace aspect
       return names;
     }
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double> VolumeOfFluidSpecifiedSolutionDiff<dim>::calc_error_level_set (const Function<dim> &func,
         const unsigned int n_samp,
         const unsigned int f_ind)

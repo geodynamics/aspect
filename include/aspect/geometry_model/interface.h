@@ -55,7 +55,7 @@ namespace aspect
      *
      * @ingroup GeometryModels
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -376,7 +376,7 @@ namespace aspect
      *
      * @ingroup GeometryModels
      */
-    template <int dim>
+    template <unsigned int>
     void
     register_geometry_model (const std::string &name,
                              const std::string &description,
@@ -393,7 +393,7 @@ namespace aspect
      *
      * @ingroup GeometryModels
      */
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_geometry_model (ParameterHandler &prm);
 
@@ -402,7 +402,7 @@ namespace aspect
      *
      * @ingroup GeometryModels
      */
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm);
 
@@ -415,7 +415,7 @@ namespace aspect
      *
      * @param output_stream The stream to write the output to.
      */
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &output_stream);
 

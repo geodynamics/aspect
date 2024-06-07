@@ -34,7 +34,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       class SphericalVelocityComponents
         : public DataPostprocessorVector<dim>,
           public SimulatorAccess<dim>,

@@ -39,7 +39,7 @@ namespace aspect
 
   namespace MeshDeformation
   {
-    template <int dim>
+    template <unsigned int>
     Diffusion<dim>::Diffusion()
       :
       diffusivity(0.),
@@ -49,7 +49,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Diffusion<dim>::initialize ()
     {
@@ -60,7 +60,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Diffusion<dim>::update ()
     {
@@ -82,7 +82,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void Diffusion<dim>::diffuse_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                           const IndexSet &mesh_locally_owned,
                                           const IndexSet &mesh_locally_relevant,
@@ -392,7 +392,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void Diffusion<dim>::check_diffusion_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                     const std::set<types::boundary_id> &boundary_ids) const
     {
@@ -433,7 +433,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Diffusion<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                              AffineConstraints<double> &mesh_velocity_constraints,
@@ -476,7 +476,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Diffusion<dim>::
     needs_surface_stabilization () const
@@ -486,7 +486,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void Diffusion<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh deformation");
@@ -511,7 +511,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void Diffusion<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");

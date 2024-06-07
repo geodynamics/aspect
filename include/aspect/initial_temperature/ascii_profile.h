@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiProfile : public Utilities::AsciiDataProfile<dim>, public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

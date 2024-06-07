@@ -31,7 +31,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     bool
     ViscoPlastic<dim>::
     is_yielding (const double pressure,
@@ -70,7 +70,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     ViscoPlastic<dim>::
     is_yielding(const MaterialModelInputs<dim> &in) const
@@ -127,7 +127,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscoPlastic<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -311,7 +311,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     ViscoPlastic<dim>::
     is_compressible () const
@@ -321,7 +321,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double ViscoPlastic<dim>::
     get_min_strain_rate () const
     {
@@ -330,7 +330,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -372,7 +372,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -443,7 +443,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

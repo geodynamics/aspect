@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     double
     HarmonicPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -153,7 +153,7 @@ namespace aspect
       return background_temperature + magnitude * depth_perturbation * lateral_perturbation;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     HarmonicPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -196,7 +196,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     HarmonicPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {

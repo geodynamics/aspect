@@ -41,7 +41,7 @@ namespace big_mpi
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
 namespace dealii
 {
-  template<int dim, class NumberType>
+  template<unsigned int, class NumberType>
   using MGTransferMF = MGTransferMatrixFree<dim,NumberType>;
 }
 #endif
@@ -62,7 +62,7 @@ namespace dealii
        * A structure that stores the dim DoF indices that correspond to a
        * vector-valued quantity at a single support point.
        */
-      template <int dim>
+      template <unsigned int>
       struct VectorDoFTuple
       {
         std::array<types::global_dof_index,dim> dof_indices;
@@ -94,7 +94,7 @@ namespace dealii
       };
 
 
-      template <int dim>
+      template <unsigned int>
       std::ostream &
       operator<<(std::ostream &out, const VectorDoFTuple<dim> &vdt)
       {
@@ -115,7 +115,7 @@ namespace dealii
        * The function does not add constraints if a degree of freedom is already
        * constrained in the constraints object.
        */
-      template <int dim>
+      template <unsigned int>
       void
       add_constraint(const VectorDoFTuple<dim> &dof_indices,
                      const Tensor<1, dim>      &constraining_vector,
@@ -328,7 +328,7 @@ namespace dealii
        * The function does not add constraints if a degree of freedom is already
        * constrained in the constraints object.
        */
-      template <int dim>
+      template <unsigned int>
       void
       add_tangentiality_constraints(
         const VectorDoFTuple<dim> &dof_indices,
@@ -388,7 +388,7 @@ namespace dealii
        * Compute the mappings from vector degrees of freedom to normal vectors @p dof_to_normals_map
        * and vector degrees of freedom to prescribed normal fluxes @p dof_vector_to_b_values.
        */
-      template <int dim, int spacedim>
+      template <unsigned int, int spacedim>
       void
       map_dofs_to_normal_vectors_and_normal_fluxes(
         const typename DoFHandler<dim, spacedim>::cell_iterator &cell,
@@ -569,7 +569,7 @@ namespace dealii
        * compute_nonzero_normal_flux_constraints_on_level() so as to have
        * separate interfaces for the active and level cells.
        */
-      template <int dim, int spacedim>
+      template <unsigned int, int spacedim>
       void
       compute_nonzero_normal_flux_constraints_active_or_level(
         const DoFHandler<dim, spacedim>    &dof_handler,
@@ -1051,7 +1051,7 @@ namespace dealii
 
     } // namespece internal
 
-    template <int dim, int spacedim>
+    template <unsigned int, int spacedim>
     void
     compute_no_normal_flux_constraints_on_level(
       const DoFHandler<dim, spacedim>    &dof_handler,
@@ -1103,7 +1103,7 @@ namespace aspect
    * use deal.II 9.5 and earlier for this class. The current class
    * here is therefore a copy of the fixed class.
    */
-  template <int dim, int spacedim = dim>
+  template <unsigned int, int spacedim = dim>
   class SphericalManifold : public Manifold<dim, spacedim>
   {
     public:

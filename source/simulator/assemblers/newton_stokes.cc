@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace Assemblers
   {
-    template <int dim>
+    template <unsigned int>
     void
     NewtonInterface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesPreconditioner<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -269,7 +269,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesPreconditioner<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -286,7 +286,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesIncompressibleTerms<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -567,7 +567,7 @@ namespace aspect
 #endif
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesIncompressibleTerms<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -616,7 +616,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesCompressibleStrainRateViscosityTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -697,7 +697,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesReferenceDensityCompressibilityTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -746,7 +746,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -800,7 +800,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesIsentropicCompressionTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -859,7 +859,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     NewtonStokesProjectedDensityFieldTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,

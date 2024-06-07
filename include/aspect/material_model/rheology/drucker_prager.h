@@ -61,7 +61,7 @@ namespace aspect
         DruckerPragerParameters();
       };
 
-      template <int dim>
+      template <unsigned int>
       class DruckerPrager : public ::aspect::SimulatorAccess<dim>
       {
         public:

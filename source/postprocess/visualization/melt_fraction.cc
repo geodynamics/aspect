@@ -31,7 +31,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       MeltFraction<dim>::
       MeltFraction ()
         :
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MeltFraction<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -142,7 +142,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MeltFraction<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -275,7 +275,7 @@ namespace aspect
         prm.leave_subsection();
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       MeltFraction<dim>::parse_parameters (ParameterHandler &prm)
       {

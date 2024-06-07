@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class Simpler : public Interface<dim>
     {
       public:

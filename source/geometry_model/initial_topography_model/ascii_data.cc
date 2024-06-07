@@ -36,14 +36,14 @@ namespace aspect
 {
   namespace InitialTopographyModel
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData ()
       :
       surface_boundary_id(1)
     {}
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -54,7 +54,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiData<dim>::value (const Point<dim-1> &surface_point) const
     {
@@ -109,7 +109,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim-1>
     AsciiData<dim>::vector_gradient(const Point<dim> &point) const
     {
@@ -118,7 +118,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiData<dim>::max_topography () const
     {
@@ -127,7 +127,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -145,7 +145,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

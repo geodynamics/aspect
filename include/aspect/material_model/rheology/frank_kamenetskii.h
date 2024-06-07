@@ -44,7 +44,7 @@ namespace aspect
        * Refer to Noack and Breuer, 2013, GJI. doi: 10.1093/gji/ggt248 Eq. 2.10 for reference.
        */
 
-      template <int dim>
+      template <unsigned int>
       class FrankKamenetskii : public ::aspect::SimulatorAccess<dim>
       {
         public:

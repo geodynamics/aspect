@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     LoadBalanceStatistics<dim>::execute (TableHandler &statistics)
     {

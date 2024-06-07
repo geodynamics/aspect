@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Simple<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -91,7 +91,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Simple<dim>::
     is_compressible () const
@@ -101,7 +101,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Simple<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -153,7 +153,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Simple<dim>::parse_parameters (ParameterHandler &prm)
     {

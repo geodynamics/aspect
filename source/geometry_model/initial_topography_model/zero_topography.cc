@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace InitialTopographyModel
   {
-    template <int dim>
+    template <unsigned int>
     double
     ZeroTopography<dim>::
     value (const Point<dim-1> &/*p*/) const
@@ -35,7 +35,7 @@ namespace aspect
       return 0.0;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     ZeroTopography<dim>::
     max_topography () const

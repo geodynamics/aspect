@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class Nondimensional : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

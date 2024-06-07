@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class CompositionalHeating : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

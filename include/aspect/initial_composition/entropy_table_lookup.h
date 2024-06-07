@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup InitialCompositionModels
      */
-    template <int dim>
+    template <unsigned int>
     class EntropyTableLookUp : public Interface<dim>,
       public SimulatorAccess<dim>
     {

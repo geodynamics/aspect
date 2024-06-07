@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     bool
     ReactiveFluidTransport<dim>::
     is_compressible () const
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     ReactiveFluidTransport<dim>::
     reference_darcy_coefficient () const
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     ReactiveFluidTransport<dim>::
     tian_equilibrium_bound_water_content (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -110,7 +110,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReactiveFluidTransport<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -186,7 +186,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReactiveFluidTransport<dim>::initialize()
     {
@@ -195,7 +195,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReactiveFluidTransport<dim>::update()
     {
@@ -204,7 +204,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReactiveFluidTransport<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                           typename Interface<dim>::MaterialModelOutputs &out) const
@@ -292,7 +292,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ReactiveFluidTransport<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -386,7 +386,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ReactiveFluidTransport<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -515,7 +515,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReactiveFluidTransport<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

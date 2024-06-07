@@ -55,7 +55,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class LatentHeat : public Interface<dim>
     {
       public:

@@ -51,7 +51,7 @@ namespace aspect
      *
      * @ingroup BoundaryCompositions
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -81,7 +81,7 @@ namespace aspect
      *
      * @ingroup BoundaryCompositions
      */
-    template <int dim>
+    template <unsigned int>
     class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -271,7 +271,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename BoundaryCompositionType, typename>
     inline
     bool
@@ -286,7 +286,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename BoundaryCompositionType, typename>
     inline
     const BoundaryCompositionType &
@@ -314,7 +314,7 @@ namespace aspect
      * that the string can be an input to the deal.II classes
      * Patterns::Selection or Patterns::MultipleSelection.
      */
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ();
 

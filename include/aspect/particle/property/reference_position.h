@@ -34,7 +34,7 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class ReferencePosition : public Interface<dim>
       {
         public:

@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class AnelasticVs2T : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
     {
       public:

@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace EquationOfState
     {
-      template <int dim>
+      template <unsigned int>
       void
       LinearizedIncompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -60,7 +60,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       LinearizedIncompressible<dim>::
       is_compressible () const
@@ -70,7 +70,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       LinearizedIncompressible<dim>::declare_parameters (ParameterHandler &prm,
                                                          const unsigned int n_compositions)
@@ -119,7 +119,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       LinearizedIncompressible<dim>::parse_parameters (ParameterHandler &prm,
                                                        const unsigned int n_compositions)

@@ -84,7 +84,7 @@ namespace aspect
       /**
        * The exact solution for the Inclusion benchmark.
        */
-      template <int dim>
+      template <unsigned int>
       class FunctionInclusion : public Function<dim>
       {
         public:
@@ -104,7 +104,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class InclusionBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
@@ -133,7 +133,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     InclusionBoundary<dim>::
     boundary_velocity (const types::boundary_id boundary_id,
@@ -168,7 +168,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class InclusionMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -245,7 +245,7 @@ namespace aspect
         double eta_B;
     };
 
-    template <int dim>
+    template <unsigned int>
     bool
     InclusionMaterial<dim>::
     is_compressible () const
@@ -253,7 +253,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     InclusionMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -272,7 +272,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InclusionMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -294,7 +294,7 @@ namespace aspect
       this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     InclusionMaterial<dim>::get_eta_B() const
     {
@@ -326,7 +326,7 @@ namespace aspect
       * references, see the bibliography of the paper above.
       * @ingroup Postprocessing
       */
-    template <int dim>
+    template <unsigned int>
     class InclusionPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -338,7 +338,7 @@ namespace aspect
         execute (TableHandler &statistics);
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     InclusionPostprocessor<dim>::execute (TableHandler &statistics)
     {

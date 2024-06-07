@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     DiffusionDislocation<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -96,7 +96,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     DiffusionDislocation<dim>::
     is_compressible () const
@@ -104,7 +104,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DiffusionDislocation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -121,7 +121,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DiffusionDislocation<dim>::parse_parameters (ParameterHandler &prm)
     {

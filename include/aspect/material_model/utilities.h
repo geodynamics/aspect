@@ -30,21 +30,21 @@
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <unsigned int> class SimulatorAccess;
   namespace Utilities
   {
     using namespace dealii;
     using namespace dealii::Utilities;
 
-    template <int dim>
+    template <unsigned int>
     class StructuredDataLookup;
   }
   namespace MaterialModel
   {
     using namespace dealii;
 
-    template <int dim> class MaterialModelOutputs;
-    template <int dim> struct EquationOfStateOutputs;
+    template <unsigned int> class MaterialModelOutputs;
+    template <unsigned int> struct EquationOfStateOutputs;
 
     /**
      * A namespace in which we define utility functions that
@@ -470,7 +470,7 @@ namespace aspect
        * These averages are used to fill the corresponding attributes of
        * a MaterialModelOutputs object.
        */
-      template <int dim>
+      template <unsigned int>
       void
       fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
                                               const std::vector<double> &mass_fractions,
@@ -526,7 +526,7 @@ namespace aspect
        * PhaseFunction::phase_function_value() and
        * PhaseFunction::phase_function_derivative() method.
        */
-      template <int dim>
+      template <unsigned int>
       struct PhaseFunctionInputs
       {
         /**
@@ -565,7 +565,7 @@ namespace aspect
        * how to use the return values of this object (e.g. in terms of
        * density or viscosity).
        */
-      template <int dim>
+      template <unsigned int>
       class PhaseFunction: public ::aspect::SimulatorAccess<dim>
       {
         public:

@@ -37,7 +37,7 @@ namespace aspect
   // forward declaration:
   namespace GeometryModel
   {
-    template <int dim>
+    template <unsigned int>
     class Interface;
   }
 
@@ -54,7 +54,7 @@ namespace aspect
    *
    * @ingroup Simulator
    */
-  template <int dim>
+  template <unsigned int>
   struct Parameters
   {
 

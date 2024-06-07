@@ -34,13 +34,13 @@ namespace aspect
   {
     namespace Rheology
     {
-      template <int dim>
+      template <unsigned int>
       FrankKamenetskii<dim>::FrankKamenetskii ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       FrankKamenetskii<dim>::compute_viscosity (const double temperature,
                                                 const unsigned int composition,
@@ -64,7 +64,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       FrankKamenetskii<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -93,7 +93,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       FrankKamenetskii<dim>::parse_parameters (ParameterHandler &prm)
       {

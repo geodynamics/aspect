@@ -31,7 +31,7 @@ namespace aspect
   {
 // ------------------------------ Interface -----------------------------
 
-    template <int dim>
+    template <unsigned int>
     double Interface<dim>::check_for_last_time_step (const double time_step) const
     {
       return time_step;
@@ -41,7 +41,7 @@ namespace aspect
 
 // ------------------------------ Manager -----------------------------
 
-    template <int dim>
+    template <unsigned int>
     double Manager<dim>::check_for_last_time_step (const double time_step) const
     {
       double new_time_step = time_step;
@@ -59,7 +59,7 @@ namespace aspect
       return new_time_step;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::execute () const
     {
@@ -154,7 +154,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -186,7 +186,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -228,7 +228,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_termination_criterion (const std::string &name,
                                                   const std::string &description,
@@ -243,7 +243,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {

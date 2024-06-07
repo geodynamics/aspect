@@ -32,7 +32,7 @@ using namespace dealii;
 namespace aspect
 {
 
-  template <int dim>
+  template <unsigned int>
   void my_signal(std::vector<VariableDeclaration<dim>> &variables)
   {
     std::cout << "* signals.edit_finite_element_variables:" << std::endl;
@@ -60,7 +60,7 @@ namespace aspect
 
 
 
-template <int dim>
+template <unsigned int>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;

@@ -46,7 +46,7 @@ namespace aspect
        *
        * @ingroup ParticleInterpolators
        */
-      template <int dim>
+      template <unsigned int>
       class QuadraticLeastSquares : public Interface<dim>, public aspect::SimulatorAccess<dim>
       {
         public:

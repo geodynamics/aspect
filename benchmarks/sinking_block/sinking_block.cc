@@ -44,7 +44,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class SinkingBlockMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -206,7 +206,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     SinkingBlockMaterial<dim>::
     is_compressible () const

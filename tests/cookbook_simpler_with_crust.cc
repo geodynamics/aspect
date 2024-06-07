@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class SimplerWithCrust : public Interface<dim>
     {
       public:
@@ -85,7 +85,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     SimplerWithCrust<dim>::
     is_compressible () const
@@ -94,7 +94,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SimplerWithCrust<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out ) const
@@ -116,7 +116,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SimplerWithCrust<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -164,7 +164,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SimplerWithCrust<dim>::parse_parameters (ParameterHandler &prm)
     {

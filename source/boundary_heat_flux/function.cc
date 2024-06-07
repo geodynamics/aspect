@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace BoundaryHeatFlux
   {
-    template <int dim>
+    template <unsigned int>
     std::vector<Tensor<1,dim>>
     Function<dim>::
     heat_flux (const types::boundary_id /*boundary_indicator*/,
@@ -75,7 +75,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::update()
     {
@@ -88,7 +88,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -115,7 +115,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

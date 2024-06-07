@@ -52,7 +52,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     class Material : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -154,7 +154,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Material<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -198,7 +198,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Material<dim>::parse_parameters (ParameterHandler &prm)
     {

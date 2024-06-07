@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace GravityModel
   {
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     Vertical<dim>::gravity_vector (const Point<dim> &) const
     {
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Vertical<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Vertical<dim>::parse_parameters (ParameterHandler &prm)
     {

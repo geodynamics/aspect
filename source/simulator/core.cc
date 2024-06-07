@@ -78,7 +78,7 @@ namespace aspect
      * it is used to construct the Introspection object. Create the default
      * setup based on parameters followed by a signal to allow modifications.
      */
-    template <int dim>
+    template <unsigned int>
     std::vector<VariableDeclaration<dim>> construct_variables(const Parameters<dim> &parameters,
                                                                SimulatorSignals<dim> &signals,
                                                                std::unique_ptr<MeltHandler<dim>> &melt_handler)
@@ -101,7 +101,7 @@ namespace aspect
      * MappingQ1Eulerian, which allows for mesh deformation during the
      * computation.
      */
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Mapping<dim>>
     construct_mapping(const GeometryModel::Interface<dim> &geometry_model,
                       const InitialTopographyModel::Interface<dim> &initial_topography_model)
@@ -122,7 +122,7 @@ namespace aspect
    * class has no members, there is nothing to initialize -- all we
    * need to do is execute the 'action' argument.
    */
-  template <int dim>
+  template <unsigned int>
   Simulator<dim>::IntermediaryConstructorAction::
   IntermediaryConstructorAction (const std::function<void ()> &action)
   {
@@ -134,7 +134,7 @@ namespace aspect
   /**
    * Constructor. Initialize all member variables.
    **/
-  template <int dim>
+  template <unsigned int>
   Simulator<dim>::Simulator (const MPI_Comm mpi_communicator_,
                              ParameterHandler &prm)
     :
@@ -557,7 +557,7 @@ namespace aspect
   /**
    * Destructor.
    */
-  template <int dim>
+  template <unsigned int>
   Simulator<dim>::~Simulator ()
   {
     // The particle_world object is declared before the triangulation, and so
@@ -582,7 +582,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   start_timestep ()
@@ -646,7 +646,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   compute_current_constraints ()
@@ -814,7 +814,7 @@ namespace aspect
 
   namespace
   {
-    template <int dim>
+    template <unsigned int>
     bool solver_scheme_solves_advection_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the advection equations
@@ -843,7 +843,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
     {
       // Check if we use a solver scheme that solves the Stokes equations
@@ -872,7 +872,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool compositional_fields_need_matrix_block(const Introspection<dim> &introspection)
     {
       // Check if any compositional field method actually requires a matrix block
@@ -902,7 +902,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   Table<2,DoFTools::Coupling>
   Simulator<dim>::
   setup_system_matrix_coupling () const
@@ -1022,7 +1022,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   setup_system_matrix (const std::vector<IndexSet> &system_partitioning)
@@ -1169,7 +1169,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::
   setup_system_preconditioner (const std::vector<IndexSet> &system_partitioning)
   {
@@ -1279,7 +1279,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints)
   {
 
@@ -1315,7 +1315,7 @@ namespace aspect
 
   }
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints)
   {
     // set the current time and do the interpolation
@@ -1386,7 +1386,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::setup_dofs ()
   {
     signals.edit_parameters_pre_setup_dofs(*this, parameters);
@@ -1506,7 +1506,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::setup_introspection ()
   {
     // compute the various partitionings between processors and blocks
@@ -1563,7 +1563,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::postprocess ()
   {
     TimerOutput::Scope timer (computing_timer, "Postprocessing");
@@ -1603,7 +1603,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::refine_mesh (const unsigned int max_grid_level)
   {
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
@@ -1813,7 +1813,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   solve_timestep ()
@@ -1932,7 +1932,7 @@ namespace aspect
    * This is the main function of the program, containing the overall
    * logic which function is called when.
    */
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::run ()
   {
     CitationInfo::print_info_block(pcout);

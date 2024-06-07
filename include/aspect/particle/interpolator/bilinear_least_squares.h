@@ -44,7 +44,7 @@ namespace aspect
        *
        * @ingroup ParticleInterpolators
        */
-      template <int dim>
+      template <unsigned int>
       class BilinearLeastSquares : public Interface<dim>, public aspect::SimulatorAccess<dim>
       {
         public:

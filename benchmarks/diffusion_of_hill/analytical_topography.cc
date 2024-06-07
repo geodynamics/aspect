@@ -37,7 +37,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     AnalyticalTopography<dim>::execute (TableHandler &statistics)
     {
@@ -270,7 +270,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AnalyticalTopography<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -311,7 +311,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AnalyticalTopography<dim>::parse_parameters (ParameterHandler &prm)
     {

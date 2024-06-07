@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     ModifiedTait<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
@@ -116,7 +116,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     ModifiedTait<dim>::
     is_compressible () const
@@ -126,7 +126,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ModifiedTait<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -184,7 +184,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ModifiedTait<dim>::parse_parameters (ParameterHandler &prm)
     {

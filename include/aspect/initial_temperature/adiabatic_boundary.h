@@ -45,7 +45,7 @@ namespace aspect
      *
      * This plugin is developed by Tahiry Rajaonarison, Emmanuel Njinju, and D. Sarah Stamps.
      */
-    template <int dim>
+    template <unsigned int>
     class AdiabaticBoundary : public Interface<dim>, public Utilities::AsciiDataBoundary<dim>
     {
       public:

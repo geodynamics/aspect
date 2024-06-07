@@ -33,7 +33,7 @@ namespace aspect
     {
       namespace Scratch
       {
-        template <int dim>
+        template <unsigned int>
         StokesPreconditioner<dim>::
         StokesPreconditioner (const FiniteElement<dim> &finite_element,
                               const Quadrature<dim>    &quadrature,
@@ -62,7 +62,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         StokesPreconditioner<dim>::
         StokesPreconditioner (const StokesPreconditioner &scratch)
           :
@@ -86,13 +86,13 @@ namespace aspect
         {}
 
 
-        template <int dim>
+        template <unsigned int>
         StokesPreconditioner<dim>::
         ~StokesPreconditioner ()
           = default;
 
 
-        template <int dim>
+        template <unsigned int>
         void
         StokesPreconditioner<dim>::
         reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref)
@@ -103,7 +103,7 @@ namespace aspect
         }
 
 
-        template <int dim>
+        template <unsigned int>
         StokesSystem<dim>::
         StokesSystem (const FiniteElement<dim> &finite_element,
                       const Mapping<dim>       &mapping,
@@ -144,7 +144,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         StokesSystem<dim>::
         StokesSystem (const StokesSystem<dim> &scratch)
           :
@@ -166,7 +166,7 @@ namespace aspect
           rebuild_newton_stokes_matrix(scratch.rebuild_newton_stokes_matrix)
         {}
 
-        template <int dim>
+        template <unsigned int>
         void
         StokesSystem<dim>::
         reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref,
@@ -179,7 +179,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         AdvectionSystem<dim>::
         AdvectionSystem (const FiniteElement<dim> &finite_element,
                          const FiniteElement<dim> &advection_element,
@@ -274,7 +274,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         AdvectionSystem<dim>::
         AdvectionSystem (const AdvectionSystem &scratch)
           :
@@ -357,7 +357,7 @@ namespace aspect
         {}
 
 
-        template<int dim>
+        template<unsigned int>
         void
         AdvectionSystem<dim>::
         reinit (const typename DoFHandler<dim>::active_cell_iterator &cell_ref)
@@ -373,7 +373,7 @@ namespace aspect
       namespace CopyData
       {
 
-        template <int dim>
+        template <unsigned int>
         StokesPreconditioner<dim>::
         StokesPreconditioner (const unsigned int stokes_dofs_per_cell)
           :
@@ -384,7 +384,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         StokesPreconditioner<dim>::
         StokesPreconditioner (const StokesPreconditioner &data)
           :
@@ -393,7 +393,7 @@ namespace aspect
         {}
 
 
-        template <int dim>
+        template <unsigned int>
         void StokesPreconditioner<dim>::
         extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
                                    const Introspection<dim>                   &introspection,
@@ -414,7 +414,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         StokesSystem<dim>::
         StokesSystem (const unsigned int        stokes_dofs_per_cell,
                       const bool                do_pressure_rhs_compatibility_modification)
@@ -429,7 +429,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         StokesSystem<dim>::
         StokesSystem (const StokesSystem<dim> &data)
           :
@@ -441,7 +441,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         AdvectionSystem<dim>::
         AdvectionSystem (const FiniteElement<dim> &finite_element,
                          const bool                field_is_discontinuous)
@@ -539,14 +539,14 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const
     {}
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     Interface<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const
     {
@@ -560,13 +560,13 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     AdvectionStabilizationInterface<dim>::~AdvectionStabilizationInterface()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     AdvectionStabilizationInterface<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -583,7 +583,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     AdvectionStabilizationInterface<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -597,7 +597,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void Manager<dim>::reset ()
     {
       stokes_preconditioner.clear();
@@ -608,7 +608,7 @@ namespace aspect
       advection_system_on_interior_face.clear();
     }
 
-    template <int dim>
+    template <unsigned int>
     Manager<dim>::Properties::Properties ()
       :
       need_face_material_model_data (false),

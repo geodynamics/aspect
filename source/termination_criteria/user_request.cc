@@ -26,14 +26,14 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
-    template <int dim>
+    template <unsigned int>
     bool
     UserRequest<dim>::execute()
     {
       return Utilities::fexists(this->get_output_directory()+filename_to_test, this->get_mpi_communicator());
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     UserRequest<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -58,7 +58,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     UserRequest<dim>::parse_parameters (ParameterHandler &prm)
     {

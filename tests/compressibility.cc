@@ -27,7 +27,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class Compressibility : public MaterialModel::Simple<dim>
     {
       public:
@@ -51,7 +51,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     Compressibility<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -66,7 +66,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Compressibility<dim>::
     is_compressible () const
@@ -98,7 +98,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     class Compressibility : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -117,7 +117,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     Compressibility<dim>::execute (TableHandler &)
     {

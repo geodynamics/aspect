@@ -59,7 +59,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     Adiabatic<dim>::Adiabatic ()
       :
       surface_boundary_id(numbers::invalid_unsigned_int)
@@ -67,7 +67,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Adiabatic<dim>::initialize ()
     {
@@ -84,7 +84,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Adiabatic<dim>::
     top_boundary_layer_age (const Point<dim> &position) const
@@ -126,7 +126,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Adiabatic<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -359,7 +359,7 @@ namespace aspect
                 : bottom_heating_temperature + subadiabatic_T);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Adiabatic<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -465,7 +465,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Adiabatic<dim>::parse_parameters (ParameterHandler &prm)
     {

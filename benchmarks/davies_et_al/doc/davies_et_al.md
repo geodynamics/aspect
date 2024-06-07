@@ -185,7 +185,7 @@ compared to the `simpler` material model is the line about the viscosity in
 the following function:
 
 ```{code-block} c++
-template <int dim>
+template <unsigned int>
 void
 VoT<dim>::
 evaluate(const typename Interface<dim>::MaterialModelInputs &in,

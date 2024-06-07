@@ -35,7 +35,7 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class InitialPosition : public Interface<dim>
       {
         public:

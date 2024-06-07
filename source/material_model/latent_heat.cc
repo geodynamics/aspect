@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeat<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
@@ -221,7 +221,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     LatentHeat<dim>::
     is_compressible () const
@@ -234,7 +234,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeat<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -327,7 +327,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeat<dim>::parse_parameters (ParameterHandler &prm)
     {

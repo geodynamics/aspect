@@ -50,7 +50,7 @@ namespace aspect
        * The function returns a solution vector, which contains the heat flux in the temperature
        * block of the vector.
        */
-      template <int dim>
+      template <unsigned int>
       LinearAlgebra::BlockVector
       compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access);
 
@@ -69,7 +69,7 @@ namespace aspect
        * This function is a helper function that unifies the complex heat flux computation necessary
        * for several postprocessors.
        */
-      template <int dim>
+      template <unsigned int>
       std::vector<std::vector<std::pair<double, double>>>
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access);
     }
@@ -79,7 +79,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class HeatFluxMap : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

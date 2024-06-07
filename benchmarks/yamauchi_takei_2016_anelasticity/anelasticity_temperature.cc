@@ -36,11 +36,11 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     AnelasticVs2T<dim>::AnelasticVs2T ()
     {}
 
-    template <int dim>
+    template <unsigned int>
     void
     AnelasticVs2T<dim>::initialize ()
     {
@@ -48,7 +48,7 @@ namespace aspect
     }
 
 // set up Vs function that Brent minimization operates on
-    template <int dim>
+    template <unsigned int>
     double
     AnelasticVs2T<dim>::
     fVs (double x,
@@ -68,7 +68,7 @@ namespace aspect
     }
 
 // set up volume change function that Brent minimization operates on
-    template <int dim>
+    template <unsigned int>
     double
     AnelasticVs2T<dim>::
     fdV (double x, const double bulk_modulus, const double bulk_modulus_pressure_derivative, const double pressure ) const
@@ -78,7 +78,7 @@ namespace aspect
     }
 
 // set up initial temperature
-    template <int dim>
+    template <unsigned int>
     double
     AnelasticVs2T<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -153,7 +153,7 @@ namespace aspect
       return temperature;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     AnelasticVs2T<dim>::
     yamauchi_takei_Vs (double temperature,
@@ -310,7 +310,7 @@ namespace aspect
       return anelastic_Vs;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     AnelasticVs2T<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -345,7 +345,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AnelasticVs2T<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -25,7 +25,7 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    template <int dim>
+    template <unsigned int>
     void
     ArtificialViscosity<dim>::execute(Vector<float> &indicators) const
     {
@@ -47,7 +47,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ArtificialViscosity<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -79,7 +79,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ArtificialViscosity<dim>::parse_parameters (ParameterHandler &prm)
     {

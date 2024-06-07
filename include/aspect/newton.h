@@ -38,7 +38,7 @@ namespace aspect
     /**
      * This class holds the derivatives for the Newton solver.
      */
-    template <int dim>
+    template <unsigned int>
     class MaterialModelDerivatives : public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -187,7 +187,7 @@ namespace aspect
   /**
    * A class that supports the functionality of the Newton solver.
    */
-  template <int dim>
+  template <unsigned int>
   class NewtonHandler : public SimulatorAccess<dim>
   {
     public:
@@ -219,7 +219,7 @@ namespace aspect
      * A base class for the definition of assemblers that implement the linear
      * system terms for the NewtonStokes solver scheme.
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonInterface : public aspect::Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -236,7 +236,7 @@ namespace aspect
     /**
      * This class assembles the terms of the Newton Stokes preconditioner matrix for the current cell.
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonStokesPreconditioner : public NewtonInterface<dim>
     {
       public:
@@ -255,7 +255,7 @@ namespace aspect
      * This class assembles the terms for the matrix and right-hand-side of the incompressible
      * Newton Stokes system for the current cell.
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonStokesIncompressibleTerms : public NewtonInterface<dim>
     {
       public:
@@ -275,7 +275,7 @@ namespace aspect
      * This class assembles the term that arises in the viscosity term of the Newton Stokes matrix for
      * compressible models, because the divergence of the velocity is not longer zero.
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonStokesCompressibleStrainRateViscosityTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -291,7 +291,7 @@ namespace aspect
      * This function approximates this term as
      * $- \nabla \mathbf{u} = \frac{1}{\rho} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonStokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -309,7 +309,7 @@ namespace aspect
      * This function approximates this term as
      * $ - \nabla \mathbf{u} - \frac{1}{\rho} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonStokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -325,7 +325,7 @@ namespace aspect
      * This function approximates this term as
      * $ - \nabla \mathbf{u} = \frac{1}{\rho} \frac{\partial rho}{\partial p} \rho \mathbf{g} \cdot \mathbf{u}$
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonStokesIsentropicCompressionTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -343,7 +343,7 @@ namespace aspect
      * where the right-hand side velocity is explicitly taken from the last timestep,
      * and the density is taken from a compositional field of the type 'density'.
      */
-    template <int dim>
+    template <unsigned int>
     class NewtonStokesProjectedDensityFieldTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {

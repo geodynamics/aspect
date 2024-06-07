@@ -52,7 +52,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class AdiabaticHeatingMelt : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

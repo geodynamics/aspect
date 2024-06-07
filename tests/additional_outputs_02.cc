@@ -35,7 +35,7 @@ namespace aspect
   namespace MaterialModel
   {
     using namespace dealii;
-    template <int dim>
+    template <unsigned int>
     class AdditionalOutputs1 : public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -48,7 +48,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     class Material1 : public MaterialModel::Simple<dim>
     {
       public:
@@ -85,7 +85,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   class TestAssembler :
     public aspect::Assemblers::Interface<dim>
   {
@@ -122,7 +122,7 @@ namespace aspect
   };
 
 
-  template <int dim>
+  template <unsigned int>
   void set_assemblers1(const SimulatorAccess<dim> &,
                        Assemblers::Manager<dim> &assemblers)
   {
@@ -139,7 +139,7 @@ namespace aspect
 }
 
 
-template <int dim>
+template <unsigned int>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;

@@ -38,7 +38,7 @@ namespace aspect
      * the MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class ElasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -58,7 +58,7 @@ namespace aspect
 
     namespace Rheology
     {
-      template <int dim>
+      template <unsigned int>
       class Elasticity : public ::aspect::SimulatorAccess<dim>
       {
         public:

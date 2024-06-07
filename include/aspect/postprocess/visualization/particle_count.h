@@ -40,7 +40,7 @@ namespace aspect
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
        */
-      template <int dim>
+      template <unsigned int>
       class ParticleCount
         : public CellDataVectorCreator<dim>,
           public SimulatorAccess<dim>

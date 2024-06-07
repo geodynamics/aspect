@@ -50,7 +50,7 @@ namespace aspect
        * The transformations can include topography added
        * to the initially radially symmetric mesh.
        */
-      template <int dim>
+      template <unsigned int>
       class ChunkGeometry : public ChartManifold<dim,dim>
       {
         public:
@@ -189,7 +189,7 @@ namespace aspect
      * Initial topography can be added through a radial displacement of the
      * mesh nodes.
      */
-    template <int dim>
+    template <unsigned int>
     class Chunk : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

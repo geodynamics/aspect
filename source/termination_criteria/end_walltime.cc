@@ -27,11 +27,11 @@ namespace aspect
   {
     // The start_walltime is made as static and initialized here to
     // make sure it is initialized when the program starts.
-    template <int dim>
+    template <unsigned int>
     std::time_t
     EndWalltime<dim>::start_walltime = std::time(nullptr);
 
-    template <int dim>
+    template <unsigned int>
     bool
     EndWalltime<dim>::execute()
     {
@@ -39,7 +39,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EndWalltime<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -54,7 +54,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EndWalltime<dim>::parse_parameters (ParameterHandler &prm)
     {

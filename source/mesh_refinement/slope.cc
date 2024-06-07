@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    template <int dim>
+    template <unsigned int>
     void
     Slope<dim>::execute(Vector<float> &indicators) const
     {

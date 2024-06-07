@@ -37,7 +37,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class PrescribedTemperature : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

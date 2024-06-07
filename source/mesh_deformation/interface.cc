@@ -45,13 +45,13 @@ namespace aspect
 {
   namespace Assemblers
   {
-    template <int dim>
+    template <unsigned int>
     ApplyStabilization<dim>::ApplyStabilization(const double stabilization_theta)
       :
       free_surface_theta(stabilization_theta)
     {}
 
-    template <int dim>
+    template <unsigned int>
     void
     ApplyStabilization<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
@@ -154,7 +154,7 @@ namespace aspect
 
   namespace MeshDeformation
   {
-    template <int dim>
+    template <unsigned int>
     bool
     Interface<dim>::needs_surface_stabilization () const
     {
@@ -163,7 +163,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     Interface<dim>::
     compute_initial_deformation_on_boundary(const types::boundary_id /*boundary_indicator*/,
@@ -174,7 +174,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::
     compute_velocity_constraints_on_boundary(const DoFHandler<dim> &/*mesh_deformation_dof_handler*/,
@@ -184,7 +184,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
         mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
@@ -198,7 +198,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     MeshDeformationHandler<dim>::~MeshDeformationHandler ()
     {
       // Free the Simulator's mapping object, otherwise
@@ -221,7 +221,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeshDeformationHandler<dim>::initialize ()
     {
@@ -245,7 +245,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::set_assemblers(const SimulatorAccess<dim> &,
                                                      aspect::Assemblers::Manager<dim> &assemblers) const
     {
@@ -266,7 +266,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeshDeformationHandler<dim>::register_mesh_deformation (const std::string &name,
                                                             const std::string &description,
@@ -281,7 +281,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeshDeformationHandler<dim>::update ()
     {
@@ -296,7 +296,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
@@ -361,7 +361,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
@@ -508,7 +508,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::execute()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
@@ -538,7 +538,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const Mapping<dim> &
     MeshDeformationHandler<dim>::get_level_mapping(const unsigned int level) const
     {
@@ -547,7 +547,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::make_constraints()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
@@ -654,7 +654,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::make_initial_constraints()
     {
       AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
@@ -779,7 +779,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::compute_mesh_displacements()
     {
       // This functions updates the mesh displacement of the whole
@@ -915,7 +915,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
     {
       // Same as compute_mesh_displacements, but using matrix-free GMG
@@ -1191,7 +1191,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::set_initial_topography()
     {
       LinearAlgebra::Vector distributed_initial_topography;
@@ -1250,7 +1250,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::interpolate_mesh_velocity()
     {
       // Interpolate the mesh vertex velocity onto the Stokes velocity system for use in ALE corrections
@@ -1300,7 +1300,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::setup_dofs()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
@@ -1439,7 +1439,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeshDeformationHandler<dim>::update_multilevel_deformation ()
     {
       Assert(this->is_stokes_matrix_free(), ExcInternalError());
@@ -1472,7 +1472,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::map<types::boundary_id, std::vector<std::string>> &
     MeshDeformationHandler<dim>::get_active_mesh_deformation_names () const
     {
@@ -1481,7 +1481,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim>>>> &
     MeshDeformationHandler<dim>::get_active_mesh_deformation_models () const
     {
@@ -1490,7 +1490,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::set<types::boundary_id> &
     MeshDeformationHandler<dim>::get_active_mesh_deformation_boundary_indicators () const
     {
@@ -1499,7 +1499,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::set<types::boundary_id> &
     MeshDeformationHandler<dim>::get_boundary_indicators_requiring_stabilization () const
     {
@@ -1508,7 +1508,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::set<types::boundary_id> &
     MeshDeformationHandler<dim>::get_free_surface_boundary_indicators () const
     {
@@ -1517,7 +1517,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double MeshDeformationHandler<dim>::get_free_surface_theta()const
     {
       return surface_theta;
@@ -1525,7 +1525,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const LinearAlgebra::Vector &
     MeshDeformationHandler<dim>::get_mesh_displacements () const
     {
@@ -1534,7 +1534,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const DoFHandler<dim> &
     MeshDeformationHandler<dim>::get_mesh_deformation_dof_handler () const
     {
@@ -1543,7 +1543,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const LinearAlgebra::Vector &
     MeshDeformationHandler<dim>::get_initial_topography () const
     {
@@ -1552,7 +1552,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ()
     {
@@ -1561,7 +1561,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeshDeformationHandler<dim>::write_plugin_graph (std::ostream &out)
     {

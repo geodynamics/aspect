@@ -38,7 +38,7 @@ namespace aspect
   {
     namespace Rheology
     {
-      template <int dim>
+      template <unsigned int>
       void
       StrainDependent<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -219,7 +219,7 @@ namespace aspect
                            "strain healing. Units: None");
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       StrainDependent<dim>::parse_parameters (ParameterHandler &prm)
       {
@@ -434,7 +434,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<double, 3>
       StrainDependent<dim>::
       compute_strain_weakening_factors(const std::vector<double> &composition,
@@ -509,7 +509,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<double, 3>
       StrainDependent<dim>::
       compute_strain_weakening_factors(const unsigned int j,
@@ -520,7 +520,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<double, 3>
       StrainDependent<dim>::
       apply_temperature_dependence_to_strain_weakening_factors(const std::array<double, 3> &weakening_factors,
@@ -549,7 +549,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       StrainDependent<dim>::
       calculate_strain_healing(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -575,7 +575,7 @@ namespace aspect
         return healed_strain;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::pair<double, double>
       StrainDependent<dim>::
       calculate_plastic_weakening(const double strain_ii,
@@ -595,7 +595,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       double
       StrainDependent<dim>::
       calculate_viscous_weakening(const double strain_ii,
@@ -610,7 +610,7 @@ namespace aspect
         return 1. + ( 1. - viscous_strain_weakening_factors[j] ) * strain_fraction;
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       StrainDependent<dim>::
       fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -785,7 +785,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       StrainDependent<dim>::
       compute_finite_strain_reaction_terms(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -848,7 +848,7 @@ namespace aspect
           }
       }
 
-      template <int dim>
+      template <unsigned int>
       ComponentMask
       StrainDependent<dim>::
       get_strain_composition_mask() const
@@ -882,7 +882,7 @@ namespace aspect
         return strain_mask;
       }
 
-      template <int dim>
+      template <unsigned int>
       WeakeningMechanism
       StrainDependent<dim>::
       get_weakening_mechanism() const
@@ -890,7 +890,7 @@ namespace aspect
         return weakening_mechanism;
       }
 
-      template <int dim>
+      template <unsigned int>
       HealingMechanism
       StrainDependent<dim>::
       get_healing_mechanism() const

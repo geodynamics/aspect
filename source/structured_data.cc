@@ -55,7 +55,7 @@ namespace aspect
   namespace Utilities
   {
 
-    template <int dim>
+    template <unsigned int>
     StructuredDataLookup<dim>::StructuredDataLookup(const unsigned int n_components,
                                                     const double scale_factor)
       :
@@ -68,7 +68,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     StructuredDataLookup<dim>::StructuredDataLookup(const double scale_factor)
       :
       n_components(numbers::invalid_unsigned_int),
@@ -80,7 +80,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<std::string>
     StructuredDataLookup<dim>::get_column_names() const
     {
@@ -89,7 +89,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     StructuredDataLookup<dim>::has_equidistant_coordinates() const
     {
@@ -98,7 +98,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<double> &
     StructuredDataLookup<dim>::get_interpolation_point_coordinates(const unsigned int dimension) const
     {
@@ -111,7 +111,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     unsigned int
     StructuredDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
     {
@@ -126,7 +126,7 @@ namespace aspect
       return std::distance(data_component_names.begin(),column_position);
     }
 
-    template <int dim>
+    template <unsigned int>
     std::string
     StructuredDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
     {
@@ -138,7 +138,7 @@ namespace aspect
       return data_component_names[column_index];
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     StructuredDataLookup<dim>::get_maximum_component_value(const unsigned int component) const
     {
@@ -153,7 +153,7 @@ namespace aspect
        * Return whether a set of coordinate points in dim space dimensions
        * are all equidistantly spaced within some small tolerance.
        */
-      template <int dim>
+      template <unsigned int>
       bool data_is_equidistant (const std::array<std::vector<double>,dim> &coordinate_values)
       {
         bool coordinate_values_are_equidistant = true;
@@ -186,7 +186,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
                                       std::vector<std::vector<double>> &&coordinate_values_,
@@ -332,7 +332,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StructuredDataLookup<dim>::load_ascii(const std::string &filename,
                                           const MPI_Comm comm)
@@ -590,7 +590,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StructuredDataLookup<dim>::load_netcdf(const std::string &filename, const std::vector<std::string> &data_column_names_)
     {
@@ -840,7 +840,7 @@ namespace aspect
 #endif
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     StructuredDataLookup<dim>::load_file(const std::string &filename,
                                          const MPI_Comm communicator)
@@ -852,7 +852,7 @@ namespace aspect
         load_ascii(filename, communicator);
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     StructuredDataLookup<dim>::get_data(const Point<dim> &position,
                                         const unsigned int component) const
@@ -861,7 +861,7 @@ namespace aspect
       return data[component]->value(position);
     }
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     StructuredDataLookup<dim>::get_gradients(const Point<dim> &position,
                                              const unsigned int component)
@@ -870,7 +870,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     TableIndices<dim>
     StructuredDataLookup<dim>::compute_table_indices(const TableIndices<dim> &sizes, const std::size_t idx) const
     {
@@ -886,12 +886,12 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     AsciiDataBase<dim>::AsciiDataBase ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBase<dim>::declare_parameters (ParameterHandler  &prm,
                                             const std::string &default_directory,
@@ -926,7 +926,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBase<dim>::parse_parameters (ParameterHandler &prm,
                                           const std::string &subsection_name)
@@ -945,7 +945,7 @@ namespace aspect
 
     namespace
     {
-      template <int dim>
+      template <unsigned int>
       void
       check_supported_geometry_models(const GeometryModel::Interface<dim> &geometry_model)
       {
@@ -963,7 +963,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     AsciiDataBoundary<dim>::AsciiDataBoundary ()
       :
       current_file_number(numbers::invalid_unsigned_int),
@@ -978,7 +978,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBoundary<dim>::initialize(const std::set<types::boundary_id> &boundary_ids,
                                        const unsigned int n_components)
@@ -1078,7 +1078,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     std::string
     AsciiDataBoundary<dim>::create_filename (const int filenumber,
                                              const types::boundary_id boundary_id) const
@@ -1117,7 +1117,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBoundary<dim>::update ()
     {
@@ -1174,7 +1174,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBoundary<dim>::update_data (const types::boundary_id boundary_id,
                                          const bool load_both_files)
@@ -1221,7 +1221,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBoundary<dim>::end_time_dependence ()
     {
@@ -1256,7 +1256,7 @@ namespace aspect
        * the interface of the geometry model and needs to be specialized
        * for distinct geometry models.
        */
-      template <int dim>
+      template <unsigned int>
       std::array<unsigned int,dim-1>
       get_boundary_dimensions (const types::boundary_id boundary_id)
       {
@@ -1316,7 +1316,7 @@ namespace aspect
        * used in the structured data input files, i.e. coordinates in the
        * natural coordinate system of the given @p geometry_model.
        */
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       data_coordinates_from_position (const Point<dim> &position,
                                       const aspect::GeometryModel::Interface<dim> &geometry_model)
@@ -1349,7 +1349,7 @@ namespace aspect
        * of the input coordinates and returning a point with one dimension less
        * than the input point that is determined by these coordinates.
        */
-      template <int dim>
+      template <unsigned int>
       Point<dim-1>
       boundary_coordinates_from_data_coordinates (const Point<dim> &data_coordinates,
                                                   const types::boundary_id boundary_indicator)
@@ -1367,7 +1367,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiDataBoundary<dim>::
     get_data_component (const types::boundary_id             boundary_indicator,
@@ -1390,7 +1390,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim-1>
     AsciiDataBoundary<dim>::vector_gradient (const types::boundary_id             boundary_indicator,
                                              const Point<dim>                    &position,
@@ -1410,7 +1410,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiDataBoundary<dim>::get_maximum_component_value (const types::boundary_id boundary_indicator, const unsigned int component) const
     {
@@ -1418,7 +1418,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBoundary<dim>::declare_parameters (ParameterHandler  &prm,
                                                 const std::string &default_directory,
@@ -1482,7 +1482,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataBoundary<dim>::parse_parameters (ParameterHandler &prm,
                                               const std::string &subsection_name,
@@ -1532,13 +1532,13 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     AsciiDataLayered<dim>::AsciiDataLayered ()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataLayered<dim>::initialize(const unsigned int n_components)
     {
@@ -1564,7 +1564,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiDataLayered<dim>::
     get_data_component (const Point<dim> &position,
@@ -1622,7 +1622,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataLayered<dim>::declare_parameters (ParameterHandler  &prm,
                                                const std::string &default_directory,
@@ -1666,7 +1666,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm,
                                              const std::string &subsection_name)
@@ -1684,7 +1684,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     AsciiDataInitial<dim>::AsciiDataInitial ()
       : slice_data(false),
         rotation_matrix()
@@ -1692,7 +1692,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataInitial<dim>::initialize (const unsigned int n_components)
     {
@@ -1725,7 +1725,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiDataInitial<dim>::
     get_data_component (const Point<dim> &position,
@@ -1755,7 +1755,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataInitial<dim>::declare_parameters (ParameterHandler  &prm,
                                                const std::string &default_directory,
@@ -1797,7 +1797,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataInitial<dim>::parse_parameters (ParameterHandler &prm,
                                              const std::string &subsection_name)
@@ -1842,13 +1842,13 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     AsciiDataProfile<dim>::AsciiDataProfile ()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataProfile<dim>::initialize (const MPI_Comm communicator)
     {
@@ -1867,7 +1867,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<std::string>
     AsciiDataProfile<dim>::get_column_names() const
     {
@@ -1876,7 +1876,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     unsigned int
     AsciiDataProfile<dim>::get_column_index_from_name(const std::string &column_name) const
     {
@@ -1885,7 +1885,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     unsigned int
     AsciiDataProfile<dim>::maybe_get_column_index_from_name(const std::string &column_name) const
     {
@@ -1903,7 +1903,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     AsciiDataProfile<dim>::get_column_name_from_index(const unsigned int column_index) const
     {
@@ -1912,7 +1912,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiDataProfile<dim>::
     get_data_component (const Point<1>                      &position,
@@ -1923,7 +1923,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<double> &
     AsciiDataProfile<dim>::get_interpolation_point_coordinates() const
     {

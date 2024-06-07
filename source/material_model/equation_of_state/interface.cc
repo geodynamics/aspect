@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     EquationOfStateOutputs<dim>::EquationOfStateOutputs(const unsigned int n_individual_compositions_and_phases)
       :
       densities(n_individual_compositions_and_phases, numbers::signaling_nan<double>()),
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
                                             const std::vector<double> &phase_function_values,

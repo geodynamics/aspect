@@ -35,10 +35,10 @@ namespace aspect
 {
   namespace Assemblers
   {
-    template <int dim>
+    template <unsigned int>
     class Manager;
 
-    template <int dim>
+    template <unsigned int>
     class Interface;
   }
 
@@ -60,7 +60,7 @@ namespace aspect
    *
    * @ingroup Simulator
    */
-  template <int dim>
+  template <unsigned int>
   struct SimulatorSignals
   {
     /**
@@ -357,7 +357,7 @@ namespace aspect
        * connector functions to let them register their slots with the
        * corresponding signals.
        */
-      template <int dim>
+      template <unsigned int>
       void call_connector_functions (aspect::SimulatorSignals<dim> &signals);
     }
   }

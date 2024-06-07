@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::
 
@@ -126,7 +126,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     LatentHeatMelt<dim>::
     entropy_derivative (const double temperature,
@@ -240,7 +240,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -253,7 +253,7 @@ namespace aspect
                                           in.position[q]);
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     LatentHeatMelt<dim>::
     peridotite_melt_fraction (const double temperature,
@@ -294,7 +294,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     LatentHeatMelt<dim>::
     pyroxenite_melt_fraction (const double temperature,
@@ -320,7 +320,7 @@ namespace aspect
       return pyroxenite_melt_fraction;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     LatentHeatMelt<dim>::
     melt_fraction (const double temperature,
@@ -342,7 +342,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     LatentHeatMelt<dim>::
     is_compressible () const
@@ -355,7 +355,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -556,7 +556,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::parse_parameters (ParameterHandler &prm)
     {

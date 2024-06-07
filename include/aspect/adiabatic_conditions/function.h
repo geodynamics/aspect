@@ -38,7 +38,7 @@ namespace aspect
      * A simple class that sets the adiabatic conditions based on given
      * a given function with three components: temperature, pressure, density.
      */
-    template <int dim>
+    template <unsigned int>
     class Function : public Interface<dim>
     {
       public:

@@ -26,7 +26,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       IntegratedStrain<dim>::initialize_one_particle_property(const Point<dim> &,
                                                               std::vector<double> &data) const
@@ -36,7 +36,7 @@ namespace aspect
           data.push_back(identity[Tensor<2,dim>::unrolled_to_component_indices(i)]);
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       IntegratedStrain<dim>::update_particle_property(const unsigned int data_position,
                                                       const Vector<double> &/*solution*/,
@@ -77,21 +77,21 @@ namespace aspect
                           &particle->get_properties()[data_position] + Tensor<2,dim>::n_independent_components);
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       IntegratedStrain<dim>::need_update() const
       {
         return update_time_step;
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       IntegratedStrain<dim>::get_needed_update_flags () const
       {
         return update_gradients;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       IntegratedStrain<dim>::get_property_information() const
       {

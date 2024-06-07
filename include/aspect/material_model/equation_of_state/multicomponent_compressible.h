@@ -59,7 +59,7 @@ namespace aspect
        * where $\rho$ is the density and $C_p$ is the isobaric heat capacity.
        * $f$ is a scaling factor for $\alpha$ and $\beta_T$.
        */
-      template <int dim>
+      template <unsigned int>
       class MulticomponentCompressible :  public ::aspect::SimulatorAccess<dim>
       {
         public:

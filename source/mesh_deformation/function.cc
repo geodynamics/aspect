@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    template <int dim>
+    template <unsigned int>
     BoundaryFunction<dim>::BoundaryFunction()
       :
       function(dim)
@@ -35,7 +35,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryFunction<dim>::update ()
     {
@@ -55,7 +55,7 @@ namespace aspect
      * The calling class will respect
      * these constraints when computing the new vertex positions.
      */
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryFunction<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                                     AffineConstraints<double> &mesh_velocity_constraints,
@@ -72,7 +72,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     BoundaryFunction<dim>::
     needs_surface_stabilization () const
@@ -82,7 +82,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void BoundaryFunction<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
@@ -96,7 +96,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-    template <int dim>
+    template <unsigned int>
     void BoundaryFunction<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");

@@ -45,107 +45,107 @@ namespace aspect
   using namespace dealii;
 
   // forward declarations:
-  template <int dim> class Simulator;
-  template <int dim> struct SimulatorSignals;
-  template <int dim> class LateralAveraging;
-  template <int dim> struct RotationProperties;
+  template <unsigned int> class Simulator;
+  template <unsigned int> struct SimulatorSignals;
+  template <unsigned int> class LateralAveraging;
+  template <unsigned int> struct RotationProperties;
 
   namespace GravityModel
   {
-    template <int dim> class Interface;
+    template <unsigned int> class Interface;
   }
 
   namespace HeatingModel
   {
-    template <int dim> class Manager;
+    template <unsigned int> class Manager;
   }
 
   namespace MaterialModel
   {
-    template <int dim> class Interface;
+    template <unsigned int> class Interface;
   }
 
   namespace InitialTemperature
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <unsigned int> class Manager;
+    template <unsigned int> class Interface;
   }
 
   namespace BoundaryTemperature
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <unsigned int> class Manager;
+    template <unsigned int> class Interface;
   }
 
   namespace BoundaryHeatFlux
   {
-    template <int dim> class Interface;
+    template <unsigned int> class Interface;
   }
 
   namespace BoundaryComposition
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <unsigned int> class Manager;
+    template <unsigned int> class Interface;
   }
 
   namespace BoundaryTraction
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <unsigned int> class Manager;
+    template <unsigned int> class Interface;
   }
 
   namespace BoundaryVelocity
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <unsigned int> class Manager;
+    template <unsigned int> class Interface;
   }
 
   namespace InitialComposition
   {
-    template <int dim> class Manager;
-    template <int dim> class Interface;
+    template <unsigned int> class Manager;
+    template <unsigned int> class Interface;
   }
 
   namespace InitialTopographyModel
   {
-    template <int dim> class Interface;
+    template <unsigned int> class Interface;
   }
 
   namespace MeshRefinement
   {
-    template <int dim> class Manager;
+    template <unsigned int> class Manager;
   }
 
   namespace AdiabaticConditions
   {
-    template <int dim> class Interface;
+    template <unsigned int> class Interface;
   }
 
   namespace Postprocess
   {
-    template <int dim> class Manager;
+    template <unsigned int> class Manager;
   }
 
-  template <int dim> class MeltHandler;
-  template <int dim> class VolumeOfFluidHandler;
+  template <unsigned int> class MeltHandler;
+  template <unsigned int> class VolumeOfFluidHandler;
 
   namespace MeshDeformation
   {
-    template <int dim> class MeshDeformationHandler;
+    template <unsigned int> class MeshDeformationHandler;
   }
 
-  template <int dim> class NewtonHandler;
+  template <unsigned int> class NewtonHandler;
 
-  template <int dim> class StokesMatrixFreeHandler;
+  template <unsigned int> class StokesMatrixFreeHandler;
 
   namespace Particle
   {
-    template <int dim> class World;
+    template <unsigned int> class World;
   }
 
   namespace TimeStepping
   {
-    template <int dim> class Manager;
+    template <unsigned int> class Manager;
   }
 
   /**
@@ -169,7 +169,7 @@ namespace aspect
    *
    * @ingroup Simulator
    */
-  template <int dim>
+  template <unsigned int>
   class SimulatorAccess
   {
     public:

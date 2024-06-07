@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       void
       RandomUniform<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
@@ -43,7 +43,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       RandomUniform<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -94,7 +94,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       RandomUniform<dim>::parse_parameters (ParameterHandler &prm)
       {

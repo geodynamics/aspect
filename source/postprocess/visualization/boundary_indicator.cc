@@ -30,7 +30,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       BoundaryIndicator<dim>::
       BoundaryIndicator ()
         :
@@ -39,7 +39,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       BoundaryIndicator<dim>::execute() const
       {

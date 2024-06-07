@@ -37,7 +37,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class PerturbedBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -53,7 +53,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class PolarBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -68,7 +68,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class MandelBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -84,7 +84,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class InclusionShapeBox : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

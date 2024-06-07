@@ -35,7 +35,7 @@ namespace aspect
        * Stokes matrix.
        * @ingroup ParticleGenerators
        */
-      template <int dim>
+      template <unsigned int>
       class QuadraturePoints : public Interface<dim>
       {
         public:

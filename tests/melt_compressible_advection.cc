@@ -42,7 +42,7 @@ namespace aspect
     * A material model with constant material properties except for the
     * compaction viscosity, and non-zero melt and solid compressibilities.
     */
-  template <int dim>
+  template <unsigned int>
   class CompressibleMeltMaterial:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
@@ -92,7 +92,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   class RefFunction : public Function<dim>
   {
     public:
@@ -121,7 +121,7 @@ namespace aspect
     * A postprocessor that evaluates the accuracy of the solution
     * by using the L2 norm.
     */
-  template <int dim>
+  template <unsigned int>
   class CompressibleMeltPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -133,7 +133,7 @@ namespace aspect
       execute (TableHandler &statistics);
   };
 
-  template <int dim>
+  template <unsigned int>
   std::pair<std::string,std::string>
   CompressibleMeltPostprocessor<dim>::execute (TableHandler &statistics)
   {
@@ -159,7 +159,7 @@ namespace aspect
     return std::make_pair("Error porosity_L2:", os.str());
   }
 
-  template <int dim>
+  template <unsigned int>
   class PressureBdry:
 
     public BoundaryFluidPressure::Interface<dim>

@@ -84,7 +84,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
 
-    template <int dim>
+    template <unsigned int>
     class SpiegelmanMaterial : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -203,7 +203,7 @@ namespace aspect
 
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     double
     SpiegelmanMaterial<dim>::
     compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const
@@ -213,7 +213,7 @@ namespace aspect
       return edot_ii;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     SpiegelmanMaterial<dim>::
     compute_viscosity(const double edot_ii,
@@ -255,7 +255,7 @@ namespace aspect
         return viscosity;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     SpiegelmanMaterial<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -454,7 +454,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     SpiegelmanMaterial<dim>::
     reference_density () const
@@ -462,7 +462,7 @@ namespace aspect
       return densities[0];
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     SpiegelmanMaterial<dim>::
     is_compressible () const
@@ -470,7 +470,7 @@ namespace aspect
       return (reference_compressibility != 0);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     SpiegelmanMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -568,7 +568,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SpiegelmanMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {

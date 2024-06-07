@@ -39,7 +39,7 @@ namespace aspect
        * stress values and directions, i.e., the eigenvalues and eigenvectors
        * of the stress tensor (or optionally of the deviatoric stress tensor).
        */
-      template <int dim>
+      template <unsigned int>
       class PrincipalStress
         : public DataPostprocessor<dim>,
           public SimulatorAccess<dim>,

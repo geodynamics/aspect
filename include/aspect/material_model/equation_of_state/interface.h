@@ -43,7 +43,7 @@ namespace aspect
      * Accordingly, the vectors are the values for each compositional field
      * and individual phase at one specific location.
      */
-    template <int dim>
+    template <unsigned int>
     struct EquationOfStateOutputs
     {
       /**
@@ -113,7 +113,7 @@ namespace aspect
      * plus one for the background field, if the input @p eos_outputs_all_phases contained
      * one and the phase function contained one as well).
      */
-    template <int dim>
+    template <unsigned int>
     void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
                                             const std::vector<double> &phase_function_values,

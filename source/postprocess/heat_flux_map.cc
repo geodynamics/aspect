@@ -36,7 +36,7 @@ namespace aspect
   {
     namespace internal
     {
-      template <int dim>
+      template <unsigned int>
       LinearAlgebra::BlockVector
       compute_dirichlet_boundary_heat_flux_solution_vector (const SimulatorAccess<dim> &simulator_access)
       {
@@ -315,7 +315,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::vector<std::pair<double, double>>>
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
       {
@@ -454,7 +454,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     HeatFluxMap<dim>::execute (TableHandler &)
     {
@@ -477,7 +477,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     HeatFluxMap<dim>::output_to_file(const types::boundary_id boundary_id,
                                      const std::vector<std::vector<std::pair<double, double>>> &heat_flux_and_area)

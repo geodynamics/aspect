@@ -28,7 +28,7 @@
 using namespace aspect;
 
 
-template <int dim>
+template <unsigned int>
 void post_constraints_creation (const SimulatorAccess<dim> &sim,
                                 AffineConstraints<double> &)
 {
@@ -63,7 +63,7 @@ void post_constraints_creation (const SimulatorAccess<dim> &sim,
 }
 
 
-template <int dim>
+template <unsigned int>
 void signal_connector (SimulatorSignals<dim> &signals)
 {
   signals.post_constraints_creation.connect (&post_constraints_creation<dim>);
@@ -77,7 +77,7 @@ ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
 // make a dummy material model and instantiate and register it
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class TestMaterial : public MaterialModel::Interface<dim>
   {
     public:

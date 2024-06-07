@@ -38,7 +38,7 @@ namespace aspect
        * A class derived from DataPostprocessor that outputs the depth
        * according to the geometry model.
        */
-      template <int dim>
+      template <unsigned int>
       class Depth
         : public DataPostprocessorScalar<dim>,
           public SimulatorAccess<dim>,

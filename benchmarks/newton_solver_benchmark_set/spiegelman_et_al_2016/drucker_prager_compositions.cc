@@ -84,7 +84,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
 
-    template <int dim>
+    template <unsigned int>
     class DruckerPragerCompositions : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -196,7 +196,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     double
     DruckerPragerCompositions<dim>::
     compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const
@@ -206,7 +206,7 @@ namespace aspect
       return edot_ii;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DruckerPragerCompositions<dim>::
     compute_viscosity(const double edot_ii,const double pressure,const int comp,const double prefactor,const bool regularize, const double min_visc, const double max_visc) const
@@ -237,7 +237,7 @@ namespace aspect
       return std::max(std::min(viscosity,max_visc),min_visc);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DruckerPragerCompositions<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -445,7 +445,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DruckerPragerCompositions<dim>::
     reference_density () const
@@ -453,7 +453,7 @@ namespace aspect
       return densities[0];
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     DruckerPragerCompositions<dim>::
     is_compressible () const
@@ -461,7 +461,7 @@ namespace aspect
       return (reference_compressibility != 0);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DruckerPragerCompositions<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -560,7 +560,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DruckerPragerCompositions<dim>::parse_parameters (ParameterHandler &prm)
     {

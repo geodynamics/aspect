@@ -36,7 +36,7 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  template <unsigned int>
   class EVPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -48,7 +48,7 @@ namespace aspect
       execute (TableHandler &statistics);
   };
 
-  template <int dim>
+  template <unsigned int>
   std::pair<std::string,std::string>
   EVPostprocessor<dim>::execute (TableHandler &statistics)
   {

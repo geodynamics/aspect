@@ -37,7 +37,7 @@ namespace aspect
      *
      * @ingroup BoundaryTractions
      */
-    template <int dim>
+    template <unsigned int>
     class ZeroTraction : public Interface<dim>
     {
       public:

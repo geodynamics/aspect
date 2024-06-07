@@ -49,7 +49,7 @@ namespace aspect
      * @ingroup InitialTemperatures
      */
 
-    template <int dim>
+    template <unsigned int>
     class SAVANIPerturbation : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

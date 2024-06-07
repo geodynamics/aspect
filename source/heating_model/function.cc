@@ -27,14 +27,14 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     Function<dim>::Function ()
       :
       heating_model_function (1)
     {}
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -56,7 +56,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::update ()
     {
@@ -70,7 +70,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -97,7 +97,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

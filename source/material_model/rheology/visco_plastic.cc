@@ -45,7 +45,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs(const unsigned int n_points)
       : NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
         cohesions(n_points, numbers::signaling_nan<double>()),
@@ -56,7 +56,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -87,13 +87,13 @@ namespace aspect
     namespace Rheology
     {
 
-      template <int dim>
+      template <unsigned int>
       ViscoPlastic<dim>::ViscoPlastic ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       IsostrainViscosities
       ViscoPlastic<dim>::
       calculate_isostrain_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -389,7 +389,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ViscoPlastic<dim>::
       compute_viscosity_derivatives(const unsigned int i,
@@ -505,7 +505,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       ComponentMask
       ViscoPlastic<dim>::
       get_volumetric_composition_mask() const
@@ -524,7 +524,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -630,7 +630,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm,
                                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
@@ -772,7 +772,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ViscoPlastic<dim>::create_plastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
@@ -784,7 +784,7 @@ namespace aspect
           }
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       ViscoPlastic<dim>::
       fill_plastic_outputs(const unsigned int i,

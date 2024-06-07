@@ -28,12 +28,12 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     RadioactiveDecay<dim>::RadioactiveDecay ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RadioactiveDecay<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -83,7 +83,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RadioactiveDecay<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -124,7 +124,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RadioactiveDecay<dim>::parse_parameters (ParameterHandler &prm)
     {

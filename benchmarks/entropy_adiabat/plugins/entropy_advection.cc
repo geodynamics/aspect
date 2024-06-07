@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace Assemblers
   {
-    template <int dim>
+    template <unsigned int>
     void
     EntropyAdvectionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                           internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
@@ -174,7 +174,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     EntropyAdvectionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -224,7 +224,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     EntropyAdvectionSystem<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -240,7 +240,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     EntropyAdvectionSystem<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -258,7 +258,7 @@ namespace aspect
   }
 
 // The function below replaces the normal temperature advection assembler with the entropy advection assembler of this file
-  template <int dim>
+  template <unsigned int>
   void set_assemblers_entropy_advection(const SimulatorAccess<dim> &simulator_access,
                                         Assemblers::Manager<dim> &assemblers)
   {
@@ -290,7 +290,7 @@ namespace aspect
   }
 } // namespace aspect
 
-template <int dim>
+template <unsigned int>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   signals.set_assemblers.connect (&aspect::set_assemblers_entropy_advection<dim>);

@@ -36,7 +36,7 @@ namespace aspect
      *
      * @ingroup TerminationCriteria
      */
-    template <int dim>
+    template <unsigned int>
     class EndWalltime : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

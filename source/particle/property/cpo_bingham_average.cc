@@ -29,13 +29,13 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       CpoBinghamAverage<dim>::CpoBinghamAverage ()
       {}
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoBinghamAverage<dim>::initialize ()
       {
@@ -54,7 +54,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoBinghamAverage<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                std::vector<double> &data) const
@@ -85,7 +85,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoBinghamAverage<dim>::update_one_particle_property(const unsigned int data_position,
                                                            const Point<dim> &,
@@ -117,7 +117,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       std::array<std::array<double,3>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices) const
       {
@@ -175,7 +175,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       CpoBinghamAverage<dim>::need_update() const
       {
@@ -184,7 +184,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       CpoBinghamAverage<dim>::get_needed_update_flags () const
       {
@@ -193,7 +193,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       CpoBinghamAverage<dim>::get_property_information() const
       {
@@ -210,7 +210,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoBinghamAverage<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -242,7 +242,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoBinghamAverage<dim>::parse_parameters (ParameterHandler &prm)
       {

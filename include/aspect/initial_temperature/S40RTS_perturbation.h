@@ -72,7 +72,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     class PatchOnS40RTS;
 
 
@@ -85,7 +85,7 @@ namespace aspect
      * @ingroup InitialTemperatures
      */
 
-    template <int dim>
+    template <unsigned int>
     class S40RTSPerturbation : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -224,7 +224,7 @@ namespace aspect
          */
         bool use_material_model_thermal_alpha;
 
-        template <int dim2> friend class PatchOnS40RTS;
+        template <unsigned int2> friend class PatchOnS40RTS;
     };
 
   }

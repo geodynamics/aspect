@@ -45,7 +45,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class RTinstabilityMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -173,7 +173,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     RTinstabilityMaterial<dim>::
     is_compressible () const

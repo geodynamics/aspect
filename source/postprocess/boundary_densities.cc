@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     BoundaryDensities<dim>::execute (TableHandler &statistics)
     {
@@ -147,14 +147,14 @@ namespace aspect
                                                   output.str());
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     BoundaryDensities<dim>::density_at_top() const
     {
       return top_density;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     BoundaryDensities<dim>::density_at_bottom() const
     {

@@ -33,7 +33,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     CrystalPreferredOrientation<dim>::CrystalPreferredOrientation ()
       :
       // the following value is later read from the input file
@@ -48,7 +48,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     CrystalPreferredOrientation<dim>::~CrystalPreferredOrientation ()
     {
       // make sure a thread that may still be running in the background,
@@ -65,7 +65,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CrystalPreferredOrientation<dim>::initialize ()
     {
@@ -75,7 +75,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     CrystalPreferredOrientation<dim>::required_other_postprocessors () const
     {
@@ -84,7 +84,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     // We need to pass the arguments by value, as this function can be called on a separate thread:
     void CrystalPreferredOrientation<dim>::writer (const std::string &filename,
                                                    const std::string &temporary_output_location,
@@ -168,7 +168,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     CrystalPreferredOrientation<dim>::execute (TableHandler &statistics)
     {
@@ -564,7 +564,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CrystalPreferredOrientation<dim>::set_last_output_time (const double current_time)
     {
@@ -585,7 +585,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     typename CrystalPreferredOrientation<dim>::Output
     CrystalPreferredOrientation<dim>::string_to_output_enum(const std::string &string)
     {
@@ -601,7 +601,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CrystalPreferredOrientation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -686,7 +686,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CrystalPreferredOrientation<dim>::parse_parameters (ParameterHandler &prm)
     {

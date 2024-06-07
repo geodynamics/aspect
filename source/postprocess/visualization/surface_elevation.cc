@@ -26,7 +26,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       SurfaceElevation<dim>::
       SurfaceElevation ()
         :
@@ -37,7 +37,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SurfaceElevation<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

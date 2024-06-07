@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       StrainRateTensor<dim>::
       StrainRateTensor ()
         :
@@ -39,7 +39,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       StrainRateTensor<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

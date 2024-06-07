@@ -34,7 +34,7 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    template <int dim>
+    template <unsigned int>
     void
     FreeSurface<dim>::initialize ()
     {
@@ -69,7 +69,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                           const IndexSet &mesh_locally_owned,
                                                           const IndexSet &mesh_locally_relevant,
@@ -212,7 +212,7 @@ namespace aspect
      * The calling class will respect
      * these constraints when computing the new vertex positions.
      */
-    template <int dim>
+    template <unsigned int>
     void
     FreeSurface<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                                AffineConstraints<double> &mesh_velocity_constraints,
@@ -256,7 +256,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     FreeSurface<dim>::
     needs_surface_stabilization () const
@@ -266,7 +266,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void FreeSurface<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
@@ -294,7 +294,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void FreeSurface<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");

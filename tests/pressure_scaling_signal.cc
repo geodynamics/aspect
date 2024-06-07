@@ -33,7 +33,7 @@ double my_signal(const double pressure_scaling, const double reference_viscosity
 }
 
 
-template <int dim>
+template <unsigned int>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   std::cout << "* Connecting signals" << std::endl;

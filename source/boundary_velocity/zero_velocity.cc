@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace BoundaryVelocity
   {
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     ZeroVelocity<dim>::
     boundary_velocity (const types::boundary_id ,

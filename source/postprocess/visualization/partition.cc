@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       Partition<dim>::
       Partition ()
         :
@@ -43,7 +43,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Partition<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &/*input_data*/,

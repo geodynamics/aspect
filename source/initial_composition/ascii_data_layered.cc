@@ -27,12 +27,12 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    template <int dim>
+    template <unsigned int>
     AsciiDataLayered<dim>::AsciiDataLayered ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataLayered<dim>::initialize ()
     {
@@ -41,7 +41,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiDataLayered<dim>::
     initial_composition (const Point<dim> &position,
@@ -53,7 +53,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataLayered<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -67,7 +67,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiDataLayered<dim>::parse_parameters (ParameterHandler &prm)
     {

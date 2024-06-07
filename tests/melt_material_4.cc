@@ -38,7 +38,7 @@ using namespace dealii;
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class MeltMaterial:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
@@ -96,7 +96,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   class RefFunction : public Function<dim>
   {
     public:
@@ -125,7 +125,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   class MMPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -135,7 +135,7 @@ namespace aspect
   };
 
 
-  template <int dim>
+  template <unsigned int>
   std::pair<std::string,std::string>
   MMPostprocessor<dim>::execute (TableHandler &statistics)
   {
@@ -191,7 +191,7 @@ namespace aspect
 
   }
 
-  template <int dim>
+  template <unsigned int>
   class PressureBdry:
 
     public BoundaryFluidPressure::Interface<dim>

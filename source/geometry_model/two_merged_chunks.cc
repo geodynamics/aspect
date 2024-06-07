@@ -35,7 +35,7 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedChunks<dim>::initialize ()
     {
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedChunks<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
@@ -123,7 +123,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedChunks<dim>::
     set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const
@@ -171,7 +171,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<types::boundary_id>
     TwoMergedChunks<dim>::
     get_used_boundary_indicators () const
@@ -185,7 +185,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     TwoMergedChunks<dim>::
     get_symbolic_boundary_names_map () const
@@ -229,7 +229,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::
     length_scale () const
@@ -244,7 +244,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::depth(const Point<dim> &position) const
     {
@@ -255,7 +255,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
@@ -264,7 +264,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     TwoMergedChunks<dim>::representative_point(const double depth) const
     {
@@ -284,7 +284,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::west_longitude () const
     {
@@ -293,7 +293,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::east_longitude () const
     {
@@ -302,7 +302,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::longitude_range () const
     {
@@ -311,7 +311,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::south_latitude () const
     {
@@ -323,7 +323,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::north_latitude () const
     {
@@ -335,7 +335,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::latitude_range () const
     {
@@ -347,7 +347,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::maximal_depth() const
     {
@@ -356,7 +356,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::inner_radius () const
     {
@@ -365,7 +365,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedChunks<dim>::outer_radius () const
     {
@@ -374,7 +374,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     TwoMergedChunks<dim>::has_curved_elements() const
     {
@@ -383,7 +383,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     TwoMergedChunks<dim>::point_is_in_domain(const Point<dim> &point) const
     {
@@ -408,7 +408,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     TwoMergedChunks<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
@@ -426,7 +426,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     aspect::Utilities::Coordinates::CoordinateSystem
     TwoMergedChunks<dim>::natural_coordinate_system() const
     {
@@ -439,7 +439,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     TwoMergedChunks<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
@@ -455,7 +455,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedChunks<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -527,7 +527,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedChunks<dim>::parse_parameters (ParameterHandler &prm)
     {

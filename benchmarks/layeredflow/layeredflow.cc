@@ -72,7 +72,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       class FunctionLayeredFlow : public Function<dim>
       {
         public:
@@ -104,7 +104,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     class LayeredFlowBoundary : public BoundaryVelocity::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
@@ -132,7 +132,7 @@ namespace aspect
      * therefore set to zero in the implementation of this class.
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class LayeredFlowMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -208,7 +208,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     LayeredFlowMaterial<dim>::
     is_compressible () const
@@ -216,7 +216,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     LayeredFlowMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -238,7 +238,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LayeredFlowMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -258,21 +258,21 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     LayeredFlowMaterial<dim>::get_beta() const
     {
       return beta;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     LayeredFlowMaterial<dim>::get_epsilon() const
     {
       return epsilon;
     }
 
-    template <int dim>
+    template <unsigned int>
     LayeredFlowBoundary<dim>::LayeredFlowBoundary ()
       :
       beta (0),
@@ -314,7 +314,7 @@ namespace aspect
       * The implementation of error evaluators that correspond to the
       * benchmarks defined in the manual.
       */
-    template <int dim>
+    template <unsigned int>
     class LayeredFlowPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -325,7 +325,7 @@ namespace aspect
         execute (TableHandler &statistics) override;
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     LayeredFlowPostprocessor<dim>::execute (TableHandler &)
     {

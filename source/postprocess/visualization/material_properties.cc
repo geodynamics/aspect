@@ -32,7 +32,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       MaterialProperties<dim>::
       MaterialProperties ()
         :
@@ -44,7 +44,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::string>
       MaterialProperties<dim>::
       get_names () const
@@ -68,7 +68,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       MaterialProperties<dim>::
       get_data_component_interpretation () const
@@ -90,7 +90,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       MaterialProperties<dim>::
       get_needed_update_flags () const
@@ -100,7 +100,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MaterialProperties<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -206,7 +206,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MaterialProperties<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -242,7 +242,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MaterialProperties<dim>::parse_parameters (ParameterHandler &prm)
       {

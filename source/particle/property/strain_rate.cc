@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       StrainRate<dim>::initialize_one_particle_property(const Point<dim> &,
                                                         std::vector<double> &data) const
@@ -39,7 +39,7 @@ namespace aspect
 
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       StrainRate<dim>::update_particle_property(const unsigned int data_position,
                                                 const Vector<double> &/*solution*/,
@@ -60,21 +60,21 @@ namespace aspect
 
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       StrainRate<dim>::need_update() const
       {
         return update_time_step;
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       StrainRate<dim>::get_needed_update_flags () const
       {
         return update_gradients;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       StrainRate<dim>::get_property_information() const
       {

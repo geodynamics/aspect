@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Multicomponent<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -68,7 +68,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Multicomponent<dim>::
     is_compressible () const
@@ -76,7 +76,7 @@ namespace aspect
       return equation_of_state.is_compressible();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Multicomponent<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -112,7 +112,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Multicomponent<dim>::parse_parameters (ParameterHandler &prm)
     {

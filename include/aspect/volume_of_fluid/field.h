@@ -57,7 +57,7 @@ namespace aspect
    * Structure to package the relevant data (both state and cached) in a single
    * location for access.
    */
-  template<int dim>
+  template<unsigned int>
   struct VolumeOfFluidField
   {
     /**

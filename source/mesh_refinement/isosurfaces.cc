@@ -150,12 +150,12 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Isosurfaces<dim>::update ()
     { }
 
-    template <int dim>
+    template <unsigned int>
     void
     Isosurfaces<dim>::tag_additional_cells () const
     {
@@ -256,7 +256,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Isosurfaces<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -293,7 +293,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Isosurfaces<dim>::parse_parameters (ParameterHandler &prm)
     {

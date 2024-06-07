@@ -42,7 +42,7 @@ namespace aspect
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
        */
-      template <int dim>
+      template <unsigned int>
       class NonadiabaticTemperature
         : public DataPostprocessorScalar<dim>,
           public SimulatorAccess<dim>,

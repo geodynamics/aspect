@@ -50,7 +50,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class SimpleNonlinear : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -117,7 +117,7 @@ namespace aspect
 
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     SimpleNonlinear<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -239,7 +239,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     SimpleNonlinear<dim>::
     is_compressible () const
@@ -247,7 +247,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     SimpleNonlinear<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -326,7 +326,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SimpleNonlinear<dim>::parse_parameters (ParameterHandler &prm)
     {

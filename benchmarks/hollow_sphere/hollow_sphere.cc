@@ -132,7 +132,7 @@ namespace aspect
         return hr*cos(theta) + rho_0 * gravity * (R2 - r);
       }
 
-      template<int dim>
+      template<unsigned int>
       double
       hollow_sphere_normal_traction(const Point<dim> &pos,
                                     const double mmm)
@@ -167,7 +167,7 @@ namespace aspect
       /**
        * The exact solution for the HollowSphere benchmark.
        */
-      template <int dim>
+      template <unsigned int>
       class FunctionHollowSphere : public Function<dim>
       {
         public:
@@ -200,7 +200,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class HollowSphereBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
@@ -233,7 +233,7 @@ namespace aspect
         double mmm;
     };
 
-    template <int dim>
+    template <unsigned int>
     HollowSphereBoundary<dim>::HollowSphereBoundary ()
       :
       mmm (0)
@@ -272,7 +272,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class HollowSphereMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -333,7 +333,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     HollowSphereMaterial<dim>::
     is_compressible () const
@@ -402,7 +402,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     HollowSphereMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -421,7 +421,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     HollowSphereMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -439,7 +439,7 @@ namespace aspect
       this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     HollowSphereBoundary<dim>::declare_parameters (ParameterHandler &)
     {
@@ -448,7 +448,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     HollowSphereBoundary<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -461,7 +461,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     HollowSphereMaterial<dim>::get_mmm() const
     {
@@ -475,7 +475,7 @@ namespace aspect
       * The implementation of error evaluators that correspond to the
       * benchmarks defined in the paper Duretz et al. reference above.
       */
-    template <int dim>
+    template <unsigned int>
     class HollowSpherePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -499,7 +499,7 @@ namespace aspect
         compute_dynamic_topography_error() const;
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     HollowSpherePostprocessor<dim>::execute (TableHandler &)
     {
@@ -572,7 +572,7 @@ namespace aspect
     /**
      * Register the other postprocessor that we need: DynamicTopography
      */
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     HollowSpherePostprocessor<dim>::required_other_postprocessors() const
     {

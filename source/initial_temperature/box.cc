@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     double
     PerturbedBox<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -47,7 +47,7 @@ namespace aspect
       return 1 + perturbation/10;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     PolarBox<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -71,7 +71,7 @@ namespace aspect
       return 1+(1/exp(position.distance(temporary2)) - 1/exp(position.distance(temporary1)));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     MandelBox<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -107,7 +107,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     InclusionShapeBox<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -175,7 +175,7 @@ namespace aspect
       return ambient_temperature + perturbation;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     InclusionShapeBox<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -220,7 +220,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     InclusionShapeBox<dim>::parse_parameters (ParameterHandler &prm)
     {

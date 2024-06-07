@@ -114,7 +114,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       Tensor<1,dim>
       Annulus_velocity (const Point<dim> &pos,
                         const double k,
@@ -139,7 +139,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       double
       Annulus_pressure (const Point<dim> &pos,
                         const double k,
@@ -156,7 +156,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       double
       Annulus_normal_traction (const Point<dim> &pos,
                                const double k,
@@ -172,7 +172,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       double
       Annulus_density (const Point<dim> &pos,
                        const double k,
@@ -200,7 +200,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       Tensor<1,dim>
       Annulus_gravity (const Point<dim> &pos,
                        const double k,
@@ -229,7 +229,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       class FunctionAnnulus : public Function<dim>
       {
         public:
@@ -280,7 +280,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class AnnulusMaterial : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
@@ -432,7 +432,7 @@ namespace aspect
     /**
      * Velocity boundary condition for the Annulus benchmark
      */
-    template <int dim>
+    template <unsigned int>
     class AnnulusBoundary : public BoundaryVelocity::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
@@ -458,7 +458,7 @@ namespace aspect
     /**
      * Gravity model for the Annulus benchmark
      */
-    template <int dim>
+    template <unsigned int>
     class AnnulusGravity : public aspect::GravityModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
@@ -483,7 +483,7 @@ namespace aspect
     /**
       * A postprocessor that evaluates the accuracy of the solution.
       */
-    template <int dim>
+    template <unsigned int>
     class AnnulusPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -667,7 +667,7 @@ namespace aspect
     /**
       * A postprocessor that visualizes the analytical solution.
       */
-    template <int dim>
+    template <unsigned int>
     class AnnulusVisualizationPostprocessor : public DataPostprocessor<dim>,
       public Postprocess::VisualizationPostprocessors::Interface<dim>,
       public ::aspect::SimulatorAccess<dim>
@@ -734,7 +734,7 @@ namespace aspect
     /**
      * A particle property that represents the density on particles.
      */
-    template <int dim>
+    template <unsigned int>
     class ParticleDensity : public aspect::Particle::Property::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -767,7 +767,7 @@ namespace aspect
     /**
     * A initial condition for compositional fields that represents the initial density.
     */
-    template <int dim>
+    template <unsigned int>
     class AnnulusInitialDensity : public aspect::InitialComposition::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

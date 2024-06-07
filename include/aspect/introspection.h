@@ -40,7 +40,7 @@ namespace aspect
    * Helper function to construct the default list of variables to use
    * based on the given set of @p parameters.
    */
-  template <int dim>
+  template <unsigned int>
   std::vector<VariableDeclaration<dim>>
   construct_default_variables (const Parameters<dim> &parameters);
 
@@ -123,7 +123,7 @@ namespace aspect
    *
    * @ingroup Simulator
    */
-  template <int dim>
+  template <unsigned int>
   struct Introspection: public FEVariableCollection<dim>
   {
     public:

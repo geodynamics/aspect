@@ -37,7 +37,7 @@ void declare_parameters(const unsigned int dim,
 
 
 // same for parsing parameters
-template <int dim>
+template <unsigned int>
 void parse_parameters(const Parameters<dim> &parameters,
                       ParameterHandler &prm)
 {

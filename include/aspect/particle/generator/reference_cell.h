@@ -37,7 +37,7 @@ namespace aspect
        *
        * @ingroup ParticleGenerators
        */
-      template <int dim>
+      template <unsigned int>
       class ReferenceCell : public Interface<dim>
       {
         public:

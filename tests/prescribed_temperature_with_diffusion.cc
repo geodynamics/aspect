@@ -27,7 +27,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class PrescribedTemperatureMaterial : public MaterialModel::Simple<dim>
     {
       public:
@@ -48,7 +48,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedTemperatureMaterial<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -68,7 +68,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedTemperatureMaterial<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

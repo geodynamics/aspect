@@ -51,7 +51,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     AdvectionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                    internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
@@ -257,7 +257,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     AdvectionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -314,7 +314,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DiffusionSystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                    internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
@@ -382,7 +382,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     DiffusionSystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -394,7 +394,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     DiffusionSystem<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -404,7 +404,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     DiffusionSystem<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -423,7 +423,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AdvectionSystemBoundaryHeatFlux<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                                   internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
@@ -499,14 +499,14 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DarcySystem<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       MeltHandler<dim>::create_material_model_outputs(outputs);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DarcySystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
@@ -625,7 +625,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     DarcySystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
@@ -673,7 +673,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
@@ -887,7 +887,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AdvectionSystemInteriorFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const

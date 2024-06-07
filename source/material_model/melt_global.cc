@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     double
     MeltGlobal<dim>::
     reference_darcy_coefficient () const
@@ -41,7 +41,7 @@ namespace aspect
       return reference_permeability * std::pow(0.01,3.0) / eta_f;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     MeltGlobal<dim>::
     is_compressible () const
@@ -49,7 +49,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltGlobal<dim>::
     melt_fraction (const double temperature,
@@ -73,7 +73,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltGlobal<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -96,7 +96,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltGlobal<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
@@ -297,7 +297,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltGlobal<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -448,7 +448,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltGlobal<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -521,7 +521,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltGlobal<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

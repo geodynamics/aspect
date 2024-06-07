@@ -43,7 +43,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class MeltGlobal : public MaterialModel::MeltInterface<dim>,
       public MaterialModel::MeltFractionModel<dim>,
       public ::aspect::SimulatorAccess<dim>

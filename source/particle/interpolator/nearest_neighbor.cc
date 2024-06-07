@@ -30,7 +30,7 @@ namespace aspect
   {
     namespace Interpolator
     {
-      template <int dim>
+      template <unsigned int>
       std::vector<std::vector<double>>
       NearestNeighbor<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
                                                  const std::vector<Point<dim>> &positions,
@@ -140,7 +140,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       NearestNeighbor<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -162,7 +162,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       NearestNeighbor<dim>::parse_parameters (ParameterHandler &prm)
       {

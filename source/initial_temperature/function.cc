@@ -30,13 +30,13 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     Function<dim>::Function ()
       :
       function (1)
     {}
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -47,7 +47,7 @@ namespace aspect
       return function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -81,7 +81,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

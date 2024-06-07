@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       SphericalVelocityComponents<dim>::
       SphericalVelocityComponents ()
         :
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::string
       SphericalVelocityComponents<dim>::
       get_physical_units () const
@@ -53,7 +53,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SphericalVelocityComponents<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -97,7 +97,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::string>
       SphericalVelocityComponents<dim>::get_names () const
       {
@@ -110,7 +110,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       SphericalVelocityComponents<dim>::get_data_component_interpretation () const
       {

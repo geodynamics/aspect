@@ -37,7 +37,7 @@ namespace aspect
      * A postprocessor that generates ascii data output of the temperature
      * field to be used as initial condition.
      */
-    template <int dim>
+    template <unsigned int>
     class TemperatureAsciiOut : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -45,7 +45,7 @@ namespace aspect
         execute (TableHandler &statistics) override;
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     TemperatureAsciiOut<dim>::execute (TableHandler &)
     {

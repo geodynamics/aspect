@@ -49,7 +49,7 @@ namespace aspect
      * by strain to be added to the MaterialModel::MaterialModelOutputs structure
      * and filled in the MaterialModel::Interface::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -113,7 +113,7 @@ namespace aspect
     namespace Rheology
     {
 
-      template <int dim>
+      template <unsigned int>
       class ViscoPlastic : public ::aspect::SimulatorAccess<dim>
       {
         public:

@@ -43,13 +43,13 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       DiffusionCreep<dim>::DiffusionCreep ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       const DiffusionCreepParameters
       DiffusionCreep<dim>::compute_creep_parameters (const unsigned int composition,
                                                      const std::vector<double> &phase_function_values,
@@ -84,7 +84,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       DiffusionCreep<dim>::compute_viscosity (const double pressure,
                                               const double temperature,
@@ -124,7 +124,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<double, double>
       DiffusionCreep<dim>::compute_strain_rate_and_derivative (const double stress,
                                                                const double pressure,
@@ -149,7 +149,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<double, double>
       DiffusionCreep<dim>::compute_log_strain_rate_and_derivative (const double log_stress,
                                                                    const double pressure,
@@ -177,7 +177,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       DiffusionCreep<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -221,7 +221,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       DiffusionCreep<dim>::parse_parameters (ParameterHandler &prm,
                                              const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)

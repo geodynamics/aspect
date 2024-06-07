@@ -30,7 +30,7 @@ using namespace dealii;
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class AMRLeft : public MeshRefinement::Interface<dim>,
     public SimulatorAccess<dim>
   {
@@ -63,7 +63,7 @@ namespace aspect
   };
 
 
-  template <int dim>
+  template <unsigned int>
   void
   AMRLeft<dim>::tag_additional_cells () const
   {
@@ -78,14 +78,14 @@ namespace aspect
       }
   }
 
-  template <int dim>
+  template <unsigned int>
   void
   AMRLeft<dim>::
   declare_parameters (ParameterHandler &prm)
   {
   }
 
-  template <int dim>
+  template <unsigned int>
   void
   AMRLeft<dim>::parse_parameters (ParameterHandler &prm)
   {

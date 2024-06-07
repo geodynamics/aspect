@@ -40,7 +40,7 @@ namespace aspect
      *
      * @ingroup InitialCompositionModels
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiDataLayered : public Interface<dim>, public Utilities::AsciiDataLayered<dim>
     {
       public:

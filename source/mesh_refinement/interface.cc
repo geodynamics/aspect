@@ -31,7 +31,7 @@ namespace aspect
   {
 // ------------------------------ Interface -----------------------------
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::execute (Vector<float> &error_indicators) const
     {
@@ -40,7 +40,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::tag_additional_cells () const
     {}
@@ -49,13 +49,13 @@ namespace aspect
 
 // ------------------------------ Manager -----------------------------
 
-    template <int dim>
+    template <unsigned int>
     Manager<dim>::~Manager()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::update ()
     {
@@ -116,7 +116,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::execute (Vector<float> &error_indicators) const
     {
@@ -226,7 +226,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::tag_additional_cells () const
     {
@@ -304,7 +304,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -401,7 +401,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -463,7 +463,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_mesh_refinement_criterion (const std::string &name,
                                                       const std::string &description,
@@ -478,7 +478,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {

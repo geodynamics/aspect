@@ -41,7 +41,7 @@ namespace aspect
    */
   namespace
   {
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageField: public internal::FunctorBase<dim>
     {
       public:
@@ -63,7 +63,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageAdiabat: public internal::FunctorBase<dim>
     {
       public:
@@ -112,7 +112,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageViscosity: public internal::FunctorBase<dim>
     {
       public:
@@ -133,7 +133,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageLogViscosity: public internal::FunctorBase<dim>
     {
       public:
@@ -156,7 +156,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageVelocityMagnitude: public internal::FunctorBase<dim>
     {
       public:
@@ -189,7 +189,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageSinkingVelocity: public internal::FunctorBase<dim>
     {
       public:
@@ -237,7 +237,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageRisingVelocity: public internal::FunctorBase<dim>
     {
       public:
@@ -285,7 +285,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageVsVp: public internal::FunctorBase<dim>
     {
       public:
@@ -330,7 +330,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageVerticalHeatFlux: public internal::FunctorBase<dim>
     {
       public:
@@ -387,7 +387,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageVerticalMassFlux: public internal::FunctorBase<dim>
     {
       public:
@@ -432,7 +432,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageFieldMass: public internal::FunctorBase<dim>
     {
       public:
@@ -469,7 +469,7 @@ namespace aspect
 
   namespace internal
   {
-    template <int dim>
+    template <unsigned int>
     bool
     FunctorBase<dim>::need_material_properties() const
     {
@@ -478,13 +478,13 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     FunctorBase<dim>::~FunctorBase()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     FunctorBase<dim>::create_additional_material_model_outputs (const unsigned int /*n_points*/,
                                                                 MaterialModel::MaterialModelOutputs<dim> &/*outputs*/) const
@@ -492,12 +492,12 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     FunctorBase<dim>::setup(const unsigned int /*q_points*/)
     {}
 
-    template <int dim>
+    template <unsigned int>
     QAnisotropic<dim>
     get_quadrature_formula(const unsigned int lateral_quadrature_degree,
                            const unsigned int depth_dimension);
@@ -544,7 +544,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::vector<std::vector<double>>
   LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_bounds,
                                                   std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const
@@ -714,7 +714,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_temperature_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -723,7 +723,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_composition_averages(const unsigned int c,
                                                        std::vector<double> &values) const
   {
@@ -733,7 +733,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_viscosity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -742,7 +742,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_log_viscosity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -750,7 +750,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -759,7 +759,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -768,7 +768,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_rising_velocity_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -777,7 +777,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -786,7 +786,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -795,7 +795,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -804,7 +804,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void LateralAveraging<dim>::get_vertical_mass_flux_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -813,7 +813,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::vector<std::vector<double>>
   LateralAveraging<dim>::get_averages(const unsigned int n_slices,
                                       const std::vector<std::string> &property_names) const
@@ -823,7 +823,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::vector<std::vector<double>>
   LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
                                                   const std::vector<std::string> &property_names) const
@@ -840,7 +840,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::vector<std::vector<double>>
   LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_thresholds,
                                                   const std::vector<std::string> &property_names) const

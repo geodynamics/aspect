@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       ArtificialViscosity<dim>::
       ArtificialViscosity ()
         :
@@ -37,7 +37,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ArtificialViscosity<dim>::execute() const
       {

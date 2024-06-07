@@ -61,7 +61,7 @@ namespace aspect
      * Initial topography can be added through a radial displacement of the
      * mesh nodes.
      */
-    template <int dim>
+    template <unsigned int>
     class TwoMergedChunks : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

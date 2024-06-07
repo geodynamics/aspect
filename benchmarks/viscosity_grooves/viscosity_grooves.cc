@@ -72,7 +72,7 @@ namespace aspect
         return 0.;
       }
 
-      template <int dim>
+      template <unsigned int>
       class FunctionViscosityGrooves : public Function<dim>
       {
         public:
@@ -102,7 +102,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     class ViscosityGroovesBoundary : public BoundaryVelocity::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
@@ -131,7 +131,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class ViscosityGroovesMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -197,7 +197,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     ViscosityGroovesMaterial<dim>::
     is_compressible () const
@@ -205,7 +205,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscosityGroovesMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -224,7 +224,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscosityGroovesMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -242,14 +242,14 @@ namespace aspect
       this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     ViscosityGroovesMaterial<dim>::get_epsilon() const
     {
       return epsilon;
     }
 
-    template <int dim>
+    template <unsigned int>
     ViscosityGroovesBoundary<dim>::ViscosityGroovesBoundary ()
       :
       epsilon (0.)
@@ -279,7 +279,7 @@ namespace aspect
      * Gravity model for the ViscosityGrooves benchmark
     */
 
-    template <int dim>
+    template <unsigned int>
     class ViscosityGroovesGravity : public aspect::GravityModel::Interface<dim>
     {
       public:
@@ -299,7 +299,7 @@ namespace aspect
 
     };
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     ViscosityGroovesGravity<dim>::
     gravity_vector(const Point<dim> &pos) const
@@ -339,7 +339,7 @@ namespace aspect
       return g;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscosityGroovesGravity<dim>::declare_parameters (ParameterHandler &)
     {
@@ -347,7 +347,7 @@ namespace aspect
       //declared by the material model in the "ViscosityGrooves benchmark" section
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ViscosityGroovesGravity<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -365,7 +365,7 @@ namespace aspect
       * The implementation of error evaluators that correspond to the
       * benchmarks defined in the Donea and Huerta FEM book (see manual).
       */
-    template <int dim>
+    template <unsigned int>
     class ViscosityGroovesPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -376,7 +376,7 @@ namespace aspect
         execute (TableHandler &statistics) override;
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     ViscosityGroovesPostprocessor<dim>::execute (TableHandler &)
     {

@@ -41,7 +41,7 @@ namespace aspect
      * is recommended for plotting against real data. For both representations
      * the specific output fields and their order can be set.
      */
-    template <int dim>
+    template <unsigned int>
     class CrystalPreferredOrientation : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

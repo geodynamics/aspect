@@ -44,7 +44,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class ShearHeating : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -96,7 +96,7 @@ namespace aspect
      * to be added to the MaterialModel::MaterialModelOutputs structure
      * and filled in the MaterialModel::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class ShearHeatingOutputs : public MaterialModel::NamedAdditionalMaterialOutputs<dim>
     {
       public:

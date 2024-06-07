@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       void
       UniformRadial<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
@@ -117,7 +117,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       UniformRadial<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -189,7 +189,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       UniformRadial<dim>::parse_parameters (ParameterHandler &prm)
       {

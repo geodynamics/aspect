@@ -30,7 +30,7 @@ namespace aspect
   {
     namespace EquationOfState
     {
-      template <int dim>
+      template <unsigned int>
       void
       MulticomponentIncompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -60,7 +60,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       MulticomponentIncompressible<dim>::
       is_compressible () const
@@ -70,7 +70,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MulticomponentIncompressible<dim>::declare_parameters (ParameterHandler &prm,
                                                              const double default_thermal_expansion)
@@ -100,7 +100,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MulticomponentIncompressible<dim>::parse_parameters (ParameterHandler &prm,
                                                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)

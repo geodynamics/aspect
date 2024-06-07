@@ -40,7 +40,7 @@ namespace aspect
      *
      * @ingroup BoundaryCompositions
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiData : public Utilities::AsciiDataBoundary<dim>, public Interface<dim>
     {
       public:

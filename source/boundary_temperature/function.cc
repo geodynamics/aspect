@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    template <int dim>
+    template <unsigned int>
     Function<dim>::Function ()
       :
       boundary_temperature_function (1)
@@ -35,7 +35,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     boundary_temperature (const types::boundary_id /*boundary_indicator*/,
@@ -47,7 +47,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::update()
     {
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     minimal_temperature (const std::set<types::boundary_id> &) const
@@ -71,7 +71,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     maximal_temperature (const std::set<types::boundary_id> &) const
@@ -80,7 +80,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -114,7 +114,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

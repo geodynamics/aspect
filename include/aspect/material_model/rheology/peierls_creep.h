@@ -66,7 +66,7 @@ namespace aspect
        * flow law used here is based on a derivation from Kameyama et al., 1999, Earth and
        * Planetary Science Letters.
        */
-      template <int dim>
+      template <unsigned int>
       class PeierlsCreep : public ::aspect::SimulatorAccess<dim>
       {
         public:

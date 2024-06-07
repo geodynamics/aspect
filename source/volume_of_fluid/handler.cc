@@ -41,7 +41,7 @@ namespace aspect
     {
       namespace Scratch
       {
-        template <int dim>
+        template <unsigned int>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem (const FiniteElement<dim> &finite_element,
                                                        const FiniteElement<dim> &volume_of_fluid_element,
                                                        const Mapping<dim>       &mapping,
@@ -92,7 +92,7 @@ namespace aspect
 
 
 
-        template <int dim>
+        template <unsigned int>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem (const VolumeOfFluidSystem &scratch)
           :
           finite_element_values (scratch.finite_element_values.get_mapping(),
@@ -133,7 +133,7 @@ namespace aspect
 
       namespace CopyData
       {
-        template <int dim>
+        template <unsigned int>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem(const FiniteElement<dim> &finite_element)
           :
           local_matrix (finite_element.dofs_per_cell,
@@ -154,7 +154,7 @@ namespace aspect
 
 
 
-        template<int dim>
+        template<unsigned int>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem(const VolumeOfFluidSystem &data)
           :
           local_matrix (data.local_matrix),
@@ -176,7 +176,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   VolumeOfFluidField<dim>::VolumeOfFluidField(const FEVariable<dim> &volume_fraction,
                                               const FEVariable<dim> &reconstruction,
                                               const FEVariable<dim> &level_set,
@@ -189,7 +189,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   VolumeOfFluidHandler<dim>::VolumeOfFluidHandler (Simulator<dim> &simulator,
                                                    ParameterHandler &prm)
     : sim (simulator),
@@ -214,7 +214,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   VolumeOfFluidHandler<dim>::edit_finite_element_variables (std::vector<VariableDeclaration<dim>> &vars)
   {
@@ -241,7 +241,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   VolumeOfFluidHandler<dim>::declare_parameters (ParameterHandler &prm)
   {
@@ -302,7 +302,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   VolumeOfFluidHandler<dim>::parse_parameters (ParameterHandler &prm)
   {
@@ -403,7 +403,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   VolumeOfFluidHandler<dim>::initialize (ParameterHandler &/*prm*/)
   {
@@ -452,7 +452,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int VolumeOfFluidHandler<dim>::get_n_fields() const
   {
     return n_volume_of_fluid_fields;
@@ -460,7 +460,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::string VolumeOfFluidHandler<dim>::name_for_field_index(unsigned int field) const
   {
     Assert(field < n_volume_of_fluid_fields,
@@ -470,7 +470,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double VolumeOfFluidHandler<dim>::get_volume_fraction_threshold() const
   {
     return volume_fraction_threshold;
@@ -478,7 +478,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const VolumeOfFluidField<dim> &VolumeOfFluidHandler<dim>::field_struct_for_field_index(unsigned int field) const
   {
     Assert(field < n_volume_of_fluid_fields,
@@ -488,7 +488,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int VolumeOfFluidHandler<dim>::field_index_for_name(const std::string &composition_fieldname) const
   {
     const unsigned int composition_index = this->introspection().compositional_index_for_name(composition_fieldname);
@@ -499,7 +499,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void VolumeOfFluidHandler<dim>::do_volume_of_fluid_update (const typename Simulator<dim>::AdvectionField &advection_field)
   {
     const bool direction_order_descending = (this->get_timestep_number() % 2) == 1;
@@ -537,7 +537,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void VolumeOfFluidHandler<dim>::assemble_volume_of_fluid_system (const VolumeOfFluidField<dim> &field,
                                                                    const unsigned int dir,
                                                                    const bool update_from_old)
@@ -605,7 +605,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void VolumeOfFluidHandler<dim>::copy_local_to_global_volume_of_fluid_system (const internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data)
   {
     // copy entries into the global matrix. note that these local contributions

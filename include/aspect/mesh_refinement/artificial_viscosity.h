@@ -36,7 +36,7 @@ namespace aspect
      *
      * @ingroup MeshRefinement
      */
-    template <int dim>
+    template <unsigned int>
     class ArtificialViscosity : public Interface<dim>,
       public SimulatorAccess<dim>
     {

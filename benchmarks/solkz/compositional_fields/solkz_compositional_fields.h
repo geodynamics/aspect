@@ -12,7 +12,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template<int dim>
+    template<unsigned int>
     class SolKzCompositionalMaterial : public SolKzMaterial<dim>
     {
       public:

@@ -53,7 +53,7 @@ namespace aspect
     // This function initializes the simulator access for all assemblers
     // inside of the assemblers parameter. This is just a shortcut to save some
     // lines in set_assemblers(), where this operation appears multiple times.
-    template <int dim, class AssemblerType>
+    template <unsigned int, class AssemblerType>
     void
     initialize_simulator(const Simulator<dim> &simulator,
                          std::vector<std::unique_ptr<AssemblerType>> &assemblers)
@@ -66,7 +66,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   set_stokes_assemblers()
@@ -140,7 +140,7 @@ namespace aspect
 
   }
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   set_advection_assemblers()
@@ -223,7 +223,7 @@ namespace aspect
       }
   }
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   set_assemblers ()
@@ -282,7 +282,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   local_assemble_stokes_preconditioner (const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -325,7 +325,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   copy_local_to_global_stokes_preconditioner (const internal::Assembly::CopyData::StokesPreconditioner<dim> &data)
@@ -337,7 +337,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::assemble_stokes_preconditioner ()
   {
@@ -400,7 +400,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::build_stokes_preconditioner ()
   {
@@ -515,7 +515,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   local_assemble_stokes_system (const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -648,7 +648,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   copy_local_to_global_stokes_system (const internal::Assembly::CopyData::StokesSystem<dim> &data)
@@ -672,7 +672,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::assemble_stokes_system ()
   {
     std::string timer_section_name = "Assemble Stokes system";
@@ -821,7 +821,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::build_advection_preconditioner(const AdvectionField &advection_field,
                                                  LinearAlgebra::PreconditionILU &preconditioner,
@@ -842,7 +842,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::
   local_assemble_advection_system (const AdvectionField     &advection_field,
                                    const Vector<double>           &viscosity_per_cell,
@@ -1068,7 +1068,7 @@ namespace aspect
       }
   }
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   copy_local_to_global_advection_system (const AdvectionField &advection_field,
@@ -1112,7 +1112,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::assemble_advection_system (const AdvectionField &advection_field)
   {
     TimerOutput::Scope timer (computing_timer, (advection_field.is_temperature() ?

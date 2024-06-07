@@ -41,7 +41,7 @@ namespace aspect
      * It also requires that there is a compositional field named
      * 'entropy' that represents the entropy of the material.
      */
-    template <int dim>
+    template <unsigned int>
     class ComputeEntropyProfile : public Interface<dim>
     {
       public:

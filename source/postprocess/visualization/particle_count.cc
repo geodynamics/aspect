@@ -32,7 +32,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       ParticleCount<dim>::
       ParticleCount ()
         :
@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ParticleCount<dim>::execute() const
       {
@@ -67,7 +67,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::list<std::string>
       ParticleCount<dim>::required_other_postprocessors() const
       {

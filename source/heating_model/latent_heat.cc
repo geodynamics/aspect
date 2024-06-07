@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeat<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,

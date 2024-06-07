@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    template <int dim>
+    template <unsigned int>
     void
     EntropyTableLookUp<dim>::initialize()
     {
@@ -54,7 +54,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     EntropyTableLookUp<dim>::
     initial_composition (const Point<dim> &position,
@@ -75,7 +75,7 @@ namespace aspect
       return 0.0;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EntropyTableLookUp<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -100,7 +100,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EntropyTableLookUp<dim>::parse_parameters (ParameterHandler &prm)
     {

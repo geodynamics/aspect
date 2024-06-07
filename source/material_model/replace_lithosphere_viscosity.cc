@@ -34,7 +34,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     ReplaceLithosphereViscosity<dim>::initialize()
     {
@@ -44,7 +44,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReplaceLithosphereViscosity<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                                typename Interface<dim>::MaterialModelOutputs &out) const
@@ -63,7 +63,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReplaceLithosphereViscosity<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -90,7 +90,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ReplaceLithosphereViscosity<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -127,7 +127,7 @@ namespace aspect
       this->model_dependence = base_model->get_model_dependence();
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     ReplaceLithosphereViscosity<dim>::
     is_compressible () const
@@ -135,7 +135,7 @@ namespace aspect
       return base_model->is_compressible();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ReplaceLithosphereViscosity<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

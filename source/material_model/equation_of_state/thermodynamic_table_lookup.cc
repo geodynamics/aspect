@@ -31,7 +31,7 @@ namespace aspect
   {
     namespace EquationOfState
     {
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::initialize()
       {
@@ -146,7 +146,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       unsigned int
       ThermodynamicTableLookup<dim>::number_of_lookups() const
       {
@@ -155,7 +155,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       ThermodynamicTableLookup<dim>::
       is_compressible () const
@@ -165,7 +165,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::
       fill_seismic_velocities (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -215,7 +215,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::
       fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -243,7 +243,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::
       fill_dominant_phases (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -273,7 +273,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<std::pair<double, unsigned int>,2>
       ThermodynamicTableLookup<dim>::
       enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const
@@ -314,7 +314,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -352,7 +352,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::
       evaluate_thermal_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -414,7 +414,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::fill_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
                                                               const std::vector<std::vector<double>> &volume_fractions,
@@ -434,7 +434,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -493,7 +493,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::parse_parameters (ParameterHandler &prm)
       {
@@ -521,7 +521,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ThermodynamicTableLookup<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
@@ -550,7 +550,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
       ThermodynamicTableLookup<dim>::get_material_lookup (unsigned int lookup_index) const
       {

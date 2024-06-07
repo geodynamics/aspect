@@ -30,7 +30,7 @@ namespace aspect
   {
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       void
       ProbabilityDensityFunction<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
@@ -45,7 +45,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ProbabilityDensityFunction<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -98,7 +98,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ProbabilityDensityFunction<dim>::parse_parameters (ParameterHandler &prm)
       {

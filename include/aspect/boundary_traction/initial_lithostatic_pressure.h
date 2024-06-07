@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup BoundaryTractions
      */
-    template <int dim>
+    template <unsigned int>
     class InitialLithostaticPressure : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

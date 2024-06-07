@@ -36,7 +36,7 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> & /*outputs*/) const
@@ -44,7 +44,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::
     create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> & /*inputs*/) const
@@ -53,13 +53,13 @@ namespace aspect
 
     // ------------------------------ Manager -----------------------------
 
-    template <int dim>
+    template <unsigned int>
     Manager<dim>::~Manager()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::adiabatic_heating_enabled() const
     {
@@ -68,7 +68,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::shear_heating_enabled() const
     {
@@ -87,7 +87,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_heating_model (const std::string &name,
                                           const std::string &description,
@@ -101,7 +101,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -137,7 +137,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::update ()
     {
@@ -147,7 +147,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                             const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
@@ -195,7 +195,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::
     create_additional_material_model_inputs_and_outputs(MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
@@ -214,7 +214,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<std::string> &
     Manager<dim>::get_active_heating_model_names () const
     {
@@ -222,7 +222,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_heating_models () const
     {
@@ -230,7 +230,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -259,7 +259,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
@@ -295,7 +295,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ()
     {

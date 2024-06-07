@@ -25,7 +25,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   void post_nonlinear_solver (const SolverControl &nonlinear_solver_control)
   {
     const bool success = nonlinear_solver_control.last_check() == SolverControl::success;
@@ -33,7 +33,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
     std::cout << "Connecting signals" << std::endl;

@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup MeshRefinement
      */
-    template <int dim>
+    template <unsigned int>
     class CompositionThreshold : public Interface<dim>,
       public SimulatorAccess<dim>
     {

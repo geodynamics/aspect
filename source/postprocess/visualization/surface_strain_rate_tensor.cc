@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       SurfaceStrainRateTensor<dim>::
       SurfaceStrainRateTensor()
         : DataPostprocessorTensor<dim>("surface_strain_rate_tensor",
@@ -39,7 +39,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SurfaceStrainRateTensor<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

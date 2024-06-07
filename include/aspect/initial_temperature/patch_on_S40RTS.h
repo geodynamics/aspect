@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class PatchOnS40RTS : public Utilities::AsciiDataInitial<dim>, public Interface<dim>
     {
       public:

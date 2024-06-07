@@ -28,12 +28,12 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -45,7 +45,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::
     stokes_solution (const Point<dim> &position, Vector<double> &value) const
@@ -58,7 +58,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -72,7 +72,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

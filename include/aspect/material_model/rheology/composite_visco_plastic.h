@@ -39,7 +39,7 @@ namespace aspect
     namespace Rheology
     {
 
-      template <int dim>
+      template <unsigned int>
       class CompositeViscoPlastic : public ::aspect::SimulatorAccess<dim>
       {
         public:

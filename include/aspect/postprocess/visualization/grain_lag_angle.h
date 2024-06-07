@@ -56,7 +56,7 @@ namespace aspect
        * timestep behind the other quantities in order to get the gradients, but we're
        * often interested in GOL in a steady-state flow anyway.
        */
-      template<int dim>
+      template<unsigned int>
       class GrainLagAngle: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:

@@ -127,7 +127,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Steinberger<dim>::initialize()
     {
@@ -144,7 +144,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Steinberger<dim>::
     update()
@@ -165,7 +165,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Steinberger<dim>::
     viscosity (const double temperature,
@@ -206,7 +206,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Steinberger<dim>::
     is_compressible () const
@@ -216,7 +216,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Steinberger<dim>::
     thermal_conductivity (const double temperature,
@@ -260,7 +260,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
@@ -319,7 +319,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Steinberger<dim>::
     fill_prescribed_outputs(const unsigned int q,
@@ -340,7 +340,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Steinberger<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -477,7 +477,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Steinberger<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -590,7 +590,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Steinberger<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

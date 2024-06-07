@@ -33,7 +33,7 @@ namespace aspect
   {
 // ------------------------------ Constant -------------------
 
-    template <int dim>
+    template <unsigned int>
     double
     Constant<dim>::
     boundary_temperature (const types::boundary_id boundary_indicator,
@@ -53,7 +53,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Constant<dim>::
     minimal_temperature (const std::set<types::boundary_id> &) const
@@ -71,7 +71,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Constant<dim>::
     maximal_temperature (const std::set<types::boundary_id> &) const
@@ -89,7 +89,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Constant<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -115,7 +115,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Constant<dim>::parse_parameters (ParameterHandler &prm)
     {

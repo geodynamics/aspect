@@ -38,7 +38,7 @@ namespace aspect
        * A class derived from DataPostprocessor that can output sets of dim
        * compositional fields as vectors.
        */
-      template <int dim>
+      template <unsigned int>
       class CompositionalVector
         : public DataPostprocessor<dim>,
           public SimulatorAccess<dim>,

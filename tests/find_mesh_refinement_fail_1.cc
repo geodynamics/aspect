@@ -32,13 +32,13 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    template <int dim>
+    template <unsigned int>
     class Box2 : public Box<dim>
     {
       public:
         virtual void update();
     };
-    template <int dim>
+    template <unsigned int>
     void Box2<dim>::update()
     {
       this->get_mesh_refinement_manager().template get_matching_mesh_refinement_strategy<MeshRefinement::Boundary<dim>>();

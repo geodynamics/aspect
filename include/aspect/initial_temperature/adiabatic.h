@@ -69,7 +69,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class Adiabatic : public Interface<dim>, public Utilities::AsciiDataBoundary<dim>
     {
       public:

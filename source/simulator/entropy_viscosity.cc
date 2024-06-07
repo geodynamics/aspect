@@ -32,7 +32,7 @@ namespace aspect
    * Compute the variation in the entropy needed in the definition of the
    * artificial viscosity used to stabilize the composition/temperature equation.
    */
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::get_entropy_variation (const double average_field,
                                          const AdvectionField &advection_field) const
@@ -112,7 +112,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::
   compute_viscosity (internal::Assembly::Scratch::AdvectionSystem<dim> &scratch,
@@ -242,7 +242,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   template <typename T>
   void
   Simulator<dim>::

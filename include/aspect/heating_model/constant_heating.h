@@ -35,7 +35,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class ConstantHeating : public Interface<dim>
     {
       public:

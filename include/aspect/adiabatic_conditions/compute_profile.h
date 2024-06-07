@@ -42,7 +42,7 @@ namespace aspect
      * the material model plugin. The surface conditions are either constant
      * or changing over time as prescribed by an user-provided function.
      */
-    template <int dim>
+    template <unsigned int>
     class ComputeProfile : public Interface<dim>
     {
       public:

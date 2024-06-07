@@ -32,13 +32,13 @@ namespace aspect
   {
     namespace Rheology
     {
-      template <int dim>
+      template <unsigned int>
       ConstantViscosityPrefactors<dim>::ConstantViscosityPrefactors ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       ConstantViscosityPrefactors<dim>::compute_viscosity (const double base_viscosity,
                                                            const unsigned int composition_index) const
@@ -48,7 +48,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ConstantViscosityPrefactors<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -62,7 +62,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ConstantViscosityPrefactors<dim>::parse_parameters (ParameterHandler &prm)
       {

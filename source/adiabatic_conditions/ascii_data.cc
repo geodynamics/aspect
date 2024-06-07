@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData()
       :
       initialized(false),
@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -58,7 +58,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     AsciiData<dim>::is_initialized() const
     {
@@ -67,7 +67,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double AsciiData<dim>::pressure (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
@@ -76,7 +76,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double AsciiData<dim>::temperature (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
@@ -85,7 +85,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double AsciiData<dim>::density (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
@@ -94,7 +94,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double AsciiData<dim>::density_derivative (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
@@ -108,7 +108,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -123,7 +123,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

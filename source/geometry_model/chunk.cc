@@ -37,7 +37,7 @@ namespace aspect
   {
     namespace internal
     {
-      template <int dim>
+      template <unsigned int>
       ChunkGeometry<dim>::ChunkGeometry(const InitialTopographyModel::Interface<dim> &topo,
                                         const double min_longitude,
                                         const double min_radius,
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       DerivativeForm<1,dim,dim>
       ChunkGeometry<dim>::
       push_forward_gradient(const Point<dim> &chart_point) const
@@ -178,7 +178,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       ChunkGeometry<dim>::
       push_forward(const Point<dim> &r_phi_theta) const
@@ -193,7 +193,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       ChunkGeometry<dim>::
       pull_back(const Point<dim> &x_y_z) const
@@ -207,7 +207,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       ChunkGeometry<dim>::
       push_forward_sphere(const Point<dim> &input_vertex) const
@@ -236,7 +236,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1, dim>
       ChunkGeometry<dim>::
       normal_vector(const typename Triangulation<dim>::face_iterator &face,
@@ -292,7 +292,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       ChunkGeometry<dim>::
       pull_back_sphere(const Point<dim> &v) const
@@ -339,7 +339,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::unique_ptr<Manifold<dim,dim>>
       ChunkGeometry<dim>::
       clone() const
@@ -349,7 +349,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       ChunkGeometry<dim>::
       push_forward_topo(const Point<dim> &r_phi_theta) const
@@ -393,7 +393,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       ChunkGeometry<dim>::
       pull_back_topo(const Point<dim> &topo_r_phi_theta) const
@@ -436,7 +436,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       ChunkGeometry<dim>::
       get_radius(const Point<dim> &x_y_z) const
@@ -457,7 +457,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Chunk<dim>::initialize ()
     {
@@ -472,7 +472,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Chunk<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
@@ -503,7 +503,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<types::boundary_id>
     Chunk<dim>::
     get_used_boundary_indicators () const
@@ -517,7 +517,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     Chunk<dim>::
     get_symbolic_boundary_names_map () const
@@ -555,7 +555,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::
     length_scale () const
@@ -570,7 +570,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::depth(const Point<dim> &position) const
     {
@@ -581,7 +581,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
@@ -590,7 +590,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Chunk<dim>::representative_point(const double depth) const
     {
@@ -611,7 +611,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::west_longitude () const
     {
@@ -620,7 +620,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::east_longitude () const
     {
@@ -629,7 +629,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::longitude_range () const
     {
@@ -638,7 +638,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::south_latitude () const
     {
@@ -650,7 +650,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::north_latitude () const
     {
@@ -662,7 +662,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::latitude_range () const
     {
@@ -674,7 +674,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::maximal_depth() const
     {
@@ -688,7 +688,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::inner_radius () const
     {
@@ -697,7 +697,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Chunk<dim>::outer_radius () const
     {
@@ -706,7 +706,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Chunk<dim>::has_curved_elements() const
     {
@@ -715,7 +715,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Chunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
@@ -750,7 +750,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     Chunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
@@ -777,7 +777,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     aspect::Utilities::Coordinates::CoordinateSystem
     Chunk<dim>::natural_coordinate_system() const
     {
@@ -790,7 +790,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Chunk<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
@@ -806,7 +806,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Chunk<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -857,7 +857,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Chunk<dim>::parse_parameters (ParameterHandler &prm)
     {

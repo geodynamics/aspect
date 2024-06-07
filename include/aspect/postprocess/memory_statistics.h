@@ -35,7 +35,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class MemoryStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

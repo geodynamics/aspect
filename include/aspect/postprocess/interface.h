@@ -40,8 +40,8 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim> class Simulator;
-  template <int dim> class SimulatorAccess;
+  template <unsigned int> class Simulator;
+  template <unsigned int> class SimulatorAccess;
 
 
   /**
@@ -67,7 +67,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -170,7 +170,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -306,7 +306,7 @@ namespace aspect
 
     /* -------------------------- inline and template functions ---------------------- */
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void Manager<dim>::save (Archive &ar,
                              const unsigned int) const
@@ -321,7 +321,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void Manager<dim>::load (Archive &ar,
                              const unsigned int)
@@ -339,7 +339,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename PostprocessorType, typename>
     inline
     bool
@@ -354,7 +354,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename PostprocessorType, typename>
     inline
     const PostprocessorType &

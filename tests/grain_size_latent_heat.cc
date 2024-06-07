@@ -47,7 +47,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class GrainSizeLatentHeat : public MaterialModel::GrainSize<dim>
     {
       public:

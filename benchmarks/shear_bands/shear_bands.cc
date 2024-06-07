@@ -69,7 +69,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class ShearBandsMaterial : public MaterialModel::MeltInterface<dim>,
       public ::aspect::SimulatorAccess<dim>
     {
@@ -172,21 +172,21 @@ namespace aspect
         double permeability_exponent;
     };
 
-    template <int dim>
+    template <unsigned int>
     double
     ShearBandsMaterial<dim>::get_background_porosity () const
     {
       return background_porosity;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     ShearBandsMaterial<dim>::get_reference_compaction_viscosity () const
     {
       return xi_0;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     ShearBandsMaterial<dim>::get_porosity_exponent () const
     {
@@ -194,7 +194,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearBandsMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -253,7 +253,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearBandsMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -283,7 +283,7 @@ namespace aspect
      * that implements a background porosity plus white noise with
      * a certain amplitude.
      */
-    template <int dim>
+    template <unsigned int>
     class ShearBandsInitialCondition : public InitialComposition::Interface<dim>,
       public ::aspect::SimulatorAccess<dim>
     {
@@ -317,7 +317,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearBandsInitialCondition<dim>::initialize ()
     {
@@ -381,7 +381,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     ShearBandsInitialCondition<dim>::
     initial_composition (const Point<dim> &position, const unsigned int /*n_comp*/) const
@@ -390,7 +390,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearBandsInitialCondition<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -422,7 +422,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearBandsInitialCondition<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -445,7 +445,7 @@ namespace aspect
      * that implements a background porosity plus a plave wave in the porosity
      * field with a certain amplitude.
      */
-    template <int dim>
+    template <unsigned int>
     class PlaneWaveMeltBandsInitialCondition : public InitialComposition::Interface<dim>,
       public ::aspect::SimulatorAccess<dim>
     {
@@ -488,7 +488,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PlaneWaveMeltBandsInitialCondition<dim>::initialize ()
     {
@@ -507,21 +507,21 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     PlaneWaveMeltBandsInitialCondition<dim>::get_wave_amplitude () const
     {
       return amplitude;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     PlaneWaveMeltBandsInitialCondition<dim>::get_wave_number () const
     {
       return wave_number;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     PlaneWaveMeltBandsInitialCondition<dim>::get_initial_band_angle () const
     {
@@ -529,7 +529,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     PlaneWaveMeltBandsInitialCondition<dim>::
     initial_composition (const Point<dim> &position, const unsigned int /*n_comp*/) const
@@ -539,7 +539,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PlaneWaveMeltBandsInitialCondition<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -568,7 +568,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PlaneWaveMeltBandsInitialCondition<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -591,7 +591,7 @@ namespace aspect
     /**
       * A postprocessor that evaluates the angle of the shear bands.
       */
-    template <int dim>
+    template <unsigned int>
     class ShearBandsPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -603,7 +603,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     ShearBandsPostprocessor<dim>::execute (TableHandler &/*statistics*/)
     {
@@ -666,7 +666,7 @@ namespace aspect
       * "Compaction around a rigid, circular inclusion in partially molten rock."
       * Journal of Geophysical Research: Solid Earth 119.7 (2014): 5903-5920.
       */
-    template <int dim>
+    template <unsigned int>
     class ShearBandsGrowthRate : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -694,7 +694,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearBandsGrowthRate<dim>::initialize ()
     {
@@ -719,7 +719,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     ShearBandsGrowthRate<dim>::execute (TableHandler &/*statistics*/)
     {

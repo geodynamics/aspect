@@ -37,7 +37,7 @@ using namespace dealii;
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class MeltingRate:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {

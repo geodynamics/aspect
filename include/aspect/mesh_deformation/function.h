@@ -33,7 +33,7 @@ namespace aspect
 
   namespace MeshDeformation
   {
-    template<int dim>
+    template<unsigned int>
     class BoundaryFunction : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

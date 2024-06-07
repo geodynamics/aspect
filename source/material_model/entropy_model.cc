@@ -36,7 +36,7 @@ namespace aspect
   {
     namespace
     {
-      template <int dim>
+      template <unsigned int>
       bool solver_scheme_is_supported(const Parameters<dim> &parameters)
       {
         // If we solve advection equations, we need to iterate them, because this material
@@ -67,7 +67,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EntropyModel<dim>::initialize()
     {
@@ -104,7 +104,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     EntropyModel<dim>::
     is_compressible () const
@@ -114,7 +114,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     EntropyModel<dim>::
     thermal_conductivity (const double temperature,
@@ -158,7 +158,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EntropyModel<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                 MaterialModel::MaterialModelOutputs<dim> &out) const
@@ -315,7 +315,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EntropyModel<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -448,7 +448,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EntropyModel<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -519,7 +519,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EntropyModel<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

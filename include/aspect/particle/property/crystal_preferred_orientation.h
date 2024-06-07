@@ -115,7 +115,7 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class CrystalPreferredOrientation : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:

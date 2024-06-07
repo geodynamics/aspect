@@ -45,7 +45,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     void
     SeaLevel<dim>::initialize()
     {
@@ -69,7 +69,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SeaLevel<dim>::compute_nonuniform_sea_level_change(const Point<dim> &/*position*/) const
     {
@@ -108,7 +108,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SeaLevel<dim>::compute_sea_level_offset()
     {
@@ -207,7 +207,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SeaLevel<dim>::compute_total_surface_pressure(const Point<dim> &/*position*/) const
     {
@@ -245,7 +245,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     SeaLevel<dim>::execute (TableHandler &/*statistics*/)
     {
@@ -447,7 +447,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     SeaLevel<dim>::required_other_postprocessors() const
     {
@@ -456,7 +456,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SeaLevel<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -525,7 +525,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SeaLevel<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -551,7 +551,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void SeaLevel<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -560,7 +560,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SeaLevel<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
@@ -572,7 +572,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SeaLevel<dim>::load (const std::map<std::string, std::string> &status_strings)
     {

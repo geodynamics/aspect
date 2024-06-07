@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Viscoelastic<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -93,7 +93,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Viscoelastic<dim>::
     is_compressible () const
@@ -101,7 +101,7 @@ namespace aspect
       return equation_of_state.is_compressible();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Viscoelastic<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -138,7 +138,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Viscoelastic<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -186,7 +186,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Viscoelastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

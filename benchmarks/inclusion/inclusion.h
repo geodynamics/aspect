@@ -82,7 +82,7 @@ namespace aspect
       /**
        * The exact solution for the Inclusion benchmark.
        */
-      template <int dim>
+      template <unsigned int>
       class FunctionInclusion : public Function<dim>
       {
         public:
@@ -105,7 +105,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class InclusionBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
@@ -146,7 +146,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class InclusionMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -268,7 +268,7 @@ namespace aspect
      * The implementation of error evaluators that correspond to the
      * benchmarks defined in the paper Duretz et al. reference above.
      */
-    template <int dim>
+    template <unsigned int>
     class InclusionPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

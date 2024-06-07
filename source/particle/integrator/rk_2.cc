@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace Integrator
     {
-      template <int dim>
+      template <unsigned int>
       RK2<dim>::RK2()
         :
         integrator_substep(0)
@@ -37,7 +37,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       RK2<dim>::initialize ()
       {
@@ -47,7 +47,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       RK2<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                      const typename ParticleHandler<dim>::particle_iterator &end_particle,
@@ -147,7 +147,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       RK2<dim>::new_integration_step()
       {
@@ -159,7 +159,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<bool, 3>
       RK2<dim>::required_solution_vectors() const
       {
@@ -184,7 +184,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       RK2<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -214,7 +214,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       RK2<dim>::parse_parameters (ParameterHandler &prm)
       {

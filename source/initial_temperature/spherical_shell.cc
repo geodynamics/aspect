@@ -33,7 +33,7 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     double
     SphericalHexagonalPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -73,7 +73,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalHexagonalPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -99,7 +99,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalHexagonalPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -159,7 +159,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     SphericalGaussianPerturbation<dim>::
     SphericalGaussianPerturbation()
     {
@@ -179,7 +179,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalGaussianPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -244,7 +244,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalGaussianPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -279,7 +279,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalGaussianPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {

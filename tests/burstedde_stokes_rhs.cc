@@ -88,7 +88,7 @@ namespace aspect
       /**
        * The exact solution for the Burstedde benchmark.
        */
-      template <int dim>
+      template <unsigned int>
       class FunctionBurstedde : public Function<dim>
       {
         public:
@@ -121,7 +121,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class BursteddeBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
@@ -142,7 +142,7 @@ namespace aspect
         const double beta;
     };
 
-    template <int dim>
+    template <unsigned int>
     BursteddeBoundary<dim>::BursteddeBoundary ()
       :
       beta (0)
@@ -181,7 +181,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class BursteddeMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -299,7 +299,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     BursteddeMaterial<dim>::
     is_compressible () const
@@ -307,7 +307,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     BursteddeMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -326,7 +326,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     BursteddeMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -345,7 +345,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     BursteddeMaterial<dim>::get_beta() const
     {
@@ -363,7 +363,7 @@ namespace aspect
       * The implementation of error evaluators that correspond to the
       * benchmarks defined in the paper Duretz et al. reference above.
       */
-    template <int dim>
+    template <unsigned int>
     class BursteddePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -375,7 +375,7 @@ namespace aspect
         execute (TableHandler &statistics);
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     BursteddePostprocessor<dim>::execute (TableHandler &statistics)
     {

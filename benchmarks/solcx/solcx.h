@@ -2894,7 +2894,7 @@ namespace aspect
        * The exact solution for the SolCx benchmark, given the value of the
        * jump in viscosity $\eta_B$.
        */
-      template<int dim>
+      template<unsigned int>
       class FunctionSolCx : public Function<dim>
       {
         public:
@@ -2952,7 +2952,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class SolCxMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -3105,7 +3105,7 @@ namespace aspect
      * The implementation of error evaluators that correspond to the
      * benchmarks defined in the paper Duretz et al. reference above.
      */
-    template <int dim>
+    template <unsigned int>
     class SolCxPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

@@ -34,7 +34,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class MeltMaterial:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {

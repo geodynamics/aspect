@@ -28,7 +28,7 @@
 namespace aspect
 {
 
-  template <int dim>
+  template <unsigned int>
   class PressureBdry:
     public BoundaryFluidPressure::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
@@ -62,7 +62,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class Advection : public MaterialModel::MeltGlobal<dim>
     {
       public:
@@ -72,7 +72,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Advection<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,

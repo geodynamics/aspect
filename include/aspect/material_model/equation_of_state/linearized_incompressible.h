@@ -42,7 +42,7 @@ namespace aspect
        * relating to the equation of state are assumed to be constant and identical for each
        * composition.
        */
-      template <int dim>
+      template <unsigned int>
       class LinearizedIncompressible
       {
         public:

@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class SeaLevel : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

@@ -26,13 +26,13 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       Function<dim>::Function()
         :
         n_components (0)
       {}
 
-      template <int dim>
+      template <unsigned int>
       void
       Function<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                       std::vector<double> &data) const
@@ -41,7 +41,7 @@ namespace aspect
           data.push_back(function->value(position, i));
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       Function<dim>::get_property_information() const
       {
@@ -50,7 +50,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Function<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -74,7 +74,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Function<dim>::parse_parameters (ParameterHandler &prm)
       {

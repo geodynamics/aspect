@@ -45,7 +45,7 @@ namespace aspect
      *
      * @ingroup BoundaryTractions
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -70,7 +70,7 @@ namespace aspect
                            const Tensor<1,dim> &normal_vector) const = 0;
     };
 
-    template <int dim>
+    template <unsigned int>
     class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -221,7 +221,7 @@ namespace aspect
      *
      * @ingroup BoundaryTractions
      */
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_boundary_traction (const std::string &name);
 
@@ -230,7 +230,7 @@ namespace aspect
      * separated by '|' so that it can be used in an object of type
      * Patterns::Selection.
      */
-    template <int dim>
+    template <unsigned int>
     std::string
     get_names ();
 
@@ -240,7 +240,7 @@ namespace aspect
      *
      * @ingroup BoundaryTractions
      */
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm);
 
@@ -254,7 +254,7 @@ namespace aspect
      *
      * @param output_stream The stream to write the output to.
      */
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &output_stream);
 

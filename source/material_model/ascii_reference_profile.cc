@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     AsciiReferenceProfile<dim>::AsciiReferenceProfile()
       :
       density_index(numbers::invalid_unsigned_int),
@@ -40,7 +40,7 @@ namespace aspect
       seismic_dvs_dT_index(numbers::invalid_unsigned_int)
     {}
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiReferenceProfile<dim>::initialize ()
     {
@@ -60,7 +60,7 @@ namespace aspect
       seismic_dvs_dT_index = profile.maybe_get_column_index_from_name("seismic_dvs_dt");
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiReferenceProfile<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -123,7 +123,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     AsciiReferenceProfile<dim>::
     is_compressible () const
@@ -133,7 +133,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiReferenceProfile<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -182,7 +182,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiReferenceProfile<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -221,7 +221,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiReferenceProfile<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

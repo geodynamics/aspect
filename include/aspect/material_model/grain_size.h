@@ -43,7 +43,7 @@ namespace aspect
      * to be added to the MaterialModel::MaterialModelOutputs structure
      * and filled in the MaterialModel::GrainSize::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class DislocationViscosityOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -89,7 +89,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class GrainSize : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

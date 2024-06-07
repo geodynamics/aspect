@@ -28,7 +28,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   VariableDeclaration<dim>::VariableDeclaration(const std::string &name,
                                                 const std::shared_ptr<FiniteElement<dim>> &fe,
                                                 const unsigned int multiplicity,
@@ -47,11 +47,11 @@ namespace aspect
            ExcMessage("A Variable can only have 0, 1, or n_components() number of blocks."));
   }
 
-  template <int dim>
+  template <unsigned int>
   VariableDeclaration<dim>::VariableDeclaration()
     = default;
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   VariableDeclaration<dim>::n_components() const
   {
@@ -59,7 +59,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   FEVariable<dim>::FEVariable(const VariableDeclaration<dim> &fe_variable,
                               const unsigned int component_index,
                               const unsigned int block_index,
@@ -74,7 +74,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const FEValuesExtractors::Scalar &
   FEVariable<dim>::extractor_scalar() const
   {
@@ -85,7 +85,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const FEValuesExtractors::Vector &
   FEVariable<dim>::extractor_vector() const
   {
@@ -96,13 +96,13 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   FEVariableCollection<dim>::FEVariableCollection()
     = default;
 
 
 
-  template <int dim>
+  template <unsigned int>
   FEVariableCollection<dim>::FEVariableCollection(const std::vector<VariableDeclaration<dim>> &variable_definitions)
   {
     initialize(variable_definitions);
@@ -110,7 +110,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   FEVariableCollection<dim>::initialize(const std::vector<VariableDeclaration<dim>> &variable_definitions)
   {
@@ -168,7 +168,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const FEVariable<dim> &
   FEVariableCollection<dim>::variable(const std::string &name) const
   {
@@ -182,7 +182,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   FEVariableCollection<dim>::variable_exists(const std::string &name) const
   {
@@ -195,7 +195,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<FEVariable<dim>> &
   FEVariableCollection<dim>::get_variables() const
   {
@@ -204,7 +204,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   FEVariableCollection<dim>::n_components() const
   {
@@ -213,7 +213,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   FEVariableCollection<dim>::n_blocks() const
   {
@@ -222,7 +222,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<const FiniteElement<dim> *> &
   FEVariableCollection<dim>::get_fes() const
   {
@@ -230,7 +230,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<unsigned int> &
   FEVariableCollection<dim>::get_multiplicities() const
   {
@@ -238,7 +238,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const std::vector<unsigned int> &
   FEVariableCollection<dim>::get_components_to_blocks() const
   {

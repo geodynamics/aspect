@@ -33,7 +33,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       GrainLagAngle<dim>::
       GrainLagAngle ()
         :
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       GrainLagAngle<dim>::execute() const
       {

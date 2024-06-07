@@ -44,7 +44,7 @@ namespace aspect
      * by strain to be added to the MaterialModel::MaterialModelOutputs structure
      * and filled in the MaterialModel::Interface::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class PlasticAdditionalOutputs2 : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -88,7 +88,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class MeltViscoPlastic : public MaterialModel::MeltFractionModel<dim>,
       public MaterialModel::MeltInterface<dim>,
       public ::aspect::SimulatorAccess<dim>
@@ -267,7 +267,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     PlasticAdditionalOutputs2<dim>::PlasticAdditionalOutputs2 (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
@@ -276,7 +276,7 @@ namespace aspect
       yielding(n_points, numbers::signaling_nan<double>())
     {}
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     PlasticAdditionalOutputs2<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -299,7 +299,7 @@ namespace aspect
       return cohesions;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltViscoPlastic<dim>::
     reference_darcy_coefficient () const
@@ -308,7 +308,7 @@ namespace aspect
       return reference_permeability * std::pow(0.01,3.0) / eta_f;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     MeltViscoPlastic<dim>::
     is_compressible () const
@@ -316,7 +316,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltViscoPlastic<dim>::
     melt_fraction (const double temperature,
@@ -354,7 +354,7 @@ namespace aspect
       return peridotite_melt_fraction;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltViscoPlastic<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -366,7 +366,7 @@ namespace aspect
       return;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltViscoPlastic<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
@@ -637,7 +637,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -878,7 +878,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltViscoPlastic<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -1004,7 +1004,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

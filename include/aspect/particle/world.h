@@ -46,7 +46,7 @@
 
 namespace aspect
 {
-  template<int dim>
+  template<unsigned int>
   struct SimulatorSignals;
 
   namespace Particle
@@ -56,14 +56,14 @@ namespace aspect
 
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       class Interface;
     }
 
 
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       class Manager;
     }
 
@@ -74,7 +74,7 @@ namespace aspect
        * This base class only provides the interface for SolutionEvaluatorsImplementation.
        * See there for more details.
        */
-      template <int dim>
+      template <unsigned int>
       class SolutionEvaluators
       {
         public:
@@ -130,7 +130,7 @@ namespace aspect
       /**
        * A function to create a pointer to a SolutionEvaluators object.
        */
-      template <int dim>
+      template <unsigned int>
       std::unique_ptr<internal::SolutionEvaluators<dim>>
       construct_solution_evaluators(const SimulatorAccess<dim> &simulator_access,
                                     const UpdateFlags update_flags);
@@ -147,7 +147,7 @@ namespace aspect
      *
      * @ingroup Particle
      */
-    template <int dim>
+    template <unsigned int>
     class World : public SimulatorAccess<dim>
     {
       public:
@@ -509,7 +509,7 @@ namespace aspect
 
     /* -------------------------- inline and template functions ---------------------- */
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void World<dim>::serialize (Archive &ar, const unsigned int)
     {

@@ -38,7 +38,7 @@ namespace aspect
        * A class derived from DataPostprocessor that outputs melt related
        * properties of the material model.
        */
-      template <int dim>
+      template <unsigned int>
       class MeltMaterialProperties
         : public DataPostprocessor<dim>,
           public SimulatorAccess<dim>,

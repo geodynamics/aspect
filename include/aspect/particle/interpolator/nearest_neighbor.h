@@ -36,7 +36,7 @@ namespace aspect
        *
        * @ingroup ParticleInterpolators
        */
-      template <int dim>
+      template <unsigned int>
       class NearestNeighbor : public Interface<dim>, public aspect::SimulatorAccess<dim>
       {
         public:

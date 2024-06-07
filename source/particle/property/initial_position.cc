@@ -27,7 +27,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       InitialPosition<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                              std::vector<double> &data) const
@@ -36,7 +36,7 @@ namespace aspect
           data.push_back(position[i]);
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       InitialPosition<dim>::get_property_information() const
       {

@@ -42,7 +42,7 @@
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <unsigned int> class SimulatorAccess;
 
   namespace Plugins
   {

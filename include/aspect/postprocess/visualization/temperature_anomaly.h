@@ -38,7 +38,7 @@ namespace aspect
        * A class derived from DataPostprocessor that outputs the temperature
        * anomaly (temperature-depth average of temperature).
        */
-      template <int dim>
+      template <unsigned int>
       class TemperatureAnomaly
         : public DataPostprocessorScalar<dim>,
           public SimulatorAccess<dim>,

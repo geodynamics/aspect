@@ -28,7 +28,7 @@ namespace aspect
   namespace BoundaryComposition
   {
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     boundary_composition (const types::boundary_id /*boundary_indicator*/,
@@ -41,7 +41,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::update()
     {
@@ -55,7 +55,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -83,7 +83,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

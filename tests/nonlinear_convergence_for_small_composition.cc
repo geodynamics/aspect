@@ -24,7 +24,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class TestMaterial:
     public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {

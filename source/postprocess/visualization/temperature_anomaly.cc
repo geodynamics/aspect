@@ -32,7 +32,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       TemperatureAnomaly<dim>::
       TemperatureAnomaly ()
         :
@@ -43,7 +43,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       TemperatureAnomaly<dim>::
       update ()
@@ -84,7 +84,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       TemperatureAnomaly<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -112,7 +112,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       TemperatureAnomaly<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -146,7 +146,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       TemperatureAnomaly<dim>::parse_parameters(ParameterHandler &prm)
       {

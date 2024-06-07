@@ -33,7 +33,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       class MyPostprocessor
         : public DataPostprocessorScalar<dim>,
           public SimulatorAccess<dim>,

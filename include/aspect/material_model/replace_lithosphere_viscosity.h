@@ -41,7 +41,7 @@ namespace aspect
      * from the base model.
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class ReplaceLithosphereViscosity : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

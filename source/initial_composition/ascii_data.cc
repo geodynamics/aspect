@@ -27,12 +27,12 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -40,7 +40,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     AsciiData<dim>::
     initial_composition (const Point<dim> &position,
@@ -50,7 +50,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -64,7 +64,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

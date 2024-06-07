@@ -36,7 +36,7 @@ namespace aspect
     // -------------------------------- Deal with registering initial_temperature models and automating
     // -------------------------------- their setup and selection at run time
 
-    template <int dim>
+    template <unsigned int>
     Manager<dim>::~Manager()
       = default;
 
@@ -52,7 +52,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_initial_temperature (const std::string &name,
                                                 const std::string &description,
@@ -66,7 +66,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -121,7 +121,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Manager<dim>::initial_temperature (const Point<dim> &position) const
     {
@@ -138,7 +138,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<std::string> &
     Manager<dim>::get_active_initial_temperature_names () const
     {
@@ -146,7 +146,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_initial_temperature_conditions () const
     {
@@ -154,7 +154,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -201,7 +201,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ()
     {
@@ -210,7 +210,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {

@@ -27,7 +27,7 @@ namespace aspect
   {
     namespace Integrator
     {
-      template <int dim>
+      template <unsigned int>
       void
       Euler<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
@@ -75,7 +75,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<bool, 3>
       Euler<dim>::required_solution_vectors() const
       {

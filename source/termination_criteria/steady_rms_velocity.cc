@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
-    template <int dim>
+    template <unsigned int>
     bool
     SteadyRMSVelocity<dim>::execute()
     {
@@ -108,7 +108,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SteadyRMSVelocity<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -136,7 +136,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SteadyRMSVelocity<dim>::parse_parameters (ParameterHandler &prm)
     {

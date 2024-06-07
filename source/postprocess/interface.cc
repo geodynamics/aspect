@@ -31,7 +31,7 @@ namespace aspect
   {
 // ------------------------------ Interface -----------------------------
 
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     Interface<dim>::required_other_postprocessors() const
     {
@@ -40,14 +40,14 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::save (std::map<std::string,std::string> &) const
     {}
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::load (const std::map<std::string,std::string> &)
     {}
@@ -57,7 +57,7 @@ namespace aspect
 // ------------------------------ Manager -----------------------------
 
 
-    template <int dim>
+    template <unsigned int>
     std::list<std::pair<std::string,std::string>>
     Manager<dim>::execute (TableHandler &statistics)
     {
@@ -141,7 +141,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -175,7 +175,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -358,7 +358,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_postprocessor (const std::string &name,
                                           const std::string &description,
@@ -373,7 +373,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {

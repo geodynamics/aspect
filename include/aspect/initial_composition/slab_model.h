@@ -46,7 +46,7 @@ namespace aspect
      *
      * @ingroup InitialCompositionModels
      */
-    template <int dim>
+    template <unsigned int>
     class SlabModel : public Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:

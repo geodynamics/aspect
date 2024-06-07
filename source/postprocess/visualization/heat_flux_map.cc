@@ -33,7 +33,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       HeatFluxMap<dim>::
       HeatFluxMap ()
         :
@@ -44,7 +44,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       HeatFluxMap<dim>::update ()
       {
@@ -56,7 +56,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       HeatFluxMap<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -119,7 +119,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       HeatFluxMap<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -149,7 +149,7 @@ namespace aspect
         prm.leave_subsection();
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       HeatFluxMap<dim>::parse_parameters (ParameterHandler &prm)
       {

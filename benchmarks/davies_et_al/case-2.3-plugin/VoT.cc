@@ -40,7 +40,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class VoT : public Interface<dim>
     {
       public:
@@ -81,7 +81,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     VoT<dim>::
     is_compressible () const
@@ -90,7 +90,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     VoT<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in,
@@ -113,7 +113,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     VoT<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -153,7 +153,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     VoT<dim>::parse_parameters (ParameterHandler &prm)
     {

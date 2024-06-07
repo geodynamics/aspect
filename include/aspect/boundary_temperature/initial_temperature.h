@@ -37,7 +37,7 @@ namespace aspect
      *
      * @ingroup BoundaryTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class InitialTemperature : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

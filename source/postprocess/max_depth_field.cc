@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     MaxDepthField<dim>::execute (TableHandler &statistics)
     {

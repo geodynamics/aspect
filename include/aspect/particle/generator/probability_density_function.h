@@ -34,7 +34,7 @@ namespace aspect
       /**
        * Exception
        */
-      template <int dim>
+      template <unsigned int>
       DeclException1 (ProbabilityFunctionNegative,
                       Point<dim>,
                       << "Your probability density function in the particle generator "
@@ -58,7 +58,7 @@ namespace aspect
        *
        * @ingroup ParticleGenerators
        */
-      template <int dim>
+      template <unsigned int>
       class ProbabilityDensityFunction : public Interface<dim>
       {
         public:

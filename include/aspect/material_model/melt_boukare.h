@@ -34,7 +34,7 @@ namespace aspect
     /**
      * Additional output fields for the melt boukare material model.
      */
-    template <int dim>
+    template <unsigned int>
     class BoukareOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -64,7 +64,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class MeltBoukare : public MaterialModel::MeltInterface<dim>,
       public MaterialModel::MeltFractionModel<dim>,
       public ::aspect::SimulatorAccess<dim>

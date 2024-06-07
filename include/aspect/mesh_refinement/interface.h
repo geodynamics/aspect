@@ -36,8 +36,8 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim> class Simulator;
-  template <int dim> class SimulatorAccess;
+  template <unsigned int> class Simulator;
+  template <unsigned int> class SimulatorAccess;
 
 
   /**
@@ -70,7 +70,7 @@ namespace aspect
      *
      * @ingroup MeshRefinement
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -113,7 +113,7 @@ namespace aspect
      *
      * @ingroup MeshRefinement
      */
-    template <int dim>
+    template <unsigned int>
     class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -277,7 +277,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename MeshRefinementType, typename>
     inline
     bool
@@ -292,7 +292,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename MeshRefinementType, typename>
     inline
     const MeshRefinementType &

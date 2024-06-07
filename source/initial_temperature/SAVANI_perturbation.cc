@@ -148,14 +148,14 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     SAVANIPerturbation<dim>::SAVANIPerturbation()
       :
       vs_to_density_index(numbers::invalid_unsigned_int)
     {}
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SAVANIPerturbation<dim>::initialize()
     {
@@ -361,7 +361,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SAVANIPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -437,7 +437,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SAVANIPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -576,7 +576,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<std::string>
     expand_dimensional_variable_names (const std::vector<std::string> &var_declarations)
     {
@@ -628,7 +628,7 @@ namespace aspect
     * Return an array that for each dof on the reference cell lists the
     * corresponding vector component.
     */
-    template <int dim, int spacedim>
+    template <unsigned int, int spacedim>
     std::vector<unsigned char>
     get_local_component_association (const FiniteElement<dim,spacedim>  &fe,
                                      const ComponentMask        & /*component_mask*/)
@@ -660,7 +660,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &dof_handler,
                                                         const ComponentMask &component_mask)
     {
@@ -686,7 +686,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<Point<dim>> get_unit_support_points(const SimulatorAccess<dim> &simulator_access)
     {
       if ( !simulator_access.get_parameters().use_locally_conservative_discretization )
@@ -726,7 +726,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     point_is_in_triangulation(const Mapping<dim> &mapping,
                               const parallel::distributed::Triangulation<dim> &triangulation,
@@ -757,7 +757,7 @@ namespace aspect
     namespace Coordinates
     {
 
-      template <int dim>
+      template <unsigned int>
       std::array<double,dim>
       WGS84_coordinates(const Point<dim> &position)
       {
@@ -797,7 +797,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<double,dim>
       cartesian_to_spherical_coordinates(const Point<dim> &position)
       {
@@ -826,7 +826,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       spherical_to_cartesian_coordinates(const std::array<double,dim> &scoord)
       {
@@ -857,7 +857,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<double,3>
       cartesian_to_ellipsoidal_coordinates(const Point<3> &x,
                                            const double semi_major_axis_a,
@@ -884,7 +884,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<3>
       ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
@@ -905,7 +905,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1, dim>
       spherical_to_cartesian_vector(const Tensor<1, dim> &spherical_vector,
                                     const Point<dim> &position)
@@ -978,7 +978,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     polygon_contains_point(const std::vector<Point<2>> &point_list,
                            const dealii::Point<2> &point)
@@ -1080,7 +1080,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     signed_distance_to_polygon(const std::vector<Point<2>> &point_list,
                                const dealii::Point<2> &point)
@@ -1176,7 +1176,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v)
     {
@@ -2530,7 +2530,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
@@ -2573,7 +2573,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim> convert_array_to_point(const std::array<double,dim> &array)
     {
       Point<dim> point;
@@ -2585,7 +2585,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim> convert_point_to_array(const Point<dim> &point)
     {
       std::array<double,dim> array;
@@ -2692,7 +2692,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     SymmetricTensor<2,dim>
     nth_basis_for_symmetric_tensors (const unsigned int k)
     {
@@ -2709,7 +2709,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     NaturalCoordinate<dim>::NaturalCoordinate(Point<dim> &position,
                                               const GeometryModel::Interface<dim> &geometry_model)
     {
@@ -2719,7 +2719,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     NaturalCoordinate<dim>::NaturalCoordinate(const std::array<double, dim> &coord,
                                               const Utilities::Coordinates::CoordinateSystem &coord_system) :
       coordinate_system (coord_system), coordinates (coord)
@@ -2727,7 +2727,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates()
     {
       return coordinates;
@@ -2735,7 +2735,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates() const
     {
       return coordinates;
@@ -2804,7 +2804,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double NaturalCoordinate<dim>::get_depth_coordinate() const
     {
       switch (coordinate_system)
@@ -2827,7 +2827,7 @@ namespace aspect
 
 
 
-    template <int dim, typename VectorType>
+    template <unsigned int, typename VectorType>
     void
     project_cellwise(const Mapping<dim>                                        &mapping,
                      const DoFHandler<dim>                                     &dof_handler,
@@ -2901,7 +2901,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     VectorFunctionFromVelocityFunctionObject<dim>::
     VectorFunctionFromVelocityFunctionObject
     (const unsigned int n_components,
@@ -2914,7 +2914,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     VectorFunctionFromVelocityFunctionObject<dim>::value (const Point<dim> &p,
                                                           const unsigned int component) const
@@ -2933,7 +2933,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     VectorFunctionFromVelocityFunctionObject<dim>::
     vector_value (const Point<dim>   &p,

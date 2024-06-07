@@ -39,7 +39,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void DepthAverage<dim>::DataPoint::serialize (Archive &ar,
                                                   const unsigned int)
@@ -48,7 +48,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     DepthAverage<dim>::DepthAverage ()
       :
       // the following value is later read from the input file
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     DepthAverage<dim>::execute (TableHandler &)
     {
@@ -213,7 +213,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthAverage<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -291,7 +291,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthAverage<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -436,7 +436,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void DepthAverage<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -445,7 +445,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthAverage<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
@@ -457,7 +457,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthAverage<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
@@ -471,7 +471,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthAverage<dim>::set_last_output_time (const double current_time)
     {

@@ -33,13 +33,13 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    template <int dim>
+    template <unsigned int>
     class Box2 : public Box<dim>
     {
       public:
         virtual void update();
     };
-    template <int dim>
+    template <unsigned int>
     void Box2<dim>::update()
     {
       if (this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::PressureStatistics<dim>>())

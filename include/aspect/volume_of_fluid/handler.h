@@ -38,7 +38,7 @@ namespace aspect
    * tracking is not active, there is no instantiation of this class at
    * all.
    */
-  template <int dim>
+  template <unsigned int>
   class VolumeOfFluidHandler : public SimulatorAccess<dim>
   {
     public:

@@ -29,7 +29,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     class CellMaterial :
       public aspect::MaterialModel::Simpler<dim>, aspect::SimulatorAccess<dim>
     {

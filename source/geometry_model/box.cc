@@ -35,7 +35,7 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::initialize ()
     {
@@ -64,7 +64,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
@@ -89,7 +89,7 @@ namespace aspect
         coarse_grid.add_periodicity (periodicity_vector);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::
     topography (typename parallel::distributed::Triangulation<dim> &grid) const
@@ -107,7 +107,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Box<dim>::
     add_topography (const Point<dim> &x_y_z) const
@@ -131,7 +131,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<types::boundary_id>
     Box<dim>::
     get_used_boundary_indicators () const
@@ -144,7 +144,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     Box<dim>::
     get_symbolic_boundary_names_map () const
@@ -182,7 +182,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     Box<dim>::
     get_periodic_boundary_pairs () const
@@ -196,7 +196,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::adjust_positions_for_periodicity (Point<dim> &position,
                                                 const ArrayView<Point<dim>> &connected_positions,
@@ -222,28 +222,28 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Box<dim>::get_extents () const
     {
       return extents;
     }
 
-    template <int dim>
+    template <unsigned int>
     const std::array<unsigned int, dim> &
     Box<dim>::get_repetitions () const
     {
       return repetitions;
     }
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Box<dim>::get_origin () const
     {
       return box_origin;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::
     length_scale () const
@@ -252,7 +252,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::depth(const Point<dim> &position) const
     {
@@ -269,7 +269,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
@@ -277,7 +277,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Box<dim>::representative_point(const double depth) const
     {
@@ -301,21 +301,21 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::maximal_depth() const
     {
       return extents[dim-1] + topo_model->max_topography();
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Box<dim>::has_curved_elements() const
     {
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Box<dim>::point_is_in_domain(const Point<dim> &point) const
     {
@@ -368,7 +368,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     Box<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
@@ -380,7 +380,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     aspect::Utilities::Coordinates::CoordinateSystem
     Box<dim>::natural_coordinate_system() const
     {
@@ -388,7 +388,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Box<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
@@ -400,7 +400,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -459,7 +459,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::parse_parameters (ParameterHandler &prm)
     {

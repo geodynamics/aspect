@@ -41,7 +41,7 @@ namespace aspect
        * GPlatesLookup handles all kinds of tasks around looking up a certain
        * velocity boundary condition from a gplates .gpml file.
        */
-      template <int dim>
+      template <unsigned int>
       class GPlatesLookup
       {
         public:
@@ -165,7 +165,7 @@ namespace aspect
      *
      * @ingroup BoundaryVelocities
      */
-    template <int dim>
+    template <unsigned int>
     class GPlates : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

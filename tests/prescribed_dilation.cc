@@ -71,7 +71,7 @@ namespace aspect
       /**
        * The exact solution for the benchmark.
        */
-      template <int dim>
+      template <unsigned int>
       class Exact : public Function<dim>
       {
         public:
@@ -103,7 +103,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class MyBoundary : public BoundaryVelocity::Interface<dim>
     {
       public:
@@ -124,7 +124,7 @@ namespace aspect
         const double eta;
     };
 
-    template <int dim>
+    template <unsigned int>
     MyBoundary<dim>::MyBoundary ()
       :
       eta (0)
@@ -163,7 +163,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class MyMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -243,7 +243,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MyMaterial<dim>::
     get_eta () const
@@ -251,7 +251,7 @@ namespace aspect
       return eta;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     MyMaterial<dim>::
     is_compressible () const
@@ -259,7 +259,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MyMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -279,7 +279,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MyMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -309,7 +309,7 @@ namespace aspect
       * The implementation of error evaluators that correspond to the
       * benchmarks defined in the paper Duretz et al. reference above.
       */
-    template <int dim>
+    template <unsigned int>
     class MyPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -321,7 +321,7 @@ namespace aspect
         execute (TableHandler &statistics);
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     MyPostprocessor<dim>::execute (TableHandler &statistics)
     {

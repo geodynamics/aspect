@@ -47,7 +47,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     register_boundary_heat_flux (const std::string &name,
                                  const std::string &description,
@@ -61,7 +61,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_boundary_heat_flux (ParameterHandler &prm)
     {
@@ -78,7 +78,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -97,7 +97,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &out)
     {

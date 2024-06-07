@@ -34,7 +34,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       class PostInitializeParticleProperty : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:

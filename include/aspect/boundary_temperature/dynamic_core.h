@@ -94,7 +94,7 @@ namespace aspect
      * The formulation of the core energy balance is from \cite NPB+04 .
      * @ingroup BoundaryTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class DynamicCore : public Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:

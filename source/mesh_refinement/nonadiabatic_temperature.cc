@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    template <int dim>
+    template <unsigned int>
     void
     NonadiabaticTemperature<dim>::execute(Vector<float> &indicators) const
     {

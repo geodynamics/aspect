@@ -36,7 +36,7 @@
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <unsigned int> class SimulatorAccess;
   /**
    * A namespace in which we define everything that has to do with defining
    * the heating model.
@@ -118,7 +118,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -168,7 +168,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class Manager : public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -347,7 +347,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename HeatingModelType, typename>
     inline
     bool
@@ -360,7 +360,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename HeatingModelType, typename>
     inline
     const HeatingModelType &
@@ -387,7 +387,7 @@ namespace aspect
      * that the string can be an input to the deal.II classes
      * Patterns::Selection or Patterns::MultipleSelection.
      */
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ();
 

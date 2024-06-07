@@ -29,7 +29,7 @@ namespace aspect
   {
 // ------------------------------ InitialTemperature -------------------
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialTemperature<dim>::initialize()
     {
@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     InitialTemperature<dim>::
     boundary_temperature (const types::boundary_id,
@@ -51,7 +51,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     InitialTemperature<dim>::
     minimal_temperature (const std::set<types::boundary_id> &) const
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     InitialTemperature<dim>::
     maximal_temperature (const std::set<types::boundary_id> &) const
@@ -71,7 +71,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialTemperature<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -92,7 +92,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialTemperature<dim>::parse_parameters (ParameterHandler &prm)
     {

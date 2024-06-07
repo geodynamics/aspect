@@ -33,7 +33,7 @@ namespace aspect
 {
   namespace InitialTopographyModel
   {
-    template <int dim>
+    template <unsigned int>
     Function<dim>::Function ()
       :
       max_topo(0),
@@ -43,7 +43,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     value (const Point<dim-1> &surface_point) const
@@ -100,7 +100,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     max_topography () const
@@ -109,7 +109,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -141,7 +141,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -30,7 +30,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class FiniteStrain : public MaterialModel::Simple<dim>
     {
       public:
@@ -47,7 +47,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     FiniteStrain<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -94,7 +94,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     FiniteStrain<dim>::
     parse_parameters (ParameterHandler &prm)

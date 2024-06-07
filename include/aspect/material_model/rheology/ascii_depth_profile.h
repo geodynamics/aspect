@@ -44,7 +44,7 @@ namespace aspect
        *
        * @ingroup Rheology
        */
-      template <int dim>
+      template <unsigned int>
       class AsciiDepthProfile : public Utilities::AsciiDataProfile<dim> , public SimulatorAccess<dim>
       {
         public:

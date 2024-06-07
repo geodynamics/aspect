@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     DynamicTopography<dim>::execute (TableHandler &)
     {
@@ -375,7 +375,7 @@ namespace aspect
     /**
      * Return the topography vector as calculated by CBF formulation
      */
-    template <int dim>
+    template <unsigned int>
     const LinearAlgebra::BlockVector &
     DynamicTopography<dim>::
     topography_vector() const
@@ -386,7 +386,7 @@ namespace aspect
     /**
      * Return the cellwise topography vector as calculated by CBF formulation
      */
-    template <int dim>
+    template <unsigned int>
     const Vector<float> &
     DynamicTopography<dim>::
     cellwise_topography() const
@@ -397,7 +397,7 @@ namespace aspect
     /**
      * Register the other postprocessor that we need: BoundaryPressures
      */
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     DynamicTopography<dim>::required_other_postprocessors() const
     {
@@ -409,7 +409,7 @@ namespace aspect
      * Output the dynamic topography solution to
      * a file.
      */
-    template <int dim>
+    template <unsigned int>
     void
     DynamicTopography<dim>::output_to_file(const types::boundary_id boundary_id,
                                            const std::vector<std::pair<Point<dim>,double>> &position_and_topography)
@@ -451,7 +451,7 @@ namespace aspect
     /**
      * Declare the parameters for the postprocessor.
      */
-    template <int dim>
+    template <unsigned int>
     void
     DynamicTopography<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -493,7 +493,7 @@ namespace aspect
     /**
      * Declare the parameters for the postprocessor.
      */
-    template <int dim>
+    template <unsigned int>
     void
     DynamicTopography<dim>::parse_parameters (ParameterHandler &prm)
     {

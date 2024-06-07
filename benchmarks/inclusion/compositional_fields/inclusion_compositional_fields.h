@@ -11,7 +11,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template<int dim>
+    template<unsigned int>
     class InclusionCompositionalMaterial : public InclusionMaterial<dim>
     {
       public:

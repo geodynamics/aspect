@@ -32,7 +32,7 @@ namespace aspect
   {
 // ------------------------------ Box -------------------
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::
     boundary_composition (const types::boundary_id boundary_indicator,
@@ -43,7 +43,7 @@ namespace aspect
       return composition_values[boundary_indicator][compositional_field];
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -93,7 +93,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -130,7 +130,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::initialize()
     {

@@ -49,7 +49,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     SteadyHeatFlux<dim>::execute()
     {
@@ -117,7 +117,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SteadyHeatFlux<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -166,7 +166,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SteadyHeatFlux<dim>::parse_parameters (ParameterHandler &prm)
     {

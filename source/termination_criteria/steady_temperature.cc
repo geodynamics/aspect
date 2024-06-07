@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     SteadyTemperature<dim>::execute()
     {
@@ -134,7 +134,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SteadyTemperature<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -162,7 +162,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SteadyTemperature<dim>::parse_parameters (ParameterHandler &prm)
     {

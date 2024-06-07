@@ -66,7 +66,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     class TanGurnis : public MaterialModel::Interface<dim>
     {
       public:
@@ -155,7 +155,7 @@ namespace aspect
 
     };
 
-    template <int dim>
+    template <unsigned int>
     TanGurnis<dim>::TanGurnis()
     {
       // a=0 for a constant viscosity or
@@ -173,7 +173,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     TanGurnis<dim>::
     is_compressible () const
@@ -183,7 +183,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TanGurnis<dim>::
     parameter_a() const
@@ -193,7 +193,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TanGurnis<dim>::
     parameter_wavenumber() const
@@ -203,7 +203,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TanGurnis<dim>::
     parameter_Di() const
@@ -213,7 +213,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TanGurnis<dim>::
     parameter_gamma() const
@@ -223,7 +223,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TanGurnis<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -252,7 +252,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TanGurnis<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -285,7 +285,7 @@ namespace aspect
    *
    * @ingroup BoundaryTemperatures
    */
-  template <int dim>
+  template <unsigned int>
   class TanGurnisBoundary : public BoundaryTemperature::Interface<dim>
   {
     public:
@@ -301,7 +301,7 @@ namespace aspect
       double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
   };
 
-  template <int dim>
+  template <unsigned int>
   double
   TanGurnisBoundary<dim>::
   minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
@@ -311,7 +311,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   TanGurnisBoundary<dim>::
   maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
@@ -328,7 +328,7 @@ namespace aspect
    * The implementation writes out the solution to be read in by a matlab
    * script.
    */
-  template <int dim>
+  template <unsigned int>
   class TanGurnisPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -336,7 +336,7 @@ namespace aspect
       execute (TableHandler &statistics) override;
   };
 
-  template <int dim>
+  template <unsigned int>
   std::pair<std::string,std::string>
   TanGurnisPostprocessor<dim>::execute (TableHandler &/*statistics*/)
   {

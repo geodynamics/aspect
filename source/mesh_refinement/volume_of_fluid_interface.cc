@@ -36,7 +36,7 @@ namespace aspect
   namespace MeshRefinement
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     VolumeOfFluidInterface<dim>::tag_additional_cells() const
     {
@@ -294,7 +294,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     VolumeOfFluidInterface<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -313,7 +313,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     VolumeOfFluidInterface<dim>::parse_parameters (ParameterHandler &prm)
     {

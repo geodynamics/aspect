@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       ElasticStress<dim>::ElasticStress ()
         :
         material_inputs(1,0),
@@ -38,7 +38,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ElasticStress<dim>::initialize ()
       {
@@ -58,7 +58,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ElasticStress<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                            std::vector<double> &data) const
@@ -87,7 +87,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ElasticStress<dim>::update_particle_property(const unsigned int data_position,
                                                    const Vector<double> &solution,
@@ -123,7 +123,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       ElasticStress<dim>::need_update() const
       {
@@ -132,7 +132,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       ElasticStress<dim>::get_needed_update_flags () const
       {
@@ -141,7 +141,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       ElasticStress<dim>::get_property_information() const
       {

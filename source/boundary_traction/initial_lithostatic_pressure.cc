@@ -42,7 +42,7 @@ namespace aspect
   namespace BoundaryTraction
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialLithostaticPressure<dim>::initialize()
     {
@@ -279,7 +279,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     InitialLithostaticPressure<dim>::
     boundary_traction (const types::boundary_id boundary_indicator,
@@ -305,7 +305,7 @@ namespace aspect
       return traction;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     InitialLithostaticPressure<dim>::
     interpolate_pressure (const Point<dim> &p) const
@@ -337,7 +337,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialLithostaticPressure<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -364,7 +364,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialLithostaticPressure<dim>::parse_parameters (ParameterHandler &prm)
     {

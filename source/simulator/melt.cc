@@ -45,7 +45,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     MeltInputs<dim>::MeltInputs (const unsigned int n_points)
       :
       compaction_pressures(n_points, numbers::signaling_nan<double>()),
@@ -54,7 +54,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
                                 const FEValuesBase<dim>          &fe_values,
                                 const Introspection<dim>         &introspection)
@@ -71,7 +71,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
                                     const FullMatrix<double>  &projection_matrix,
                                     const FullMatrix<double>  &expansion_matrix)
@@ -93,7 +93,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltInterface<dim>::p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
                                    const MaterialModel::MaterialModelOutputs<dim> &outputs,
@@ -143,7 +143,7 @@ namespace aspect
   {
     namespace
     {
-      template <int dim>
+      template <unsigned int>
       bool
       is_velocity_or_pressures (const Introspection<dim> &introspection,
                                 const unsigned int p_c_component_index,
@@ -166,7 +166,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltInterface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
@@ -187,7 +187,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltStokesPreconditioner<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -308,7 +308,7 @@ namespace aspect
        * derived from Darcy's law, a term including the melting rate and a term dependent
        * on the densities and velocities of fluid and solid.
        */
-      template <int dim>
+      template <unsigned int>
       double
       compute_fluid_pressure_rhs(const SimulatorAccess<dim> *simulator_access,
                                  const internal::Assembly::Scratch::StokesSystem<dim> &scratch,
@@ -371,7 +371,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltStokesSystem<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -554,7 +554,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltStokesSystemBoundary<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -623,7 +623,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/melt.cc</code>.
        */
-      template <int dim>
+      template <unsigned int>
       double
       compute_melting_RHS(const SimulatorAccess<dim> *simulator_access,
                           const internal::Assembly::Scratch::AdvectionSystem<dim>  &scratch,
@@ -659,7 +659,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltAdvectionSystem<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -863,7 +863,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     MeltAdvectionSystem<dim>::
     compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
@@ -956,7 +956,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltPressureRHSCompatibilityModification<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -991,7 +991,7 @@ namespace aspect
           }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltBoundaryTraction<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
@@ -1056,7 +1056,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::
   compute_melt_variables(LinearAlgebra::BlockSparseMatrix &system_matrix,
@@ -1329,7 +1329,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   MeltHandler<dim>::
   is_porosity(const typename Simulator<dim>::AdvectionField &advection_field) const
@@ -1347,7 +1347,7 @@ namespace aspect
     // This is a scratch object for the setting the compaction pressure constraints
     // in cells without melt (where we do not solve the melt transport equations,
     // so we set the compaction pressure to zero).
-    template <int dim>
+    template <unsigned int>
     struct PcConstraintsAssembleData
     {
       // Standard constructor
@@ -1392,7 +1392,7 @@ namespace aspect
 
     };
 
-    template <int dim>
+    template <unsigned int>
     struct PcConstraintsCopyData
     {
       explicit PcConstraintsCopyData (const unsigned int stokes_dofs_per_cell)
@@ -1409,7 +1409,7 @@ namespace aspect
     // structure of an assembler to loop over all compaction pressure dofs and to insert
     // the ones that are in melt cells into an IndexSet (nonzero_dof_indices) that is
     // later needed for setting the constraints.
-    template <int dim>
+    template <unsigned int>
     class PcNonZeroDofsAssembler : public SimulatorAccess<dim>
     {
       public:
@@ -1468,7 +1468,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::
   add_current_constraints(AffineConstraints<double> &constraints)
@@ -1579,7 +1579,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   MeltHandler<dim>::
   is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const
@@ -1589,7 +1589,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   MeltHandler<dim>::
   limited_darcy_coefficient(const double K_D,
@@ -1601,7 +1601,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const BoundaryFluidPressure::Interface<dim> &
   MeltHandler<dim>::
   get_boundary_fluid_pressure () const
@@ -1611,7 +1611,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::
   edit_finite_element_variables(const Parameters<dim> &parameters,
@@ -1651,7 +1651,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
@@ -1713,7 +1713,7 @@ namespace aspect
 
   namespace Melt
   {
-    template <int dim>
+    template <unsigned int>
     void
     Parameters<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -1764,7 +1764,7 @@ namespace aspect
       BoundaryFluidPressure::declare_parameters<dim> (prm);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Parameters<dim>::
     parse_parameters (ParameterHandler &prm)
@@ -1780,7 +1780,7 @@ namespace aspect
     }
   }
 
-  template <int dim>
+  template <unsigned int>
   MeltHandler<dim>::MeltHandler (ParameterHandler &prm)
     :
     boundary_fluid_pressure(BoundaryFluidPressure::create_boundary_fluid_pressure<dim>(prm))
@@ -1791,7 +1791,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::initialize () const
   {
@@ -1812,7 +1812,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
   {
@@ -1823,7 +1823,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
@@ -1837,7 +1837,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   MeltHandler<dim>::
   apply_free_surface_stabilization_with_melt (const double free_surface_theta,

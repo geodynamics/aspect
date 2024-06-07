@@ -120,7 +120,7 @@ namespace aspect
        * @ingroup Postprocessing
        * @ingroup Visualization
        */
-      template <int dim>
+      template <unsigned int>
       class Interface : public Plugins::InterfaceBase
       {
         public:
@@ -237,7 +237,7 @@ namespace aspect
        * @ingroup Postprocessing
        * @ingroup Visualization
        */
-      template <int dim>
+      template <unsigned int>
       class CellDataVectorCreator : public Interface<dim>
       {
         public:
@@ -283,7 +283,7 @@ namespace aspect
        * be used to generate graphical output on the surface of the model,
        * rather than for the entire domain.
        */
-      template <int dim>
+      template <unsigned int>
       class SurfaceOnlyVisualization
       {
         public:
@@ -313,7 +313,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class Visualization : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

@@ -50,7 +50,7 @@ namespace aspect
        *
        * There is no pressure-dependence of the density.
        */
-      template <int dim>
+      template <unsigned int>
       class MulticomponentIncompressible :  public ::aspect::SimulatorAccess<dim>
       {
         public:

@@ -37,7 +37,7 @@ namespace aspect
        *
        * @ingroup Postprocessing
        */
-      template <int dim>
+      template <unsigned int>
       class HeatFluxMap
         : public DataPostprocessorScalar<dim>,
           public SimulatorAccess<dim>,

@@ -36,7 +36,7 @@ namespace aspect
        * A class derived that implements a function that provides the computed
        * mesh refinement/error indicators for graphical output.
        */
-      template <int dim>
+      template <unsigned int>
       class ErrorIndicator : public CellDataVectorCreator<dim>,
         public SimulatorAccess<dim>
       {

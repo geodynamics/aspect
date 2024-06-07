@@ -28,7 +28,7 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  template <unsigned int>
   void modify_constraints (const SimulatorAccess<dim> &simulator_access,
                            AffineConstraints<double> &current_constraints)
   {
@@ -49,7 +49,7 @@ namespace aspect
   }
 
   // Connect constraints function to correct signal.
-  template <int dim>
+  template <unsigned int>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
     signals.post_constraints_creation.connect (&modify_constraints<dim>);

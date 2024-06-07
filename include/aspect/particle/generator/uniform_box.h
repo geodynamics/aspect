@@ -39,7 +39,7 @@ namespace aspect
        *
        * @ingroup ParticleGenerators
        */
-      template <int dim>
+      template <unsigned int>
       class UniformBox : public Interface<dim>
       {
         public:

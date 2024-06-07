@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     CompositionVelocityStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -147,7 +147,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionVelocityStatistics<dim>::declare_parameters(ParameterHandler &prm)
     {
@@ -167,7 +167,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionVelocityStatistics<dim>::parse_parameters(ParameterHandler &prm)
     {

@@ -36,7 +36,7 @@ namespace aspect
      *
      * @ingroup TimeStepping
      */
-    template <int dim>
+    template <unsigned int>
     class RepeatOnCutback : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     void
     GlobalStatistics<dim>::initialize()
     {
@@ -66,7 +66,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GlobalStatistics<dim>::clear_data()
     {
@@ -79,7 +79,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GlobalStatistics<dim>::store_stokes_solver_history(const unsigned int number_S_iterations,
                                                        const unsigned int number_A_iterations,
@@ -94,7 +94,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GlobalStatistics<dim>::store_advection_solver_history(const bool solved_temperature_field,
                                                           const unsigned int compositional_index,
@@ -119,7 +119,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     GlobalStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -215,7 +215,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GlobalStatistics<dim>::generate_global_statistics(TableHandler &statistics)
     {
@@ -262,7 +262,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GlobalStatistics<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -284,7 +284,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GlobalStatistics<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -50,7 +50,7 @@ namespace aspect
      * scheme is based on that of Kaus et. al., 2010. Called during
      * assembly of the system matrix.
      */
-    template <int dim>
+    template <unsigned int>
     class ApplyStabilization: public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -71,7 +71,7 @@ namespace aspect
     };
   }
 
-  template <int dim> class Simulator;
+  template <unsigned int> class Simulator;
 
   /**
    * A namespace that contains everything that is related to the deformation
@@ -86,7 +86,7 @@ namespace aspect
      * for all non-constrained vertices will be computed by solving a Laplace
      * problem with the given constraints.
      */
-    template<int dim>
+    template<unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -129,7 +129,7 @@ namespace aspect
      * of the surface, the internal nodes and computes the
      * Arbitrary-Lagrangian-Eulerian correction terms.
      */
-    template<int dim>
+    template<unsigned int>
     class MeshDeformationHandler: public SimulatorAccess<dim>
     {
       public:
@@ -572,7 +572,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename MeshDeformationType, typename>
     inline
     bool
@@ -588,7 +588,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename MeshDeformationType, typename>
     inline
     const MeshDeformationType &
@@ -618,7 +618,7 @@ namespace aspect
      * that the string can be an input to the deal.II classes
      * Patterns::Selection or Patterns::MultipleSelection.
      */
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ();
 

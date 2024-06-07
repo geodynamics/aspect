@@ -39,7 +39,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   struct Introspection;
 
 
@@ -232,7 +232,7 @@ namespace aspect
 
 
     // Forward declaration:
-    template <int dim>
+    template <unsigned int>
     class AdditionalMaterialInputs;
 
     /**
@@ -241,7 +241,7 @@ namespace aspect
      * same length and refer to different evaluation points (given in
      * #position).
      */
-    template <int dim>
+    template <unsigned int>
     class MaterialModelInputs
     {
       public:
@@ -466,7 +466,7 @@ namespace aspect
 
 
     // Forward declaration:
-    template <int dim>
+    template <unsigned int>
     class AdditionalMaterialOutputs;
 
 
@@ -476,7 +476,7 @@ namespace aspect
      * values at the different positions given by
      * MaterialModelInputs::position.
      */
-    template <int dim>
+    template <unsigned int>
     class MaterialModelOutputs
     {
       public:
@@ -736,7 +736,7 @@ namespace aspect
        * quadrature points are located on the given cell, and a mapping,
        * perform this operation on all elements of the @p values structure.
        */
-      template <int dim>
+      template <unsigned int>
       void average (const AveragingOperation operation,
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
@@ -774,7 +774,7 @@ namespace aspect
      * The format of the additional quantities defined in derived classes
      * should be the same as for MaterialModel::MaterialModelInputs.
      */
-    template <int dim>
+    template <unsigned int>
     class AdditionalMaterialInputs
     {
       public:
@@ -821,7 +821,7 @@ namespace aspect
      * The format of the additional quantities defined in derived classes
      * should be the same as for MaterialModel::MaterialModelOutputs.
      */
-    template <int dim>
+    template <unsigned int>
     class AdditionalMaterialOutputs
     {
       public:
@@ -859,7 +859,7 @@ namespace aspect
      * This class is then this base class for additional named material model outputs
      * to be added to the MaterialModel::MaterialModelOutputs structure.
      */
-    template <int dim>
+    template <unsigned int>
     class NamedAdditionalMaterialOutputs : public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -925,7 +925,7 @@ namespace aspect
      * the MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class SeismicAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -969,7 +969,7 @@ namespace aspect
      * fields, the reaction_rates defined here allow for reaction processes that
      * happen on shorter time scales than the advection, and disequilibrium reactions.
      */
-    template <int dim>
+    template <unsigned int>
     class ReactionRateOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -995,7 +995,7 @@ namespace aspect
      * to be added to the MaterialModel::MaterialModelOutputs structure
      * and filled in the MaterialModel::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class PhaseOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -1022,7 +1022,7 @@ namespace aspect
      * are using the "prescribed field" method. It is the responsibility
      * of the individual material models to fill the correct entries.
      */
-    template <int dim>
+    template <unsigned int>
     class PrescribedFieldOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -1054,7 +1054,7 @@ namespace aspect
      * outputs will finally be interpolated onto the
      * temperature field.
      */
-    template <int dim>
+    template <unsigned int>
     class PrescribedTemperatureOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -1078,7 +1078,7 @@ namespace aspect
      * MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class AdditionalMaterialOutputsStokesRHS: public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -1133,7 +1133,7 @@ namespace aspect
      *    equation (if the model is incompressible), otherwise this term is
      *    already present on the left side.
      */
-    template <int dim>
+    template <unsigned int>
     class PrescribedPlasticDilation : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -1162,7 +1162,7 @@ namespace aspect
      * MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class ElasticOutputs: public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -1208,7 +1208,7 @@ namespace aspect
      * material models (which is required for thermodynamically consistent
      * models).
      */
-    template <int dim>
+    template <unsigned int>
     class EnthalpyOutputs : public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -1252,7 +1252,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class Interface : public Plugins::InterfaceBase
     {
       public:
@@ -1366,7 +1366,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     void
     register_material_model (const std::string &name,
                              const std::string &description,
@@ -1383,7 +1383,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_material_model (const std::string &model_name);
 
@@ -1399,7 +1399,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_material_model (ParameterHandler &prm);
 
@@ -1410,7 +1410,7 @@ namespace aspect
      * that the string can be an input to the deal.II classes
      * Patterns::Selection or Patterns::MultipleSelection.
      */
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ();
 
@@ -1420,7 +1420,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm);
 
@@ -1435,7 +1435,7 @@ namespace aspect
      *
      * @param output_stream The stream to write the output to.
      */
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &output_stream);
 
@@ -1443,7 +1443,7 @@ namespace aspect
 
 // --------------------- template function definitions ----------------------------------
 
-    template <int dim>
+    template <unsigned int>
     template <class AdditionalInputType>
     AdditionalInputType *MaterialModelInputs<dim>::get_additional_input()
     {
@@ -1457,7 +1457,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <class AdditionalInputType>
     const AdditionalInputType *MaterialModelInputs<dim>::get_additional_input() const
     {
@@ -1471,7 +1471,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <class AdditionalOutputType>
     AdditionalOutputType *MaterialModelOutputs<dim>::get_additional_output()
     {
@@ -1485,7 +1485,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <class AdditionalOutputType>
     const AdditionalOutputType *MaterialModelOutputs<dim>::get_additional_output() const
     {
@@ -1499,7 +1499,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void MaterialModelOutputs<dim>::move_additional_outputs_from(MaterialModelOutputs<dim> &other)
     {
       Assert(this->additional_outputs.empty(), ExcMessage("Destination of move needs to be empty!"));

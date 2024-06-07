@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    template <int dim>
+    template <unsigned int>
     void
     MaximumRefinementFunction<dim>::update ()
     {
@@ -46,7 +46,7 @@ namespace aspect
       max_refinement_level.set_time(time);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MaximumRefinementFunction<dim>::tag_additional_cells () const
     {
@@ -69,7 +69,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MaximumRefinementFunction<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -109,7 +109,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MaximumRefinementFunction<dim>::parse_parameters (ParameterHandler &prm)
     {

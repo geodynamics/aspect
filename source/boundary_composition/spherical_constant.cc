@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-    template <int dim>
+    template <unsigned int>
     void
     SphericalConstant<dim>::
     initialize ()
@@ -55,7 +55,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalConstant<dim>::
     boundary_composition (const types::boundary_id boundary_indicator,
@@ -76,7 +76,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalConstant<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -103,7 +103,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalConstant<dim>::parse_parameters (ParameterHandler &prm)
     {

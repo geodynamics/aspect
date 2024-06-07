@@ -40,7 +40,7 @@ namespace aspect
      *
      * @ingroup BoundaryVelocities
      */
-    template <int dim>
+    template <unsigned int>
     class Function : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

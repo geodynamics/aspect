@@ -45,7 +45,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class BasicStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

@@ -37,7 +37,7 @@ namespace aspect
     // ------------------------------ Deal with registering initial composition models and automating
     // ------------------------------ their setup and selection at run time
 
-    template <int dim>
+    template <unsigned int>
     Manager<dim>::~Manager()
       = default;
 
@@ -54,7 +54,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_initial_composition (const std::string &name,
                                                 const std::string &description,
@@ -69,7 +69,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -131,7 +131,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Manager<dim>::initial_composition (const Point<dim> &position,
                                        const unsigned int n_comp) const
@@ -150,7 +150,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<std::string> &
     Manager<dim>::get_active_initial_composition_names () const
     {
@@ -158,7 +158,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_initial_composition_conditions () const
     {
@@ -166,7 +166,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -212,7 +212,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ()
     {
@@ -221,7 +221,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {

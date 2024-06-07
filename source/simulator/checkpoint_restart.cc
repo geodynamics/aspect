@@ -78,7 +78,7 @@ namespace aspect
      * restart to verify that they are the same as the ones set
      * in the input file active during restart.
      */
-    template <int dim>
+    template <unsigned int>
     void save_critical_parameters (const Parameters<dim> &parameters,
                                    aspect::oarchive &oa)
     {
@@ -106,7 +106,7 @@ namespace aspect
      * restart to verify that they are the same as the ones currently set
      * in the input file active during restart.
      */
-    template <int dim>
+    template <unsigned int>
     void load_and_check_critical_parameters (const Parameters<dim> &parameters,
                                              aspect::iarchive &ia)
     {
@@ -264,7 +264,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::create_snapshot()
   {
     TimerOutput::Scope timer (computing_timer, "Create snapshot");
@@ -433,7 +433,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::resume_from_snapshot()
   {
     // By definition, a checkpoint is past the first time step. As a consequence,
@@ -609,7 +609,7 @@ BOOST_CLASS_TRACKING (aspect::Simulator<3>, boost::serialization::track_never)
 namespace aspect
 {
 
-  template <int dim>
+  template <unsigned int>
   template <class Archive>
   void Simulator<dim>::serialize (Archive &ar, const unsigned int)
   {

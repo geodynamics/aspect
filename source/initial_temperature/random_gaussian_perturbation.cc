@@ -33,7 +33,7 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     void
     RandomGaussianPerturbation<dim>::initialize ()
     {
@@ -120,7 +120,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     RandomGaussianPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -139,7 +139,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RandomGaussianPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -170,7 +170,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RandomGaussianPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {

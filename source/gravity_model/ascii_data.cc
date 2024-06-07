@@ -25,14 +25,14 @@ namespace aspect
 {
   namespace GravityModel
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData ()
       :
       gravity_index(numbers::invalid_unsigned_int)
     {}
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -41,7 +41,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     AsciiData<dim>::
     gravity_vector (const Point<dim> &position) const
@@ -66,7 +66,7 @@ namespace aspect
       return Tensor<1,dim>();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -82,7 +82,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

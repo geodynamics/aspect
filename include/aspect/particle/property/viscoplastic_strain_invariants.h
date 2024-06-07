@@ -41,7 +41,7 @@ namespace aspect
        * and is effectively the same as what the visco plastic material model uses for compositional fields.
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class ViscoPlasticStrainInvariant : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:

@@ -46,7 +46,7 @@ namespace aspect
        * dimension of zero (the dimension of the particle / point), and a space dimension
        * of dim (the dimension in which this zero-dimensional particle lives).
        */
-      template<int dim>
+      template<unsigned int>
       class ParticleOutput : public dealii::DataOutInterface<0,dim>
       {
         public:
@@ -116,7 +116,7 @@ namespace aspect
      * although this is not mandatory. It also allows other parts of the
      * code to query the particles for information.
      */
-    template <int dim>
+    template <unsigned int>
     class Particles : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

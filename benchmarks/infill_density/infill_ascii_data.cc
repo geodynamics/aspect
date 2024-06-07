@@ -37,7 +37,7 @@ namespace aspect
      *
      * @ingroup BoundaryTractions
      */
-    template <int dim>
+    template <unsigned int>
     class InfillAsciiData : public Utilities::AsciiDataBoundary<dim>, public Interface<dim>
     {
       public:
@@ -102,14 +102,14 @@ namespace aspect
         double rock_infill_height;
     };
 
-    template <int dim>
+    template <unsigned int>
     InfillAsciiData<dim>::InfillAsciiData ()
       :
       surface_boundary_id(numbers::invalid_unsigned_int)
     {}
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InfillAsciiData<dim>::initialize ()
     {
@@ -124,7 +124,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     InfillAsciiData<dim>::
     boundary_traction (const types::boundary_id surface_boundary_id,
@@ -163,7 +163,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InfillAsciiData<dim>::update()
     {
@@ -172,7 +172,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InfillAsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -204,7 +204,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InfillAsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

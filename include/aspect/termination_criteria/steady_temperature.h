@@ -35,7 +35,7 @@ namespace aspect
      *
      * @ingroup TerminationCriteria
      */
-    template <int dim>
+    template <unsigned int>
     class SteadyTemperature : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

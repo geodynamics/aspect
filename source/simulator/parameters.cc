@@ -37,7 +37,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   Parameters<dim>::Parameters (ParameterHandler &prm,
                                const MPI_Comm mpi_communicator)
   {
@@ -45,7 +45,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Parameters<dim>::
   declare_parameters (ParameterHandler &prm)
@@ -1374,7 +1374,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Parameters<dim>::
   parse_parameters (ParameterHandler &prm,
@@ -2151,7 +2151,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Parameters<dim>::
   parse_geometry_dependent_parameters(ParameterHandler &prm,
@@ -2258,7 +2258,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::declare_parameters (ParameterHandler &prm)
   {
     Parameters<dim>::declare_parameters (prm);

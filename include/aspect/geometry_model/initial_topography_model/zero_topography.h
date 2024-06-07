@@ -35,7 +35,7 @@ namespace aspect
      *
      * @ingroup InitialTopographyModels
      */
-    template <int dim>
+    template <unsigned int>
     class ZeroTopography : public Interface<dim>
     {
       public:

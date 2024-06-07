@@ -36,7 +36,7 @@ namespace aspect
      *
      * @ingroup BoundaryCompositions
      */
-    template <int dim>
+    template <unsigned int>
     class Box : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

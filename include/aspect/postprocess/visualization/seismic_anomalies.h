@@ -36,7 +36,7 @@ namespace aspect
        * A class derived that implements a function that provides the computed
        * computed seismic anomaly in $V_s$ for graphical output.
        */
-      template <int dim>
+      template <unsigned int>
       class SeismicVsAnomaly
         :
         public CellDataVectorCreator<dim>,
@@ -96,7 +96,7 @@ namespace aspect
        * A class derived that implements a function that provides the computed
        * computed seismic anomaly in $V_p$ for graphical output.
        */
-      template <int dim>
+      template <unsigned int>
       class SeismicVpAnomaly
         :
         public CellDataVectorCreator<dim>,

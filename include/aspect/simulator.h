@@ -77,25 +77,25 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  template <unsigned int>
   class MeltHandler;
 
-  template <int dim>
+  template <unsigned int>
   class NewtonHandler;
 
-  template <int dim>
+  template <unsigned int>
   class StokesMatrixFreeHandler;
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   class StokesMatrixFreeHandlerImplementation;
 
   namespace MeshDeformation
   {
-    template <int dim>
+    template <unsigned int>
     class MeshDeformationHandler;
   }
 
-  template <int dim>
+  template <unsigned int>
   class VolumeOfFluidHandler;
 
   namespace internal
@@ -104,24 +104,24 @@ namespace aspect
     {
       namespace Scratch
       {
-        template <int dim>      struct StokesPreconditioner;
-        template <int dim>      struct StokesSystem;
-        template <int dim>      struct AdvectionSystem;
+        template <unsigned int>      struct StokesPreconditioner;
+        template <unsigned int>      struct StokesSystem;
+        template <unsigned int>      struct AdvectionSystem;
       }
 
       namespace CopyData
       {
-        template <int dim>      struct StokesPreconditioner;
-        template <int dim>      struct StokesSystem;
-        template <int dim>      struct AdvectionSystem;
+        template <unsigned int>      struct StokesPreconditioner;
+        template <unsigned int>      struct StokesSystem;
+        template <unsigned int>      struct AdvectionSystem;
       }
     }
   }
 
   namespace Assemblers
   {
-    template <int dim>      class Interface;
-    template <int dim>      class Manager;
+    template <unsigned int>      class Interface;
+    template <unsigned int>      class Manager;
   }
 
   struct DefectCorrectionResiduals
@@ -139,7 +139,7 @@ namespace aspect
   /**
    * A data structure with all properties relevant to compute angular momentum and rotation.
    */
-  template <int dim>
+  template <unsigned int>
   struct RotationProperties
   {
     RotationProperties()
@@ -175,7 +175,7 @@ namespace aspect
    *
    * @ingroup Simulator
    */
-  template <int dim>
+  template <unsigned int>
   class Simulator
   {
     public:
@@ -2150,7 +2150,7 @@ namespace aspect
       friend class MeshDeformation::MeshDeformationHandler<dim>;   // MeshDeformationHandler needs access to the internals of the Simulator
       friend class VolumeOfFluidHandler<dim>; // VolumeOfFluidHandler needs access to the internals of the Simulator
       friend class StokesMatrixFreeHandler<dim>;
-      template <int dimension, int velocity_degree>
+      template <unsigned intension, int velocity_degree>
       friend class StokesMatrixFreeHandlerImplementation;
       friend struct Parameters<dim>;
   };

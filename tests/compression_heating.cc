@@ -29,7 +29,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class Compression : public MaterialModel::MeltGlobal<dim>
     {
       public:
@@ -39,7 +39,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Compression<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,

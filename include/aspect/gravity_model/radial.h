@@ -37,7 +37,7 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
-    template <int dim>
+    template <unsigned int>
     class RadialConstant : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -79,7 +79,7 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
-    template <int dim>
+    template <unsigned int>
     class RadialEarthLike : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -101,7 +101,7 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
-    template <int dim>
+    template <unsigned int>
     class RadialLinear : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

@@ -37,7 +37,7 @@ namespace aspect
      * the MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.
      */
-    template <int dim>
+    template <unsigned int>
     class UnscaledViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -50,7 +50,7 @@ namespace aspect
 
   namespace internal
   {
-    template <int dim>
+    template <unsigned int>
     class FunctorDepthAverageUnscaledViscosity: public internal::FunctorBase<dim>
     {
       public:
@@ -98,7 +98,7 @@ namespace aspect
      * an unscaled (constant) viscosity profile, which is then scaled by the quotient between reference
      * profile and unscaled viscosity.
      */
-    template<int dim>
+    template<unsigned int>
     class ScaledViscosityProfileMaterial : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:

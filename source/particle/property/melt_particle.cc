@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       MeltParticle<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
                                                           std::vector<double> &data) const
@@ -37,7 +37,7 @@ namespace aspect
         data.push_back(0.0);
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       MeltParticle<dim>::update_particle_property(const unsigned int data_position,
                                                   const Vector<double> &solution,
@@ -55,21 +55,21 @@ namespace aspect
           particle->get_properties()[data_position] = 0.0;
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       MeltParticle<dim>::need_update() const
       {
         return update_time_step;
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       MeltParticle<dim>::get_needed_update_flags () const
       {
         return update_values;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       MeltParticle<dim>::get_property_information() const
       {
@@ -77,7 +77,7 @@ namespace aspect
         return property_information;
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       MeltParticle<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -101,7 +101,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MeltParticle<dim>::parse_parameters (ParameterHandler &prm)
       {

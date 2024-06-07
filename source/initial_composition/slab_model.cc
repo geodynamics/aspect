@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    template <int dim>
+    template <unsigned int>
     void
     SlabModel<dim>::initialize ()
     {
@@ -48,7 +48,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SlabModel<dim>::
     initial_composition (const Point<dim> &position,
@@ -81,7 +81,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     const Utilities::AsciiDataBoundary<dim> &
     SlabModel<dim>::get_slab_boundary () const
     {
@@ -89,7 +89,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SlabModel<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -105,7 +105,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SlabModel<dim>::parse_parameters (ParameterHandler &prm)
     {

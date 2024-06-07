@@ -33,11 +33,11 @@ namespace aspect
   {
     namespace Rheology
     {
-      template <int dim>
+      template <unsigned int>
       DiffusionDislocation<dim>::DiffusionDislocation ()
         = default;
 
-      template <int dim>
+      template <unsigned int>
       std::vector<double>
       DiffusionDislocation<dim>::
       calculate_isostrain_viscosities ( const double pressure,
@@ -181,7 +181,7 @@ namespace aspect
         return composition_viscosities;
       }
 
-      template <int dim>
+      template <unsigned int>
       double
       DiffusionDislocation<dim>::compute_viscosity (const double pressure,
                                                     const double temperature,
@@ -203,7 +203,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       DiffusionDislocation<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -332,7 +332,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       DiffusionDislocation<dim>::parse_parameters (ParameterHandler &prm)
       {

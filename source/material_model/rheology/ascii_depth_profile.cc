@@ -31,13 +31,13 @@ namespace aspect
     namespace Rheology
     {
 
-      template <int dim>
+      template <unsigned int>
       AsciiDepthProfile<dim>::AsciiDepthProfile ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       AsciiDepthProfile<dim>::initialize ()
       {
@@ -47,7 +47,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       AsciiDepthProfile<dim>::compute_viscosity (const double depth) const
       {
@@ -56,7 +56,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       AsciiDepthProfile<dim>::declare_parameters (ParameterHandler &prm,
                                                   const std::string &subsection_name)
@@ -69,7 +69,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       AsciiDepthProfile<dim>::parse_parameters (ParameterHandler &prm,
                                                 const std::string &subsection_name)

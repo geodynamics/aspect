@@ -24,7 +24,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     Command<dim>::execute (TableHandler &)
     {
@@ -71,7 +71,7 @@ namespace aspect
                              command);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Command<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -98,7 +98,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Command<dim>::parse_parameters (ParameterHandler &prm)
     {

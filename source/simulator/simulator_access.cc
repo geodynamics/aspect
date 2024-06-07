@@ -26,7 +26,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   SimulatorAccess<dim>::SimulatorAccess ()
     :
     simulator (nullptr)
@@ -34,7 +34,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   SimulatorAccess<dim>::SimulatorAccess (const Simulator<dim> &simulator_object)
     :
     simulator (&simulator_object)
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   SimulatorAccess<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
   {
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const Simulator<dim> &
   SimulatorAccess<dim>::get_simulator() const
   {
@@ -59,7 +59,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const Parameters<dim> &
   SimulatorAccess<dim>::get_parameters() const
   {
@@ -68,7 +68,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   SimulatorSignals<dim> &
   SimulatorAccess<dim>::get_signals() const
   {
@@ -79,7 +79,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const Introspection<dim> &
   SimulatorAccess<dim>::introspection () const
   {
@@ -88,7 +88,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   MPI_Comm
   SimulatorAccess<dim>::get_mpi_communicator () const
   {
@@ -97,7 +97,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   TimerOutput &
   SimulatorAccess<dim>::get_computing_timer () const
   {
@@ -106,7 +106,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const ConditionalOStream &
   SimulatorAccess<dim>::get_pcout () const
   {
@@ -115,7 +115,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double SimulatorAccess<dim>::get_time () const
   {
     return simulator->time;
@@ -123,7 +123,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double SimulatorAccess<dim>::get_timestep () const
   {
     return simulator->time_step;
@@ -131,7 +131,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double SimulatorAccess<dim>::get_old_timestep () const
   {
     return simulator->old_time_step;
@@ -139,7 +139,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int SimulatorAccess<dim>::get_timestep_number () const
   {
     return simulator->timestep_number;
@@ -147,7 +147,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const TimeStepping::Manager<dim> &
   SimulatorAccess<dim>::get_timestepping_manager() const
   {
@@ -156,7 +156,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int SimulatorAccess<dim>::get_nonlinear_iteration () const
   {
     return simulator->nonlinear_iteration;
@@ -164,7 +164,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const parallel::distributed::Triangulation<dim> &
   SimulatorAccess<dim>::get_triangulation () const
   {
@@ -173,7 +173,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   SimulatorAccess<dim>::get_volume () const
   {
@@ -182,7 +182,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const Mapping<dim> &
   SimulatorAccess<dim>::get_mapping () const
   {
@@ -191,7 +191,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::string
   SimulatorAccess<dim>::get_output_directory () const
   {
@@ -200,7 +200,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::convert_output_to_years () const
   {
@@ -209,7 +209,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   SimulatorAccess<dim>::get_end_time () const
   {
@@ -217,7 +217,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   SimulatorAccess<dim>::get_pre_refinement_step () const
   {
@@ -226,7 +226,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   SimulatorAccess<dim>::n_compositional_fields () const
   {
@@ -235,7 +235,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::include_adiabatic_heating () const
   {
@@ -244,7 +244,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::include_latent_heat () const
   {
@@ -254,7 +254,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::include_melt_transport () const
   {
@@ -263,7 +263,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   int
   SimulatorAccess<dim>::get_stokes_velocity_degree () const
   {
@@ -272,7 +272,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   SimulatorAccess<dim>::get_adiabatic_surface_temperature () const
   {
@@ -281,7 +281,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   SimulatorAccess<dim>::get_surface_pressure () const
   {
@@ -290,7 +290,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   SimulatorAccess<dim>::get_refinement_criteria (Vector<float> &estimated_error_per_cell) const
   {
@@ -299,7 +299,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,
                                                   const bool skip_interior_cells) const
@@ -310,7 +310,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   SimulatorAccess<dim>::get_artificial_viscosity_composition (Vector<float> &viscosity_per_cell,
                                                               const unsigned int compositional_variable) const
@@ -321,7 +321,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_current_linearization_point () const
   {
@@ -330,7 +330,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_solution () const
   {
@@ -339,7 +339,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_old_solution () const
   {
@@ -348,7 +348,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_old_old_solution () const
   {
@@ -357,7 +357,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_reaction_vector () const
   {
@@ -366,7 +366,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_mesh_velocity () const
   {
@@ -377,7 +377,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const DoFHandler<dim> &
   SimulatorAccess<dim>::get_dof_handler () const
   {
@@ -386,7 +386,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const FiniteElement<dim> &
   SimulatorAccess<dim>::get_fe () const
   {
@@ -395,7 +395,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockSparseMatrix &
   SimulatorAccess<dim>::get_system_matrix () const
   {
@@ -404,7 +404,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const LinearAlgebra::BlockSparseMatrix &
   SimulatorAccess<dim>::get_system_preconditioner_matrix () const
   {
@@ -413,7 +413,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const MaterialModel::Interface<dim> &
   SimulatorAccess<dim>::get_material_model () const
   {
@@ -424,7 +424,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const BoundaryTraction::Manager<dim> &
   SimulatorAccess<dim>::get_boundary_traction_manager () const
   {
@@ -433,7 +433,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::has_boundary_temperature () const
   {
@@ -442,7 +442,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const BoundaryTemperature::Manager<dim> &
   SimulatorAccess<dim>::get_boundary_temperature_manager () const
   {
@@ -451,7 +451,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const BoundaryHeatFlux::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_heat_flux () const
   {
@@ -462,7 +462,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::has_boundary_composition () const
   {
@@ -471,7 +471,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const BoundaryComposition::Manager<dim> &
   SimulatorAccess<dim>::get_boundary_composition_manager () const
   {
@@ -480,7 +480,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_fixed_temperature_boundary_indicators () const
   {
@@ -489,7 +489,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_fixed_heat_flux_boundary_indicators () const
   {
@@ -498,7 +498,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_fixed_composition_boundary_indicators () const
   {
@@ -506,7 +506,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const std::set<types::boundary_id> &
   SimulatorAccess<dim>::get_mesh_deformation_boundary_indicators () const
   {
@@ -517,7 +517,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const BoundaryVelocity::Manager<dim> &
   SimulatorAccess<dim>::get_boundary_velocity_manager () const
   {
@@ -525,7 +525,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const InitialTopographyModel::Interface<dim> &
   SimulatorAccess<dim>::get_initial_topography_model () const
   {
@@ -535,7 +535,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const GeometryModel::Interface<dim> &
   SimulatorAccess<dim>::get_geometry_model () const
   {
@@ -544,7 +544,7 @@ namespace aspect
     return *simulator->geometry_model.get();
   }
 
-  template <int dim>
+  template <unsigned int>
   const GravityModel::Interface<dim> &
   SimulatorAccess<dim>::get_gravity_model () const
   {
@@ -554,7 +554,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const AdiabaticConditions::Interface<dim> &
   SimulatorAccess<dim>::get_adiabatic_conditions () const
   {
@@ -565,7 +565,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::shared_ptr<const InitialTemperature::Manager<dim>>
   SimulatorAccess<dim>::get_initial_temperature_manager_pointer () const
   {
@@ -585,7 +585,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const InitialTemperature::Manager<dim> &
   SimulatorAccess<dim>::get_initial_temperature_manager () const
   {
@@ -605,7 +605,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::shared_ptr<const InitialComposition::Manager<dim>>
   SimulatorAccess<dim>::get_initial_composition_manager_pointer () const
   {
@@ -625,7 +625,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const InitialComposition::Manager<dim> &
   SimulatorAccess<dim>::get_initial_composition_manager () const
   {
@@ -645,21 +645,21 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const HeatingModel::Manager<dim> &
   SimulatorAccess<dim>::get_heating_model_manager () const
   {
     return simulator->heating_model_manager;
   }
 
-  template <int dim>
+  template <unsigned int>
   const MeshRefinement::Manager<dim> &
   SimulatorAccess<dim>::get_mesh_refinement_manager () const
   {
     return simulator->mesh_refinement_manager;
   }
 
-  template <int dim>
+  template <unsigned int>
   const MeltHandler<dim> &
   SimulatorAccess<dim>::get_melt_handler () const
   {
@@ -668,7 +668,7 @@ namespace aspect
     return *(simulator->melt_handler);
   }
 
-  template <int dim>
+  template <unsigned int>
   const VolumeOfFluidHandler<dim> &
   SimulatorAccess<dim>::get_volume_of_fluid_handler () const
   {
@@ -677,7 +677,7 @@ namespace aspect
     return *(simulator->volume_of_fluid_handler);
   }
 
-  template <int dim>
+  template <unsigned int>
   const NewtonHandler<dim> &
   SimulatorAccess<dim>::get_newton_handler () const
   {
@@ -688,7 +688,7 @@ namespace aspect
 
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
-  template <int dim>
+  template <unsigned int>
   const WorldBuilder::World &
   SimulatorAccess<dim>::get_world_builder () const
   {
@@ -710,7 +710,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   std::shared_ptr<const WorldBuilder::World>
   SimulatorAccess<dim>::get_world_builder_pointer () const
   {
@@ -733,7 +733,7 @@ namespace aspect
 #endif
 
 
-  template <int dim>
+  template <unsigned int>
   const MeshDeformation::MeshDeformationHandler<dim> &
   SimulatorAccess<dim>::get_mesh_deformation_handler () const
   {
@@ -743,7 +743,7 @@ namespace aspect
     return *(simulator->mesh_deformation);
   }
 
-  template <int dim>
+  template <unsigned int>
   void
   SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
                                                            const unsigned int                      q,
@@ -754,21 +754,21 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   TableHandler &
   SimulatorAccess<dim>::get_statistics_object () const
   {
     return const_cast<TableHandler &>(simulator->statistics);
   }
 
-  template <int dim>
+  template <unsigned int>
   const LateralAveraging<dim> &
   SimulatorAccess<dim>::get_lateral_averaging() const
   {
     return simulator->lateral_averaging;
   }
 
-  template <int dim>
+  template <unsigned int>
   const AffineConstraints<double> &
   SimulatorAccess<dim>::get_current_constraints() const
   {
@@ -777,7 +777,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::simulator_is_past_initialization () const
   {
@@ -787,28 +787,28 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   double
   SimulatorAccess<dim>::get_pressure_scaling () const
   {
     return (simulator->pressure_scaling);
   }
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::pressure_rhs_needs_compatibility_modification () const
   {
     return simulator->do_pressure_rhs_compatibility_modification;
   }
 
-  template <int dim>
+  template <unsigned int>
   bool
   SimulatorAccess<dim>::model_has_prescribed_stokes_solution () const
   {
     return (simulator->prescribed_stokes_solution.get() != nullptr);
   }
 
-  template <int dim>
+  template <unsigned int>
   const Postprocess::Manager<dim> &
   SimulatorAccess<dim>::get_postprocess_manager() const
   {
@@ -816,7 +816,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   const Particle::World<dim> &
   SimulatorAccess<dim>::get_particle_world() const
   {
@@ -825,7 +825,7 @@ namespace aspect
     return *simulator->particle_world.get();
   }
 
-  template <int dim>
+  template <unsigned int>
   Particle::World<dim> &
   SimulatorAccess<dim>::get_particle_world()
   {
@@ -836,7 +836,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool SimulatorAccess<dim>::is_stokes_matrix_free()
   {
     return (simulator->stokes_matrix_free ? true : false);
@@ -844,7 +844,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   const StokesMatrixFreeHandler<dim> &
   SimulatorAccess<dim>::get_stokes_matrix_free () const
   {
@@ -855,7 +855,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   RotationProperties<dim>
   SimulatorAccess<dim>::compute_net_angular_momentum(const bool use_constant_density,
                                                      const LinearAlgebra::BlockVector &solution,

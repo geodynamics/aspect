@@ -27,7 +27,7 @@
 namespace aspect
 {
 
-  template <int dim>
+  template <unsigned int>
   class PressureBdry:
     public BoundaryFluidPressure::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {

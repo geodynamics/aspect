@@ -46,7 +46,7 @@ namespace aspect
       *
       * @ingroup ReactionModel
       */
-      template <int dim>
+      template <unsigned int>
       class Katz2003MantleMelting : public ::aspect::SimulatorAccess<dim>
       {
         public:

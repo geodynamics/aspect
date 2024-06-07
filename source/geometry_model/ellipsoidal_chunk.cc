@@ -40,7 +40,7 @@ namespace aspect
   {
     namespace
     {
-      template <int dim>
+      template <unsigned int>
       void
       set_manifold_ids(Triangulation<dim> &triangulation)
       {
@@ -48,7 +48,7 @@ namespace aspect
           cell->set_all_manifold_ids (15);
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       clear_manifold_ids(Triangulation<dim> &triangulation)
       {
@@ -65,7 +65,7 @@ namespace aspect
        */
 
       // Constructor
-      template <int dim>
+      template <unsigned int>
       EllipsoidalChunkGeometry<dim>::EllipsoidalChunkGeometry(const InitialTopographyModel::Interface<dim> &topo,
                                                               const double para_semi_major_axis_a,
                                                               const double para_eccentricity,
@@ -85,7 +85,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<3>
       EllipsoidalChunkGeometry<dim>::push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const
       {
@@ -108,7 +108,7 @@ namespace aspect
                          ((1 - eccentricity * eccentricity) * R_bar + d) * std::sin(theta));
       }
 
-      template <int dim>
+      template <unsigned int>
       Point<3>
       EllipsoidalChunkGeometry<dim>::pull_back_ellipsoid(const Point<3> &x, const double semi_major_axis_a, const double eccentricity) const
       {
@@ -136,7 +136,7 @@ namespace aspect
         return phi_theta_d;
       }
 
-      template <int dim>
+      template <unsigned int>
       Point<3>
       EllipsoidalChunkGeometry<dim>::push_forward_topography(const Point<3> &phi_theta_d_hat) const
       {
@@ -152,7 +152,7 @@ namespace aspect
         return phi_theta_d;
       }
 
-      template <int dim>
+      template <unsigned int>
       Point<3>
       EllipsoidalChunkGeometry<dim>::pull_back_topography(const Point<3> &phi_theta_d) const
       {
@@ -177,7 +177,7 @@ namespace aspect
        * function from outside. The push forward function can't be fixed in this way, because
        * it is used by a bind statement.
        */
-      template <int dim>
+      template <unsigned int>
       Point<3>
       EllipsoidalChunkGeometry<dim>::pull_back(const Point<3> &space_point) const
       {
@@ -185,7 +185,7 @@ namespace aspect
 
       }
 
-      template <int dim>
+      template <unsigned int>
       Point<2>
       EllipsoidalChunkGeometry<dim>::pull_back(const Point<2> &space_point) const
       {
@@ -193,14 +193,14 @@ namespace aspect
 
       }
 
-      template <int dim>
+      template <unsigned int>
       Point<3>
       EllipsoidalChunkGeometry<dim>::push_forward(const Point<3> &chart_point) const
       {
         return push_forward_ellipsoid (push_forward_topography(chart_point), semi_major_axis_a, eccentricity);
       }
 
-      template <int dim>
+      template <unsigned int>
       std::unique_ptr<Manifold<dim,3>>
       EllipsoidalChunkGeometry<dim>::clone() const
       {
@@ -208,7 +208,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EllipsoidalChunk<dim>::initialize()
     {
@@ -274,14 +274,14 @@ namespace aspect
         [&] {this->set_boundary_ids(coarse_grid);});
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EllipsoidalChunk<dim>::create_coarse_mesh(parallel::distributed::Triangulation<dim> &/*coarse_grid*/) const
     {
       Assert(false, ExcNotImplemented());
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EllipsoidalChunk<dim>::set_boundary_ids(parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
@@ -296,7 +296,7 @@ namespace aspect
             cell->face(f)->set_boundary_id(f);
     }
 
-    template <int dim>
+    template <unsigned int>
     std::set<types::boundary_id>
     EllipsoidalChunk<dim>::get_used_boundary_indicators() const
     {
@@ -307,7 +307,7 @@ namespace aspect
       return s;
     }
 
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     EllipsoidalChunk<dim>::
     get_symbolic_boundary_names_map () const
@@ -343,7 +343,7 @@ namespace aspect
       return {};
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EllipsoidalChunk<dim>::declare_parameters(ParameterHandler &prm)
     {
@@ -405,7 +405,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EllipsoidalChunk<dim>::parse_parameters(ParameterHandler &prm)
     {
@@ -605,14 +605,14 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::depth(const Point<dim> &position) const
     {
       return std::max(std::min(-manifold->pull_back(position)[dim-1], maximal_depth()), 0.0);
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::height_above_reference_surface(const Point<dim> &/*position*/) const
     {
@@ -623,14 +623,14 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::maximal_depth() const
     {
       return bottom_depth;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::get_radius(const Point<dim> &position) const
     {
@@ -638,28 +638,28 @@ namespace aspect
       return semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(long_lat_depth[1]) * std::sin(long_lat_depth[1])));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::get_eccentricity() const
     {
       return eccentricity;
     }
 
-    template <int dim>
+    template <unsigned int>
     const std::vector<Point<2>> &
     EllipsoidalChunk<dim>::get_corners() const
     {
       return corners;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::get_semi_minor_axis_b() const
     {
       return semi_minor_axis_b;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::get_semi_major_axis_a() const
     {
@@ -667,7 +667,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     EllipsoidalChunk<dim>::length_scale() const
     {
@@ -679,7 +679,7 @@ namespace aspect
       return 1e4 * maximal_depth() / (6336000.-3481000.);
     }
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     EllipsoidalChunk<dim>::representative_point(const double /*depth*/) const
     {
@@ -704,7 +704,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     EllipsoidalChunk<dim>::point_is_in_domain(const Point<dim> &point) const
     {
@@ -727,7 +727,7 @@ namespace aspect
       return true;
     }
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     EllipsoidalChunk<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
@@ -752,7 +752,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     aspect::Utilities::Coordinates::CoordinateSystem
     EllipsoidalChunk<dim>::natural_coordinate_system() const
     {
@@ -791,7 +791,7 @@ namespace aspect
   }
 }
 
-template <int dim>
+template <unsigned int>
 typename aspect::GeometryModel::internal::EllipsoidalChunkGeometry<dim>
 aspect::GeometryModel::EllipsoidalChunk<dim>::get_manifold() const
 {

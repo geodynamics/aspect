@@ -39,15 +39,15 @@ namespace aspect
 {
   namespace Particle
   {
-    template <int dim>
+    template <unsigned int>
     World<dim>::World()
       = default;
 
-    template <int dim>
+    template <unsigned int>
     World<dim>::~World()
       = default;
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::initialize()
     {
@@ -81,7 +81,7 @@ namespace aspect
       connect_to_signals(this->get_signals());
     }
 
-    template <int dim>
+    template <unsigned int>
     const Property::Manager<dim> &
     World<dim>::get_property_manager() const
     {
@@ -90,7 +90,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const Particles::ParticleHandler<dim> &
     World<dim>::get_particle_handler() const
     {
@@ -99,7 +99,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Particles::ParticleHandler<dim> &
     World<dim>::get_particle_handler()
     {
@@ -108,7 +108,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
                                        Particles::ParticleHandler<dim> &to_particle_handler) const
@@ -122,7 +122,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::backup_particles ()
     {
@@ -131,7 +131,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::restore_particles ()
     {
@@ -140,7 +140,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const Interpolator::Interface<dim> &
     World<dim>::get_interpolator() const
     {
@@ -149,7 +149,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     types::particle_index
     World<dim>::n_global_particles() const
     {
@@ -158,7 +158,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::connect_to_signals(aspect::SimulatorSignals<dim> &signals)
     {
@@ -187,7 +187,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
                                                  ParticleHandler<dim> &particle_handler_,
@@ -242,7 +242,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::apply_particle_per_cell_bounds()
     {
@@ -347,7 +347,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     unsigned int
     World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
 #if DEAL_II_VERSION_GTE(9,6,0)
@@ -399,7 +399,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::map<types::subdomain_id, unsigned int>
     World<dim>::get_subdomain_id_to_neighbor_map() const
     {
@@ -416,7 +416,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                            const typename ParticleHandler<dim>::particle_iterator &end_particle)
@@ -427,7 +427,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
@@ -480,7 +480,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
@@ -548,7 +548,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::setup_initial_state ()
     {
@@ -563,7 +563,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::generate_particles()
     {
@@ -573,7 +573,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::initialize_particles()
     {
@@ -612,7 +612,7 @@ namespace aspect
       // we create this derived class with an additional template. This makes it possible
       // to access the functionality through the base class, but create an object of this
       // derived class with the correct number of components at runtime.
-      template <int dim, int n_compositional_fields>
+      template <unsigned int, int n_compositional_fields>
       class SolutionEvaluatorsImplementation: public SolutionEvaluators<dim>
       {
         public:
@@ -691,7 +691,7 @@ namespace aspect
 
 
 
-      template <int dim, int n_compositional_fields>
+      template <unsigned int, int n_compositional_fields>
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::SolutionEvaluatorsImplementation(const SimulatorAccess<dim> &simulator,
           const UpdateFlags update_flags)
         :
@@ -769,7 +769,7 @@ namespace aspect
 
 
 
-      template <int dim, int n_compositional_fields>
+      template <unsigned int, int n_compositional_fields>
       void
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                                                             const ArrayView<Point<dim>> &positions,
@@ -850,7 +850,7 @@ namespace aspect
           return solution;
         }
 
-        template <int dim, int n_compositional_fields>
+        template <unsigned int, int n_compositional_fields>
         Tensor<1,dim>
         get_gradient(const Tensor<1,n_compositional_fields,Tensor<1,dim>> &gradient,
                      const unsigned int component_index)
@@ -860,7 +860,7 @@ namespace aspect
         }
 
 
-        template <int dim, int n_compositional_fields>
+        template <unsigned int, int n_compositional_fields>
         Tensor<1,dim>
         get_gradient(const Tensor<1,dim> &gradient,
                      const unsigned int component_index)
@@ -872,7 +872,7 @@ namespace aspect
       }
 
 
-      template <int dim, int n_compositional_fields>
+      template <unsigned int, int n_compositional_fields>
       void
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_solution(const unsigned int evaluation_point,
                                                                                   Vector<double> &solution)
@@ -912,7 +912,7 @@ namespace aspect
 
 
 
-      template <int dim, int n_compositional_fields>
+      template <unsigned int, int n_compositional_fields>
       void
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_gradients(const unsigned int evaluation_point,
                                                                                    std::vector<Tensor<1,dim>> &gradients)
@@ -951,7 +951,7 @@ namespace aspect
       }
 
 
-      template <int dim, int n_compositional_fields>
+      template <unsigned int, int n_compositional_fields>
       FEPointEvaluation<dim, dim> &
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity)
       {
@@ -962,7 +962,7 @@ namespace aspect
 
         return velocity;
       }
-      template <int dim, int n_compositional_fields>
+      template <unsigned int, int n_compositional_fields>
       NonMatching::MappingInfo<dim> &
       SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_mapping_info()
       {
@@ -972,7 +972,7 @@ namespace aspect
 
 
       // A function to create a pointer to a SolutionEvaluators object.
-      template <int dim>
+      template <unsigned int>
       std::unique_ptr<internal::SolutionEvaluators<dim>>
       construct_solution_evaluators (const SimulatorAccess<dim> &simulator_access,
                                      const UpdateFlags update_flags)
@@ -1029,7 +1029,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::update_particles()
     {
@@ -1071,7 +1071,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::advect_particles()
     {
@@ -1115,7 +1115,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::advance_timestep()
     {
@@ -1146,7 +1146,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::save (std::ostringstream &os) const
     {
@@ -1156,7 +1156,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::load (std::istringstream &is)
     {
@@ -1166,7 +1166,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -1236,7 +1236,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     World<dim>::parse_parameters (ParameterHandler &prm)
     {

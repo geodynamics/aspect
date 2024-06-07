@@ -47,7 +47,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class ShearHeatingMelt : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

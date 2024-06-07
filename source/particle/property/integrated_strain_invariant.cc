@@ -26,7 +26,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       IntegratedStrainInvariant<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                        std::vector<double> &data) const
@@ -36,7 +36,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       IntegratedStrainInvariant<dim>::update_particle_property(const unsigned int data_position,
                                                                const Vector<double> &/*solution*/,
@@ -68,7 +68,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       IntegratedStrainInvariant<dim>::need_update() const
       {
@@ -77,7 +77,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       IntegratedStrainInvariant<dim>::get_needed_update_flags () const
       {
@@ -86,7 +86,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       IntegratedStrainInvariant<dim>::get_property_information() const
       {

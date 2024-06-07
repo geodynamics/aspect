@@ -40,11 +40,11 @@
 
 namespace aspect
 {
-  template <int dim> class SimulatorAccess;
+  template <unsigned int> class SimulatorAccess;
 
   namespace GeometryModel
   {
-    template <int dim> class Interface;
+    template <unsigned int> class Interface;
   }
 
   /**
@@ -329,7 +329,7 @@ namespace aspect
      *
      * Returns the generated list of variable names
      */
-    template <int dim>
+    template <unsigned int>
     std::vector<std::string>
     expand_dimensional_variable_names (const std::vector<std::string> &var_declarations);
 
@@ -339,7 +339,7 @@ namespace aspect
      *
      * This function should be moved into deal.II at some point.
      */
-    template <int dim>
+    template <unsigned int>
     IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &dof_handler,
                                                         const ComponentMask &component_mask);
 
@@ -352,7 +352,7 @@ namespace aspect
      * because we only use this function when interpolating the velocity variable, and ignore the
      * evaluation at the pressure support points.
      */
-    template <int dim>
+    template <unsigned int>
     std::vector<Point<dim>> get_unit_support_points(const SimulatorAccess<dim> &simulator_access);
 
 
@@ -362,7 +362,7 @@ namespace aspect
      * processes own the cell in which this point lies. If
      * not, the point lies outside the @p triangulation.
      */
-    template <int dim>
+    template <unsigned int>
     bool
     point_is_in_triangulation(const Mapping<dim> &mapping,
                               const parallel::distributed::Triangulation<dim> &triangulation,
@@ -378,7 +378,7 @@ namespace aspect
        * given ECEF Cartesian coordinates that account for ellipsoidal shape of
        * the Earth with WGS84 parameters.
        */
-      template <int dim>
+      template <unsigned int>
       std::array<double,dim>
       WGS84_coordinates(const dealii::Point<dim> &position);
 
@@ -392,7 +392,7 @@ namespace aspect
        * have to provide data using this convention, rather than providing their
        * data from $-\pi$ (=180 degrees west) to $+\pi$ (=180 degrees east).
        */
-      template <int dim>
+      template <unsigned int>
       std::array<double,dim>
       cartesian_to_spherical_coordinates(const dealii::Point<dim> &position);
 
@@ -401,7 +401,7 @@ namespace aspect
        * phi and theta (polar angle). If the dimension is set to 2 theta is
        * omitted.
        */
-      template <int dim>
+      template <unsigned int>
       dealii::Point<dim>
       spherical_to_cartesian_coordinates(const std::array<double,dim> &scoord);
 
@@ -410,7 +410,7 @@ namespace aspect
        * a vector defined in Cartesian coordinates. If the dimension is set to 2
        * theta is omitted. Position is given as a Point in Cartesian coordinates.
        */
-      template <int dim>
+      template <unsigned int>
       Tensor<1,dim>
       spherical_to_cartesian_vector(const Tensor<1,dim> &spherical_vector,
                                     const dealii::Point<dim> &position);
@@ -421,7 +421,7 @@ namespace aspect
        * is filled with phi, theta and radius.
        *
        */
-      template <int dim>
+      template <unsigned int>
       std::array<double,3>
       cartesian_to_ellipsoidal_coordinates(const dealii::Point<3> &position,
                                            const double semi_major_axis_a,
@@ -431,7 +431,7 @@ namespace aspect
        * Return the Cartesian point of a ellipsoidal position defined by phi,
        * theta and radius.
        */
-      template <int dim>
+      template <unsigned int>
       dealii::Point<3>
       ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
@@ -452,7 +452,7 @@ namespace aspect
      * Given a 2d point and a list of points which form a polygon, computes if the point
      * falls within the polygon.
      */
-    template <int dim>
+    template <unsigned int>
     bool
     polygon_contains_point(const std::vector<Point<2>> &point_list,
                            const dealii::Point<2> &point);
@@ -462,7 +462,7 @@ namespace aspect
      * distance of the point to the polygon. The sign is negative for points outside of
      * the polygon and positive for points inside the polygon.
      */
-    template <int dim>
+    template <unsigned int>
     double
     signed_distance_to_polygon(const std::vector<Point<2>> &point_list,
                                const dealii::Point<2> &point);
@@ -485,7 +485,7 @@ namespace aspect
      * vector @p v to ensure that the resulting set of vectors
      * represents a well-conditioned basis.
      */
-    template <int dim>
+    template <unsigned int>
     std::array<Tensor<1,dim>,dim-1>
     orthogonal_vectors (const Tensor<1,dim> &v);
 
@@ -853,7 +853,7 @@ namespace aspect
      * and $a:b + b:a = 2a:b$, in which case one can drop the factor
      * of $2$ everywhere in the computations.
      */
-    template <int dim>
+    template <unsigned int>
     double compute_spd_factor(const double eta,
                               const SymmetricTensor<2,dim> &strain_rate,
                               const SymmetricTensor<2,dim> &dviscosities_dstrain_rate,
@@ -862,13 +862,13 @@ namespace aspect
     /**
      * Converts an array of size dim to a Point of size dim.
      */
-    template <int dim>
+    template <unsigned int>
     Point<dim> convert_array_to_point(const std::array<double,dim> &array);
 
     /**
      * Converts a Point of size dim to an array of size dim.
      */
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim> convert_point_to_array(const Point<dim> &point);
 
     /**
@@ -940,13 +940,13 @@ namespace aspect
      * the k'th component, which is set to one. If k is not on the main diagonal the
      * resulting tensor is symmetrized.
      */
-    template <int dim>
+    template <unsigned int>
     SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k);
 
     /**
      * A class that represents a point in a chosen coordinate system.
      */
-    template <int dim>
+    template <unsigned int>
     class NaturalCoordinate
     {
       public:
@@ -1019,7 +1019,7 @@ namespace aspect
      * @param[out] vec_result The output vector where the projected function will be
      * stored in.
      */
-    template <int dim, typename VectorType>
+    template <unsigned int, typename VectorType>
     void
     project_cellwise(const Mapping<dim>                                        &mapping,
                      const DoFHandler<dim>                                     &dof_handler,
@@ -1068,7 +1068,7 @@ namespace aspect
      * components equal to the number of components of the finite element
      * in use.
      */
-    template <int dim>
+    template <unsigned int>
     class VectorFunctionFromVelocityFunctionObject : public Function<dim>
     {
       public:
@@ -1275,7 +1275,7 @@ namespace aspect
        * The input is expected to be ordered according to the
        * SymmetricTensor::unrolled_to_component_indices() function.
        */
-      template <int dim, class Iterator>
+      template <unsigned int, class Iterator>
       inline
       SymmetricTensor<2,dim>
       to_symmetric_tensor(const Iterator begin,
@@ -1297,7 +1297,7 @@ namespace aspect
        * Unroll a SymmetricTensor into a series of doubles. The output is ordered
        * according to the SymmetricTensor::unrolled_to_component_indices() function.
        */
-      template <int dim, class Iterator>
+      template <unsigned int, class Iterator>
       inline
       void
       unroll_symmetric_tensor_into_array(const SymmetricTensor<2,dim> &tensor,
@@ -1365,7 +1365,7 @@ namespace aspect
        * Return the Levi-Civita tensor, also called a permutation or "totally antisymmetric" tensor.
        * See https://en.wikipedia.org/wiki/Levi-Civita_symbol for a definition.
        */
-      template <int dim>
+      template <unsigned int>
       const Tensor<dim,dim> &levi_civita();
 
       // Declare the existence of a specialization:

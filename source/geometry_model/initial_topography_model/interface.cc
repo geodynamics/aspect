@@ -45,7 +45,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     register_initial_topography_model (const std::string &name,
                                        const std::string &description,
@@ -59,7 +59,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_initial_topography_model (ParameterHandler &prm)
     {
@@ -91,7 +91,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -117,7 +117,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &out)
     {

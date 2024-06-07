@@ -184,7 +184,7 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class ElasticTensorDecomposition : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:

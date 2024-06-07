@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData ()
       :
       surface_boundary_id(1)
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -52,7 +52,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     AsciiData<dim>::compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
                                                             const Point<dim> &position) const
@@ -72,7 +72,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     AsciiData<dim>::
     needs_surface_stabilization () const
@@ -82,7 +82,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -97,7 +97,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -38,7 +38,7 @@ namespace aspect
     /**
      * A simple class that reads adiabatic conditions from a file.
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiData : public Utilities::AsciiDataProfile<dim>, public Interface<dim>
     {
       public:

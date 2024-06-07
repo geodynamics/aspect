@@ -36,7 +36,7 @@ namespace aspect
      *
      * @ingroup BoundaryTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class Time_Dep_Box : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -104,7 +104,7 @@ namespace aspect
   {
 // ------------------------------ Time_Dep_Box -------------------
 
-    template <int dim>
+    template <unsigned int>
     double
     Time_Dep_Box<dim>::
     boundary_temperature (const types::boundary_id boundary_indicator,
@@ -123,7 +123,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Time_Dep_Box<dim>::
     minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
@@ -144,7 +144,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Time_Dep_Box<dim>::
     maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
@@ -163,7 +163,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Time_Dep_Box<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -199,7 +199,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Time_Dep_Box<dim>::parse_parameters (ParameterHandler &prm)
     {

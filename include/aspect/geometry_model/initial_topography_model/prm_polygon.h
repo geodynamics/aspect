@@ -36,7 +36,7 @@ namespace aspect
      * by defining a set of polygons on the surface from the prm file. It
      * sets the elevation in each polygon to a constant value.
      */
-    template <int dim>
+    template <unsigned int>
     class PrmPolygon : public Interface<dim>
     {
       public:

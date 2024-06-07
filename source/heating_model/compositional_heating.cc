@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     CompositionalHeating<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -53,7 +53,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionalHeating<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -87,7 +87,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionalHeating<dim>::parse_parameters (ParameterHandler &prm)
     {

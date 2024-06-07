@@ -25,7 +25,7 @@
 using namespace dealii;
 
 
-template <int dim>
+template <unsigned int>
 class MyGravity :
   public aspect::GravityModel::Interface<dim>
 {

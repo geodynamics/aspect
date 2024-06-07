@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     DislocationViscosityOutputs<dim>::DislocationViscosityOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_dislocation_viscosity_outputs_names()),
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     DislocationViscosityOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -83,7 +83,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GrainSize<dim>::initialize()
     {
@@ -111,7 +111,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     unsigned int
     GrainSize<dim>::
     get_phase_index (const MaterialUtilities::PhaseFunctionInputs<dim> &in) const
@@ -139,7 +139,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     compute_partitioning_fraction (const double temperature) const
@@ -209,7 +209,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<std::vector<double>>
     GrainSize<dim>::
     grain_size_change (const typename Interface<dim>::MaterialModelInputs &in,
@@ -409,7 +409,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     diffusion_viscosity (const double temperature,
@@ -447,7 +447,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     dislocation_viscosity (const double temperature,
@@ -517,7 +517,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     enthalpy (const double      temperature,
@@ -541,7 +541,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     seismic_Vp (const double      temperature,
@@ -565,7 +565,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     seismic_Vs (const double      temperature,
@@ -589,7 +589,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     density (const double temperature,
@@ -621,7 +621,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     GrainSize<dim>::
     is_compressible () const
@@ -632,7 +632,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     compressibility (const double temperature,
@@ -657,7 +657,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     thermal_expansion_coefficient (const double      temperature,
@@ -684,7 +684,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     GrainSize<dim>::
     specific_heat (const double temperature,
@@ -711,7 +711,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<std::pair<double, unsigned int>,2>
     GrainSize<dim>::
     enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
@@ -780,7 +780,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GrainSize<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
@@ -999,7 +999,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GrainSize<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -1325,7 +1325,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GrainSize<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -1607,7 +1607,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

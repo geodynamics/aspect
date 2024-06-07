@@ -29,7 +29,7 @@ namespace aspect
   {
 // ------------------------------ InitialComposition -------------------
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialComposition<dim>::initialize()
     {
@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     InitialComposition<dim>::
     boundary_composition (const types::boundary_id /*boundary_indicator*/,
@@ -52,7 +52,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     InitialComposition<dim>::
     minimal_composition (const std::set<types::boundary_id> &) const
@@ -62,7 +62,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     InitialComposition<dim>::
     maximal_composition (const std::set<types::boundary_id> &) const
@@ -72,7 +72,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialComposition<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -93,7 +93,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     InitialComposition<dim>::parse_parameters (ParameterHandler &prm)
     {

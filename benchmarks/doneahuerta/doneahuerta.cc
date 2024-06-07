@@ -58,7 +58,7 @@ namespace aspect
         return x*(1.-x)-1./6.;
       }
 
-      template <int dim>
+      template <unsigned int>
       class FunctionDoneaHuerta : public Function<dim>
       {
         public:
@@ -85,7 +85,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     class DoneaHuertaBoundary : public BoundaryVelocity::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
@@ -110,7 +110,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class DoneaHuertaMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -168,7 +168,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     DoneaHuertaMaterial<dim>::
     is_compressible () const
@@ -176,14 +176,14 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DoneaHuertaMaterial<dim>::declare_parameters (ParameterHandler &)
     {
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DoneaHuertaMaterial<dim>::parse_parameters (ParameterHandler &)
     {
@@ -196,7 +196,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     DoneaHuertaBoundary<dim>::DoneaHuertaBoundary ()
     {}
 
@@ -225,7 +225,7 @@ namespace aspect
      * Gravity model for the DoneaHuerta benchmark
     */
 
-    template <int dim>
+    template <unsigned int>
     class DoneaHuertaGravity : public aspect::GravityModel::Interface<dim>
     {
       public:
@@ -233,7 +233,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     DoneaHuertaGravity<dim>::
     gravity_vector(const Point<dim> &pos) const
@@ -255,7 +255,7 @@ namespace aspect
       * The implementation of error evaluators that correspond to the
       * benchmarks defined in the Donea and Huerta FEM book (see manual).
       */
-    template <int dim>
+    template <unsigned int>
     class DoneaHuertaPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -266,7 +266,7 @@ namespace aspect
         execute (TableHandler &statistics) override;
     };
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     DoneaHuertaPostprocessor<dim>::execute (TableHandler &)
     {

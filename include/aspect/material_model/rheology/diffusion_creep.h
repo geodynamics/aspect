@@ -55,7 +55,7 @@ namespace aspect
         DiffusionCreepParameters();
       };
 
-      template <int dim>
+      template <unsigned int>
       class DiffusionCreep : public ::aspect::SimulatorAccess<dim>
       {
         public:

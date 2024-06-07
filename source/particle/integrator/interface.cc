@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace Integrator
     {
-      template <int dim>
+      template <unsigned int>
       bool
       Interface<dim>::new_integration_step()
       {
@@ -38,7 +38,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::size_t
       Interface<dim>::get_data_size() const
       {
@@ -47,7 +47,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       const void *
       Interface<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
                                 const void *data)
@@ -57,7 +57,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void *
       Interface<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &/*particle*/,
                                  void *data) const
@@ -81,7 +81,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       register_particle_integrator (const std::string &name,
                                     const std::string &description,
@@ -96,7 +96,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::unique_ptr<Interface<dim>>
       create_particle_integrator (ParameterHandler &prm)
       {
@@ -117,7 +117,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       declare_parameters (ParameterHandler &prm)
       {
@@ -203,7 +203,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       write_plugin_graph (std::ostream &out)
       {

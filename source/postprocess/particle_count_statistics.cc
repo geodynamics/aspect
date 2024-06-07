@@ -34,7 +34,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     ParticleCountStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -79,7 +79,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     ParticleCountStatistics<dim>::required_other_postprocessors() const
     {

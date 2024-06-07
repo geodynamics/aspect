@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    template <int dim>
+    template <unsigned int>
     double
     AdiabaticDensity<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const

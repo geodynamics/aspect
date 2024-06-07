@@ -40,7 +40,7 @@ namespace aspect
      *
      * @ingroup BoundaryFluidPressures
      */
-    template <int dim>
+    template <unsigned int>
     class Density : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

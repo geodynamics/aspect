@@ -42,7 +42,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class LatentHeatMelt : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

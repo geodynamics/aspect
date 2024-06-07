@@ -32,13 +32,13 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     CoreStatistics<dim>::CoreStatistics()
     {
       core_data.is_initialized = false;
     }
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     CoreStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -144,7 +144,7 @@ namespace aspect
                                                   screen_text.str());
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     CoreStatistics<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -161,7 +161,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     CoreStatistics<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -176,14 +176,14 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     const BoundaryTemperature::internal::CoreData &
     CoreStatistics<dim>::get_core_data() const
     {
       return core_data;
     }
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void CoreStatistics<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -197,7 +197,7 @@ namespace aspect
       ar &(core_data.is_initialized);
     }
 
-    template <int dim>
+    template <unsigned int>
     void CoreStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
@@ -207,7 +207,7 @@ namespace aspect
       status_strings["CoreStatistics"] = os.str();
     }
 
-    template <int dim>
+    template <unsigned int>
     void CoreStatistics<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
       // see if something was saved

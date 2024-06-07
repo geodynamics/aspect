@@ -29,12 +29,12 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     AsciiProfile<dim>::AsciiProfile ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiProfile<dim>::initialize ()
     {
@@ -44,7 +44,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double AsciiProfile<dim>::initial_temperature (const Point<dim> &p) const
     {
       const double depth = this->get_geometry_model().depth(p);
@@ -52,7 +52,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiProfile<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -67,7 +67,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiProfile<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -32,12 +32,12 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     ContinentalGeotherm<dim>::ContinentalGeotherm ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ContinentalGeotherm<dim>::
     initialize ()
@@ -53,7 +53,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     ContinentalGeotherm<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -96,7 +96,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ContinentalGeotherm<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -125,7 +125,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ContinentalGeotherm<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -263,7 +263,7 @@ namespace aspect
       /**
        * The exact solution for the Solitary wave benchmark.
        */
-      template <int dim>
+      template <unsigned int>
       class FunctionSolitaryWave : public Function<dim>
       {
         public:
@@ -315,7 +315,7 @@ namespace aspect
     /**
      * An initial conditions model for the solitary waves benchmark.
      */
-    template <int dim>
+    template <unsigned int>
     class SolitaryWaveInitialCondition : public InitialComposition::Interface<dim>,
       public ::aspect::SimulatorAccess<dim>
     {
@@ -368,7 +368,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class SolitaryWaveMaterial : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -474,7 +474,7 @@ namespace aspect
         std::shared_ptr<const aspect::InitialComposition::Manager<dim>> initial_composition_manager;
     };
 
-    template <int dim>
+    template <unsigned int>
     void
     SolitaryWaveMaterial<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -515,7 +515,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SolitaryWaveMaterial<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -537,28 +537,28 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SolitaryWaveInitialCondition<dim>::get_amplitude () const
     {
       return amplitude;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     SolitaryWaveInitialCondition<dim>::get_background_porosity () const
     {
       return background_porosity;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     SolitaryWaveInitialCondition<dim>::get_offset () const
     {
       return offset;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     SolitaryWaveInitialCondition<dim>::initialize ()
     {
@@ -584,7 +584,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SolitaryWaveInitialCondition<dim>::
     initial_composition (const Point<dim> &position, const unsigned int /*n_comp*/) const
@@ -594,7 +594,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SolitaryWaveInitialCondition<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -628,7 +628,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SolitaryWaveInitialCondition<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -659,7 +659,7 @@ namespace aspect
       * The implementation of error evaluators that correspond to the
       * benchmarks defined in the paper Keller et al. reference above.
       */
-    template <int dim>
+    template <unsigned int>
     class SolitaryWavePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -697,7 +697,7 @@ namespace aspect
 
     };
 
-    template <int dim>
+    template <unsigned int>
     void
     SolitaryWavePostprocessor<dim>::initialize ()
     {
@@ -729,7 +729,7 @@ namespace aspect
       maximum_pressure = 0.0;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     SolitaryWavePostprocessor<dim>::store_initial_pressure ()
     {
@@ -821,7 +821,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     SolitaryWavePostprocessor<dim>::compute_phase_shift ()
     {
@@ -930,7 +930,7 @@ namespace aspect
       return integral; // + phase_speed * this->get_time();
     }
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     SolitaryWavePostprocessor<dim>::execute (TableHandler & /*statistics*/)
     {

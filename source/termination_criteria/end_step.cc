@@ -24,14 +24,14 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
-    template <int dim>
+    template <unsigned int>
     bool
     EndStep<dim>::execute()
     {
       return (this->get_timestep_number () > end_step);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EndStep<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -45,7 +45,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EndStep<dim>::parse_parameters (ParameterHandler &prm)
     {

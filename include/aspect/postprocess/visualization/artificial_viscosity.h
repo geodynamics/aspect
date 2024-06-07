@@ -37,7 +37,7 @@ namespace aspect
        * artificial viscosity for the temperature equation on each cell for
        * graphical output.
        */
-      template <int dim>
+      template <unsigned int>
       class ArtificialViscosity : public CellDataVectorCreator<dim>,
         public SimulatorAccess<dim>
       {

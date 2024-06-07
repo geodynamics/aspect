@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace
   {
-    template <int dim, int spacedim>
+    template <unsigned int, int spacedim>
     bool
     spherical_face_is_horizontal(
       const typename Triangulation<dim, spacedim>::face_iterator &face,
@@ -72,7 +72,7 @@ namespace aspect
   // SphericalManifold
   // ============================================================
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   SphericalManifold<dim, spacedim>::SphericalManifold(
     const Point<spacedim> center)
     : center(center)
@@ -81,7 +81,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   std::unique_ptr<Manifold<dim, spacedim>>
   SphericalManifold<dim, spacedim>::clone() const
   {
@@ -90,7 +90,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   Point<spacedim>
   SphericalManifold<dim, spacedim>::get_intermediate_point(
     const Point<spacedim> &p1,
@@ -156,7 +156,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   Tensor<1, spacedim>
   SphericalManifold<dim, spacedim>::get_tangent_vector(
     const Point<spacedim> &p1,
@@ -207,7 +207,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   Tensor<1, spacedim>
   SphericalManifold<dim, spacedim>::normal_vector(
     const typename Triangulation<dim, spacedim>::face_iterator &face,
@@ -259,7 +259,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   void
   SphericalManifold<dim, spacedim>::get_normals_at_vertices(
     const typename Triangulation<dim, spacedim>::face_iterator &face,
@@ -286,7 +286,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   void
   SphericalManifold<dim, spacedim>::get_new_points(
     const ArrayView<const Point<spacedim>> &surrounding_points,
@@ -303,7 +303,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   Point<spacedim>
   SphericalManifold<dim, spacedim>::get_new_point(
     const ArrayView<const Point<spacedim>> &vertices,
@@ -543,7 +543,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   void
   SphericalManifold<dim, spacedim>::do_get_new_points(
     const ArrayView<const Point<spacedim>> &surrounding_points,
@@ -758,7 +758,7 @@ namespace aspect
 
 
 
-  template <int dim, int spacedim>
+  template <unsigned int, int spacedim>
   std::pair<double, Tensor<1, spacedim>>
   SphericalManifold<dim, spacedim>::guess_new_point(
     const ArrayView<const Tensor<1, spacedim>> &directions,

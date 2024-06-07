@@ -58,7 +58,7 @@ namespace aspect
      * @ingroup MaterialModels
      */
 
-    template <int dim>
+    template <unsigned int>
     class Compositing : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

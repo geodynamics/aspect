@@ -29,7 +29,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     AveragingOperation
     Averaging<dim>::parse_averaging_operation_name (const std::string &s)
     {
@@ -61,7 +61,7 @@ namespace aspect
     }
 
     // Do the requested averaging operation for one array.
-    template <int dim>
+    template <unsigned int>
     void
     Averaging<dim>::average (const AveragingOperation averaging_operation,
                              const std::vector<Point<dim>>    &position,
@@ -324,7 +324,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Averaging<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                              typename Interface<dim>::MaterialModelOutputs &out) const
@@ -352,7 +352,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Averaging<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -379,7 +379,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Averaging<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -411,7 +411,7 @@ namespace aspect
       this->model_dependence = base_model->get_model_dependence();
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Averaging<dim>::
     is_compressible () const
@@ -419,7 +419,7 @@ namespace aspect
       return base_model->is_compressible();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Averaging<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

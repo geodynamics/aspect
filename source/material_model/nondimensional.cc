@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Nondimensional<dim>::initialize ()
     {
@@ -56,7 +56,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Nondimensional<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -95,7 +95,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Nondimensional<dim>::
     is_compressible () const
@@ -105,7 +105,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Nondimensional<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -150,7 +150,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Nondimensional<dim>::parse_parameters (ParameterHandler &prm)
     {

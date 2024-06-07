@@ -52,7 +52,7 @@ namespace aspect
 
     namespace internal
     {
-      template <int dim>
+      template <unsigned int>
       SphericalManifoldWithTopography<dim>::
       SphericalManifoldWithTopography(const InitialTopographyModel::Interface<dim> &topography,
                                       const double inner_radius,
@@ -65,7 +65,7 @@ namespace aspect
       {}
 
 
-      template <int dim>
+      template <unsigned int>
       std::unique_ptr<Manifold<dim, dim>>
       SphericalManifoldWithTopography<dim>::clone() const
       {
@@ -74,7 +74,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       SphericalManifoldWithTopography<dim>::
       topography_for_point(const Point<dim> &x_y_z) const
@@ -100,7 +100,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       SphericalManifoldWithTopography<dim>::
       push_forward_from_sphere(const Point<dim> &p) const
@@ -140,7 +140,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       SphericalManifoldWithTopography<dim>::
       pull_back_to_sphere(const Point<dim> &p) const
@@ -177,7 +177,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       SphericalManifoldWithTopography<dim>::
       get_intermediate_point(const Point<dim> &p1,
@@ -192,7 +192,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1, dim>
       SphericalManifoldWithTopography<dim>::
       get_tangent_vector(const Point<dim> &x1,
@@ -204,7 +204,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1, dim>
       SphericalManifoldWithTopography<dim>::
       normal_vector(const typename Triangulation<dim, dim>::face_iterator &face,
@@ -221,7 +221,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SphericalManifoldWithTopography<dim>::
       get_normals_at_vertices(
@@ -234,7 +234,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SphericalManifoldWithTopography<dim>::
       get_new_points(const ArrayView<const Point<dim>> &surrounding_points,
@@ -260,7 +260,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Point<dim>
       SphericalManifoldWithTopography<dim>::
       get_new_point(const ArrayView<const Point<dim>> &surrounding_points,
@@ -282,7 +282,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalShell<dim>::initialize ()
     {
@@ -292,7 +292,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalShell<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
@@ -497,7 +497,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalShell<dim>::set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const
     {
@@ -507,7 +507,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<types::boundary_id>
     SphericalShell<dim>::
     get_used_boundary_indicators () const
@@ -535,7 +535,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     SphericalShell<dim>::
     get_symbolic_boundary_names_map () const
@@ -591,7 +591,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     SphericalShell<dim>::
     get_periodic_boundary_pairs () const
@@ -606,7 +606,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalShell<dim>::adjust_positions_for_periodicity (Point<dim> &position,
                                                            const ArrayView<Point<dim>> &connected_positions,
@@ -651,7 +651,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalShell<dim>::
     length_scale () const
@@ -669,7 +669,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalShell<dim>::depth(const Point<dim> &position) const
     {
@@ -678,7 +678,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalShell<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
@@ -687,7 +687,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     SphericalShell<dim>::representative_point(const double depth) const
     {
@@ -708,7 +708,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalShell<dim>::maximal_depth() const
     {
@@ -722,7 +722,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double SphericalShell<dim>::inner_radius () const
     {
       return R0;
@@ -730,7 +730,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double SphericalShell<dim>::outer_radius () const
     {
       return R1;
@@ -738,7 +738,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double SphericalShell<dim>::opening_angle () const
     {
       return phi;
@@ -746,7 +746,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     SphericalShell<dim>::has_curved_elements () const
     {
@@ -755,7 +755,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     SphericalShell<dim>::point_is_in_domain(const Point<dim> &point) const
     {
@@ -797,7 +797,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     SphericalShell<dim>::cartesian_to_natural_coordinates(const Point<dim> &position) const
     {
@@ -807,7 +807,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     aspect::Utilities::Coordinates::CoordinateSystem
     SphericalShell<dim>::natural_coordinate_system() const
     {
@@ -816,7 +816,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     SphericalShell<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position) const
     {
@@ -826,7 +826,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalShell<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
                                                       AffineConstraints<double> &constraints) const
@@ -853,7 +853,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalShell<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -954,7 +954,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalShell<dim>::parse_parameters (ParameterHandler &prm)
     {

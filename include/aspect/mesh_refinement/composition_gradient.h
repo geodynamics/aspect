@@ -36,7 +36,7 @@ namespace aspect
      *
      * @ingroup MeshRefinement
      */
-    template <int dim>
+    template <unsigned int>
     class CompositionGradient : public Interface<dim>,
       public SimulatorAccess<dim>
     {

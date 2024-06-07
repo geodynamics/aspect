@@ -38,7 +38,7 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-      template <int dim>
+      template <unsigned int>
       class Composition : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:

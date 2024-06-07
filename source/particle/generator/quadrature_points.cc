@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       void
       QuadraturePoints<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {

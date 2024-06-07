@@ -45,7 +45,7 @@ namespace aspect
    * the pressure (for a Schur complement-based preconditioner), or separate
    * blocks for pressure and each velocity component.
    */
-  template <int dim>
+  template <unsigned int>
   struct VariableDeclaration
   {
     /**
@@ -107,7 +107,7 @@ namespace aspect
    * from an instance of VariableDeclaration<dim> but contains additional
    * information that can be queried.
    */
-  template <int dim>
+  template <unsigned int>
   struct FEVariable: public VariableDeclaration<dim>
   {
       /**
@@ -172,7 +172,7 @@ namespace aspect
    * contained in this class on top of FESystem are names, and the block
    * structure for linear systems.
    */
-  template <int dim>
+  template <unsigned int>
   class FEVariableCollection
   {
     public:

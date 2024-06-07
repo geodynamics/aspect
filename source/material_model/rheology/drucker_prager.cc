@@ -40,13 +40,13 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       DruckerPrager<dim>::DruckerPrager ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       const DruckerPragerParameters
       DruckerPrager<dim>::compute_drucker_prager_parameters (const unsigned int composition,
                                                              const std::vector<double> &phase_function_values,
@@ -73,7 +73,7 @@ namespace aspect
         return drucker_prager_parameters;
       }
 
-      template <int dim>
+      template <unsigned int>
       double
       DruckerPrager<dim>::compute_yield_stress (const double cohesion,
                                                 const double angle_internal_friction,
@@ -104,7 +104,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       DruckerPrager<dim>::compute_viscosity (const double cohesion,
                                              const double angle_internal_friction,
@@ -137,7 +137,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<double, double>
       DruckerPrager<dim>::compute_strain_rate_and_derivative (const double stress,
                                                               const double pressure,
@@ -158,7 +158,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       DruckerPrager<dim>::compute_derivative (const double angle_internal_friction,
                                               const double effective_strain_rate) const
@@ -181,7 +181,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       DruckerPrager<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -217,7 +217,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       DruckerPrager<dim>::parse_parameters (ParameterHandler &prm,
                                             const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)

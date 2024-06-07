@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace TimeStepping
   {
-    template <int dim>
+    template <unsigned int>
     double
     ConductionTimeStep<dim>::execute()
     {

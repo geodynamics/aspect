@@ -39,7 +39,7 @@ namespace aspect
      *
      * @ingroup HeatingModels
      */
-    template <int dim>
+    template <unsigned int>
     class RadioactiveDecay : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

@@ -34,7 +34,7 @@ namespace aspect
        *
        * @ingroup ParticleGenerators
        */
-      template <int dim>
+      template <unsigned int>
       class RandomUniform : public Interface<dim>
       {
         public:

@@ -39,7 +39,7 @@ namespace aspect
       * the MaterialModel::MaterialModelOutputs structure and filled in the
       * MaterialModel::Interface::evaluate() function.
       */
-    template <int dim>
+    template <unsigned int>
     class AnisotropicViscosity : public NamedAdditionalMaterialOutputs<dim>
     {
       public:
@@ -61,7 +61,7 @@ namespace aspect
         std::vector<SymmetricTensor<4,dim>> stress_strain_directors;
     };
 
-    template <int dim>
+    template <unsigned int>
     AnisotropicViscosity<dim>::AnisotropicViscosity (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1,"anisotropic_viscosity")),
@@ -70,7 +70,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     AnisotropicViscosity<dim>::get_nth_output(const unsigned int /*idx*/) const
     {
@@ -83,7 +83,7 @@ namespace aspect
     /**
      * A class containing the functions to assemble the Stokes preconditioner.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesPreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -103,7 +103,7 @@ namespace aspect
      * A class containing the functions to assemble the compressible adjustment
      * to the Stokes preconditioner.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesCompressiblePreconditionerAnisotropicViscosity : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -118,7 +118,7 @@ namespace aspect
      * This class assembles the terms for the matrix and right-hand-side of the incompressible
      * Stokes equation for the current cell.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesIncompressibleTermsAnisotropicViscosity : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -138,7 +138,7 @@ namespace aspect
      * This class assembles the term that arises in the viscosity term of Stokes matrix for
      * compressible models, because the divergence of the velocity is not longer zero.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesCompressibleStrainRateViscosityTermAnisotropicViscosity : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -149,7 +149,7 @@ namespace aspect
                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesPreconditionerAnisotropicViscosity<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -233,7 +233,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesPreconditionerAnisotropicViscosity<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -249,7 +249,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesCompressiblePreconditionerAnisotropicViscosity<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -321,7 +321,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesIncompressibleTermsAnisotropicViscosity<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -415,7 +415,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesIncompressibleTermsAnisotropicViscosity<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -442,7 +442,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesCompressibleStrainRateViscosityTermAnisotropicViscosity<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -506,7 +506,7 @@ namespace aspect
 
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     class ShearHeatingAnisotropicViscosity : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -527,7 +527,7 @@ namespace aspect
         create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
     };
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeatingAnisotropicViscosity<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -585,7 +585,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeatingAnisotropicViscosity<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
@@ -606,7 +606,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class Anisotropic : public MaterialModel::Simple<dim>
     {
       public:
@@ -639,7 +639,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Anisotropic<dim>::set_assemblers(const SimulatorAccess<dim> &,
                                      Assemblers::Manager<dim> &assemblers) const
@@ -661,7 +661,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Anisotropic<dim>::
     initialize()
@@ -672,7 +672,7 @@ namespace aspect
                                                             std::placeholders::_2));
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Anisotropic<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -700,7 +700,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Anisotropic<dim>::
     is_compressible () const
@@ -708,7 +708,7 @@ namespace aspect
       return true;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Anisotropic<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -741,7 +741,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Anisotropic<dim>::
     parse_parameters (ParameterHandler &prm)

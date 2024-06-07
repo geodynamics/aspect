@@ -38,7 +38,7 @@
 namespace aspect
 {
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::set_initial_temperature_and_compositional_fields ()
   {
     // create a fully distributed vector since we
@@ -250,7 +250,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::interpolate_particle_properties (const AdvectionField &advection_field)
   {
     std::vector<AdvectionField> advection_fields(1,advection_field);
@@ -259,7 +259,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields)
   {
     TimerOutput::Scope timer (computing_timer, "Particles: Interpolate");
@@ -435,7 +435,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::compute_initial_pressure_field ()
   {
     // Note that this code will overwrite the velocity solution with 0 if

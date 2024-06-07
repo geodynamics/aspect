@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -109,7 +109,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -137,7 +137,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -155,7 +155,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     LatentHeatMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {

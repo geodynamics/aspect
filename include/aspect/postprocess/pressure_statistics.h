@@ -35,7 +35,7 @@ namespace aspect
      *
      * @ingroup Postprocessing
      */
-    template <int dim>
+    template <unsigned int>
     class PressureStatistics : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

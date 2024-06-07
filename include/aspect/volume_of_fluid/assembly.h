@@ -30,10 +30,10 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  template <unsigned int>
   class Simulator;
 
-  template <int dim>
+  template <unsigned int>
   struct VolumeOfFluidField;
 
   namespace internal
@@ -45,7 +45,7 @@ namespace aspect
         /**
          * Standard scratch data structure for matrix assembly
          */
-        template <int dim>
+        template <unsigned int>
         struct VolumeOfFluidSystem
         {
           VolumeOfFluidSystem (const FiniteElement<dim> &finite_element,
@@ -107,7 +107,7 @@ namespace aspect
         /**
          * Standard copy data structure for matrix assembly
          */
-        template <int dim>
+        template <unsigned int>
         struct VolumeOfFluidSystem
         {
           /**
@@ -184,7 +184,7 @@ namespace aspect
     /**
      * Class to hold VolumeOfFluid assembly logic, as analogous to that used in the main simulator.
      */
-    template <int dim>
+    template <unsigned int>
     class VolumeOfFluidAssembler : public SimulatorAccess<dim>
     {
       public:

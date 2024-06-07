@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiData : public Utilities::AsciiDataProfile<dim>, public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

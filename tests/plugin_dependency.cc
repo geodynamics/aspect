@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     class NewPostprocessor : public aspect::InclusionBenchmark::SolCxPostprocessor<dim>
     {
       public:

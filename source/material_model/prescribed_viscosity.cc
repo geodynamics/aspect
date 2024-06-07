@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedViscosity<dim>::initialize()
     {
@@ -35,7 +35,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedViscosity<dim>::update()
     {
@@ -50,7 +50,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedViscosity<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                        typename Interface<dim>::MaterialModelOutputs &out) const
@@ -72,7 +72,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     PrescribedViscosity<dim>::
     is_compressible () const
@@ -82,7 +82,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedViscosity<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -118,7 +118,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedViscosity<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -183,7 +183,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedViscosity<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

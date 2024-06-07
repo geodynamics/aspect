@@ -34,11 +34,11 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     WorldBuilder<dim>::WorldBuilder ()
       = default;
 
-    template <int dim>
+    template <unsigned int>
     void
     WorldBuilder<dim>::
     initialize()
@@ -48,7 +48,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     WorldBuilder<dim>::
     initial_temperature (const Point<dim> &position) const

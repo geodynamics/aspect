@@ -28,7 +28,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class NoAdiabaticHeating : public CompressibilityIteratedStokes<dim>
     {
       public:

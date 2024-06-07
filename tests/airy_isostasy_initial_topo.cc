@@ -27,7 +27,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     class PointIsInDomain : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -43,7 +43,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     PointIsInDomain<dim>::execute(TableHandler &)
     {

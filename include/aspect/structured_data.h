@@ -52,7 +52,7 @@ namespace aspect
      * the prescribed coordinates. The coordinates do not need to be
      * equidistant.
      */
-    template <int dim>
+    template <unsigned int>
     class StructuredDataLookup
     {
       public:
@@ -308,7 +308,7 @@ namespace aspect
      * AsciDataBase is a generic plugin used for declaring and reading the
      * parameters from the parameter file.
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiDataBase
     {
       public:
@@ -359,7 +359,7 @@ namespace aspect
      * A base class that implements boundary conditions determined from a
      * AsciiData input file.
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiDataBoundary : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -532,7 +532,7 @@ namespace aspect
      * A base class that implements initial conditions determined from a
      * AsciiData input file.
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiDataInitial : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -607,7 +607,7 @@ namespace aspect
      * A base class that implements conditions determined from a
      * layered AsciiData input file.
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiDataLayered : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -686,7 +686,7 @@ namespace aspect
     /**
      * A base class that reads in a data profile and provides its values.
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiDataProfile : public Utilities::AsciiDataBase<dim>
     {
       public:
@@ -770,7 +770,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     using AsciiDataLookup DEAL_II_DEPRECATED = StructuredDataLookup<dim>;
   }
 }

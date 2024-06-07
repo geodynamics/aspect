@@ -32,7 +32,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       NamedAdditionalOutputs<dim>::
       NamedAdditionalOutputs ()
         :
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       NamedAdditionalOutputs<dim>::
       initialize ()
@@ -80,7 +80,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::string>
       NamedAdditionalOutputs<dim>::
       get_names () const
@@ -90,7 +90,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       NamedAdditionalOutputs<dim>::
       get_data_component_interpretation () const
@@ -101,7 +101,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       NamedAdditionalOutputs<dim>::
       get_needed_update_flags () const
@@ -111,7 +111,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       NamedAdditionalOutputs<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

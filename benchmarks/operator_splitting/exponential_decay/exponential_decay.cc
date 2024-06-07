@@ -33,7 +33,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class ExponentialDecay : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -66,7 +66,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class ExponentialDecayHeating : public HeatingModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -92,7 +92,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     bool
     ExponentialDecay<dim>::
     is_compressible () const
@@ -101,7 +101,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ExponentialDecay<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -133,7 +133,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ExponentialDecay<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -160,7 +160,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ExponentialDecay<dim>::
     parse_parameters (ParameterHandler &prm)
@@ -193,7 +193,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ExponentialDecay<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
@@ -210,7 +210,7 @@ namespace aspect
 
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     ExponentialDecayHeating<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -234,7 +234,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ExponentialDecayHeating<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -256,7 +256,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ExponentialDecayHeating<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -274,7 +274,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   class RefFunction : public Function<dim>
   {
     public:
@@ -296,7 +296,7 @@ namespace aspect
      * A postprocessor that evaluates the accuracy of the solution
      * by using the L2 norm.
      */
-  template <int dim>
+  template <unsigned int>
   class ExponentialDecayPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -312,14 +312,14 @@ namespace aspect
       double max_error_T;
   };
 
-  template<int dim>
+  template<unsigned int>
   ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
   {
     max_error = 0.0;
     max_error_T = 0.0;
   }
 
-  template <int dim>
+  template <unsigned int>
   std::pair<std::string,std::string>
   ExponentialDecayPostprocessor<dim>::execute (TableHandler & /*statistics*/)
   {

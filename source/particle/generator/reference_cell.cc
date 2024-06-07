@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       void
       ReferenceCell<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
@@ -41,7 +41,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<Point<dim>>
       ReferenceCell<dim>::generate_particle_positions_in_unit_cell()
       {
@@ -81,7 +81,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ReferenceCell<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -112,7 +112,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ReferenceCell<dim>::parse_parameters (ParameterHandler &prm)
       {

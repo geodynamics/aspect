@@ -43,7 +43,7 @@ namespace aspect
      * other properties are derived from the base model.
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class DepthDependent : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

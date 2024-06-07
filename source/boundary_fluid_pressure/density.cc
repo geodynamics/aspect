@@ -31,7 +31,7 @@ namespace aspect
   namespace BoundaryFluidPressure
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     Density<dim>::
     fluid_pressure_gradient (
@@ -78,7 +78,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Density<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -116,7 +116,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Density<dim>::parse_parameters (ParameterHandler &prm)
     {

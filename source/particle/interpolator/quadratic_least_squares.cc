@@ -36,7 +36,7 @@ namespace aspect
   {
     namespace Interpolator
     {
-      template <int dim>
+      template <unsigned int>
       double QuadraticLeastSquares<dim>::evaluate_interpolation_function(const Vector<double> &coefficients, const Point<dim> &position) const
       {
         if (dim == 2)
@@ -64,7 +64,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template<unsigned int>
       std::pair<double, double> QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficients) const
       {
         double interpolation_min = std::numeric_limits<double>::max();
@@ -88,7 +88,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<Point<dim>> QuadraticLeastSquares<dim>::get_critical_points(const Vector<double> &coefficients) const
       {
         std::vector<Point<dim>> critical_points;
@@ -294,7 +294,7 @@ namespace aspect
         return critical_points;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::vector<double>>
       QuadraticLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
                                                        const std::vector<Point<dim>> &positions,
@@ -547,7 +547,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       QuadraticLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -584,7 +584,7 @@ namespace aspect
         prm.leave_subsection();
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       QuadraticLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
       {

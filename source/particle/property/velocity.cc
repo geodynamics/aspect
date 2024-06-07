@@ -26,7 +26,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       Velocity<dim>::initialize_one_particle_property(const Point<dim> &,
                                                       std::vector<double> &data) const
@@ -35,7 +35,7 @@ namespace aspect
           data.push_back(0.0);
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       Velocity<dim>::update_particle_property(const unsigned int data_position,
                                               const Vector<double> &solution,
@@ -46,21 +46,21 @@ namespace aspect
           particle->get_properties()[data_position+i] = solution[this->introspection().component_indices.velocities[i]];
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       Velocity<dim>::need_update() const
       {
         return update_output_step;
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       Velocity<dim>::get_needed_update_flags () const
       {
         return update_values;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       Velocity<dim>::get_property_information() const
       {

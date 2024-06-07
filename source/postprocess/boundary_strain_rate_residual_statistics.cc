@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryStrainRateResidualStatistics<dim>::initialize ()
     {
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     BoundaryStrainRateResidualStatistics<dim>::get_data_surface_strain_rate (const Point<dim> &p) const
     {
@@ -64,7 +64,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     BoundaryStrainRateResidualStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -255,7 +255,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryStrainRateResidualStatistics<dim>::declare_parameters (ParameterHandler  &prm)
     {
@@ -292,7 +292,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     BoundaryStrainRateResidualStatistics<dim>::parse_parameters (ParameterHandler &prm)
     {

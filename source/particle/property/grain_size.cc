@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       GrainSize<dim>::GrainSize ()
         :
         material_inputs(1,0),
@@ -37,7 +37,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       GrainSize<dim>::initialize ()
       {
@@ -53,7 +53,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       GrainSize<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                        std::vector<double> &data) const
@@ -64,7 +64,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       GrainSize<dim>::update_particle_property(const unsigned int data_position,
                                                const Vector<double> &solution,
@@ -103,7 +103,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       InitializationModeForLateParticles
       GrainSize<dim>::late_initialization_mode () const
       {
@@ -112,7 +112,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       GrainSize<dim>::need_update() const
       {
@@ -121,7 +121,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       GrainSize<dim>::get_needed_update_flags () const
       {
@@ -130,7 +130,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       GrainSize<dim>::get_property_information() const
       {

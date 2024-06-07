@@ -33,7 +33,7 @@ namespace aspect
      * A class deriving from Box<dim>, which changes the upper boundary
        with a sinusoidal perturbation of a given order and amplitude
      */
-    template <int dim>
+    template <unsigned int>
     class ReboundBox : public Box<dim>
     {
       public:
@@ -79,7 +79,7 @@ namespace aspect
 
     };
 
-    template <int dim>
+    template <unsigned int>
     void
     ReboundBox<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
@@ -104,14 +104,14 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     ReboundBox<dim>::maximal_depth() const
     {
       return Box<dim>::maximal_depth()+amplitude;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     ReboundBox<dim>::depth(const Point<dim> &position) const
     {
@@ -119,7 +119,7 @@ namespace aspect
       return d;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ReboundBox<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -145,7 +145,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ReboundBox<dim>::parse_parameters (ParameterHandler &prm)
     {

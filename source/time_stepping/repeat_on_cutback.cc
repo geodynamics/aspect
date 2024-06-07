@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace TimeStepping
   {
-    template <int dim>
+    template <unsigned int>
     double
     RepeatOnCutback<dim>::execute()
     {
@@ -35,7 +35,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<Reaction, double>
     RepeatOnCutback<dim>::determine_reaction (const TimeStepInfo &info)
     {
@@ -52,7 +52,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RepeatOnCutback<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -78,7 +78,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RepeatOnCutback<dim>::parse_parameters (ParameterHandler &prm)
     {

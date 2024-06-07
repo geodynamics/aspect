@@ -623,7 +623,7 @@ namespace aspect
       /**
        * The exact solution for the SolKz benchmark.
        */
-      template<int dim>
+      template<unsigned int>
       class FunctionSolKz : public Function<dim>
       {
         public:
@@ -648,7 +648,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template<unsigned int>
     class SolKzMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -721,7 +721,7 @@ namespace aspect
      * The implementation of error evaluators that correspond to the
      * benchmarks defined in the paper Duretz et al. reference above.
      */
-    template<int dim>
+    template<unsigned int>
     class SolKzPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

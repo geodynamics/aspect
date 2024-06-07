@@ -39,7 +39,7 @@ const double c = 1.0;
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class TestMeltMaterial:
     public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
   {
@@ -101,7 +101,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   class RefFunction : public Function<dim>
   {
     public:
@@ -138,7 +138,7 @@ namespace aspect
     * A postprocessor that evaluates the accuracy of the solution
     * by using the L2 norm.
     */
-  template <int dim>
+  template <unsigned int>
   class ConvergenceMeltPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -151,7 +151,7 @@ namespace aspect
 
   };
 
-  template <int dim>
+  template <unsigned int>
   std::pair<std::string,std::string>
   ConvergenceMeltPostprocessor<dim>::execute (TableHandler &statistics)
   {
@@ -271,7 +271,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   class PressureBdry:
 
     public BoundaryFluidPressure::Interface<dim>

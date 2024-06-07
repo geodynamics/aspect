@@ -27,7 +27,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class MeltFreeSurface : public MaterialModel::MeltFractionModel<dim>, public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -91,7 +91,7 @@ namespace aspect
     };
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltFreeSurface<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -159,7 +159,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltFreeSurface<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -170,7 +170,7 @@ namespace aspect
       return;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     MeltFreeSurface<dim>::
     reference_darcy_coefficient () const
@@ -178,7 +178,7 @@ namespace aspect
       return 1e-14;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     MeltFreeSurface<dim>::
     is_compressible () const
@@ -188,7 +188,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltFreeSurface<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -261,7 +261,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltFreeSurface<dim>::parse_parameters (ParameterHandler &prm)
     {

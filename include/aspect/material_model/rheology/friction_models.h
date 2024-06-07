@@ -52,7 +52,7 @@ namespace aspect
         function
       };
 
-      template <int dim>
+      template <unsigned int>
       class FrictionModels : public ::aspect::SimulatorAccess<dim>
       {
         public:

@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     Interface<dim>::get_symbolic_boundary_names_map() const
     {
@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     Interface<dim>::get_periodic_boundary_pairs() const
     {
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::adjust_positions_for_periodicity (Point<dim> &/*position*/,
                                                       const ArrayView<Point<dim>> &/*connected_positions*/,
@@ -64,7 +64,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Interface<dim>::has_curved_elements() const
     {
@@ -73,7 +73,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     Interface<dim>::cartesian_to_natural_coordinates(const Point<dim> &) const
     {
@@ -84,7 +84,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Utilities::NaturalCoordinate<dim>
     Interface<dim>::cartesian_to_other_coordinates(const Point<dim> &position,
                                                    const Utilities::Coordinates::CoordinateSystem &coordinate_system) const
@@ -112,7 +112,7 @@ namespace aspect
       return Utilities::NaturalCoordinate<dim>(other_coord, coordinate_system);
     }
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Interface<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &) const
     {
@@ -166,7 +166,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     types::boundary_id
     Interface<dim>::
     translate_symbolic_boundary_name_to_id (const std::string &name) const
@@ -176,7 +176,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<types::boundary_id>
     Interface<dim>::
     translate_symbolic_boundary_names_to_ids (const std::vector<std::string> &names) const
@@ -185,7 +185,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     Interface<dim>::
     translate_id_to_symbol_name(const types::boundary_id boundary_id) const
@@ -225,7 +225,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     register_geometry_model (const std::string &name,
                              const std::string &description,
@@ -239,7 +239,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_geometry_model (ParameterHandler &prm)
     {
@@ -267,7 +267,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -289,7 +289,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &out)
     {
@@ -299,7 +299,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Interface<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
                                                  AffineConstraints<double> &constraints) const

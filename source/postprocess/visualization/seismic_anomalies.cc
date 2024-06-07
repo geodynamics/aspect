@@ -33,7 +33,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       SeismicVsAnomaly<dim>::
       SeismicVsAnomaly ()
         :
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       SeismicVsAnomaly<dim>::execute() const
       {
@@ -177,7 +177,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       SeismicVpAnomaly<dim>::
       SeismicVpAnomaly ()
         :
@@ -186,7 +186,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       SeismicVpAnomaly<dim>::execute() const
       {
@@ -343,7 +343,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SeismicVsAnomaly<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -381,7 +381,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SeismicVsAnomaly<dim>::parse_parameters (ParameterHandler &prm)
       {
@@ -422,7 +422,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SeismicVpAnomaly<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -460,7 +460,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SeismicVpAnomaly<dim>::parse_parameters (ParameterHandler &prm)
       {

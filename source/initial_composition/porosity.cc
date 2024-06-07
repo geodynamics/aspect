@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    template <int dim>
+    template <unsigned int>
     void
     Porosity<dim>::initialize()
     {
@@ -47,7 +47,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Porosity<dim>::
     initial_composition (const Point<dim> &position,

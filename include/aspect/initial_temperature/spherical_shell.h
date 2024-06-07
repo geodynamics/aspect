@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class SphericalHexagonalPerturbation : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -92,7 +92,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class SphericalGaussianPerturbation : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

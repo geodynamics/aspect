@@ -342,7 +342,7 @@ namespace aspect
 
   namespace MatrixFreeStokesOperators
   {
-    template <int dim, typename number>
+    template <unsigned int, typename number>
     inline std::size_t
     OperatorCellData<dim,number>::memory_consumption() const
     {
@@ -354,7 +354,7 @@ namespace aspect
 
 
 
-    template <int dim, typename number>
+    template <unsigned int, typename number>
     void
     OperatorCellData<dim,number>::clear()
     {
@@ -368,7 +368,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::StokesOperator ()
     :
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>()
@@ -376,7 +376,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::clear ()
   {
@@ -386,7 +386,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::
   set_cell_data (const OperatorCellData<dim,number> &data)
@@ -396,7 +396,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
   ::compute_diagonal ()
@@ -409,7 +409,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
   ::local_apply (const dealii::MatrixFree<dim, number>                         &data,
@@ -509,7 +509,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
   ::local_apply_face(const dealii::MatrixFree<dim, number> &,
@@ -521,7 +521,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
   ::local_apply_boundary_face(const dealii::MatrixFree<dim, number> &data,
@@ -560,7 +560,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
   ::apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
@@ -586,7 +586,7 @@ namespace aspect
   /**
    * Mass matrix operator on pressure
    */
-  template <int dim, int degree_p, typename number>
+  template <unsigned int, int degree_p, typename number>
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::MassMatrixOperator ()
     :
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>()
@@ -594,7 +594,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_p, typename number>
+  template <unsigned int, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::clear ()
   {
@@ -604,7 +604,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_p, typename number>
+  template <unsigned int, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::
   set_cell_data (const OperatorCellData<dim,number> &data)
@@ -614,7 +614,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_p, typename number>
+  template <unsigned int, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
   ::local_apply (const dealii::MatrixFree<dim, number>                 &data,
@@ -665,7 +665,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_p, typename number>
+  template <unsigned int, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
   ::apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
@@ -677,7 +677,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_p, typename number>
+  template <unsigned int, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
   ::compute_diagonal ()
@@ -717,7 +717,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_p, typename number>
+  template <unsigned int, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
   ::local_compute_diagonal (const MatrixFree<dim,number>                     &data,
@@ -786,7 +786,7 @@ namespace aspect
   /**
    * Velocity block operator
    */
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::ABlockOperator ()
     :
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>()
@@ -794,7 +794,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::clear ()
   {
@@ -804,7 +804,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::
   set_cell_data (const OperatorCellData<dim,number> &data)
@@ -814,7 +814,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::inner_cell_operation(FEEvaluation<dim,
@@ -852,7 +852,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::cell_operation(FEEvaluation<dim,
@@ -868,7 +868,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::local_apply (const dealii::MatrixFree<dim, number>                 &data,
@@ -895,7 +895,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
@@ -907,7 +907,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::compute_diagonal ()
@@ -941,7 +941,7 @@ namespace aspect
 
 
 
-  template <int dim, int degree_v, typename number>
+  template <unsigned int, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
   ::set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag)
@@ -971,7 +971,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void StokesMatrixFreeHandler<dim>::declare_parameters(ParameterHandler &prm)
   {
     StokesMatrixFreeHandlerImplementation<dim,2>::declare_parameters(prm);
@@ -979,7 +979,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   void
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
   {
@@ -1003,7 +1003,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Solver parameters");
@@ -1018,7 +1018,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::StokesMatrixFreeHandlerImplementation (Simulator<dim> &simulator,
       ParameterHandler &prm)
     : sim(simulator),
@@ -1088,7 +1088,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::assemble ()
   {
     if (sim.mesh_deformation)
@@ -1108,7 +1108,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
@@ -1598,7 +1598,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
@@ -1734,7 +1734,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   std::pair<double,double> StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve()
   {
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
@@ -2385,7 +2385,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::setup_dofs()
   {
     // Periodic boundary conditions with hanging nodes on the boundary currently
@@ -2712,7 +2712,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::build_preconditioner()
   {
     TimerOutput::Scope timer (this->sim.computing_timer, "Build Stokes preconditioner");
@@ -2726,7 +2726,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   const DoFHandler<dim> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_v () const
   {
@@ -2735,7 +2735,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   const DoFHandler<dim> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_p () const
   {
@@ -2744,7 +2744,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   const DoFHandler<dim> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_projection () const
   {
@@ -2753,7 +2753,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   const AffineConstraints<double> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_v() const
   {
@@ -2762,7 +2762,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   const AffineConstraints<double> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_p() const
   {
@@ -2771,7 +2771,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   const MGTransferMF<dim,GMGNumberType> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_A() const
   {
@@ -2780,7 +2780,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   const MGTransferMF<dim,GMGNumberType> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_S() const
   {
@@ -2789,7 +2789,7 @@ namespace aspect
 
 
 
-  template <int dim, int velocity_degree>
+  template <unsigned int, int velocity_degree>
   std::size_t
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>:: get_cell_data_memory_consumption() const
   {

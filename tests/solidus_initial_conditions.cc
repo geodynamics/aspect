@@ -83,7 +83,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class Solidus : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -238,12 +238,12 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Solidus<dim>::Solidus ():
       solidus_curve()
     {}
 
-    template <int dim>
+    template <unsigned int>
     double
     Solidus<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -304,7 +304,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const Tensor<1,dim>
     Solidus<dim>::
     spherical_surface_coordinates(const Tensor<1,dim> &position) const
@@ -322,7 +322,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Solidus<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -392,7 +392,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Solidus<dim>::parse_parameters (ParameterHandler &prm)
     {

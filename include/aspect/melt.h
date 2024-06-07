@@ -39,7 +39,7 @@ namespace aspect
      * melt (fluid) velocities, so that they can be used as
      * additional inputs in heating or material models.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltInputs : public AdditionalMaterialInputs<dim>
     {
       public:
@@ -72,7 +72,7 @@ namespace aspect
                    const Introspection<dim>         &introspection) override;
     };
 
-    template <int dim>
+    template <unsigned int>
     class MeltOutputs : public AdditionalMaterialOutputs<dim>
     {
       public:
@@ -137,7 +137,7 @@ namespace aspect
      * of the current class). The inheritance from MaterialModel::Interface is
      * typically via the MaterialModel::MeltInterface intermediate class.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltFractionModel
     {
       public:
@@ -182,7 +182,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename ModelType>
     inline
     bool
@@ -193,7 +193,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename ModelType>
     inline
     const MeltFractionModel<dim> &
@@ -211,7 +211,7 @@ namespace aspect
     /**
      * Base class for material models to be used with melt transport enabled.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltInterface: public MaterialModel::Interface<dim>
     {
       public:
@@ -256,7 +256,7 @@ namespace aspect
      * system terms for the *melt* migration compressible or incompressible
      * equations.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltInterface : public aspect::Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -274,7 +274,7 @@ namespace aspect
      * Compute the integrals for the preconditioner for the Stokes system in
      * the case of melt migration on a single cell.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltStokesPreconditioner : public MeltInterface<dim>
     {
       public:
@@ -287,7 +287,7 @@ namespace aspect
      * Compute the integrals for the Stokes matrix and right hand side in
      * the case of melt migration on a single cell.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltStokesSystem : public MeltInterface<dim>
     {
       public:
@@ -302,7 +302,7 @@ namespace aspect
      * the case of melt migration on a single cell. These boundary terms
      * are used to describe Neumann boundary conditions for the fluid pressure.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltStokesSystemBoundary : public MeltInterface<dim>
     {
       public:
@@ -315,7 +315,7 @@ namespace aspect
      * Compute the integrals for the Advection system matrix and right hand side in
      * the case of melt migration on a single cell.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltAdvectionSystem : public MeltInterface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>
     {
       public:
@@ -336,7 +336,7 @@ namespace aspect
      * for models with melt migration, so that they can later be used to do
      * the pressure right-hand side compatibility modification.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltPressureRHSCompatibilityModification : public MeltInterface<dim>
     {
       public:
@@ -348,7 +348,7 @@ namespace aspect
     /**
      * Assemble traction boundary condition terms for models with melt.
      */
-    template <int dim>
+    template <unsigned int>
     class MeltBoundaryTraction : public MeltInterface<dim>
     {
       public:
@@ -361,7 +361,7 @@ namespace aspect
 
   namespace Melt
   {
-    template <int dim>
+    template <unsigned int>
     struct Parameters
     {
       /**
@@ -427,7 +427,7 @@ namespace aspect
    * SimulatorAccess<dim>::get_melt_handler(), but keep in mind that it only
    * exists if parameters.include_melt_transport is true.
    */
-  template <int dim>
+  template <unsigned int>
   class MeltHandler: public SimulatorAccess<dim>
   {
     public:

@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class CompressibilityFormulations : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -92,7 +92,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompressibilityFormulations<dim>::initialize()
     {
@@ -101,7 +101,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompressibilityFormulations<dim>::update()
     {
@@ -110,7 +110,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     CompressibilityFormulations<dim>::
     is_compressible () const
@@ -120,7 +120,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompressibilityFormulations<dim>::evaluate(const MaterialModelInputs<dim> &in,
                                                MaterialModelOutputs<dim> &out) const
@@ -170,7 +170,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompressibilityFormulations<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
@@ -185,7 +185,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompressibilityFormulations<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -209,7 +209,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompressibilityFormulations<dim>::parse_parameters (ParameterHandler &prm)
     {

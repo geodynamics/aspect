@@ -35,7 +35,7 @@ namespace aspect
        * Plugin to output volume fractions and reconstructed interface data
        * from the Volume of Fluid Interface Tracking data.
        */
-      template <int dim>
+      template <unsigned int>
       class VolumeOfFluidValues
         : public DataPostprocessor<dim>,
           public SimulatorAccess<dim>,

@@ -264,13 +264,13 @@ namespace aspect
         }
       }
 
-      template <int dim>
+      template <unsigned int>
       ElasticTensorDecomposition<dim>::ElasticTensorDecomposition ()
       {}
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ElasticTensorDecomposition<dim>::initialize ()
       {
@@ -291,7 +291,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ElasticTensorDecomposition<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                         std::vector<double> &data) const
@@ -349,7 +349,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       ElasticTensorDecomposition<dim>::update_one_particle_property(const unsigned int data_position,
                                                                     const Point<dim> &,
@@ -410,7 +410,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       ElasticTensorDecomposition<dim>::need_update() const
       {
@@ -419,7 +419,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       ElasticTensorDecomposition<dim>::get_property_information() const
       {

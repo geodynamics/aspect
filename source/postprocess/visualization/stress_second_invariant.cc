@@ -30,7 +30,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       StressSecondInvariant<dim>::
       StressSecondInvariant ()
         :
@@ -41,7 +41,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       StressSecondInvariant<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

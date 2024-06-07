@@ -463,7 +463,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double Simulator<dim>::solve_advection (const AdvectionField &advection_field)
   {
     const unsigned int block_idx = advection_field.block_index(introspection);
@@ -628,7 +628,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::pair<double,double>
   Simulator<dim>::solve_stokes ()
   {

@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     BoundaryPressures<dim>::execute (TableHandler &statistics)
     {
@@ -126,14 +126,14 @@ namespace aspect
                                                   output.str());
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     BoundaryPressures<dim>::pressure_at_top() const
     {
       return top_pressure;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     BoundaryPressures<dim>::pressure_at_bottom() const
     {

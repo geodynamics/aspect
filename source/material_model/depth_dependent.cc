@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     DepthDependent<dim>::initialize()
     {
@@ -40,7 +40,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthDependent<dim>::update()
     {
@@ -56,7 +56,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     DepthDependent<dim>::
     is_compressible () const
@@ -66,7 +66,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     DepthDependent<dim>::calculate_depth_dependent_prefactor(const double &depth) const
     {
@@ -107,7 +107,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthDependent<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                   typename Interface<dim>::MaterialModelOutputs &out) const
@@ -126,7 +126,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthDependent<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -183,7 +183,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthDependent<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -276,7 +276,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DepthDependent<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

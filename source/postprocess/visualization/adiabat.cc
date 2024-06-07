@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       Adiabat<dim>::
       Adiabat ()
         :
@@ -39,7 +39,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::string>
       Adiabat<dim>::
       get_names () const
@@ -53,7 +53,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       Adiabat<dim>::
       get_data_component_interpretation () const
@@ -65,7 +65,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       Adiabat<dim>::
       get_needed_update_flags () const
@@ -74,7 +74,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Adiabat<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

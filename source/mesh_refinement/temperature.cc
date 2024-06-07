@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    template <int dim>
+    template <unsigned int>
     void
     Temperature<dim>::execute(Vector<float> &indicators) const
     {

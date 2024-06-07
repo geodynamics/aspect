@@ -36,7 +36,7 @@ namespace aspect
      * depth (in 3d) and adds two (four in 3D) additional boundary indicators
      * for the lithospheric part of the vertical boundaries.
      */
-    template <int dim>
+    template <unsigned int>
     class TwoMergedBoxes : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

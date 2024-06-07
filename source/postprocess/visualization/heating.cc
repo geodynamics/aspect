@@ -34,7 +34,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       Heating<dim>::
       Heating ()
         :
@@ -44,7 +44,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::string>
       Heating<dim>::
       get_names () const
@@ -60,7 +60,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       Heating<dim>::
       get_data_component_interpretation () const
@@ -72,7 +72,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       Heating<dim>::
       get_needed_update_flags () const
@@ -82,7 +82,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Heating<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

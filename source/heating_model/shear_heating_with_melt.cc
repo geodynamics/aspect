@@ -29,7 +29,7 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeatingMelt<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -79,7 +79,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeatingMelt<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output) const
@@ -89,7 +89,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeatingMelt<dim>::
     create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const

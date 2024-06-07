@@ -38,7 +38,7 @@ namespace aspect
        * A class derived from DataPostprocessorVector that outputs the gravity
        * as a vector field.
        */
-      template <int dim>
+      template <unsigned int>
       class Gravity
         : public DataPostprocessorVector<dim>,
           public SimulatorAccess<dim>,

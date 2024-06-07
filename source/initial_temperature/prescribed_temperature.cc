@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     void
     PrescribedTemperature<dim>::initialize()
     {
@@ -41,7 +41,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     PrescribedTemperature<dim>::
     initial_temperature (const Point<dim> &position) const

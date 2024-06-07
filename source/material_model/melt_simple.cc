@@ -31,7 +31,7 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    template <int dim>
+    template <unsigned int>
     double
     MeltSimple<dim>::
     reference_darcy_coefficient () const
@@ -40,7 +40,7 @@ namespace aspect
       return katz2003_model.reference_darcy_coefficient();
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     MeltSimple<dim>::
     is_compressible () const
@@ -48,7 +48,7 @@ namespace aspect
       return model_is_compressible;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltSimple<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -60,7 +60,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltSimple<dim>::initialize ()
     {
@@ -78,7 +78,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltSimple<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
@@ -137,7 +137,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltSimple<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -206,7 +206,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltSimple<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -241,7 +241,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     MeltSimple<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

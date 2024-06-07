@@ -39,7 +39,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiDataLayered : public Utilities::AsciiDataLayered<dim>, public Interface<dim>
     {
       public:

@@ -28,7 +28,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class CompressibilityIteratedStokes : public MaterialModel::Simple<dim>
     {
       public:
@@ -52,7 +52,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     CompressibilityIteratedStokes<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -66,7 +66,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     CompressibilityIteratedStokes<dim>::
     is_compressible () const

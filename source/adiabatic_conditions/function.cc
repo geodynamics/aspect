@@ -26,18 +26,18 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    template <int dim>
+    template <unsigned int>
     Function<dim>::Function()
       : function (3)
     {}
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::initialize()
     {
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Function<dim>::is_initialized() const
     {
@@ -46,7 +46,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double Function<dim>::pressure (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
@@ -55,14 +55,14 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double Function<dim>::temperature (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
       return function.value(Point<1>(z), 0);
     }
 
-    template <int dim>
+    template <unsigned int>
     double Function<dim>::density (const Point<dim> &p) const
     {
       const double z = this->get_geometry_model().depth(p);
@@ -71,7 +71,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double Function<dim>::density_derivative (const Point<dim> &p) const
     {
       // TODO: better eps or make it a user input
@@ -82,7 +82,7 @@ namespace aspect
               - function.value(Point<1>(z2), 2))/(z-z2);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -102,7 +102,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

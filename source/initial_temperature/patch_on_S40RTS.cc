@@ -30,12 +30,12 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     PatchOnS40RTS<dim>::PatchOnS40RTS ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     PatchOnS40RTS<dim>::initialize ()
     {
@@ -43,7 +43,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     PatchOnS40RTS<dim>::
     ascii_grid_vs (const Point<dim> &position) const
@@ -53,7 +53,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     PatchOnS40RTS<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -107,7 +107,7 @@ namespace aspect
       return background_temperature + temperature_perturbation;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     PatchOnS40RTS<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -144,7 +144,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     PatchOnS40RTS<dim>::parse_parameters (ParameterHandler &prm)
     {

@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       BoundaryVelocityResidual<dim>::
       BoundaryVelocityResidual ()
         :
@@ -39,7 +39,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::string
       BoundaryVelocityResidual<dim>::
       get_physical_units () const
@@ -52,7 +52,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       BoundaryVelocityResidual<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -90,7 +90,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::list<std::string>
       BoundaryVelocityResidual<dim>::required_other_postprocessors() const
       {

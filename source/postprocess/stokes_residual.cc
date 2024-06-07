@@ -37,7 +37,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void StokesResidual<dim>::DataPoint::serialize (Archive &ar,
                                                     const unsigned int)
@@ -46,14 +46,14 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     StokesResidual<dim>::StokesResidual ()
       = default;
 
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     StokesResidual<dim>::execute (TableHandler &)
     {
@@ -80,7 +80,7 @@ namespace aspect
                              "stokes_residuals.txt");
     }
 
-    template <int dim>
+    template <unsigned int>
     void StokesResidual<dim>::stokes_solver_callback (const SolverControl &solver_control_cheap,
                                                       const SolverControl &solver_control_expensive)
     {
@@ -114,7 +114,7 @@ namespace aspect
       entries.push_back(data_point);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesResidual<dim>::initialize ()
     {
@@ -129,7 +129,7 @@ namespace aspect
       });
     }
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void StokesResidual<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -137,7 +137,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesResidual<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
@@ -149,7 +149,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesResidual<dim>::load (const std::map<std::string, std::string> &status_strings)
     {

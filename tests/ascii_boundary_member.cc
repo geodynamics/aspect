@@ -38,7 +38,7 @@ namespace aspect
   /**
    * A boundary velocity plugin that uses an AsciiDataBoundary object as member
    */
-  template <int dim>
+  template <unsigned int>
   class AsciiBoundaryMember : public BoundaryVelocity::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -89,12 +89,12 @@ namespace aspect
       std::set<types::boundary_id> boundary_ids;
   };
 
-  template <int dim>
+  template <unsigned int>
   AsciiBoundaryMember<dim>::AsciiBoundaryMember ()
   {}
 
 
-  template <int dim>
+  template <unsigned int>
   void
   AsciiBoundaryMember<dim>::initialize ()
   {
@@ -113,7 +113,7 @@ namespace aspect
                        dim);
   }
 
-  template <int dim>
+  template <unsigned int>
   void
   AsciiBoundaryMember<dim>::update ()
   {
@@ -121,7 +121,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   Tensor<1,dim>
   AsciiBoundaryMember<dim>::
   boundary_velocity (const types::boundary_id ,
@@ -136,7 +136,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   AsciiBoundaryMember<dim>::declare_parameters (ParameterHandler &prm)
   {
@@ -150,7 +150,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   AsciiBoundaryMember<dim>::parse_parameters (ParameterHandler &prm)
   {

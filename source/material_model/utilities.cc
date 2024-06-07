@@ -1090,7 +1090,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
                                               const std::vector<double> &mass_fractions,
@@ -1151,7 +1151,7 @@ namespace aspect
         return averaged_parameter;
       }
 
-      template <int dim>
+      template <unsigned int>
       PhaseFunctionInputs<dim>::PhaseFunctionInputs(const double temperature_,
                                                     const double pressure_,
                                                     const double depth_,
@@ -1168,7 +1168,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       PhaseFunction<dim>::compute_value (const PhaseFunctionInputs<dim> &in) const
       {
@@ -1229,7 +1229,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       PhaseFunction<dim>::compute_derivative (const PhaseFunctionInputs<dim> &in) const
       {
@@ -1285,7 +1285,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       unsigned int
       PhaseFunction<dim>::
       n_phase_transitions () const
@@ -1296,7 +1296,7 @@ namespace aspect
           return transition_pressures.size();
       }
 
-      template <int dim>
+      template <unsigned int>
       unsigned int
       PhaseFunction<dim>::
       n_phases () const
@@ -1304,14 +1304,14 @@ namespace aspect
         return n_phases_total;
       }
 
-      template <int dim>
+      template <unsigned int>
       const std::vector<unsigned int> &
       PhaseFunction<dim>::n_phase_transitions_for_each_composition () const
       {
         return *n_phase_transitions_per_composition;
       }
 
-      template <int dim>
+      template <unsigned int>
       const std::vector<unsigned int> &
       PhaseFunction<dim>::n_phases_for_each_composition () const
       {
@@ -1320,7 +1320,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       PhaseFunction<dim>::
       get_transition_slope (const unsigned int phase_index) const
@@ -1330,7 +1330,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       PhaseFunction<dim>::
       get_transition_depth (const unsigned int phase_index) const
@@ -1340,7 +1340,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       PhaseFunction<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -1426,7 +1426,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       PhaseFunction<dim>::parse_parameters (ParameterHandler &prm)
       {

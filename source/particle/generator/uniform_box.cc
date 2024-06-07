@@ -32,7 +32,7 @@ namespace aspect
   {
     namespace Generator
     {
-      template <int dim>
+      template <unsigned int>
       void
       UniformBox<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
@@ -79,7 +79,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       UniformBox<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -127,7 +127,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       UniformBox<dim>::parse_parameters (ParameterHandler &prm)
       {

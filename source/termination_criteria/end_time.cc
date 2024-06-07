@@ -26,14 +26,14 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
-    template <int dim>
+    template <unsigned int>
     bool
     EndTime<dim>::execute()
     {
       return (this->get_time() > end_time);
     }
 
-    template <int dim>
+    template <unsigned int>
     double EndTime<dim>::check_for_last_time_step (const double time_step) const
     {
       if ((this->get_time()<end_time)
@@ -44,7 +44,7 @@ namespace aspect
         return time_step;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     EndTime<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -62,7 +62,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     EndTime<dim>::parse_parameters (ParameterHandler &prm)
     {

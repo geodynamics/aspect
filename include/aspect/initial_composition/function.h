@@ -40,7 +40,7 @@ namespace aspect
      *
      * @ingroup InitialCompositionModels
      */
-    template <int dim>
+    template <unsigned int>
     class Function : public Interface<dim>,
       public SimulatorAccess<dim>
     {

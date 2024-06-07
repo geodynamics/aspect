@@ -35,7 +35,7 @@
 
 namespace aspect
 {
-  template <int dim>
+  template <unsigned int>
   class TestMaterial:
     public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
@@ -67,7 +67,7 @@ namespace aspect
   };
 
 
-  template <int dim>
+  template <unsigned int>
   class Gravity : public aspect::GravityModel::Interface<dim>
   {
     public:
@@ -90,7 +90,7 @@ namespace aspect
   };
 
 
-  template <int dim>
+  template <unsigned int>
   class RefFunction : public Function<dim>
   {
     public:
@@ -114,7 +114,7 @@ namespace aspect
     * A postprocessor that evaluates the accuracy of the solution
     * by using the L2 norm.
     */
-  template <int dim>
+  template <unsigned int>
   class ConvergencePostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {
     public:
@@ -127,7 +127,7 @@ namespace aspect
 
   };
 
-  template <int dim>
+  template <unsigned int>
   std::pair<std::string,std::string>
   ConvergencePostprocessor<dim>::execute (TableHandler &statistics)
   {
@@ -171,7 +171,7 @@ namespace aspect
     return std::make_pair("Errors", os.str());
   }
 
-  template <int dim>
+  template <unsigned int>
   class ForceAssembler :
     public aspect::Assemblers::Interface<dim>, public SimulatorAccess<dim>
   {
@@ -270,7 +270,7 @@ namespace aspect
   };
 
 
-  template <int dim>
+  template <unsigned int>
   void add_force_assembler(const SimulatorAccess<dim> &simulator_access,
                            Assemblers::Manager<dim> &assemblers)
   {
@@ -283,7 +283,7 @@ namespace aspect
 
 
 
-template <int dim>
+template <unsigned int>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
   signals.set_assemblers.connect (&aspect::add_force_assembler<dim>);

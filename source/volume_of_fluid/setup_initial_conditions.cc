@@ -30,7 +30,7 @@ namespace aspect
 {
   using namespace dealii;
 
-  template <int dim>
+  template <unsigned int>
   void VolumeOfFluidHandler<dim>::set_initial_volume_fractions ()
   {
     for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
@@ -65,7 +65,7 @@ namespace aspect
       }
   }
 
-  template <int dim>
+  template <unsigned int>
   void VolumeOfFluidHandler<dim>::initialize_from_composition_field (
     const VolumeOfFluidField<dim> &field)
   {
@@ -130,7 +130,7 @@ namespace aspect
     sim.old_old_solution.block(blockidx) = initial_solution.block(blockidx);
   }
 
-  template <int dim>
+  template <unsigned int>
   void VolumeOfFluidHandler<dim>::initialize_from_level_set (
     const VolumeOfFluidField<dim> &field)
   {

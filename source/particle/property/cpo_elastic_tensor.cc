@@ -31,7 +31,7 @@ namespace aspect
     {
 
 
-      template <int dim>
+      template <unsigned int>
       CpoElasticTensor<dim>::CpoElasticTensor ()
       {
         // The following values are directly from D-Rex.
@@ -62,7 +62,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoElasticTensor<dim>::initialize ()
       {
@@ -78,7 +78,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       SymmetricTensor<2,6>
       CpoElasticTensor<dim>::voigt_average_elastic_tensor (const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property,
                                                            const unsigned int cpo_data_position,
@@ -119,7 +119,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoElasticTensor<dim>::initialize_one_particle_property(const Point<dim> &,
                                                               std::vector<double> &data) const
@@ -138,7 +138,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoElasticTensor<dim>::update_one_particle_property(const unsigned int data_position,
                                                           const Point<dim> &,
@@ -164,7 +164,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       SymmetricTensor<2,6>
       CpoElasticTensor<dim>::get_elastic_tensor(unsigned int cpo_data_position,
                                                 const ArrayView<double> &data)
@@ -175,7 +175,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoElasticTensor<dim>::set_elastic_tensor(unsigned int cpo_data_position,
                                                 const ArrayView<double> &data,
@@ -188,7 +188,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       CpoElasticTensor<dim>::need_update() const
       {
@@ -197,7 +197,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       CpoElasticTensor<dim>::get_needed_update_flags () const
       {
@@ -206,7 +206,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       CpoElasticTensor<dim>::get_property_information() const
       {
@@ -219,14 +219,14 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoElasticTensor<dim>::declare_parameters (ParameterHandler &)
       {}
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CpoElasticTensor<dim>::parse_parameters (ParameterHandler &prm)
       {

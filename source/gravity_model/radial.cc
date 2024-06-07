@@ -30,7 +30,7 @@ namespace aspect
   namespace GravityModel
   {
 // ------------------------------ RadialConstant -------------------
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     RadialConstant<dim>::gravity_vector (const Point<dim> &p) const
     {
@@ -43,7 +43,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RadialConstant<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -62,7 +62,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RadialConstant<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -84,7 +84,7 @@ namespace aspect
 
 // ------------------------------ RadialEarthLike -------------------
 
-    template <int dim>
+    template <unsigned int>
     void
     RadialEarthLike<dim>::initialize ()
     {
@@ -99,7 +99,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     RadialEarthLike<dim>::gravity_vector (const Point<dim> &/*p*/) const
     {
@@ -112,7 +112,7 @@ namespace aspect
 // ----------------------------- RadialLinear ----------------------
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     RadialLinear<dim>::gravity_vector (const Point<dim> &p) const
     {
@@ -128,7 +128,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RadialLinear<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -157,7 +157,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     RadialLinear<dim>::parse_parameters (ParameterHandler &prm)
     {

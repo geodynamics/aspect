@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace BoundaryTraction
   {
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     ZeroTraction<dim>::
     boundary_traction (const types::boundary_id,

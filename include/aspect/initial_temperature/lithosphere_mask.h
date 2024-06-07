@@ -35,7 +35,7 @@ namespace aspect
 
     namespace LABDepth
     {
-      template <int dim>
+      template <unsigned int>
       class LABDepthLookup : public SimulatorAccess<dim>
       {
         public:
@@ -118,7 +118,7 @@ namespace aspect
      *
      * @ingroup InitialTemperatures
      */
-    template <int dim>
+    template <unsigned int>
     class LithosphereMask : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

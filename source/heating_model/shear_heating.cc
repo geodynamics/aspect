@@ -26,7 +26,7 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeating<dim>::
     evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
@@ -84,7 +84,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeating<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -128,7 +128,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeating<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -148,7 +148,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearHeating<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
@@ -158,7 +158,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     ShearHeatingOutputs<dim>::ShearHeatingOutputs (const unsigned int n_points)
       :
       MaterialModel::NamedAdditionalMaterialOutputs<dim>({"shear_heating_work_fraction"}),
@@ -167,7 +167,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     ShearHeatingOutputs<dim>::get_nth_output(const unsigned int idx) const
     {

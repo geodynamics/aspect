@@ -32,7 +32,7 @@ namespace aspect
     /**
      * A class containing the functions to assemble the Stokes preconditioner.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesPreconditioner : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -46,7 +46,7 @@ namespace aspect
      * A class containing the functions to assemble the compressible adjustment
      * to the Stokes preconditioner.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesCompressiblePreconditioner : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -60,7 +60,7 @@ namespace aspect
      * This class assembles the terms for the matrix and right-hand-side of the incompressible
      * Stokes equation for the current cell.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesIncompressibleTerms : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -79,7 +79,7 @@ namespace aspect
      * This class assembles the term that arises in the viscosity term of Stokes matrix for
      * compressible models, because the divergence of the velocity is not longer zero.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesCompressibleStrainRateViscosityTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -98,7 +98,7 @@ namespace aspect
      * This class approximates this term as
      * $- \nabla \cdot \mathbf{u} = \frac{1}{\rho^{\ast}} \frac{\partial rho}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u}$
      */
-    template <int dim>
+    template <unsigned int>
     class StokesReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -117,7 +117,7 @@ namespace aspect
      * This class approximates this term as
      * $ - \nabla \cdot \mathbf{u} - \frac{1}{\rho^{\ast}} \frac{\partial rho{^\ast}}{\partial z} \frac{\mathbf{g}}{||\mathbf{g}||} \cdot \mathbf{u} = 0$
      */
-    template <int dim>
+    template <unsigned int>
     class StokesImplicitReferenceDensityCompressibilityTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -136,7 +136,7 @@ namespace aspect
      * which is frequently computed as
      * $\kappa = \frac{1}{\rho} \frac{\partial rho}{\partial p}$.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesIsentropicCompressionTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -154,7 +154,7 @@ namespace aspect
      * where the right-hand side velocity is explicitly taken from the last timestep,
      * and the density is taken from a compositional field of the type 'density'.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesProjectedDensityFieldTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -177,7 +177,7 @@ namespace aspect
      * $- \frac{1}{\rho}\frac{\partial \rho}{\partial T} = \alpha$ is the thermal expansion coefficient,
      * and both are defined in the material model.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesHydrostaticCompressionTerm : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -191,7 +191,7 @@ namespace aspect
      * This class assembles the right-hand-side terms that are used to weakly
      * prescribe the boundary tractions.
      */
-    template <int dim>
+    template <unsigned int>
     class StokesBoundaryTraction : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -208,7 +208,7 @@ namespace aspect
      * Heister et al. (2017), "High Accuracy Mantle Convection Simulation
      * through Modern Numerical Methods. II: Realistic Models and Problems."
      */
-    template <int dim>
+    template <unsigned int>
     class StokesPressureRHSCompatibilityModification : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {

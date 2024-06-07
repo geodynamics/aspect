@@ -33,13 +33,13 @@ namespace aspect
 {
   namespace BoundaryTraction
   {
-    template <int dim>
+    template <unsigned int>
     Manager<dim>::~Manager()
       = default;
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::update ()
     {
@@ -59,7 +59,7 @@ namespace aspect
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_boundary_traction (const std::string &name,
                                               const std::string &description,
@@ -72,7 +72,7 @@ namespace aspect
                                                          factory_function);
     }
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     Manager<dim>::boundary_traction (const types::boundary_id boundary_indicator,
                                      const Point<dim> &position,
@@ -97,7 +97,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> &
     Manager<dim>::get_active_boundary_traction_names () const
     {
@@ -106,7 +106,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryTraction::Interface<dim>>>> &
     Manager<dim>::get_active_boundary_traction_conditions () const
     {
@@ -115,7 +115,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -155,7 +155,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -280,7 +280,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {

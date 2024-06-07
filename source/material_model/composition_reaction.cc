@@ -29,7 +29,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionReaction<dim>::
     evaluate(const MaterialModelInputs<dim> &in,
@@ -122,7 +122,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     CompositionReaction<dim>::
     is_compressible () const
@@ -132,7 +132,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionReaction<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -178,7 +178,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionReaction<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -218,7 +218,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     CompositionReaction<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

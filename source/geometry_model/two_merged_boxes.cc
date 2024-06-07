@@ -33,7 +33,7 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedBoxes<dim>::
     set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation) const
@@ -72,7 +72,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedBoxes<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &total_coarse_grid) const
@@ -141,7 +141,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<types::boundary_id>
     TwoMergedBoxes<dim>::
     get_used_boundary_indicators () const
@@ -155,7 +155,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     TwoMergedBoxes<dim>::
     get_symbolic_boundary_names_map () const
@@ -199,7 +199,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
     TwoMergedBoxes<dim>::
     get_periodic_boundary_pairs () const
@@ -216,7 +216,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedBoxes<dim>::adjust_positions_for_periodicity (Point<dim> &position,
                                                            const ArrayView<Point<dim>> &connected_positions,
@@ -242,21 +242,21 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     TwoMergedBoxes<dim>::get_extents () const
     {
       return extents;
     }
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     TwoMergedBoxes<dim>::get_origin () const
     {
       return lower_box_origin;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedBoxes<dim>::
     length_scale () const
@@ -265,7 +265,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedBoxes<dim>::depth(const Point<dim> &position) const
     {
@@ -274,7 +274,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedBoxes<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
@@ -283,7 +283,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     TwoMergedBoxes<dim>::representative_point(const double depth) const
     {
@@ -300,14 +300,14 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedBoxes<dim>::maximal_depth() const
     {
       return extents[dim-1];
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     TwoMergedBoxes<dim>::has_curved_elements() const
     {
@@ -316,7 +316,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     TwoMergedBoxes<dim>::point_is_in_domain(const Point<dim> &point) const
     {
@@ -336,7 +336,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     aspect::Utilities::Coordinates::CoordinateSystem
     TwoMergedBoxes<dim>::natural_coordinate_system() const
     {
@@ -344,7 +344,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     TwoMergedBoxes<dim>::cartesian_to_natural_coordinates(const Point<dim> &position_point) const
     {
@@ -357,7 +357,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
@@ -370,7 +370,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedBoxes<dim>::
     declare_parameters (ParameterHandler &prm)
@@ -473,7 +473,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedBoxes<dim>::parse_parameters (ParameterHandler &prm)
     {

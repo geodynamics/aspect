@@ -39,7 +39,7 @@ namespace aspect
        * from pressure-temperature tables in input files. These input files
        * can be created using codes such as Perple_X or HeFESTo.
        */
-      template <int dim>
+      template <unsigned int>
       class ThermodynamicTableLookup : public ::aspect::SimulatorAccess<dim>
       {
         public:

@@ -37,7 +37,7 @@ namespace aspect
        * artificial viscosity for a given composition on each cell for
        * graphical output.
        */
-      template <int dim>
+      template <unsigned int>
       class ArtificialViscosityComposition : public CellDataVectorCreator<dim>,
         public SimulatorAccess<dim>
       {

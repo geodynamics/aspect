@@ -31,7 +31,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       SPD_Factor<dim>::
       SPD_Factor ()
         :
@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SPD_Factor<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -76,7 +76,7 @@ namespace aspect
           }
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       SPD_Factor<dim>::parse_parameters (ParameterHandler &/*prm*/)
       {

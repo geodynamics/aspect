@@ -27,7 +27,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       InitialComposition<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                                 std::vector<double> &data) const
@@ -38,7 +38,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       InitializationModeForLateParticles
       InitialComposition<dim>::late_initialization_mode () const
       {
@@ -47,7 +47,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       InitialComposition<dim>::get_property_information() const
       {

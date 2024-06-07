@@ -29,7 +29,7 @@ namespace aspect
   {
     namespace EquationOfState
     {
-      template <int dim>
+      template <unsigned int>
       void
       MulticomponentCompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       MulticomponentCompressible<dim>::
       is_compressible () const
@@ -71,7 +71,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MulticomponentCompressible<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -113,7 +113,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       MulticomponentCompressible<dim>::parse_parameters (ParameterHandler &prm)
       {

@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace BoundaryVelocity
   {
-    template <int dim>
+    template <unsigned int>
     Function<dim>::Function ()
       :
       boundary_velocity_function (dim)
@@ -36,7 +36,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     Function<dim>::
     boundary_velocity (const types::boundary_id ,
@@ -68,7 +68,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::update()
     {
@@ -81,7 +81,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -115,7 +115,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

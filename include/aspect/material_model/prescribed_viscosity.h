@@ -41,7 +41,7 @@ namespace aspect
      * other material parameters in the rest of the model.
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class PrescribedViscosity : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:

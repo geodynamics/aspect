@@ -26,7 +26,7 @@ namespace aspect
   {
     namespace Property
     {
-      template <int dim>
+      template <unsigned int>
       void
       Position<dim>::initialize_one_particle_property(const Point<dim> &position,
                                                       std::vector<double> &data) const
@@ -35,7 +35,7 @@ namespace aspect
           data.push_back(position[i]);
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       Position<dim>::update_particle_property(const unsigned int data_position,
                                               const Vector<double> &/*solution*/,
@@ -46,14 +46,14 @@ namespace aspect
           particle->get_properties()[data_position+i] = particle->get_location()[i];
       }
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       Position<dim>::need_update() const
       {
         return update_output_step;
       }
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       Position<dim>::get_property_information() const
       {

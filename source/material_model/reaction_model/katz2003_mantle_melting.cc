@@ -34,13 +34,13 @@ namespace aspect
     {
 
 
-      template <int dim>
+      template <unsigned int>
       Katz2003MantleMelting<dim>::Katz2003MantleMelting()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       Katz2003MantleMelting<dim>::
       reference_darcy_coefficient () const
@@ -50,7 +50,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       double
       Katz2003MantleMelting<dim>::
       melt_fraction (const double temperature,
@@ -90,7 +90,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       Katz2003MantleMelting<dim>::
       entropy_change (const double temperature,
@@ -170,7 +170,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Katz2003MantleMelting<dim>::
       calculate_reaction_rate_outputs(const typename Interface<dim>::MaterialModelInputs &in,
@@ -289,7 +289,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Katz2003MantleMelting<dim>::
       calculate_fluid_outputs(const typename Interface<dim>::MaterialModelInputs &in,
@@ -369,7 +369,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Katz2003MantleMelting<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -567,7 +567,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Katz2003MantleMelting<dim>::parse_parameters (ParameterHandler &prm)
       {

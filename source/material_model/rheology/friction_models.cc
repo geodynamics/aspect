@@ -34,7 +34,7 @@ namespace aspect
   {
     namespace Rheology
     {
-      template <int dim>
+      template <unsigned int>
       double
       FrictionModels<dim>::
       compute_friction_angle(const double current_edot_ii,
@@ -115,7 +115,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       FrictionMechanism
       FrictionModels<dim>::
       get_friction_mechanism() const
@@ -125,7 +125,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       FrictionModels<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -212,7 +212,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       FrictionModels<dim>::parse_parameters (ParameterHandler &prm)
       {

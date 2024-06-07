@@ -72,7 +72,7 @@ namespace aspect
        * The first value in the list is the value assigned to "background mantle"
        * (regions where the sum of the compositional fields is < 1.0).
        */
-      template <int dim>
+      template <unsigned int>
       class DiffusionDislocation : public ::aspect::SimulatorAccess<dim>
       {
         public:

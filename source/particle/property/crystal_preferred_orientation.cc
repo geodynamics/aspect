@@ -30,13 +30,13 @@ namespace aspect
     namespace Property
     {
 
-      template <int dim>
+      template <unsigned int>
       CrystalPreferredOrientation<dim>::CrystalPreferredOrientation ()
       {}
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CrystalPreferredOrientation<dim>::initialize ()
       {
@@ -56,7 +56,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CrystalPreferredOrientation<dim>::compute_random_rotation_matrix(Tensor<2,3> &rotation_matrix) const
       {
@@ -121,7 +121,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CrystalPreferredOrientation<dim>::initialize_one_particle_property(const Point<dim> &,
                                                                          std::vector<double> &data) const
@@ -205,7 +205,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CrystalPreferredOrientation<dim>::update_one_particle_property(const unsigned int data_position,
                                                                      const Point<dim> &position,
@@ -384,7 +384,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       CrystalPreferredOrientation<dim>::need_update() const
       {
@@ -393,7 +393,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       InitializationModeForLateParticles
       CrystalPreferredOrientation<dim>::late_initialization_mode () const
       {
@@ -402,7 +402,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       CrystalPreferredOrientation<dim>::get_needed_update_flags () const
       {
@@ -411,7 +411,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       CrystalPreferredOrientation<dim>::get_property_information() const
       {
@@ -438,7 +438,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       CrystalPreferredOrientation<dim>::advect_forward_euler(const unsigned int cpo_index,
                                                              const ArrayView<double> &data,
@@ -473,7 +473,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       CrystalPreferredOrientation<dim>::advect_backward_euler(const unsigned int cpo_index,
                                                               const ArrayView<double> &data,
@@ -537,7 +537,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
       CrystalPreferredOrientation<dim>::compute_derivatives(const unsigned int cpo_index,
                                                             const ArrayView<double> &data,
@@ -596,7 +596,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
       CrystalPreferredOrientation<dim>::compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const
       {
@@ -608,7 +608,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
       CrystalPreferredOrientation<dim>::compute_derivatives_drex_2004(const unsigned int cpo_index,
                                                                       const ArrayView<double> &data,
@@ -806,7 +806,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template<unsigned int>
       DeformationType
       CrystalPreferredOrientation<dim>::determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
                                                                    const Point<dim> &position,
@@ -864,7 +864,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template<unsigned int>
       DeformationType
       CrystalPreferredOrientation<dim>::determine_deformation_type_karato_2008(const double stress, const double water_content) const
       {
@@ -902,7 +902,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template<unsigned int>
       std::array<double,4>
       CrystalPreferredOrientation<dim>::reference_resolved_shear_stress_from_deformation_type(DeformationType deformation_type,
           double max_value) const
@@ -974,7 +974,7 @@ namespace aspect
         return ref_resolved_shear_stress;
       }
 
-      template<int dim>
+      template<unsigned int>
       unsigned int
       CrystalPreferredOrientation<dim>::get_number_of_grains() const
       {
@@ -983,7 +983,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template<unsigned int>
       unsigned int
       CrystalPreferredOrientation<dim>::get_number_of_minerals() const
       {
@@ -992,7 +992,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CrystalPreferredOrientation<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -1102,7 +1102,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       CrystalPreferredOrientation<dim>::parse_parameters (ParameterHandler &prm)
       {

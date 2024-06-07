@@ -28,14 +28,14 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       ArtificialViscosityComposition<dim>::
       ArtificialViscosityComposition ()
         :
         CellDataVectorCreator<dim>("m/s/s")
       {}
 
-      template <int dim>
+      template <unsigned int>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ArtificialViscosityComposition<dim>::execute() const
       {
@@ -63,7 +63,7 @@ namespace aspect
         return return_value;
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       ArtificialViscosityComposition<dim>::
       declare_parameters (ParameterHandler &prm)
@@ -86,7 +86,7 @@ namespace aspect
         prm.leave_subsection();
       }
 
-      template <int dim>
+      template <unsigned int>
       void
       ArtificialViscosityComposition<dim>::parse_parameters (ParameterHandler &prm)
       {

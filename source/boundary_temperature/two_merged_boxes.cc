@@ -31,7 +31,7 @@ namespace aspect
   namespace BoundaryTemperature
   {
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedBoxes<dim>::
     boundary_temperature (const types::boundary_id boundary_indicator,
@@ -43,7 +43,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedBoxes<dim>::
     minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     TwoMergedBoxes<dim>::
     maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
@@ -77,7 +77,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedBoxes<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -125,7 +125,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     TwoMergedBoxes<dim>::parse_parameters (ParameterHandler &prm)
     {

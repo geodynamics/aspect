@@ -36,7 +36,7 @@ namespace aspect
      * A class we use when setting up the data structures for nullspace removal
      * of the rotations in spherical or annular shells.
      */
-    template <int dim>
+    template <unsigned int>
     class Rotation : public TensorFunction<1,dim>
     {
       private:
@@ -71,7 +71,7 @@ namespace aspect
      * A class we use when setting up the data structures for nullspace removal
      * of the translations in box-like geometries.
      */
-    template <int dim>
+    template <unsigned int>
     class Translation : public TensorFunction<1,dim>
     {
       private:
@@ -101,7 +101,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints)
   {
     if (parameters.nullspace_removal & NullspaceRemoval::any_translation)
@@ -205,7 +205,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
                                         LinearAlgebra::BlockVector &tmp_distributed_stokes)
   {
@@ -243,7 +243,7 @@ namespace aspect
       }
   }
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::remove_net_linear_momentum( const bool use_constant_density,
                                                    LinearAlgebra::BlockVector &relevant_dst,
                                                    LinearAlgebra::BlockVector &tmp_distributed_stokes )
@@ -338,7 +338,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   RotationProperties<dim>
   Simulator<dim>::compute_net_angular_momentum(const bool use_constant_density,
                                                const LinearAlgebra::BlockVector &solution,
@@ -466,7 +466,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::remove_net_angular_momentum( const bool use_constant_density,
                                                     LinearAlgebra::BlockVector &relevant_dst,
                                                     LinearAlgebra::BlockVector &tmp_distributed_stokes,

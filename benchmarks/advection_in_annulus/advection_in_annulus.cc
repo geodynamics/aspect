@@ -85,7 +85,7 @@ namespace aspect
         return k*h_r*sin(k*theta)+rho_0*gravity*(outer_radius-r);
       }
 
-      template<int dim>
+      template<unsigned int>
       double
       Annulus_normal_traction (const Point<dim> &pos,
                                const double k)
@@ -116,7 +116,7 @@ namespace aspect
      *
      * @ingroup PrescribedStokesSolution
      */
-    template <int dim>
+    template <unsigned int>
     class AdvectionInAnnulus : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -129,7 +129,7 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    template <int dim>
+    template <unsigned int>
     void AdvectionInAnnulus<dim>::stokes_solution (const Point<dim> &, Vector<double> &) const
     {
       return;

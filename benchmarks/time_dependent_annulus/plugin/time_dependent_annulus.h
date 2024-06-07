@@ -55,7 +55,7 @@ namespace aspect
    */
   namespace AnalyticSolutions
   {
-    template <int dim>
+    template <unsigned int>
     void analytic_solution(
       double pos[],
       double vel[],
@@ -79,7 +79,7 @@ namespace aspect
     /**
      * The exact solution for the benchmark.
      */
-    template <int dim>
+    template <unsigned int>
     class FunctionStreamline : public Function<dim>
     {
       public:
@@ -114,7 +114,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class TimeDependentAnnulus : public MaterialModel::Interface<dim>
     {
       private:
@@ -297,7 +297,7 @@ namespace aspect
      * A postprocessor that evaluates the accuracy of the solution.
      *
      */
-    template <int dim>
+    template <unsigned int>
     class TimeDependentAnnulus : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       private:

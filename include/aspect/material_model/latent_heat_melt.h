@@ -38,7 +38,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class LatentHeatMelt : public MaterialModel::Interface<dim>,
       public MaterialModel::MeltFractionModel<dim>,
       public ::aspect::SimulatorAccess<dim>

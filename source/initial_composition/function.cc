@@ -29,7 +29,7 @@ namespace aspect
   namespace InitialComposition
   {
 
-    template <int dim>
+    template <unsigned int>
     double
     Function<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
@@ -41,7 +41,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -75,7 +75,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Function<dim>::parse_parameters (ParameterHandler &prm)
     {

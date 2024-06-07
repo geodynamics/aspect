@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    template <int dim>
+    template <unsigned int>
     void
     SphericalConstant<dim>::
     initialize ()
@@ -54,7 +54,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalConstant<dim>::
     boundary_temperature (const types::boundary_id boundary_indicator,
@@ -74,7 +74,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalConstant<dim>::
     minimal_temperature (const std::set<types::boundary_id> &) const
@@ -84,7 +84,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     SphericalConstant<dim>::
     maximal_temperature (const std::set<types::boundary_id> &) const
@@ -94,7 +94,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalConstant<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -116,7 +116,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     SphericalConstant<dim>::parse_parameters (ParameterHandler &prm)
     {

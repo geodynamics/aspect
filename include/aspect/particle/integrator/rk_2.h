@@ -38,7 +38,7 @@ namespace aspect
        *
        * @ingroup ParticleIntegrators
        */
-      template <int dim>
+      template <unsigned int>
       class RK2 : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:

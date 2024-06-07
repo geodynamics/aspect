@@ -178,7 +178,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     FastScape<dim>::~FastScape ()
     {
       // It doesn't seem to matter if this is done on all processors or only on the one that runs
@@ -187,7 +187,7 @@ namespace aspect
         fastscape_destroy_();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     FastScape<dim>::initialize ()
     {
@@ -317,7 +317,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     FastScape<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                              AffineConstraints<double> &mesh_velocity_constraints,
@@ -594,7 +594,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<std::vector<double>>
     FastScape<dim>::get_aspect_values() const
     {
@@ -690,7 +690,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::fill_fastscape_arrays(std::vector<double> &elevation,
                                                std::vector<double> &bedrock_transport_coefficient_array,
                                                std::vector<double> &bedrock_river_incision_rate_array,
@@ -770,7 +770,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::initialize_fastscape(std::vector<double> &elevation,
                                               std::vector<double> &basement,
                                               std::vector<double> &bedrock_transport_coefficient_array,
@@ -828,7 +828,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::execute_fastscape(std::vector<double> &elevation,
                                            std::vector<double> &extra_vtk_field,
                                            std::vector<double> &velocity_x,
@@ -934,7 +934,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::apply_orographic_controls(const std::vector<double> &elevation,
                                                    std::vector<double> &bedrock_transport_coefficient_array,
                                                    std::vector<double> &bedrock_river_incision_rate_array) const
@@ -1067,7 +1067,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::set_ghost_nodes(std::vector<double> &elevation,
                                          std::vector<double> &velocity_x,
                                          std::vector<double> &velocity_y,
@@ -1359,7 +1359,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     bool FastScape<dim>::is_ghost_node(const unsigned int &index,
                                        const bool &exclude_boundaries) const
     {
@@ -1378,7 +1378,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Table<dim,double>
     FastScape<dim>::fill_data_table(std::vector<double> &values,
                                     TableIndices<dim> &size_idx,
@@ -1461,7 +1461,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::read_restart_files(std::vector<double> &elevation,
                                             std::vector<double> &basement,
                                             std::vector<double> &silt_fraction) const
@@ -1527,7 +1527,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::save_restart_files(const std::vector<double> &elevation,
                                             std::vector<double> &basement,
                                             std::vector<double> &silt_fraction) const
@@ -1576,7 +1576,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     FastScape<dim>::
     needs_surface_stabilization () const
@@ -1586,7 +1586,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");
@@ -1798,7 +1798,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void FastScape<dim>::parse_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");

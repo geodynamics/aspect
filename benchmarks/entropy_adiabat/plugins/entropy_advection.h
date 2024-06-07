@@ -33,7 +33,7 @@ namespace aspect
      * This class assembles the terms for the matrix and right-hand-side of the entropy
      * advection equation for the current cell.
      */
-    template <int dim>
+    template <unsigned int>
     class EntropyAdvectionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {

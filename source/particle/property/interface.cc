@@ -198,7 +198,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::initialize_one_particle_property (const Point<dim> &,
                                                         std::vector<double> &) const
@@ -207,7 +207,7 @@ namespace aspect
 
 
       DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::update_particle_property (const unsigned int data_position,
                                                 const Vector<double> &solution,
@@ -225,7 +225,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::update_one_particle_property (const unsigned int,
                                                     const Point<dim> &,
@@ -236,7 +236,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       Interface<dim>::need_update () const
       {
@@ -245,7 +245,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       Interface<dim>::get_needed_update_flags () const
       {
@@ -254,7 +254,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       InitializationModeForLateParticles
       Interface<dim>::late_initialization_mode () const
       {
@@ -263,7 +263,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       IntegratorProperties<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
                                                                   std::vector<double> &data) const
@@ -273,7 +273,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::pair<std::string, unsigned int>>
       IntegratorProperties<dim>::get_property_information() const
       {
@@ -282,7 +282,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       IntegratorProperties<dim>::parse_parameters (ParameterHandler &prm)
       {
@@ -311,21 +311,21 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       inline
       Manager<dim>::Manager ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       inline
       Manager<dim>::~Manager ()
         = default;
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Manager<dim>::initialize ()
       {
@@ -347,7 +347,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Manager<dim>::initialize_one_particle (typename ParticleHandler<dim>::particle_iterator &particle) const
       {
@@ -374,7 +374,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<double>
       Manager<dim>::initialize_late_particle (const Point<dim> &particle_location,
                                               const ParticleHandler<dim> &particle_handler,
@@ -530,7 +530,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Manager<dim>::update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                          const Vector<double> &solution,
@@ -549,7 +549,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateTimeFlags
       Manager<dim>::need_update () const
       {
@@ -563,7 +563,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       Manager<dim>::get_needed_update_flags () const
       {
@@ -578,7 +578,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       Manager<dim>::plugin_name_exists(const std::string &name) const
       {
@@ -587,7 +587,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       Manager<dim>::check_plugin_order(const std::string &first, const std::string &second) const
       {
@@ -605,7 +605,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       unsigned int
       Manager<dim>::get_plugin_index_by_name(const std::string &name) const
       {
@@ -622,7 +622,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       unsigned int
       Manager<dim>::get_n_property_components () const
       {
@@ -631,7 +631,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::size_t
       Manager<dim>::get_particle_size () const
       {
@@ -640,7 +640,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       const ParticlePropertyInformation &
       Manager<dim>::get_data_info () const
       {
@@ -649,7 +649,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       unsigned int
       Manager<dim>::get_property_component_by_name(const std::string &name) const
       {
@@ -669,7 +669,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Manager<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -702,7 +702,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Manager<dim>::parse_parameters (ParameterHandler &prm)
       {
@@ -758,7 +758,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Manager<dim>::
       register_particle_property (const std::string &name,
@@ -774,7 +774,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Manager<dim>::write_plugin_graph (std::ostream &out)
       {

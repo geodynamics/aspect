@@ -52,7 +52,7 @@ namespace aspect
         DislocationCreepParameters();
       };
 
-      template <int dim>
+      template <unsigned int>
       class DislocationCreep : public ::aspect::SimulatorAccess<dim>
       {
         public:

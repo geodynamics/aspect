@@ -39,7 +39,7 @@ namespace aspect
       /**
        * A class which describes the manifold.
        */
-      template <int dim>
+      template <unsigned int>
       class EllipsoidalChunkGeometry : public ChartManifold<dim,3,3>
       {
         public:
@@ -136,7 +136,7 @@ namespace aspect
      *
      * @author This plugin is a joined effort of Menno Fraters, D. Sarah Stamps and Wolfgang Bangerth
      */
-    template <int dim>
+    template <unsigned int>
     class EllipsoidalChunk : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

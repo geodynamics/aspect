@@ -147,13 +147,13 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     S40RTSPerturbation<dim>::S40RTSPerturbation()
       :
       vs_to_density_index(numbers::invalid_unsigned_int)
     {}
 
-    template <int dim>
+    template <unsigned int>
     void
     S40RTSPerturbation<dim>::initialize()
     {
@@ -173,7 +173,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     S40RTSPerturbation<dim>::
     get_Vs (const Point<dim> &position) const
@@ -286,7 +286,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     S40RTSPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
@@ -353,7 +353,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     S40RTSPerturbation<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -430,7 +430,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     S40RTSPerturbation<dim>::parse_parameters (ParameterHandler &prm)
     {

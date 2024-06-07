@@ -28,7 +28,7 @@ namespace aspect
 {
   namespace Assemblers
   {
-    template <int dim>
+    template <unsigned int>
     void
     StokesPreconditioner<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -186,7 +186,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesCompressiblePreconditioner<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -251,7 +251,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesIncompressibleTerms<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -442,7 +442,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesIncompressibleTerms<dim>::
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -491,7 +491,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesCompressibleStrainRateViscosityTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -538,7 +538,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesReferenceDensityCompressibilityTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -587,7 +587,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesImplicitReferenceDensityCompressibilityTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -641,7 +641,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesIsentropicCompressionTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -701,7 +701,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesProjectedDensityFieldTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -792,7 +792,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesHydrostaticCompressionTerm<dim>::
     execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
@@ -864,7 +864,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesPressureRHSCompatibilityModification<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
@@ -893,7 +893,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     StokesBoundaryTraction<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
                                           internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const

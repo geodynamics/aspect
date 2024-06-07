@@ -30,7 +30,7 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    template <int dim>
+    template <unsigned int>
     void
     Sphere<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
@@ -44,7 +44,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::set<types::boundary_id>
     Sphere<dim>::
     get_used_boundary_indicators () const
@@ -54,7 +54,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::map<std::string,types::boundary_id>
     Sphere<dim>::
     get_symbolic_boundary_names_map () const
@@ -63,7 +63,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Sphere<dim>::
     length_scale () const
@@ -78,14 +78,14 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Sphere<dim>::depth(const Point<dim> &position) const
     {
       return std::min (std::max (R-position.norm(), 0.), maximal_depth());
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     Sphere<dim>::height_above_reference_surface(const Point<dim> &position) const
     {
@@ -93,7 +93,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Sphere<dim>::representative_point(const double depth) const
     {
@@ -104,20 +104,20 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Sphere<dim>::maximal_depth() const
     {
       return R;
     }
 
-    template <int dim>
+    template <unsigned int>
     double Sphere<dim>::radius () const
     {
       return R;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     Sphere<dim>::has_curved_elements () const
     {
@@ -126,7 +126,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Sphere<dim>::point_is_in_domain(const Point<dim> &point) const
     {
@@ -147,7 +147,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::array<double,dim>
     Sphere<dim>::cartesian_to_natural_coordinates(const Point<dim> &position) const
     {
@@ -156,7 +156,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     aspect::Utilities::Coordinates::CoordinateSystem
     Sphere<dim>::natural_coordinate_system() const
     {
@@ -165,7 +165,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Point<dim>
     Sphere<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position) const
     {
@@ -174,7 +174,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Sphere<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -193,7 +193,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Sphere<dim>::parse_parameters (ParameterHandler &prm)
     {

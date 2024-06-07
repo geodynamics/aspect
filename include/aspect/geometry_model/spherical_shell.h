@@ -37,7 +37,7 @@ namespace aspect
        * A description of a manifold that describes a spherical shell with overlaid
        * topography.
        */
-      template <int dim>
+      template <unsigned int>
       class SphericalManifoldWithTopography : public aspect::SphericalManifold<dim>
       {
         public:
@@ -180,7 +180,7 @@ namespace aspect
      * input file are the inner and outer radii of the shell and the opening
      * angle of the section of the shell we want to build.
      */
-    template <int dim>
+    template <unsigned int>
     class SphericalShell : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

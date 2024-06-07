@@ -26,12 +26,12 @@ namespace aspect
 {
   namespace BoundaryTraction
   {
-    template <int dim>
+    template <unsigned int>
     AsciiData<dim>::AsciiData ()
       = default;
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::initialize ()
     {
@@ -49,7 +49,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     AsciiData<dim>::
     boundary_traction (const types::boundary_id boundary_indicator,
@@ -63,7 +63,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::update()
     {
@@ -72,7 +72,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -86,7 +86,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     AsciiData<dim>::parse_parameters (ParameterHandler &prm)
     {

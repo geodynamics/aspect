@@ -56,7 +56,7 @@ namespace aspect
        * directly if the velocity needs to be converted from m/s to m/year, so
        * this is what this class does.
        */
-      template <int dim>
+      template <unsigned int>
       class BaseVariablePostprocessor: public DataPostprocessor<dim>, public SimulatorAccess<dim>
       {
         public:
@@ -167,7 +167,7 @@ namespace aspect
        * so output on the surface of the model domain. The only difference with the previous
        * class is that each output variable name is prepended with the string 'surface_'.
        */
-      template <int dim>
+      template <unsigned int>
       class SurfaceBaseVariablePostprocessor: public VisualizationPostprocessors::SurfaceOnlyVisualization<dim>, public BaseVariablePostprocessor<dim>
       {
         public:
@@ -188,7 +188,7 @@ namespace aspect
        * This Postprocessor will generate the output variables of mesh velocity and
        * mesh displacement for when a deforming mesh is used.
        */
-      template <int dim>
+      template <unsigned int>
       class MeshDeformationPostprocessor: public DataPostprocessorVector<dim>, public SimulatorAccess<dim>
       {
         public:
@@ -236,7 +236,7 @@ namespace aspect
 
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       Interface<dim>::Interface (const std::string &physical_units)
         :
         physical_units (physical_units)
@@ -244,7 +244,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::string
       Interface<dim>::get_physical_units () const
       {
@@ -253,7 +253,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::list<std::string>
       Interface<dim>::required_other_postprocessors () const
       {
@@ -262,20 +262,20 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::save (std::map<std::string,std::string> &) const
       {}
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Interface<dim>::load (const std::map<std::string,std::string> &)
       {}
 
 
 
-      template <int dim>
+      template <unsigned int>
       CellDataVectorCreator<dim>::CellDataVectorCreator (const std::string &physical_units)
         :
         Interface<dim> (physical_units)
@@ -283,7 +283,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     Visualization<dim>::OutputHistory::OutputHistory()
       :
       // Record that we have not yet written any meshes and so
@@ -293,7 +293,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Visualization<dim>::OutputHistory::~OutputHistory()
     {
       // Make sure that any thread that may still be running in the background,
@@ -304,7 +304,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void Visualization<dim>::OutputHistory::serialize (Archive &ar, const unsigned int)
     {
@@ -329,7 +329,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Visualization<dim>::Visualization ()
       :
       // the following value is later read from the input file
@@ -344,7 +344,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void Visualization<dim>::mesh_changed_signal()
     {
       cell_output_history.mesh_changed = true;
@@ -353,7 +353,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename DataOutType>
     void
     Visualization<dim>::write_description_files (const DataOutType &data_out,
@@ -442,7 +442,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::update ()
     {
@@ -453,7 +453,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <typename DataOutType>
     std::string
     Visualization<dim>::write_data_out_data(DataOutType   &data_out,
@@ -736,7 +736,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
@@ -1046,7 +1046,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void Visualization<dim>::writer (const std::string &filename,
                                      const std::string &temporary_output_location,
                                      const std::string &file_contents)
@@ -1122,7 +1122,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -1332,7 +1332,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -1520,7 +1520,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     template <class Archive>
     void Visualization<dim>::serialize (Archive &ar, const unsigned int)
     {
@@ -1533,7 +1533,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
@@ -1547,7 +1547,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
@@ -1563,7 +1563,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::set_last_output_time (const double current_time)
     {
@@ -1584,7 +1584,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::
     register_visualization_postprocessor (const std::string &name,
@@ -1600,7 +1600,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::list<std::string>
     Visualization<dim>::required_other_postprocessors () const
     {
@@ -1621,7 +1621,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Visualization<dim>::output_pointwise_stress_and_strain () const
     {
@@ -1630,7 +1630,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Visualization<dim>::write_plugin_graph (std::ostream &out)
     {

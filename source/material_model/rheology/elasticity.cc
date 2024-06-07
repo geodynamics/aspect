@@ -42,7 +42,7 @@ namespace aspect
       }
     }
 
-    template <int dim>
+    template <unsigned int>
     ElasticAdditionalOutputs<dim>::ElasticAdditionalOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(make_elastic_additional_outputs_names()),
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::vector<double>
     ElasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -64,7 +64,7 @@ namespace aspect
 
     namespace Rheology
     {
-      template <int dim>
+      template <unsigned int>
       void
       Elasticity<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -110,7 +110,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Elasticity<dim>::parse_parameters (ParameterHandler &prm)
       {
@@ -225,7 +225,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Elasticity<dim>::create_elastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
@@ -268,7 +268,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Elasticity<dim>::fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
                                              const std::vector<double> &average_elastic_shear_moduli,
@@ -323,7 +323,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       Elasticity<dim>::fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
                                               const std::vector<double> &average_elastic_shear_moduli,
@@ -431,7 +431,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       Elasticity<dim>::elastic_timestep () const
       {
@@ -455,7 +455,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       const std::vector<double> &
       Elasticity<dim>::get_elastic_shear_moduli () const
       {
@@ -464,7 +464,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       Elasticity<dim>::
       calculate_elastic_viscosity (const double shear_modulus) const
@@ -474,7 +474,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       Elasticity<dim>::
       calculate_viscoelastic_viscosity (const double viscosity,
@@ -486,7 +486,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       SymmetricTensor<2,dim>
       Elasticity<dim>::
       calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,

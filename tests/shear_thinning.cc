@@ -27,7 +27,7 @@ namespace aspect
   {
     using namespace dealii;
 
-    template <int dim>
+    template <unsigned int>
     class ShearThinning : public MaterialModel::Simple<dim>
     {
       public:
@@ -47,7 +47,7 @@ namespace aspect
   namespace MaterialModel
   {
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearThinning<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -59,7 +59,7 @@ namespace aspect
           out.viscosities[i] = 1./(1+in.strain_rate[i].norm());
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     ShearThinning<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -93,7 +93,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     class ShearThinning : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
@@ -112,7 +112,7 @@ namespace aspect
 {
   namespace Postprocess
   {
-    template <int dim>
+    template <unsigned int>
     std::pair<std::string,std::string>
     ShearThinning<dim>::execute (TableHandler &)
     {

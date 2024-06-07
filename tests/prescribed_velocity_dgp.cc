@@ -84,7 +84,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void parse_parameters(const Parameters<dim> &,
                         ParameterHandler &prm)
   {
@@ -141,7 +141,7 @@ namespace aspect
    * have been calculated. This enables us to define additional constraints in the mass
    * matrix on any arbitrary degree of freedom in the model space.
    */
-  template <int dim>
+  template <unsigned int>
   void constrain_internal_velocities (const SimulatorAccess<dim> &simulator_access,
                                       AffineConstraints<double> &current_constraints)
   {
@@ -252,7 +252,7 @@ namespace aspect
   }
 
   // Connect constraints function to correct signal.
-  template <int dim>
+  template <unsigned int>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
     signals.post_constraints_creation.connect (&constrain_internal_velocities<dim>);

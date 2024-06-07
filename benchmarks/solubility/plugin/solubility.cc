@@ -38,7 +38,7 @@ namespace aspect
      * Volatiles material model.
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class Volatiles : public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>, public MaterialModel::MeltFractionModel<dim>
     {
       public:
@@ -122,7 +122,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Volatiles<dim>::initialize()
     {
@@ -131,7 +131,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Volatiles<dim>::update()
     {
@@ -140,7 +140,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Volatiles<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                              typename Interface<dim>::MaterialModelOutputs &out) const
@@ -217,7 +217,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Volatiles<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -282,7 +282,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Volatiles<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -343,7 +343,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Volatiles<dim>::
     is_compressible () const
@@ -353,7 +353,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Volatiles<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
@@ -381,7 +381,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Volatiles<dim>::
     reference_darcy_coefficient () const
@@ -392,7 +392,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Volatiles<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {

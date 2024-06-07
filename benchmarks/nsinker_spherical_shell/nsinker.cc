@@ -41,7 +41,7 @@ namespace aspect
      *
      * @ingroup MaterialModels
      */
-    template <int dim>
+    template <unsigned int>
     class NSinkerMaterial : public MaterialModel::Interface<dim>
     {
       public:
@@ -201,7 +201,7 @@ namespace aspect
     };
 
 
-    template<int dim>
+    template<unsigned int>
     NSinkerMaterial<dim>::NSinkerMaterial ()
     {
       delta = 2*200.0;

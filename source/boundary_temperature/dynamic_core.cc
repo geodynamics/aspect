@@ -39,7 +39,7 @@ namespace aspect
   namespace BoundaryTemperature
   {
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     boundary_temperature (const types::boundary_id            boundary_indicator,
@@ -58,7 +58,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     minimal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
@@ -68,7 +68,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     maximal_temperature (const std::set<types::boundary_id> &/*fixed_boundary_ids*/) const
@@ -78,7 +78,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -218,7 +218,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -307,7 +307,7 @@ namespace aspect
       prm.leave_subsection ();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::read_data_OES()
     {
@@ -334,7 +334,7 @@ namespace aspect
                           << std::endl;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::get_OES(double t) const
     {
@@ -354,14 +354,14 @@ namespace aspect
       return w;
     }
 
-    template <int dim>
+    template <unsigned int>
     DynamicCore<dim>::DynamicCore()
     {
       is_first_call = true;
       core_data.is_initialized = false;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::get_initial_Ri(double T)
     {
@@ -399,7 +399,7 @@ namespace aspect
       return (r0+r1)/2.;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     DynamicCore<dim>::solve_time_step(double &X, double &T, double &R)
     {
@@ -497,7 +497,7 @@ namespace aspect
       return false;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::get_Tc(double r) const
     {
@@ -509,7 +509,7 @@ namespace aspect
                             ) / core_data.Qs;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::get_Ts(double r) const
     {
@@ -517,14 +517,14 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::get_dT(double r) const
     {
       return get_T(get_Tc(r),r) - get_Ts(r);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::update_core_data()
     {
@@ -536,14 +536,14 @@ namespace aspect
       get_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi,core_data.Eh);
     }
 
-    template <int dim>
+    template <unsigned int>
     const internal::CoreData &
     DynamicCore<dim>::get_core_data() const
     {
       return core_data;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::get_solidus(double X,double p) const
     {
@@ -574,7 +574,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::get_X(double r) const
     {
@@ -582,7 +582,7 @@ namespace aspect
       return X_init/(1-xi_3+Delta*xi_3);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::update()
     {
@@ -783,7 +783,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     get_Mass(double r) const
@@ -791,7 +791,7 @@ namespace aspect
       return 4.*M_PI*Rho_cen*(-pow(L,2)/2.*r*exp(-pow(r/L,2))+pow(L,3)/4.*sqrt(M_PI)*erf(r/L));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     fun_Sn(double B,double R,double n) const
@@ -802,7 +802,7 @@ namespace aspect
       return S;
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     get_Pressure(double r) const
@@ -812,7 +812,7 @@ namespace aspect
                -(3*pow(Rc,2)/10-pow(L,2)/5)*exp(-pow(Rc/L,2)));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     get_Rho(double r) const
@@ -820,7 +820,7 @@ namespace aspect
       return Rho_cen*exp(-pow(r/L,2));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     get_g(double r) const
@@ -828,7 +828,7 @@ namespace aspect
       return (4*M_PI/3)*constants::big_g*Rho_cen*r*(1-3*pow(r,2)/(5*pow(L,2)));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     get_T(double Tc,double r) const
@@ -836,7 +836,7 @@ namespace aspect
       return Tc*exp((pow(Rc,2)-pow(r,2))/pow(D,2));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     get_gravity_potential(double r) const
@@ -845,7 +845,7 @@ namespace aspect
                                                             /(10.*pow(L,2)))-pow(Rc,2)*(1.-3.*pow(Rc,2)/(10.*pow(L,2))));
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::
     get_specific_heating(double Tc, double &Qs,double &Es)
@@ -857,7 +857,7 @@ namespace aspect
       Es=Cp/Tc*(Mc-Is/Tc);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::
     get_radio_heating(double Tc, double &Qr, double &Er)
@@ -878,7 +878,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::
     get_heat_solution(double Tc, double r, double X,double &Eh)
@@ -900,7 +900,7 @@ namespace aspect
       Eh=Rh*(It-(Mc-get_Mass(r))/get_T(Tc,r))*Cc;
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::
     get_gravity_heating(double Tc, double r,double X,double &Qg,double &Eg)
@@ -920,7 +920,7 @@ namespace aspect
 
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::
     get_adiabatic_heating(double Tc, double &Ek, double &Qk)
@@ -928,7 +928,7 @@ namespace aspect
       Ek=16*M_PI*k_c*pow(Rc,5)/5/pow(D,4);
       Qk=8*M_PI*pow(Rc,3)*k_c*Tc/pow(D,2);
     }
-    template <int dim>
+    template <unsigned int>
     void
     DynamicCore<dim>::
     get_latent_heating(double Tc, double r, double &El, double &Ql)
@@ -937,7 +937,7 @@ namespace aspect
       El=Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     DynamicCore<dim>::
     get_radioheating_rate() const
@@ -949,7 +949,7 @@ namespace aspect
       return Ht;
     }
 
-    template <int dim>
+    template <unsigned int>
     bool
     DynamicCore<dim>::
     is_OES_used() const

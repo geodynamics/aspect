@@ -50,7 +50,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Compositing<dim>::copy_required_properties(const unsigned int model_index,
                                                const typename Interface<dim>::MaterialModelOutputs &base_output,
@@ -78,7 +78,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Compositing<dim>::initialize ()
     {
@@ -88,7 +88,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Compositing<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                                typename Interface<dim>::MaterialModelOutputs &out) const
@@ -111,7 +111,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Compositing<dim>::
     create_additional_named_outputs (typename Interface<dim>::MaterialModelOutputs &outputs) const
@@ -124,7 +124,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Compositing<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -152,7 +152,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Compositing<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -214,7 +214,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Compositing<dim>::
     is_compressible () const

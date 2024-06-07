@@ -40,7 +40,7 @@ namespace aspect
      *
      * @ingroup InitialCompositionModels
      */
-    template <int dim>
+    template <unsigned int>
     class AsciiData : public Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:

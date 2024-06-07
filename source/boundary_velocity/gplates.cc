@@ -36,7 +36,7 @@ namespace aspect
   {
     namespace internal
     {
-      template <int dim>
+      template <unsigned int>
       GPlatesLookup<dim>::GPlatesLookup(const Tensor<1,2> &surface_point_one,
                                         const Tensor<1,2> &surface_point_two)
       {
@@ -51,7 +51,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::string
       GPlatesLookup<dim>::screen_output(const Tensor<1,2> &surface_point_one,
                                         const Tensor<1,2> &surface_point_two) const
@@ -92,7 +92,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       GPlatesLookup<dim>::load_file(const std::string &filename,
                                     const MPI_Comm comm)
@@ -196,7 +196,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1,dim>
       GPlatesLookup<dim>::surface_velocity(const Point<dim> &position) const
       {
@@ -256,7 +256,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1,dim>
       GPlatesLookup<dim>::cartesian_velocity_at_surface_point(const std::array<double,3> &spherical_point) const
       {
@@ -285,7 +285,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1,3>
       GPlatesLookup<dim>::cartesian_surface_coordinates(const Tensor<1,3> &sposition) const
       {
@@ -299,7 +299,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       Tensor<1,3>
       GPlatesLookup<dim>::sphere_to_cart_velocity(const Tensor<1,2> &s_velocities, const std::array<double,3> &s_position) const
       {
@@ -316,7 +316,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       double
       GPlatesLookup<dim>::rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
                                                      const Tensor<2,3> &rotation_matrix) const
@@ -341,7 +341,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       std::array<double,3>
       GPlatesLookup<dim>::angles_from_matrix(const Tensor<2,3> &rotation_matrix) const
       {
@@ -443,7 +443,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       template <int in, int out>
       Tensor<1,out>
       GPlatesLookup<dim>::convert_tensor (const Tensor<1,in> &old_tensor) const
@@ -458,7 +458,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       bool
       GPlatesLookup<dim>::gplates_1_4_or_higher(const boost::property_tree::ptree &pt) const
       {
@@ -482,7 +482,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     GPlates<dim>::GPlates ()
       :
       current_file_number(0),
@@ -501,7 +501,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GPlates<dim>::initialize ()
     {
@@ -578,7 +578,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     GPlates<dim>::create_filename (const int timestep) const
     {
@@ -592,7 +592,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GPlates<dim>::update ()
     {
@@ -644,7 +644,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GPlates<dim>::update_data (const bool load_both_files)
     {
@@ -690,7 +690,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GPlates<dim>::end_time_dependence ()
     {
@@ -706,7 +706,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     Tensor<1,dim>
     GPlates<dim>::
     boundary_velocity (const types::boundary_id /*boundary_indicator*/,
@@ -740,7 +740,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GPlates<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -813,7 +813,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     GPlates<dim>::parse_parameters (ParameterHandler &prm)
     {

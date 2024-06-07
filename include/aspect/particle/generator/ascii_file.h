@@ -35,7 +35,7 @@ namespace aspect
        *
        * @ingroup ParticleGenerators
        */
-      template <int dim>
+      template <unsigned int>
       class AsciiFile : public Interface<dim>
       {
         public:

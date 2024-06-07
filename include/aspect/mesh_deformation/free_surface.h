@@ -40,7 +40,7 @@ namespace aspect
      * In particular this means if the surface of the domain is
      * left open to flow, this flow will carry the mesh with it.
      */
-    template<int dim>
+    template<unsigned int>
     class FreeSurface : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

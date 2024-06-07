@@ -28,13 +28,13 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    template <int dim>
+    template <unsigned int>
     AdiabaticBoundary<dim>::AdiabaticBoundary ()
       :
       surface_boundary_id(numbers::invalid_unsigned_int)
     {}
 
-    template <int dim>
+    template <unsigned int>
     void
     AdiabaticBoundary<dim>::initialize ()
     {
@@ -48,7 +48,7 @@ namespace aspect
                                                     1);
     }
 
-    template <int dim>
+    template <unsigned int>
     double
     AdiabaticBoundary<dim>::initial_temperature (const Point<dim> &position) const
     {
@@ -61,7 +61,7 @@ namespace aspect
         return surface_temperature + (depth/isotherm_depth) * (isotherm_temperature - surface_temperature);
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     AdiabaticBoundary<dim>::declare_parameters(ParameterHandler &prm)
     {
@@ -89,7 +89,7 @@ namespace aspect
       prm.leave_subsection();
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     AdiabaticBoundary<dim>::parse_parameters(ParameterHandler &prm)
     {

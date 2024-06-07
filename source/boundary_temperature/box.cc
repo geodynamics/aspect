@@ -32,7 +32,7 @@ namespace aspect
   {
 // ------------------------------ Box -------------------
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::
     boundary_temperature (const types::boundary_id boundary_indicator,
@@ -43,7 +43,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::
     minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
@@ -61,7 +61,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Box<dim>::
     maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
@@ -77,7 +77,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -113,7 +113,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Box<dim>::parse_parameters (ParameterHandler &prm)
     {

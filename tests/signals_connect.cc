@@ -26,7 +26,7 @@
 using namespace aspect;
 
 
-template <int dim>
+template <unsigned int>
 void post_constraints_creation (const SimulatorAccess<dim> &,
                                 AffineConstraints<double> &)
 {
@@ -37,7 +37,7 @@ void post_constraints_creation (const SimulatorAccess<dim> &,
 }
 
 
-template <int dim>
+template <unsigned int>
 void signal_connector (SimulatorSignals<dim> &signals)
 {
   std::cout << "Connecting signals" << std::endl;

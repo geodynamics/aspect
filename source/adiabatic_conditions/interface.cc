@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    template <int dim>
+    template <unsigned int>
     void Interface<dim>::get_adiabatic_temperature_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
@@ -48,7 +48,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void Interface<dim>::get_adiabatic_pressure_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
@@ -63,7 +63,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void Interface<dim>::get_adiabatic_density_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
@@ -78,7 +78,7 @@ namespace aspect
         }
     }
 
-    template <int dim>
+    template <unsigned int>
     void Interface<dim>::get_adiabatic_density_derivative_profile(std::vector<double> &values) const
     {
       const unsigned int num_slices = values.size();
@@ -108,7 +108,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     register_adiabatic_conditions (const std::string &name,
                                    const std::string &description,
@@ -122,7 +122,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::unique_ptr<Interface<dim>>
     create_adiabatic_conditions (ParameterHandler &prm)
     {
@@ -142,7 +142,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     declare_parameters (ParameterHandler &prm)
     {
@@ -164,7 +164,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     write_plugin_graph (std::ostream &out)
     {

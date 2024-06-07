@@ -33,7 +33,7 @@ namespace aspect
      * This class assembles the terms for the matrix and right-hand-side of the advection
      * equation for the current cell.
      */
-    template <int dim>
+    template <unsigned int>
     class AdvectionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {
@@ -46,7 +46,7 @@ namespace aspect
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base) const override;
     };
 
-    template <int dim>
+    template <unsigned int>
     class DarcySystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {
@@ -66,7 +66,7 @@ namespace aspect
      * This class assembles the terms for the matrix and right-hand-side equation for the
      * current cell in case we only want to solve the diffusion equation.
      */
-    template <int dim>
+    template <unsigned int>
     class DiffusionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {
@@ -92,7 +92,7 @@ namespace aspect
      * advection equation for a face at the boundary of the domain where
      * Neumann boundary conditions are used (which allow to prescribe a heat flux).
      */
-    template <int dim>
+    template <unsigned int>
     class AdvectionSystemBoundaryHeatFlux : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -106,7 +106,7 @@ namespace aspect
      * This class assembles the face terms for the matrix and right-hand-side of
      * the discontinuous advection equation for a face at the boundary of the domain.
      */
-    template <int dim>
+    template <unsigned int>
     class AdvectionSystemBoundaryFace : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {
@@ -120,7 +120,7 @@ namespace aspect
      * This class assembles the face terms for the matrix and right-hand-side of
      * the discontinuous advection equation for a face in the interior of the domain.
      */
-    template <int dim>
+    template <unsigned int>
     class AdvectionSystemInteriorFace : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>
     {

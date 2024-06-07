@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       VolumeOfFluidValues<dim>::
       VolumeOfFluidValues ()
         :
@@ -37,7 +37,7 @@ namespace aspect
       {}
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<std::string>
       VolumeOfFluidValues<dim>::
       get_names () const
@@ -46,7 +46,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       VolumeOfFluidValues<dim>::
       get_data_component_interpretation () const
@@ -55,7 +55,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       UpdateFlags
       VolumeOfFluidValues<dim>::
       get_needed_update_flags () const
@@ -64,7 +64,7 @@ namespace aspect
       }
 
 
-      template <int dim>
+      template <unsigned int>
       void
       VolumeOfFluidValues<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -117,7 +117,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       VolumeOfFluidValues<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -145,7 +145,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       VolumeOfFluidValues<dim>::parse_parameters (ParameterHandler &prm)
       {

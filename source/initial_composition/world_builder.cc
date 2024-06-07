@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    template <int dim>
+    template <unsigned int>
     void
     WorldBuilder<dim>::
     initialize()
@@ -43,7 +43,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     WorldBuilder<dim>::
     initial_composition (const Point<dim> &position, const unsigned int n_comp) const
@@ -58,7 +58,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     WorldBuilder<dim>::declare_parameters (ParameterHandler &prm)
     {
@@ -83,7 +83,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     void
     WorldBuilder<dim>::parse_parameters (ParameterHandler &prm)
     {

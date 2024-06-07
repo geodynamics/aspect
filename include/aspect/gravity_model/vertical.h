@@ -37,7 +37,7 @@ namespace aspect
      *
      * @ingroup GravityModels
      */
-    template <int dim>
+    template <unsigned int>
     class Vertical : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

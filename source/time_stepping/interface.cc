@@ -37,7 +37,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     std::pair<Reaction, double>
     Interface<dim>::
     determine_reaction (const TimeStepInfo & /*info*/)
@@ -47,7 +47,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::
     update()
@@ -121,7 +121,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     double
     Manager<dim>::get_next_time_step_size() const
     {
@@ -130,7 +130,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::should_repeat_time_step() const
     {
@@ -153,7 +153,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::should_refine_mesh() const
     {
@@ -176,7 +176,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::
     need_checkpoint_on_terminate() const
@@ -186,7 +186,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     bool
     Manager<dim>::should_simulation_terminate_now() const
     {
@@ -195,7 +195,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::initialize_simulator (const Simulator<dim> &simulator_object)
     {
@@ -205,7 +205,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::register_time_stepping_model(const std::string &name,
                                                const std::string &description,
@@ -220,7 +220,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>:: declare_parameters (ParameterHandler &prm)
     {
@@ -261,7 +261,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::parse_parameters (ParameterHandler &prm)
     {
@@ -324,7 +324,7 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <unsigned int>
     void
     Manager<dim>::write_plugin_graph (std::ostream &out)
     {
@@ -333,7 +333,7 @@ namespace aspect
     }
 
 
-    template <int dim>
+    template <unsigned int>
     std::string
     get_valid_model_names_pattern ()
     {

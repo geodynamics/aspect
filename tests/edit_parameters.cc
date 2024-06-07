@@ -42,7 +42,7 @@ namespace aspect
                       "Switch CFL at the timestep given.");
   }
 
-  template <int dim>
+  template <unsigned int>
   void parse_parameters(const Parameters<dim>,
                         ParameterHandler &prm)
   {
@@ -50,7 +50,7 @@ namespace aspect
     switched = false;
   }
 
-  template <int dim>
+  template <unsigned int>
   void on_start_timestep (const SimulatorAccess<dim> &simulator_access)
   {
     simulator_access.get_pcout() << "Signal start_timestep triggered!" << std::endl;
@@ -68,7 +68,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void on_edit_parameters (const SimulatorAccess<dim> &simulator_access,
                            Parameters<dim> &/*parameters*/)
   {
@@ -85,7 +85,7 @@ namespace aspect
     SimulatorSignals<3>::parse_additional_parameters.connect (&parse_parameters<3>);
   }
 
-  template <int dim>
+  template <unsigned int>
   void signal_connector (SimulatorSignals<dim> &signals)
   {
     signals.edit_parameters_pre_setup_dofs.connect (&on_edit_parameters<dim>);

@@ -27,7 +27,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      template <int dim>
+      template <unsigned int>
       SurfaceDynamicTopography<dim>::
       SurfaceDynamicTopography ()
         :
@@ -38,7 +38,7 @@ namespace aspect
 
 
 
-      template <int dim>
+      template <unsigned int>
       void
       SurfaceDynamicTopography<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -97,7 +97,7 @@ namespace aspect
       /**
        * Register the other postprocessor that we need: DynamicTopography
        */
-      template <int dim>
+      template <unsigned int>
       std::list<std::string>
       SurfaceDynamicTopography<dim>::required_other_postprocessors() const
       {

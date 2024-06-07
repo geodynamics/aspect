@@ -60,7 +60,7 @@
 namespace aspect
 {
 
-  template <int dim>
+  template <unsigned int>
   Simulator<dim>::AdvectionField::
   AdvectionField (const FieldType field_type,
                   const unsigned int compositional_variable)
@@ -76,7 +76,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   typename Simulator<dim>::AdvectionField
   Simulator<dim>::AdvectionField::temperature ()
   {
@@ -85,7 +85,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   typename Simulator<dim>::AdvectionField
   Simulator<dim>::AdvectionField::composition (const unsigned int compositional_variable)
   {
@@ -94,14 +94,14 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   Simulator<dim>::AdvectionField::is_temperature() const
   {
     return (field_type == temperature_field);
   }
 
-  template <int dim>
+  template <unsigned int>
   bool
   Simulator<dim>::AdvectionField::is_discontinuous(const Introspection<dim> &introspection) const
   {
@@ -114,7 +114,7 @@ namespace aspect
     return false;
   }
 
-  template <int dim>
+  template <unsigned int>
   typename Parameters<dim>::AdvectionFieldMethod::Kind
   Simulator<dim>::AdvectionField::advection_method(const Introspection<dim> &introspection) const
   {
@@ -127,7 +127,7 @@ namespace aspect
     return Parameters<dim>::AdvectionFieldMethod::fem_field;
   }
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Simulator<dim>::AdvectionField::block_index(const Introspection<dim> &introspection) const
   {
@@ -137,7 +137,7 @@ namespace aspect
       return introspection.block_indices.compositional_fields[compositional_variable];
   }
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Simulator<dim>::AdvectionField::sparsity_pattern_block_index(const Introspection<dim> &introspection) const
   {
@@ -147,7 +147,7 @@ namespace aspect
       return introspection.block_indices.compositional_field_sparsity_pattern[compositional_variable];
   }
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Simulator<dim>::AdvectionField::component_index(const Introspection<dim> &introspection) const
   {
@@ -157,7 +157,7 @@ namespace aspect
       return introspection.component_indices.compositional_fields[compositional_variable];
   }
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Simulator<dim>::AdvectionField::field_index() const
   {
@@ -167,7 +167,7 @@ namespace aspect
       return compositional_variable + 1;
   }
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Simulator<dim>::AdvectionField::base_element(const Introspection<dim> &introspection) const
   {
@@ -177,7 +177,7 @@ namespace aspect
       return introspection.base_elements.compositional_fields;
   }
 
-  template <int dim>
+  template <unsigned int>
   FEValuesExtractors::Scalar
   Simulator<dim>::AdvectionField::scalar_extractor(const Introspection<dim> &introspection) const
   {
@@ -187,7 +187,7 @@ namespace aspect
       return introspection.extractors.compositional_fields[compositional_variable];
   }
 
-  template <int dim>
+  template <unsigned int>
   unsigned int
   Simulator<dim>::AdvectionField::polynomial_degree(const Introspection<dim> &introspection) const
   {
@@ -198,7 +198,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::write_plugin_graph (std::ostream &out) const
   {
     // write the preamble
@@ -262,7 +262,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::output_statistics()
   {
     // Only write the statistics file from processor zero
@@ -380,7 +380,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::
   compute_pressure_scaling_factor() const
@@ -483,7 +483,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::
   get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const
@@ -522,7 +522,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level)
   {
     if (pre_refinement_step < parameters.initial_adaptive_refinement)
@@ -557,7 +557,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::exchange_refinement_flags ()
   {
     // Communicate refinement flags on ghost cells from the owner of the
@@ -590,7 +590,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::maybe_refine_mesh (const double new_time_step,
                                           unsigned int &max_refinement_level)
   {
@@ -631,7 +631,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::maybe_write_timing_output () const
   {
     bool write_timing_output = false;
@@ -653,7 +653,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time,
                                                const bool force_writing_checkpoint)
   {
@@ -697,7 +697,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::advance_time (const double step_size)
   {
     old_time_step = time_step;
@@ -723,7 +723,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   std::pair<double,double>
   Simulator<dim>::
   get_extrapolated_advection_field_range (const AdvectionField &advection_field) const
@@ -801,7 +801,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                                         LinearAlgebra::Vector &vec)
   {
@@ -864,7 +864,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double Simulator<dim>::normalize_pressure (LinearAlgebra::BlockVector &vector) const
   {
     if (parameters.pressure_normalization == "no")
@@ -1055,7 +1055,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::
   denormalize_pressure (const double                      pressure_adjustment,
@@ -1143,7 +1143,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector)
   {
@@ -1284,7 +1284,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::compute_initial_stokes_residual()
   {
@@ -1349,7 +1349,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   Simulator<dim>::stokes_matrix_depends_on_solution() const
   {
@@ -1369,7 +1369,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   bool
   Simulator<dim>::stokes_A_block_is_symmetric() const
   {
@@ -1385,7 +1385,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::apply_limiter_to_dg_solutions (const AdvectionField &advection_field)
   {
     // TODO: Modify to more robust method
@@ -1627,7 +1627,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::update_solution_vectors_with_reaction_results (const unsigned int block_index,
                                                                       const LinearAlgebra::BlockVector &distributed_vector,
                                                                       const LinearAlgebra::BlockVector &distributed_reaction_vector)
@@ -1657,7 +1657,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::compute_reactions ()
   {
     // if the time step has a length of zero, there are no reactions
@@ -1881,7 +1881,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::initialize_current_linearization_point ()
   {
     // Start with a simple copy of the last timestep
@@ -1906,7 +1906,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void Simulator<dim>::interpolate_material_output_into_advection_field (const AdvectionField &adv_field)
   {
     // we need some temporary vectors to store our updates to composition in
@@ -2037,7 +2037,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::check_consistency_of_formulation()
   {
@@ -2131,7 +2131,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
   {
@@ -2199,7 +2199,7 @@ namespace aspect
   }
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::restore_outflow_boundary_ids(const unsigned int offset)
   {
@@ -2238,7 +2238,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   void
   Simulator<dim>::check_consistency_of_boundary_conditions() const
   {
@@ -2440,7 +2440,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess)
   {
@@ -2481,7 +2481,7 @@ namespace aspect
 
 
 
-  template <int dim>
+  template <unsigned int>
   double
   Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne,
                                                             const double maximum_linear_stokes_solver_tolerance,
