@@ -67,14 +67,22 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
 
           // Average the viscous viscosity and the shear modulus over the compositions
-          const double average_viscosity = MaterialUtilities::average_value(volume_fractions, viscosities, viscosity_averaging);
           average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
-          // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.).
-          // This viscosity is scaled with the timestep ratio $\frac{\Delta t_c}{\Delta t_{el}}$ in the
+          // If we have multiple compositions, we need to first compute their respective their viscoelastic viscosities,
+          // based on their respective viscous viscosities and the averaged shear modulus, before averaging them
+          // into the final effective viscosity.
+          std::vector<double> viscoelastic_viscosities(volume_fractions.size());
+          for (unsigned int j=0; j < volume_fractions.size(); ++j)
+          {
+          // The viscoelastic viscosity is scaled with the timestep ratio $\frac{\Delta t_c}{\Delta t_{el}}$ in the
           // calculate_viscoelastic_viscosity function.
-          out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
+            viscoelastic_viscosities[j] = elastic_rheology.calculate_viscoelastic_viscosity(viscosities[j],
                                                                                  average_elastic_shear_moduli[i]);
+          }
+
+          // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.).
+          out.viscosities[i] =  MaterialUtilities::average_value(volume_fractions, viscoelastic_viscosities, viscosity_averaging);
         }
 
       // Fill the body force term, viscoelastic strain rate and viscous dissipation.
