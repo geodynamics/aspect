@@ -758,6 +758,18 @@ namespace aspect
     string_to_bool(const std::vector<std::string> &s);
 
     /**
+     * Given a string @p s, convert it to an unsigned int.
+     */
+    unsigned int
+    string_to_unsigned_int(const std::string &s);
+
+    /**
+     * Given a vector of strings @p s, convert it to a vector of unsigned int values.
+     */
+    std::vector<unsigned int>
+    string_to_unsigned_int(const std::vector<std::string> &s);
+
+    /**
      * Returns if a vector of strings @p strings only contains unique
      * entries.
      */
