@@ -191,6 +191,10 @@ namespace aspect
                         ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
                                    "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
                                    "for stresses tracked on particles."));
+            if ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")))
+                                                                           AssertThrow(!this->get_parameters().use_operator_splitting,
+                                                                           ExcMessage("If stresses are tracked on particles, the stress update is applied by the particle property 'elastic stress' "
+                                                                                      "and operator splitting should not be turned on. "));
             // The discontinuous element is required to accommodate discontinuous
             // strain rates that feed into the stored stresses.
             AssertThrow(this->get_parameters().use_discontinuous_composition_discretization,
