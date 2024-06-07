@@ -342,17 +342,15 @@ namespace aspect
     // Therefore, we include all fields that represent stress tensor components
     // of the same stress tensor in the computation of the initial residual
     // for the fields that belong to that tensor. In other words, we compute an
-    // averaged initial residual using those fields that belong to the ve_stress tensor,
-    // and one for those belonging to the ve_stress_old tensor.
-    // TODO ve_stress_old values are not independent components of the solution vector,
-    // do we need to compute a residual for them at all?
+    // averaged initial residual using those fields that belong to the ve_stress tensor.
+    // The ve_stress_old values are not independent components of the solution vector,
+    // so we do not need to compute a residual for them and set their residual to zero.
     // TODO Is this residual calculation representative of a second order tensor?
-    double stress_initial_residual = 0.0;
-    double old_stress_initial_residual = 0.0;
-    std::vector<unsigned int> stress_indices;
-    std::vector<unsigned int> old_stress_indices;
     if (parameters.enable_elasticity == true)
       {
+        double stress_initial_residual = 0.0;
+        std::vector<unsigned int> stress_indices;
+        std::vector<unsigned int> old_stress_indices;
         stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx"));
         stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_yy"));
         old_stress_indices.push_back(introspection.compositional_index_for_name("ve_stress_xx_old"));
@@ -380,14 +378,12 @@ namespace aspect
             const double n_stress_fields = stress_indices.size();
             for (auto &c : stress_indices)
               stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
-            for (auto &c : old_stress_indices)
-              old_stress_initial_residual += system_rhs.block(introspection.block_indices.compositional_fields[c]).l2_norm() / n_stress_fields;
 
             // Overwrite the initial residual
             for (auto &c : stress_indices)
               (*residual)[c] = stress_initial_residual;
             for (auto &c : old_stress_indices)
-              (*residual)[c] = old_stress_initial_residual;
+              (*residual)[c] = 0.;
           }
       }
 
