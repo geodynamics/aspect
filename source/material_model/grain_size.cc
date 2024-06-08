@@ -1372,6 +1372,7 @@ namespace aspect
 
           grain_size_evolution_formulation      = Formulation::parse(prm.get("Grain size evolution formulation"));
 
+          // TODO: Remove deprecated parameter in next release.
           const std::string use_paleowattmeter  = prm.get ("Use paleowattmeter");
           Assert(use_paleowattmeter == "default",
                  ExcMessage("The parameter 'Use paleowattmeter' has been removed. "
@@ -1460,18 +1461,19 @@ namespace aspect
           for (unsigned int i=0; i<dislocation_creep_prefactor.size(); ++i)
             dislocation_creep_prefactor[i] = std::pow(dislocation_creep_prefactor[i],-1.0/dislocation_creep_exponent[i]);
 
+          // TODO: Remove deprecated parameters in next release.
           const double pv_grain_size_scaling         = prm.get_double ("Lower mantle grain size scaling");
           AssertThrow(pv_grain_size_scaling == 1.0,
                       ExcMessage("Error: The 'Lower mantle grain size scaling' parameter "
                                  "has been removed. Please remove it from your input file. For models "
-                                 "with large sptial variations in grain size, please advect your "
+                                 "with large spatial variations in grain size, please advect your "
                                  "grain size on particles."));
 
           const bool advect_log_grainsize            = prm.get_bool ("Advect logarithm of grain size");
           AssertThrow(advect_log_grainsize == false,
                       ExcMessage("Error: The 'Advect logarithm of grain size' parameter "
                                  "has been removed. Please remove it from your input file. For models "
-                                 "with large sptial variations in grain size, please advect your "
+                                 "with large spatial variations in grain size, please advect your "
                                  "grain size on particles."));
 
           if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
