@@ -1183,7 +1183,7 @@ namespace WorldBuilder
           MPI_Comm_rank(comm, &my_rank);
           if (my_rank == 0)
             {
-              uint64_t filesize;
+              int filesize;
               std::ifstream filestream;
               filestream.open(filename.c_str());
               WBAssertThrow (filestream.is_open(), std::string("Could not open file <") + filename + ">.");
@@ -1217,9 +1217,9 @@ namespace WorldBuilder
                 }
 
               data_string = datastream.str();
-              filesize = data_string.size();
-              WBAssertThrow(filesize < std::numeric_limits<uint64_t>::max(),
+              WBAssertThrow(static_cast<long int>(data_string.size()) < std::numeric_limits<int>::max(),
                             "File to large to be send with MPI.");
+              filesize = static_cast<int>(data_string.size());
 
               // Distribute data_size and data across processes
               int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
@@ -1227,7 +1227,7 @@ namespace WorldBuilder
 
               // Receive and store data
               ierr = MPI_Bcast(&data_string[0],
-                               static_cast<int>(filesize),
+                               filesize,
                                MPI_CHAR,
                                0,
                                comm);
