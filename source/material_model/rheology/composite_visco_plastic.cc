@@ -132,6 +132,7 @@ namespace aspect
         // strain rate (often simplified as epsilondot_ii)
         const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
                                         min_strain_rate);
+        const double log_edot_ii = std::log(edot_ii);
 
         Rheology::DiffusionCreepParameters diffusion_creep_parameters;
         Rheology::DislocationCreepParameters dislocation_creep_parameters;
@@ -183,56 +184,55 @@ namespace aspect
 
         // The following while loop conducts a Newton iteration to obtain the
         // creep stress, which we need in order to calculate the viscosity.
-        double strain_rate_residual = 2*strain_rate_residual_threshold;
-        unsigned int stress_iteration = 0;
-        double log_edot_ii = std::log(edot_ii);
-        double log_stress_ii = std::log(creep_stress);
+        double strain_rate_deriv = 0;
+        double log_strain_rate_deriv = 0;
 
-        while (std::abs(strain_rate_residual) > strain_rate_residual_threshold
-               && stress_iteration < stress_max_iteration_number)
-          {
-            const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative(creep_stress,
-                                                                   pressure,
-                                                                   temperature,
-                                                                   diffusion_creep_parameters,
-                                                                   dislocation_creep_parameters,
-                                                                   peierls_creep_parameters,
-                                                                   drucker_prager_parameters);
+        SUNDIALS::KINSOL<Vector<double>> nonlinear_solver(kinsol_settings);
+        nonlinear_solver.reinit_vector = [&](Vector<double> &x)
+        {
+          x.reinit(1);
+        };
 
-            const double strain_rate = creep_stress/(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.first;
-            const double strain_rate_deriv = 1./(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.second;
-            const double log_strain_rate_deriv = creep_stress / strain_rate * strain_rate_deriv;
-            const double log_strain_rate_residual = std::log(strain_rate) - log_edot_ii;
-            strain_rate_residual = strain_rate - edot_ii;
+        nonlinear_solver.residual =
+          [&](const Vector<double> &current_log_stress_ii,
+              Vector<double> &residual)
+        {
+          const double current_stress_ii = std::exp(current_log_stress_ii(0));
+          const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative(current_stress_ii,
+                                                                 pressure,
+                                                                 temperature,
+                                                                 diffusion_creep_parameters,
+                                                                 dislocation_creep_parameters,
+                                                                 peierls_creep_parameters,
+                                                                 drucker_prager_parameters);
 
-            // Update log_stress_ii and creep_stress as both are needed for the next iteration
-            // If the strain rate derivative is zero, we catch it below.
-            if (strain_rate_deriv>std::numeric_limits<double>::min())
-              {
-                log_stress_ii -= log_strain_rate_residual/log_strain_rate_deriv;
-                creep_stress = std::exp(log_stress_ii);
-              }
-            stress_iteration += 1;
+          const double strain_rate = current_stress_ii / (2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.first;
+          strain_rate_deriv = 1./(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.second;
+          log_strain_rate_deriv = current_stress_ii / strain_rate * strain_rate_deriv;
+          residual(0) = std::log(strain_rate) - log_edot_ii;
+        };
 
-            // If anything that would be used in the next iteration is not finite, the
-            // Newton iteration would trigger an exception and we want to abort the
-            // iteration instead.
-            // Currently, we still throw an exception, but if this exception is thrown,
-            // another more robust iterative scheme should be implemented
-            // (similar to that seen in the diffusion-dislocation material model).
-            const bool abort_newton_iteration = !numbers::is_finite(log_stress_ii)
-                                                || !numbers::is_finite(log_strain_rate_residual)
-                                                || !numbers::is_finite(log_strain_rate_deriv)
-                                                || strain_rate_deriv < std::numeric_limits<double>::min()
-                                                || stress_iteration == stress_max_iteration_number;
-            AssertThrow(!abort_newton_iteration,
-                        ExcMessage("No convergence has been reached in the loop that determines "
-                                   "the composite viscous creep stress. Aborting! "
-                                   "Residual is " + Utilities::to_string(strain_rate_residual) +
-                                   " after " + Utilities::to_string(stress_iteration) + " iterations. "
-                                   "You can increase the number of iterations by adapting the "
-                                   "parameter 'Maximum creep strain rate iterations'."));
-          }
+        nonlinear_solver.setup_jacobian =
+          [&](const Vector<double> & /*current_log_stress_ii*/,
+              const Vector<double> & /*current_f*/)
+        {
+          // Do nothing here, because we calculate the Jacobian in the residual function
+        };
+
+        nonlinear_solver.solve_with_jacobian = [&](const Vector<double> &residual,
+                                                   Vector<double> &solution,
+                                                   const double /*tolerance*/)
+        {
+          solution(0) = residual(0) / log_strain_rate_deriv;
+        };
+
+
+        // KINSOL works on vectors and so the scalar (log) stress is inserted into
+        // a vector of length 1
+        Vector<double> log_stress_ii(1);
+        log_stress_ii[0] = std::log(creep_stress);
+        nonlinear_solver.solve(log_stress_ii);
+        creep_stress = std::exp(log_stress_ii[0]);
 
         // The creep stress is not the total stress, so we still need to do a little work to obtain the effective viscosity.
         // First, we compute the stress running through the strain rate limiter, and then add that to the creep stress
@@ -357,8 +357,8 @@ namespace aspect
                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
 
         // Viscosity iteration parameters
-        prm.declare_entry ("Strain rate residual tolerance", "1e-22", Patterns::Double(0.),
-                           "Tolerance for correct diffusion/dislocation strain rate ratio.");
+        prm.declare_entry ("Strain rate residual tolerance", "1e-10", Patterns::Double(0.),
+                           "Tolerance for correct log strain rate residual.");
         prm.declare_entry ("Maximum creep strain rate iterations", "40", Patterns::Integer(0),
                            "Maximum number of iterations to find the correct "
                            "creep strain rate.");
@@ -371,6 +371,8 @@ namespace aspect
         prm.declare_entry ("Maximum viscosity", "1.e28",
                            Patterns::Double(0.),
                            "Maximum effective viscosity. Units: \\si{\\pascal\\second}.");
+
+
       }
 
 
@@ -439,6 +441,12 @@ namespace aspect
 
         AssertThrow(use_diffusion_creep == true || use_dislocation_creep == true || use_peierls_creep == true || use_drucker_prager == true,
                     ExcMessage("You need to include at least one deformation mechanism."));
+
+        // KINSOL settings
+        kinsol_settings.strategy = dealii::SUNDIALS::KINSOL<>::AdditionalData::linesearch;
+        kinsol_settings.function_tolerance = strain_rate_residual_threshold;
+        kinsol_settings.maximum_non_linear_iterations = stress_max_iteration_number;
+        kinsol_settings.maximum_setup_calls = 1;
 
       }
     }

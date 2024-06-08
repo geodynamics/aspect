@@ -29,6 +29,7 @@
 #include <aspect/material_model/rheology/peierls_creep.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/simulator_access.h>
+#include <deal.II/sundials/kinsol.h>
 
 namespace aspect
 {
@@ -140,6 +141,8 @@ namespace aspect
           double min_strain_rate;
           double strain_rate_residual_threshold;
           unsigned int stress_max_iteration_number;
+
+          SUNDIALS::KINSOL<Vector<double>>::AdditionalData kinsol_settings;
       };
     }
   }
