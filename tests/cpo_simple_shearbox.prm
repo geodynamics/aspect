@@ -101,7 +101,7 @@ subsection Postprocess
 
   subsection Particles
     set Time between data output = 1e6
-    set Data output format       = vtu
+    set Data output format       = gnuplot
     set List of particle properties = integrated strain invariant, crystal preferred orientation, cpo bingham average, cpo elastic tensor, elastic tensor decomposition
     set Exclude output properties = a_cosine_matrix, volume fraction
     set Particle generator name = ascii file
