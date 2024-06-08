@@ -1,21 +1,4 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 2.6.0-pre (add-katz2003-rft, 61d1e342d)
---     . using deal.II 9.5.1
---     .       with 32 bit indices and vectorization level 2 (256 bits)
---     . using Trilinos 13.2.0
---     . using p4est 2.3.2
---     . using Geodynamic World Builder 0.6.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=61d1e342d&src=code
------------------------------------------------------------------------------
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
 
@@ -26,7 +9,7 @@ Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
 
    Postprocessing:
      Compositions min/max/mass: 2.778e-12/0.2/1.257e+08 // 0/0/0
-     Writing graphical output:  output-viscoplastic-melt-blob-freezing/solution/solution-00000
+     Writing graphical output:  output-viscoplastic_melt_blob_freezing/solution/solution-00000
 
 *** Timestep 1:  t=1 years, dt=1 years
    Solving composition reactions... in 20 substep(s).
@@ -36,7 +19,7 @@ Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
 
    Postprocessing:
      Compositions min/max/mass: 1.372e-12/0.09878/6.206e+07 // -0.1265/-1.406e-12/-7.096e+07
-     Writing graphical output:  output-viscoplastic-melt-blob-freezing/solution/solution-00001
+     Writing graphical output:  output-viscoplastic_melt_blob_freezing/solution/solution-00001
 
 *** Timestep 2:  t=2 years, dt=1 years
    Solving composition reactions... in 20 substep(s).
@@ -46,33 +29,9 @@ Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
 
    Postprocessing:
      Compositions min/max/mass: 6.775e-13/0.04879/3.065e+07 // -0.189/-2.1e-12/-1.06e+08
-     Writing graphical output:  output-viscoplastic-melt-blob-freezing/solution/solution-00002
+     Writing graphical output:  output-viscoplastic_melt_blob_freezing/solution/solution-00002
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      37.7s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble composition system      |         6 |      10.9s |        29% |
-| Assemble temperature system      |         3 |      5.56s |        15% |
-| Build composition preconditioner |         5 |    0.0262s |         0% |
-| Build temperature preconditioner |         3 |    0.0168s |         0% |
-| Initialization                   |         1 |     0.553s |       1.5% |
-| Interpolate Stokes solution      |         3 |      0.87s |       2.3% |
-| Postprocessing                   |         3 |      2.03s |       5.4% |
-| Setup dof systems                |         1 |      0.14s |      0.37% |
-| Setup initial conditions         |         1 |      1.62s |       4.3% |
-| Setup matrices                   |         1 |     0.949s |       2.5% |
-| Solve composition reactions      |         2 |      13.7s |        36% |
-| Solve composition system         |         5 |   0.00685s |         0% |
-| Solve temperature system         |         3 |   0.00435s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 38s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&melt=1&sha=61d1e342d&src=code
------------------------------------------------------------------------------

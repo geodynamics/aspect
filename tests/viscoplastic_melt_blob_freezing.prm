@@ -1,7 +1,8 @@
 #########################################################
 # This is a test for the melting rate functionality,
 # in particular the freezing of melt.
-# It uses the melt simple model.
+# It uses the reactive fluid transport material model composited
+# on top of the visco plastic material model.
 
 # The initial porosity has the form of a Gaussian function
 # there is a fixed (constant) freezing rate.
