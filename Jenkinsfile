@@ -29,13 +29,12 @@ pipeline {
       agent
       {
         // first build a docker image for running the tests from the repo
-        dockerfile {
-          dir 'contrib/ci'
+        docker {
+          image 'geodynamics/aspect-tester:focal-dealii-9.5-v3'
           // We mount /repos into the docker image. This allows us to cache
           // the git repo by setting "advanced clone behaviors". If the
           // directory does not exist, this will be ignored.
           args '-v /repos:/repos:ro'
-          additionalBuildArgs '--pull'
         }
       }
 
