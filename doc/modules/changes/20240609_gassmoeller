@@ -1,0 +1,8 @@
+Added: A new particle interpolator plugin 'distance weighted average' that
+computes the interpolated properties as an average of particle properties
+weighted by a distance function. This plugin is similarly accurate
+as the 'cell average' interpolator, but provides smoother results and is
+less susceptible to jumps in interpolated properties if particles move
+small distances.
+<br>
+(Rene Gassmoeller, 2024/06/09)
