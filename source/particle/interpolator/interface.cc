@@ -27,17 +27,6 @@ namespace aspect
   {
     namespace Interpolator
     {
-      template <int dim>
-      std::vector<std::vector<double>>
-      Interface<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                           const std::vector<Point<dim>> &positions,
-                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
-      {
-        return properties_at_points(particle_handler,positions,ComponentMask(), cell);
-      }
-
-
-
 // -------------------------------- Deal with registering models and automating
 // -------------------------------- their setup and selection at run time
 
