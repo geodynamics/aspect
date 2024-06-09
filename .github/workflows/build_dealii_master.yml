@@ -39,4 +39,3 @@ jobs:
           cache-to: type=inline
           push: true
           tags: geodynamics/aspect-tester:focal-dealii-master
-
