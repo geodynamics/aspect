@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__postprocess_isotherm_depth_h
-#define __aspect__postprocess_isotherm_depth_h
+#ifndef _aspect_postprocess_isotherm_depth_h
+#define _aspect_postprocess_isotherm_depth_h
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
