@@ -1,6 +1,8 @@
+# The maximum refinement level will be 6+4 levels,
+# corresponding to a maximum resolution of ~700 m.
 subsection Mesh refinement
-  set Initial adaptive refinement              = 2
-  set Initial global refinement                = 8
+  set Initial adaptive refinement              = 4
+  set Initial global refinement                = 6
   set Minimum refinement level                 = 6
   set Normalize individual refinement criteria = true
   set Refinement criteria merge operation      = plus

@@ -4,9 +4,12 @@
 # conditions on the top part of the right boundary,
 # while a balancing outflow is prescribed underneath.
 # Only density and viscosity differ per composition.
-# High resolution is required to a.o. resolve the weak zone
-# between the subducting and overriding plate, so about
+# High resolution is required to sufficiently resolve the weak zone
+# between the subducting and overriding plate, and consequently
 # 100 MPI processes are required.
+
+# We include a shared library for the trench location postprocessor.
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
 
 # 2D
 set Dimension                              = 2
@@ -69,18 +72,24 @@ subsection Material model
   subsection Multicomponent
     set Reference temperature         = 0.0
     set Viscosity averaging scheme    = maximum composition
-
-    # OP, ML SP, crust SP
-    set Viscosities                   = 1.e20, 1.e23, 1.e23, 1.e20
-    set Densities                     = 3200.0, 3250.0, 3250.0, 3250.0
+    # BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
+    set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
+    set Densities                     = 3200.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0
     set Thermal conductivities        = 1
   end
 end
 
+# The overriding plate (OP) and subducting plate (SP)
+# are each divided into three different layers:
+# a layer of Bulk Oceanic Composition (BOC),
+# a layer of Serpentinized HarzBurgite (SHB),
+# and a "thermal layer".
+
 subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields  = OP, ML_SP, crust_SP
+  set Number of fields = 7
+  set Names of fields  = BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
 end
+
 
 subsection Initial composition model
   set List of model names = function
@@ -93,10 +102,13 @@ subsection Initial composition model
                               Ex=1530000.0, Ez=560000.0, \
                               Fz=663000.0, Gz=662000.0, \
                               Hz=631000.0, Iz=630000.0
-    set Function expression = \
-                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
-                              if((x>=Ex&z>=Ez&z<Gz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
-                              if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)|z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0)
+    set Function expression = if(z>=Fz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
+                              if(z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0); \
+                              if(z>=Hz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Fz,1,0); \
+                              if(z>=Iz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz,1,0); \
+                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Hz,1,0); \
+                              if((x>=Ex&z>=Ez&z<Iz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Iz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
+                              if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1.5,0)
     set Variable names      = x,z
   end
 end
@@ -133,8 +145,10 @@ subsection Initial temperature model
   end
 end
 
+# The maximum refinement level will be 6+4 levels,
+# corresponding to a maximum resolution of ~700 m.
 subsection Mesh refinement
-  set Initial adaptive refinement              = 1
+  set Initial adaptive refinement              = 4
   set Initial global refinement                = 6
   set Minimum refinement level                 = 6
   set Normalize individual refinement criteria = true
@@ -160,15 +174,19 @@ subsection Formulation
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics
+  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics, trench location
 
   subsection Visualization
     set List of output variables      = density, viscosity, strain rate, error indicator
     set Time between graphical output = 5e5
   end
 
+  subsection Trench location
+    set Name of trench compositional field = BOC_OP
+  end
+
   subsection Composition velocity statistics
-    set Names of selected compositional fields = ML_SP, crust_SP
+    set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
   end
 end
 
