@@ -149,6 +149,7 @@ namespace aspect
         double max_compaction_visc;
         double reference_permeability;
         double alpha_phi;
+        double reference_T;
 
         // Time scale for fluid release and absorption.
         double fluid_reaction_time_scale;
