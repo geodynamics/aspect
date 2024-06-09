@@ -87,6 +87,17 @@ namespace aspect
       };
 
       /**
+       * @brief An enum used to determine how the initial grain sizes and orientations are set for all particles
+       *
+       * uniform_grains_and_random_uniform_rotations: all particles are set to a uniform grain-size of 1/n_grains
+       * world_builder: all particle grain-sizes and orientations are set by the world builder.
+       */
+      enum class CPOInitialGrainsModel
+      {
+        uniform_grains_and_random_uniform_rotations, world_builder
+      };
+
+      /**
        * The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO)
        * on particles. Each ASPECT particle represents many grains. Each grain is assigned a size and a orientation
        * matrix. This allows tracking the LPO evolution with kinematic polycrystal CPO evolution models such
@@ -618,6 +629,11 @@ namespace aspect
            * in Kaminski and Ribe (2001, EPSL).
            */
           double mobility;
+
+          /**
+           * Sets which type of initial grain model is used to create the gain sizes and orientations
+           */
+          CPOInitialGrainsModel initial_grains_model;
 
           /** @} */
 
