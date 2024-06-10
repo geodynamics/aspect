@@ -48,32 +48,8 @@ namespace aspect
                     ExcMessage("Internal error: the particle property interpolator was "
                                "called without a specified component to interpolate."));
 
-        const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
-                                                      / static_cast<double> (positions.size());
-
-        typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
-
-        if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
-          {
-            // We can not simply use one of the points as input for find_active_cell_around_point
-            // because for vertices of mesh cells we might end up getting ghost_cells as return value
-            // instead of the local active cell. So make sure we are well in the inside of a cell.
-            Assert(positions.size() > 0,
-                   ExcMessage("The particle property interpolator was not given any "
-                              "positions to evaluate the particle cell_properties at."));
-
-
-            found_cell =
-              (GridTools::find_active_cell_around_point<> (this->get_mapping(),
-                                                           this->get_triangulation(),
-                                                           approximated_cell_midpoint)).first;
-          }
-        else
-          found_cell = cell;
-
         const typename ParticleHandler<dim>::particle_iterator_range particle_range =
-          particle_handler.particles_in_cell(found_cell);
-
+          particle_handler.particles_in_cell(cell);
 
         std::vector<std::vector<double>> cell_properties(positions.size(),
                                                           std::vector<double>(n_particle_properties,
@@ -88,7 +64,7 @@ namespace aspect
           return fallback_interpolator.properties_at_points(particle_handler,
                                                             positions,
                                                             selected_properties,
-                                                            found_cell);
+                                                            cell);
 
         // Noticed that the size of matrix A is n_particles x n_matrix_columns
         // which usually is not a square matrix. Therefore, we find the
@@ -138,7 +114,7 @@ namespace aspect
         if (use_linear_least_squares_limiter.n_selected_components() != 0)
           {
             std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> active_neighbors;
-            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(found_cell, active_neighbors);
+            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(cell, active_neighbors);
             for (const auto &active_neighbor : active_neighbors)
               {
                 if (active_neighbor->is_artificial())
@@ -153,15 +129,15 @@ namespace aspect
                       }
                   }
               }
-            if (found_cell->at_boundary())
+            if (cell->at_boundary())
               {
-                const std::vector<double> cell_average_values = fallback_interpolator.properties_at_points(particle_handler, {positions[0]}, selected_properties, found_cell)[0];
-                for (unsigned int face_id = 0; face_id < found_cell->reference_cell().n_faces(); ++face_id)
+                const std::vector<double> cell_average_values = fallback_interpolator.properties_at_points(particle_handler, {positions[0]}, selected_properties, cell)[0];
+                for (unsigned int face_id = 0; face_id < cell->reference_cell().n_faces(); ++face_id)
                   {
-                    if (found_cell->at_boundary(face_id))
+                    if (cell->at_boundary(face_id))
                       {
                         const unsigned int opposing_face_id = GeometryInfo<dim>::opposite_face[face_id];
-                        const auto &opposing_cell = found_cell->neighbor(opposing_face_id);
+                        const auto &opposing_cell = cell->neighbor(opposing_face_id);
                         if (opposing_cell.state() == IteratorState::IteratorStates::valid && opposing_cell->is_active() && opposing_cell->is_artificial() == false)
                           {
                             const auto neighbor_cell_average = fallback_interpolator.properties_at_points(particle_handler, {positions[0]}, selected_properties, opposing_cell)[0];
@@ -169,7 +145,7 @@ namespace aspect
                               {
                                 if (selected_properties[property_index] == true && use_boundary_extrapolation[property_index] == true)
                                   {
-                                    Assert(found_cell->reference_cell().is_hyper_cube() == true, ExcNotImplemented());
+                                    Assert(cell->reference_cell().is_hyper_cube() == true, ExcNotImplemented());
                                     const double expected_boundary_value = 1.5 * cell_average_values[property_index] - 0.5 * neighbor_cell_average[property_index];
                                     property_minimums[property_index] = std::min(property_minimums[property_index], expected_boundary_value);
                                     property_maximums[property_index] = std::max(property_maximums[property_index], expected_boundary_value);
@@ -192,7 +168,7 @@ namespace aspect
           return fallback_interpolator.properties_at_points(particle_handler,
                                                             positions,
                                                             selected_properties,
-                                                            found_cell);
+                                                            cell);
 
         std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
         std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
@@ -233,7 +209,7 @@ namespace aspect
                 std::size_t positions_index = 0;
                 for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++positions_index)
                   {
-                    Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(found_cell, *itr);
+                    Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(cell, *itr);
                     double interpolated_value = c[property_index][0];
                     for (unsigned int i = 1; i < n_matrix_columns; ++i)
                       {
