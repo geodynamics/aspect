@@ -359,7 +359,7 @@ namespace aspect
            * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value deformation type for.
-           * @param deformation_type The value of the of the deformation type to set.
+           * @param deformation_type The value of the deformation type to set.
            */
           inline
           void set_deformation_type(const unsigned int cpo_data_position,
@@ -391,7 +391,7 @@ namespace aspect
            * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value of the volume fraction of a mineral for.
-           * @param volume_fraction_mineral The value of the of the volume fraction of a mineral to set.
+           * @param volume_fraction_mineral The value of the volume fraction of a mineral to set.
            */
           inline
           void set_volume_fraction_mineral(const unsigned int cpo_data_position,
@@ -426,7 +426,7 @@ namespace aspect
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value of the volume fraction of a grain for.
            * @param grain_i The grain to set the value of the volume fraction of.
-           * @param volume_fractions_grains The value of the of the volume fraction of a grain to set.
+           * @param volume_fractions_grains The value of the volume fraction of a grain to set.
            */
           inline
           void set_volume_fractions_grains(const unsigned int cpo_data_position,
