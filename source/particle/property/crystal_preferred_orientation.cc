@@ -597,7 +597,7 @@ namespace aspect
                                                                                   deviatoric_strain_rate,
                                                                                   water_content);
 
-              set_deformation_type(cpo_index,data,mineral_i,static_cast<unsigned int>(deformation_type));
+              set_deformation_type(cpo_index,data,mineral_i,deformation_type);
 
               const std::array<double,4> ref_resolved_shear_stress = reference_resolved_shear_stress_from_deformation_type(deformation_type);
 

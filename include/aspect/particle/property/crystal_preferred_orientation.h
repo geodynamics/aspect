@@ -346,11 +346,11 @@ namespace aspect
            * @param mineral_i The mineral to get the value of the deformation type for.
            */
           inline
-          double get_deformation_type(const unsigned int cpo_data_position,
-                                      const ArrayView<double> &data,
-                                      const unsigned int mineral_i) const
+          DeformationType get_deformation_type(const unsigned int cpo_data_position,
+                                               const ArrayView<double> &data,
+                                               const unsigned int mineral_i) const
           {
-            return data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)];
+            return static_cast<DeformationType>(data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)]);
           }
 
           /**
@@ -365,9 +365,9 @@ namespace aspect
           void set_deformation_type(const unsigned int cpo_data_position,
                                     const ArrayView<double> &data,
                                     const unsigned int mineral_i,
-                                    const double deformation_type) const
+                                    const DeformationType deformation_type) const
           {
-            data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = deformation_type;
+            data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = static_cast<double>(deformation_type);
           }
 
           /**
