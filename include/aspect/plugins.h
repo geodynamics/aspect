@@ -67,7 +67,7 @@ namespace aspect
      * cases, use a `dynamic_cast`.
      */
     template <typename TestType, typename PluginType,
-              typename = typename std::enable_if<std::is_base_of<PluginType,TestType>::value>::type>
+              typename = typename std::enable_if_t<std::is_base_of<PluginType,TestType>::value>>
     inline
     bool
     plugin_type_matches (const PluginType &object)
@@ -93,7 +93,7 @@ namespace aspect
      * class `PluginType`. For these cases, use a `dynamic_cast`.
      */
     template <typename TestType, typename PluginType,
-              typename = typename std::enable_if<std::is_base_of<PluginType,TestType>::value>::type>
+              typename = typename std::enable_if_t<std::is_base_of<PluginType,TestType>::value>>
     inline
     TestType &
     get_plugin_as_type (PluginType &object)
