@@ -217,8 +217,9 @@ namespace aspect
          * A function that is called at the beginning of each time step,
          * calling the update function of the individual heating models.
          */
+        virtual
         void
-        update ();
+        update () override;
 
         /**
          * Go through the list of all plugins that have been selected
