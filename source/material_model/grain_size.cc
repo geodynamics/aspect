@@ -217,7 +217,7 @@ namespace aspect
                        const std::vector<unsigned int>                    &phase_indices) const
     {
       // We want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
-      // and it is not correct to use the starting grain size (and introduces instabilities).
+      // and it is not correct to use the starting grain size (and it introduces instabilities).
       // We assume that the strain rate is constant across all substeps for the ODE (within one advection step).
       // Even though this assumption may not always be the most accurate (compared to assuming a constant stress),
       // it leads to a more stable behavior because it implies that a reduction in grain size leads to less work
