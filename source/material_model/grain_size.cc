@@ -216,8 +216,12 @@ namespace aspect
                        const std::vector<double>                          &pressures,
                        const std::vector<unsigned int>                    &phase_indices) const
     {
-      // we want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
-      // and it is not correct to use the starting grain size (and introduces instabilities)
+      // We want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
+      // and it is not correct to use the starting grain size (and introduces instabilities).
+      // We assume that the strain rate is constant across all substeps for the ODE (within one advection step).
+      // Even though this assumption may not always be the most accurate (compared to assuming a constant stress),
+      // it leads to a more stable behavior because it implies that a reduction in grain size leads to less work
+      // being done by dislocation creep, so that the grain size reduction rate is lower in the next substep.
       std::vector<std::vector<double>> reaction_terms (in.n_evaluation_points(), std::vector<double>(this->n_compositional_fields(), 0.0));
 
       // Set up a vector that tells us which phase transition has been crossed for each point we are evaluating.
