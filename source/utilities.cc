@@ -2184,7 +2184,7 @@ namespace aspect
     {
       // Check for environment variable override to ASPECT_SOURCE_DIR
       char const *ASPECT_SOURCE_DIR_env = getenv("ASPECT_SOURCE_DIR");
-      if (ASPECT_SOURCE_DIR_env != NULL)
+      if (ASPECT_SOURCE_DIR_env != nullptr)
         {
           return Utilities::replace_in_string(location,
                                               "$ASPECT_SOURCE_DIR",
@@ -3042,8 +3042,8 @@ namespace aspect
 
 
     std::vector<Tensor<2,3>>
-    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fraction,
-                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> &volume_fraction,
+                                                   const std::vector<Tensor<2,3>> &rotation_matrices,
                                                    const unsigned int n_output_matrices,
                                                    std::mt19937 &random_number_generator)
     {

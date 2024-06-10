@@ -2044,7 +2044,7 @@ namespace aspect
                                    + ">."));
 
           // the easy part: get the name of the compositional field
-          const std::string key = split_parts[0];
+          const std::string &key = split_parts[0];
 
           // check that the names used are actually names of fields,
           // are solved by particles, and are unique in this list
@@ -2188,7 +2188,7 @@ namespace aspect
                                    + ">."));
 
           // the easy part: get the value
-          const std::string value = split_parts[1];
+          const std::string &value = split_parts[1];
 
           // now for the rest. since we don't know whether there is a
           // component selector, start reading at the end and subtracting
