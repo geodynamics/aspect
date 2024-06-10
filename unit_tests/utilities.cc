@@ -186,7 +186,7 @@ TEST_CASE("Random draw volume weighted average rotation matrix")
   const std::vector<dealii::Tensor<2,3>> sorted_rotation_matrices = aspect::Utilities::apply_permutation<dealii::Tensor<2,3>>(unsorted_rotation_matrices,permutation);
   for (unsigned int i = 0; i < sorted_rotation_matrices.size(); i++)
     {
-      REQUIRE(sorted_rotation_matrices[i][0][0] == Approx(sorted_rotation_matrices[i][0][0]));
+      REQUIRE(sorted_rotation_matrices[i][0][0] == Approx(sorted_rotation_matrices_ref[i][0][0]));
     }
 
   std::mt19937 random_number_generator;
