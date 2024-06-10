@@ -1190,7 +1190,7 @@ namespace WorldBuilder
 
               // Need to convert to unsigned int, because MPI_Bcast does not support
               // size_t or const unsigned int
-              unsigned int invalid_file_size = -1;
+              int invalid_file_size = -1;
 
               if (!filestream)
                 {
@@ -1218,7 +1218,7 @@ namespace WorldBuilder
 
               data_string = datastream.str();
               WBAssertThrow(static_cast<long int>(data_string.size()) < std::numeric_limits<int>::max(),
-                            "File to large to be send with MPI.");
+                            "File is too large to be send with MPI.");
               filesize = static_cast<int>(data_string.size());
 
               // Distribute data_size and data across processes

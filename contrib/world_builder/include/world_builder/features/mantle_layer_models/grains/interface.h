@@ -30,7 +30,7 @@ namespace WorldBuilder
 {
   class World;
   class Parameters;
-    template <unsigned int dim> class Point;
+  template <unsigned int dim> class Point;
 
   /**
    * This class is an interface for the specific plate tectonic feature classes,
