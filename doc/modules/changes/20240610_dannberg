@@ -1,0 +1,11 @@
+Fixed: The grain size material model now computes the
+stress that is used to calculate the grain size reduction
+rate with the viscosity that has been limited between its
+minimum and maximum given in the input file, rather than
+with the unlimited viscosity. This is more consistent,
+because the limited viscosity is the one we use to compute
+the strain rate (and stress is 2*viscosity_strain_rate).
+This updated implementation prevents artificial grain size
+reduction in regions with large viscosity.
+<br>
+(Juliane Dannberg, 2024/06/10)
