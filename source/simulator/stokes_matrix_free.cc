@@ -1067,18 +1067,6 @@ namespace aspect
       AssertThrow(sim.parameters.formulation_mass_conservation !=
                   Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
                   ExcNotImplemented());
-
-    {
-      const unsigned int n_vect_doubles =
-        VectorizedArray<double>::size();
-      const unsigned int n_vect_bits = 8 * sizeof(double) * n_vect_doubles;
-
-      sim.pcout << "Vectorization over " << n_vect_doubles
-                << " doubles = " << n_vect_bits << " bits ("
-                << dealii::Utilities::System::get_current_vectorization_level()
-                << "), VECTORIZATION_LEVEL=" << DEAL_II_COMPILER_VECTORIZATION_LEVEL
-                << std::endl;
-    }
   }
 
 
