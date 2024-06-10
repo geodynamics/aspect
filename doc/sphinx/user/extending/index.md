@@ -163,6 +163,7 @@ compatibility.md
 signals.md
 extending-solver.md
 testing/index.md
+benchmarking-run-time.md
 contributing.md
 future-plans.md
 release-tasklist-link.md
