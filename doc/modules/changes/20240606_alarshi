@@ -1,0 +1,5 @@
+New: There is now a python script in the contrib folder that
+creates netcdf files from an input ascii file 
+formatted following structured ascii data file convention.
+<br>
+(Arushi Saxena, 2024/06/06)
