@@ -245,8 +245,8 @@ TEST_CASE("CPO core: Store and Load")
   data[0] = 20847932.2;
   data[65] = 6541684.3;
 
-  cpo.set_deformation_type(cpo_data_position,data,0,(double)aspect::Particle::Property::DeformationType::passive);
-  cpo.set_deformation_type(cpo_data_position,data,1,(double)aspect::Particle::Property::DeformationType::passive);
+  cpo.set_deformation_type(cpo_data_position,data,0,aspect::Particle::Property::DeformationType::passive);
+  cpo.set_deformation_type(cpo_data_position,data,1,aspect::Particle::Property::DeformationType::passive);
 
 
   CHECK(data[0] == Approx(20847932.2)); // before data position
@@ -1362,8 +1362,8 @@ TEST_CASE("CPO elastic tensor")
   cpo.set_volume_fraction_mineral(cpo_data_position,data_cpo,0,0.7);
   cpo.set_volume_fraction_mineral(cpo_data_position,data_cpo,1,0.3);
 
-  cpo.set_deformation_type(cpo_data_position,data_cpo,0,(double)aspect::Particle::Property::DeformationType::olivine_a_fabric);
-  cpo.set_deformation_type(cpo_data_position,data_cpo,1,(double)aspect::Particle::Property::DeformationType::enstatite);
+  cpo.set_deformation_type(cpo_data_position,data_cpo,0,aspect::Particle::Property::DeformationType::olivine_a_fabric);
+  cpo.set_deformation_type(cpo_data_position,data_cpo,1,aspect::Particle::Property::DeformationType::enstatite);
 
   computed_elastic_tensor = cpo_elastic_tensor.voigt_average_elastic_tensor(cpo,
                                                                             cpo_data_position,
