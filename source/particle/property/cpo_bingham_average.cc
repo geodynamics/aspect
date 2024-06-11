@@ -87,14 +87,14 @@ namespace aspect
 
       template <int dim>
       void
-      CpoBinghamAverage<dim>::update_one_particle_property(const unsigned int data_position,
-                                                           const Point<dim> &,
-                                                           const Vector<double> &,
-                                                           const std::vector<Tensor<1,dim>> &,
-                                                           const ArrayView<double> &data) const
+      CpoBinghamAverage<dim>::update_particle_property(const unsigned int data_position,
+                                                       const Vector<double> &/*solution*/,
+                                                       const std::vector<Tensor<1,dim>> &/*gradients*/,
+                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
+        ArrayView<double> data = particle->get_properties();
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             // create volume fractions and rotation matrix vectors in the order that it is stored in the data array

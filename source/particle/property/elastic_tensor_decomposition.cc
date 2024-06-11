@@ -351,15 +351,14 @@ namespace aspect
 
       template <int dim>
       void
-      ElasticTensorDecomposition<dim>::update_one_particle_property(const unsigned int data_position,
-                                                                    const Point<dim> &,
-                                                                    const Vector<double> &,
-                                                                    const std::vector<Tensor<1,dim>> &,
-                                                                    const ArrayView<double> &data) const
+      ElasticTensorDecomposition<dim>::update_particle_property(const unsigned int data_position,
+                                                                const Vector<double> &/*solution*/,
+                                                                const std::vector<Tensor<1,dim>> &/*gradients*/,
+                                                                typename ParticleHandler<dim>::particle_iterator &particle) const
       {
+        ArrayView<double> data = particle->get_properties();
         const SymmetricTensor<2,6> elastic_matrix = Particle::Property::CpoElasticTensor<dim>::get_elastic_tensor(cpo_elastic_tensor_data_position,
                                                     data);
-
 
         const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = Utilities::compute_dilatation_stiffness_tensor(elastic_matrix);
         const SymmetricTensor<2,3> voigt_stiffness_tensor_full = Utilities::compute_voigt_stiffness_tensor(elastic_matrix);

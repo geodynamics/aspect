@@ -140,11 +140,10 @@ namespace aspect
 
       template <int dim>
       void
-      CpoElasticTensor<dim>::update_one_particle_property(const unsigned int data_position,
-                                                          const Point<dim> &,
-                                                          const Vector<double> &,
-                                                          const std::vector<Tensor<1,dim>> &,
-                                                          const ArrayView<double> &data) const
+      CpoElasticTensor<dim>::update_particle_property(const unsigned int data_position,
+                                                      const Vector<double> &/*solution*/,
+                                                      const std::vector<Tensor<1,dim>> &/*gradients*/,
+                                                      typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         // Get a reference to the CPO particle property.
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
@@ -153,10 +152,10 @@ namespace aspect
 
         const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
                                                                             cpo_data_position,
-                                                                            data);
+                                                                            particle->get_properties());
 
         Particle::Property::CpoElasticTensor<dim>::set_elastic_tensor(data_position,
-                                                                      data,
+                                                                      particle->get_properties(),
                                                                       C_average);
 
 
