@@ -36,15 +36,4 @@ ENV OMPI_MCA_rmaps_base_oversubscribe=1
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
 ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 
-# Set environment variables for derived images, which
-# are build by Jenkins
-ONBUILD ENV PATH="/opt/astyle-2.04:/opt/cmake-3.26.4-linux-x86_64/bin:$PATH"
-ONBUILD ENV DEAL_II_DIR /opt/deal.II-master
-ONBUILD ENV NETCDF_DIR /opt/netcdf-4.7.4
-ONBUILD ENV OMPI_MCA_btl_base_warn_component_unused=0
-ONBUILD ENV OMPI_MCA_mpi_yield_when_idle=1
-ONBUILD ENV OMPI_MCA_rmaps_base_oversubscribe=1
-ONBUILD ENV OMPI_ALLOW_RUN_AS_ROOT=1
-ONBUILD ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
-
 WORKDIR /opt
