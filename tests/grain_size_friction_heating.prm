@@ -1,5 +1,5 @@
 # A test for the grain size material model similar to
-# damage-rheology-strain. The only difference is the activation of shear
+# grain_size_strain.prm. The only difference is the activation of shear
 # heating. In the grain size model, a fraction of the energy dissipated by
 # dislocation creep increases the surface area of grains.
 
