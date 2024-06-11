@@ -13,7 +13,6 @@ Loading shared library <./libtomography_based_plate_motions_cookbook.debug.so>
 
    Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LLNL_model_cropped_cratons_faults.txt.gz.
 
-Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 2,232 (480+72+240+240+240+240+240+240+240)
 

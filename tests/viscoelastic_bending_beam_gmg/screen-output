@@ -1,5 +1,4 @@
 
-Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 150 (on 1 levels)
 Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
 

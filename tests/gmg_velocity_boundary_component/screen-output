@@ -5,7 +5,6 @@
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_right.0.txt.
 
-Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
 
