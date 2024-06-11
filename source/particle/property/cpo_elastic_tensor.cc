@@ -229,22 +229,18 @@ namespace aspect
       void
       CpoElasticTensor<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Particles");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Crystal Preferred Orientation");
           {
-            prm.enter_subsection("Crystal Preferred Orientation");
+            n_grains = prm.get_integer("Number of grains per particle");
+            prm.enter_subsection("Initial grains");
             {
-              n_grains = prm.get_integer("Number of grains per particle");
-              prm.enter_subsection("Initial grains");
-              {
-                n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
-              }
-              prm.leave_subsection();
+              n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
             }
             prm.leave_subsection();
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
         }
         prm.leave_subsection ();
       }

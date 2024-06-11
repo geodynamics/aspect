@@ -61,29 +61,25 @@ namespace aspect
       void
       AsciiFile<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Particles");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Generator");
           {
-            prm.enter_subsection("Generator");
+            prm.enter_subsection("Ascii file");
             {
-              prm.enter_subsection("Ascii file");
-              {
-                prm.declare_entry ("Data directory",
-                                   "$ASPECT_SOURCE_DIR/data/particle/generator/ascii/",
-                                   Patterns::DirectoryName (),
-                                   "The name of a directory that contains the particle data. This path "
-                                   "may either be absolute (if starting with a '/') or relative to "
-                                   "the current directory. The path may also include the special "
-                                   "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
-                                   "in which the ASPECT source files were located when ASPECT was "
-                                   "compiled. This interpretation allows, for example, to reference "
-                                   "files located in the `data/' subdirectory of ASPECT. ");
-                prm.declare_entry ("Data file name", "particle.dat",
-                                   Patterns::Anything (),
-                                   "The name of the particle file.");
-                prm.leave_subsection();
-              }
+              prm.declare_entry ("Data directory",
+                                 "$ASPECT_SOURCE_DIR/data/particle/generator/ascii/",
+                                 Patterns::DirectoryName (),
+                                 "The name of a directory that contains the particle data. This path "
+                                 "may either be absolute (if starting with a '/') or relative to "
+                                 "the current directory. The path may also include the special "
+                                 "text '$ASPECT_SOURCE_DIR' which will be interpreted as the path "
+                                 "in which the ASPECT source files were located when ASPECT was "
+                                 "compiled. This interpretation allows, for example, to reference "
+                                 "files located in the `data/' subdirectory of ASPECT. ");
+              prm.declare_entry ("Data file name", "particle.dat",
+                                 Patterns::Anything (),
+                                 "The name of the particle file.");
               prm.leave_subsection();
             }
             prm.leave_subsection();
@@ -97,19 +93,15 @@ namespace aspect
       void
       AsciiFile<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Particles");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Generator");
           {
-            prm.enter_subsection("Generator");
+            prm.enter_subsection("Ascii file");
             {
-              prm.enter_subsection("Ascii file");
-              {
-                data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+              data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
 
-                data_filename    = prm.get ("Data file name");
-              }
-              prm.leave_subsection();
+              data_filename    = prm.get ("Data file name");
             }
             prm.leave_subsection();
           }

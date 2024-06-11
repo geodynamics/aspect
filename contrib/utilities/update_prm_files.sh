@@ -38,6 +38,7 @@ done
 
 for script in `ls ${SCRIPT_FOLDER}/*.py`; do
   for file in $@ ; do
+    echo $file
     python3 $script $file "$file.tmp"
     mv "$file.tmp" "$file"
   done
