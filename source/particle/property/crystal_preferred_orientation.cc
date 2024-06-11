@@ -230,11 +230,10 @@ namespace aspect
 
       template <int dim>
       void
-      CrystalPreferredOrientation<dim>::update_one_particle_property(const unsigned int data_position,
-                                                                     const Point<dim> &position,
-                                                                     const Vector<double> &solution,
-                                                                     const std::vector<Tensor<1,dim>> &gradients,
-                                                                     const ArrayView<double> &data) const
+      CrystalPreferredOrientation<dim>::update_particle_property(const unsigned int data_position,
+                                                                 const Vector<double> &solution,
+                                                                 const std::vector<Tensor<1,dim>> &gradients,
+                                                                 typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         // STEP 1: Load data and preprocess it.
 
@@ -302,6 +301,8 @@ namespace aspect
             velocity_gradient_3d[2][2] = velocity_gradient[2][2];
           }
 
+        ArrayView<double> data = particle->get_properties();
+
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
 
@@ -318,7 +319,7 @@ namespace aspect
                                                            mineral_i,
                                                            strain_rate_3d,
                                                            velocity_gradient_3d,
-                                                           position,
+                                                           particle->get_location(),
                                                            temperature,
                                                            pressure,
                                                            velocity,

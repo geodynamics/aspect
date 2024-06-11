@@ -206,36 +206,6 @@ namespace aspect
 
 
 
-      DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-      template <int dim>
-      void
-      Interface<dim>::update_particle_property (const unsigned int data_position,
-                                                const Vector<double> &solution,
-                                                const std::vector<Tensor<1,dim>> &gradients,
-                                                typename ParticleHandler<dim>::particle_iterator &particle) const
-      {
-        // call the deprecated version of this function
-        update_one_particle_property(data_position,
-                                     particle->get_location(),
-                                     solution,
-                                     gradients,
-                                     particle->get_properties());
-      }
-      DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::update_one_particle_property (const unsigned int,
-                                                    const Point<dim> &,
-                                                    const Vector<double> &,
-                                                    const std::vector<Tensor<1,dim>> &,
-                                                    const ArrayView<double> &) const
-      {}
-
-
-
       template <int dim>
       UpdateTimeFlags
       Interface<dim>::need_update () const
@@ -270,6 +240,16 @@ namespace aspect
       {
         data.resize(data.size() + n_integrator_properties, 0.0);
       }
+
+
+
+      template <int dim>
+      void
+      Interface<dim>::update_particle_property (const unsigned int /*data_position*/,
+                                                const Vector<double> &/*solution*/,
+                                                const std::vector<Tensor<1,dim>> &/*gradients*/,
+                                                typename ParticleHandler<dim>::particle_iterator &/*particle*/) const
+      {}
 
 
 
