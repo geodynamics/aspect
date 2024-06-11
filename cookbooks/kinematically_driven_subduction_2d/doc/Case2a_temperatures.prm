@@ -16,6 +16,6 @@ subsection Boundary temperature model
   end
 end
 
-Subsection Initial temperature model
+subsection Initial temperature model
   set List of model names = subduction plate cooling
 end
