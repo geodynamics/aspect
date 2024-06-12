@@ -115,8 +115,7 @@ namespace aspect
           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
           * and the (viscous) viscosities given in the material model outputs object @p out,
           * fill a material model outputs (ElasticAdditionalOutputs) object with the
-          * average shear modulus, elastic viscosity, ratio of computational to elastic timestep,
-          * and the deviatoric stress of the current timestep.
+          * average shear modulus, elastic viscosity, and the deviatoric stress of the current timestep.
           */
           void
           fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,

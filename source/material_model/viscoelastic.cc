@@ -88,7 +88,7 @@ namespace aspect
       // Fill the body force term, viscoelastic strain rate and viscous dissipation.
       elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
       // Fill the elastic additional outputs with the shear modulus, elastic viscosity
-      // and timestep ratio.
+      // and deviatoric stress of the current timestep.
       elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
       // Fill the reaction terms to apply the rotation of the stresses into the current timestep.
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);

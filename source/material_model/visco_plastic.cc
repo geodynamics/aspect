@@ -300,7 +300,7 @@ namespace aspect
           // and the viscous dissipation.
           rheology->elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
           // Fill the elastic additional outputs with the shear modulus, elastic viscosity
-          // and timestep ratio.
+          // and deviatoric stress of the current timestep.
           rheology->elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
           // Fill the reaction terms that account for the rotation of the stresses.
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
