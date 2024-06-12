@@ -488,6 +488,7 @@ namespace aspect
 
     // subsection: Stokes solver parameters
     bool                           use_direct_stokes_solver;
+    bool                           use_bfbt;
     typename StokesSolverType::Kind stokes_solver_type;
     typename StokesKrylovType::Kind stokes_krylov_type;
     unsigned int                    idr_s_parameter;

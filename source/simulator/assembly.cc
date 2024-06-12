@@ -301,6 +301,7 @@ namespace aspect
     // Prepare the data structures for assembly
     scratch.reinit(cell);
     data.local_matrix = 0;
+    data.local_inverse_lumped_mass_matrix = 0;
 
     scratch.material_model_inputs.reinit  (scratch.finite_element_values,
                                            cell,
@@ -333,6 +334,8 @@ namespace aspect
     current_constraints.distribute_local_to_global (data.local_matrix,
                                                     data.local_dof_indices,
                                                     system_preconditioner_matrix);
+    if (parameters.use_bfbt)
+      current_constraints.distribute_local_to_global(data.local_inverse_lumped_mass_matrix,data.local_dof_indices,inverse_lumped_mass_matrix);
   }
 
 
@@ -391,11 +394,30 @@ namespace aspect
                                     introspection.n_compositional_fields,
                                     stokes_dofs_per_cell,
                                     parameters.include_melt_transport,
-                                    rebuild_stokes_matrix),
+                                    rebuild_stokes_matrix,
+                                    parameters.use_bfbt),
          internal::Assembly::CopyData::
          StokesPreconditioner<dim> (stokes_dofs_per_cell));
 
     system_preconditioner_matrix.compress(VectorOperation::add);
+    if (parameters.use_bfbt)
+      {
+        inverse_lumped_mass_matrix.compress(VectorOperation::add);
+        IndexSet local_indices = inverse_lumped_mass_matrix.block(0).locally_owned_elements();
+        for (auto i: local_indices)
+          {
+            if (current_constraints.is_constrained(i))
+              {
+                inverse_lumped_mass_matrix.block(0)[i] = 1.0;
+              }
+            else
+              {
+                inverse_lumped_mass_matrix.block(0)[i] = 1.0/inverse_lumped_mass_matrix.block(0)[i];
+              }
+          }
+        inverse_lumped_mass_matrix.block(0).compress(VectorOperation::insert);
+      }
+
   }
 
 
@@ -527,7 +549,6 @@ namespace aspect
     // Note that assemblers below can modify this list of dofs, if they in fact
     // assemble a different system than the standard Stokes system (e.g. in
     // models with melt transport).
-
     cell->get_dof_indices (scratch.local_dof_indices);
 
     data.extract_stokes_dof_indices (scratch.local_dof_indices, introspection, finite_element);
@@ -794,7 +815,8 @@ namespace aspect
                             parameters.include_melt_transport,
                             use_reference_density_profile,
                             rebuild_stokes_matrix,
-                            assemble_newton_stokes_matrix),
+                            assemble_newton_stokes_matrix,
+                            parameters.use_bfbt),
          internal::Assembly::CopyData::
          StokesSystem<dim> (stokes_dofs_per_cell,
                             do_pressure_rhs_compatibility_modification));

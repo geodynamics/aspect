@@ -38,8 +38,8 @@ Additional information:
     VectorType&, const VectorType&, const PreconditionerType&) [with
     MatrixType = aspect::internal::StokesBlock; PreconditionerType =
     aspect::internal::BlockSchurPreconditioner<aspect::internal::InverseVelocityBlock<dealii::TrilinosWrappers::PreconditionAMG>,
-    aspect::internal::InverseWeightedMassMatrix<dealii::TrilinosWrappers::PreconditionBase>
-    >; VectorType = dealii::TrilinosWrappers::MPI::BlockVector]
+    aspect::internal::SchurComplementOperator>; VectorType =
+    dealii::TrilinosWrappers::MPI::BlockVector]
     The violated condition was:
     false
     Additional information:
