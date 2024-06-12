@@ -10,6 +10,7 @@
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 6e6
+
 # For a timestep of 2500 yr and no stabilization,
 # the model is stable. For a timestep of 10000 yr,
 # it is not ("drunken sailor").
@@ -20,18 +21,17 @@ set Output directory                       = output_nostab_10000
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Pressure normalization                 = no
 
-
 ############## Element types
 # Use dicontinuous composition elements for a sharp interface
 subsection Discretization
   set Use discontinuous composition discretization = true
+
   subsection Stabilization parameters
     set Use limiter for discontinuous composition solution = true
     set Global composition maximum = 1
     set Global composition minimum = 0
   end
 end
-
 
 ############### Geometry
 # We consider a 2D box of 500x500 km
@@ -43,7 +43,6 @@ subsection Geometry model
     set Y extent  = 500e3
   end
 end
-
 
 ############### Boundary conditions
 # Vertical boundaries are free slip,
@@ -58,11 +57,13 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators                    = top: free surface
   set Additional tangential mesh velocity boundary indicators = left, right
+
   subsection Free surface
     # We test the stability of the free surface
     # for a timestep of 2500 and 10000 yr with
     # (0.5) and without (0.0) stabilization.
     set Free surface stabilization theta = 0.0
+
     # We compare the vertical and normal projection of
     # the free surface.
     #set Surface velocity projection      = normal
@@ -70,24 +71,23 @@ subsection Mesh deformation
   end
 end
 
-
 ############### Material properties
 # No temperature effects.
 # The top layer is denser and more viscous.
 subsection Material model
   set Model name = simple
+
   subsection Simple model
-   set Viscosity                                      = 1.0e20
-   set Composition viscosity prefactor                = 10
-   set Reference temperature                          = 1.0
-   set Reference density                              = 3200.0
-   set Density differential for compositional field 1 = 100
-   set Thermal expansion coefficient                  = 0.0
-   set Thermal conductivity                           = 2.7
-   set Reference specific heat                        = 1250
+    set Viscosity                                      = 1.0e20
+    set Composition viscosity prefactor                = 10
+    set Reference temperature                          = 1.0
+    set Reference density                              = 3200.0
+    set Density differential for compositional field 1 = 100
+    set Thermal expansion coefficient                  = 0.0
+    set Thermal conductivity                           = 2.7
+    set Reference specific heat                        = 1250
   end
 end
-
 
 ############## Gravity
 subsection Gravity model
@@ -97,7 +97,6 @@ subsection Gravity model
     set Magnitude = 9.81
   end
 end
-
 
 ############### Parameters describing the temperature field
 # We ignore any temperature effects.
@@ -114,14 +113,13 @@ subsection Initial temperature model
   end
 end
 
-
 ############### Parameters describing the compositional fields
 # We include one compositional field plus the background material.
 # The material interface is sinusoidally perturbed with an amplitude
 # A of 5 km.
 
 subsection Compositional fields
-   set Number of fields = 1
+  set Number of fields = 1
 end
 
 subsection Initial composition model
@@ -133,7 +131,6 @@ subsection Initial composition model
   end
 end
 
-
 ############### Mesh refinement
 # The Kaus paper considers a resolution of 50x50 elements.
 # We use 64x64.
@@ -142,7 +139,6 @@ subsection Mesh refinement
   set Initial global refinement          = 6
   set Time steps between mesh refinement = 0
 end
-
 
 ############### Parameters describing what to do with the solution
 # We monitor the topography over time.
@@ -154,6 +150,7 @@ subsection Postprocess
     set List of output variables      = viscosity, density
     set Output mesh velocity          = true
   end
+
   subsection Topography
     set Output to file           = true
     set Time between text output = 2.e5

@@ -7,6 +7,7 @@
 # for the development of surface topography.
 include $ASPECT_SOURCE_DIR/benchmarks/rayleigh_taylor_instability_free_surface/kaus_rayleigh_taylor_instability.prm
 
+
 ############### Global parameters
 set Dimension                              = 2
 set Start time                             = 0
@@ -21,7 +22,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
 ############### Parameters describing what to do with the solution
 # We monitor the topography over time.
 subsection Postprocess
@@ -33,6 +33,7 @@ subsection Postprocess
     set Output mesh velocity          = true
     set Output format = gnuplot
   end
+
   subsection Topography
     set Output to file           = true
     set Time between text output = 0

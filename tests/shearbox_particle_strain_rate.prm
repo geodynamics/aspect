@@ -157,18 +157,8 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles        = 10 #0
     set Time between data output = 0.001 #0.02499999999999
     set Data output format       = vtu, ascii
-    set List of particle properties =  integrated strain invariant, strain rate
-    set Particle generator name = ascii file
-
-    subsection Generator
-      subsection Ascii file
-        set Data directory = $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
-        set Data file name = shearbox_particle_strain_rate.dat
-      end
-    end
   end
 end
 
@@ -181,4 +171,16 @@ end
 
 subsection Solver parameters
   set Temperature solver tolerance = 1e-10
+end
+
+subsection Particles
+  set List of particle properties =  integrated strain invariant, strain rate
+  set Particle generator name = ascii file
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
+      set Data file name = shearbox_particle_strain_rate.dat
+    end
+  end
 end

@@ -93,16 +93,24 @@ end
 subsection Postprocess
   set List of postprocessors = particles,visualization,composition statistics,velocity statistics
 
-  subsection Particles
-    set List of particle properties   = composition
-    set Time between data output      = 0
-    set Number of particles           = 10
-    set Data output format            = gnuplot
-  end
-
   subsection Visualization
     set Interpolate output = false
     set Number of grouped files       = 0
     set Time between graphical output = 5e5
+  end
+
+  subsection Particles
+    set Time between data output      = 0
+    set Data output format            = gnuplot
+  end
+end
+
+subsection Particles
+  set List of particle properties   = composition
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles           = 10
+    end
   end
 end

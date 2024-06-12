@@ -81,7 +81,6 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles        = 1000
     set Time between data output = 0.1
     set Data output format       = vtu
   end
@@ -103,5 +102,13 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0)
+  end
+end
+
+subsection Particles
+  subsection Generator
+    subsection Probability density function
+      set Number of particles        = 1000
+    end
   end
 end

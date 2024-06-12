@@ -3,15 +3,14 @@
 include $ASPECT_SOURCE_DIR/cookbooks/mantle_convection_with_continents_in_annulus/modelR.prm
 
 set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/mantle_convection_with_continents_in_annulus/world.wb
-
 set Output directory                       = cookbook_mantle_convection_annulus
-
 set End time                               = 0
 
 subsection Mesh refinement
   set Initial global refinement       = 1
   set Initial adaptive refinement     = 0
   set Strategy                        = minimum refinement function, viscosity, velocity
+
   subsection Minimum refinement function
     set Coordinate system = spherical
     set Function expression = if(r>6000e3, 6, if(r>5000e3,5,3))
@@ -20,14 +19,18 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  subsection Particles
-    set Number of particles           = 123
-    subsection Generator
-      subsection Uniform radial
-         set Minimum radius = 3580000
-         set Maximum radius = 6270000
-         set Radial layers  = 50
-      end
+end
+
+subsection Particles
+  subsection Generator
+    subsection Uniform radial
+      set Minimum radius = 3580000
+      set Maximum radius = 6270000
+      set Radial layers  = 50
+    end
+
+    subsection Probability density function
+      set Number of particles           = 123
     end
   end
 end

@@ -35,5 +35,4 @@ subsection Material model
     # feeds into the density and therefore the Stokes equations
     set Thermal expansivities         = 2.5e-5
   end
-
 end

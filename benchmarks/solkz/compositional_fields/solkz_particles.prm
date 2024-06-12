@@ -89,27 +89,29 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 16384
     set Time between data output = 0
     set Data output format = vtu
-    set List of particle properties = function
-    set Integration scheme = rk2
-    set Interpolation scheme = cell average
-    set Maximum particles per cell = 16384
-    set Update ghost particles = true
-    set Particle generator name = reference cell
+  end
+end
 
-    subsection Function
-      set Number of components = 2
-      set Variable names      = x, z
-      set Function constants  = pi=3.1415926, eta_b=1e6
-      set Function expression =  -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
-    end
+subsection Particles
+  set List of particle properties = function
+  set Integration scheme = rk2
+  set Interpolation scheme = cell average
+  set Maximum particles per cell = 16384
+  set Update ghost particles = true
+  set Particle generator name = reference cell
 
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 4
-      end
+  subsection Function
+    set Number of components = 2
+    set Variable names      = x, z
+    set Function constants  = pi=3.1415926, eta_b=1e6
+    set Function expression =  -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
+  end
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
     end
   end
 end

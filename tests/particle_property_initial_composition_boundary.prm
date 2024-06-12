@@ -87,12 +87,17 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics,particles
 
   subsection Particles
-    set Number of particles = 1000
-    set Particle generator name = reference cell
     set Time between data output = 0
     set Data output format = gnuplot
-    set List of particle properties = initial composition
-    set Load balancing strategy = add particles
-    set Minimum particles per cell = 40
+  end
+end
+
+subsection Particles
+  set Particle generator name = reference cell
+  set List of particle properties = initial composition
+  set Load balancing strategy = add particles
+  set Minimum particles per cell = 40
+
+  subsection Generator
   end
 end

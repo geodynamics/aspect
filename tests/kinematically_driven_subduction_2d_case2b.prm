@@ -5,6 +5,17 @@
 set Dimension                              = 2
 set End time                               = 1.e5
 
+# Copy of the cookbooks instead of includes because we
+# cannot include a prm that includes another prm as
+# $ASPECT_SOURCE_DIR is not expanded the second time.
+set Start time                             = 0
+set CFL number                             = 0.5
+set Use years in output instead of seconds = true
+
+# Linear solver
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Adiabatic surface temperature          = 0
+
 subsection Mesh refinement
   set Initial adaptive refinement              = 1
   set Initial global refinement                = 4
@@ -26,17 +37,6 @@ subsection Mesh refinement
     set Function expression = if(x<crust,8,if(x<L,7,if(x<vel,6,4)))
   end
 end
-
-# Copy of the cookbooks instead of includes because we
-# cannot include a prm that includes another prm as
-# $ASPECT_SOURCE_DIR is not expanded the second time.
-set Start time                             = 0
-set CFL number                             = 0.5
-set Use years in output instead of seconds = true
-
-# Linear solver
-set Nonlinear solver scheme                = single Advection, single Stokes
-set Adiabatic surface temperature          = 0
 
 # We fix composition on the right boundary,
 # because we have inflow there.
@@ -95,12 +95,10 @@ subsection Solver parameters
   end
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, right
   set List of model names = initial temperature
 end
-
 
 # The overriding plate (OP) and subducting plate (SP)
 # are each divided into three different layers:
@@ -112,9 +110,9 @@ subsection Compositional fields
   set Names of fields  = BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
 end
 
-
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function constants  = Ax=1475600.0, Az=670000.0, \
                               Bx=1500000.0, Bz=670000.0, \
@@ -133,7 +131,6 @@ subsection Initial composition model
     set Variable names      = x,z
   end
 end
-
 
 # The initial temperature is prescribed through a plugin
 # and uses the plate cooling model for the temperature in both
@@ -163,7 +160,6 @@ subsection Postprocess
   subsection Composition RMS temperature statistics
     set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
   end
-
 end
 
 subsection Material model
@@ -184,18 +180,16 @@ subsection Material model
     # 3200 * (1 - 2.5e-5 * (1355 - 1573.15)) = rho_0_2 * (1 - 2.5e-5 * (1355 - 473.15))
     # rho_0_2 = 3290.66.
     set Reference temperature         = 473.15
+
     # BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
     set Densities                     = 3290.66,3000.0,3000.0,3250.0,3250.0,3290.66,3290.66,3200.0
 
     # Compared to Case 2a, thermal expansivity is no longer zero and therefore temperature
     # feeds into the density and therefore the Stokes equations
     set Thermal expansivities         = 2.5e-5
-
     set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
     set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
-
     set Viscosity averaging scheme    = maximum composition
     set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
   end
-
 end

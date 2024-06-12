@@ -13,11 +13,19 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization, particles
 
   subsection Particles
-    set Number of particles = 1e5
     set Time between data output = 0
     set Data output format = none
-    set List of particle properties = viscoplastic strain invariants
-    set Particle generator name = random uniform
-    set Interpolation scheme = nearest neighbor
+  end
+end
+
+subsection Particles
+  set List of particle properties = viscoplastic strain invariants
+  set Particle generator name = random uniform
+  set Interpolation scheme = nearest neighbor
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 1e5
+    end
   end
 end

@@ -17,14 +17,22 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 512
     set Time between data output = 1
     set Data output format = gnuplot
-    set List of particle properties = initial position, position
-    set Interpolation scheme = nearest neighbor
-    set Particle generator name = random uniform
-    set Minimum particles per cell = 2
-    set Maximum particles per cell = 2
-    set Load balancing strategy = remove and add particles
+  end
+end
+
+subsection Particles
+  set List of particle properties = initial position, position
+  set Interpolation scheme = nearest neighbor
+  set Particle generator name = random uniform
+  set Minimum particles per cell = 2
+  set Maximum particles per cell = 2
+  set Load balancing strategy = remove and add particles
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 512
+    end
   end
 end

@@ -78,7 +78,6 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Postprocess
   set List of postprocessors = visualization
 

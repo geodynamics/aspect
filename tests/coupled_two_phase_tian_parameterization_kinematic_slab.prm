@@ -3,12 +3,14 @@
 # compaction viscosity.
 
 include $ASPECT_SOURCE_DIR/cookbooks/tian_parameterization_kinematic_slab/coupled-two-phase-tian-parameterization-kinematic-slab.prm
+
 set Adiabatic surface temperature              = 1600
 set Nonlinear solver scheme                    = single Advection, single Stokes
 set End time                                   = 2000
 
 subsection Mesh refinement
   set Initial global refinement = 1
+
   subsection Minimum refinement function
     set Function expression = 1
   end
@@ -19,6 +21,7 @@ end
 subsection Boundary composition model
   set Fixed composition boundary indicators         = left
   set List of model names                           = function
+
   subsection Function
     set Function constants  = initial_porosity=0, initial_bound_sed=0.03, initial_bound_MORB=0.02, initial_bound_gabbro=0.01, \
                               sediment_min=0, sediment_max=5e3, MORB_min=5e3, MORB_max=12e3, gabbro_min=12e3, gabbro_max=20e3, \
@@ -44,11 +47,13 @@ end
 
 subsection Postprocess
   set List of postprocessors          = composition statistics, visualization
+
   subsection Visualization
+    set Output format                 = gnuplot
+    set Time between graphical output = 2000
+
     subsection Melt material properties
       set List of properties          = compaction viscosity
     end
-    set Output format                 = gnuplot
-    set Time between graphical output = 2000
-    end
+  end
 end

@@ -69,7 +69,6 @@ subsection Initial composition model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 
@@ -77,7 +76,6 @@ subsection Initial temperature model
     set Function expression = 1600
   end
 end
-
 
 subsection Material model
   set Model name = grain size
@@ -108,7 +106,6 @@ subsection Material model
     set Dislocation creep exponent           = 1
     set Dislocation activation energy        = 0
     set Dislocation activation volume        = 0
-
     set Use Drucker-Prager rheology          = true
     set Cohesions                            = 5.77350269e7
     set Angles of internal friction          = 30
@@ -126,9 +123,9 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, material statistics
 
-    subsection Visualization
-      set Output format = gnuplot
-      set List of output variables  = material properties, named additional outputs, strain rate, shear stress
-      set Time between graphical output = 0
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables  = material properties, named additional outputs, strain rate, shear stress
+    set Time between graphical output = 0
   end
 end

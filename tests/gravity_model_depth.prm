@@ -51,6 +51,7 @@ end
 
 subsection Gravity model
   set Model name = function
+
   subsection Function
     set Coordinate system = depth
     set Variable names = z,x

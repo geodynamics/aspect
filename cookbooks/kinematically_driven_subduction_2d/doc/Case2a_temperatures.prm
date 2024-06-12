@@ -6,8 +6,8 @@ set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinema
 # we have inflow through the latter.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top, right
-
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 0
     set Left temperature   = 0

@@ -21,7 +21,7 @@ subsection Solver parameters
 end
 
 subsection Formulation
-   set Formulation = isentropic compression
+  set Formulation = isentropic compression
 end
 
 subsection Compositional fields
@@ -58,22 +58,18 @@ subsection Material model
     set Activation energies for diffusion creep   =  background:166e3    ,  1_mantle: 150e3   | 155e3    | 150e3     ,  3_continent:   166e3
     set Activation volumes for diffusion creep    =  background:6.34e-7  ,  1_mantle: 6.34e-7 | 14.34e-7 | 12.34e-7  ,  3_continent: 6.34e-7
     set Densities                                 =  background:3300     ,  1_mantle: 3300    | 3500     | 3800      ,  3_continent:    2900
-
     set Grain size                                 =   1
     set Angles of internal friction                =   1.43373998 , 1.43373998  , 30
     set Cohesions                                  =   7e6        , 4e6,1e7
-
     set Phase transition depths                        = 1_mantle: 410000 | 660000
     set Phase transition temperatures                  = 1_mantle:   1700 | 1900
     set Phase transition Clapeyron slopes              = 1_mantle:    3e6 | -2.5e6
     set Phase transition widths                        = 1_mantle: 50000  | 50000
-
     set Use adiabatic pressure in creep viscosity = true
     set Constant viscosity prefactors                   = 1, 1, 1
   end
 
   subsection Latent heat
-
     # The change of density across the phase transition. Together with the
     # Clapeyron slope, this is what determines the entropy change.
     set Phase transition density jumps                 = 273, 341
@@ -116,6 +112,7 @@ end
 
 subsection Geometry model
   set Model name = spherical shell
+
   subsection Spherical shell
     set Inner radius = 3480000
     set Outer radius = 6370000
@@ -123,7 +120,7 @@ subsection Geometry model
 end
 
 subsection Boundary velocity model
-   set Tangential velocity boundary indicators = inner, outer
+  set Tangential velocity boundary indicators = inner, outer
 end
 
 subsection Heating model
@@ -131,6 +128,7 @@ subsection Heating model
   subsection Adiabatic heating
     set Use simplified adiabatic heating = true
   end
+
   subsection Constant heating
     set Radiogenic heating rate = 5.44e-12
   end
@@ -139,6 +137,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = outer, inner
   set List of model names = spherical constant
+
   subsection Spherical constant
     set Outer temperature = 300
     set Inner temperature = 3700
@@ -151,28 +150,30 @@ end
 
 subsection Gravity model
   set Model name = radial constant
+
   subsection Radial constant
     set Magnitude = 9.81
-   end
+  end
 end
 
 subsection Mesh refinement
   set Initial global refinement       = 3
   set Initial adaptive refinement     = 4
   set Strategy                        = minimum refinement function, viscosity, velocity
+  set Time steps between mesh refinement = 1
+
   subsection Minimum refinement function
     set Coordinate system = spherical
     set Function expression = if(r>6000e3, 6, if(r>5000e3,5,3))
     set Variable names = r,phi,t
   end
-  set Time steps between mesh refinement = 1
 end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, visualization, heat flux statistics, depth average, particles, Stokes residual, basic statistics, mobility statistics
 
   subsection Global statistics
-     set Write statistics for each nonlinear iteration = true
+    set Write statistics for each nonlinear iteration = true
   end
 
   subsection Depth average
@@ -195,8 +196,8 @@ subsection Postprocess
     set Update ghost particles        = true
     set Particle generator name       = reference cell
     set Time between data output      = 1e6
-    set Allow cells without particles = true
-    set Interpolation scheme          = cell average
+    set Data output format            = ascii, vtu
+    set Number of grouped files       = 1
     set Write in background thread    = true
 
     set Load balancing strategy       = remove and add particles

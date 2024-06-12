@@ -86,21 +86,24 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics, particles
 
   subsection Particles
-    set Number of particles = 2
     set Time between data output = 0
     set Data output format = ascii
-    set List of particle properties = velocity,function, initial composition, initial position
-    set Particle generator name = random uniform
+  end
+end
 
-    subsection Function
-      set Variable names      = x,z
-      set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
-    end
+subsection Particles
+  set List of particle properties = velocity,function, initial composition, initial position
+  set Particle generator name = random uniform
 
-    subsection Generator
-      subsection Probability density function
-        set Random cell selection = true
-      end
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
+  end
+
+  subsection Generator
+    subsection Probability density function
+      set Random cell selection = true
+      set Number of particles = 2
     end
   end
 end

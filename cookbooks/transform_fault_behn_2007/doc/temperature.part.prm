@@ -19,8 +19,8 @@ end
 # at the bottom.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
-
   set List of model names = box
+
   subsection Box
     set Top temperature = 273.15
     set Bottom temperature = 1573.15

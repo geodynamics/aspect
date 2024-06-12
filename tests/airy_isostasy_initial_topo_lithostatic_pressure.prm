@@ -11,6 +11,7 @@
 include $ASPECT_SOURCE_DIR/tests/airy_isostasy.prm
 
 set Dimension = 2
+
 # The point_is_in_domain function is only called in
 # timestep 0, so we do not need to run the test further.
 set End time                               = 0

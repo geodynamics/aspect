@@ -13,7 +13,7 @@ set End time = 0
 subsection Material model
   set Model name = prescribed viscosity
 
-   subsection Prescribed viscosity
+  subsection Prescribed viscosity
     set Base model = grain size
 
     subsection Indicator function
@@ -24,7 +24,7 @@ subsection Material model
     subsection Viscosity function
       set Function expression = 1e22
     end
-   end
+  end
 end
 
 subsection Mesh refinement
