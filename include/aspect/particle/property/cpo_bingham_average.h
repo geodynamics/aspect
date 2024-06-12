@@ -40,18 +40,30 @@ namespace aspect
        * See https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html for more info.
        *
        * The layout of the data vector per particle is the following (note that for this plugin the following dim's are always 3):
-       * 1 averaged a axis of olivine -> 3 (dim) doubles, starts at:
-       *                                   data_position + 1,
-       * 2 averaged b axis of olivine -> 3 (dim) doubles, starts at:
-       *                                   data_position + 4
-       * 3 averaged c axis of olivine -> 3 (dim) doubles, starts at:
-       *                                   data_position + 7
-       * 4 averaged a axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                    data_position + 10
-       * 5 averaged b axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                    data_position + 13
-       * 6 averaged c axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                    data_position + 16
+       * 1 averaged a axis of olivine       -> 3 (dim) doubles, starts at:
+       *                                         data_position + 1,
+       * 2 eigenvalues of a axis of olivine -> 3 (dim) doubles, starts at:
+       *                                         data_position + 4,
+       * 3 averaged b axis of olivine       -> 3 (dim) doubles, starts at:
+       *                                         data_position + 7,
+       * 4 eigenvalues of b axis of olivine -> 3 (dim) doubles, starts at:
+       *                                         data_position + 10,
+       * 5 averaged c axis of olivine       -> 3 (dim) doubles, starts at:
+       *                                         data_position + 13,
+       * 6 eigenvalues of c axis of olivine -> 3 (dim) doubles, starts at:
+       *                                         data_position + 16,
+       * 7 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
+       *                                          data_position + 19,
+       * 8 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
+       *                                          data_position + 22,
+       * 9 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
+       *                                          data_position + 25,
+       * 10 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
+       *                                          data_position + 28,
+       * 11 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
+       *                                          data_position + 31,
+       * 12 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
+       *                                          data_position + 34,
        *
        * @ingroup ParticleProperties
        */
@@ -150,7 +162,7 @@ namespace aspect
            * axis associated with the densest clustering of points for each axis. the a to c axis vectors
            * are stored in the first to last array respectively.
            */
-          std::array<std::array<double,3>,3>
+          std::array<std::array<double,6>,3>
           compute_bingham_average(std::vector<Tensor<2,3>> matrices) const;
 
           /**

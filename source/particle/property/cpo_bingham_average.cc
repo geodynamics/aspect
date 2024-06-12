@@ -75,10 +75,10 @@ namespace aspect
                                                                         rotation_matrices_grains,
                                                                         n_samples,
                                                                         this->random_number_generator);
-            const std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
+            const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
             for (unsigned int i = 0; i < 3; ++i)
-              for (unsigned int j = 0; j < 3; ++j)
+              for (unsigned int j = 0; j < 6; ++j)
                 data.emplace_back(bingham_average[i][j]);
           }
       }
@@ -105,12 +105,12 @@ namespace aspect
               }
 
             const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
-            std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
+            std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
             for (unsigned int i = 0; i < 3; ++i)
-              for (unsigned int j = 0; j < 3; ++j)
+              for (unsigned int j = 0; j < 6; ++j)
                 {
-                  data[data_position + mineral_i*9 + i*3 + j] = bingham_average[i][j];
+                  data[data_position + mineral_i*18 + i*3 + j] = bingham_average[i][j];
                 }
           }
       }
@@ -118,7 +118,7 @@ namespace aspect
 
 
       template <int dim>
-      std::array<std::array<double,3>,3>
+      std::array<std::array<double,6>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices) const
       {
         SymmetricTensor<2,3> sum_matrix_a;
@@ -158,19 +158,31 @@ namespace aspect
         const std::array<std::pair<double,Tensor<1,3,double>>, 3> eigenvectors_b = eigenvectors(sum_matrix_b, SymmetricTensorEigenvectorMethod::jacobi);
         const std::array<std::pair<double,Tensor<1,3,double>>, 3> eigenvectors_c = eigenvectors(sum_matrix_c, SymmetricTensorEigenvectorMethod::jacobi);
 
-
+        // average axis = eigenvector * largest eigenvalue
         const Tensor<1,3,double> averaged_a = eigenvectors_a[0].second * eigenvectors_a[0].first;
         const Tensor<1,3,double> averaged_b = eigenvectors_b[0].second * eigenvectors_b[0].first;
         const Tensor<1,3,double> averaged_c = eigenvectors_c[0].second * eigenvectors_a[0].first;
 
+        // eigenvalues of all axes, used in the anisotropic viscosity material model to compute Hill's coefficients
+        const double eigenvalue_a1 = eigenvectors_a[0].first/matrices.size();
+        const double eigenvalue_a2 = eigenvectors_a[1].first/matrices.size();
+        const double eigenvalue_a3 = eigenvectors_a[2].first/matrices.size();
+        const double eigenvalue_b1 = eigenvectors_b[0].first/matrices.size();
+        const double eigenvalue_b2 = eigenvectors_b[1].first/matrices.size();
+        const double eigenvalue_b3 = eigenvectors_b[2].first/matrices.size();
+        const double eigenvalue_c1 = eigenvectors_c[0].first/matrices.size();
+        const double eigenvalue_c2 = eigenvectors_c[1].first/matrices.size();
+        const double eigenvalue_c3 = eigenvectors_c[2].first/matrices.size();
+
         return
         {
           {
-            {{averaged_a[0],averaged_a[1],averaged_a[2]}},
-            {{averaged_b[0],averaged_b[1],averaged_b[2]}},
-            {{averaged_c[0],averaged_c[1],averaged_c[2]}}
+            {{averaged_a[0],averaged_a[1],averaged_a[2], eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}},
+            {{averaged_b[0],averaged_b[1],averaged_b[2], eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}},
+            {{averaged_c[0],averaged_c[1],averaged_c[2], eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}}
           }
         };
+
       }
 
 
@@ -201,8 +213,11 @@ namespace aspect
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3));
+            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3));
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3));
+            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3));
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3));
+            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3));
           }
 
         return property_information;
