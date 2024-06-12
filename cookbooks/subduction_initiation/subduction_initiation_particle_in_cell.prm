@@ -1,6 +1,6 @@
 # Parameter file for replicating Matsumoto & Tomoda 1983
 
-include subduction_initiation_basis.prm
+include subduction_initiation.prm.base
 
 set Output directory                       = output-subduction-initiation-pic
 
