@@ -1199,8 +1199,6 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
     // Reset the Newton stabilization at the end of the timestep.
     newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
     newton_handler->parameters.velocity_block_stabilization = starting_velocity_block_stabilization;
@@ -1211,6 +1209,8 @@ namespace aspect
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
     solution = current_linearization_point;
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
@@ -1308,8 +1308,6 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
     // Reset the Newton stabilization at the end of the timestep.
     newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
     newton_handler->parameters.velocity_block_stabilization = starting_velocity_block_stabilization;
@@ -1320,6 +1318,8 @@ namespace aspect
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
     solution = current_linearization_point;
+
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
