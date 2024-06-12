@@ -1,68 +1,24 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 2.6.0-pre (add_mantle_conv_annulus_cookbook, 31f9f36ad)
---     . using deal.II 9.5.1
---     .       with 32 bit indices and vectorization level 1 (128 bits)
---     . using Trilinos 13.2.0
---     . using p4est 2.3.2
---     . using Geodynamic World Builder 0.6.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&GWB=1&particles=1&sha=31f9f36ad&src=code
------------------------------------------------------------------------------
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 1,272 (480+72+240+240+240)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving 1_mantle system ... 0 iterations.
-   Solving 3_continent system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+17 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0570421
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+17 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.21808
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0124028
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+16 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.024248
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00146411
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00816953
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00017388
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0059109
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.00430698
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.00320187
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.002389
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.00179171
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+13 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00135323
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.75785e-05
 
 
    Postprocessing:
@@ -71,51 +27,18 @@ Number of degrees of freedom: 1,272 (480+72+240+240+240)
      that does not have any quadrature points in it.
      Consider reducing the number of depth layers for averaging.
 
-     RMS, max velocity:                  0.0131 m/year, 0.0283 m/year
+     RMS, max velocity:                  0.0139 m/year, 0.023 m/year
      Temperature min/avg/max:            300 K, 2067 K, 3700 K
      Writing graphical output:           output-cookbook_mantle_convection_annulus/solution/solution-00000
-     Heat fluxes through boundary parts: 9.327e+06 W, 1.851e+07 W
+     Heat fluxes through boundary parts: 1.168e+07 W, 2.059e+07 W
      Writing depth average:              output-cookbook_mantle_convection_annulus/depth_average
      Writing particle output:            output-cookbook_mantle_convection_annulus/particles/particles-00000
      Writing stokes residuals            output-cookbook_mantle_convection_annulus/stokes_residuals.txt
-     Mobility:                           0.399
+     Mobility:                           3.04e-06
 
 Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      3.35s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |        10 |     0.869s |        26% |
-| Assemble composition system      |         2 |     0.153s |       4.6% |
-| Assemble temperature system      |         1 |    0.0464s |       1.4% |
-| Build Stokes preconditioner      |        10 |     0.529s |        16% |
-| Build composition preconditioner |         2 |  0.000633s |         0% |
-| Build temperature preconditioner |         1 |  0.000487s |         0% |
-| Initialization                   |         1 |     0.628s |        19% |
-| Particles: Advect                |         2 |   0.00416s |      0.12% |
-| Particles: Copy                  |         1 |  0.000155s |         0% |
-| Particles: Generate              |         1 |    0.0334s |         1% |
-| Particles: Initialization        |         1 |  0.000207s |         0% |
-| Particles: Initialize properties |         1 |   0.00762s |      0.23% |
-| Particles: Sort                  |         2 |    0.0321s |      0.96% |
-| Particles: Update properties     |         1 |   0.00139s |         0% |
-| Postprocessing                   |         1 |     0.355s |        11% |
-| Refine mesh structure, part 1    |         1 |      0.11s |       3.3% |
-| Setup dof systems                |         1 |    0.0237s |      0.71% |
-| Setup initial conditions         |         1 |     0.135s |         4% |
-| Setup matrices                   |         1 |    0.0523s |       1.6% |
-| Solve Stokes system              |        10 |     0.276s |       8.2% |
-| Solve composition system         |         2 |   0.00116s |         0% |
-| Solve temperature system         |         1 |  0.000882s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 3s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&GWB=1&particles=1&sha=31f9f36ad&src=code
------------------------------------------------------------------------------

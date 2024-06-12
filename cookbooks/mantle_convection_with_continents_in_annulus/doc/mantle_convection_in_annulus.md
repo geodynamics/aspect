@@ -83,7 +83,7 @@ Results of the reference model (R) after 500 Ma of mantle convection simulation.
 temperature (b) within the modelled domain, showing five slabs actively subducting below the continents (pink).
 (c) Solid lines indicate average surface velocity (blue)
 and mobility M (red) of model R as well as their dashed time-averages Vsurf=2.1 cm/a and M = 2.218.
-Mobility is defined as the ratio of rms surface velocity to rms velocity averaged over the entire 3D domain{cite}`tackley:2000`.
+Mobility is defined as the ratio of rms surface velocity to rms velocity averaged over the entire 3D domain {cite}`tackley:2000`.
 (d) Radial velocity of all tracers defined as
 slabs plotted at their position in the model where blue indicates sinking slabs and red slowly rising. Shown tracers are 300 K colder than the radial averaged
 temperature at similar depth and automatically obtained (see methods section of the publication).

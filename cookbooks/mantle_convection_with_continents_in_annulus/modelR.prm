@@ -15,6 +15,7 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
     set Number of cheap Stokes solver steps = 5000
+    set Maximum number of expensive Stokes solver steps = 0
     set Linear solver tolerance = 1e-6
   end
 end
@@ -204,7 +205,7 @@ subsection Postprocess
 
     subsection Generator
       subsection Reference cell
-        set Number of particles per cell per direction = 3
+        set Number of particles per cell per direction = 4
       end
     end
 
