@@ -116,7 +116,7 @@ namespace aspect
               pressures[i] = pressures[i-1] + density * gravity * delta_z;
             }
 
-          const double z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
+          const double z = static_cast<double>(i)/static_cast<double>(n_points-1)*this->get_geometry_model().maximal_depth();
           const Point<dim> representative_point = this->get_geometry_model().representative_point (z);
 
           in.position[0] = representative_point;
