@@ -31,6 +31,7 @@
 #include <aspect/fe_variable_collection.h>
 #include <aspect/parameters.h>
 
+#include <map>
 
 namespace aspect
 {
@@ -655,6 +656,19 @@ namespace aspect
        * given in CompositionalFieldDescription.
        */
       std::vector<std::vector<unsigned int>> composition_indices_for_type;
+
+      /**
+       * List of base element indices used by compositional fields. Cached
+       * result returned by get_composition_base_element_indices().
+       */
+      std::vector<unsigned int> composition_base_element_indices;
+
+      /**
+       * Map base_element_index to list of compositional field indices that use
+       * that base element. Cached result returned by
+       * get_compositional_field_indices_with_base_element();
+       */
+      std::map<unsigned int, std::vector<unsigned int>> compositional_field_indices_with_base_element;
   };
 }
 

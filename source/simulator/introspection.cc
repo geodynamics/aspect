@@ -268,6 +268,42 @@ namespace aspect
         composition_indices_for_type[composition_descriptions[c].type].push_back(c);
         composition_names_for_type[composition_descriptions[c].type].push_back(composition_names[c]);
       }
+
+    // Fill composition_base_element_indices
+    {
+      if (this->n_compositional_fields > 0)
+        {
+          // We are assigning base elements in order, so the first compositional field
+          // gives us the first base element index. Then we find the largest index
+          // in the vector. This is necessary, because the fields could have type A,B,A.
+          const unsigned int first = this->base_elements.compositional_fields[0];
+          const unsigned int last = *std::max_element(this->base_elements.compositional_fields.begin(),
+                                                      this->base_elements.compositional_fields.end());
+
+          composition_base_element_indices.resize(last-first+1);
+          std::iota(composition_base_element_indices.begin(), composition_base_element_indices.end(), first);
+        }
+    }
+
+// Fill compositional_field_indices_with_base_element
+    {
+      for (const auto base_element_index : composition_base_element_indices)
+        {
+          std::vector<unsigned int> result;
+
+          unsigned int idx = 0;
+          for (const auto base_idx : this->base_elements.compositional_fields)
+            {
+              if (base_idx == base_element_index)
+                result.emplace_back(idx);
+              ++idx;
+            }
+
+          Assert(result.size() > 0, ExcInternalError("There should be at least one compositional field for a valid base element."));
+          compositional_field_indices_with_base_element[base_element_index] = result;
+        }
+    }
+
   }
 
 
@@ -337,15 +373,7 @@ namespace aspect
   std::vector<unsigned int>
   Introspection<dim>::get_composition_base_element_indices() const
   {
-    // We are assigning base elements in order, so the first compositional field
-    // gives us the first base element index. Then we find the largest index
-    // in the vector. This is necessary, because the fields could have type A,B,A.
-    const unsigned int first = this->base_elements.compositional_fields[0];
-    const unsigned int last = *std::max_element(this->base_elements.compositional_fields.begin(),
-                                                this->base_elements.compositional_fields.end());
-    std::vector<unsigned int> result(last-first+1);
-    std::iota(result.begin(), result.end(), first);
-    return result;
+    return composition_base_element_indices;
   }
 
 
@@ -354,21 +382,10 @@ namespace aspect
   std::vector<unsigned int>
   Introspection<dim>::get_compositional_field_indices_with_base_element(const unsigned int base_element_index) const
   {
-    std::vector<unsigned int> result;
-    Assert(base_element_index <= get_composition_base_element_indices().back(),
+    Assert(compositional_field_indices_with_base_element.find(base_element_index)
+           != compositional_field_indices_with_base_element.end(),
            ExcMessage("Invalid base_element_index specified."));
-
-    unsigned int idx = 0;
-    for (const auto base_idx : this->base_elements.compositional_fields)
-      {
-        if (base_idx == base_element_index)
-          result.emplace_back(idx);
-
-        ++idx;
-      }
-
-    Assert(result.size() > 0, ExcInternalError("There should be at least one compositional field for a valid base element."));
-    return result;
+    return compositional_field_indices_with_base_element.find(base_element_index)->second;
   }
 
 
