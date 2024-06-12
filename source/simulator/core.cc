@@ -1902,13 +1902,13 @@ namespace aspect
 
         case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
         {
-          solve_iterated_advection_and_newton_stokes();
+          solve_iterated_advection_and_newton_stokes(/*use_newton_iterations =*/ true);
           break;
         }
 
         case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
         {
-          solve_single_advection_and_iterated_newton_stokes();
+          solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations =*/ true);
           break;
         }
 
