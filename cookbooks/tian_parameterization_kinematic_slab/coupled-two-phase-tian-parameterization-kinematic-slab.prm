@@ -106,7 +106,7 @@ subsection Boundary composition model
                               onset_time=100e3, slab_thickness=20e3
     set Function expression = initial_porosity; \
                               if( t<=onset_time, 0, \
-                                  if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sed, \
+                                  if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sediment, \
                                       if( (y<=slab_thickness - MORB_min) & (y>slab_thickness - MORB_max), initial_bound_MORB, \
                                           if( (y<=slab_thickness - gabbro_min) & (y>slab_thickness - gabbro_max), initial_bound_gabbro, 0.0) \
                                         ) \
