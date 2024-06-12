@@ -2,11 +2,17 @@
 
 When changing ASPECT's code it can be useful to check if and how much the new changes affect the run time of ASPECT. To test this, one could compile ASPECT in release mode on the main branch and on the branch with the changed code (e.g. feature branch), run both models and time both runs. The problems is that this is not very reliable, because your computer might be doing something in the background on one but not both of the runs.
 
+However, measuring the performance of code is a complex topic that can be approached in many different ways, for example:
+
+  - Collecting statistics about the different tasks the processor has to execute and measuring their influence on the performance, e.g. using the tool `perf` as described here: https://integrated-earth.github.io/2023/02/03/perf.html.
+  - Running a virtual machine that is instrumented to count every single instruction that is executed and displays the amount of time spent in each line of code using the tool `callgrind`.
+  - Executing a program many times with and without the changed code and comparing the run time statistics, e.g. using the tool `cbdr`. This is the approach discussed on this page.
+
 ```{note}
 When running timing benchmarks, always make sure to compile in release mode. Debug mode is for testing model implementations, but the change to release mode affects the performance of different parts of the code differently. Useful timing information can only be generated in release mode (see {ref}`sec:run-aspect:debug-mode`).
 ```
 
-One solution to this problem is to run both executables after each other in a random order. This is what the program [cbdr](https://crates.io/crates/cbdr) can do for you. It can also analyze and report back the result.
+As mentioned above, one option to compare performance is to run both executables after each other in a random order. This is what the program [cbdr](https://crates.io/crates/cbdr) can do for you. It can also analyze and report the result.
 
 This program can be installed with [cargo](https://crates.io/) (see Install Cargo button), with `cargo install cbdr`. To generate the run data, the program is run with `cbdr sample --timeout=900s main:/path/to/build-main/aspect-release /path/to/test.prm features:/path/to/build-feature/aspect-release /path/to/test.prm > results.csv`. This command runs both the main and feature branch executable to "warm up" and then it keeps randomly selection one of the two executables and write the timings out to `results.csv` until the timer reaches 900 seconds.
 
