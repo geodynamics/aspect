@@ -120,7 +120,7 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, composition statistics, particles, material statistics
+  set List of postprocessors = visualization, composition statistics, particles, material statistics, ODE statistics
 
   subsection Visualization
     set List of output variables  = material properties

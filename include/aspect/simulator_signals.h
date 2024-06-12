@@ -289,6 +289,15 @@ namespace aspect
     boost::signals2::signal<void (const SolverControl &)> post_nonlinear_solver;
 
     /**
+     * A signal that is triggered when ARKode is done solving an ODE.
+     * Arguments are a reference to the SimulatorAccess and
+     * an iteration count describing how many iterations ARKode required
+     * to solve the ODE.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &,
+                                  const unsigned int iteration_count)> post_ARKode_solve;
+
+    /**
      * A signal that is triggered when mesh deformation has occurred.
      * The arguments to this signal is a reference to the SimulatorAccess
      * object.

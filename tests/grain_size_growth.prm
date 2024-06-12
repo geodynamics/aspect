@@ -147,7 +147,7 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics,temperature statistics, velocity statistics
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, ODE statistics
 end
 
 subsection Solver parameters
