@@ -2,6 +2,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_viscous_strain_weakening.prm
 
+set Nonlinear solver failure strategy = continue with next timestep
 set Output directory = visco_plastic_yield_temperature_activated_viscous_strain_weakening
 
 subsection Initial composition model
