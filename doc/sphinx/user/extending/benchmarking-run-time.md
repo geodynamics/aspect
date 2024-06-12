@@ -22,7 +22,7 @@ samples    66             74
 
 You can ignore the sys_time in the output above. It just shows how much time the programs spends on operating system kernel calls. The user time is how much the program actually spends on your processor and the wall time is how much time the program takes if you measure it by having a stop-watch next to your computer. In this case it is nearly the same, but if you run it with many processors, the user time might be much larger then the wall time.
 
-In this case the feature branch is, measure by th wall time, between 1.3% and 0.5% faster than the main branch with a 99.9% convidence iterval. This means that in this case we can have reasonable convidence that the  feature branch is a bit faster then the main branch.
+In this case the feature branch is measured by the wall time between 1.3% and 0.5% faster than the main branch with a 99.9% confidence interval. This means that in this case we can have reasonable confidence that the  feature branch is a bit faster than the main branch.
 
 The `cbdr` program can also create a graphical output in a vega-lite format through the command `cbdr plot <results.csv > results.vl`. This can then be converted to a png through [vl-convert](https://crates.io/crates/vl-convert) with the command `vl-convert vl2png --input results.vl --output results.png`.
 
