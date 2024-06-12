@@ -86,7 +86,7 @@ namespace aspect
           catch (...)
             {
               std::cerr << "ERROR: FunctionParser failed to parse\n"
-                        << "\t'Postprocess.Particles.Function'\n"
+                        << "\t'Particles.Function'\n"
                         << "with expression\n"
                         << "\t'" << prm.get("Function expression") << "'";
               throw;

@@ -68,7 +68,6 @@ def reformat (parameters):
     return parameters
 
 
-
 def main(input_file, output_file):
     """Echo the input arguments to standard output"""
     parameters = aspect.read_parameter_file(input_file)

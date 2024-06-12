@@ -36,7 +36,6 @@ subsection Nullspace removal
 end
 
 subsection Material model
-
   set Model name = compositing
   set Material averaging = harmonic average only viscosity
 
@@ -48,7 +47,6 @@ subsection Material model
     set Minimum strain rate   = 1e-22
     set Reference strain rate = 1e-15
     set Heat capacities       = background: 1250, 1_mantle: 1250 | 1250 | 1250 , 3_continent: 1250
-
     set Prefactors for dislocation creep          =  background:6.51e-16 ,  1_mantle: 6.51e-16| 8.51e-16 | 6.51e-16  ,  3_continent:6.51e-28
     set Stress exponents for dislocation creep    =  background:1        ,  1_mantle: 3       | 3        | 1         ,  3_continent:       1
     set Activation energies for dislocation creep =  background:540e3    ,  1_mantle: 500e3   | 500e3    | 530e3     ,  3_continent:   540e3
@@ -125,6 +123,7 @@ end
 
 subsection Heating model
   set List of model names = latent heat, adiabatic heating, constant heating, shear heating
+
   subsection Adiabatic heating
     set Use simplified adiabatic heating = true
   end
@@ -189,26 +188,23 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Data output format            = vtu
-    set List of particle properties   = position, velocity, initial composition, pT path, initial position
-    set Number of particles           = 100000
-    set Number of grouped files       = 1
-    set Update ghost particles        = true
-    set Particle generator name       = reference cell
     set Time between data output      = 1e6
     set Data output format            = ascii, vtu
     set Number of grouped files       = 1
     set Write in background thread    = true
+  end
+end
 
-    set Load balancing strategy       = remove and add particles
-    set Minimum particles per cell    = 5
-    set Minimum particles per cell    = 80
+subsection Particles
+  set List of particle properties   = position, velocity, initial composition, pT path, initial position
+  set Update ghost particles        = true
+  set Particle generator name       = reference cell
+  set Load balancing strategy       = remove and add particles
+  set Minimum particles per cell    = 80
 
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 4
-      end
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
     end
-
   end
 end

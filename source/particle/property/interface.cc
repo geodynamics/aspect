@@ -697,7 +697,7 @@ namespace aspect
           plugin_names = Utilities::split_string_list(prm.get("List of particle properties"));
           AssertThrow(Utilities::has_unique_entries(plugin_names),
                       ExcMessage("The list of strings for the parameter "
-                                 "'Postprocess/Particles/List of particle properties' contains entries more than once. "
+                                 "'Particles/List of particle properties' contains entries more than once. "
                                  "This is not allowed. Please check your parameter file."));
 
           // see if 'all' was selected (or is part of the list). if so
