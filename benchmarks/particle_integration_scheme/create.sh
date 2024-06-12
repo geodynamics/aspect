@@ -9,7 +9,7 @@ for int in euler rk2 rk4; do #euler rk2 rk4
   echo set Output directory = $OUTPUT_DIR > output_dir.prm
   echo set CFL number = $cfl > cfl.prm
   
-  cat circle.prm output_dir.prm cfl.prm ${int}.prm | aspect --
+  cat circle.prm output_dir.prm cfl.prm ${int}.part.prm | aspect --
 
   # format and print results
     tail -n +8 $OUTPUT_DIR/particles/particles-00000.0000.gnuplot | sort -g -k 3 > sort_temp_0
