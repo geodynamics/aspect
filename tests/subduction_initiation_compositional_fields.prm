@@ -1,7 +1,7 @@
 # Parameter file for replicating Matsumoto & Tomoda 1983
 # see cookbooks/subduction_initiation for more details
 
-include $ASPECT_SOURCE_DIR/cookbooks/subduction_initiation/subduction_initiation_basis.prm
+include $ASPECT_SOURCE_DIR/cookbooks/subduction_initiation/subduction_initiation.prm.base
 
 set Dimension                              = 2
 set End time                               = 0
