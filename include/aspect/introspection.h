@@ -466,17 +466,23 @@ namespace aspect
        */
 
       /**
-       * Return a vector with all used indices of base elements of the deal.II FiniteElement
-       * that are used for compositional fields. If several fields are the same type, they
-       * share base elements. If you have no compositional fields, the vector has length 0.
-       * If all compositional fields have the same finite element space, the length is 1.
+       * Return a vector that contains the base element indices of the deal.II FiniteElement
+       * that are used for compositional fields. Note that compositional fields can share the
+       * same base element, so this vector can (and usually will) be smaller than the number
+       * of compositional fields. The function get_compositional_field_indices_with_base_element()
+       * can be used to translate from base element index to all compositional field indices
+       * using the specified base element.
+       * If several fields are the finite element type (same degree and both continuous or both
+       * discontinuous), they share base elements. If you have no compositional fields, the
+       * vector returned has length 0. If all compositional fields have the same finite element
+       * space, the length is 1.
        */
       std::vector<unsigned int>
-      get_compositional_field_base_element_indices() const;
+      get_composition_base_element_indices() const;
 
       /**
        * Return a vector with all compositional field indices that belong to a given
-       * base element index as returned by get_compositional_field_base_element_indices().
+       * base element index as returned by get_composition_base_element_indices().
        * The indices returned are therefore between 0 and n_compositional_fields-1.
        * If you have a single compositional field, this function returns {0} when passing
        * in base_element_index=0.

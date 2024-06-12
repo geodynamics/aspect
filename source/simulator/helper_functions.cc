@@ -1838,7 +1838,7 @@ namespace aspect
                   const unsigned int field_index = component_idx-component_idx_T;
                   // Now we can look up in the support_point_index_by_field data structure where this support
                   // point is in the list of unique_support_points (and in the Quadrature):
-                  const unsigned int idx = support_point_index_by_field[field_index][index_within];
+                  const unsigned int point_idx = support_point_index_by_field[field_index][index_within];
 
                   // The final step is grabbing the value from the reaction computation and write it into
                   // the global vector (if we own it, of course):
@@ -1847,14 +1847,14 @@ namespace aspect
                       // temperatures and compositions are stored differently:
                       if (component_idx == component_idx_T)
                         {
-                          distributed_vector(local_dof_indices[dof_idx]) = in.temperature[idx];
-                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_T[idx];
+                          distributed_vector(local_dof_indices[dof_idx]) = in.temperature[point_idx];
+                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_T[point_idx];
                         }
                       else
                         {
                           const unsigned int composition = field_index-1; // 0 is temperature...
-                          distributed_vector(local_dof_indices[dof_idx]) = in.composition[idx][composition];
-                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[idx][composition];
+                          distributed_vector(local_dof_indices[dof_idx]) = in.composition[point_idx][composition];
+                          distributed_reaction_vector(local_dof_indices[dof_idx]) = accumulated_reactions_C[point_idx][composition];
                         }
                     }
                 }

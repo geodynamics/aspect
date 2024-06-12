@@ -335,16 +335,16 @@ namespace aspect
 
   template <int dim>
   std::vector<unsigned int>
-  Introspection<dim>::get_compositional_field_base_element_indices() const
+  Introspection<dim>::get_composition_base_element_indices() const
   {
     // We are assigning base elements in order, so the first compositional field
     // gives us the first base element index. Then we find the largest index
     // in the vector. This is necessary, because the fields could have type A,B,A.
-    std::vector<unsigned int> result;
     const unsigned int first = this->base_elements.compositional_fields[0];
-    const unsigned int last = *std::max_element(this->base_elements.compositional_fields.begin(), this->base_elements.compositional_fields.end());
-    for (unsigned int i = first; i<=last; ++i)
-      result.emplace_back(i);
+    const unsigned int last = *std::max_element(this->base_elements.compositional_fields.begin(),
+                                                this->base_elements.compositional_fields.end());
+    std::vector<unsigned int> result(last-first+1);
+    std::iota(result.begin(), result.end(), first);
     return result;
   }
 
@@ -355,7 +355,7 @@ namespace aspect
   Introspection<dim>::get_compositional_field_indices_with_base_element(const unsigned int base_element_index) const
   {
     std::vector<unsigned int> result;
-    Assert(base_element_index <= get_compositional_field_base_element_indices().back(),
+    Assert(base_element_index <= get_composition_base_element_indices().back(),
            ExcMessage("Invalid base_element_index specified."));
 
     unsigned int idx = 0;

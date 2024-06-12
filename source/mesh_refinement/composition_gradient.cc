@@ -40,7 +40,7 @@ namespace aspect
       indicators = 0;
       const double power = 1.0 + dim/2.0;
 
-      for (const unsigned int base_element_index : this->introspection().get_compositional_field_base_element_indices())
+      for (const unsigned int base_element_index : this->introspection().get_composition_base_element_indices())
         {
           const Quadrature<dim> quadrature (this->get_fe().base_element(base_element_index).get_unit_support_points());
           const unsigned int dofs_per_cell = quadrature.size();
