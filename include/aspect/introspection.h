@@ -478,7 +478,7 @@ namespace aspect
        * vector returned has length 0. If all compositional fields have the same finite element
        * space, the length is 1.
        */
-      std::vector<unsigned int>
+      const std::vector<unsigned int> &
       get_composition_base_element_indices() const;
 
       /**
@@ -488,7 +488,7 @@ namespace aspect
        * If you have a single compositional field, this function returns {0} when passing
        * in base_element_index=0.
        */
-      std::vector<unsigned int>
+      const std::vector<unsigned int> &
       get_compositional_field_indices_with_base_element(const unsigned int base_element_index) const;
 
       /**
