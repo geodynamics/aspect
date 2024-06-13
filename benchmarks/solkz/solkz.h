@@ -588,22 +588,22 @@ namespace aspect
 
 
         /* Output */
-        if (vel != NULL)
+        if (vel != nullptr)
           {
             vel[0] = sum2;
             vel[1] = sum1;
           }
-        if (presssure != NULL)
+        if (presssure != nullptr)
           {
             (*presssure) = sum5;
           }
-        if (total_stress != NULL)
+        if (total_stress != nullptr)
           {
             total_stress[0] = sum6;
             total_stress[1] = sum3;
             total_stress[2] = sum4;
           }
-        if (strain_rate != NULL)
+        if (strain_rate != nullptr)
           {
             /* sigma = tau - p, tau = sigma + p, tau[] = 2*eta*strain_rate[] */
             Z = exp(2.0 * B * z);

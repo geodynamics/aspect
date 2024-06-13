@@ -589,7 +589,7 @@ namespace aspect
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
 
-      if (melt_out != NULL)
+      if (melt_out != nullptr)
         {
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
