@@ -23,6 +23,7 @@
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+#include <aspect/simulator.h>
 
 
 
@@ -76,15 +77,13 @@ namespace aspect
                                              total_iteration_count / number_of_solves
                                              :
                                              total_iteration_count;
-
-      statistics.add_value("Average iterations for ODE solver",
-                           average_iteration_count);
 #else
       // The computation is not correct for dealii versions older than
       // June 2024.
-      statistics.add_value("Average iterations for ODE solver",
-                           std::numeric_limits<double>::quiet_NaN());
+      const double average_iteration_count = std::numeric_limits<double>::quiet_NaN();
 #endif
+      statistics.add_value("Average iterations for ODE solver",
+                           average_iteration_count);
 
       clear_data();
 
