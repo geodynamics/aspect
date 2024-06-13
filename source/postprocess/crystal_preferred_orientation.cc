@@ -26,7 +26,7 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 namespace aspect
@@ -554,11 +554,10 @@ namespace aspect
       // up the next time we need output
       set_last_output_time (this->get_time());
 
-      const std::string particles_cpo_output = particle_file_prefix_content_raw;
+      const std::string &particles_cpo_output = particle_file_prefix_content_raw;
 
       // record the file base file name in the output file
-      statistics.add_value ("Particle CPO file name",
-                            particles_cpo_output);
+      statistics.add_value ("Particle CPO file name", particles_cpo_output);
       return std::make_pair("Writing particle cpo output:", particles_cpo_output);
     }
 

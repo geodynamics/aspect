@@ -793,8 +793,8 @@ namespace aspect
 
         void
         EntropyReader::initialize(const MPI_Comm comm,
-                                  const std::string data_directory,
-                                  const std::string material_file_name)
+                                  const std::string &data_directory,
+                                  const std::string &material_file_name)
         {
           material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
           material_lookup->load_file(data_directory+material_file_name,

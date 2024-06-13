@@ -74,7 +74,7 @@ namespace aspect
           /**
            * constructor
            */
-          CpoBinghamAverage();
+          CpoBinghamAverage() = default;
 
           /**
            * Initialization function. This function is called once at the
