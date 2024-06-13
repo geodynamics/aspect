@@ -34,12 +34,6 @@ namespace aspect
     {
 
       template <int dim>
-      CrystalPreferredOrientation<dim>::CrystalPreferredOrientation ()
-      {}
-
-
-
-      template <int dim>
       void
       CrystalPreferredOrientation<dim>::initialize ()
       {
@@ -440,19 +434,20 @@ namespace aspect
       CrystalPreferredOrientation<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
+        property_information.reserve(n_minerals * n_grains * (1+Tensor<2,3>::n_independent_components));
 
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " type",1));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " volume fraction",1));
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " type",1);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " volume fraction",1);
 
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
-                property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " volume fraction",1));
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " volume fraction",1);
 
                 for (unsigned int index = 0; index < Tensor<2,3>::n_independent_components; ++index)
                   {
-                    property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " rotation_matrix " + std::to_string(index),1));
+                    property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " rotation_matrix " + std::to_string(index),1);
                   }
               }
           }

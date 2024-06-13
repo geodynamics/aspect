@@ -58,7 +58,7 @@ namespace aspect
         = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
       // check if the material model computes prescribed temperature outputs
-      AssertThrow(prescribed_temperature_out != NULL,
+      AssertThrow(prescribed_temperature_out != nullptr,
                   ExcMessage("The material model you use does not provide "
                              "PrescribedTemperatureOutputs, which is required "
                              "for this adiabatic conditions plugin."));

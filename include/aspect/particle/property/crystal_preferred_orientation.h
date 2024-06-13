@@ -133,7 +133,7 @@ namespace aspect
           /**
            * Constructor
            */
-          CrystalPreferredOrientation();
+          CrystalPreferredOrientation() = default;
 
           /**
            * Initialization function. This function is called once at the

@@ -30,12 +30,6 @@ namespace aspect
     namespace Property
     {
       template <int dim>
-      CpoBinghamAverage<dim>::CpoBinghamAverage ()
-      {}
-
-
-
-      template <int dim>
       void
       CpoBinghamAverage<dim>::initialize ()
       {
@@ -210,14 +204,15 @@ namespace aspect
       CpoBinghamAverage<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
+        property_information.reserve(6*n_minerals);
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3));
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
           }
 
         return property_information;

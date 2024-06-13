@@ -2154,7 +2154,7 @@ namespace aspect
         // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
         std::vector<double>::const_iterator it;
         it = std::lower_bound(m_x.begin(),m_x.end(),x);
-        int idx = std::max( int(it-m_x.begin())-1, 0);
+        const int idx = std::max( static_cast<int>(it-m_x.begin())-1, 0);
 
         double h = x-m_x[idx];
         double interpol;
