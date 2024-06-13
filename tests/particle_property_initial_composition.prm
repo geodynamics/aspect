@@ -90,9 +90,17 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics,particles
 
   subsection Particles
-    set Number of particles = 10
     set Time between data output = 70
     set Data output format = vtu
-    set List of particle properties = initial composition
+  end
+end
+
+subsection Particles
+  set List of particle properties = initial composition
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
   end
 end

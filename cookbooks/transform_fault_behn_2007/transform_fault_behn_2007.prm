@@ -24,7 +24,6 @@ set Surface pressure                       = 0
 # value assumed in the GWB input file, given in the parameter 'potential
 # mantle temperature'.
 set Adiabatic surface temperature          = 1573.15
-
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 50
@@ -52,6 +51,7 @@ end
 # of the oceanic plate feature given in the GWB input file.
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 250000
     set Y extent  = 100000
@@ -102,25 +102,21 @@ subsection Initial temperature model
   set List of model names = world builder
 end
 
-
 # We prescribe the surface temperature at the top and the mantle potential temperature
 # at the bottom.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom
-
   set List of model names = box
+
   subsection Box
     set Top temperature = 273.15
     set Bottom temperature = 1573.15
   end
 end
 
-
 subsection Material model
-
   # Because we use the GMG solver, we need to average the viscosity.
   set Material averaging = project to Q1 only viscosity
-
   set Model name = visco plastic
 
   subsection Visco Plastic
@@ -133,14 +129,11 @@ subsection Material model
     # 1e19 Pa s.
     set Minimum viscosity = 1e18
     set Maximum viscosity = 1e23
-
     set Heat capacities       = 1000
     set Densities             = 3300           # Value from Behn et al., 2007
     set Thermal expansivities = 0              # Thermal buoyancy is ignored in Behn et al., 2007
-
     set Define thermal conductivities = true
     set Thermal conductivities        = 3.5
-
     set Viscous flow law      = diffusion
     set Activation volumes for diffusion creep  = 0
     set Grain size            = 1
@@ -160,6 +153,7 @@ end
 # The gravity points downward and is set to 10.
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -190,7 +184,6 @@ subsection Heating model
   set List of model names =
 end
 
-
 # Below, we describe the variables we want to include in the graphical output.
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, mass flux statistics
@@ -198,15 +191,13 @@ subsection Postprocess
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature, strain rate, melt fraction
     set Point-wise stress and strain  = true
-
-    subsection Material properties
-      set List of material properties = density, viscosity, thermal expansivity, thermal conductivity
-    end
-
     set Number of grouped files       = 0
     set Interpolate output            = false
     set Output format                 = vtu
     set Time between graphical output = 1e5
-  end
 
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, thermal conductivity
+    end
+  end
 end

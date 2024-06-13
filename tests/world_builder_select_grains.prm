@@ -3,13 +3,13 @@
 # a subset of grains for which to evaluate the world builder.
 
 include $ASPECT_SOURCE_DIR/tests/world_builder_select_composition.prm
+
 set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_select_grains.wb
 set Use years in output instead of seconds = false
 set Adiabatic surface temperature = 1613
 set End time = 0
 set Dimension = 3
 set Nonlinear solver scheme = no Advection, no Stokes
-
 
 subsection Geometry model
   set Model name = box
@@ -18,7 +18,6 @@ subsection Geometry model
     set X extent = 1000e3
     set Y extent = 200e3
     set Z extent = 200e3
-
     set Box origin Z coordinate = -200e3
     set Box origin Y coordinate = -100e3
     set Box origin X coordinate = -50e3
@@ -43,41 +42,54 @@ end
 subsection Postprocess
   set List of postprocessors = composition statistics, visualization, particles, crystal preferred orientation
 
-  subsection Particles
-    set Time between data output = 1e6
-    set Data output format       = gnuplot
-    set List of particle properties = integrated strain invariant, crystal preferred orientation, cpo bingham average, cpo elastic tensor, elastic tensor decomposition
-    set Exclude output properties = a_cosine_matrix, volume fraction
-    set Particle generator name = random uniform
-    set Number of particles = 50
-    subsection Crystal Preferred Orientation
-      subsection Initial grains
-        set Model name = World Builder
-        set Minerals = Olivine: A-fabric , Enstatite
-        set Volume fractions minerals =1.0,0.0
-      end
-      set Random number seed = 301
-      set Number of grains per particle = 5
-      set Property advection method = Backward Euler
-      set Property advection tolerance = 1e-15
-      set CPO derivatives algorithm = D-Rex 2004
-      subsection D-Rex 2004
-        set Mobility = 125
-        set Stress exponents = 3.5
-        set Exponents p = 1.5
-        set Nucleation efficiency = 5
-        set Threshold GBS = 0.3
-      end
-    end
-    subsection CPO Bingham Average
-      set Random number seed = 200
-    end
-  end
   subsection Crystal Preferred Orientation
     set Time between data output = 1e6
     set Write in background thread = true
     set Compress cpo data files = false
     set Write out raw cpo data = mineral 0: volume fraction, mineral 0: rotation matrix, mineral 1: volume fraction, mineral 1: rotation matrix
     set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: rotation matrix, mineral 1: volume fraction, mineral 1: rotation matrix
+  end
+
+  subsection Particles
+    set Time between data output = 1e6
+    set Data output format       = gnuplot
+    set Exclude output properties = a_cosine_matrix, volume fraction
+  end
+end
+
+subsection Particles
+  set List of particle properties = integrated strain invariant, crystal preferred orientation, cpo bingham average, cpo elastic tensor, elastic tensor decomposition
+  set Particle generator name = random uniform
+
+  subsection Crystal Preferred Orientation
+    set Random number seed = 301
+    set Number of grains per particle = 5
+    set Property advection method = Backward Euler
+    set Property advection tolerance = 1e-15
+    set CPO derivatives algorithm = D-Rex 2004
+
+    subsection Initial grains
+      set Model name = World Builder
+      set Minerals = Olivine: A-fabric , Enstatite
+      set Volume fractions minerals = 1.0,0.0
+    end
+
+    subsection D-Rex 2004
+      set Mobility = 125
+      set Stress exponents = 3.5
+      set Exponents p = 1.5
+      set Nucleation efficiency = 5
+      set Threshold GBS = 0.3
+    end
+  end
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+  end
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 50
+    end
   end
 end

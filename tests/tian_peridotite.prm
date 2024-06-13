@@ -33,6 +33,7 @@ end
 # for peridotite.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function constants  = initial_porosity=0.0, initial_bound_water=0.11
     set Function expression = initial_porosity; \
@@ -53,6 +54,7 @@ end
 # as in phase diagrams from Tian et al., 2019
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent  = 200e3
     set Y extent  = 200e3
@@ -64,6 +66,7 @@ end
 # 10 m/s^2 vertical gravity
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 10.0
   end
@@ -73,6 +76,7 @@ end
 # phase diagrams from Tian et al., 2019
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Coordinate system   = cartesian
     set Variable names      = x,y
@@ -85,12 +89,12 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top, bottom, right, left
   set List of model names = initial temperature
+
   subsection Initial temperature
     set Maximal temperature = 573
     set Minimal temperature = 1273
   end
 end
-
 
 # Material model, using the simpler base model and selecting the tian approximation
 # as the fluid solid reaction scheme for the reactive fluid transport model.

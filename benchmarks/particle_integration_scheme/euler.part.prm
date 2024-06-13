@@ -1,5 +1,6 @@
 subsection Postprocess
-  subsection Particles
-    set Integration scheme = euler
-  end
+end
+
+subsection Particles
+  set Integration scheme = euler
 end

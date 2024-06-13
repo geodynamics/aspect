@@ -23,7 +23,6 @@ include kinematically_driven_subduction_2d_case1.prm
 
 set Output directory                       = output-Case2a
 
-
 # We fix temperature on the top and bottom
 # as well as on the right boundary because
 # we have inflow through the latter.
@@ -32,18 +31,17 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 end
 
-
 subsection Material model
   set Model name = multicomponent
 
   subsection Multicomponent
     set Reference temperature         = 473.15
+
     # BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
     set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
     set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
     set Thermal expansivities         = 0
   end
-
 end
 
 # The overriding plate (OP) and subducting plate (SP)
@@ -56,9 +54,9 @@ subsection Compositional fields
   set Names of fields  = BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
 end
 
-
 subsection Initial composition model
   set List of model names = function
+
   subsection Function
     set Function constants  = Ax=1475600.0, Az=670000.0, \
                               Bx=1500000.0, Bz=670000.0, \
@@ -77,7 +75,6 @@ subsection Initial composition model
     set Variable names      = x,z
   end
 end
-
 
 # The initial temperature is prescribed through a plugin
 # and uses the plate cooling model for the temperature in both
@@ -107,5 +104,4 @@ subsection Postprocess
   subsection Composition RMS temperature statistics
     set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
   end
-
 end

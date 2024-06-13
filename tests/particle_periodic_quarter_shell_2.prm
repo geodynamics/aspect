@@ -97,23 +97,26 @@ subsection Postprocess
   set List of postprocessors = particle count statistics, particles, visualization
 
   subsection Particles
-    set Number of particles = 50
     set Time between data output = 0
     set Data output format = gnuplot
-    set Particle generator name = uniform radial
-    set List of particle properties = function, position, reference position, initial position
-    set Integration scheme = rk2
+  end
+end
 
-    subsection Generator
-      subsection Uniform radial
-        set Maximum latitude = 180
-        set Maximum longitude = 89.999
-        set Maximum radius = 0.9999
-        set Minimum latitude = 0.
-        set Minimum longitude = 89
-        set Minimum radius = 0.5001
-        set Radial layers = 10
-      end
+subsection Particles
+  set Particle generator name = uniform radial
+  set List of particle properties = function, position, reference position, initial position
+  set Integration scheme = rk2
+
+  subsection Generator
+    subsection Uniform radial
+      set Maximum latitude = 180
+      set Maximum longitude = 89.999
+      set Maximum radius = 0.9999
+      set Minimum latitude = 0.
+      set Minimum longitude = 89
+      set Minimum radius = 0.5001
+      set Radial layers = 10
+      set Number of particles = 50
     end
   end
 end

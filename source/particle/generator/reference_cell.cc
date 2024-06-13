@@ -85,24 +85,20 @@ namespace aspect
       void
       ReferenceCell<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Particles");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Generator");
           {
-            prm.enter_subsection("Generator");
+            prm.enter_subsection("Reference cell");
             {
-              prm.enter_subsection("Reference cell");
-              {
-                prm.declare_entry ("Number of particles per cell per direction", "2",
-                                   Patterns::List(Patterns::Integer(1)),
-                                   "List of number of particles to create per cell and spatial dimension. "
-                                   "The size of the list is the number of spatial dimensions. If only "
-                                   "one value is given, then each spatial dimension is set to the same value. "
-                                   "The list of numbers are parsed as a floating point number (so that one can "
-                                   "specify, for example, '1e4' particles) but it is interpreted as "
-                                   "an integer, of course.");
-              }
-              prm.leave_subsection();
+              prm.declare_entry ("Number of particles per cell per direction", "2",
+                                 Patterns::List(Patterns::Integer(1)),
+                                 "List of number of particles to create per cell and spatial dimension. "
+                                 "The size of the list is the number of spatial dimensions. If only "
+                                 "one value is given, then each spatial dimension is set to the same value. "
+                                 "The list of numbers are parsed as a floating point number (so that one can "
+                                 "specify, for example, '1e4' particles) but it is interpreted as "
+                                 "an integer, of course.");
             }
             prm.leave_subsection();
           }
@@ -116,24 +112,20 @@ namespace aspect
       void
       ReferenceCell<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Particles");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Generator");
           {
-            prm.enter_subsection("Generator");
+            prm.enter_subsection("Reference cell");
             {
-              prm.enter_subsection("Reference cell");
-              {
-                const auto n_particles_per_direction = Utilities::possibly_extend_from_1_to_N (
-                                                         Utilities::string_to_int(
-                                                           Utilities::split_string_list(prm.get("Number of particles per cell per direction"))),
-                                                         dim,
-                                                         "Number of particles per cell per direction");
+              const auto n_particles_per_direction = Utilities::possibly_extend_from_1_to_N (
+                                                       Utilities::string_to_int(
+                                                         Utilities::split_string_list(prm.get("Number of particles per cell per direction"))),
+                                                       dim,
+                                                       "Number of particles per cell per direction");
 
-                for (const auto &n_particle_direction: n_particles_per_direction)
-                  number_of_particles.push_back(static_cast<unsigned int> (n_particle_direction));
-              }
-              prm.leave_subsection();
+              for (const auto &n_particle_direction: n_particles_per_direction)
+                number_of_particles.push_back(static_cast<unsigned int> (n_particle_direction));
             }
             prm.leave_subsection();
           }

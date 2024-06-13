@@ -34,16 +34,17 @@ set Output directory = viscoplastic_melt_blob_freezing
 subsection Material model
   set Model name =  reactive fluid transport
   set Material averaging =  harmonic average
+
   subsection Reactive Fluid Transport Model
     set Base model = visco plastic
     set Fluid-solid reaction scheme = katz2003
+
     subsection Katz 2003 model
       set Melt extraction depth = 0.0
       set Freezing rate         = 1.0
       set Melting time scale for operator splitting = 1.442695041
     end
   end
-
 end
 
 subsection Postprocess

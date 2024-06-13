@@ -10,8 +10,10 @@
 
 include $ASPECT_SOURCE_DIR/tests/shear_heating.prm
 
+
 subsection Heating model
   set List of model names = shear heating
+
   subsection Shear heating
     set Limit stress contribution to shear heating = true
     set Cohesion for maximum shear stress = 0.5

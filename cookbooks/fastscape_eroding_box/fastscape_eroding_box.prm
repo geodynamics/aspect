@@ -6,12 +6,10 @@
 # At the top, we define the number of space dimensions we would like to
 # work in:
 set Dimension                              = 3
-
 set Use years in output instead of seconds = true
 set End time                               = 2.5e5
 set Maximum time step                      = 50000
 set Output directory                       = eroding_box
-
 set Pressure normalization                 = no
 set Surface pressure                       = 0
 
@@ -29,6 +27,7 @@ subsection Geometry model
 
   subsection Initial topography model
     set Model name = function
+
     subsection Function
       set Function expression = if(y>20e3 && y<80e3 && x>32.5e3 && x<92.5e3, 2500, 0)
     end
@@ -56,7 +55,8 @@ end
 
 # Here we setup the top boundary with fastscape.
 subsection Mesh deformation
- set Mesh deformation boundary indicators = top : fastscape
+  set Mesh deformation boundary indicators = top : fastscape
+  set Additional tangential mesh velocity boundary indicators = left, right, front, back
 
   subsection Fastscape
     # As the highest resolution at the surface is 4 in the mesh refinement function, we set this the same.
@@ -112,9 +112,6 @@ subsection Mesh deformation
       set Multi-direction slope exponent = -1
     end
   end
-
-  set Additional tangential mesh velocity boundary indicators = left, right, front, back
-
 end
 
 subsection Gravity model
@@ -139,14 +136,12 @@ subsection Material model
   end
 end
 
-
 # We also have to specify that we want to use the Boussinesq
 # approximation (assuming the density in the temperature
 # equation to be constant, and incompressibility).
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
-
 
 # We set a maximum surface refinement level of 4 using the max/minimum refinement level.
 # This will make it so that the ASPECT surface refinement is the same as what we set
@@ -157,16 +152,16 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 0
   set Strategy                                 = minimum refinement function, maximum refinement function
 
-    subsection Maximum refinement function
-      set Coordinate system   = cartesian
-      set Variable names      = x,y,z
-      set Function expression = if(z>=21000, 4, 2)
+  subsection Maximum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if(z>=21000, 4, 2)
   end
 
-      subsection Minimum refinement function
-      set Coordinate system   = cartesian
-      set Variable names      = x,y,z
-      set Function expression = if(z>=21000, 4, 2)
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if(z>=21000, 4, 2)
   end
 end
 

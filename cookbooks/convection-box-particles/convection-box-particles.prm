@@ -152,7 +152,6 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 1000
     set Time between data output = 1e7
     set Data output format = vtu
   end
@@ -160,4 +159,12 @@ end
 
 subsection Solver parameters
   set Temperature solver tolerance = 1e-10
+end
+
+subsection Particles
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 1000
+    end
+  end
 end

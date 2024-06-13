@@ -89,7 +89,6 @@ subsection Material model
     set Geometric constant                   = 3, 3, 3, 3
     set Grain size evolution formulation     = paleowattmeter
     set Reciprocal required strain           = 10
-
     set Phase transition depths              = background:20000|50000|65000
     set Phase transition Clapeyron slopes    = background:1e6|-5e5|2.5e5
     set Phase transition temperatures        = background:1600|1600|1600
@@ -122,14 +121,23 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, composition statistics, particles, material statistics
+
   subsection Visualization
     set List of output variables  = material properties
     set Time between graphical output = 0
   end
 
   subsection Particles
-    set List of particle properties = grain size
-    set Number of particles = 10000
     set Time between data output = 0
+  end
+end
+
+subsection Particles
+  set List of particle properties = grain size
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10000
+    end
   end
 end

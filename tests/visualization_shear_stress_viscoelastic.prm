@@ -18,7 +18,6 @@
 
 include $ASPECT_SOURCE_DIR/tests/visualization_shear_stress.prm
 
-
 set End time                               = 1
 
 subsection Formulation

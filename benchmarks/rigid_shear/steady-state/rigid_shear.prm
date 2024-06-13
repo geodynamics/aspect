@@ -86,23 +86,25 @@ subsection Postprocess
   subsection Particles
     set Time between data output = 0.1
     set Data output format = vtu
-    set List of particle properties = function
-    set Integration scheme = rk2
-    set Interpolation scheme = bilinear least squares
-    set Update ghost particles = true
-    set Minimum particles per cell = 9
-    set Maximum particles per cell = 16384
-    set Particle generator name = reference cell
-    set Number of particles = 8192
+  end
+end
 
-    subsection Function
-      set Function expression = sin(pi*x)*sin(pi*y) + 2.0
-    end
+subsection Particles
+  set List of particle properties = function
+  set Integration scheme = rk2
+  set Interpolation scheme = bilinear least squares
+  set Update ghost particles = true
+  set Minimum particles per cell = 9
+  set Maximum particles per cell = 16384
+  set Particle generator name = reference cell
 
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 9
-      end
+  subsection Function
+    set Function expression = sin(pi*x)*sin(pi*y) + 2.0
+  end
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 9
     end
   end
 end

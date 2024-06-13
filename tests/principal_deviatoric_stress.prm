@@ -99,17 +99,19 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 1
     set Time between data output = 0.05
     set Data output format = vtu
-    set List of particle properties = integrated strain
-    set Particle generator name = ascii file
+  end
+end
 
-    subsection Generator
-      subsection Ascii file
-        set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
-        set Data file name = simple_shear_particle.dat
-      end
+subsection Particles
+  set List of particle properties = integrated strain
+  set Particle generator name = ascii file
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
+      set Data file name = simple_shear_particle.dat
     end
   end
 end

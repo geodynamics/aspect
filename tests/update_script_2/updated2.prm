@@ -106,10 +106,6 @@ end
 subsection Postprocess
   set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average, dynamic topography, particles, heating statistics
 
-  subsection Particles
-    set Number of particles = 50
-  end
-
   subsection Dynamic topography
   end
 
@@ -128,4 +124,12 @@ end
 
 subsection Heating model
   set List of model names = adiabatic heating
+end
+
+subsection Particles
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 50
+    end
+  end
 end

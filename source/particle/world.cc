@@ -1184,61 +1184,57 @@ namespace aspect
     void
     World<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Postprocess");
+      prm.enter_subsection("Particles");
       {
-        prm.enter_subsection("Particles");
-        {
-          prm.declare_entry ("Load balancing strategy", "repartition",
-                             Patterns::MultipleSelection ("none|remove particles|add particles|"
-                                                          "remove and add particles|repartition"),
-                             "Strategy that is used to balance the computational "
-                             "load across processors for adaptive meshes.");
-          prm.declare_entry ("Minimum particles per cell", "0",
-                             Patterns::Integer (0),
-                             "Lower limit for particle number per cell. This limit is "
-                             "useful for adaptive meshes to prevent fine cells from being empty "
-                             "of particles. It will be checked and enforced after mesh "
-                             "refinement and after particle movement. "
-                             "If there are "
-                             "\\texttt{n\\_number\\_of\\_particles} $<$ \\texttt{min\\_particles\\_per\\_cell} "
-                             "particles in one cell then "
-                             "\\texttt{min\\_particles\\_per\\_cell} - \\texttt{n\\_number\\_of\\_particles} "
-                             "particles are generated and randomly placed in "
-                             "this cell. If the particles carry properties the "
-                             "individual property plugins control how the "
-                             "properties of the new particles are initialized.");
-          prm.declare_entry ("Maximum particles per cell", "100",
-                             Patterns::Integer (0),
-                             "Upper limit for particle number per cell. This limit is "
-                             "useful for adaptive meshes to prevent coarse cells from slowing down "
-                             "the whole model. It will be checked and enforced after mesh "
-                             "refinement, after MPI transfer of particles and after particle "
-                             "movement. If there are "
-                             "\\texttt{n\\_number\\_of\\_particles} $>$ \\texttt{max\\_particles\\_per\\_cell} "
-                             "particles in one cell then "
-                             "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
-                             "particles in this cell are randomly chosen and destroyed.");
-          prm.declare_entry ("Particle weight", "10",
-                             Patterns::Integer (0),
-                             "Weight that is associated with the computational load of "
-                             "a single particle. The sum of particle weights will be added "
-                             "to the sum of cell weights to determine the partitioning of "
-                             "the mesh if the `repartition' particle load balancing strategy "
-                             "is selected. The optimal weight depends on the used "
-                             "integrator and particle properties. In general for a more "
-                             "expensive integrator and more expensive properties a larger "
-                             "particle weight is recommended. Before adding the weights "
-                             "of particles, each cell already carries a weight of 1000 to "
-                             "account for the cost of field-based computations.");
-          prm.declare_entry ("Update ghost particles", "false",
-                             Patterns::Bool (),
-                             "Some particle interpolation algorithms require knowledge "
-                             "about particles in neighboring cells. To allow this, "
-                             "particles in ghost cells need to be exchanged between the "
-                             "processes neighboring this cell. This parameter determines "
-                             "whether this transport is happening.");
-        }
-        prm.leave_subsection ();
+        prm.declare_entry ("Load balancing strategy", "repartition",
+                           Patterns::MultipleSelection ("none|remove particles|add particles|"
+                                                        "remove and add particles|repartition"),
+                           "Strategy that is used to balance the computational "
+                           "load across processors for adaptive meshes.");
+        prm.declare_entry ("Minimum particles per cell", "0",
+                           Patterns::Integer (0),
+                           "Lower limit for particle number per cell. This limit is "
+                           "useful for adaptive meshes to prevent fine cells from being empty "
+                           "of particles. It will be checked and enforced after mesh "
+                           "refinement and after particle movement. "
+                           "If there are "
+                           "\\texttt{n\\_number\\_of\\_particles} $<$ \\texttt{min\\_particles\\_per\\_cell} "
+                           "particles in one cell then "
+                           "\\texttt{min\\_particles\\_per\\_cell} - \\texttt{n\\_number\\_of\\_particles} "
+                           "particles are generated and randomly placed in "
+                           "this cell. If the particles carry properties the "
+                           "individual property plugins control how the "
+                           "properties of the new particles are initialized.");
+        prm.declare_entry ("Maximum particles per cell", "100",
+                           Patterns::Integer (0),
+                           "Upper limit for particle number per cell. This limit is "
+                           "useful for adaptive meshes to prevent coarse cells from slowing down "
+                           "the whole model. It will be checked and enforced after mesh "
+                           "refinement, after MPI transfer of particles and after particle "
+                           "movement. If there are "
+                           "\\texttt{n\\_number\\_of\\_particles} $>$ \\texttt{max\\_particles\\_per\\_cell} "
+                           "particles in one cell then "
+                           "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
+                           "particles in this cell are randomly chosen and destroyed.");
+        prm.declare_entry ("Particle weight", "10",
+                           Patterns::Integer (0),
+                           "Weight that is associated with the computational load of "
+                           "a single particle. The sum of particle weights will be added "
+                           "to the sum of cell weights to determine the partitioning of "
+                           "the mesh if the `repartition' particle load balancing strategy "
+                           "is selected. The optimal weight depends on the used "
+                           "integrator and particle properties. In general for a more "
+                           "expensive integrator and more expensive properties a larger "
+                           "particle weight is recommended. Before adding the weights "
+                           "of particles, each cell already carries a weight of 1000 to "
+                           "account for the cost of field-based computations.");
+        prm.declare_entry ("Update ghost particles", "false",
+                           Patterns::Bool (),
+                           "Some particle interpolation algorithms require knowledge "
+                           "about particles in neighboring cells. To allow this, "
+                           "particles in ghost cells need to be exchanged between the "
+                           "processes neighboring this cell. This parameter determines "
+                           "whether this transport is happening.");
       }
       prm.leave_subsection ();
 
@@ -1269,56 +1265,52 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      prm.enter_subsection("Postprocess");
+      prm.enter_subsection("Particles");
       {
-        prm.enter_subsection("Particles");
-        {
-          min_particles_per_cell = prm.get_integer("Minimum particles per cell");
-          max_particles_per_cell = prm.get_integer("Maximum particles per cell");
+        min_particles_per_cell = prm.get_integer("Minimum particles per cell");
+        max_particles_per_cell = prm.get_integer("Maximum particles per cell");
 
-          AssertThrow(min_particles_per_cell <= max_particles_per_cell,
-                      ExcMessage("Please select a 'Minimum particles per cell' parameter "
-                                 "that is smaller than or equal to the 'Maximum particles per cell' parameter."));
+        AssertThrow(min_particles_per_cell <= max_particles_per_cell,
+                    ExcMessage("Please select a 'Minimum particles per cell' parameter "
+                               "that is smaller than or equal to the 'Maximum particles per cell' parameter."));
 
-          particle_weight = prm.get_integer("Particle weight");
+        particle_weight = prm.get_integer("Particle weight");
 
-          update_ghost_particles = prm.get_bool("Update ghost particles");
+        update_ghost_particles = prm.get_bool("Update ghost particles");
 
-          const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
-          AssertThrow(Utilities::has_unique_entries(strategies),
-                      ExcMessage("The list of strings for the parameter "
-                                 "'Postprocess/Particles/Load balancing strategy' contains entries more than once. "
-                                 "This is not allowed. Please check your parameter file."));
+        const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
+        AssertThrow(Utilities::has_unique_entries(strategies),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Particles/Load balancing strategy' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
 
-          particle_load_balancing = ParticleLoadBalancing::no_balancing;
+        particle_load_balancing = ParticleLoadBalancing::no_balancing;
 
-          for (std::vector<std::string>::const_iterator strategy = strategies.begin(); strategy != strategies.end(); ++strategy)
-            {
-              if (*strategy == "remove particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_particles);
-              else if (*strategy == "add particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::add_particles);
-              else if (*strategy == "remove and add particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_and_add_particles);
-              else if (*strategy == "repartition")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::repartition);
-              else if (*strategy == "none")
-                {
-                  particle_load_balancing = ParticleLoadBalancing::no_balancing;
-                  AssertThrow(strategies.size() == 1,
-                              ExcMessage("The particle load balancing strategy `none' is not compatible "
-                                         "with any other strategy, yet it seems another is selected as well. "
-                                         "Please check the parameter file."));
-                }
-              else
-                AssertThrow(false,
-                            ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + *strategy
-                                       + ">. This value does not correspond to any known load balancing strategy. Possible values "
-                                       "are listed in the corresponding manual subsection."));
-            }
+        for (std::vector<std::string>::const_iterator strategy = strategies.begin(); strategy != strategies.end(); ++strategy)
+          {
+            if (*strategy == "remove particles")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_particles);
+            else if (*strategy == "add particles")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::add_particles);
+            else if (*strategy == "remove and add particles")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_and_add_particles);
+            else if (*strategy == "repartition")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::repartition);
+            else if (*strategy == "none")
+              {
+                particle_load_balancing = ParticleLoadBalancing::no_balancing;
+                AssertThrow(strategies.size() == 1,
+                            ExcMessage("The particle load balancing strategy `none' is not compatible "
+                                       "with any other strategy, yet it seems another is selected as well. "
+                                       "Please check the parameter file."));
+              }
+            else
+              AssertThrow(false,
+                          ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + *strategy
+                                     + ">. This value does not correspond to any known load balancing strategy. Possible values "
+                                     "are listed in the corresponding manual subsection."));
+          }
 
-        }
-        prm.leave_subsection ();
       }
       prm.leave_subsection ();
 

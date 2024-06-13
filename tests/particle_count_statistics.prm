@@ -69,16 +69,23 @@ subsection Postprocess
     set Time between graphical output = 100
   end
 
-  subsection Particles
-    set Number of particles = 1000
-    set Time between data output = 1
-    set Data output format = none
-  end
-
   subsection Visualization
     set Interpolate output = false
     set Number of grouped files       = 0
     set Output format                 = gnuplot
     set Time between graphical output = 100
+  end
+
+  subsection Particles
+    set Time between data output = 1
+    set Data output format = none
+  end
+end
+
+subsection Particles
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 1000
+    end
   end
 end

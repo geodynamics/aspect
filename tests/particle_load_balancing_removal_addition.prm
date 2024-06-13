@@ -87,12 +87,20 @@ subsection Postprocess
   set List of postprocessors = particles
 
   subsection Particles
-    set Number of particles = 100
     set Time between data output = 100
-    set Load balancing strategy = remove and add particles
-    set Maximum particles per cell = 10
-    set Minimum particles per cell = 5
     set Data output format = ascii
-    set Integration scheme = euler
+  end
+end
+
+subsection Particles
+  set Load balancing strategy = remove and add particles
+  set Maximum particles per cell = 10
+  set Minimum particles per cell = 5
+  set Integration scheme = euler
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 100
+    end
   end
 end

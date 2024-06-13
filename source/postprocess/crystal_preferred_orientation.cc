@@ -695,22 +695,24 @@ namespace aspect
         end_time *= year_in_seconds;
 
       unsigned int n_minerals;
-      prm.enter_subsection("Postprocess");
+
+      prm.enter_subsection("Particles");
       {
-        prm.enter_subsection("Particles");
+        prm.enter_subsection("Crystal Preferred Orientation");
         {
-          prm.enter_subsection("Crystal Preferred Orientation");
+          prm.enter_subsection("Initial grains");
           {
-            prm.enter_subsection("Initial grains");
-            {
-              // Static variable of CPO has not been initialize yet, so we need to get it directly.
-              n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
-            }
-            prm.leave_subsection();
+            // Static variable of CPO has not been initialize yet, so we need to get it directly.
+            n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
         }
         prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+
+      prm.enter_subsection("Postprocess");
+      {
         prm.enter_subsection("Crystal Preferred Orientation");
         {
           output_interval = prm.get_double ("Time between data output");

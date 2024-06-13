@@ -229,26 +229,22 @@ namespace aspect
       void
       CpoBinghamAverage<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Particles");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("CPO Bingham Average");
           {
-            prm.enter_subsection("CPO Bingham Average");
-            {
-              prm.declare_entry ("Random number seed", "1",
-                                 Patterns::Integer (0),
-                                 "The seed used to generate random numbers. This will make sure that "
-                                 "results are reproducible as long as the problem is run with the "
-                                 "same amount of MPI processes. It is implemented as final seed = "
-                                 "Random number seed + MPI Rank. ");
+            prm.declare_entry ("Random number seed", "1",
+                               Patterns::Integer (0),
+                               "The seed used to generate random numbers. This will make sure that "
+                               "results are reproducible as long as the problem is run with the "
+                               "same amount of MPI processes. It is implemented as final seed = "
+                               "Random number seed + MPI Rank. ");
 
-              prm.declare_entry ("Number of samples", "0",
-                                 Patterns::Double(0),
-                                 "This determines how many samples are taken when using the random "
-                                 "draw volume averaging. Setting it to zero means that the number of "
-                                 "samples is set to be equal to the number of grains.");
-            }
-            prm.leave_subsection ();
+            prm.declare_entry ("Number of samples", "0",
+                               Patterns::Double(0),
+                               "This determines how many samples are taken when using the random "
+                               "draw volume averaging. Setting it to zero means that the number of "
+                               "samples is set to be equal to the number of grains.");
           }
           prm.leave_subsection ();
         }
@@ -262,24 +258,20 @@ namespace aspect
       CpoBinghamAverage<dim>::parse_parameters (ParameterHandler &prm)
       {
 
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Particles");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("CPO Bingham Average");
           {
-            prm.enter_subsection("CPO Bingham Average");
-            {
-              // Get a pointer to the CPO particle property.
-              cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
-                                        this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>());
+            // Get a pointer to the CPO particle property.
+            cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
+                                      this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>());
 
-              random_number_seed = prm.get_integer ("Random number seed");
-              n_grains = cpo_particle_property->get_number_of_grains();
-              n_minerals = cpo_particle_property->get_number_of_minerals();
-              n_samples = prm.get_integer("Number of samples");
-              if (n_samples == 0)
-                n_samples = n_grains;
-            }
-            prm.leave_subsection ();
+            random_number_seed = prm.get_integer ("Random number seed");
+            n_grains = cpo_particle_property->get_number_of_grains();
+            n_minerals = cpo_particle_property->get_number_of_minerals();
+            n_samples = prm.get_integer("Number of samples");
+            if (n_samples == 0)
+              n_samples = n_grains;
           }
           prm.leave_subsection ();
         }

@@ -674,7 +674,7 @@ namespace aspect
           output_formats   = Utilities::split_string_list(prm.get ("Data output format"));
           AssertThrow(Utilities::has_unique_entries(output_formats),
                       ExcMessage("The list of strings for the parameter "
-                                 "'Particles/Data output format' contains entries more than once. "
+                                 "'Postprocess/Particles/Data output format' contains entries more than once. "
                                  "This is not allowed. Please check your parameter file."));
 
           AssertThrow ((std::find (output_formats.begin(),

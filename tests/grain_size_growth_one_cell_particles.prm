@@ -2,6 +2,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/grain_size_growth_one_cell.prm
 
+
 ############### Global parameters
 
 set Dimension                              = 2
@@ -21,14 +22,22 @@ end
 subsection Postprocess
   set List of postprocessors = composition statistics, velocity statistics, particles
 
-  # We use particles to advect the grain size.
   subsection Particles
-    set Interpolation scheme = cell average
-    set Number of particles = 50000
     set Time between data output = 1e6
-    set List of particle properties = grain size
-    set Load balancing strategy = none
-    set Integration scheme = rk2
-    set Update ghost particles = true
+  end
+end
+
+# We use particles to advect the grain size.
+subsection Particles
+  set Interpolation scheme = cell average
+  set List of particle properties = grain size
+  set Load balancing strategy = none
+  set Integration scheme = rk2
+  set Update ghost particles = true
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 50000
+    end
   end
 end

@@ -29,6 +29,7 @@ end
 
 subsection Postprocess
   set List of postprocessors     = visualization, composition statistics, velocity statistics
+
   subsection Visualization
     set List of output variables = density, viscosity, thermal expansivity, melt fraction
   end

@@ -17,7 +17,6 @@ subsection Material model
   end
 end
 
-
 subsection Geometry model
   set Model name = spherical shell
 
@@ -28,11 +27,9 @@ subsection Geometry model
   end
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top
 end
-
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
@@ -44,39 +41,35 @@ subsection Boundary temperature model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = spherical hexagonal perturbation
 end
-
 
 subsection Compositional fields
   set Number of fields = 2
 end
 
-
 subsection Boundary composition model
   set List of model names = spherical constant
   set Fixed composition boundary indicators = top, bottom
+
   subsection Spherical constant
     set Inner composition = 1,2
     set Outer composition = 2,3
   end
 end
 
-
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 2; 2
   end
 end
 
-
 subsection Gravity model
   set Model name = ascii data
 end
-
 
 subsection Mesh refinement
   set Initial global refinement          = 2
@@ -84,7 +77,6 @@ subsection Mesh refinement
   set Strategy                           = temperature
   set Time steps between mesh refinement = 15
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, composition statistics

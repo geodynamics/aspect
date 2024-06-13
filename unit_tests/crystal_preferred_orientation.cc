@@ -129,27 +129,23 @@ TEST_CASE("CPO core: Store and Load")
   aspect::Particle::Property::CrystalPreferredOrientation<3> cpo;
   aspect::ParameterHandler prm;
   cpo.declare_parameters(prm);
-  prm.enter_subsection("Postprocess");
+  prm.enter_subsection("Particles");
   {
-    prm.enter_subsection("Particles");
+    prm.enter_subsection("Crystal Preferred Orientation");
     {
-      prm.enter_subsection("Crystal Preferred Orientation");
+      prm.set("Random number seed","1");
+      prm.set("Number of grains per particle","3");
+      prm.set("CPO derivatives algorithm","Spin tensor");
+      prm.set("Property advection method","Backward Euler");
+      prm.enter_subsection("Initial grains");
       {
-        prm.set("Random number seed","1");
-        prm.set("Number of grains per particle","3");
-        prm.set("CPO derivatives algorithm","Spin tensor");
-        prm.set("Property advection method","Backward Euler");
-        prm.enter_subsection("Initial grains");
-        {
-          prm.set("Model name","Uniform grains and random uniform rotations");
-          // Let the minerals just passively rotate with the rotation of
-          // the particle caused by the flow.
-          prm.set("Minerals","Passive,Passive");
-          prm.set("Volume fractions minerals","0.7,0.3");
-        }
-        prm.leave_subsection();
+        prm.set("Model name","Uniform grains and random uniform rotations");
+        // Let the minerals just passively rotate with the rotation of
+        // the particle caused by the flow.
+        prm.set("Minerals","Passive,Passive");
+        prm.set("Volume fractions minerals","0.7,0.3");
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
     prm.leave_subsection ();
   }
@@ -309,27 +305,23 @@ TEST_CASE("CPO core: Spin tensor")
     aspect::Particle::Property::CrystalPreferredOrientation<3> cpo_3d;
     aspect::ParameterHandler prm;
     cpo_3d.declare_parameters(prm);
-    prm.enter_subsection("Postprocess");
+    prm.enter_subsection("Particles");
     {
-      prm.enter_subsection("Particles");
+      prm.enter_subsection("Crystal Preferred Orientation");
       {
-        prm.enter_subsection("Crystal Preferred Orientation");
+        prm.set("Random number seed","1");
+        prm.set("Number of grains per particle","5");
+        prm.set("CPO derivatives algorithm","Spin tensor");
+        prm.set("Property advection method","Forward Euler");
+        prm.enter_subsection("Initial grains");
         {
-          prm.set("Random number seed","1");
-          prm.set("Number of grains per particle","5");
-          prm.set("CPO derivatives algorithm","Spin tensor");
-          prm.set("Property advection method","Forward Euler");
-          prm.enter_subsection("Initial grains");
-          {
-            prm.set("Model name","Uniform grains and random uniform rotations");
-            // Let the minerals just passively rotate with the rotation of
-            // the particle caused by the flow.
-            prm.set("Minerals","Passive,Passive");
-            prm.set("Volume fractions minerals","0.5,0.5");
-          }
-          prm.leave_subsection();
+          prm.set("Model name","Uniform grains and random uniform rotations");
+          // Let the minerals just passively rotate with the rotation of
+          // the particle caused by the flow.
+          prm.set("Minerals","Passive,Passive");
+          prm.set("Volume fractions minerals","0.5,0.5");
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
       prm.leave_subsection ();
     }
@@ -615,18 +607,12 @@ TEST_CASE("CPO")
     ParameterHandler prm;
     lpo_3d.declare_parameters(prm);
 
-    prm.enter_subsection("Postprocess");
+    prm.enter_subsection("Particles");
     {
-      prm.enter_subsection("Particles");
+      prm.enter_subsection("Crystal Preferred Orientation");
       {
-        prm.enter_subsection("Crystal Preferred Orientation");
-        {
-          prm.set("Random number seed","1");
-          prm.set("Number of grains per particle","5");
-
-
-        }
-        prm.leave_subsection ();
+        prm.set("Random number seed","1");
+        prm.set("Number of grains per particle","5");
       }
       prm.leave_subsection ();
     }
@@ -828,16 +814,12 @@ TEST_CASE("CPO")
     ParameterHandler prm;
     lpo_3d.declare_parameters(prm);
 
-    prm.enter_subsection("Postprocess");
+    prm.enter_subsection("Particles");
     {
-      prm.enter_subsection("Particles");
+      prm.enter_subsection("Crystal Preferred Orientation");
       {
-        prm.enter_subsection("Crystal Preferred Orientation");
-        {
-          prm.set("Random number seed","1");
-          prm.set("Number of grains per particle","5");
-        }
-        prm.leave_subsection ();
+        prm.set("Random number seed","1");
+        prm.set("Number of grains per particle","5");
       }
       prm.leave_subsection ();
     }
@@ -1089,27 +1071,23 @@ TEST_CASE("CPO elastic tensor")
   aspect::ParameterHandler prm;
   cpo.declare_parameters(prm);
   cpo_elastic_tensor.declare_parameters(prm);
-  prm.enter_subsection("Postprocess");
+  prm.enter_subsection("Particles");
   {
-    prm.enter_subsection("Particles");
+    prm.enter_subsection("Crystal Preferred Orientation");
     {
-      prm.enter_subsection("Crystal Preferred Orientation");
+      prm.set("Random number seed","1");
+      prm.set("Number of grains per particle","8");
+      prm.set("CPO derivatives algorithm","Spin tensor");
+      prm.set("Property advection method","Backward Euler");
+      prm.enter_subsection("Initial grains");
       {
-        prm.set("Random number seed","1");
-        prm.set("Number of grains per particle","8");
-        prm.set("CPO derivatives algorithm","Spin tensor");
-        prm.set("Property advection method","Backward Euler");
-        prm.enter_subsection("Initial grains");
-        {
-          prm.set("Model name","Uniform grains and random uniform rotations");
-          // Let the minerals just passively rotate with the rotation of
-          // the particle caused by the flow.
-          prm.set("Minerals","Passive,Passive");
-          prm.set("Volume fractions minerals","0.7,0.3");
-        }
-        prm.leave_subsection();
+        prm.set("Model name","Uniform grains and random uniform rotations");
+        // Let the minerals just passively rotate with the rotation of
+        // the particle caused by the flow.
+        prm.set("Minerals","Passive,Passive");
+        prm.set("Volume fractions minerals","0.7,0.3");
       }
-      prm.leave_subsection ();
+      prm.leave_subsection();
     }
     prm.leave_subsection ();
   }
