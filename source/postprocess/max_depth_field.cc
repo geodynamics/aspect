@@ -36,7 +36,7 @@ namespace aspect
     {
       // create a quadrature formula based on the compositional element alone.
       // be defensive about determining that a compositional field actually exists
-      AssertThrow(this->introspection().base_elements.compositional_fields != numbers::invalid_unsigned_int,
+      AssertThrow(this->n_compositional_fields() > 0,
                   ExcMessage("This postprocessor cannot be used without compositional fields."));
       const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.compositional_fields;
 
