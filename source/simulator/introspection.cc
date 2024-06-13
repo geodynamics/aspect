@@ -44,9 +44,17 @@ namespace aspect
 
       ci.pressure = fevs.variable("pressure").first_component_index;
       ci.temperature = fevs.variable("temperature").first_component_index;
-      unsigned int n_compositional_fields = fevs.variable("compositions").n_components();
-      for (unsigned int i=0; i<n_compositional_fields; ++i)
-        ci.compositional_fields.push_back(fevs.variable("compositions").first_component_index+i);
+
+      {
+        const auto composition_variables = fevs.variables_with_name("compositions");
+        for (const auto &fe : composition_variables)
+          {
+            for (unsigned int i=0; i<fe->multiplicity; ++i)
+              {
+                ci.compositional_fields.push_back(fe->first_component_index+i);
+              }
+          }
+      }
 
       return ci;
     }
@@ -56,20 +64,24 @@ namespace aspect
      */
     template <int dim>
     typename Introspection<dim>::BlockIndices
-    setup_blocks (FEVariableCollection<dim> &fevs, const unsigned int n_compositional_fields)
+    setup_blocks (FEVariableCollection<dim> &fevs)
     {
       typename Introspection<dim>::BlockIndices b;
       b.velocities = fevs.variable("velocity").block_index;
       b.pressure = fevs.variable("pressure").block_index;
       b.temperature = fevs.variable("temperature").block_index;
 
-      const unsigned int first_composition_block_index = fevs.variable("compositions").block_index;
-      for (unsigned int i=0; i<n_compositional_fields; ++i)
-        {
-          b.compositional_fields.push_back(fevs.variable("compositions").block_index+i);
-          b.compositional_field_sparsity_pattern.push_back(first_composition_block_index);
-        }
-
+      {
+        const auto variables = fevs.variables_with_name("compositions");
+        for (const auto &fe : variables)
+          {
+            for (unsigned int i=0; i<fe->multiplicity; ++i)
+              {
+                b.compositional_fields.push_back(fe->block_index + i);
+                b.compositional_field_sparsity_pattern.push_back(fe->block_index);
+              }
+          }
+      }
       return b;
     }
 
@@ -77,15 +89,27 @@ namespace aspect
 
     template <int dim>
     typename Introspection<dim>::BaseElements
-    setup_base_elements (FEVariableCollection<dim> &fevs, const unsigned int n_compositional_fields)
+    setup_base_elements (FEVariableCollection<dim> &fevs)
     {
       typename Introspection<dim>::BaseElements base_elements;
 
       base_elements.velocities = fevs.variable("velocity").base_index;
       base_elements.pressure = fevs.variable("pressure").base_index;
       base_elements.temperature = fevs.variable("temperature").base_index;
-      base_elements.compositional_fields = Utilities::possibly_extend_from_1_to_N(std::vector<unsigned int>({fevs.variable("compositions").base_index}),
-                                                                                  n_compositional_fields, "");
+
+      {
+        // TODO: We would ideally reuse base elements also when they are
+        // not consecutively encountered. For now, just ignore that fact.
+        const auto variables = fevs.variables_with_name("compositions");
+        for (const auto &fe : variables)
+          {
+            for (unsigned int i=0; i<fe->multiplicity; ++i)
+              base_elements.compositional_fields.push_back(fe->base_index);
+          }
+      }
+
+
+
 
       return base_elements;
     }
@@ -223,14 +247,25 @@ namespace aspect
         1,
         1));
 
-
-    variables.push_back(
-      VariableDeclaration<dim>(
-        "compositions",
-        internal::new_FE_Q_or_DGQ<dim>(parameters.have_discontinuous_composition_discretization, // TODO: this is of course incorrect for now.
-                                       parameters.composition_degree),
-        parameters.n_compositional_fields,
-        parameters.n_compositional_fields));
+    // We can not create a single composition with multiplicity n (this assumes all have the same FiniteElement) and
+    // we also don't want to create n different compositional fields for performance reasons. Instead, we combine
+    // consecutive compositions of the same type into the same base element. For example, if the user requests
+    // "Q2,Q2,DGQ1,Q2", we actually create "Q2^2, DGQ1, Q2":
+    for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+      {
+        if (c>0 && parameters.use_discontinuous_composition_discretization[c] == parameters.use_discontinuous_composition_discretization[c-1])
+          {
+            // reuse last one because it is the same
+            variables.back().multiplicity += 1;
+            variables.back().n_blocks += 1;
+          }
+        else
+          {
+            std::shared_ptr<FiniteElement<dim>> fe = internal::new_FE_Q_or_DGQ<dim>(parameters.use_discontinuous_composition_discretization[c],
+                                                                                     parameters.composition_degree);
+            variables.push_back(VariableDeclaration<dim>("compositions", fe, 1, 1));
+          }
+      }
 
     return variables;
   }
@@ -247,14 +282,14 @@ namespace aspect
     use_discontinuous_temperature_discretization (parameters.use_discontinuous_temperature_discretization),
     use_discontinuous_composition_discretization (parameters.use_discontinuous_composition_discretization),
     component_indices (internal::setup_component_indices<dim>(*this)),
-    n_blocks(FEVariableCollection<dim>::n_blocks()),
-    block_indices (internal::setup_blocks<dim>(*this, parameters.n_compositional_fields)),
+    n_blocks (FEVariableCollection<dim>::n_blocks()),
+    block_indices (internal::setup_blocks<dim>(*this)),
     extractors (component_indices),
-    base_elements (internal::setup_base_elements<dim>(*this, parameters.n_compositional_fields)),
+    base_elements (internal::setup_base_elements<dim>(*this)),
     polynomial_degree (internal::setup_polynomial_degree<dim>(parameters)),
     quadratures (internal::setup_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
     face_quadratures (internal::setup_face_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
-    component_masks (*this),
+    component_masks (*this, component_indices),
     system_dofs_per_block (n_blocks),
     temperature_method(parameters.temperature_method),
     compositional_field_methods(parameters.compositional_field_methods),
@@ -345,13 +380,13 @@ namespace aspect
   {
     template <int dim>
     std::vector<ComponentMask>
-    make_component_mask_sequence(const FEVariable<dim> &variable)
+    make_composition_component_mask_sequence (const FEVariableCollection<dim> &fevs, const typename Introspection<dim>::ComponentIndices &indices)
     {
       std::vector<ComponentMask> result;
-      for (unsigned int i=0; i<variable.multiplicity; ++i)
+      for (const unsigned int idx : indices.compositional_fields)
         {
-          result.push_back(ComponentMask(variable.component_mask.size(), false));
-          result.back().set(variable.first_component_index+i, true);
+          result.push_back(ComponentMask(fevs.n_components(), false));
+          result.back().set(idx, true);
         }
       return result;
     }
@@ -360,12 +395,12 @@ namespace aspect
 
 
   template <int dim>
-  Introspection<dim>::ComponentMasks::ComponentMasks (FEVariableCollection<dim> &fevs)
+  Introspection<dim>::ComponentMasks::ComponentMasks (const FEVariableCollection<dim> &fevs, const Introspection<dim>::ComponentIndices &indices)
     :
     velocities (fevs.variable("velocity").component_mask),
     pressure (fevs.variable("pressure").component_mask),
     temperature (fevs.variable("temperature").component_mask),
-    compositional_fields (make_component_mask_sequence (fevs.variable("compositions")))
+    compositional_fields (make_composition_component_mask_sequence (fevs, indices))
   {}
 
 

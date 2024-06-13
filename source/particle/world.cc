@@ -79,6 +79,9 @@ namespace aspect
                                          property_manager->get_n_property_components());
 
       connect_to_signals(this->get_signals());
+
+      AssertThrow(this->introspection().get_composition_base_element_indices().size()<=1,
+                  ExcNotImplemented("Particles are not supported in computations with compositional fields with different finite element types."));
     }
 
 

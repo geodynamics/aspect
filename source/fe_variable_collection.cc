@@ -117,9 +117,6 @@ namespace aspect
     variables.clear();
     variables.reserve(variable_definitions.size());
 
-    // store names temporarily to make sure they are unique
-    std::set<std::string> names;
-
     unsigned int component_index = 0;
     unsigned int block_index = 0;
 
@@ -129,10 +126,6 @@ namespace aspect
                                             component_index, block_index, i));
         component_index+= variables[i].n_components();
         block_index += variables[i].n_blocks;
-
-        Assert(names.find(variables[i].name)==names.end(),
-               ExcMessage("Can not add two variables with the same name."));
-        names.insert(variables[i].name);
       }
 
     Assert(variables.back().n_blocks != 0
@@ -178,6 +171,20 @@ namespace aspect
 
     Assert(false, ExcMessage("Variable '" + name + "' not found!"));
     return *(variables.end()); // reference invalid iterator here
+  }
+
+
+
+  template <int dim>
+  std::vector<const FEVariable<dim>*>
+  FEVariableCollection<dim>::variables_with_name(const std::string &name) const
+  {
+    std::vector<const FEVariable<dim>*> result;
+    for (unsigned int i=0; i<variables.size(); ++i)
+      if (variables[i].name == name)
+        result.emplace_back(&variables[i]);
+
+    return result;
   }
 
 

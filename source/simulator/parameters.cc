@@ -1011,7 +1011,7 @@ namespace aspect
                          "between cells, and weak imposition of boundary terms for the temperature "
                          "field via the interior-penalty discontinuous Galerkin method.");
       prm.declare_entry ("Use discontinuous composition discretization", "false",
-                         Patterns::Bool (),
+                         Patterns::List(Patterns::Bool ()),
                          "Whether to use a composition discretization that is discontinuous "
                          "as opposed to continuous. This then requires the assembly of face terms "
                          "between cells, and weak imposition of boundary terms for the composition "

@@ -881,28 +881,38 @@ namespace aspect
 
 
     template <int dim>
+    bool compositional_field_needs_matrix_block(const Introspection<dim> &introspection, const unsigned int composition_index)
+    {
+      const typename Simulator<dim>::AdvectionField adv_field (Simulator<dim>::AdvectionField::composition(composition_index));
+      switch (adv_field.advection_method(introspection))
+        {
+          case Parameters<dim>::AdvectionFieldMethod::fem_field:
+          case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
+          case Parameters<dim>::AdvectionFieldMethod::fem_darcy_field:
+          case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
+            return true;
+          case Parameters<dim>::AdvectionFieldMethod::particles:
+          case Parameters<dim>::AdvectionFieldMethod::volume_of_fluid:
+          case Parameters<dim>::AdvectionFieldMethod::static_field:
+          case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
+            break;
+          default:
+            Assert (false, ExcNotImplemented());
+        }
+      return false;
+    }
+
+
+
+    template <int dim>
     bool compositional_fields_need_matrix_block(const Introspection<dim> &introspection)
     {
       // Check if any compositional field method actually requires a matrix block
       // (as opposed to all are advected by other means or prescribed fields)
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         {
-          const typename Simulator<dim>::AdvectionField adv_field (Simulator<dim>::AdvectionField::composition(c));
-          switch (adv_field.advection_method(introspection))
-            {
-              case Parameters<dim>::AdvectionFieldMethod::fem_field:
-              case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
-              case Parameters<dim>::AdvectionFieldMethod::fem_darcy_field:
-              case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
-                return true;
-              case Parameters<dim>::AdvectionFieldMethod::particles:
-              case Parameters<dim>::AdvectionFieldMethod::volume_of_fluid:
-              case Parameters<dim>::AdvectionFieldMethod::static_field:
-              case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
-                break;
-              default:
-                Assert (false, ExcNotImplemented());
-            }
+          if (compositional_field_needs_matrix_block(introspection, c))
+            return true;
         }
       return false;
     }
@@ -1010,11 +1020,21 @@ namespace aspect
         &&
         compositional_fields_need_matrix_block(introspection))
       {
-        // If we need at least one compositional field block, we
-        // create a matrix block in the first compositional block. Its sparsity
-        // pattern will later be used to allocate composition matrices as
-        // needed. All other matrix blocks are left empty to save memory.
-        coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
+        // We reuse matrix blocks for compositional fields, but we need different blocks for each base_element.
+        // All other matrix blocks are left empty to save memory.
+        for (const unsigned int base_element_index : introspection.get_composition_base_element_indices())
+          {
+            bool block_needed = false;
+            for (const unsigned int c : introspection.get_compositional_field_indices_with_base_element(base_element_index))
+              if (compositional_field_needs_matrix_block(introspection, c))
+                block_needed = true;
+
+            if (block_needed)
+              {
+                const unsigned int first_c = introspection.get_compositional_field_indices_with_base_element(base_element_index).front();
+                coupling[x.compositional_fields[first_c]][x.compositional_fields[first_c]] = DoFTools::always;
+              }
+          }
       }
 
     // If we are using volume of fluid interface tracking, create a matrix block in the
@@ -1062,10 +1082,20 @@ namespace aspect
             parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::static_field)
           face_coupling[x.temperature][x.temperature] = DoFTools::always;
 
-        if (parameters.have_discontinuous_composition_discretization &&
-            solver_scheme_solves_advection_equations(parameters) &&
-            compositional_fields_need_matrix_block(introspection))
-          face_coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
+        for (const unsigned int base_element_index : introspection.get_composition_base_element_indices())
+          {
+            bool block_needed = false;
+            for (const unsigned int c : introspection.get_compositional_field_indices_with_base_element(base_element_index))
+              if (compositional_field_needs_matrix_block(introspection, c))
+                block_needed = true;
+
+            const unsigned int first_c = introspection.get_compositional_field_indices_with_base_element(base_element_index).front();
+
+            if (parameters.use_discontinuous_composition_discretization[first_c]
+                && solver_scheme_solves_advection_equations(parameters)
+                && block_needed)
+              face_coupling[x.compositional_fields[first_c]][x.compositional_fields[first_c]] = DoFTools::always;
+          }
 
         if (parameters.volume_of_fluid_tracking_enabled)
           {
@@ -1082,9 +1112,7 @@ namespace aspect
                                               Utilities::MPI::
                                               this_mpi_process(mpi_communicator));
 
-        if (solver_scheme_solves_advection_equations(parameters)
-            &&
-            compositional_fields_need_matrix_block(introspection))
+        if (solver_scheme_solves_advection_equations(parameters))
           {
             // If we solve for more than one compositional field make sure we keep constrained entries
             // to allow different boundary conditions for different fields. In order to keep constrained
@@ -1094,20 +1122,24 @@ namespace aspect
                                                              introspection.n_components);
             composition_coupling.fill (DoFTools::none);
 
-            const unsigned int component = introspection.component_indices.compositional_fields[0];
-            composition_coupling[component][component] = coupling[component][component];
+            for (const unsigned int base_element_index : introspection.get_composition_base_element_indices())
+              {
+                const unsigned int first_c = introspection.get_compositional_field_indices_with_base_element(base_element_index).front();
+                const unsigned int component = x.compositional_fields[first_c];
+                composition_coupling[component][component] = coupling[component][component];
 
-            const unsigned int block = introspection.get_components_to_blocks()[component];
-            sp.block(block,block).reinit(sp.block(block,block).locally_owned_range_indices(),
-                                         sp.block(block,block).locally_owned_domain_indices());
+                const unsigned int block = introspection.block_indices.compositional_field_sparsity_pattern[first_c];
+                sp.block(block,block).reinit(sp.block(block,block).locally_owned_range_indices(),
+                                             sp.block(block,block).locally_owned_domain_indices());
 
-            DoFTools::make_flux_sparsity_pattern (dof_handler,
-                                                  sp,
-                                                  current_constraints, true,
-                                                  composition_coupling,
-                                                  face_coupling,
-                                                  Utilities::MPI::
-                                                  this_mpi_process(mpi_communicator));
+                DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                                      sp,
+                                                      current_constraints, true,
+                                                      composition_coupling,
+                                                      face_coupling,
+                                                      Utilities::MPI::
+                                                      this_mpi_process(mpi_communicator));
+              }
           }
       }
     else
