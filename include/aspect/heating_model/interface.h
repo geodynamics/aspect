@@ -169,15 +169,9 @@ namespace aspect
      * @ingroup HeatingModels
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
         /**
          * Returns true if the adiabatic heating plugin is found in the
          * list of active heating models.
@@ -207,15 +201,7 @@ namespace aspect
          * let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
-
-        /**
-         * A function that is called at the beginning of each time step,
-         * calling the update function of the individual heating models.
-         */
-        void
-        update ();
-
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the evaluate function of all the individual
@@ -333,12 +319,6 @@ namespace aspect
                         << "> among the names of registered heating model objects.");
       private:
         /**
-         * A list of heating model objects that have been requested in the
-         * parameter file.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> heating_model_objects;
-
-        /**
          * A list of names of heating model objects that have been requested
          * in the parameter file.
          */
@@ -353,10 +333,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_heating_model () const
     {
-      for (const auto &p : heating_model_objects)
-        if (Plugins::plugin_type_matches<HeatingModelType>(*p))
-          return true;
-      return false;
+      return this->template has_matching_plugin_object<HeatingModelType>();
     }
 
 
@@ -366,18 +343,7 @@ namespace aspect
     const HeatingModelType &
     Manager<dim>::get_matching_heating_model () const
     {
-      AssertThrow(has_matching_heating_model<HeatingModelType> (),
-                  ExcMessage("You asked HeatingModel::Manager::get_heating_model() for a "
-                             "heating model of type <" + boost::core::demangle(typeid(HeatingModelType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "heating model in the input file."));
-
-      for (const auto &p : heating_model_objects)
-        if (Plugins::plugin_type_matches<HeatingModelType>(*p))
-          return Plugins::get_plugin_as_type<HeatingModelType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<HeatingModelType>(**(heating_model_objects.begin()));
+      return this->template get_matching_plugin_object<HeatingModelType>();
     }
 
 

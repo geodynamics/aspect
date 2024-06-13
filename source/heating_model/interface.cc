@@ -53,10 +53,6 @@ namespace aspect
 
     // ------------------------------ Manager -----------------------------
 
-    template <int dim>
-    Manager<dim>::~Manager()
-      = default;
-
 
 
     template <int dim>
@@ -123,29 +119,19 @@ namespace aspect
       // their own parameters
       for (auto &model_name : model_names)
         {
-          heating_model_objects.push_back (std::unique_ptr<Interface<dim>>
-                                           (std::get<dim>(registered_plugins)
-                                            .create_plugin (model_name,
-                                                            "Heating model::Model names")));
+          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
+                                          (std::get<dim>(registered_plugins)
+                                           .create_plugin (model_name,
+                                                           "Heating model::Model names")));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*heating_model_objects.back()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());
 
-          heating_model_objects.back()->parse_parameters (prm);
-          heating_model_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
         }
     }
 
-
-    template <int dim>
-    void
-    Manager<dim>::update ()
-    {
-      for (const auto &heating_model : heating_model_objects)
-        {
-          heating_model->update();
-        }
-    }
 
     template <int dim>
     void
@@ -168,7 +154,7 @@ namespace aspect
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
         = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
-      for (const auto &heating_model : heating_model_objects)
+      for (const auto &heating_model : this->plugin_objects)
         {
           heating_model->evaluate(material_model_inputs, material_model_outputs, individual_heating_outputs);
           for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
@@ -201,12 +187,12 @@ namespace aspect
     create_additional_material_model_inputs_and_outputs(MaterialModel::MaterialModelInputs<dim>  &material_model_inputs,
                                                         MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const
     {
-      for (const auto &heating_model : heating_model_objects)
+      for (const auto &heating_model : this->plugin_objects)
         {
           heating_model->create_additional_material_model_inputs(material_model_inputs);
         }
 
-      for (const auto &heating_model : heating_model_objects)
+      for (const auto &heating_model : this->plugin_objects)
         {
           heating_model->create_additional_material_model_outputs(material_model_outputs);
         }
@@ -226,7 +212,7 @@ namespace aspect
     const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_heating_models () const
     {
-      return heating_model_objects;
+      return this->plugin_objects;
     }
 
 
