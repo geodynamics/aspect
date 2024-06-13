@@ -976,7 +976,7 @@ namespace aspect
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature"
               << (introspection.n_compositional_fields > 0 ? ", compositional fields" : "")
-              << ", Stokes system):" << relative_temperature_residual;
+              << ", Stokes system): " << relative_temperature_residual;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           pcout << ", " << relative_composition_residual[c];
         pcout << ", " << relative_nonlinear_stokes_residual;
@@ -1167,7 +1167,7 @@ namespace aspect
         // write the residual output in the same order as the solutions
         pcout << "      Relative nonlinear residuals (temperature"
               << (introspection.n_compositional_fields > 0 ? ", compositional fields" : "")
-              << ", Stokes system):" << relative_temperature_residual;
+              << ", Stokes system): " << relative_temperature_residual;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           pcout << ", " << relative_composition_residual[c];
         pcout << ", " << dcr.residual/dcr.initial_residual << std::endl;

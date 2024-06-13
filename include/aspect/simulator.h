@@ -680,8 +680,8 @@ namespace aspect
        * number of iterations is reached. This can greatly improve the
        * convergence rate for particularly nonlinear viscosities.
        *
-       * @param use_newton_iterations Sets whether this should function as a defect
-       * correction iterations (use_newton_iterations = false) or as a Newton iteration
+       * @param use_newton_iterations Sets whether this function should only use defect
+       * correction iterations (use_newton_iterations = false) or also use Newton iterations
        * (use_newton_iterations = true).
        *
        * This function is implemented in
@@ -701,8 +701,8 @@ namespace aspect
        * number of iterations is reached. This can greatly improve the
        * convergence rate for particularly nonlinear viscosities.
        *
-       * @param use_newton_iterations Sets whether this should function as a defect
-       * correction iterations (use_newton_iterations = false) or as a Newton iteration
+       * @param use_newton_iterations Sets whether this function should only use defect
+       * correction iterations (use_newton_iterations = false) or also use Newton iterations
        * (use_newton_iterations = true).
        *
        * This function is implemented in
