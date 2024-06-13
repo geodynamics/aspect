@@ -4,8 +4,7 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 46+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
 
@@ -35,8 +34,7 @@ Number of degrees of freedom: 12,176 (7,470+971+3,735)
 
 *** Timestep 1:  t=1.57051e+13 seconds, dt=1.57051e+13 seconds
    Solving temperature system... 26 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1.26e-09 m/s, 3.74e-09 m/s
@@ -45,25 +43,24 @@ Number of degrees of freedom: 12,176 (7,470+971+3,735)
 
 *** Timestep 2:  t=2.3326e+13 seconds, dt=7.62092e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1.29e-09 m/s, 3.8e-09 m/s
      Temperature min/avg/max:            -222.8 K, 100.7 K, 1613 K
      Heat fluxes through boundary parts: -1.045e+05 W, -6.937e+04 W, 0 W, 0 W
 
-Number of active cells: 921 (on 6 levels)
-Number of degrees of freedom: 13,055 (8,008+1,043+4,004)
+Number of active cells: 924 (on 6 levels)
+Number of degrees of freedom: 13,104 (8,038+1,047+4,019)
 
 *** Timestep 3:  t=3.08656e+13 seconds, dt=7.53962e+12 seconds
    Solving temperature system... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  1.32e-09 m/s, 3.85e-09 m/s
      Temperature min/avg/max:            -225 K, 100.8 K, 1613 K
-     Heat fluxes through boundary parts: -1.352e+05 W, -5.733e+04 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -1.352e+05 W, -5.658e+04 W, 0 W, 0 W
 
 Termination requested by criterion: end step
 *** Snapshot created!

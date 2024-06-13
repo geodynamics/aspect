@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
 
@@ -18,7 +13,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54103e-16, 0, 1.39664e-16, 0, 8.51473e-17, 0, 0, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23571e-16, 0, 2.70797e-16, 0, 1.90017e-16, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
@@ -31,8 +26,8 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.54103e-16, 0, 1.39664e-16, 0, 8.51473e-17, 0, 0, 4.64647e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.64647e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23571e-16, 0, 2.70797e-16, 0, 1.90017e-16, 0, 0, 4.64654e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 4.64654e-10
 
 
    Postprocessing:
@@ -50,7 +45,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.98897e-10, 3.76196e-10, 1.52958e-09, 0, 9.56536e-17, 0, 0, 0.0208107
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.98897e-10, 3.76196e-10, 1.52958e-09, 0, 1.77859e-16, 0, 0, 0.0208107
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0208107
 
    Solving temperature system... 5 iterations.
@@ -63,7 +58,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.67114e-07, 1.20625e-05, 1.23251e-06, 0, 7.09412e-17, 0, 0, 1.09741e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.67114e-07, 1.20625e-05, 1.23251e-06, 0, 1.94796e-16, 0, 0, 1.09741e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.20625e-05
 
    Solving temperature system... 1 iterations.
@@ -76,7 +71,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.77098e-12, 1.64474e-10, 4.67294e-12, 0, 9.75727e-17, 0, 0, 2.23761e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.77101e-12, 1.64474e-10, 4.67294e-12, 0, 1.95977e-16, 0, 0, 2.23761e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.23761e-09
 
 
@@ -86,9 +81,4 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

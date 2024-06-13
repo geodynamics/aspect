@@ -13,4 +13,4 @@
 # 13: Max. velocity (m/year)
 # 14: Minimum topography (m)
 # 15: Maximum topography (m)
-0 0.000000000000e+00 0.000000000000e+00 64 2312 729 0 39 41 80 output-box_initial_topography_prm_polygon/solution/solution-00000 1.05348824e-08 4.82025869e-08 0.00000000e+00 5.00000000e+04 
+0 0.000000000000e+00 0.000000000000e+00 64 2312 729 0 23 25 25 output-box_initial_topography_prm_polygon/solution/solution-00000 8.14603826e-02 2.51671922e-01 0.00000000e+00 5.00000000e+04 

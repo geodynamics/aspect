@@ -141,3 +141,9 @@ subsection Particles
     end
   end
 end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set GMRES solver restart length = 200
+  end
+end

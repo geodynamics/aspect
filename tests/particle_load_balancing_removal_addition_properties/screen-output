@@ -6,8 +6,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal_addition_properties/particles/particles-00000
@@ -19,30 +18,29 @@ Number of degrees of freedom: 246 (114+18+57+57)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 24+0 iterations.
 
    Postprocessing:
      Number of advected particles: 70
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 2:  t=456.236 seconds, dt=207.75 seconds
+*** Timestep 2:  t=456.236 seconds, dt=207.751 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      Number of advected particles: 74
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 3:  t=500 seconds, dt=43.764 seconds
+*** Timestep 3:  t=500 seconds, dt=43.7636 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 8 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_removal_addition_properties/particles/particles-00001

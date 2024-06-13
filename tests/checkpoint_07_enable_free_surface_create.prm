@@ -33,6 +33,7 @@ end
 
 subsection Material model
   set Model name = simple
+  set Material averaging = none
 
   subsection Simple model
     set Viscosity = 1e20
@@ -59,6 +60,12 @@ subsection Postprocess
   subsection Visualization
     set Output format                 = gnuplot
     set Time between graphical output = 1e6
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type =  block AMG
   end
 end
 

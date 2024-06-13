@@ -6,24 +6,73 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 79+0 iterations.
+   Solving Stokes system... 38+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00000
-     RMS, max velocity:                  0.000291 m/s, 0.00058 m/s
+     RMS, max velocity:                  0.0278 m/s, 0.0432 m/s
      Temperature min/avg/max:            0 K, 0.2 K, 0.8 K
      Heat fluxes through boundary parts: 12.03 W
 
-*** Timestep 1:  t=50 seconds, dt=50 seconds
-   Solving temperature system... 51 iterations.
-   Solving Stokes system... 78+0 iterations.
+*** Timestep 1:  t=1.79907 seconds, dt=1.79907 seconds
+   Solving temperature system... 50 iterations.
+   Solving Stokes system... 39+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00001
-     RMS, max velocity:                  4.22e-05 m/s, 0.000104 m/s
-     Temperature min/avg/max:            0 K, 0.3996 K, 0.999 K
-     Heat fluxes through boundary parts: 25.12 W
+     RMS, max velocity:                  0.00135 m/s, 0.0021 m/s
+     Temperature min/avg/max:            0 K, 0.3905 K, 0.9738 K
+     Heat fluxes through boundary parts: 24.69 W
+
+*** Timestep 2:  t=5.2353 seconds, dt=3.43623 seconds
+   Solving temperature system... 51 iterations.
+   Solving Stokes system... 39+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-inner_core/solution/solution-00002
+     RMS, max velocity:                  0.000873 m/s, 0.00135 m/s
+     Temperature min/avg/max:            0 K, 0.4055 K, 1.015 K
+     Heat fluxes through boundary parts: 25.39 W
+
+*** Timestep 3:  t=11.7985 seconds, dt=6.5632 seconds
+   Solving temperature system... 46 iterations.
+   Solving Stokes system... 38+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-inner_core/solution/solution-00003
+     RMS, max velocity:                  7.39e-05 m/s, 0.000131 m/s
+     Temperature min/avg/max:            0 K, 0.4004 K, 1.001 K
+     Heat fluxes through boundary parts: 25.15 W
+
+*** Timestep 4:  t=24.3342 seconds, dt=12.5357 seconds
+   Solving temperature system... 44 iterations.
+   Solving Stokes system... 38+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-inner_core/solution/solution-00004
+     RMS, max velocity:                  4.35e-05 m/s, 0.000105 m/s
+     Temperature min/avg/max:            0 K, 0.4 K, 0.9999 K
+     Heat fluxes through boundary parts: 25.13 W
+
+*** Timestep 5:  t=48.2774 seconds, dt=23.9432 seconds
+   Solving temperature system... 40 iterations.
+   Solving Stokes system... 25+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-inner_core/solution/solution-00005
+     RMS, max velocity:                  0.000111 m/s, 0.000174 m/s
+     Temperature min/avg/max:            0 K, 0.4 K, 1 K
+     Heat fluxes through boundary parts: 25.13 W
+
+*** Timestep 6:  t=50 seconds, dt=1.72259 seconds
+   Solving temperature system... 26 iterations.
+   Solving Stokes system... 23+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-inner_core/solution/solution-00006
+     RMS, max velocity:                  8.56e-05 m/s, 0.000142 m/s
+     Temperature min/avg/max:            0 K, 0.4 K, 1 K
+     Heat fluxes through boundary parts: 25.13 W
 
 Termination requested by criterion: end time
 

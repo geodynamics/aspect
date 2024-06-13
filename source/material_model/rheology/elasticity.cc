@@ -216,7 +216,9 @@ namespace aspect
                      ||
                      this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::harmonic_average_only_viscosity
                      ||
-                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::geometric_average_only_viscosity),
+                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::geometric_average_only_viscosity
+                     ||
+                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::default_averaging),
                     ExcMessage("Material models with elasticity can only be used with the material "
                                "averaging schemes 'none', 'harmonic average only viscosity' and "
                                "'geometric average only viscosity'. This parameter ('Material averaging') "

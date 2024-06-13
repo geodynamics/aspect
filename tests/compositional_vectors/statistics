@@ -16,4 +16,4 @@
 # 16: Velocity iterations in Stokes preconditioner
 # 17: Schur complement iterations in Stokes preconditioner
 # 18: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 6534 0 0 0 0 0 0 0 30 32 31 output-compositional_vectors/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 6534 0 0 0 0 0 0 0 7 9 9 output-compositional_vectors/solution/solution-00000 

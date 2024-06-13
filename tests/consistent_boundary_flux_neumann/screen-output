@@ -4,7 +4,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -13,7 +12,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 1:  t=1.60248e+14 seconds, dt=1.60248e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -22,7 +20,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 2:  t=3.19103e+14 seconds, dt=1.58854e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -31,7 +28,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 3:  t=4.77025e+14 seconds, dt=1.57922e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -40,7 +36,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 4:  t=6.34002e+14 seconds, dt=1.56977e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -49,7 +44,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 5:  t=7.90008e+14 seconds, dt=1.56006e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -58,7 +52,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 6:  t=9.4512e+14 seconds, dt=1.55112e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -67,7 +60,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 7:  t=1.09942e+15 seconds, dt=1.543e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -76,7 +68,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 8:  t=1.25299e+15 seconds, dt=1.53567e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -85,7 +76,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 9:  t=1.40589e+15 seconds, dt=1.52905e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -94,7 +84,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 10:  t=1.5582e+15 seconds, dt=1.52306e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -103,7 +92,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 11:  t=1.70996e+15 seconds, dt=1.51765e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -112,7 +100,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 12:  t=1.86124e+15 seconds, dt=1.51275e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -121,7 +108,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 13:  t=2.01207e+15 seconds, dt=1.50832e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -130,7 +116,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 14:  t=2.1625e+15 seconds, dt=1.50431e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -139,7 +124,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 15:  t=2.31257e+15 seconds, dt=1.50067e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -148,7 +132,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 16:  t=2.46231e+15 seconds, dt=1.49739e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -157,7 +140,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 17:  t=2.61175e+15 seconds, dt=1.49441e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -166,7 +148,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 18:  t=2.76092e+15 seconds, dt=1.49172e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -175,7 +156,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 19:  t=2.90985e+15 seconds, dt=1.48928e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -184,7 +164,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 20:  t=3.05855e+15 seconds, dt=1.48707e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -193,7 +172,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 21:  t=3.20706e+15 seconds, dt=1.48507e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -202,7 +180,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 22:  t=3.35539e+15 seconds, dt=1.48325e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -211,7 +188,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 23:  t=3.50355e+15 seconds, dt=1.48161e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -220,7 +196,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 24:  t=3.65156e+15 seconds, dt=1.48013e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -229,7 +204,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 25:  t=3.79944e+15 seconds, dt=1.47878e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -238,7 +212,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 26:  t=3.94719e+15 seconds, dt=1.47756e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -247,7 +220,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 27:  t=4.09484e+15 seconds, dt=1.47645e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -256,7 +228,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 28:  t=4.24238e+15 seconds, dt=1.47545e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -265,7 +236,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 29:  t=4.38984e+15 seconds, dt=1.47454e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -274,7 +244,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 30:  t=4.53721e+15 seconds, dt=1.47372e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -283,7 +252,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 31:  t=4.68451e+15 seconds, dt=1.47298e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -292,7 +260,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 32:  t=4.83174e+15 seconds, dt=1.4723e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -301,7 +268,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 33:  t=4.97891e+15 seconds, dt=1.47169e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -310,7 +276,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 34:  t=5.12602e+15 seconds, dt=1.47114e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -319,7 +284,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 35:  t=5.27308e+15 seconds, dt=1.47063e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -328,7 +292,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 36:  t=5.4201e+15 seconds, dt=1.47018e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -337,7 +300,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 37:  t=5.56708e+15 seconds, dt=1.46977e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -346,7 +308,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 38:  t=5.71402e+15 seconds, dt=1.46939e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -355,7 +316,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 39:  t=5.86092e+15 seconds, dt=1.46905e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -364,7 +324,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 40:  t=6.0078e+15 seconds, dt=1.46875e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -373,7 +332,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 41:  t=6.15465e+15 seconds, dt=1.46847e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -382,7 +340,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 42:  t=6.30147e+15 seconds, dt=1.46822e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -391,7 +348,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 43:  t=6.44827e+15 seconds, dt=1.46799e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -400,7 +356,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 44:  t=6.59504e+15 seconds, dt=1.46778e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -409,7 +364,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 45:  t=6.7418e+15 seconds, dt=1.4676e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -418,7 +372,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 46:  t=6.88855e+15 seconds, dt=1.46743e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -427,7 +380,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 47:  t=7.03527e+15 seconds, dt=1.46727e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -436,7 +388,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 48:  t=7.18199e+15 seconds, dt=1.46713e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -445,7 +396,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 49:  t=7.32869e+15 seconds, dt=1.46701e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -454,7 +404,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 50:  t=7.47538e+15 seconds, dt=1.46689e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -463,7 +412,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 51:  t=7.62206e+15 seconds, dt=1.46679e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -472,7 +420,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 52:  t=7.76872e+15 seconds, dt=1.46669e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -481,7 +428,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 53:  t=7.91539e+15 seconds, dt=1.46661e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -490,7 +436,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 54:  t=8.06204e+15 seconds, dt=1.46653e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -499,7 +444,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 55:  t=8.20868e+15 seconds, dt=1.46646e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -508,7 +452,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 56:  t=8.35532e+15 seconds, dt=1.4664e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -517,7 +460,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 57:  t=8.50196e+15 seconds, dt=1.46634e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -526,7 +468,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 58:  t=8.64859e+15 seconds, dt=1.46629e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -535,7 +476,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 59:  t=8.79521e+15 seconds, dt=1.46624e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -544,7 +484,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 60:  t=8.94183e+15 seconds, dt=1.4662e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -553,7 +492,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 61:  t=9.08845e+15 seconds, dt=1.46616e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -562,7 +500,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 62:  t=9.23506e+15 seconds, dt=1.46612e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -571,7 +508,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 63:  t=9.38167e+15 seconds, dt=1.46609e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -580,7 +516,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 64:  t=9.52827e+15 seconds, dt=1.46606e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -589,7 +524,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 65:  t=9.67488e+15 seconds, dt=1.46604e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -598,7 +532,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 66:  t=9.82148e+15 seconds, dt=1.46601e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -607,7 +540,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 67:  t=9.96808e+15 seconds, dt=1.46599e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -616,7 +548,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 68:  t=1.01147e+16 seconds, dt=1.46597e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -625,7 +556,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 69:  t=1.02613e+16 seconds, dt=1.46595e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -634,7 +564,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 70:  t=1.04079e+16 seconds, dt=1.46594e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -643,7 +572,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 71:  t=1.05545e+16 seconds, dt=1.46592e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -652,7 +580,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 72:  t=1.0701e+16 seconds, dt=1.46591e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -661,7 +588,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 73:  t=1.08476e+16 seconds, dt=1.4659e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -670,7 +596,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 74:  t=1.09942e+16 seconds, dt=1.46589e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -679,7 +604,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 75:  t=1.11408e+16 seconds, dt=1.46588e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -688,7 +612,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 76:  t=1.12874e+16 seconds, dt=1.46587e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -697,7 +620,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 77:  t=1.1434e+16 seconds, dt=1.46586e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -706,7 +628,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 78:  t=1.15806e+16 seconds, dt=1.46585e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -715,7 +636,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 79:  t=1.17272e+16 seconds, dt=1.46585e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -724,7 +644,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 80:  t=1.18737e+16 seconds, dt=1.46584e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -733,7 +652,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 81:  t=1.20203e+16 seconds, dt=1.46583e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -742,7 +660,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 82:  t=1.21669e+16 seconds, dt=1.46583e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -751,7 +668,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 83:  t=1.23135e+16 seconds, dt=1.46583e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -760,7 +676,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 84:  t=1.24601e+16 seconds, dt=1.46582e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -769,7 +684,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 85:  t=1.26067e+16 seconds, dt=1.46582e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -778,7 +692,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 86:  t=1.27532e+16 seconds, dt=1.46581e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -787,7 +700,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 87:  t=1.28998e+16 seconds, dt=1.46581e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -796,7 +708,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 88:  t=1.30464e+16 seconds, dt=1.46581e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -805,7 +716,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 89:  t=1.3193e+16 seconds, dt=1.46581e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -814,7 +724,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 90:  t=1.33396e+16 seconds, dt=1.4658e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -823,7 +732,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 91:  t=1.34861e+16 seconds, dt=1.4658e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -832,7 +740,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 92:  t=1.36327e+16 seconds, dt=1.4658e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -841,7 +748,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 93:  t=1.37793e+16 seconds, dt=1.4658e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -850,7 +756,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 94:  t=1.39259e+16 seconds, dt=1.4658e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -859,7 +764,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 95:  t=1.40725e+16 seconds, dt=1.4658e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -868,7 +772,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 96:  t=1.4219e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -877,7 +780,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 97:  t=1.43656e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -886,7 +788,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 98:  t=1.45122e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -895,7 +796,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 99:  t=1.46588e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -904,7 +804,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 100:  t=1.48054e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -916,7 +815,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 101:  t=1.49519e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -925,7 +823,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 102:  t=1.50985e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -934,7 +831,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 103:  t=1.52451e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -943,7 +839,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 104:  t=1.53917e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -952,7 +847,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 105:  t=1.55382e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -961,7 +855,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 106:  t=1.56848e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -970,7 +863,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 107:  t=1.58314e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -979,7 +871,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 108:  t=1.5978e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -988,7 +879,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 109:  t=1.61246e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -997,7 +887,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 110:  t=1.62711e+16 seconds, dt=1.46579e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1006,7 +895,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 111:  t=1.64177e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1015,7 +903,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 112:  t=1.65643e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1024,7 +911,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 113:  t=1.67109e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1033,7 +919,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 114:  t=1.68575e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1042,7 +927,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 115:  t=1.7004e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1051,7 +935,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 116:  t=1.71506e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1060,7 +943,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 117:  t=1.72972e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1069,7 +951,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 118:  t=1.74438e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1078,7 +959,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 119:  t=1.75903e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1087,7 +967,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 120:  t=1.77369e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1096,7 +975,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 121:  t=1.78835e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1105,7 +983,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 122:  t=1.80301e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1114,7 +991,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 123:  t=1.81767e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1123,7 +999,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 124:  t=1.83232e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1132,7 +1007,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 125:  t=1.84698e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1141,7 +1015,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 126:  t=1.86164e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1150,7 +1023,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 127:  t=1.8763e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1159,7 +1031,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 128:  t=1.89095e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1168,7 +1039,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 129:  t=1.90561e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1177,7 +1047,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 130:  t=1.92027e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1186,7 +1055,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 131:  t=1.93493e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1195,7 +1063,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 132:  t=1.94959e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1204,7 +1071,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 133:  t=1.96424e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1213,7 +1079,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 134:  t=1.9789e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1222,7 +1087,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 135:  t=1.99356e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1231,7 +1095,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 136:  t=2.00822e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1240,7 +1103,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 137:  t=2.02288e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1249,7 +1111,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 138:  t=2.03753e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1258,7 +1119,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 139:  t=2.05219e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1267,7 +1127,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 140:  t=2.06685e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1276,7 +1135,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 141:  t=2.08151e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1285,7 +1143,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 142:  t=2.09616e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1294,7 +1151,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 143:  t=2.11082e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1303,7 +1159,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 144:  t=2.12548e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1312,7 +1167,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 145:  t=2.14014e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1321,7 +1175,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 146:  t=2.1548e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1330,7 +1183,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 147:  t=2.16945e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1339,7 +1191,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 148:  t=2.18411e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1348,7 +1199,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 149:  t=2.19877e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1357,7 +1207,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 150:  t=2.21343e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1366,7 +1215,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 151:  t=2.22808e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1375,7 +1223,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 152:  t=2.24274e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1384,7 +1231,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 153:  t=2.2574e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1393,7 +1239,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 154:  t=2.27206e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1402,7 +1247,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 155:  t=2.28672e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1411,7 +1255,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 156:  t=2.30137e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1420,7 +1263,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 157:  t=2.31603e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1429,7 +1271,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 158:  t=2.33069e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1438,7 +1279,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 159:  t=2.34535e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1447,7 +1287,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 160:  t=2.36001e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1456,7 +1295,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 161:  t=2.37466e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1465,7 +1303,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 162:  t=2.38932e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1474,7 +1311,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 163:  t=2.40398e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1483,7 +1319,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 164:  t=2.41864e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1492,7 +1327,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 165:  t=2.43329e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1501,7 +1335,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 166:  t=2.44795e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1510,7 +1343,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 167:  t=2.46261e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1519,7 +1351,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 168:  t=2.47727e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1528,7 +1359,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 169:  t=2.49193e+16 seconds, dt=1.46578e+14 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -1537,7 +1367,6 @@ Number of degrees of freedom: 31 (18+4+9)
 
 *** Timestep 170:  t=2.5e+16 seconds, dt=8.07448e+13 seconds
    Solving temperature system... 1 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:

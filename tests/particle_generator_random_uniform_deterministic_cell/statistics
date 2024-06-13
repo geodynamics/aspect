@@ -17,4 +17,4 @@
 # 17: Global mass for composition C_1
 # 18: Number of advected particles
 # 19: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 14 16 45 1.33268186e-04 3.31044374e-04 0.00000000e+00 1.00000000e+00 1.91399339e-01 256 output-particle_generator_random_uniform_deterministic_cell/particles/particles-00000 
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 10 12 12 1.33268186e-04 3.31044371e-04 0.00000000e+00 1.00000000e+00 1.91399339e-01 256 output-particle_generator_random_uniform_deterministic_cell/particles/particles-00000 

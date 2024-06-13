@@ -1741,6 +1741,14 @@ namespace aspect
       check_consistency_of_formulation ();
 
       /**
+      * This function checks if the default solver and/or material
+      * averaging were selected and if so, determines the appropriate
+      * solver and/or averaging option.
+      */
+      void
+      select_default_solver_and_averaging ();
+
+      /**
        * This function checks that the user-selected boundary conditions do not
        * contain contradictions. If an incorrect selection is detected it
        * throws an exception. This for example assures that not both velocity

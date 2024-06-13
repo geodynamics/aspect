@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 93 96 568 output-initial_condition_vs_to_density/solution/solution-00000 1.51258418e+03 1.60011805e+03 1.69189853e+03 
+0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 44 46 46 output-initial_condition_vs_to_density/solution/solution-00000 1.51258418e+03 1.60011805e+03 1.69189853e+03 

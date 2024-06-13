@@ -15,6 +15,6 @@
 # 15: u_L2
 # 16: p_L2
 # 17: rho_L2
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 576 0 7  9  8 output-rigid_shear_steady_state/solution/solution-00000 5184 output-rigid_shear_steady_state/particles/particles-00000 3.49117695033268e-04 2.60074011232150e-02 7.55669318237575e-03 
-1 6.247722157405e-02 6.247722157405e-02 64 659 289 576 0 8 10 10                                                      "" 5184                                                        "" 3.49949716082824e-04 2.60084512260754e-02 7.63033022521832e-03 
-2 1.000000000000e-01 3.752277842595e-02 64 659 289 576 0 8 10 10 output-rigid_shear_steady_state/solution/solution-00001 5184 output-rigid_shear_steady_state/particles/particles-00001 3.48929539567650e-04 2.60082618440733e-02 7.59541956319281e-03 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 576 0 7 9 9 output-rigid_shear_steady_state/solution/solution-00000 5184 output-rigid_shear_steady_state/particles/particles-00000 3.49116376850641e-04 2.60074009827921e-02 7.55669318237575e-03 
+1 6.247722391368e-02 6.247722391368e-02 64 659 289 576 0 4 6 6                                                      "" 5184                                                        "" 3.49949751013658e-04 2.60084512794991e-02 7.63033022233409e-03 
+2 1.000000000000e-01 3.752277608632e-02 64 659 289 576 0 4 6 6 output-rigid_shear_steady_state/solution/solution-00001 5184 output-rigid_shear_steady_state/particles/particles-00001 3.48929491468915e-04 2.60082617522442e-02 7.59541956237771e-03 

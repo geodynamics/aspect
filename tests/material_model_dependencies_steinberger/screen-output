@@ -5,29 +5,20 @@ Number of active cells: 48 (on 3 levels)
 Number of degrees of freedom: 740 (450+65+225)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00567963
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.77869
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0101023
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0294974
-
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00180303
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000167534
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 4.648e-05
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.02406e-05
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 2.8245e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.63803e-07
 
 
    Postprocessing:

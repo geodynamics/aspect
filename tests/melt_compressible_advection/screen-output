@@ -38,7 +38,7 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
      RMS, max velocity:                               0.666 m/s, 1.1 m/s
      Pressure min/avg/max:                            -17.99 Pa, -3.368 Pa, 0.4757 Pa
      Max, min, and rms velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 0.1 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s, 1.1 m/s
-     Error porosity_L2:                               1.164557e-04
+     Error porosity_L2:                               1.164556e-04
 
 *** Timestep 1:  t=0.0142045 seconds, dt=0.0142045 seconds
    Skipping temperature solve because RHS is zero.

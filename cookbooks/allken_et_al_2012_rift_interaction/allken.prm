@@ -16,6 +16,7 @@ set CFL number                             = .5
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
+    set Stokes solver type = block AMG
   end
 end
 

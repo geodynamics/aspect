@@ -712,7 +712,8 @@ namespace aspect
         log_average,
         harmonic_average_only_viscosity,
         geometric_average_only_viscosity,
-        project_to_Q1_only_viscosity
+        project_to_Q1_only_viscosity,
+        default_averaging
       };
 
 

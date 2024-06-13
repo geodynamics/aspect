@@ -212,7 +212,8 @@ namespace aspect
                       Triangulation<dim>::do_not_produce_unrefined_islands)
                    )
                    ,
-                   (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
+                   (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
+                    parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver
                     ?
                     static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
                     (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
@@ -422,6 +423,9 @@ namespace aspect
         newton_handler->initialize_simulator(*this);
         newton_handler->parameters.parse_parameters(prm);
       }
+
+    // choose the default solver and averaging scheme
+    select_default_solver_and_averaging();
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {

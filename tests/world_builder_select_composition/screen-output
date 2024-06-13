@@ -7,8 +7,7 @@ Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
    Solving Crust system ... 0 iterations.
    Skipping Lithosphere composition solve because RHS is zero.
    Skipping Continent composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+2 iterations.
+   Solving Stokes system... 37+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/1/1.677e+10 // 0/0/0 // 0/0/0

@@ -1,18 +1,4 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.6.0-pre (add_subd_init_cookbook, b24fd8ae1)
---     . using deal.II 9.4.2
---     .       with 32 bit indices and vectorization level 1 (128 bits)
---     . using Trilinos 13.2.0
---     . using p4est 2.3.2
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=b24fd8ae1&src=code
------------------------------------------------------------------------------
 Number of active cells: 128 (on 4 levels)
 Number of degrees of freedom: 4,080 (1,122+153+561+561+561+561+561)
 
@@ -22,39 +8,15 @@ Number of degrees of freedom: 4,080 (1,122+153+561+561+561+561+561)
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
    Solving C_4 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+11 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                 0.00152 m/year, 0.00385 m/year
+     RMS, max velocity:                                 0.00145 m/year, 0.00325 m/year
      Compositions min/max/mass:                         0/1/1.68e+10 // 0/1/1.825e+10 // 0/1/1.563e+09 // 0/1/1.5e+09
-     Pressure min/avg/max:                              -1.268e+07 Pa, 2.833e+09 Pa, 5.667e+09 Pa
+     Pressure min/avg/max:                              -7.922e+06 Pa, 2.837e+09 Pa, 5.671e+09 Pa
      Average density / Average viscosity / Total mass:  3176 kg/m^3, 3.136e+21 Pa s, 2.287e+14 kg
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      2.88s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |         1 |     0.149s |       5.2% |
-| Assemble composition system      |         4 |     0.731s |        25% |
-| Assemble temperature system      |         1 |     0.174s |         6% |
-| Build Stokes preconditioner      |         1 |    0.0884s |       3.1% |
-| Build composition preconditioner |         4 |   0.00292s |       0.1% |
-| Initialization                   |         1 |     0.463s |        16% |
-| Postprocessing                   |         1 |    0.0861s |         3% |
-| Setup dof systems                |         1 |    0.0292s |         1% |
-| Setup initial conditions         |         1 |     0.266s |       9.2% |
-| Setup matrices                   |         1 |     0.163s |       5.7% |
-| Solve Stokes system              |         1 |     0.617s |        21% |
-| Solve composition system         |         4 |   0.00276s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 3s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&sha=b24fd8ae1&src=code
------------------------------------------------------------------------------

@@ -85,6 +85,7 @@ end
 
 subsection Material model
   set Model name = grain size
+  set Material averaging = none
 
   subsection Grain size model
     set Reference density                    = 3400
@@ -161,5 +162,11 @@ subsection Particles
       set Function expression = sin(y/100000*pi)
       set Number of particles = 10000
     end
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type =  block AMG
   end
 end
