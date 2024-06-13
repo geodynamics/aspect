@@ -108,7 +108,7 @@ namespace aspect
     if (field_type == temperature_field)
       return introspection.use_discontinuous_temperature_discretization;
     else if (field_type == compositional_field)
-      return introspection.use_discontinuous_composition_discretization;
+      return introspection.use_discontinuous_composition_discretization[compositional_variable];
 
     Assert (false, ExcInternalError());
     return false;

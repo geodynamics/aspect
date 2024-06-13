@@ -736,13 +736,13 @@ namespace aspect
     pcout << solver_control.last_step()
           << " iterations." << std::endl;
 
-    if ((advection_field.is_temperature()
-         && parameters.use_discontinuous_temperature_discretization
-         && parameters.use_limiter_for_discontinuous_temperature_solution)
-        ||
-        (!advection_field.is_temperature()
-         && parameters.use_discontinuous_composition_discretization
-         && parameters.use_limiter_for_discontinuous_composition_solution[advection_field.compositional_variable]))
+    if ((advection_field.is_discontinuous(introspection)
+         &&
+         (
+           (advection_field.is_temperature() && parameters.use_limiter_for_discontinuous_temperature_solution)
+           ||
+           (!advection_field.is_temperature() && parameters.use_limiter_for_discontinuous_composition_solution[advection_field.compositional_variable])
+         )))
       {
         apply_limiter_to_dg_solutions(advection_field);
         // by applying the limiter we have modified the solution to no longer

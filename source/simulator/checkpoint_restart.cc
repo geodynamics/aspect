@@ -178,7 +178,7 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
-      bool use_discontinuous_composition_discretization;
+      std::vector<bool> use_discontinuous_composition_discretization;
       ia >> use_discontinuous_composition_discretization;
       AssertThrow (use_discontinuous_composition_discretization == parameters.use_discontinuous_composition_discretization,
                    ExcMessage ("The value provided for `Use discontinuous composition discretization' that was stored "

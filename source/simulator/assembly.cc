@@ -169,7 +169,7 @@ namespace aspect
         if ((i==0 && parameters.use_discontinuous_temperature_discretization
              && parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::fem_field)
             ||
-            (i>0 && parameters.use_discontinuous_composition_discretization
+            (i>0 && parameters.use_discontinuous_composition_discretization[i-1]
              && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field))
           {
             assemblers->advection_system_on_boundary_face[i].push_back(
@@ -192,7 +192,7 @@ namespace aspect
             assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
           }
 
-        if (i > 0 && parameters.use_discontinuous_composition_discretization
+        if (i > 0 && parameters.use_discontinuous_composition_discretization[i-1]
             && parameters.compositional_field_methods[i-1] == Parameters<dim>::AdvectionFieldMethod::fem_field)
           {
             assemblers->advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
@@ -201,20 +201,29 @@ namespace aspect
       }
 
     if (parameters.use_discontinuous_temperature_discretization ||
-        parameters.use_discontinuous_composition_discretization)
+        parameters.have_discontinuous_composition_discretization)
       {
         const bool dc_temperature = parameters.use_discontinuous_temperature_discretization && parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::fem_field;
-        const bool dc_composition = parameters.use_discontinuous_composition_discretization && std::find(parameters.compositional_field_methods.begin(),
-                                    parameters.compositional_field_methods.end(),
-                                    Parameters<dim>::AdvectionFieldMethod::fem_field) != parameters.compositional_field_methods.end();
-        const bool no_field_method = !(dc_temperature || dc_composition);
+        bool dc_composition = false;
+
+        for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
+          {
+            if (parameters.use_discontinuous_composition_discretization[c]
+                && parameters.compositional_field_methods[c] == Parameters<dim>::AdvectionFieldMethod::fem_field)
+              {
+                dc_composition = true;
+                break;
+              }
+          }
+
+        const bool no_dc_field_method = !dc_temperature && !dc_composition;
 
         // TODO: This currently does not work in parallel, because the sparsity
         // pattern of the matrix does not seem to know about flux terms
         // across periodic faces of different levels. Fix this.
         AssertThrow(geometry_model->get_periodic_boundary_pairs().size() == 0 ||
                     Utilities::MPI::n_mpi_processes(mpi_communicator) == 1 ||
-                    no_field_method ||
+                    no_dc_field_method ||
                     (parameters.initial_adaptive_refinement == 0 &&
                      parameters.adaptive_refinement_interval == 0),
                     ExcMessage("Combining discontinuous elements with periodic boundaries and "

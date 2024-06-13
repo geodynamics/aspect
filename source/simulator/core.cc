@@ -545,7 +545,7 @@ namespace aspect
     // check that the setup of equations, material models, and heating terms is consistent
     check_consistency_of_formulation();
 
-    if (parameters.use_discontinuous_temperature_discretization || parameters.use_discontinuous_composition_discretization)
+    if (parameters.use_discontinuous_temperature_discretization || parameters.have_discontinuous_composition_discretization)
       CitationInfo::add("dg");
 
     // now that all member variables have been set up, also
@@ -720,13 +720,13 @@ namespace aspect
     if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
       replace_outflow_boundary_ids(boundary_id_offset);
 
-    // now do the same for the composition variable:
-    if (!parameters.use_discontinuous_composition_discretization)
-      {
-        // obtain the boundary indicators that belong to Dirichlet-type
-        // composition boundary conditions and interpolate the composition
-        // there
-        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+    // now do the same for the composition variables:
+    {
+      // obtain the boundary indicators that belong to Dirichlet-type
+      // composition boundary conditions and interpolate the composition
+      // there
+      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+        if (parameters.use_discontinuous_composition_discretization[c] == false)
           for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
             {
               VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
@@ -744,7 +744,7 @@ namespace aspect
                                                         new_current_constraints,
                                                         introspection.component_masks.compositional_fields[c]);
             }
-      }
+    }
 
     if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
       restore_outflow_boundary_ids(boundary_id_offset);
@@ -1043,7 +1043,7 @@ namespace aspect
 
 
     if ((parameters.use_discontinuous_temperature_discretization) ||
-        (parameters.use_discontinuous_composition_discretization) ||
+        (parameters.have_discontinuous_composition_discretization) ||
         (parameters.volume_of_fluid_tracking_enabled))
       {
         Table<2,DoFTools::Coupling> face_coupling (introspection.n_components,
@@ -1058,7 +1058,7 @@ namespace aspect
             parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::static_field)
           face_coupling[x.temperature][x.temperature] = DoFTools::always;
 
-        if (parameters.use_discontinuous_composition_discretization &&
+        if (parameters.have_discontinuous_composition_discretization &&
             solver_scheme_solves_advection_equations(parameters) &&
             compositional_fields_need_matrix_block(introspection))
           face_coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;

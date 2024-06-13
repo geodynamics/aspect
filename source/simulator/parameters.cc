@@ -1728,9 +1728,15 @@ namespace aspect
       use_discontinuous_temperature_discretization
         = prm.get_bool("Use discontinuous temperature discretization");
       use_discontinuous_composition_discretization
-        = prm.get_bool("Use discontinuous composition discretization");
+        = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_bool(Utilities::split_string_list(prm.get("Use discontinuous composition discretization"))),
+                                                  n_compositional_fields,
+                                                  "Use discontinuous composition discretization");
+      have_discontinuous_composition_discretization =
+        (std::find(use_discontinuous_composition_discretization.begin(), use_discontinuous_composition_discretization.end(), true)
+         != use_discontinuous_composition_discretization.end());
 
-      AssertThrow(use_discontinuous_composition_discretization == true || composition_degree > 0,
+      // TODO: this needs to be modified once we lift the restriction that all compositions have the same degree.
+      AssertThrow(have_discontinuous_composition_discretization == true || composition_degree > 0,
                   ExcMessage("Using a composition polynomial degree of 0 (cell-wise constant composition) "
                              "is only supported if a discontinuous composition discretization is selected."));
 
