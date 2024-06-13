@@ -73,7 +73,11 @@ for refinement in 2 3 4; do
         echo "end" >> particles.prm
 
         echo "subsection Particles" >> particles.prm
-        echo "  set Number of particles = $number_of_particles" >> particles.prm
+        echo "  subsection Generator" >> particles.prm
+        echo "    subsection Probability density function" >> particles.prm
+        echo "      set Number of particles = $number_of_particles" >> particles.prm
+        echo "    end" >> particles.prm
+        echo "  end" >> particles.prm
         echo "  set Integration scheme = rk2" >> particles.prm
         echo "  subsection Integrator" >> particles.prm
         echo "    subsection RK2" >> particles.prm
