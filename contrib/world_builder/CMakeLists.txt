@@ -376,7 +376,7 @@ if (NOT MSVC AND NOT APPLE)
         -Wcast-align -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wunused>)
 
         if (${FORCE_COLORED_OUTPUT})
-          SET(WB_COMPILER_OPTIONS_PRIVATE -fcolor-diagnostics ${WB_COMPILER_OPTIONS_PRIVATE})
+          SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fcolor-diagnostics> ${WB_COMPILER_OPTIONS_PRIVATE})
         endif ()
 
       else()
@@ -400,7 +400,7 @@ if (NOT MSVC AND NOT APPLE)
         SET(WB_COMPILER_OPTIONS_PRIVATE -pedantic -Wall -Wextra  $<$<COMPILE_LANGUAGE:CXX>:-Wunused-variable -Wmissing-braces -Wunused-parameter -Wpointer-arith -Wwrite-strings -Wsynth -Wsign-compare -Woverloaded-virtual -Wno-placement-new -Wno-literal-suffix -Wno-parentheses -Wno-unused-local-typedefs -Wcast-qual -fstrict-aliasing -Wmaybe-uninitialized -Werror=maybe-uninitialized -Wparentheses -Wfloat-equal -Wundef -Wcast-align -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wno-unused>)
 
         if (${FORCE_COLORED_OUTPUT})
-          SET(WB_COMPILER_OPTIONS_PRIVATE -fdiagnostics-color=always ${WB_COMPILER_OPTIONS_PRIVATE})
+          SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fdiagnostics-color=always> ${WB_COMPILER_OPTIONS_PRIVATE})
         endif()
 
       else()
