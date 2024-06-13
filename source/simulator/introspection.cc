@@ -370,7 +370,7 @@ namespace aspect
 
 
   template <int dim>
-  std::vector<unsigned int>
+  const std::vector<unsigned int> &
   Introspection<dim>::get_composition_base_element_indices() const
   {
     return composition_base_element_indices;
@@ -379,7 +379,7 @@ namespace aspect
 
 
   template <int dim>
-  std::vector<unsigned int>
+  const std::vector<unsigned int> &
   Introspection<dim>::get_compositional_field_indices_with_base_element(const unsigned int base_element_index) const
   {
     Assert(compositional_field_indices_with_base_element.find(base_element_index)
