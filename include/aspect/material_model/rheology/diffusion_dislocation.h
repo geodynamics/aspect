@@ -28,6 +28,8 @@
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 
+#include <deal.II/sundials/kinsol.h>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -91,6 +93,20 @@ namespace aspect
                                             const SymmetricTensor<2,dim> &strain_rate) const;
 
           /**
+           * Compute the residual of the natural logarithm of the strain rate
+           * and the derivative with respect to the logarithm of the stress
+           * at the current value of the logarithm of the stress.
+           */
+          std::pair<double, double>
+          compute_log_strain_rate_residual_and_derivative(
+            const double current_log_stress_ii,
+            const double pressure,
+            const double temperature,
+            const Rheology::DiffusionCreepParameters &diffusion_creep_parameters,
+            const Rheology::DislocationCreepParameters &dislocation_creep_parameters,
+            const double log_edot_ii) const;
+
+          /**
            * Compute the viscosity based on the composite viscous creep law,
            * averaging over all compositional fields according to their
            * volume fractions.
@@ -130,6 +146,7 @@ namespace aspect
           unsigned int n_chemical_composition_fields;
 
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
+          SUNDIALS::KINSOL<Vector<double>>::AdditionalData kinsol_settings;
 
       };
 
