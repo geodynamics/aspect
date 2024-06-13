@@ -26,14 +26,15 @@
 TEST_CASE("Particle Manager plugin names")
 {
   dealii::ParameterHandler prm;
+  aspect::Particle::Property::Manager<2> manager;
   // The property manager needs to know about the integrator, which is declared in World
   aspect::Particle::World<2>::declare_parameters(prm);
-  aspect::Particle::Property::Manager<2> manager;
-  manager.declare_parameters(prm);
+
   prm.enter_subsection("Particles");
+  manager.declare_parameters(prm);
   prm.set("List of particle properties","composition, position");
-  prm.leave_subsection();
   manager.parse_parameters(prm);
+  prm.leave_subsection();
 
   // existing and listed pluring
   REQUIRE(manager.plugin_name_exists("composition") == true);

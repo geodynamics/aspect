@@ -47,42 +47,38 @@ namespace aspect
       void
       RandomUniform<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Particles");
+        prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Generator");
+          prm.enter_subsection("Probability density function");
           {
-            prm.enter_subsection("Probability density function");
-            {
-              prm.declare_entry ("Number of particles", "1000",
-                                 Patterns::Double (0.),
-                                 "Total number of particles to create (not per processor or per element). "
-                                 "The number is parsed as a floating point number (so that one can "
-                                 "specify, for example, '1e4' particles) but it is interpreted as "
-                                 "an integer, of course.");
+            prm.declare_entry ("Number of particles", "1000",
+                               Patterns::Double (0.),
+                               "Total number of particles to create (not per processor or per element). "
+                               "The number is parsed as a floating point number (so that one can "
+                               "specify, for example, '1e4' particles) but it is interpreted as "
+                               "an integer, of course.");
 
-              prm.declare_entry ("Random cell selection", "true",
-                                 Patterns::Bool(),
-                                 "If true, particle numbers per cell are calculated randomly "
-                                 "according to their respective probability density. "
-                                 "This means particle numbers per cell can deviate statistically from "
-                                 "the integral of the probability density. If false, "
-                                 "first determine how many particles each cell should have "
-                                 "based on the integral of the density over each of the cells, "
-                                 "and then once we know how many particles we want on each cell, "
-                                 "choose their locations randomly within each cell.");
+            prm.declare_entry ("Random cell selection", "true",
+                               Patterns::Bool(),
+                               "If true, particle numbers per cell are calculated randomly "
+                               "according to their respective probability density. "
+                               "This means particle numbers per cell can deviate statistically from "
+                               "the integral of the probability density. If false, "
+                               "first determine how many particles each cell should have "
+                               "based on the integral of the density over each of the cells, "
+                               "and then once we know how many particles we want on each cell, "
+                               "choose their locations randomly within each cell.");
 
-              prm.declare_entry ("Random number seed", "5432",
-                                 Patterns::Integer(0),
-                                 "The seed for the random number generator that controls "
-                                 "the particle generation. Keep constant to generate "
-                                 "identical particle distributions in subsequent model "
-                                 "runs. Change to get a different distribution. In parallel "
-                                 "computations the seed is further modified on each process "
-                                 "to ensure different particle patterns on different "
-                                 "processes. Note that the number of particles per processor "
-                                 "is not affected by the seed.");
-            }
-            prm.leave_subsection();
+            prm.declare_entry ("Random number seed", "5432",
+                               Patterns::Integer(0),
+                               "The seed for the random number generator that controls "
+                               "the particle generation. Keep constant to generate "
+                               "identical particle distributions in subsequent model "
+                               "runs. Change to get a different distribution. In parallel "
+                               "computations the seed is further modified on each process "
+                               "to ensure different particle patterns on different "
+                               "processes. Note that the number of particles per processor "
+                               "is not affected by the seed.");
           }
           prm.leave_subsection();
         }
@@ -94,17 +90,13 @@ namespace aspect
       void
       RandomUniform<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Particles");
+        prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Generator");
+          prm.enter_subsection("Probability density function");
           {
-            prm.enter_subsection("Probability density function");
-            {
-              n_particles = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
-              random_cell_selection = prm.get_bool("Random cell selection");
-              random_number_seed = prm.get_integer("Random number seed");
-            }
-            prm.leave_subsection();
+            n_particles = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
+            random_cell_selection = prm.get_bool("Random cell selection");
+            random_number_seed = prm.get_integer("Random number seed");
           }
           prm.leave_subsection();
         }

@@ -267,22 +267,18 @@ namespace aspect
       IntegratorProperties<dim>::parse_parameters (ParameterHandler &prm)
       {
         std::string name;
-        prm.enter_subsection ("Particles");
-        {
-          name = prm.get ("Integration scheme");
+        name = prm.get ("Integration scheme");
 
-          if (name == "rk2")
-            n_integrator_properties = Particle::Integrator::RK2<dim>::n_integrator_properties;
-          else if (name == "rk4")
-            n_integrator_properties = Particle::Integrator::RK4<dim>::n_integrator_properties;
-          else if (name == "euler")
-            n_integrator_properties = Particle::Integrator::Euler<dim>::n_integrator_properties;
-          else
-            AssertThrow(false,
-                        ExcMessage("Unknown integrator scheme. The particle property 'Integrator properties' "
-                                   "does not know how many particle properties to store for this integration scheme."));
-        }
-        prm.leave_subsection ();
+        if (name == "rk2")
+          n_integrator_properties = Particle::Integrator::RK2<dim>::n_integrator_properties;
+        else if (name == "rk4")
+          n_integrator_properties = Particle::Integrator::RK4<dim>::n_integrator_properties;
+        else if (name == "euler")
+          n_integrator_properties = Particle::Integrator::Euler<dim>::n_integrator_properties;
+        else
+          AssertThrow(false,
+                      ExcMessage("Unknown integrator scheme. The particle property 'Integrator properties' "
+                                 "does not know how many particle properties to store for this integration scheme."));
       }
 
 
@@ -659,23 +655,20 @@ namespace aspect
       void
       Manager<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Particles");
-        {
-          // finally also construct a string for Patterns::MultipleSelection that
-          // contains the names of all registered particle properties
-          const std::string pattern_of_names
-            = std::get<dim>(registered_plugins).get_pattern_of_names ();
-          prm.declare_entry("List of particle properties",
-                            "",
-                            Patterns::MultipleSelection(pattern_of_names),
-                            "A comma separated list of particle properties that should be tracked. "
-                            "By default none is selected, which means only position, velocity "
-                            "and id of the particles are output. \n\n"
-                            "The following properties are available:\n\n"
-                            +
-                            std::get<dim>(registered_plugins).get_description_string());
-        }
-        prm.leave_subsection();
+        // finally also construct a string for Patterns::MultipleSelection that
+        // contains the names of all registered particle properties
+        const std::string pattern_of_names
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+
+        prm.declare_entry("List of particle properties",
+                          "",
+                          Patterns::MultipleSelection(pattern_of_names),
+                          "A comma separated list of particle properties that should be tracked. "
+                          "By default none is selected, which means only position, velocity "
+                          "and id of the particles are output. \n\n"
+                          "The following properties are available:\n\n"
+                          +
+                          std::get<dim>(registered_plugins).get_description_string());
 
         // now declare the parameters of each of the registered
         // particle properties in turn
@@ -691,29 +684,25 @@ namespace aspect
         Assert (std::get<dim>(registered_plugins).plugins != nullptr,
                 ExcMessage ("No postprocessors registered!?"));
 
-        prm.enter_subsection("Particles");
-        {
-          // now also see which derived quantities we are to compute
-          plugin_names = Utilities::split_string_list(prm.get("List of particle properties"));
-          AssertThrow(Utilities::has_unique_entries(plugin_names),
-                      ExcMessage("The list of strings for the parameter "
-                                 "'Particles/List of particle properties' contains entries more than once. "
-                                 "This is not allowed. Please check your parameter file."));
+        // now also see which derived quantities we are to compute
+        plugin_names = Utilities::split_string_list(prm.get("List of particle properties"));
+        AssertThrow(Utilities::has_unique_entries(plugin_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Particles/List of particle properties' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
 
-          // see if 'all' was selected (or is part of the list). if so
-          // simply replace the list with one that contains all names
-          if (std::find (plugin_names.begin(),
-                         plugin_names.end(),
-                         "all") != plugin_names.end())
-            {
-              plugin_names.clear();
-              for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim>>::PluginInfo>::const_iterator
-                   p = std::get<dim>(registered_plugins).plugins->begin();
-                   p != std::get<dim>(registered_plugins).plugins->end(); ++p)
-                plugin_names.push_back (std::get<0>(*p));
-            }
-        }
-        prm.leave_subsection();
+        // see if 'all' was selected (or is part of the list). if so
+        // simply replace the list with one that contains all names
+        if (std::find (plugin_names.begin(),
+                       plugin_names.end(),
+                       "all") != plugin_names.end())
+          {
+            plugin_names.clear();
+            for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim>>::PluginInfo>::const_iterator
+                 p = std::get<dim>(registered_plugins).plugins->begin();
+                 p != std::get<dim>(registered_plugins).plugins->end(); ++p)
+              plugin_names.push_back (std::get<0>(*p));
+          }
 
         // then go through the list, create objects and let them parse
         // their own parameters
