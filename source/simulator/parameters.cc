@@ -502,7 +502,7 @@ namespace aspect
                            "\n\n"
                            "The default value should be good for relatively simple models, but in "
                            "particular for very strong viscosity contrasts the full $A$ block can be "
-                           "advantageous.");
+                           "advantageous. This parameter is always set to true when using the GMG solver.");
 
         prm.declare_entry ("Force nonsymmetric A block solver", "false",
                            Patterns::Bool(),
