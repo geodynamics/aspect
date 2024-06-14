@@ -7,7 +7,15 @@
 # transition, where it freezes and changes the velocity.
 # The crucial property of the test is the maximum velocity
 # (at the bottom of the domain), which should be close to
-# 2.4e-11 m/s. This test is similar to the
+# 2.4e-11 m/s.
+#
+# This is because upon melting, the density changes from
+# 3000 kg/m3 to 2500 kg/m3, so the velocity increases from
+# 2e-11 m/s to
+#
+# 2e-11 m/s * 3000/2500 = 2.4e-11 m/s.
+#
+# This test is similar to the
 # "latent heat melt transport" test, except that it has a
 # zero permeability and latent heat, and slightly different
 # material properties and geometry.
@@ -17,13 +25,7 @@ set Start time                             = 0
 set End time                               = 2.6e16
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Use operator splitting                     = true
-
-subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 4e14
-  end
-end
+set Use operator splitting                 = true
 
 subsection Geometry model
   set Model name = box

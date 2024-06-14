@@ -34,7 +34,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
      Compositions min/max/mass: 0/0/0 // 0.11/0.11/4.4e+09 // 0/0/0 // 0/0/0 // 1/1/4e+10 // 0/0/0
 
 *** Timestep 1:  t=1000 years, dt=1000 years
-   Solving composition reactions... in 10 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 2 iterations.
    Solving porosity system ... 2 iterations.
    Solving bound_fluid system ... 3 iterations.

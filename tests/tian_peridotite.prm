@@ -14,13 +14,6 @@ set End time                               = 1e3
 set Maximum time step                      = 1e3
 set Use operator splitting                 = true
 
-subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 1e2
-    set Reaction time steps per advection step = 10
-  end
-end
-
 # The Tian approximation implementation requires that all 4 rock compositions exist
 # as compositional fields, though they do not have to all be non zero.
 subsection Compositional fields

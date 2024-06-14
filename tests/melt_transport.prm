@@ -32,11 +32,6 @@ subsection Compositional fields
 end
 
 subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 1.5e7
-    set Reaction time steps per advection step = 1
-  end
-
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = true
   end

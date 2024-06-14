@@ -27,13 +27,10 @@ set Maximum time step                      = 1
 # there are now two different time steps in the model:
 # We control the advection time step using the 'Maximum time step'
 # parameter (for easy comparison with the exponential decay test
-# case), and the reaction time step using the 'Reaction time step'
-# parameter. We will vary both parameters in different model runs.
-subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                 = 0.002
-  end
-end
+# case), and the reaction time step is controlled internally
+# through the ODE solver scheme. Instead of changing the step
+# for the ODE solver, we can make the solution more accurate by
+# modifying the Reaction solver relative tolerance.
 
 subsection Discretization
   subsection Stabilization parameters

@@ -14,7 +14,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00000
 
 *** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 1 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00001
 
 *** Timestep 2:  t=0.02 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -34,11 +34,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1001 K, 1001 K, 1001 K
-     Compositions min/max/mass: 9.518e-05/9.518e-05/9.518e-05 // 9.518e-05/9.518e-05/9.518e-05
+     Compositions min/max/mass: 9.519e-05/9.519e-05/9.519e-05 // 9.519e-05/9.519e-05/9.519e-05
      Writing graphical output:  output-global_latent_heat/solution/solution-00002
 
 *** Timestep 3:  t=0.03 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -50,7 +50,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00003
 
 *** Timestep 4:  t=0.04 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -58,11 +58,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1001 K, 1001 K, 1001 K
-     Compositions min/max/mass: 0.0002855/0.0002855/0.0002855 // 0.0002855/0.0002855/0.0002855
+     Compositions min/max/mass: 0.0002856/0.0002856/0.0002856 // 0.0002856/0.0002856/0.0002856
      Writing graphical output:  output-global_latent_heat/solution/solution-00004
 
 *** Timestep 5:  t=0.05 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -74,7 +74,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00005
 
 *** Timestep 6:  t=0.06 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -86,7 +86,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00006
 
 *** Timestep 7:  t=0.07 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -94,11 +94,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1001 K, 1001 K, 1001 K
-     Compositions min/max/mass: 0.000571/0.000571/0.000571 // 0.000571/0.000571/0.000571
+     Compositions min/max/mass: 0.0005711/0.0005711/0.0005711 // 0.0005711/0.0005711/0.0005711
      Writing graphical output:  output-global_latent_heat/solution/solution-00007
 
 *** Timestep 8:  t=0.08 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -110,7 +110,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00008
 
 *** Timestep 9:  t=0.09 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -118,11 +118,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1001 K, 1001 K, 1001 K
-     Compositions min/max/mass: 0.0007613/0.0007613/0.0007613 // 0.0007613/0.0007613/0.0007613
+     Compositions min/max/mass: 0.0007614/0.0007614/0.0007614 // 0.0007614/0.0007614/0.0007614
      Writing graphical output:  output-global_latent_heat/solution/solution-00009
 
 *** Timestep 10:  t=0.1 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -130,11 +130,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1001 K, 1001 K, 1001 K
-     Compositions min/max/mass: 0.0008565/0.0008565/0.0008565 // 0.0008565/0.0008565/0.0008565
+     Compositions min/max/mass: 0.0008566/0.0008566/0.0008566 // 0.0008566/0.0008566/0.0008566
      Writing graphical output:  output-global_latent_heat/solution/solution-00010
 
 *** Timestep 11:  t=0.11 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -142,11 +142,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1001 K, 1001 K, 1001 K
-     Compositions min/max/mass: 0.0009516/0.0009516/0.0009516 // 0.0009516/0.0009516/0.0009516
+     Compositions min/max/mass: 0.0009517/0.0009517/0.0009517 // 0.0009517/0.0009517/0.0009517
      Writing graphical output:  output-global_latent_heat/solution/solution-00011
 
 *** Timestep 12:  t=0.12 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -158,7 +158,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00012
 
 *** Timestep 13:  t=0.13 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -170,7 +170,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00013
 
 *** Timestep 14:  t=0.14 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -182,7 +182,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00014
 
 *** Timestep 15:  t=0.15 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -194,7 +194,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00015
 
 *** Timestep 16:  t=0.16 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -206,7 +206,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00016
 
 *** Timestep 17:  t=0.17 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -214,11 +214,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1002 K, 1002 K, 1002 K
-     Compositions min/max/mass: 0.001522/0.001522/0.001522 // 0.001522/0.001522/0.001522
+     Compositions min/max/mass: 0.001523/0.001523/0.001523 // 0.001523/0.001523/0.001523
      Writing graphical output:  output-global_latent_heat/solution/solution-00017
 
 *** Timestep 18:  t=0.18 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -226,11 +226,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1002 K, 1002 K, 1002 K
-     Compositions min/max/mass: 0.001617/0.001617/0.001617 // 0.001617/0.001617/0.001617
+     Compositions min/max/mass: 0.001618/0.001618/0.001618 // 0.001618/0.001618/0.001618
      Writing graphical output:  output-global_latent_heat/solution/solution-00018
 
 *** Timestep 19:  t=0.19 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -242,7 +242,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00019
 
 *** Timestep 20:  t=0.2 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -254,7 +254,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00020
 
 *** Timestep 21:  t=0.21 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -266,7 +266,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00021
 
 *** Timestep 22:  t=0.22 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -278,7 +278,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00022
 
 *** Timestep 23:  t=0.23 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -290,7 +290,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00023
 
 *** Timestep 24:  t=0.24 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -302,7 +302,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00024
 
 *** Timestep 25:  t=0.25 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -314,7 +314,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00025
 
 *** Timestep 26:  t=0.26 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -326,7 +326,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00026
 
 *** Timestep 27:  t=0.27 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -334,11 +334,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1002 K, 1002 K, 1002 K
-     Compositions min/max/mass: 0.002473/0.002473/0.002473 // 0.002473/0.002473/0.002473
+     Compositions min/max/mass: 0.002474/0.002474/0.002474 // 0.002474/0.002474/0.002474
      Writing graphical output:  output-global_latent_heat/solution/solution-00027
 
 *** Timestep 28:  t=0.28 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -346,11 +346,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1002 K, 1002 K, 1002 K
-     Compositions min/max/mass: 0.002568/0.002568/0.002568 // 0.002568/0.002568/0.002568
+     Compositions min/max/mass: 0.002569/0.002569/0.002569 // 0.002569/0.002569/0.002569
      Writing graphical output:  output-global_latent_heat/solution/solution-00028
 
 *** Timestep 29:  t=0.29 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -358,11 +358,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1002 K, 1002 K, 1002 K
-     Compositions min/max/mass: 0.002663/0.002663/0.002663 // 0.002663/0.002663/0.002663
+     Compositions min/max/mass: 0.002664/0.002664/0.002664 // 0.002664/0.002664/0.002664
      Writing graphical output:  output-global_latent_heat/solution/solution-00029
 
 *** Timestep 30:  t=0.3 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -370,11 +370,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1002 K, 1002 K, 1002 K
-     Compositions min/max/mass: 0.002758/0.002758/0.002758 // 0.002758/0.002758/0.002758
+     Compositions min/max/mass: 0.002759/0.002759/0.002759 // 0.002759/0.002759/0.002759
      Writing graphical output:  output-global_latent_heat/solution/solution-00030
 
 *** Timestep 31:  t=0.31 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -386,7 +386,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00031
 
 *** Timestep 32:  t=0.32 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -398,7 +398,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00032
 
 *** Timestep 33:  t=0.33 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -410,7 +410,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00033
 
 *** Timestep 34:  t=0.34 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -422,7 +422,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00034
 
 *** Timestep 35:  t=0.35 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -434,7 +434,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00035
 
 *** Timestep 36:  t=0.36 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -446,7 +446,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00036
 
 *** Timestep 37:  t=0.37 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -458,7 +458,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00037
 
 *** Timestep 38:  t=0.38 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -470,7 +470,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00038
 
 *** Timestep 39:  t=0.39 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -482,7 +482,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00039
 
 *** Timestep 40:  t=0.4 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -494,7 +494,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00040
 
 *** Timestep 41:  t=0.41 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -506,7 +506,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00041
 
 *** Timestep 42:  t=0.42 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -518,7 +518,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00042
 
 *** Timestep 43:  t=0.43 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -530,7 +530,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00043
 
 *** Timestep 44:  t=0.44 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -542,7 +542,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00044
 
 *** Timestep 45:  t=0.45 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -554,7 +554,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00045
 
 *** Timestep 46:  t=0.46 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -566,7 +566,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00046
 
 *** Timestep 47:  t=0.47 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -578,7 +578,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00047
 
 *** Timestep 48:  t=0.48 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -590,7 +590,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00048
 
 *** Timestep 49:  t=0.49 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -602,7 +602,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00049
 
 *** Timestep 50:  t=0.5 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -614,7 +614,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00050
 
 *** Timestep 51:  t=0.51 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -626,7 +626,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00051
 
 *** Timestep 52:  t=0.52 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -638,7 +638,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00052
 
 *** Timestep 53:  t=0.53 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -650,7 +650,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00053
 
 *** Timestep 54:  t=0.54 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -662,7 +662,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00054
 
 *** Timestep 55:  t=0.55 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -674,7 +674,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00055
 
 *** Timestep 56:  t=0.56 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -682,11 +682,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005228/0.005228/0.005228 // 0.005228/0.005228/0.005228
+     Compositions min/max/mass: 0.005229/0.005229/0.005229 // 0.005229/0.005229/0.005229
      Writing graphical output:  output-global_latent_heat/solution/solution-00056
 
 *** Timestep 57:  t=0.57 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -694,11 +694,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005323/0.005323/0.005323 // 0.005323/0.005323/0.005323
+     Compositions min/max/mass: 0.005324/0.005324/0.005324 // 0.005324/0.005324/0.005324
      Writing graphical output:  output-global_latent_heat/solution/solution-00057
 
 *** Timestep 58:  t=0.58 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -706,11 +706,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005418/0.005418/0.005418 // 0.005418/0.005418/0.005418
+     Compositions min/max/mass: 0.005419/0.005419/0.005419 // 0.005419/0.005419/0.005419
      Writing graphical output:  output-global_latent_heat/solution/solution-00058
 
 *** Timestep 59:  t=0.59 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -718,11 +718,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005513/0.005513/0.005513 // 0.005513/0.005513/0.005513
+     Compositions min/max/mass: 0.005514/0.005514/0.005514 // 0.005514/0.005514/0.005514
      Writing graphical output:  output-global_latent_heat/solution/solution-00059
 
 *** Timestep 60:  t=0.6 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -730,11 +730,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005608/0.005608/0.005608 // 0.005608/0.005608/0.005608
+     Compositions min/max/mass: 0.005609/0.005609/0.005609 // 0.005609/0.005609/0.005609
      Writing graphical output:  output-global_latent_heat/solution/solution-00060
 
 *** Timestep 61:  t=0.61 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -742,11 +742,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005703/0.005703/0.005703 // 0.005703/0.005703/0.005703
+     Compositions min/max/mass: 0.005704/0.005704/0.005704 // 0.005704/0.005704/0.005704
      Writing graphical output:  output-global_latent_heat/solution/solution-00061
 
 *** Timestep 62:  t=0.62 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -754,11 +754,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005798/0.005798/0.005798 // 0.005798/0.005798/0.005798
+     Compositions min/max/mass: 0.005799/0.005799/0.005799 // 0.005799/0.005799/0.005799
      Writing graphical output:  output-global_latent_heat/solution/solution-00062
 
 *** Timestep 63:  t=0.63 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -766,11 +766,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005893/0.005893/0.005893 // 0.005893/0.005893/0.005893
+     Compositions min/max/mass: 0.005894/0.005894/0.005894 // 0.005894/0.005894/0.005894
      Writing graphical output:  output-global_latent_heat/solution/solution-00063
 
 *** Timestep 64:  t=0.64 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -778,11 +778,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.005988/0.005988/0.005988 // 0.005988/0.005988/0.005988
+     Compositions min/max/mass: 0.005989/0.005989/0.005989 // 0.005989/0.005989/0.005989
      Writing graphical output:  output-global_latent_heat/solution/solution-00064
 
 *** Timestep 65:  t=0.65 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -790,11 +790,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006083/0.006083/0.006083 // 0.006083/0.006083/0.006083
+     Compositions min/max/mass: 0.006084/0.006084/0.006084 // 0.006084/0.006084/0.006084
      Writing graphical output:  output-global_latent_heat/solution/solution-00065
 
 *** Timestep 66:  t=0.66 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -806,7 +806,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00066
 
 *** Timestep 67:  t=0.67 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -818,7 +818,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00067
 
 *** Timestep 68:  t=0.68 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -826,11 +826,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006367/0.006367/0.006367 // 0.006367/0.006367/0.006367
+     Compositions min/max/mass: 0.006368/0.006368/0.006368 // 0.006368/0.006368/0.006368
      Writing graphical output:  output-global_latent_heat/solution/solution-00068
 
 *** Timestep 69:  t=0.69 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -838,11 +838,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006462/0.006462/0.006462 // 0.006462/0.006462/0.006462
+     Compositions min/max/mass: 0.006463/0.006463/0.006463 // 0.006463/0.006463/0.006463
      Writing graphical output:  output-global_latent_heat/solution/solution-00069
 
 *** Timestep 70:  t=0.7 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -850,11 +850,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006557/0.006557/0.006557 // 0.006557/0.006557/0.006557
+     Compositions min/max/mass: 0.006558/0.006558/0.006558 // 0.006558/0.006558/0.006558
      Writing graphical output:  output-global_latent_heat/solution/solution-00070
 
 *** Timestep 71:  t=0.71 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -862,11 +862,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006652/0.006652/0.006652 // 0.006652/0.006652/0.006652
+     Compositions min/max/mass: 0.006653/0.006653/0.006653 // 0.006653/0.006653/0.006653
      Writing graphical output:  output-global_latent_heat/solution/solution-00071
 
 *** Timestep 72:  t=0.72 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -874,11 +874,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006747/0.006747/0.006747 // 0.006747/0.006747/0.006747
+     Compositions min/max/mass: 0.006748/0.006748/0.006748 // 0.006748/0.006748/0.006748
      Writing graphical output:  output-global_latent_heat/solution/solution-00072
 
 *** Timestep 73:  t=0.73 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -886,11 +886,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006842/0.006842/0.006842 // 0.006842/0.006842/0.006842
+     Compositions min/max/mass: 0.006843/0.006843/0.006843 // 0.006843/0.006843/0.006843
      Writing graphical output:  output-global_latent_heat/solution/solution-00073
 
 *** Timestep 74:  t=0.74 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -898,11 +898,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1004 K, 1004 K, 1004 K
-     Compositions min/max/mass: 0.006937/0.006937/0.006937 // 0.006937/0.006937/0.006937
+     Compositions min/max/mass: 0.006938/0.006938/0.006938 // 0.006938/0.006938/0.006938
      Writing graphical output:  output-global_latent_heat/solution/solution-00074
 
 *** Timestep 75:  t=0.75 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -914,7 +914,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00075
 
 *** Timestep 76:  t=0.76 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -926,7 +926,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
      Writing graphical output:  output-global_latent_heat/solution/solution-00076
 
 *** Timestep 77:  t=0.77 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -934,11 +934,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.007221/0.007221/0.007221 // 0.007221/0.007221/0.007221
+     Compositions min/max/mass: 0.007222/0.007222/0.007222 // 0.007222/0.007222/0.007222
      Writing graphical output:  output-global_latent_heat/solution/solution-00077
 
 *** Timestep 78:  t=0.78 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -946,11 +946,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.007316/0.007316/0.007316 // 0.007316/0.007316/0.007316
+     Compositions min/max/mass: 0.007317/0.007317/0.007317 // 0.007317/0.007317/0.007317
      Writing graphical output:  output-global_latent_heat/solution/solution-00078
 
 *** Timestep 79:  t=0.79 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -958,11 +958,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.007411/0.007411/0.007411 // 0.007411/0.007411/0.007411
+     Compositions min/max/mass: 0.007412/0.007412/0.007412 // 0.007412/0.007412/0.007412
      Writing graphical output:  output-global_latent_heat/solution/solution-00079
 
 *** Timestep 80:  t=0.8 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -970,11 +970,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.007506/0.007506/0.007506 // 0.007506/0.007506/0.007506
+     Compositions min/max/mass: 0.007507/0.007507/0.007507 // 0.007507/0.007507/0.007507
      Writing graphical output:  output-global_latent_heat/solution/solution-00080
 
 *** Timestep 81:  t=0.81 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -982,11 +982,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.007601/0.007601/0.007601 // 0.007601/0.007601/0.007601
+     Compositions min/max/mass: 0.007602/0.007602/0.007602 // 0.007602/0.007602/0.007602
      Writing graphical output:  output-global_latent_heat/solution/solution-00081
 
 *** Timestep 82:  t=0.82 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -994,11 +994,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.007696/0.007696/0.007696 // 0.007696/0.007696/0.007696
+     Compositions min/max/mass: 0.007697/0.007697/0.007697 // 0.007697/0.007697/0.007697
      Writing graphical output:  output-global_latent_heat/solution/solution-00082
 
 *** Timestep 83:  t=0.83 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1006,11 +1006,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.00779/0.00779/0.00779 // 0.00779/0.00779/0.00779
+     Compositions min/max/mass: 0.007791/0.007791/0.007791 // 0.007791/0.007791/0.007791
      Writing graphical output:  output-global_latent_heat/solution/solution-00083
 
 *** Timestep 84:  t=0.84 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1018,11 +1018,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.007885/0.007885/0.007885 // 0.007885/0.007885/0.007885
+     Compositions min/max/mass: 0.007886/0.007886/0.007886 // 0.007886/0.007886/0.007886
      Writing graphical output:  output-global_latent_heat/solution/solution-00084
 
 *** Timestep 85:  t=0.85 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1030,11 +1030,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.00798/0.00798/0.00798 // 0.00798/0.00798/0.00798
+     Compositions min/max/mass: 0.007981/0.007981/0.007981 // 0.007981/0.007981/0.007981
      Writing graphical output:  output-global_latent_heat/solution/solution-00085
 
 *** Timestep 86:  t=0.86 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1042,11 +1042,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008075/0.008075/0.008075 // 0.008075/0.008075/0.008075
+     Compositions min/max/mass: 0.008076/0.008076/0.008076 // 0.008076/0.008076/0.008076
      Writing graphical output:  output-global_latent_heat/solution/solution-00086
 
 *** Timestep 87:  t=0.87 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1054,11 +1054,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.00817/0.00817/0.00817 // 0.00817/0.00817/0.00817
+     Compositions min/max/mass: 0.008171/0.008171/0.008171 // 0.008171/0.008171/0.008171
      Writing graphical output:  output-global_latent_heat/solution/solution-00087
 
 *** Timestep 88:  t=0.88 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1066,11 +1066,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008265/0.008265/0.008265 // 0.008265/0.008265/0.008265
+     Compositions min/max/mass: 0.008266/0.008266/0.008266 // 0.008266/0.008266/0.008266
      Writing graphical output:  output-global_latent_heat/solution/solution-00088
 
 *** Timestep 89:  t=0.89 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1078,11 +1078,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008359/0.008359/0.008359 // 0.008359/0.008359/0.008359
+     Compositions min/max/mass: 0.00836/0.00836/0.00836 // 0.00836/0.00836/0.00836
      Writing graphical output:  output-global_latent_heat/solution/solution-00089
 
 *** Timestep 90:  t=0.9 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1090,11 +1090,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008454/0.008454/0.008454 // 0.008454/0.008454/0.008454
+     Compositions min/max/mass: 0.008455/0.008455/0.008455 // 0.008455/0.008455/0.008455
      Writing graphical output:  output-global_latent_heat/solution/solution-00090
 
 *** Timestep 91:  t=0.91 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1102,11 +1102,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008549/0.008549/0.008549 // 0.008549/0.008549/0.008549
+     Compositions min/max/mass: 0.00855/0.00855/0.00855 // 0.00855/0.00855/0.00855
      Writing graphical output:  output-global_latent_heat/solution/solution-00091
 
 *** Timestep 92:  t=0.92 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1114,11 +1114,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008644/0.008644/0.008644 // 0.008644/0.008644/0.008644
+     Compositions min/max/mass: 0.008645/0.008645/0.008645 // 0.008645/0.008645/0.008645
      Writing graphical output:  output-global_latent_heat/solution/solution-00092
 
 *** Timestep 93:  t=0.93 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1126,11 +1126,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008739/0.008739/0.008739 // 0.008739/0.008739/0.008739
+     Compositions min/max/mass: 0.00874/0.00874/0.00874 // 0.00874/0.00874/0.00874
      Writing graphical output:  output-global_latent_heat/solution/solution-00093
 
 *** Timestep 94:  t=0.94 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1138,11 +1138,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008833/0.008833/0.008833 // 0.008833/0.008833/0.008833
+     Compositions min/max/mass: 0.008834/0.008834/0.008834 // 0.008834/0.008834/0.008834
      Writing graphical output:  output-global_latent_heat/solution/solution-00094
 
 *** Timestep 95:  t=0.95 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1150,11 +1150,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1005 K, 1005 K, 1005 K
-     Compositions min/max/mass: 0.008928/0.008928/0.008928 // 0.008928/0.008928/0.008928
+     Compositions min/max/mass: 0.008929/0.008929/0.008929 // 0.008929/0.008929/0.008929
      Writing graphical output:  output-global_latent_heat/solution/solution-00095
 
 *** Timestep 96:  t=0.96 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1162,11 +1162,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1006 K, 1006 K, 1006 K
-     Compositions min/max/mass: 0.009023/0.009023/0.009023 // 0.009023/0.009023/0.009023
+     Compositions min/max/mass: 0.009024/0.009024/0.009024 // 0.009024/0.009024/0.009024
      Writing graphical output:  output-global_latent_heat/solution/solution-00096
 
 *** Timestep 97:  t=0.97 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1174,11 +1174,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1006 K, 1006 K, 1006 K
-     Compositions min/max/mass: 0.009118/0.009118/0.009118 // 0.009118/0.009118/0.009118
+     Compositions min/max/mass: 0.009119/0.009119/0.009119 // 0.009119/0.009119/0.009119
      Writing graphical output:  output-global_latent_heat/solution/solution-00097
 
 *** Timestep 98:  t=0.98 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1186,11 +1186,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1006 K, 1006 K, 1006 K
-     Compositions min/max/mass: 0.009212/0.009212/0.009212 // 0.009212/0.009212/0.009212
+     Compositions min/max/mass: 0.009213/0.009213/0.009213 // 0.009213/0.009213/0.009213
      Writing graphical output:  output-global_latent_heat/solution/solution-00098
 
 *** Timestep 99:  t=0.99 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1198,11 +1198,11 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1006 K, 1006 K, 1006 K
-     Compositions min/max/mass: 0.009307/0.009307/0.009307 // 0.009307/0.009307/0.009307
+     Compositions min/max/mass: 0.009308/0.009308/0.009308 // 0.009308/0.009308/0.009308
      Writing graphical output:  output-global_latent_heat/solution/solution-00099
 
 *** Timestep 100:  t=1 seconds, dt=0.01 seconds
-   Solving composition reactions... in 999 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -1210,7 +1210,7 @@ Number of degrees of freedom: 75 (18+8+18+4+9+9+9)
    Postprocessing:
      RMS, max velocity:         0 m/s, 0 m/s
      Temperature min/avg/max:   1006 K, 1006 K, 1006 K
-     Compositions min/max/mass: 0.009402/0.009402/0.009402 // 0.009402/0.009402/0.009402
+     Compositions min/max/mass: 0.009403/0.009403/0.009403 // 0.009403/0.009403/0.009403
      Writing graphical output:  output-global_latent_heat/solution/solution-00100
 
 

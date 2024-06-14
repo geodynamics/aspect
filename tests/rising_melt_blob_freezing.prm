@@ -45,11 +45,6 @@ subsection Material model
 end
 
 subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 0.05
-    set Reaction time steps per advection step = 1
-  end
-
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = false
   end
