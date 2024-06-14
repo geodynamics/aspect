@@ -444,17 +444,16 @@ namespace aspect
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+      typename ParticleHandler<dim>::particle_iterator_range particles = particle_handler->particles_in_cell(cell);
 
       std::vector<Point<dim>> positions;
       positions.reserve(n_particles_in_cell);
 
-      for (auto particle = begin_particle; particle!=end_particle; ++particle)
-        positions.push_back(particle->get_reference_location());
+      for (const auto &particle : particles)
+        positions.push_back(particle.get_reference_location());
 
       const UpdateFlags update_flags = property_manager->get_needed_update_flags();
 
@@ -467,29 +466,28 @@ namespace aspect
       if (update_flags & (update_values | update_gradients))
         evaluators.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags);
 
-      Vector<double> solution;
+      std::vector<Vector<double>> solution;
       if (update_flags & update_values)
-        solution.reinit(this->introspection().n_components);
+        solution.resize(n_particles_in_cell,Vector<double>(this->introspection().n_components));
 
-      std::vector<Tensor<1,dim>> gradients;
+      std::vector<std::vector<Tensor<1,dim>>> gradients;
       if (update_flags & update_gradients)
-        gradients.resize(this->introspection().n_components);
+        gradients.resize(n_particles_in_cell,std::vector<Tensor<1,dim>>(this->introspection().n_components));
 
-      auto particle = begin_particle;
-      for (unsigned int i = 0; particle!=end_particle; ++particle,++i)
+      for (unsigned int i = 0; i<n_particles_in_cell; ++i)
         {
           // Evaluate the solution, but only if it is requested in the update_flags
           if (update_flags & update_values)
-            evaluators.get_solution(i, solution);
+            evaluators.get_solution(i, solution[i]);
 
           // Evaluate the gradients, but only if they are requested in the update_flags
           if (update_flags & update_gradients)
-            evaluators.get_gradients(i, gradients);
-
-          property_manager->update_one_particle(particle,
-                                                solution,
-                                                gradients);
+            evaluators.get_gradients(i, gradients[i]);
         }
+
+      property_manager->update_particles(particles,
+                                         solution,
+                                         gradients);
     }
 
 
@@ -1067,15 +1065,10 @@ namespace aspect
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
-                typename ParticleHandler<dim>::particle_iterator_range
-                particles_in_cell = particle_handler->particles_in_cell(cell);
-
-                // Only update particles, if there are any in this cell
-                if (particles_in_cell.begin() != particles_in_cell.end())
+                // Only update particles if there are any in this cell
+                if (particle_handler->n_particles_in_cell(cell) > 0)
                   {
                     local_update_particles(cell,
-                                           particles_in_cell.begin(),
-                                           particles_in_cell.end(),
                                            *evaluators);
                   }
 

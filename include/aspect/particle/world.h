@@ -484,8 +484,6 @@ namespace aspect
          */
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                internal::SolutionEvaluators<dim> &evaluators);
 
         /**

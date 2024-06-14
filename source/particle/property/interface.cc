@@ -206,6 +206,39 @@ namespace aspect
 
 
 
+      DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
+      template <int dim>
+      void
+      Interface<dim>::update_particle_properties (const unsigned int data_position,
+                                                  const std::vector<Vector<double>> &solution,
+                                                  const std::vector<std::vector<Tensor<1,dim>>> &gradients,
+                                                  typename ParticleHandler<dim>::particle_iterator_range &particles) const
+      {
+        unsigned int i = 0;
+        for (typename ParticleHandler<dim>::particle_iterator particle = particles.begin();
+             particle != particles.end(); ++particle, ++i)
+          {
+            // call the deprecated version of this function
+            update_particle_property(data_position,
+                                     solution[i],
+                                     gradients[i],
+                                     particle);
+          }
+      }
+      DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+
+
+
+      template <int dim>
+      void
+      Interface<dim>::update_particle_property (const unsigned int /*data_position*/,
+                                                const Vector<double> &/*solution*/,
+                                                const std::vector<Tensor<1,dim>> &/*gradients*/,
+                                                typename ParticleHandler<dim>::particle_iterator &/*particle*/) const
+      {}
+
+
+
       template <int dim>
       UpdateTimeFlags
       Interface<dim>::need_update () const
@@ -240,16 +273,6 @@ namespace aspect
       {
         data.resize(data.size() + n_integrator_properties, 0.0);
       }
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::update_particle_property (const unsigned int /*data_position*/,
-                                                const Vector<double> &/*solution*/,
-                                                const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                                typename ParticleHandler<dim>::particle_iterator &/*particle*/) const
-      {}
 
 
 
@@ -518,18 +541,18 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
-                                         const Vector<double> &solution,
-                                         const std::vector<Tensor<1,dim>> &gradients) const
+      Manager<dim>::update_particles (typename ParticleHandler<dim>::particle_iterator_range &particles,
+                                      const std::vector<Vector<double>> &solution,
+                                      const std::vector<std::vector<Tensor<1,dim>>> &gradients) const
       {
         unsigned int plugin_index = 0;
         for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
           {
-            (*p)->update_particle_property(property_information.get_position_by_plugin_index(plugin_index),
-                                           solution,
-                                           gradients,
-                                           particle);
+            (*p)->update_particle_properties(property_information.get_position_by_plugin_index(plugin_index),
+                                             solution,
+                                             gradients,
+                                             particles);
           }
       }
 
