@@ -113,7 +113,15 @@ def move_particle_postprocess_parameters_back(parameters):
 
     return parameters
 
+def remove_update_ghost_particles_parameter(parameters):
+    """ Remove the parameter 'Update ghost particles'. """
 
+    # Find the particle parameters and move
+    if "Particles" in parameters:
+        if "Update ghost particles" in parameters["Particles"]["value"]:
+            del parameters["Particles"]["value"]["Update ghost particles"]
+
+    return parameters
 
 def main(input_file, output_file):
     """Echo the input arguments to standard output"""
@@ -122,6 +130,7 @@ def main(input_file, output_file):
     parameters = move_particle_parameters_to_own_subsection(parameters)
     parameters = move_number_of_particles_to_correct_subsection(parameters)
     parameters = move_particle_postprocess_parameters_back(parameters)
+    parameters = remove_update_ghost_particles_parameter(parameters)
 
     aspect.write_parameter_file(parameters, output_file)
 
