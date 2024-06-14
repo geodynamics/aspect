@@ -1,4 +1,3 @@
-#########################################################
 # This is a model setup to test the latent heat generation.
 # Melt flows in from the bottom and crosses a phase
 # transition, where it freezes and energy is released and
@@ -7,6 +6,24 @@
 # temperature at the top of the domain. This test is the
 # same as the "latent heat melt" test, except that is uses
 # the operator split solver scheme.
+
+# The temperature should be
+# Tbottom + T * DS / C_p * DC
+# with
+# Tbottom = 1000 K (temperature at the bottom)
+# DS      = 300 K/kg (Melting entropy change)
+# C_p     = 1000 J/(kg K)
+# DC      = 1 (change in porosity)
+
+# Since the temperature T changes during the reaction,
+# but the change in porosity occurs instantaneously,
+# this is not a well-defined ODE and we do not use
+# our ODE solver to solve it. Even with the fixed step
+# operator splitting scheme, the solution depends on
+# the number of steps taken. Taking into account this
+# change in temperature, the temperature at the top
+# should be somewhere between 1300 and 1390 K. The more
+# steps we take, the closer it is to the upper value.
 
 set Dimension = 2
 set Start time                             = 0
@@ -25,8 +42,9 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 1000000
+    set X extent = 20000
     set Y extent = 1000000
+    set Y repetitions = 50
   end
 end
 
@@ -117,7 +135,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
+  set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
 
@@ -137,14 +155,14 @@ subsection Discretization
 end
 
 subsection Postprocess
-  set List of postprocessors = temperature statistics #, visualization
+  set List of postprocessors = temperature statistics
 
   subsection Visualization
     set Interpolate output            = false
     set List of output variables      = material properties, nonadiabatic temperature, named additional outputs
     set Number of grouped files       = 0
     set Output format                 = vtu
-    set Time between graphical output = 2500
+    set Time between graphical output = 1e15
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity, reaction terms, specific heat
