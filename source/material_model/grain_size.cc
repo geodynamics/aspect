@@ -25,6 +25,7 @@
 #include <aspect/heating_model/shear_heating.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -349,7 +350,8 @@ namespace aspect
       };
 
 
-      ode.solve_ode(grain_sizes);
+      const unsigned int iteration_count = ode.solve_ode(grain_sizes);
+      this->get_signals().post_ARKode_solve(*this, iteration_count);
 
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
