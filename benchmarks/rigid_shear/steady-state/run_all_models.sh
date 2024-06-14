@@ -19,10 +19,7 @@ for stokes_degree in 2 3; do
         echo "  set Use locally conservative discretization = $discontinuous_pressure" >> current.prm
         echo "end" >> current.prm
 
-        number_of_particles=`echo "$particles_per_direction * $particles_per_direction * 2 ^ (2 * $refinement)" | bc -l`
-        echo "subsection Postprocess" >> current.prm
-        echo "  subsection Particles" >> current.prm
-        echo "  set Number of particles = $number_of_particles" >> current.prm
+        echo "subsection Particles" >> current.prm
         echo "  set Particle generator name = $generator" >> current.prm
 
         # If using longer runtimes it is necessary to add particles to
@@ -34,10 +31,9 @@ for stokes_degree in 2 3; do
 
         echo "  set Interpolation scheme = $interpolator" >> current.prm
         echo "  set Integration scheme = $integrator" >> current.prm
-        echo "    subsection Generator" >> current.prm
-        echo "      subsection Reference cell" >> current.prm
-        echo "        set Number of particles per cell per direction = $particles_per_direction" >> current.prm
-        echo "      end" >> current.prm
+        echo "  subsection Generator" >> current.prm
+        echo "    subsection Reference cell" >> current.prm
+        echo "      set Number of particles per cell per direction = $particles_per_direction" >> current.prm
         echo "    end" >> current.prm
         echo "  end" >> current.prm
         echo "end" >> current.prm

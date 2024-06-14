@@ -11,12 +11,10 @@ for stokes_degree in 2; do #3
         echo "  set Stokes velocity polynomial degree = $stokes_degree" >> current.prm
         echo "end" >> current.prm
 
-        echo "subsection Postprocess" >> current.prm
-        echo "  subsection Particles" >> current.prm
-        echo "    subsection Generator" >> current.prm
-        echo "      subsection Reference cell" >> current.prm
-        echo "        set Number of particles per cell per direction = $particles_per_direction" >> current.prm
-        echo "      end" >> current.prm
+        echo "subsection Particles" >> current.prm
+        echo "  subsection Generator" >> current.prm
+        echo "    subsection Reference cell" >> current.prm
+        echo "      set Number of particles per cell per direction = $particles_per_direction" >> current.prm
         echo "    end" >> current.prm
         echo "  end" >> current.prm
         echo "end" >> current.prm
