@@ -453,7 +453,7 @@ namespace aspect
 
                       // ...then continue with writing our own data.
                       background_thread
-                        = std::thread([ my_filename = std::move(filename),
+                        = std::thread([ my_filename = filename, // filename is const, so we can not move from it
                                         my_temporary_output_location = temporary_output_location,
                                         my_file_contents = std::move(file_contents)]()
                       {
