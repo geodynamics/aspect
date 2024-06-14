@@ -170,7 +170,7 @@ namespace aspect
        * A variable that holds whether the composition field(s) should use a
        * discontinuous discretization.
        */
-      const bool use_discontinuous_composition_discretization;
+      const std::vector<bool> use_discontinuous_composition_discretization;
 
       /**
        * A structure that enumerates the vector components of the finite

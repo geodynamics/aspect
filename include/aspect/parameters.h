@@ -653,7 +653,8 @@ namespace aspect
     bool                           use_locally_conservative_discretization;
     bool                           use_equal_order_interpolation_for_stokes;
     bool                           use_discontinuous_temperature_discretization;
-    bool                           use_discontinuous_composition_discretization;
+    std::vector<bool>              use_discontinuous_composition_discretization;
+    bool                           have_discontinuous_composition_discretization;
     unsigned int                   temperature_degree;
     unsigned int                   composition_degree;
     std::string                    pressure_normalization;

@@ -1798,7 +1798,7 @@ namespace aspect
     // The additional terms in the temperature systems have not been ported
     // to the DG formulation:
     AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization &&
-                !this->get_parameters().use_discontinuous_composition_discretization,
+                !this->get_parameters().have_discontinuous_composition_discretization,
                 ExcMessage("Using discontinuous elements for temperature "
                            "or composition in models with melt transport is currently not implemented.") );
     if (melt_parameters.use_discontinuous_p_c)

@@ -223,10 +223,11 @@ namespace aspect
         1,
         1));
 
+
     variables.push_back(
       VariableDeclaration<dim>(
         "compositions",
-        internal::new_FE_Q_or_DGQ<dim>(parameters.use_discontinuous_composition_discretization,
+        internal::new_FE_Q_or_DGQ<dim>(parameters.have_discontinuous_composition_discretization, // TODO: this is of course incorrect for now.
                                        parameters.composition_degree),
         parameters.n_compositional_fields,
         parameters.n_compositional_fields));
@@ -410,7 +411,7 @@ namespace aspect
   Introspection<dim>::name_for_compositional_index (const unsigned int index) const
   {
     // make sure that what we get here is really an index of one of the compositional fields
-    AssertIndexRange(index, composition_names.size());
+    AssertIndexRange(index,composition_names.size());
     return composition_names[index];
   }
 
