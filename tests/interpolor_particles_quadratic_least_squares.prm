@@ -1,0 +1,8 @@
+# Test whether the interpolator reads the input correctly.
+include $ASPECT_SOURCE_DIR/tests/time_stepping_repeat_particles.prm
+
+set End time                               = 0.0
+
+subsection Particles
+  set Interpolation scheme = quadratic least squares
+end
