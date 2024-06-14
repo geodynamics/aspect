@@ -30,6 +30,11 @@ set Maximum time step                      = 10
 # Instead of changing the step for the ODE solver, we can make the
 # solution more accurate by modifying the Reaction solver relative
 # tolerance.
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction solver relative tolerance = 1e-6
+  end
+end
 
 subsection Geometry model
   set Model name = box

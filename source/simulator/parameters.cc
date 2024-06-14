@@ -588,7 +588,7 @@ namespace aspect
         prm.declare_entry ("Reaction solver relative tolerance", "1e-6",
                            Patterns::Double (0.),
                            "The relative solver tolerance used in the ARKode reaction solver. "
-                           "This tolerance is used to adaptivelt determine the reaction step size. "
+                           "This tolerance is used to adaptively determine the reaction step size. "
                            "For more details, see the ARKode documentation. This parameter is only used "
                            "if the `ARKode' reaction solver type is used. "
                            "Units: none.");
