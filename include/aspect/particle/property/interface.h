@@ -326,6 +326,39 @@ namespace aspect
 
           /**
            * Update function. This function is called every time an update is
+           * requested by need_update() for every cell for every property.
+           * It is expected to update the properties of all particles in the
+           * given range @p particles, which are all in one cell.
+           * It is obvious that
+           * this function is called a lot, so its code should be efficient.
+           * The interface provides a default implementation that does nothing,
+           * therefore derived plugins that do not require an update do not
+           * need to implement this function.
+           *
+           * @param [in] data_position An unsigned integer that denotes which
+           * component of each particle property vector is associated with the
+           * current property. For properties that own several components it
+           * denotes the first component of this property, all other components
+           * fill consecutive entries in the properties vector.
+           *
+           * @param [in] solution A vector of values of the solution variables
+           * at the given particle positions.
+           *
+           * @param [in] gradients A vector of gradients of the solution
+           * variables at the given particle positions.
+           *
+           * @param [in,out] particles The particles that are to be updated
+           * within this function.
+           */
+          virtual
+          void
+          update_particle_properties (const unsigned int data_position,
+                                      const std::vector<Vector<double>> &solution,
+                                      const std::vector<std::vector<Tensor<1,dim>>> &gradients,
+                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const;
+
+          /**
+           * Update function. This function is called every time an update is
            * request by need_update() for every particle for every property.
            * It is obvious that
            * this function is called a lot, so its code should be efficient.
@@ -349,7 +382,10 @@ namespace aspect
            * the call of this function. The particle location can be accessed
            * using particle->get_location() and its properties using
            * particle->get_properties().
+           *
+           * @deprecated Use update_particle_properties() instead.
            */
+          DEAL_II_DEPRECATED
           virtual
           void
           update_particle_property (const unsigned int data_position,
@@ -526,12 +562,19 @@ namespace aspect
 
           /**
            * Update function for particle properties. This function is
-           * called once every time step for every particle.
+           * called once every time step for every cell.
+           *
+           * @param particles The particles that are to be updated within
+           * this function.
+           * @param solution The values of the solution variables at the
+           * given particle positions.
+           * @param gradients The gradients of the solution variables at
+           * the given particle positions.
            */
           void
-          update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
-                               const Vector<double> &solution,
-                               const std::vector<Tensor<1,dim>> &gradients) const;
+          update_particles (typename ParticleHandler<dim>::particle_iterator_range &particles,
+                            const std::vector<Vector<double>> &solution,
+                            const std::vector<std::vector<Tensor<1,dim>>> &gradients) const;
 
           /**
            * Returns an enum, which denotes at what time this class needs to
