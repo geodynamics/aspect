@@ -201,10 +201,10 @@ int main(int argc, char **argv)
       properties.push_back({{1,0,0}}); // temperature
 
       for (size_t c = 0; c < compositions; ++c)
-        properties.push_back({{2,(unsigned int)c,0}}); // composition c
+        properties.push_back({{2,static_cast<unsigned int>(c),0}}); // composition c
 
       for (size_t gc = 0; gc < grain_compositions; ++gc)
-        properties.push_back({{3,(unsigned int)gc,(unsigned int)n_grains}}); // grains gc
+        properties.push_back({{3,static_cast<unsigned int>(gc),static_cast<unsigned int>(n_grains)}}); // grains gc
 
       properties.push_back({{4,0,0}}); // tag
 

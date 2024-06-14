@@ -251,7 +251,7 @@ namespace WorldBuilder
     const int local_seed = prm.get<int>("random number seed");
 
     if (local_seed>=0)
-      random_number_engine.seed(local_seed+MPI_RANK);
+      random_number_engine.seed(static_cast<unsigned int>(local_seed+MPI_RANK));
 
     /**
      * Now load the features. Some features use for example temperature values,
@@ -445,7 +445,7 @@ namespace WorldBuilder
                 const unsigned int composition_number,
                 size_t number_of_grains) const
   {
-    return WorldBuilder::grains(properties(point, depth, {{{3,composition_number,(unsigned int)number_of_grains}}}),(unsigned int)number_of_grains,0);
+    return WorldBuilder::grains(properties(point, depth, {{{3,composition_number,static_cast<unsigned int>(number_of_grains)}}}),static_cast<unsigned int>(number_of_grains),0);
   }
 
   WorldBuilder::grains
@@ -454,7 +454,7 @@ namespace WorldBuilder
                 const unsigned int composition_number,
                 size_t number_of_grains) const
   {
-    return WorldBuilder::grains(properties(point, depth, {{{3,composition_number,(unsigned int)number_of_grains}}}),(unsigned int)number_of_grains,0);
+    return WorldBuilder::grains(properties(point, depth, {{{3,composition_number,static_cast<unsigned int>(number_of_grains)}}}),static_cast<unsigned int>(number_of_grains),0);
   }
 
   std::mt19937 &

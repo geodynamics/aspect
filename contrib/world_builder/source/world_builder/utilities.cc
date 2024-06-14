@@ -296,7 +296,7 @@ namespace WorldBuilder
     }
 
 
-    template<int dim>
+    template<unsigned int dim>
     std::array<double,dim>
     convert_point_to_array(const Point<dim> &point_)
     {
@@ -621,9 +621,9 @@ namespace WorldBuilder
 
               if (!bool_cartesian)
                 {
-                  const double normal = std::fabs(point_list[i_section_min_distance+(int)(std::round(fraction_CPL_P1P2))][0]-check_point_surface_2d[0]);
-                  const double plus   = std::fabs(point_list[i_section_min_distance+(int)(std::round(fraction_CPL_P1P2))][0]-(check_point_surface_2d[0]+2*Consts::PI));
-                  const double min    = std::fabs(point_list[i_section_min_distance+(int)(std::round(fraction_CPL_P1P2))][0]-(check_point_surface_2d[0]-2*Consts::PI));
+                  const double normal = std::fabs(point_list[i_section_min_distance+static_cast<size_t>((std::round(fraction_CPL_P1P2)))][0]-check_point_surface_2d[0]);
+                  const double plus   = std::fabs(point_list[i_section_min_distance+static_cast<size_t>((std::round(fraction_CPL_P1P2)))][0]-(check_point_surface_2d[0]+2*Consts::PI));
+                  const double min    = std::fabs(point_list[i_section_min_distance+static_cast<size_t>((std::round(fraction_CPL_P1P2)))][0]-(check_point_surface_2d[0]-2*Consts::PI));
 
                   // find out whether the check point, checkpoint + 2pi or check point -2 pi is closest to the point list.
                   if (plus < normal)
@@ -1178,21 +1178,19 @@ namespace WorldBuilder
       MPI_Initialized(&mpi_initialized);
       if (mpi_initialized != 0)
         {
-          const unsigned int invalid_unsigned_int = static_cast<unsigned int>(-1);
-
           const MPI_Comm comm = MPI_COMM_WORLD;
-          int my_rank = invalid_unsigned_int;
+          int my_rank = 0;
           MPI_Comm_rank(comm, &my_rank);
           if (my_rank == 0)
             {
-              std::size_t filesize;
+              int filesize;
               std::ifstream filestream;
               filestream.open(filename.c_str());
               WBAssertThrow (filestream.is_open(), std::string("Could not open file <") + filename + ">.");
 
               // Need to convert to unsigned int, because MPI_Bcast does not support
               // size_t or const unsigned int
-              unsigned int invalid_file_size = invalid_unsigned_int;
+              int invalid_file_size = -1;
 
               if (!filestream)
                 {
@@ -1219,7 +1217,9 @@ namespace WorldBuilder
                 }
 
               data_string = datastream.str();
-              filesize = data_string.size();
+              WBAssertThrow(static_cast<long int>(data_string.size()) < std::numeric_limits<int>::max(),
+                            "File is too large to be send with MPI.");
+              filesize = static_cast<int>(data_string.size());
 
               // Distribute data_size and data across processes
               int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
@@ -1236,13 +1236,13 @@ namespace WorldBuilder
           else
             {
               // Prepare for receiving data
-              unsigned int filesize = 0;
+              int filesize = 0;
               int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
               WBAssertThrow(ierr == 0, "MPI_Bcast failed.");
-              WBAssertThrow(filesize != invalid_unsigned_int,
+              WBAssertThrow(filesize != -1,
                             std::string("Could not open file <") + filename + ">.");
 
-              data_string.resize(filesize);
+              data_string.resize(static_cast<size_t>(filesize));
 
               // Receive and store data
               ierr = MPI_Bcast(&data_string[0],

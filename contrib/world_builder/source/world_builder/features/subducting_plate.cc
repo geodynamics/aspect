@@ -701,7 +701,7 @@ namespace WorldBuilder
                           }
                           case 4:
                           {
-                            output[entry_in_output[i_property]] = tag_index;
+                            output[entry_in_output[i_property]] = static_cast<double>(tag_index);
                             break;
                           }
                           default:
