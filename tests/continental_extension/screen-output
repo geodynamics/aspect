@@ -15,7 +15,8 @@ Number of mesh deformation degrees of freedom: 462
    Initial Newton Stokes residual = 2.88429e+14, v = 2.79119e+14, p = 7.26906e+13
 
    Solving Stokes system... 0+56 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 2.88429e+14
+      Newton system information: Norm of the rhs: 2.88429e+14
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -33,7 +34,8 @@ Number of mesh deformation degrees of freedom: 462
    Initial Newton Stokes residual = 1.57637e+14, v = 1.57164e+14, p = 1.21967e+13
 
    Solving Stokes system... 0+21 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.149257, norm of the rhs: 2.35285e+13
+      Newton system information: Norm of the rhs: 2.35285e+13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.149257
 
 
    Postprocessing:

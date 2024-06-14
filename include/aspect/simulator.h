@@ -680,10 +680,14 @@ namespace aspect
        * number of iterations is reached. This can greatly improve the
        * convergence rate for particularly nonlinear viscosities.
        *
+       * @param use_newton_iterations Sets whether this function should only use defect
+       * correction iterations (use_newton_iterations = false) or also use Newton iterations
+       * (use_newton_iterations = true).
+       *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_iterated_advection_and_newton_stokes ();
+      void solve_iterated_advection_and_newton_stokes (bool use_newton_iterations);
 
       /**
        * This function implements one scheme for the various
@@ -697,10 +701,14 @@ namespace aspect
        * number of iterations is reached. This can greatly improve the
        * convergence rate for particularly nonlinear viscosities.
        *
+       * @param use_newton_iterations Sets whether this function should only use defect
+       * correction iterations (use_newton_iterations = false) or also use Newton iterations
+       * (use_newton_iterations = true).
+       *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_single_advection_and_iterated_newton_stokes ();
+      void solve_single_advection_and_iterated_newton_stokes (bool use_newton_iterations);
 
       /**
        * This function implements one scheme for the various

@@ -8,12 +8,12 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59443e-16, 2.078e-05
+      Relative nonlinear residuals (temperature, Stokes system): 1.59443e-16, 2.078e-05
       Relative nonlinear residual (total system) after nonlinear iteration 1: 2.078e-05
 
    Solving temperature system... 0 iterations.
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59443e-16, 3.99261e-13
+      Relative nonlinear residuals (temperature, Stokes system): 1.59443e-16, 3.99261e-13
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.99261e-13
 
 
@@ -29,7 +29,7 @@ number of nonlinear iterations: 2. State: 1.
 *** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
    Solving temperature system... 4 iterations.
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.50453e-08, 7.39415e-13
+      Relative nonlinear residuals (temperature, Stokes system): 3.50453e-08, 7.39415e-13
       Relative nonlinear residual (total system) after nonlinear iteration 1: 3.50453e-08
 
 
