@@ -32,11 +32,6 @@ namespace aspect
   {
     namespace Interpolator
     {
-      namespace internal
-      {
-        bool string_to_bool(const std::string &s);
-      }
-
       /**
        * Evaluate the properties of all particles of the given cell
        * using a least squares projection onto the set of bilinear

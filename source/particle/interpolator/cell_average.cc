@@ -19,8 +19,6 @@
  */
 
 #include <aspect/particle/interpolator/cell_average.h>
-#include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>

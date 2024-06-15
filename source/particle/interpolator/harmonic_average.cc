@@ -19,9 +19,6 @@
  */
 
 #include <aspect/particle/interpolator/harmonic_average.h>
-#include <aspect/particle/property/interface.h>
-#include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
