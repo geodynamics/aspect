@@ -54,7 +54,7 @@ if test ! -d "$SRC/source" -o ! -d "$SRC/include" -o ! -f "$SRC/CMakeLists.txt" 
     exit 1
 fi
 
-if ! [ -x "$(command -v run-clang-tidy.py)" ] || ! [ -x "$(command -v clang++)" ]; then
+if ! [ -x "$(command -v run-clang-tidy)" ] || ! [ -x "$(command -v clang++)" ]; then
     echo "Error: Either the 'run-clang-tidy.py' or the 'clang++' program could not be found."
     echo "       Make sure 'clang', 'clang++', and 'run-clang-tidy.py' (part of clang) are in the path."
     exit 2
@@ -81,7 +81,7 @@ CC=clang CXX=clang++ cmake "${ARGS[@]}" "$SRC" || (echo "cmake failed!"; false) 
 # finally run it:
 # pipe away stderr (just contains nonsensical "x warnings generated")
 # pipe output to output.txt
-run-clang-tidy.py -p . -quiet -header-filter="$SRC/include/*" 2>error.txt >output.txt
+run-clang-tidy -p . -quiet -header-filter="$SRC/include/*" 2>error.txt >output.txt
 
 if grep -E -q '(warning|error): ' output.txt; then
     grep -E '(warning|error): ' output.txt
@@ -90,4 +90,3 @@ fi
 
 echo "OK"
 exit 0
-
