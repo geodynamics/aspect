@@ -128,15 +128,16 @@ TEST_CASE("CPO core: Store and Load")
   // data position = 1.
   aspect::Particle::Property::CrystalPreferredOrientation<3> cpo;
   aspect::ParameterHandler prm;
-  cpo.declare_parameters(prm);
   prm.enter_subsection("Particles");
   {
+    cpo.declare_parameters(prm);
     prm.enter_subsection("Crystal Preferred Orientation");
     {
       prm.set("Random number seed","1");
       prm.set("Number of grains per particle","3");
       prm.set("CPO derivatives algorithm","Spin tensor");
       prm.set("Property advection method","Backward Euler");
+
       prm.enter_subsection("Initial grains");
       {
         prm.set("Model name","Uniform grains and random uniform rotations");
@@ -151,7 +152,12 @@ TEST_CASE("CPO core: Store and Load")
   }
   prm.leave_subsection ();
 
-  cpo.parse_parameters(prm);
+  prm.enter_subsection("Particles");
+  {
+    cpo.parse_parameters(prm);
+  }
+  prm.leave_subsection ();
+
   cpo.initialize();
 
   unsigned int cpo_data_position = 1;
@@ -304,9 +310,9 @@ TEST_CASE("CPO core: Spin tensor")
 
     aspect::Particle::Property::CrystalPreferredOrientation<3> cpo_3d;
     aspect::ParameterHandler prm;
-    cpo_3d.declare_parameters(prm);
     prm.enter_subsection("Particles");
     {
+      cpo_3d.declare_parameters(prm);
       prm.enter_subsection("Crystal Preferred Orientation");
       {
         prm.set("Random number seed","1");
@@ -327,7 +333,13 @@ TEST_CASE("CPO core: Spin tensor")
     }
     prm.leave_subsection ();
 
-    cpo_3d.parse_parameters(prm);
+
+    prm.enter_subsection("Particles");
+    {
+      cpo_3d.parse_parameters(prm);
+    }
+    prm.leave_subsection ();
+
     cpo_3d.initialize();
 
     Point<3> dummy_point;
@@ -605,10 +617,10 @@ TEST_CASE("CPO")
 
     Particle::Property::CrystalPreferredOrientation<dim3> lpo_3d;
     ParameterHandler prm;
-    lpo_3d.declare_parameters(prm);
 
     prm.enter_subsection("Particles");
     {
+      lpo_3d.declare_parameters(prm);
       prm.enter_subsection("Crystal Preferred Orientation");
       {
         prm.set("Random number seed","1");
@@ -618,7 +630,12 @@ TEST_CASE("CPO")
     }
     prm.leave_subsection ();
 
-    lpo_3d.parse_parameters(prm);
+    prm.enter_subsection("Particles");
+    {
+      lpo_3d.parse_parameters(prm);
+    }
+    prm.leave_subsection();
+
     lpo_3d.initialize();
 
 
@@ -812,10 +829,10 @@ TEST_CASE("CPO")
 
     Particle::Property::CrystalPreferredOrientation<dim3> lpo_3d;
     ParameterHandler prm;
-    lpo_3d.declare_parameters(prm);
 
     prm.enter_subsection("Particles");
     {
+      lpo_3d.declare_parameters(prm);
       prm.enter_subsection("Crystal Preferred Orientation");
       {
         prm.set("Random number seed","1");
@@ -825,7 +842,12 @@ TEST_CASE("CPO")
     }
     prm.leave_subsection ();
 
-    lpo_3d.parse_parameters(prm);
+    prm.enter_subsection("Particles");
+    {
+      lpo_3d.parse_parameters(prm);
+    }
+    prm.leave_subsection ();
+
     lpo_3d.initialize();
 
 
@@ -1069,10 +1091,10 @@ TEST_CASE("CPO elastic tensor")
   aspect::Particle::Property::CrystalPreferredOrientation<3> cpo;
   aspect::Particle::Property::CpoElasticTensor<3> cpo_elastic_tensor;
   aspect::ParameterHandler prm;
-  cpo.declare_parameters(prm);
-  cpo_elastic_tensor.declare_parameters(prm);
   prm.enter_subsection("Particles");
   {
+    cpo.declare_parameters(prm);
+    cpo_elastic_tensor.declare_parameters(prm);
     prm.enter_subsection("Crystal Preferred Orientation");
     {
       prm.set("Random number seed","1");
@@ -1093,10 +1115,15 @@ TEST_CASE("CPO elastic tensor")
   }
   prm.leave_subsection ();
 
-  cpo.parse_parameters(prm);
+  prm.enter_subsection("Particles");
+  {
+    cpo.parse_parameters(prm);
+    cpo_elastic_tensor.parse_parameters(prm);
+  }
+  prm.leave_subsection();
+
   cpo.initialize();
 
-  cpo_elastic_tensor.parse_parameters(prm);
 
   // All these numbers are directly from the Fortran D-Rex
   // Had to fix the random seed to get consistent results.

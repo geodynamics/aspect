@@ -1228,13 +1228,15 @@ namespace aspect
                            "particles in ghost cells need to be exchanged between the "
                            "processes neighboring this cell. This parameter determines "
                            "whether this transport is happening.");
+
+        Generator::declare_parameters<dim>(prm);
+        Integrator::declare_parameters<dim>(prm);
+        Interpolator::declare_parameters<dim>(prm);
+
+        Property::Manager<dim>::declare_parameters(prm);
       }
       prm.leave_subsection ();
 
-      Generator::declare_parameters<dim>(prm);
-      Integrator::declare_parameters<dim>(prm);
-      Interpolator::declare_parameters<dim>(prm);
-      Property::Manager<dim>::declare_parameters(prm);
     }
 
 
@@ -1304,38 +1306,39 @@ namespace aspect
                                      "are listed in the corresponding manual subsection."));
           }
 
+
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
+
+        // Create a generator object depending on what the parameters specify
+        generator = Generator::create_particle_generator<dim> (prm);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
+          sim->initialize_simulator (this->get_simulator());
+        generator->parse_parameters(prm);
+        generator->initialize();
+
+        // Create a property_manager object and initialize its properties
+        property_manager = std::make_unique<Property::Manager<dim>> ();
+        SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
+        sim->initialize_simulator (this->get_simulator());
+        property_manager->parse_parameters(prm);
+        property_manager->initialize();
+
+        // Create an integrator object depending on the specified parameter
+        integrator = Integrator::create_particle_integrator<dim> (prm);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
+          sim->initialize_simulator (this->get_simulator());
+        integrator->parse_parameters(prm);
+        integrator->initialize();
+
+        // Create an interpolator object depending on the specified parameter
+        interpolator = Interpolator::create_particle_interpolator<dim> (prm);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
+          sim->initialize_simulator (this->get_simulator());
+        interpolator->parse_parameters(prm);
+        interpolator->initialize();
+
       }
       prm.leave_subsection ();
-
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
-
-      // Create a generator object depending on what the parameters specify
-      generator = Generator::create_particle_generator<dim> (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      generator->parse_parameters(prm);
-      generator->initialize();
-
-      // Create a property_manager object and initialize its properties
-      property_manager = std::make_unique<Property::Manager<dim>> ();
-      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
-      sim->initialize_simulator (this->get_simulator());
-      property_manager->parse_parameters(prm);
-      property_manager->initialize();
-
-      // Create an integrator object depending on the specified parameter
-      integrator = Integrator::create_particle_integrator<dim> (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      integrator->parse_parameters(prm);
-      integrator->initialize();
-
-      // Create an interpolator object depending on the specified parameter
-      interpolator = Interpolator::create_particle_interpolator<dim> (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      interpolator->parse_parameters(prm);
-      interpolator->initialize();
     }
   }
 }
