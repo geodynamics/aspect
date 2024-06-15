@@ -19,8 +19,6 @@
  */
 
 #include <aspect/particle/interpolator/nearest_neighbor.h>
-#include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 

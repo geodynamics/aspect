@@ -19,16 +19,13 @@
  */
 
 #include <aspect/particle/interpolator/quadratic_least_squares.h>
-#include <aspect/particle/interpolator/bilinear_least_squares.h>
 #include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
+#include <aspect/particle/world.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/qr.h>
-#include <deal.II/grid/tria_iterator_base.h>
-
-#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
