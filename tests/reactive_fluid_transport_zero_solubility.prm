@@ -31,18 +31,6 @@ subsection Melt settings
   set Include melt transport                  = true
 end
 
-subsection Solver parameters
-  subsection Operator splitting parameters
-    # We choose the size of the reaction time step as 1000 years, small enough
-    # so that it can accurately model melting and freezing.
-    set Reaction time step                     = 1e3
-
-    # Additionally, we always want to do at least 10 operator splitting time
-    # steps in each model time step, to accurately compute the reactions.
-    set Reaction time steps per advection step = 10
-  end
-end
-
 # There are two compositional fields, one that tracks the amount of free fluid
 # (the porosity) and one that tracks the amount of bound fluid (bound_fluid).
 subsection Compositional fields

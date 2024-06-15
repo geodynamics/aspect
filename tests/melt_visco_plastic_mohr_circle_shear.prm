@@ -45,12 +45,6 @@ subsection Prescribed Stokes solution
   end
 end
 
-subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 2e2
-    set Reaction time steps per advection step = 10
-  end
-end
 
 subsection Material model
   set Model name = EXPERIMENTAL melt visco plastic

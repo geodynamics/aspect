@@ -382,6 +382,37 @@ namespace aspect
     };
 
     /**
+     * This enum represents the different choices for the reaction solver.
+     * See @p reaction_solver_type.
+     */
+    struct ReactionSolverType
+    {
+      enum Kind
+      {
+        ARKode,
+        fixed_step
+      };
+
+      static const std::string pattern()
+      {
+        return "ARKode|fixed step";
+      }
+
+      static Kind
+      parse(const std::string &input)
+      {
+        if (input == "ARKode")
+          return ARKode;
+        else if (input == "fixed step")
+          return fixed_step;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+    };
+
+    /**
      * Use the struct aspect::CompositionalFieldDescription
      */
     using CompositionalFieldDescription DEAL_II_DEPRECATED = aspect::CompositionalFieldDescription;
@@ -512,6 +543,8 @@ namespace aspect
     bool                           AMG_output_details;
 
     // subsection: Operator splitting parameters
+    typename ReactionSolverType::Kind reaction_solver_type;
+    double                         ARKode_relative_tolerance;
     double                         reaction_time_step;
     unsigned int                   reaction_steps_per_advection_step;
 

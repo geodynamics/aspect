@@ -67,6 +67,7 @@ subsection Solver parameters
 
   subsection Operator splitting parameters
     set Reaction time step                     = 0.1
+    set Reaction solver type                   = fixed step
   end
 end
 

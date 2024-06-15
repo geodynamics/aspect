@@ -568,11 +568,37 @@ namespace aspect
       prm.leave_subsection ();
       prm.enter_subsection ("Operator splitting parameters");
       {
+        prm.declare_entry ("Reaction solver type", "ARKode",
+                           Patterns::Selection ("ARKode|fixed step"),
+                           "This parameter determines what solver will be used when the reactions "
+                           "are computed within the operator splitting scheme. For reactions where "
+                           "the reaction rate is a known, finite quantity, the appropriate choice "
+                           "is `ARKode', which uses an ODE solver from SUNDIALs ARKode (adaptive-step "
+                           "additive Runge Kutta ODE solver methods) to compute the solution. ARKode "
+                           "will pick a reasonable step size based on the reaction rate and the given "
+                           "`Reaction solver relative tolerance'. "
+                           "However, in some cases we have instantaneous reactions, where we know the "
+                           "new value of a compositional field (and the reaction rate would be "
+                           "infinite), or reaction where we need to know or be able to control the step "
+                           "size we use to compute the reactions. In theses cases, it is appropriate "
+                           "to use the `fixed step' scheme, a method that a forward Euler scheme and a "
+                           "fixed number of steps given by the `Reaction time step' and "
+                           "`Reaction time steps per advection step' parameters. ");
+
+        prm.declare_entry ("Reaction solver relative tolerance", "1e-6",
+                           Patterns::Double (0.),
+                           "The relative solver tolerance used in the ARKode reaction solver. "
+                           "This tolerance is used to adaptively determine the reaction step size. "
+                           "For more details, see the ARKode documentation. This parameter is only used "
+                           "if the `ARKode' reaction solver type is used. "
+                           "Units: none.");
+
         prm.declare_entry ("Reaction time step", "1000.0",
                            Patterns::Double (0.),
                            "Set a time step size for computing reactions of compositional fields and the "
                            "temperature field in case operator splitting is used. This is only used "
-                           "when the parameter ``Use operator splitting'' is set to true. "
+                           "when the parameter ``Use operator splitting'' is set to true and when the "
+                           "`fixed step' reaction solver type is used. "
                            "The reaction time step must be greater than 0. "
                            "If you want to prescribe the reaction time step only as a relative value "
                            "compared to the advection time step as opposed to as an absolute value, you "
@@ -586,8 +612,9 @@ namespace aspect
                            Patterns::Integer (0),
                            "The number of reaction time steps done within one advection time step "
                            "in case operator splitting is used. This is only used if the parameter "
-                           "``Use operator splitting'' is set to true. If set to zero, this "
-                           "parameter is ignored. Otherwise, the reaction time step size is chosen according to "
+                           "``Use operator splitting'' is set to true and when the `fixed step' "
+                           "reaction solver type is used. If set to zero, this parameter is ignored. "
+                           "Otherwise, the reaction time step size is chosen according to "
                            "this criterion and the ``Reaction time step'', whichever yields the "
                            "smaller time step. "
                            "Units: none.");
@@ -1485,6 +1512,8 @@ namespace aspect
       prm.leave_subsection ();
       prm.enter_subsection ("Operator splitting parameters");
       {
+        reaction_solver_type                   = ReactionSolverType::parse(prm.get("Reaction solver type"));
+        ARKode_relative_tolerance              = prm.get_double("Reaction solver relative tolerance");
         reaction_time_step       = prm.get_double("Reaction time step");
         AssertThrow (reaction_time_step > 0,
                      ExcMessage("Reaction time step must be greater than 0."));

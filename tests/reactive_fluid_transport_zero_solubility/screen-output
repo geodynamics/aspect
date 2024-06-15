@@ -19,19 +19,19 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
      RMS, max velocity:           8.75e-19 m/year, 1.5e-18 m/year
 
 *** Timestep 1:  t=10000 years, dt=10000 years
-   Solving composition reactions... in 10 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Skipping bound_fluid composition solve because RHS is zero.
+   Solving bound_fluid system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.5731e-17, 2.27658e-16, 0, 1.29556e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.29556e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39641e-16, 7.10006e-17, 3.75003e-16, 1.29567e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.29567e-07
 
 
    Postprocessing:
-     Compositions min/max/mass:   0.01/0.01/4e+04 // 0/0/0
+     Compositions min/max/mass:   0.01/0.01/4e+04 // 4.54e-07/4.54e-07/1.816
      Melt fraction min/total/max: 0.01, 4e+04, 0.01
      RMS, max velocity:           2.95e-07 m/year, 4.04e-07 m/year
 

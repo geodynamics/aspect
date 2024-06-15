@@ -20,21 +20,13 @@ set Nonlinear solver tolerance             = 1e-7
 # In addition, melting and freezing normally happens on a much faster
 # time scale than the flow of melt, so we want to decouple the advection
 # of melt (and temperature) and the melting process itself. To do that,
-# we use the operator splitting scheme, and define that for every
-# advection time step, we want to do at least 50 reaction time step,
-# and in addition, we limit the maximum reaction time step size to
-# 500,000 years.
+# we use the operator splitting scheme.
 set Use operator splitting                     = true
 
 # The end time of the simulation. We only do one time step.
 set End time                               = 1e5
 
 subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 1e5
-    set Reaction time steps per advection step = 50
-  end
-
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-8
     set Number of cheap Stokes solver steps = 100

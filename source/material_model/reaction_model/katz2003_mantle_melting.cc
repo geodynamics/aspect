@@ -608,20 +608,25 @@ namespace aspect
             freezing_rate /= year_in_seconds;
           }
 
-        AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
-                    ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                               + " in the operator splitting scheme is too large to compute melting rates! "
-                               "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
-                               "operator splitting' chosen in the material model, which is currently "
-                               + Utilities::to_string(melting_time_scale) + "."));
         AssertThrow(melting_time_scale > 0,
                     ExcMessage("The Melting time scale for operator splitting must be larger than 0!"));
-        AssertThrow(freezing_rate * this->get_parameters().reaction_time_step <= 1.0,
-                    ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                               + " in the operator splitting scheme is too large to compute freezing rates! "
-                               "You have to choose it in such a way that it is smaller than the inverse of the "
-                               "'Freezing rate' chosen in the material model, which is currently "
-                               + Utilities::to_string(1.0/freezing_rate) + "."));
+
+        if (this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
+          {
+            AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
+                        ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+                                   + " in the operator splitting scheme is too large to compute melting rates! "
+                                   "You have to choose it in such a way that it is smaller than the 'Melting time scale for "
+                                   "operator splitting' chosen in the material model, which is currently "
+                                   + Utilities::to_string(melting_time_scale) + "."));
+
+            AssertThrow(freezing_rate * this->get_parameters().reaction_time_step <= 1.0,
+                        ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+                                   + " in the operator splitting scheme is too large to compute freezing rates! "
+                                   "You have to choose it in such a way that it is smaller than the inverse of the "
+                                   "'Freezing rate' chosen in the material model, which is currently "
+                                   + Utilities::to_string(1.0/freezing_rate) + "."));
+          }
       }
     }
   }

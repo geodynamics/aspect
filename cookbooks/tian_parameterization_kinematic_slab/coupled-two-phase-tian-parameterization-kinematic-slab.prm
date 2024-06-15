@@ -55,13 +55,7 @@ subsection Discretization
   end
 end
 
-# Do 10 reaction time steps per advection time step.
 subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 100
-    set Reaction time steps per advection step = 10
-  end
-
   # Set a stricter linear solver tolerance to ensure convergence
   subsection Stokes solver parameters
     set Linear solver tolerance             = 1e-10
