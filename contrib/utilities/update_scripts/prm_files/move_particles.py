@@ -23,11 +23,25 @@ import python.scripts.aspect_input as aspect
 def move_particle_parameters_to_own_subsection(parameters):
     """ Move the particle parameters to their own subsection. """
 
-    # Find the particle parameters and move
+    # Collect existing parameters and delete old entries
+    particle_params = dict({})
     if "Postprocess" in parameters:
         if "Particles" in parameters["Postprocess"]["value"]:
-            parameters["Particles"] = parameters["Postprocess"]["value"]["Particles"]
+            particle_params = parameters["Postprocess"]["value"]["Particles"]
             del parameters["Postprocess"]["value"]["Particles"]
+
+    # If there are any particle parameters
+    if "value" in particle_params:
+        # Make global section if necessary
+        if not "Particles" in parameters:
+            parameters["Particles"] = {"comment": "", "value" : dict({}), "type": "subsection"}
+
+        # Move parameters one by one, throw an error if it already exists
+        for parameter in particle_params["value"]:
+            if not parameter in parameters["Particles"]["value"]:
+                parameters["Particles"]["value"][parameter] = particle_params["value"][parameter]
+            else:
+                assert False, "Error: Duplicated parameter found with name: " + str(parameter)
 
     return parameters
 
