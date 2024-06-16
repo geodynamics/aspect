@@ -20,10 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/particle_count.h>
-
-#include <aspect/postprocess/particles.h>
 #include <aspect/particle/world.h>
-#include <aspect/simulator.h>
 
 
 namespace aspect
@@ -45,11 +42,8 @@ namespace aspect
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ParticleCount<dim>::execute() const
       {
-        const Postprocess::Particles<dim> &particle_postprocessor =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
-
         const Particle::ParticleHandler<dim> &particle_handler =
-          particle_postprocessor.get_particle_world().get_particle_handler();
+          this->get_particle_world().get_particle_handler();
 
         std::pair<std::string, std::unique_ptr<Vector<float>>>
         return_value ("particles_per_cell",
