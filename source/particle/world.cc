@@ -1186,7 +1186,7 @@ namespace aspect
             }
           else
             {
-              prm.enter_subsection("Particles " + std::to_string(world_index));
+              prm.enter_subsection("Particles " + std::to_string(world_index+1));
             }
           {
             prm.declare_entry ("Load balancing strategy", "repartition",
@@ -1277,7 +1277,7 @@ namespace aspect
         }
       else
         {
-          prm.enter_subsection("Particles " + std::to_string(world_index));
+          prm.enter_subsection("Particles " + std::to_string(world_index+1));
         }
       {
         min_particles_per_cell = prm.get_integer("Minimum particles per cell");
