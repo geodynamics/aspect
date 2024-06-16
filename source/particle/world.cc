@@ -1333,6 +1333,7 @@ namespace aspect
           sim->initialize_simulator (this->get_simulator());
         generator->parse_parameters(prm);
         generator->initialize();
+        generator->set_particle_world_index(world_index);
 
         // Create a property_manager object and initialize its properties
         property_manager = std::make_unique<Property::Manager<dim>> ();
@@ -1340,6 +1341,7 @@ namespace aspect
         sim->initialize_simulator (this->get_simulator());
         property_manager->parse_parameters(prm);
         property_manager->initialize();
+        property_manager->set_particle_world_index(world_index);
 
         // Create an integrator object depending on the specified parameter
         integrator = Integrator::create_particle_integrator<dim> (prm);
@@ -1347,6 +1349,7 @@ namespace aspect
           sim->initialize_simulator (this->get_simulator());
         integrator->parse_parameters(prm);
         integrator->initialize();
+        integrator->set_particle_world_index(world_index);
 
         // Create an interpolator object depending on the specified parameter
         interpolator = Interpolator::create_particle_interpolator<dim> (prm);
@@ -1354,6 +1357,7 @@ namespace aspect
           sim->initialize_simulator (this->get_simulator());
         interpolator->parse_parameters(prm);
         interpolator->initialize();
+        interpolator->set_particle_world_index(world_index);
 
       }
       prm.leave_subsection ();

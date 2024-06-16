@@ -21,7 +21,7 @@
 #ifndef _aspect_particle_generator_interface_h
 #define _aspect_particle_generator_interface_h
 
-#include <aspect/plugins.h>
+#include <aspect/particle/interface.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/particles/particle.h>
@@ -65,7 +65,7 @@ namespace aspect
        * @ingroup ParticleGenerators
        */
       template <int dim>
-      class Interface : public SimulatorAccess<dim>, public Plugins::InterfaceBase
+      class Interface : public SimulatorAccess<dim>, public ParticleInterfaceBase
       {
         public:
           virtual

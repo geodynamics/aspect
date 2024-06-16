@@ -21,7 +21,7 @@
 #ifndef _aspect_particle_interpolator_interface_h
 #define _aspect_particle_interpolator_interface_h
 
-#include <aspect/plugins.h>
+#include <aspect/particle/interface.h>
 #include <aspect/global.h>
 
 #include <deal.II/particles/particle.h>
@@ -47,7 +47,7 @@ namespace aspect
        * @ingroup ParticleInterpolators
        */
       template <int dim>
-      class Interface : public Plugins::InterfaceBase
+      class Interface : public ParticleInterfaceBase
       {
         public:
           /**
