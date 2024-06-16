@@ -347,7 +347,7 @@ namespace aspect
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm, const unsigned int world_index);
 
       private:
         struct ParticleLoadBalancing
