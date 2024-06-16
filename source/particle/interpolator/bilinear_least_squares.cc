@@ -19,7 +19,6 @@
  */
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
-#include <aspect/postprocess/particles.h>
 #include <aspect/particle/world.h>
 #include <aspect/utilities.h>
 
@@ -282,9 +281,7 @@ namespace aspect
         {
           prm.enter_subsection("Bilinear least squares");
           {
-            const Postprocess::Particles<dim> &particle_postprocessor =
-              this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim>>();
-            const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
+            const auto &particle_property_information = this->get_particle_world().get_property_manager().get_data_info();
             const unsigned int n_property_components = particle_property_information.n_components();
             const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
 

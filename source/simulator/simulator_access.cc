@@ -816,6 +816,17 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  unsigned int
+  SimulatorAccess<dim>::n_particle_worlds() const
+  {
+    // operator () returns whether an object is managed by a unique ptr
+    return (simulator->particle_world ? 1 : 0);
+  }
+
+
+
   template <int dim>
   const Particle::World<dim> &
   SimulatorAccess<dim>::get_particle_world() const
@@ -824,6 +835,8 @@ namespace aspect
             ExcMessage("You can not call this function if there is no particle world."));
     return *simulator->particle_world.get();
   }
+
+
 
   template <int dim>
   Particle::World<dim> &

@@ -20,14 +20,10 @@
 
 
 #include <aspect/postprocess/particle_count_statistics.h>
+#include <aspect/particle/world.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-
-#include <aspect/postprocess/particles.h>
-#include <aspect/particle/world.h>
-#include <aspect/simulator.h>
-
 
 
 namespace aspect
@@ -38,15 +34,12 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleCountStatistics<dim>::execute (TableHandler &statistics)
     {
-      const Postprocess::Particles<dim> &particle_postprocessor =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
-
       const Particle::ParticleHandler<dim> &particle_handler =
-        particle_postprocessor.get_particle_world().get_particle_handler();
+        this->get_particle_world().get_particle_handler();
 
       unsigned int local_min_particles = std::numeric_limits<unsigned int>::max();
       unsigned int local_max_particles = 0;
-      const Particle::types::particle_index global_particles = particle_postprocessor.get_particle_world().n_global_particles();
+      const Particle::types::particle_index global_particles = this->get_particle_world().n_global_particles();
 
       // compute local min/max
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
