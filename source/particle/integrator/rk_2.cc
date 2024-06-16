@@ -41,7 +41,7 @@ namespace aspect
       void
       RK2<dim>::initialize ()
       {
-        const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
+        const auto &property_information = this->get_particle_world(0).get_property_manager().get_data_info();
         property_index_old_location = property_information.get_position_by_field_name("internal: integrator properties");
       }
 

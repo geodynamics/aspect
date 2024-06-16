@@ -189,7 +189,7 @@ namespace aspect
                    nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
-    particle_world(nullptr),
+    particle_worlds(),
     time (numbers::signaling_nan<double>()),
     time_step (numbers::signaling_nan<double>()),
     old_time_step (numbers::signaling_nan<double>()),
@@ -448,12 +448,16 @@ namespace aspect
 
     if (postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim>>())
       {
-        particle_world = std::make_unique<Particle::World<dim>>();
-        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_world.get()))
-          sim->initialize_simulator (*this);
+        particle_worlds.emplace_back(std::move(std::make_unique<Particle::World<dim>>()));
+        for (unsigned int particle_world_index = 0 ; particle_world_index < particle_worlds.size(); ++particle_world_index)
+          {
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_worlds[particle_world_index].get()))
+              sim->initialize_simulator (*this);
 
-        particle_world->parse_parameters(prm,0);
-        particle_world->initialize();
+            particle_worlds.back()->parse_parameters(prm,particle_world_index);
+            particle_worlds.back()->initialize();
+
+          }
       }
 
     mesh_refinement_manager.initialize_simulator (*this);
@@ -568,7 +572,9 @@ namespace aspect
     // is destroyed after the latter. But it stores a pointer to the
     // triangulation and uses it during destruction. This results in
     // trouble. So destroy it first.
-    particle_world.reset();
+
+    for (auto &particle_world : particle_worlds)
+      particle_world.reset();
 
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
@@ -608,8 +614,9 @@ namespace aspect
 
     // Copy particle handler to restore particle location and properties
     // before repeating a timestep
-    if (particle_world.get() != nullptr)
+    for (auto &particle_world : particle_worlds)
       particle_world->backup_particles();
+
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints
@@ -642,7 +649,7 @@ namespace aspect
     if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();
 
-    if (particle_world.get() != nullptr)
+    for (auto &particle_world : particle_worlds)
       particle_world->update();
 
     // do the same for the traction boundary conditions and other things
@@ -2133,7 +2140,7 @@ namespace aspect
             // Restore particles through stored copy of particle handler,
             // created in start_timestep(),
             // but only if this timestep is to be repeated.
-            if (particle_world.get() != nullptr)
+            for (auto &particle_world : particle_worlds)
               particle_world->restore_particles();
 
             continue; // repeat time step loop

@@ -1980,7 +1980,7 @@ namespace aspect
       /**
        * The world holding the particles
        */
-      std::unique_ptr<Particle::World<dim>> particle_world;
+      std::vector<std::unique_ptr<Particle::World<dim>>> particle_worlds;
 
       /**
        * @}

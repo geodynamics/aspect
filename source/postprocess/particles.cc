@@ -323,7 +323,7 @@ namespace aspect
       if (std::isnan(last_output_time))
         last_output_time = this->get_time() - output_interval;
 
-      const Particle::World<dim> &world = this->get_particle_world();
+      const Particle::World<dim> &world = this->get_particle_world(0);
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
@@ -562,7 +562,7 @@ namespace aspect
       std::ostringstream os;
       aspect::oarchive oa (os);
 
-      this->get_particle_world().save(os);
+      this->get_particle_world(0).save(os);
       oa << (*this);
 
       status_strings["Particles"] = os.str();
@@ -580,7 +580,7 @@ namespace aspect
           aspect::iarchive ia (is);
 
           // Load the particle world
-          this->get_particle_world().load(is);
+          this->get_particle_world(0).load(is);
 
           ia >> (*this);
         }

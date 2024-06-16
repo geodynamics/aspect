@@ -412,7 +412,7 @@ namespace aspect
         // Currently this functionality only works in field composition
         if (healing_mechanism != no_healing && this->n_particle_worlds() > 0)
           {
-            const Particle::Property::Manager<dim> &particle_property_manager = this->get_particle_world().get_property_manager();
+            const Particle::Property::Manager<dim> &particle_property_manager = this->get_particle_world(0).get_property_manager();
             AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
           }
 

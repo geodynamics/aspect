@@ -821,30 +821,27 @@ namespace aspect
   unsigned int
   SimulatorAccess<dim>::n_particle_worlds() const
   {
-    // operator () returns whether an object is managed by a unique ptr
-    return (simulator->particle_world ? 1 : 0);
+    return simulator->particle_worlds.size();
   }
 
 
 
   template <int dim>
   const Particle::World<dim> &
-  SimulatorAccess<dim>::get_particle_world() const
+  SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index) const
   {
-    Assert (simulator->particle_world.get() != nullptr,
-            ExcMessage("You can not call this function if there is no particle world."));
-    return *simulator->particle_world.get();
+    AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
+    return *simulator->particle_worlds[particle_world_index].get();
   }
 
 
 
   template <int dim>
   Particle::World<dim> &
-  SimulatorAccess<dim>::get_particle_world()
+  SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index)
   {
-    Assert (simulator->particle_world.get() != nullptr,
-            ExcMessage("You can not call this function if there is no particle world."));
-    return *simulator->particle_world.get();
+    AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
+    return *simulator->particle_worlds[particle_world_index].get();
   }
 
 

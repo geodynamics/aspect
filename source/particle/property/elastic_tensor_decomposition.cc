@@ -270,7 +270,7 @@ namespace aspect
       void
       ElasticTensorDecomposition<dim>::initialize ()
       {
-        const Particle::Property::Manager<dim> &manager = this->get_particle_world().get_property_manager();
+        const Particle::Property::Manager<dim> &manager = this->get_particle_world(0).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No cpo property plugin found."));
         AssertThrow(manager.plugin_name_exists("cpo elastic tensor"),
