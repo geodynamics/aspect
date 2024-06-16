@@ -1177,65 +1177,76 @@ namespace aspect
     void
     World<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Particles");
-      {
-        prm.declare_entry ("Load balancing strategy", "repartition",
-                           Patterns::MultipleSelection ("none|remove particles|add particles|"
-                                                        "remove and add particles|repartition"),
-                           "Strategy that is used to balance the computational "
-                           "load across processors for adaptive meshes.");
-        prm.declare_entry ("Minimum particles per cell", "0",
-                           Patterns::Integer (0),
-                           "Lower limit for particle number per cell. This limit is "
-                           "useful for adaptive meshes to prevent fine cells from being empty "
-                           "of particles. It will be checked and enforced after mesh "
-                           "refinement and after particle movement. "
-                           "If there are "
-                           "\\texttt{n\\_number\\_of\\_particles} $<$ \\texttt{min\\_particles\\_per\\_cell} "
-                           "particles in one cell then "
-                           "\\texttt{min\\_particles\\_per\\_cell} - \\texttt{n\\_number\\_of\\_particles} "
-                           "particles are generated and randomly placed in "
-                           "this cell. If the particles carry properties the "
-                           "individual property plugins control how the "
-                           "properties of the new particles are initialized.");
-        prm.declare_entry ("Maximum particles per cell", "100",
-                           Patterns::Integer (0),
-                           "Upper limit for particle number per cell. This limit is "
-                           "useful for adaptive meshes to prevent coarse cells from slowing down "
-                           "the whole model. It will be checked and enforced after mesh "
-                           "refinement, after MPI transfer of particles and after particle "
-                           "movement. If there are "
-                           "\\texttt{n\\_number\\_of\\_particles} $>$ \\texttt{max\\_particles\\_per\\_cell} "
-                           "particles in one cell then "
-                           "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
-                           "particles in this cell are randomly chosen and destroyed.");
-        prm.declare_entry ("Particle weight", "10",
-                           Patterns::Integer (0),
-                           "Weight that is associated with the computational load of "
-                           "a single particle. The sum of particle weights will be added "
-                           "to the sum of cell weights to determine the partitioning of "
-                           "the mesh if the `repartition' particle load balancing strategy "
-                           "is selected. The optimal weight depends on the used "
-                           "integrator and particle properties. In general for a more "
-                           "expensive integrator and more expensive properties a larger "
-                           "particle weight is recommended. Before adding the weights "
-                           "of particles, each cell already carries a weight of 1000 to "
-                           "account for the cost of field-based computations.");
-        prm.declare_entry ("Update ghost particles", "false",
-                           Patterns::Bool (),
-                           "Some particle interpolation algorithms require knowledge "
-                           "about particles in neighboring cells. To allow this, "
-                           "particles in ghost cells need to be exchanged between the "
-                           "processes neighboring this cell. This parameter determines "
-                           "whether this transport is happening.");
+      constexpr unsigned int number_of_particle_worlds = 1;
+      for (unsigned int world_index = 0; world_index < number_of_particle_worlds; ++world_index)
+        {
+          if (world_index == 0)
+            {
+              prm.enter_subsection("Particles");
+            }
+          else
+            {
+              prm.enter_subsection("Particles " + std::to_string(world_index+1));
+            }
+          {
+            prm.declare_entry ("Load balancing strategy", "repartition",
+                               Patterns::MultipleSelection ("none|remove particles|add particles|"
+                                                            "remove and add particles|repartition"),
+                               "Strategy that is used to balance the computational "
+                               "load across processors for adaptive meshes.");
+            prm.declare_entry ("Minimum particles per cell", "0",
+                               Patterns::Integer (0),
+                               "Lower limit for particle number per cell. This limit is "
+                               "useful for adaptive meshes to prevent fine cells from being empty "
+                               "of particles. It will be checked and enforced after mesh "
+                               "refinement and after particle movement. "
+                               "If there are "
+                               "\\texttt{n\\_number\\_of\\_particles} $<$ \\texttt{min\\_particles\\_per\\_cell} "
+                               "particles in one cell then "
+                               "\\texttt{min\\_particles\\_per\\_cell} - \\texttt{n\\_number\\_of\\_particles} "
+                               "particles are generated and randomly placed in "
+                               "this cell. If the particles carry properties the "
+                               "individual property plugins control how the "
+                               "properties of the new particles are initialized.");
+            prm.declare_entry ("Maximum particles per cell", "100",
+                               Patterns::Integer (0),
+                               "Upper limit for particle number per cell. This limit is "
+                               "useful for adaptive meshes to prevent coarse cells from slowing down "
+                               "the whole model. It will be checked and enforced after mesh "
+                               "refinement, after MPI transfer of particles and after particle "
+                               "movement. If there are "
+                               "\\texttt{n\\_number\\_of\\_particles} $>$ \\texttt{max\\_particles\\_per\\_cell} "
+                               "particles in one cell then "
+                               "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
+                               "particles in this cell are randomly chosen and destroyed.");
+            prm.declare_entry ("Particle weight", "10",
+                               Patterns::Integer (0),
+                               "Weight that is associated with the computational load of "
+                               "a single particle. The sum of particle weights will be added "
+                               "to the sum of cell weights to determine the partitioning of "
+                               "the mesh if the `repartition' particle load balancing strategy "
+                               "is selected. The optimal weight depends on the used "
+                               "integrator and particle properties. In general for a more "
+                               "expensive integrator and more expensive properties a larger "
+                               "particle weight is recommended. Before adding the weights "
+                               "of particles, each cell already carries a weight of 1000 to "
+                               "account for the cost of field-based computations.");
+            prm.declare_entry ("Update ghost particles", "false",
+                               Patterns::Bool (),
+                               "Some particle interpolation algorithms require knowledge "
+                               "about particles in neighboring cells. To allow this, "
+                               "particles in ghost cells need to be exchanged between the "
+                               "processes neighboring this cell. This parameter determines "
+                               "whether this transport is happening.");
 
-        Generator::declare_parameters<dim>(prm);
-        Integrator::declare_parameters<dim>(prm);
-        Interpolator::declare_parameters<dim>(prm);
+            Generator::declare_parameters<dim>(prm);
+            Integrator::declare_parameters<dim>(prm);
+            Interpolator::declare_parameters<dim>(prm);
 
-        Property::Manager<dim>::declare_parameters(prm);
-      }
-      prm.leave_subsection ();
+            Property::Manager<dim>::declare_parameters(prm);
+          }
+          prm.leave_subsection ();
+        }
 
     }
 
@@ -1243,7 +1254,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::parse_parameters (ParameterHandler &prm)
+    World<dim>::parse_parameters (ParameterHandler &prm, const unsigned int world_index)
     {
       // First do some error checking. The current algorithm does not find
       // the cells around particles, if the particles moved more than one
@@ -1260,7 +1271,14 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      prm.enter_subsection("Particles");
+      if (world_index == 0)
+        {
+          prm.enter_subsection("Particles");
+        }
+      else
+        {
+          prm.enter_subsection("Particles " + std::to_string(world_index+1));
+        }
       {
         min_particles_per_cell = prm.get_integer("Minimum particles per cell");
         max_particles_per_cell = prm.get_integer("Maximum particles per cell");
