@@ -191,20 +191,24 @@ namespace aspect
           AssertThrow(!this->get_parameters().use_operator_splitting,
                       ExcMessage("If stresses are tracked on particles, the stress update is applied by the particle property 'elastic stress' "
                                  "and operator splitting should not be turned on. "));
-        // The discontinuous element is required to accommodate discontinuous
-        // strain rates that feed into the stored stresses.
-        AssertThrow(this->get_parameters().use_discontinuous_composition_discretization,
-                    ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
-                               "the use of discontinuous elements for composition."));
 
         // Check that 3+3 in 2D or 6+6 in 3D stress fields exist.
         AssertThrow((this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::stress) == 2*SymmetricTensor<2,dim>::n_independent_components),
                     ExcMessage("Rheology model Elasticity requires 3+3 in 2D or 6+6 in 3D fields of type stress."));
 
         // Check that the compositional fields representing the viscoelastic
-        // stress tensor components are both named correctly and listed in the right order.
+        // stress tensor components are both named correctly and listed in the right order
+        // as well as use a discontinuous discretization.
         std::vector<std::string> stress_field_names = this->introspection().get_names_for_fields_of_type(CompositionalFieldDescription::stress);
         std::vector<unsigned int> stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
+
+        // The discontinuous element is required to accommodate discontinuous
+        // strain rates that feed into the stored stresses.
+        const std::vector<bool> use_discontinuous_composition_discretization = this->get_parameters().use_discontinuous_composition_discretization;
+        for (auto stress_field : stress_field_indices)
+          AssertThrow(use_discontinuous_composition_discretization[stress_field],
+                      ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
+                                 "the use of discontinuous elements for compositions that represent stress tensor components."));
 
         // We require a consecutive range of indices (for example for FEPointEvaluation)
         // to extract the fields representing the viscoelastic stress tensor components,
