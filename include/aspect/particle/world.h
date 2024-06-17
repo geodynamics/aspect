@@ -345,7 +345,7 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          *
-         * @param world_index Parse the parameters for the Partcile world with this index
+         * @param world_index Parse the parameters for the Particle world with this index.
          */
         virtual
         void
