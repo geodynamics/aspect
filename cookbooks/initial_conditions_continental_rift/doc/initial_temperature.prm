@@ -28,6 +28,11 @@ subsection Initial temperature model
   subsection Lithosphere with rift
     set LAB isotherm temperature = 1573.
     set Surface temperature = 293.
+    # Whether or not to prescribe the LAB temperature up to a
+    # certain depth (in the area below LAB)
+    # or to use adiabat everywhere below the LAB.
+    set Use temperature compensation depth = true
+    set Temperature compensation depth = 150e3
   end
   subsection Adiabatic
     # A reference profile of the compositional fields
