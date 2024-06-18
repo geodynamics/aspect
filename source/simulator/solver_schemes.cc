@@ -894,8 +894,6 @@ namespace aspect
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations = */ false);
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
   }
 
   template <int dim>
@@ -903,8 +901,6 @@ namespace aspect
   {
     // The defect correction solver is just the Newton solver without derivatives.
     solve_iterated_advection_and_newton_stokes(/*use_newton_iterations = */ false);
-    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
-
   }
 
 
