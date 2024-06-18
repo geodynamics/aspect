@@ -1,18 +1,19 @@
 #### This is an adaptation of the Continental Extension Cookbook
-#### using new plugins for the initial composition, temperature
-#### topography and strain of an incipient continental rift system.
+#### using new plugins for the initial composition, temperature, 
+#### topography and initial strain of an incipient continental rift system.
+#### Additionally, we use FastScape and traction boundary condition.
 
 ####  Global parameters
 set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/initial_conditions_continental_rift/libinitial_conditions_continental_rift.debug.so
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0 #5e6
+set End time                               = 5e6
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 2
 set CFL number                             = 0.5
-set Maximum time step                      = 20e3
+set Maximum time step                      = 5000 
 set Output directory                       = output-initial_conditions_continental_rift_initial_topography_with_craton
 set Pressure normalization                 = no
 set Adiabatic surface temperature          = 1573
@@ -70,22 +71,65 @@ subsection Solver parameters
   end
 end
 
-# Advecting the free surface using a normal, rather than vertical,
-# projection. To reduce mesh instabilities and associated solver
-# issues when deformation becomes large, diffusion is applied to
-# the free surface at each time step.
+# Use FastScape to deform the mesh.
 subsection Mesh deformation
-  set Mesh deformation boundary indicators        = top: free surface, top: diffusion
+  set Additional tangential mesh velocity boundary indicators = right
+  set Mesh deformation boundary indicators = top: fastscape
 
   subsection Free surface
-    set Surface velocity projection = normal
+    set Free surface stabilization theta = 1
   end
+  
+  subsection Fastscape
+    set Vertical exaggeration = -1
+    set Maximum timestep length = 500
+    set Number of fastscape timesteps per aspect timestep = 10
+    set Maximum surface refinement level = 4
+    set Surface refinement difference = 0
+    set Additional fastscape refinement = 0
+    set Use ghost nodes = true
+    set Y extent in 2d = 25e3
+    set Uplift and advect with fastscape = true
 
-  subsection Diffusion
-    # Diffusivity term. Increasing this value will result
-    # in a smoother free surface and lower topography
-    # amplitudes.
-    set Hillslope transport coefficient = 1.e-8
+    subsection Boundary conditions
+      set Front = 1
+      set Right = 1
+      set Back  = 1
+      set Left  = 1
+    end
+
+    subsection Erosional parameters
+      set Drainage area exponent = 0.4              #m
+      set Slope exponent = 1                        #n
+      set Multi-direction slope exponent = -1        #p
+
+      set Bedrock diffusivity = 5e-3          #kd
+      set Bedrock river incision rate = 1e-5        #kf
+      set Bedrock deposition coefficient = 1       #G
+
+      set Sediment diffusivity = -1
+      set Sediment river incision rate = -1
+      set Sediment deposition coefficient = 1        #G
+    end
+
+    set Use marine component = true
+    set Sediment rain rates = 1e-4 # m/yr
+    set Sediment rain intervals =
+    set Use stratigraphy   = false
+
+    # No difference between sand and silt
+    subsection Marine parameters
+      set Sea level = -200
+      set Sand porosity = 0.
+      set Silt porosity = 0.
+      set Sand e-folding depth = 3000 # m
+      set Silt e-folding depth = 3000 # m
+
+      set Sand-silt ratio = 0.5
+      set Depth averaging thickness = 1e3 # m
+      set Sand transport coefficient = 150 # m2/yr
+      set Silt transport coefficient = 150 # m2/yr
+    end
   end
 end
 
