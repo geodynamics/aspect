@@ -350,7 +350,7 @@ namespace aspect
        */
       struct ComponentMasks
       {
-        ComponentMasks (FEVariableCollection<dim> &fevs);
+        ComponentMasks (const FEVariableCollection<dim> &fevs, const Introspection<dim>::ComponentIndices &indices);
 
         ComponentMask              velocities;
         ComponentMask              pressure;

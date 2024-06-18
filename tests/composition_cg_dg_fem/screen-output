@@ -1,0 +1,204 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 493 (162+25+81+144+81)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Solving Stokes system... 10+0 iterations.
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,187 (386+55+193+360+193)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Solving Stokes system... 13+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: 0/1/0.4167 // 0/1/0.4583
+
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 10 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: -0.1081/1.021/0.4167 // -0.0158/1.028/0.4583
+
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 10 iterations.
+   Solving Stokes system... 13+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: -0.1914/1.043/0.4167 // -0.02143/1.03/0.4583
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,813 (578+81+289+576+289)
+
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: -0.1976/1.126/0.4167 // -0.01355/1.028/0.4582
+
+*** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.004362 K, 0.5 K, 1 K
+     Compositions min/max/mass: -0.1982/1.126/0.4167 // -0.004788/1.019/0.4583
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.007754 K, 0.5 K, 1 K
+     Compositions min/max/mass: -0.1702/1.125/0.4167 // -0.004272/1.021/0.4582
+
+*** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.01149 K, 0.5 K, 1 K
+     Compositions min/max/mass: -0.1629/1.125/0.4167 // -0.006268/1.014/0.4581
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.01532 K, 0.4999 K, 1 K
+     Compositions min/max/mass: -0.1349/1.125/0.4167 // -0.009569/1.009/0.4581
+
+*** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.0157 K, 0.4999 K, 1 K
+     Compositions min/max/mass: -0.119/1.125/0.4167 // -0.007126/1.013/0.4581
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.01422 K, 0.4998 K, 1 K
+     Compositions min/max/mass: -0.1125/1.125/0.4167 // -0.003882/1.012/0.458
+
+*** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.01272 K, 0.4997 K, 1 K
+     Compositions min/max/mass: -0.1223/1.125/0.4167 // -0.004574/1.01/0.458
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.01329 K, 0.4996 K, 1 K
+     Compositions min/max/mass: -0.1302/1.125/0.4167 // -0.00472/1.01/0.4581
+
+*** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
+   Solving temperature system... 13 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 12 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.0123 K, 0.4996 K, 1 K
+     Compositions min/max/mass: -0.1197/1.124/0.4167 // -0.00434/1.012/0.4581
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.009901 K, 0.4996 K, 1 K
+     Compositions min/max/mass: -0.09665/1.125/0.4167 // -0.0038/1.01/0.4581
+
+*** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 5+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.007248 K, 0.4996 K, 1 K
+     Compositions min/max/mass: -0.09368/1.125/0.4167 // -0.003175/1.007/0.4581
+
+Skipping mesh refinement, because the mesh did not change.
+
+*** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 5+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.006538 K, 0.4996 K, 1 K
+     Compositions min/max/mass: -0.1627/1.125/0.4167 // -0.002995/1.006/0.4581
+
+*** Timestep 16:  t=1 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 11 iterations.
+   Solving Stokes system... 5+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   -0.006603 K, 0.4996 K, 1 K
+     Compositions min/max/mass: -0.2114/1.149/0.4167 // -0.003116/1.006/0.4581
+
+Skipping mesh refinement, because the mesh did not change.
+
+Termination requested by criterion: end time
+
+
+
