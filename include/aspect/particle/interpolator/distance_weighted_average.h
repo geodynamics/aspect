@@ -43,9 +43,9 @@ namespace aspect
       {
         public:
           /**
-           * Update function. Called once at the beginning of each time step.
+           * Initialize function. Called once at the beginning of the model.
            */
-          void update() override;
+          void initialize() override;
 
           /**
            * Return the cell-wise evaluated particle properties at the given @p positions.
@@ -58,9 +58,10 @@ namespace aspect
 
         private:
           /**
-           * Cached information that stores for each vertex which cells it belongs to.
+           * Cached information that stores information about the grid so that we
+           * do not need to recompute it every time properties_at_points() is called.
           */
-          std::vector<std::set<typename Triangulation<dim>::active_cell_iterator>> vertex_to_cell_map;
+          std::unique_ptr<GridTools::Cache<dim>> grid_cache;
       };
     }
   }

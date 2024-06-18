@@ -42,9 +42,9 @@ namespace aspect
 
       template <int dim>
       void
-      DistanceWeightedAverage<dim>::update()
+      DistanceWeightedAverage<dim>::initialize()
       {
-        vertex_to_cell_map = GridTools::vertex_to_cell_map(this->get_triangulation());
+        grid_cache = std::make_unique<GridTools::Cache<dim>>(this->get_triangulation(), this->get_mapping());
       }
 
 
@@ -71,6 +71,8 @@ namespace aspect
               cell_properties[index_positions][index_properties] = 0.0;
 
         std::set<typename Triangulation<dim>::active_cell_iterator> cell_and_neighbors;
+
+        const auto &vertex_to_cell_map = grid_cache->get_vertex_to_cell_map();
 
         for (const auto v : cell->vertex_indices())
           {
