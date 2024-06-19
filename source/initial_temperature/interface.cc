@@ -107,16 +107,16 @@ namespace aspect
       for (auto &model_name : model_names)
         {
           // create initial temperature objects
-          initial_temperature_objects.push_back (std::unique_ptr<Interface<dim>>
-                                                 (std::get<dim>(registered_plugins)
-                                                  .create_plugin (model_name,
-                                                                  "Initial temperature model::Model names")));
+          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
+                                          (std::get<dim>(registered_plugins)
+                                           .create_plugin (model_name,
+                                                           "Initial temperature model::Model names")));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_temperature_objects.back()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());
 
-          initial_temperature_objects.back()->parse_parameters (prm);
-          initial_temperature_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
         }
     }
 
@@ -126,7 +126,7 @@ namespace aspect
     void
     Manager<dim>::update()
     {
-      for (auto &initial_temperature_object : initial_temperature_objects)
+      for (auto &initial_temperature_object : this->plugin_objects)
         initial_temperature_object->update();
     }
 
@@ -139,7 +139,7 @@ namespace aspect
       double temperature = 0.0;
       int i = 0;
 
-      for (const auto &initial_temperature_object : initial_temperature_objects)
+      for (const auto &initial_temperature_object : this->plugin_objects)
         {
           temperature = model_operators[i](temperature,
                                            initial_temperature_object->initial_temperature(position));
@@ -161,7 +161,7 @@ namespace aspect
     const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_initial_temperature_conditions () const
     {
-      return initial_temperature_objects;
+      return this->plugin_objects;
     }
 
 

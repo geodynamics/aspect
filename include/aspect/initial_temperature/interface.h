@@ -70,7 +70,7 @@ namespace aspect
      * @ingroup InitialTemperatures
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -83,7 +83,7 @@ namespace aspect
          * Update function. Called once at the beginning of a timestep to
          * update all plugin objects.
         */
-        void update();
+        void update() override;
 
         /**
          * Declare the parameters of all known initial conditions plugins, as
@@ -99,7 +99,7 @@ namespace aspect
          * let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the initial_temperature functions of all the
@@ -202,12 +202,6 @@ namespace aspect
                         << "> among the names of registered initial temperature objects.");
       private:
         /**
-         * A list of initial temperature objects that have been requested in the
-         * parameter file.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> initial_temperature_objects;
-
-        /**
          * A list of names of initial temperature objects that have been requested
          * in the parameter file.
          */
@@ -230,10 +224,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_initial_temperature_model () const
     {
-      for (const auto &p : initial_temperature_objects)
-        if (Plugins::plugin_type_matches<InitialTemperatureType>(*p))
-          return true;
-      return false;
+      return this->template has_matching_plugin_object<InitialTemperatureType>();
     }
 
 
@@ -243,18 +234,7 @@ namespace aspect
     const InitialTemperatureType &
     Manager<dim>::get_matching_initial_temperature_model () const
     {
-      AssertThrow(has_matching_initial_temperature_model<InitialTemperatureType> (),
-                  ExcMessage("You asked InitialTemperature::Manager::get_initial_temperature_model() for a "
-                             "initial temperature model of type <" + boost::core::demangle(typeid(InitialTemperatureType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "initial temperature model in the input file."));
-
-      for (const auto &p : initial_temperature_objects)
-        if (Plugins::plugin_type_matches<InitialTemperatureType>(*p))
-          return Plugins::get_plugin_as_type<InitialTemperatureType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<InitialTemperatureType>(**(initial_temperature_objects.begin()));
+      return this->template get_matching_plugin_object<InitialTemperatureType>();
     }
 
 

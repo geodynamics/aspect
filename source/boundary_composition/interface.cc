@@ -50,10 +50,8 @@ namespace aspect
     void
     Manager<dim>::update ()
     {
-      for (unsigned int i=0; i<boundary_composition_objects.size(); ++i)
-        {
-          boundary_composition_objects[i]->update();
-        }
+      for (auto &p : this->plugin_objects)
+        p->update();
     }
 
 
@@ -158,16 +156,16 @@ namespace aspect
       for (auto &model_name : model_names)
         {
           // create boundary composition objects
-          boundary_composition_objects.push_back (std::unique_ptr<Interface<dim>>
-                                                  (std::get<dim>(registered_plugins)
-                                                   .create_plugin (model_name,
-                                                                   "Boundary composition::Model names")));
+          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
+                                          (std::get<dim>(registered_plugins)
+                                           .create_plugin (model_name,
+                                                           "Boundary composition::Model names")));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition_objects.back().get()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
             sim->initialize_simulator (this->get_simulator());
 
-          boundary_composition_objects.back()->parse_parameters (prm);
-          boundary_composition_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
         }
     }
 
@@ -181,11 +179,12 @@ namespace aspect
     {
       double composition = 0.0;
 
-      for (unsigned int i=0; i<boundary_composition_objects.size(); ++i)
+      auto p = this->plugin_objects.begin();
+      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         composition = model_operators[i](composition,
-                                         boundary_composition_objects[i]->boundary_composition(boundary_indicator,
-                                             position,
-                                             compositional_field));
+                                         (*p)->boundary_composition(boundary_indicator,
+                                                                    position,
+                                                                    compositional_field));
 
       return composition;
     }
@@ -201,10 +200,10 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::unique_ptr<Interface<dim>>> &
+    const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_boundary_composition_conditions () const
     {
-      return boundary_composition_objects;
+      return this->plugin_objects;
     }
 
 

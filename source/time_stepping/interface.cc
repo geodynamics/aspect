@@ -54,7 +54,7 @@ namespace aspect
     {
       double new_time_step = std::numeric_limits<double>::max();
 
-      for (const auto &plugin : active_plugins)
+      for (const auto &plugin : this->plugin_objects)
         {
           const double this_time_step = plugin->execute();
           new_time_step = std::min(new_time_step, this_time_step);
@@ -102,7 +102,7 @@ namespace aspect
       Reaction reaction = Reaction::advance;
       double repeat_step_size = std::numeric_limits<double>::max();
 
-      for (const auto &plugin : active_plugins)
+      for (const auto &plugin : this->plugin_objects)
         {
           const std::pair<Reaction, double> answer = plugin->determine_reaction(info);
           reaction = static_cast<Reaction>(std::min(reaction, answer.first));
@@ -308,16 +308,16 @@ namespace aspect
 
         for (const auto &model_name : model_names)
           {
-            active_plugins.push_back (std::unique_ptr<Interface<dim>>
-                                      (std::get<dim>(registered_plugins)
-                                       .create_plugin (model_name,
-                                                       "Time stepping::Model names")));
+            this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
+                                            (std::get<dim>(registered_plugins)
+                                             .create_plugin (model_name,
+                                                             "Time stepping::Model names")));
 
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*active_plugins.back()))
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
               sim->initialize_simulator (this->get_simulator());
 
-            active_plugins.back()->parse_parameters (prm);
-            active_plugins.back()->initialize ();
+            this->plugin_objects.back()->parse_parameters (prm);
+            this->plugin_objects.back()->initialize ();
           }
       }
     }

@@ -27,9 +27,9 @@
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
-#include <tuple>
 
 #include <list>
+#include <tuple>
 
 
 namespace aspect
@@ -50,10 +50,8 @@ namespace aspect
     void
     Manager<dim>::update ()
     {
-      for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
-        {
-          boundary_temperature_objects[i]->update();
-        }
+      for (auto &p : this->plugin_objects)
+        p->update();
     }
 
 
@@ -155,16 +153,16 @@ namespace aspect
       for (auto &model_name : model_names)
         {
           // create boundary temperature objects
-          boundary_temperature_objects.push_back (std::unique_ptr<Interface<dim>>
-                                                  (std::get<dim>(registered_plugins)
-                                                   .create_plugin (model_name,
-                                                                   "Boundary temperature::Model names")));
+          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
+                                          (std::get<dim>(registered_plugins)
+                                           .create_plugin (model_name,
+                                                           "Boundary temperature::Model names")));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_temperature_objects.back().get()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
             sim->initialize_simulator (this->get_simulator());
 
-          boundary_temperature_objects.back()->parse_parameters (prm);
-          boundary_temperature_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
         }
     }
 
@@ -177,10 +175,11 @@ namespace aspect
     {
       double temperature = 0.0;
 
-      for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
+      auto p = this->plugin_objects.begin();
+      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         temperature = model_operators[i](temperature,
-                                         boundary_temperature_objects[i]->boundary_temperature(boundary_indicator,
-                                             position));
+                                         (*p)->boundary_temperature(boundary_indicator,
+                                                                    position));
 
       return temperature;
     }
@@ -193,9 +192,9 @@ namespace aspect
     {
       double temperature = std::numeric_limits<double>::max();
 
-      for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
+      for (const auto &p : this->plugin_objects)
         temperature = std::min(temperature,
-                               boundary_temperature_objects[i]->minimal_temperature(fixed_boundary_ids));
+                               p->minimal_temperature(fixed_boundary_ids));
 
       return temperature;
     }
@@ -208,9 +207,9 @@ namespace aspect
     {
       double temperature = 0.0;
 
-      for (unsigned int i=0; i<boundary_temperature_objects.size(); ++i)
+      for (const auto &p : this->plugin_objects)
         temperature = std::max(temperature,
-                               boundary_temperature_objects[i]->maximal_temperature(fixed_boundary_ids));
+                               p->maximal_temperature(fixed_boundary_ids));
 
       return temperature;
     }
@@ -226,10 +225,10 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::unique_ptr<Interface<dim>>> &
+    const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_boundary_temperature_conditions () const
     {
-      return boundary_temperature_objects;
+      return this->plugin_objects;
     }
 
 

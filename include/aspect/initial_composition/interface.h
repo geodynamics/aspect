@@ -71,7 +71,7 @@ namespace aspect
      * @ingroup InitialCompositions
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -84,7 +84,7 @@ namespace aspect
          * Update function. Called once at the beginning of a timestep to
          * update all plugin objects.
         */
-        void update();
+        void update() override;
 
         /**
          * Declare the parameters of all known initial composition plugins, as
@@ -100,7 +100,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the initial_composition functions of all
@@ -204,12 +204,6 @@ namespace aspect
                         << "> among the names of registered initial composition objects.");
       private:
         /**
-         * A list of initial composition objects that have been requested in the
-         * parameter file.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> initial_composition_objects;
-
-        /**
          * A list of names of initial composition objects that have been requested
          * in the parameter file.
          */
@@ -232,10 +226,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_initial_composition_model () const
     {
-      for (const auto &p : initial_composition_objects)
-        if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
-          return true;
-      return false;
+      return this->template has_matching_plugin_object<InitialCompositionType>();
     }
 
 
@@ -245,18 +236,7 @@ namespace aspect
     const InitialCompositionType &
     Manager<dim>::get_matching_initial_composition_model () const
     {
-      AssertThrow(has_matching_initial_composition_model<InitialCompositionType> (),
-                  ExcMessage("You asked InitialComposition::Manager::get_initial_composition_model() for a "
-                             "initial composition model of type <" + boost::core::demangle(typeid(InitialCompositionType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "initial composition model in the input file."));
-
-      for (const auto &p : initial_composition_objects)
-        if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
-          return Plugins::get_plugin_as_type<InitialCompositionType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<InitialCompositionType>(**(initial_composition_objects.begin()));
+      return this->template get_matching_plugin_object<InitialCompositionType>();
     }
 
 

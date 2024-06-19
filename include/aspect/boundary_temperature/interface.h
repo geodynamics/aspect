@@ -103,7 +103,7 @@ namespace aspect
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -123,7 +123,7 @@ namespace aspect
          */
         virtual
         void
-        update ();
+        update () override;
 
         /**
          * Declare the parameters of all known boundary temperature plugins, as
@@ -139,7 +139,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the boundary_temperature functions of all the
@@ -200,7 +200,7 @@ namespace aspect
          * Return a list of pointers to all boundary temperature models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std::unique_ptr<Interface<dim>>> &
+        const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_boundary_temperature_conditions () const;
 
         /**
@@ -271,12 +271,6 @@ namespace aspect
                         << "> among the names of registered boundary temperature objects.");
       private:
         /**
-         * A list of boundary temperature objects that have been requested in the
-         * parameter file.
-         */
-        std::vector<std::unique_ptr<Interface<dim>>> boundary_temperature_objects;
-
-        /**
          * A list of names of boundary temperature objects that have been requested
          * in the parameter file.
          */
@@ -311,10 +305,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_temperature_model () const
     {
-      for (const auto &p : boundary_temperature_objects)
-        if (Plugins::plugin_type_matches<BoundaryTemperatureType>(*p))
-          return true;
-      return false;
+      return this->template has_matching_plugin_object<BoundaryTemperatureType>();
     }
 
 
@@ -324,18 +315,7 @@ namespace aspect
     const BoundaryTemperatureType &
     Manager<dim>::get_matching_boundary_temperature_model () const
     {
-      AssertThrow(has_matching_boundary_temperature_model<BoundaryTemperatureType> (),
-                  ExcMessage("You asked BoundaryTemperature::Manager::get_boundary_temperature_model() for a "
-                             "boundary temperature model of type <" + boost::core::demangle(typeid(BoundaryTemperatureType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "boundary temperature model in the input file."));
-
-      for (const auto &p : boundary_temperature_objects)
-        if (Plugins::plugin_type_matches<BoundaryTemperatureType>(*p))
-          return Plugins::get_plugin_as_type<BoundaryTemperatureType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<BoundaryTemperatureType>(**(boundary_temperature_objects.begin()));
+      return this->template get_matching_plugin_object<BoundaryTemperatureType>();
     }
 
 
