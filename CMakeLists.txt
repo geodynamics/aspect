@@ -762,14 +762,18 @@ endif()
 # Make sure that we have an executable 'aspect' that
 # links to the debug version, or the release version if
 # we did not compile in debug mode. TARGET_EXE describes
-# which target this references,
+# which target this references.
+#
+# We do this in the build directory with the first of the following
+# two commands, and in the install directory with the second.
 add_custom_target(aspect ALL
                   COMMAND ${CMAKE_COMMAND} -E create_symlink
                            $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME>  # executable file name
-                           aspect                                        # link name
+                           ${CMAKE_BINARY_DIR}/aspect                    # link name
                   DEPENDS ${TARGET_EXE}
                   COMMENT "Creating symlink $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME> -> aspect")
-
+install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
+	TYPE BIN)
 
 # This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
 # does not do so, so do it here. Remove this when we require deal.II 9.6.
