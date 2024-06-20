@@ -86,7 +86,7 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: None");
-        prm.declare_entry ("Reference temperature for Frank Kamenetskii", 
+        prm.declare_entry ("Reference temperature for Frank Kamenetskii",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double (0.)),
                            "A reference temperature in the viscosity approximation which "
@@ -95,7 +95,7 @@ namespace aspect
                            "or only those corresponding to chemical compositions. If only one "
                            "value is given, then all use the same value. "
                            "Units: K");
-        prm.declare_entry ("Reference pressure for Frank Kamenetskii", 
+        prm.declare_entry ("Reference pressure for Frank Kamenetskii",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double (0.)),
                            "A reference pressure in the viscosity approximation which "
