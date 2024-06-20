@@ -1331,33 +1331,33 @@ namespace aspect
         generator = Generator::create_particle_generator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
           sim->initialize_simulator (this->get_simulator());
+        generator->set_particle_world_index(world_index);
         generator->parse_parameters(prm);
         generator->initialize();
-        generator->set_particle_world_index(world_index);
 
         // Create a property_manager object and initialize its properties
         property_manager = std::make_unique<Property::Manager<dim>> ();
         SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
         sim->initialize_simulator (this->get_simulator());
+        property_manager->set_particle_world_index(world_index);
         property_manager->parse_parameters(prm);
         property_manager->initialize();
-        property_manager->set_particle_world_index(world_index);
 
         // Create an integrator object depending on the specified parameter
         integrator = Integrator::create_particle_integrator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
           sim->initialize_simulator (this->get_simulator());
+        integrator->set_particle_world_index(world_index);
         integrator->parse_parameters(prm);
         integrator->initialize();
-        integrator->set_particle_world_index(world_index);
 
         // Create an interpolator object depending on the specified parameter
         interpolator = Interpolator::create_particle_interpolator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
           sim->initialize_simulator (this->get_simulator());
+        interpolator->set_particle_world_index(world_index);
         interpolator->parse_parameters(prm);
         interpolator->initialize();
-        interpolator->set_particle_world_index(world_index);
 
       }
       prm.leave_subsection ();

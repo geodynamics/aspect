@@ -734,7 +734,7 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * @brief Set the particle world for all particle properties
+           * @brief Set the particle world index for all particle properties
            *
            * @param particle_world_index The index of the particle world.
            */

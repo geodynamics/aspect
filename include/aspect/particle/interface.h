@@ -21,14 +21,14 @@
 #ifndef _aspect_particle_interface_h
 #define _aspect_particle_interface_h
 
-#include "aspect/plugins.h"
+#include <aspect/plugins.h>
 
 namespace aspect
 {
   namespace Particle
   {
     /**
-     * An abstract base class defining methods and member variables
+     * A base class defining methods and member variables
      * shared along all the particle plugins. This includes the generator,
      * integrator, interpolator and the property classes.
      *
@@ -38,7 +38,7 @@ namespace aspect
     {
       public:
         /**
-         * @brief Set which particle world the plugin belong to.
+         * @brief Set which particle world the plugin belongs to.
          *
          * @param particle_world_index The index of the particle world this plugin belongs to.
          */
@@ -51,8 +51,7 @@ namespace aspect
 
       private:
         /**
-         * Stores the index to the particle world in the
-         * particle worlds vector, to which the plugin belongs.
+         * Stores the index to the particle world, to which the plugin belongs.
          */
         unsigned int particle_world_index;
     };

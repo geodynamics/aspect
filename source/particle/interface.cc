@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -31,11 +31,12 @@ namespace aspect
       this->particle_world_index = particle_world_index;
     }
 
+
+
     unsigned int
     ParticleInterfaceBase::get_particle_world_index() const
     {
-      return this->particle_world_index;
+      return particle_world_index;
     }
-
   }
 }
