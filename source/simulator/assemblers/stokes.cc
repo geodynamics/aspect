@@ -211,6 +211,26 @@ namespace aspect
                                               * JxW;
                   }
             }
+
+          // If the fully compressible formulation is chosen, then the (P,P)
+          // block of the system matrix is not zero, which should also be
+          // added to the preconditioner matrix (H. C. Elman et al., 2014,
+          // Eq.[8.11]).
+          if (this->get_parameters().formulation_mass_conservation ==
+              Parameters<dim>::Formulation::MassConservation::fully_compressible)
+            {
+              const double beta_over_dt
+                = this->get_timestep_number() > 0 ?
+                  scratch.material_model_outputs.compressibilities[q] / this->get_timestep() :
+                  0.0;
+
+              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                  data.local_matrix(i, j) += ( beta_over_dt *
+                                               pressure_scaling * pressure_scaling *
+                                               (scratch.phi_p[i] * scratch.phi_p[j])
+                                             ) * JxW;
+            }
         }
     }
 
@@ -563,6 +583,75 @@ namespace aspect
                                              ))
                                           * JxW;
               }
+        }
+    }
+
+
+
+    template <int dim>
+    void
+    StokesCompressibleMassConservationTerm<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      Assert(this->get_parameters().formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::fully_compressible,
+             ExcInternalError());
+
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
+
+      if (!scratch.rebuild_stokes_matrix)
+        return;
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const double pressure_scaling = this->get_pressure_scaling();
+      const double time_step = this->get_timestep();
+
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value(i, q);
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          const double beta_over_dt
+            = this->get_timestep_number() > 0 ?
+              scratch.material_model_outputs.compressibilities[q] / time_step :
+              0.0;
+
+          const double thermal_alpha
+            = scratch.material_model_outputs.thermal_expansion_coefficients[q];
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+
+          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i) -= (
+                                     pressure_scaling *
+                                     (
+                                       // pressure part
+                                       scratch.old_pressure_values[q] * beta_over_dt
+                                       // thermal part
+                                       + thermal_alpha *
+                                       (scratch.velocity_values[q] * scratch.temperature_gradients[q])
+                                     ) * scratch.phi_p[i]
+                                   ) * JxW;
+
+              for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                data.local_matrix(i, j) -= ( beta_over_dt *
+                                             pressure_scaling * pressure_scaling *
+                                             (scratch.phi_p[i] * scratch.phi_p[j])
+                                           ) * JxW;
+            }
         }
     }
 

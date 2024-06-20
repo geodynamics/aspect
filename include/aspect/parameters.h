@@ -208,6 +208,7 @@ namespace aspect
           hydrostatic_compression,
           reference_density_profile,
           implicit_reference_density_profile,
+          fully_compressible,
           incompressible,
           projected_density_field,
           ask_material_model
@@ -228,6 +229,8 @@ namespace aspect
             return Formulation::MassConservation::reference_density_profile;
           else if (input == "implicit reference density profile")
             return Formulation::MassConservation::implicit_reference_density_profile;
+          else if (input == "fully compressible")
+            return Formulation::MassConservation::fully_compressible;
           else if (input == "incompressible")
             return Formulation::MassConservation::incompressible;
           else if (input == "projected density field")

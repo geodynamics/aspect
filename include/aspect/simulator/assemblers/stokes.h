@@ -91,6 +91,22 @@ namespace aspect
 
     /**
      * This class assembles the compressibility term of the Stokes equation
+     * that is caused by the compressibility in the mass conservation equation
+     * without approximation. This term is expressed as
+     * $-\nabla\cdot\mathbf{u} = \frac{\beta(p - p^{old})}{\Delta t}$.
+     */
+    template <int dim>
+    class StokesCompressibleMassConservationTerm : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+    };
+
+    /**
+     * This class assembles the compressibility term of the Stokes equation
      * that is caused by the compressibility in the mass conservation equation.
      * It uses an approximation that involves the reference density profile, and
      * includes this term explicitly in the right-hand side vector to preserve

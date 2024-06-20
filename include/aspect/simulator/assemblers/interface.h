@@ -174,7 +174,8 @@ namespace aspect
 
           std::vector<Tensor<1,dim>>          phi_u;
           std::vector<Tensor<1,dim>>          velocity_values;
-          std::vector<double>                  velocity_divergence;
+          std::vector<double>                 velocity_divergence;
+          std::vector<double>                 old_pressure_values;
           std::vector<Tensor<1,dim>>          temperature_gradients;
 
           /**

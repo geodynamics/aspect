@@ -121,6 +121,12 @@ namespace aspect
         assemblers->stokes_system.push_back(
           std::make_unique<aspect::Assemblers::StokesProjectedDensityFieldTerm<dim>>());
       }
+    else if (parameters.formulation_mass_conservation ==
+             Parameters<dim>::Formulation::MassConservation::fully_compressible)
+      {
+        assemblers->stokes_system.push_back(
+          std::make_unique<aspect::Assemblers::StokesCompressibleMassConservationTerm<dim>>());
+      }
     else
       AssertThrow(false,
                   ExcMessage("Unknown mass conservation equation approximation. There is no assembler"
@@ -606,7 +612,12 @@ namespace aspect
     if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
       scratch.finite_element_values[introspection.extractors.temperature].get_function_gradients(current_linearization_point,
           scratch.temperature_gradients);
-
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::fully_compressible)
+      scratch.finite_element_values[introspection.extractors.pressure].get_function_values(old_solution, scratch.old_pressure_values);
+    if (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::fully_compressible ||
+        parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
+      scratch.finite_element_values[introspection.extractors.temperature].get_function_gradients(current_linearization_point,
+          scratch.temperature_gradients);
 
     const bool use_reference_density_profile = (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::reference_density_profile)
                                                || (parameters.formulation_mass_conservation == Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile);

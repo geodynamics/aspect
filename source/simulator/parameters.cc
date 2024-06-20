@@ -663,7 +663,7 @@ namespace aspect
                          ":::");
 
       prm.declare_entry ("Mass conservation", "ask material model",
-                         Patterns::Selection ("incompressible|isentropic compression|hydrostatic compression|"
+                         Patterns::Selection ("incompressible|fully compressible|isentropic compression|hydrostatic compression|"
                                               "reference density profile|implicit reference density profile|"
                                               "projected density field|"
                                               "ask material model"),
