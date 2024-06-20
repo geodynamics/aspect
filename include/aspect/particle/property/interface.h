@@ -21,8 +21,8 @@
 #ifndef _aspect_particle_property_interface_h
 #define _aspect_particle_property_interface_h
 
+#include <aspect/particle/interface.h>
 #include <aspect/global.h>
-#include <aspect/plugins.h>
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
@@ -305,7 +305,7 @@ namespace aspect
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class Interface : public Plugins::InterfaceBase
+      class Interface : public ParticleInterfaceBase
       {
         public:
           /**
@@ -733,6 +733,12 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm);
 
+          /**
+           * @brief Set the particle world index for all particle properties
+           *
+           * @param particle_world_index The index of the particle world.
+           */
+          void set_particle_world_index(unsigned int particle_world_index);
 
           /**
            * For the current plugin subsystem, write a connection graph of all of the

@@ -750,6 +750,18 @@ namespace aspect
 
       template <int dim>
       void
+      Manager<dim>::set_particle_world_index(unsigned int particle_world_index)
+      {
+        for (auto &property : property_list)
+          {
+            property->set_particle_world_index(particle_world_index);
+          }
+      }
+
+
+
+      template <int dim>
+      void
       Manager<dim>::
       register_particle_property (const std::string &name,
                                   const std::string &description,
