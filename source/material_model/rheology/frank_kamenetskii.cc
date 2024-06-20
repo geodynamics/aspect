@@ -23,6 +23,7 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/utilities.h>
+#include "boost/lexical_cast.hpp"
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
