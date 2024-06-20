@@ -86,7 +86,8 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: None");
-        prm.declare_entry ("Reference Temperature for Frank Kamenetskii", "0.0",
+        prm.declare_entry ("Reference temperature for Frank Kamenetskii", 
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double (0.)),
                            "A reference temperature in the viscosity approximation which "
                            "specifies where the FK temperature dependence goes to 0. "
@@ -94,7 +95,8 @@ namespace aspect
                            "or only those corresponding to chemical compositions. If only one "
                            "value is given, then all use the same value. "
                            "Units: K");
-        prm.declare_entry ("Reference Pressure for Frank Kamenetskii", "0.0",
+        prm.declare_entry ("Reference pressure for Frank Kamenetskii", 
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double (0.)),
                            "A reference pressure in the viscosity approximation which "
                            "specifies where the FK pressure dependence goes to 0."
@@ -147,20 +149,20 @@ namespace aspect
         pressure_prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Pressure prefactors for Frank Kamenetskii"),
                                                 options);
 
-        options.property_name = "Reference Temperature for Frank Kamenetskii";
-        reference_temperatures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference Temperature for Frank Kamenetskii"),
+        options.property_name = "Reference temperature for Frank Kamenetskii";
+        reference_temperatures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference temperature for Frank Kamenetskii"),
                                                                                   options);
 
-        options.property_name = "Reference Pressure for Frank Kamenetskii";
-        reference_pressures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference Pressure for Frank Kamenetskii"),
+        options.property_name = "Reference pressure for Frank Kamenetskii";
+        reference_pressures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference pressure for Frank Kamenetskii"),
                                                                                options);
 
-        // If the reference temperatures or pressures are given the value of -1
+        // If the reference temperatures or pressures are given the value of std::numeric_limits<double>::max()
         // assign the default value of adiabatic surface temperature and pressure.
         for (unsigned int j=0; j < reference_temperatures.size(); ++j)
           {
-            if (reference_temperatures[j] == 0.0) reference_temperatures[j] = this->get_adiabatic_surface_temperature();
-            if (reference_pressures[j] == 0.0) reference_pressures[j] = this->get_surface_pressure();
+            if (reference_temperatures[j] == std::numeric_limits<double>::max()) reference_temperatures[j] = this->get_adiabatic_surface_temperature();
+            if (reference_pressures[j] == std::numeric_limits<double>::max()) reference_pressures[j] = this->get_surface_pressure();
           }
       }
     }

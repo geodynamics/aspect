@@ -78,8 +78,8 @@ subsection Material model
     set Viscosity ratios for Frank Kamenetskii = 15.
     set Prefactors for Frank Kamenetskii = 1.e21
     set Pressure prefactors for Frank Kamenetskii = 2.
-    set Reference Temperature for Frank Kamenetskii = 1000
-    set Reference Pressure for Frank Kamenetskii = 1e6
+    set Reference temperature for Frank Kamenetskii = 1000
+    set Reference pressure for Frank Kamenetskii = 1e6
   end
 end
 
