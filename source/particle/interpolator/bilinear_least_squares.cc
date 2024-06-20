@@ -281,7 +281,7 @@ namespace aspect
         {
           prm.enter_subsection("Bilinear least squares");
           {
-            const auto &particle_property_information = this->get_particle_world(0).get_property_manager().get_data_info();
+            const auto &particle_property_information = this->get_particle_world(this->get_particle_world_index()).get_property_manager().get_data_info();
             const unsigned int n_property_components = particle_property_information.n_components();
             const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
 
