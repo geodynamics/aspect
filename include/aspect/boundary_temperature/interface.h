@@ -121,7 +121,6 @@ namespace aspect
          * time step. An example would be a model that needs to call an
          * external program to compute the temperature change at a boundary.
          */
-        virtual
         void
         update () override;
 

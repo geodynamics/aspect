@@ -144,7 +144,8 @@ namespace aspect
          * (convection time step, conduction time step), settings from parameters,
          * and termination criteria (to hit the end time exactly).
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * Return the next step size as computed from update().

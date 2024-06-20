@@ -129,7 +129,6 @@ namespace aspect
          * implement an update function to modify object variables once per
          * time step.
          */
-        virtual
         void
         update () override;
 

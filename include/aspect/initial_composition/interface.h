@@ -83,8 +83,8 @@ namespace aspect
         /**
          * Update function. Called once at the beginning of a timestep to
          * update all plugin objects.
-        */
-        void update() override;
+         */
+        void update () override;
 
         /**
          * Declare the parameters of all known initial composition plugins, as
