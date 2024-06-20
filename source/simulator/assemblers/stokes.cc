@@ -1068,6 +1068,7 @@ namespace aspect
   template class StokesCompressiblePreconditioner<dim>; \
   template class StokesIncompressibleTerms<dim>; \
   template class StokesCompressibleStrainRateViscosityTerm<dim>; \
+  template class StokesCompressibleMassConservationTerm<dim>; \
   template class StokesReferenceDensityCompressibilityTerm<dim>; \
   template class StokesImplicitReferenceDensityCompressibilityTerm<dim>; \
   template class StokesIsentropicCompressionTerm<dim>; \
