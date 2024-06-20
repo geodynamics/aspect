@@ -114,8 +114,7 @@ subsection Mesh deformation
 
     set Use marine component = true
     set Sediment rain rates = 1e-4 # m/yr
-    set Sediment rain intervals =
-    set Use stratigraphy   = false
+    set Sediment rain time intervals =
 
     # No difference between sand and silt
     subsection Marine parameters
