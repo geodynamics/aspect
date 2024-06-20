@@ -247,10 +247,6 @@ namespace aspect
       // to cover 10 km at the same resolution. Round up the number of cells.
       grid_intervals[dim-1] += static_cast<int>(std::ceil(maximum_initial_topography / (extents[dim-1] / grid_intervals[dim-1])));
 
-      this->get_pcout() << "Max initial topo: " << maximum_initial_topography << std::endl;
-      this->get_pcout() << "Grid intervals X: " << grid_intervals[0] << std::endl;
-      this->get_pcout() << "Grid intervals Y: " << grid_intervals[dim-1] << std::endl;
-
       prm.enter_subsection("Initial composition model");
       {
         prm.enter_subsection("Rift box initial plastic strain");
