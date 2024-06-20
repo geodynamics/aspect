@@ -270,7 +270,7 @@ namespace aspect
                 }
             }
 
-          // Now compute changes in the compositional fields (i.e. the accumulated strain).
+          // Now compute changes in the compositional fields (e.g., the accumulated strain).
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
@@ -280,8 +280,6 @@ namespace aspect
           // Fill plastic outputs if they exist.
           // The values in isostrain_viscosities only make sense when the calculate_isostrain_viscosities function
           // has been called.
-          // TODO do we even need a separate function? We could compute the PlasticAdditionalOutputs here like
-          // the ElasticAdditionalOutputs.
           rheology->fill_plastic_outputs(i, volume_fractions, plastic_yielding, in, out, isostrain_viscosities);
 
           if (this->get_parameters().enable_elasticity)
@@ -290,12 +288,6 @@ namespace aspect
               average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
                                                                                  rheology->elastic_rheology.get_elastic_shear_moduli(),
                                                                                  rheology->viscosity_averaging);
-
-              // Fill the material properties that are part of the elastic additional outputs
-              if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
-                {
-                  elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
-                }
             }
         }
 
@@ -304,8 +296,18 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         {
+          // Fill the elastic outputs with the body force term for the RHS, the viscoelastic strain rate
+          // and the viscous dissipation.
           rheology->elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
+          // Fill the elastic additional outputs with the shear modulus, elastic viscosity
+          // and deviatoric stress of the current timestep.
+          rheology->elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
+          // Fill the reaction terms that account for the rotation of the stresses.
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
+          // Fill the reaction_rates that apply the stress update of the previous
+          // timestep to the advected and rotated stress computed in the previous timestep ($\tau^{0}$)
+          // to obtain $\tau^{t}$.
+          rheology->elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
         }
     }
 
@@ -450,7 +452,7 @@ namespace aspect
       rheology->create_plastic_outputs(out);
 
       if (this->get_parameters().enable_elasticity)
-        rheology->elastic_rheology.create_elastic_outputs(out);
+        rheology->elastic_rheology.create_elastic_additional_outputs(out);
     }
 
   }
@@ -578,10 +580,13 @@ namespace aspect
                                    "compositional fields representing these components must be named "
                                    "and listed in a very specific format, which is designed to minimize "
                                    "mislabeling stress tensor components as distinct 'compositional "
-                                   "rock types' (or vice versa). For 2d models, the first three "
-                                   "compositional fields must be labeled 'stress\\_xx', 'stress\\_yy' and 'stress\\_xy'. "
-                                   "In 3d, the first six compositional fields must be labeled 'stress\\_xx', "
-                                   "'stress\\_yy', 'stress\\_zz', 'stress\\_xy', 'stress\\_xz', 'stress\\_yz'. "
+                                   "rock types' (or vice versa). For 2d models, three plus three consecutive "
+                                   "compositional fields must be labeled 'stress\\_xx', 'stress\\_yy', 'stress\\_xy', "
+                                   "'stress\\_xx\\_old', 'stress\\_yy\\_old', and 'stress\\_xy\\_old'. "
+                                   "In 3d, six plus six compositional fields must be labeled 'stress\\_xx', "
+                                   "'stress\\_yy', 'stress\\_zz', 'stress\\_xy', 'stress\\_xz', 'stress\\_yz', "
+                                   "'stress\\_xx\\_old', 'stress\\_yy\\_old', 'stress\\_zz\\_old', 'stress\\_xy\\_old', "
+                                   "'stress\\_xz\\_old', 'stress\\_yz\\_old'. "
                                    "\n\n "
                                    "Combining this viscoelasticity implementation with non-linear viscous flow "
                                    "and plasticity produces a constitutive relationship commonly referred to "
@@ -597,10 +602,10 @@ namespace aspect
                                    "\n\n "
                                    "The overview below directly follows Moresi et al. (2003) eqns. 23-38. "
                                    "However, an important distinction between this material model and "
-                                   "the studies above is the use of compositional fields, rather than "
+                                   "the studies above is the option to use compositional fields, rather than "
                                    "particles, to track individual components of the viscoelastic stress "
-                                   "tensor. The material model will be updated when an option to track "
-                                   "and calculate viscoelastic stresses with particles is implemented. "
+                                   "tensor. Calculating viscoelastic stresses with particles is also implemented, "
+                                   "and can be switched on by using particles with the particle property 'elastic stress'. "
                                    "\n\n "
                                    "Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric "
                                    "rate of deformation ($\\hat{D}$) as the sum of elastic "
@@ -650,8 +655,9 @@ namespace aspect
                                    "viscosity is reduced relative to the initial viscosity. "
                                    "\n\n "
                                    "Elastic effects are introduced into the governing Stokes equations through "
-                                   "an elastic force term (eqn. 30) using stresses from the previous time step: "
-                                   "$F^{e,t} = -\\frac{\\eta_{eff}}{\\mu \\Delta t^{e}} \\tau^{t}$. "
+                                   "an elastic force term (eqn. 30 updated to the term in eqn. 5 in Farrington et al. 2014) "
+                                   "using stresses from the previous time step rotated and advected into the current time step: "
+                                   "$F^{e,t} = -\\frac{\\eta_{eff}}{\\mu \\Delta t^{e}} \\tau^{0adv}$. "
                                    "This force term is added onto the right-hand side force vector in the "
                                    "system of equations. "
                                    "\n\n "
