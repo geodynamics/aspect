@@ -226,7 +226,7 @@ namespace aspect
   {
     // Advect the particles before they are potentially used to
     // set up the compositional fields.
-    if (particle_world.get() != nullptr)
+    for (auto &particle_world : particle_worlds)
       {
         // Do not advect the particles in the initial refinement stage
         const bool in_initial_refinement = (timestep_number == 0)
@@ -958,8 +958,10 @@ namespace aspect
         // Restore particles through stored copy of particle handler,
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+
+        if (nonlinear_iteration > 0)
+          for (auto &particle_world : particle_worlds)
+            particle_world->restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1115,8 +1117,10 @@ namespace aspect
         // Restore particles through stored copy of particle handler,
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
-        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          particle_world->restore_particles();
+
+        if (nonlinear_iteration > 0)
+          for (auto &particle_world : particle_worlds)
+            particle_world->restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,

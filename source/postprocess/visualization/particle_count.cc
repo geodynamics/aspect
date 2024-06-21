@@ -43,7 +43,7 @@ namespace aspect
       ParticleCount<dim>::execute() const
       {
         const Particle::ParticleHandler<dim> &particle_handler =
-          this->get_particle_world().get_particle_handler();
+          this->get_particle_world(0).get_particle_handler();
 
         std::pair<std::string, std::unique_ptr<Vector<float>>>
         return_value ("particles_per_cell",

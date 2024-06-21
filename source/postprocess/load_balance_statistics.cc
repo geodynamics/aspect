@@ -45,7 +45,7 @@ namespace aspect
 
       if (this->n_particle_worlds() > 0)
         {
-          const unsigned int locally_owned_particles = this->get_particle_world().
+          const unsigned int locally_owned_particles = this->get_particle_world(0).
                                                        get_particle_handler().n_locally_owned_particles();
           const dealii::Utilities::MPI::MinMaxAvg particles_per_process =
             dealii::Utilities::MPI::min_max_avg(locally_owned_particles,this->get_mpi_communicator());

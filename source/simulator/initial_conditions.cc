@@ -284,8 +284,8 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
 
-    const Particle::Interpolator::Interface<dim> &particle_interpolator = particle_world->get_interpolator();
-    const Particle::Property::Manager<dim> &particle_property_manager = particle_world->get_property_manager();
+    const Particle::Interpolator::Interface<dim> &particle_interpolator = particle_worlds[0]->get_interpolator();
+    const Particle::Property::Manager<dim> &particle_property_manager = particle_worlds[0]->get_property_manager();
 
     std::vector<unsigned int> particle_property_indices;
     ComponentMask property_mask  (particle_property_manager.get_data_info().n_components(),false);
@@ -356,7 +356,7 @@ namespace aspect
           try
             {
               particle_properties =
-                particle_interpolator.properties_at_points(particle_world->get_particle_handler(),
+                particle_interpolator.properties_at_points(particle_worlds[0]->get_particle_handler(),
                                                            quadrature_points,
                                                            property_mask,
                                                            cell);

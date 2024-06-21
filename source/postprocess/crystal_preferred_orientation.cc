@@ -173,8 +173,8 @@ namespace aspect
     CrystalPreferredOrientation<dim>::execute (TableHandler &statistics)
     {
 
-      const Particle::Property::Manager<dim> &manager = this->get_particle_world().get_property_manager();
-      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world().get_particle_handler();
+      const Particle::Property::Manager<dim> &manager = this->get_particle_world(0).get_property_manager();
+      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world(0).get_particle_handler();
 
       const bool cpo_elastic_decomposition_plugin_exists = manager.plugin_name_exists("elastic tensor decomposition");
 
@@ -220,7 +220,7 @@ namespace aspect
                                                                         + "isotropic_norm_square") : "") << std::endl;
 
       // get particle data
-      const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world().get_property_manager().get_data_info();
+      const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world(0).get_property_manager().get_data_info();
 
       AssertThrow(property_information.fieldname_exists("cpo mineral 0 type") ,
                   ExcMessage("No CPO particle properties found. Make sure that the CPO particle property plugin is selected."));
