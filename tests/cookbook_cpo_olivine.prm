@@ -1,0 +1,3 @@
+# input file for cpo olivine cookbook
+
+include $ASPECT_SOURCE_DIR/cookbooks/crystal_preferred_orientation_olivine_fraters_billen_2021/olivineA.prm
