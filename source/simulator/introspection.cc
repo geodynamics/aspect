@@ -126,7 +126,11 @@ namespace aspect
       polynomial_degree.temperature = parameters.temperature_degree;
       polynomial_degree.compositional_fields = parameters.composition_degrees;
       polynomial_degree.max_compositional_field = parameters.max_composition_degree;
-      polynomial_degree.max_degree = std::max({parameters.stokes_velocity_degree, parameters.temperature_degree, parameters.max_composition_degree});
+      polynomial_degree.max_degree = std::max({parameters.stokes_velocity_degree,
+                                               parameters.temperature_degree,
+                                               (parameters.n_compositional_fields>0 ? parameters.max_composition_degree : 0u)
+                                              }
+                                             );
 
       return polynomial_degree;
     }
