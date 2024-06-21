@@ -104,7 +104,7 @@ namespace aspect
             for (unsigned int i = 0; i < 3; ++i)
               for (unsigned int j = 0; j < 6; ++j)
                 {
-                  data[data_position + mineral_i*18 + i*3 + j] = bingham_average[i][j];
+                  data[data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
                 }
           }
       }
