@@ -327,14 +327,14 @@ namespace aspect
         std::vector<std::vector<std::pair<std::string, unsigned int>>> info;
 
         // Get the property information of the selected plugins
-        for (const auto &p : property_list)
+        for (const auto &p : this->plugin_objects)
           {
             info.push_back(p->get_property_information());
           }
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
-        for (const auto &p : property_list)
+        for (const auto &p : this->plugin_objects)
           {
             p->initialize();
           }
@@ -346,7 +346,7 @@ namespace aspect
       void
       Manager<dim>::update ()
       {
-        for (const auto &p : property_list)
+        for (const auto &p : this->plugin_objects)
           p->update();
       }
 
@@ -362,7 +362,7 @@ namespace aspect
         std::vector<double> particle_properties;
         particle_properties.reserve(property_information.n_components());
 
-        for (const auto &p : property_list)
+        for (const auto &p : this->plugin_objects)
           {
             p->initialize_one_particle_property(particle->get_location(),
                                                 particle_properties);
@@ -394,7 +394,7 @@ namespace aspect
 
         unsigned int property_index = 0;
         for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-             p = property_list.begin(); p!=property_list.end(); ++p, ++property_index)
+             p = this->plugin_objects.begin(); p!=this->plugin_objects.end(); ++p, ++property_index)
           {
             switch ((*p)->late_initialization_mode())
               {
@@ -543,7 +543,7 @@ namespace aspect
       {
         unsigned int plugin_index = 0;
         for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-             p = property_list.begin(); p!=property_list.end(); ++p,++plugin_index)
+             p = this->plugin_objects.begin(); p!=this->plugin_objects.end(); ++p,++plugin_index)
           {
             (*p)->update_particle_properties(property_information.get_position_by_plugin_index(plugin_index),
                                              solution,
@@ -559,7 +559,7 @@ namespace aspect
       Manager<dim>::need_update () const
       {
         UpdateTimeFlags update = update_never;
-        for (const auto &p : property_list)
+        for (const auto &p : this->plugin_objects)
           {
             update = std::max(update, p->need_update());
           }
@@ -573,7 +573,7 @@ namespace aspect
       Manager<dim>::get_needed_update_flags () const
       {
         UpdateFlags update = update_default;
-        for (const auto &p : property_list)
+        for (const auto &p : this->plugin_objects)
           {
             update |= p->get_needed_update_flags();
           }
@@ -731,19 +731,19 @@ namespace aspect
         // their own parameters
         for (auto &plugin_name : plugin_names)
           {
-            property_list.emplace_back (std::get<dim>(registered_plugins)
-                                        .create_plugin (plugin_name,
-                                                        "Particle property plugins"));
+            this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
+                                               .create_plugin (plugin_name,
+                                                               "Particle property plugins"));
 
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_list.back().get()))
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
               sim->initialize_simulator (this->get_simulator());
 
-            property_list.back()->parse_parameters (prm);
+            this->plugin_objects.back()->parse_parameters (prm);
           }
 
         // lastly store internal integrator properties
-        property_list.emplace_back (std::make_unique<IntegratorProperties<dim>>());
-        property_list.back()->parse_parameters (prm);
+        this->plugin_objects.emplace_back (std::make_unique<IntegratorProperties<dim>>());
+        this->plugin_objects.back()->parse_parameters (prm);
       }
 
 
@@ -752,7 +752,7 @@ namespace aspect
       void
       Manager<dim>::set_particle_world_index(unsigned int particle_world_index)
       {
-        for (auto &property : property_list)
+        for (auto &property : this->plugin_objects)
           {
             property->set_particle_world_index(particle_world_index);
           }

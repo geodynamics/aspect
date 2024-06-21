@@ -513,7 +513,7 @@ namespace aspect
        * user selected properties.
        */
       template <int dim>
-      class Manager : public SimulatorAccess<dim>
+      class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -531,14 +531,14 @@ namespace aspect
            * beginning of the program after parse_parameters is run.
            */
           void
-          initialize ();
+          initialize () override;
 
           /**
            * Update function. This function is called once at the
            * beginning of each timestep.
            */
           void
-          update ();
+          update () override;
 
           /**
            * Initialization function for particle properties. This function is
@@ -731,7 +731,7 @@ namespace aspect
            * Read the parameters this class declares from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
           /**
            * @brief Set the particle world index for all particle properties
@@ -761,12 +761,6 @@ namespace aspect
           std::vector<std::string> plugin_names;
 
           /**
-           * A list of property objects that have been requested in the
-           * parameter file.
-           */
-          std::list<std::unique_ptr<Interface<dim>>> property_list;
-
-          /**
            * A class that stores all information about the particle properties,
            * their association with property plugins and their storage pattern.
            */
@@ -782,11 +776,7 @@ namespace aspect
       bool
       Manager<dim>::has_matching_property () const
       {
-        for (const auto &p : property_list)
-          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
-            return true;
-
-        return false;
+        return this->template has_matching_plugin_object<ParticlePropertyType>();
       }
 
 
@@ -796,19 +786,7 @@ namespace aspect
       const ParticlePropertyType &
       Manager<dim>::get_matching_property () const
       {
-        AssertThrow(has_matching_property<ParticlePropertyType> (),
-                    ExcMessage("You asked Particle::Property::Manager::has_matching_property() for a "
-                               "particle property of type <" + boost::core::demangle(typeid(ParticlePropertyType).name()) + "> "
-                               "that could not be found in the current model. Activate this "
-                               "particle property in the input file."));
-
-        typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator property;
-        for (const auto &p : property_list)
-          if (Plugins::plugin_type_matches<ParticlePropertyType>(*p))
-            return Plugins::get_plugin_as_type<ParticlePropertyType>(*p);
-
-        // We will never get here, because we had the Assert above. Just to avoid warnings.
-        return Plugins::get_plugin_as_type<ParticlePropertyType>(*(*property));
+        return this->template get_matching_plugin_object<ParticlePropertyType>();
       }
 
 

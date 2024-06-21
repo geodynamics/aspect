@@ -45,7 +45,7 @@ namespace aspect
     double Manager<dim>::check_for_last_time_step (const double time_step) const
     {
       double new_time_step = time_step;
-      for (const auto &p : termination_objects)
+      for (const auto &p : this->plugin_objects)
         {
           double current_time_step = p->check_for_last_time_step (new_time_step);
 
@@ -70,8 +70,8 @@ namespace aspect
       // here in turns.
       std::list<std::string>::const_iterator  itn = termination_obj_names.begin();
       for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-           p = termination_objects.begin();
-           p != termination_objects.end(); ++p,++itn)
+           p = this->plugin_objects.begin();
+           p != this->plugin_objects.end(); ++p,++itn)
         {
           try
             {
@@ -214,14 +214,14 @@ namespace aspect
       // their own parameters
       for (const auto &plugin_name : plugin_names)
         {
-          termination_objects.push_back (std::unique_ptr<Interface<dim>>
-                                         (std::get<dim>(registered_plugins)
-                                          .create_plugin (plugin_name,
-                                                          "Termination criteria::Termination criteria")));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*termination_objects.back()))
+          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
+                                          (std::get<dim>(registered_plugins)
+                                           .create_plugin (plugin_name,
+                                                           "Termination criteria::Termination criteria")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());
-          termination_objects.back()->parse_parameters (prm);
-          termination_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
 
           termination_obj_names.push_back(plugin_name);
         }

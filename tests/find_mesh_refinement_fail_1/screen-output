@@ -1,28 +1,36 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Loading shared library <./libfind_mesh_refinement_fail_1.debug.so>
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
+---------------------------------------------------------
 TimerOutput objects finalize timed values printed to the
 screen by communicating over MPI in their destructors.
 Since an exception is currently uncaught, this
 synchronization (and subsequent output) will be skipped
 to avoid a possible deadlock.
+---------------------------------------------------------
 
 
-Exception 'ExcMessage("You asked MeshRefinement::Manager::get_matching_mesh_refinement_strategy() for a " "mesh refinement strategy of type <" + boost::core::demangle(typeid(MeshRefinementType).name()) + "> " "that could not be found in the current model. Activate this " "mesh refinement strategy in the input file.")' on rank 0 on processing: 
+----------------------------------------------------
+Exception 'ExcMessage("You asked the object managing a collection of plugins for a " "plugin object of type <" + boost::core::demangle(typeid(PluginType).name()) + "> " "that could not be found in the current model. You need to " "activate this plugin in the input file for it to be " "available.")' on rank 0 on processing: 
 
-An error occurred in file <interface.h> in function
+--------------------------------------------------------
+An error occurred in line <291> of file </home/bangerth/p/deal.II/1/projects/aspect/include/aspect/plugins.h> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
-    has_matching_mesh_refinement_strategy<MeshRefinementType> ()
+    has_matching_plugin_object<PluginType> ()
 Additional information: 
-    You asked
-    MeshRefinement::Manager::get_matching_mesh_refinement_strategy() for a
-    mesh refinement strategy of type <aspect::MeshRefinement::Boundary<2>>
-    that could not be found in the current model. Activate this mesh
-    refinement strategy in the input file.
+    You asked the object managing a collection of plugins for a plugin
+    object of type <aspect::MeshRefinement::Boundary<2>> that could not be
+    found in the current model. You need to activate this plugin in the
+    input file for it to be available.
 
 Stacktrace:
 (rest of the output replaced by default.sh script)

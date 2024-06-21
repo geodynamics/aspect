@@ -82,7 +82,7 @@ namespace aspect
      * @ingroup BoundaryCompositions
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -100,9 +100,8 @@ namespace aspect
          * time step. An example would be a model that needs to call an
          * external program to compute the composition change at a boundary.
          */
-        virtual
         void
-        update ();
+        update () override;
 
         /**
          * Declare the parameters of all known boundary composition plugins, as
@@ -118,7 +117,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the boundary_composition functions of all the
@@ -166,7 +165,7 @@ namespace aspect
          * Return a list of pointers to all boundary composition models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std::unique_ptr<Interface<dim>>> &
+        const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_boundary_composition_conditions () const;
 
         /**
@@ -237,12 +236,6 @@ namespace aspect
                         << "> among the names of registered boundary composition objects.");
       private:
         /**
-         * A list of boundary composition objects that have been requested in the
-         * parameter file.
-         */
-        std::vector<std::unique_ptr<Interface<dim>>> boundary_composition_objects;
-
-        /**
          * A list of names of boundary composition objects that have been requested
          * in the parameter file.
          */
@@ -277,11 +270,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_composition_model () const
     {
-      for (const auto &p : boundary_composition_objects)
-        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*p))
-          return true;
-
-      return false;
+      return this->template has_matching_plugin_object<BoundaryCompositionType>();
     }
 
 
@@ -292,18 +281,7 @@ namespace aspect
     const BoundaryCompositionType &
     Manager<dim>::get_matching_boundary_composition_model () const
     {
-      AssertThrow(has_matching_boundary_composition_model<BoundaryCompositionType> (),
-                  ExcMessage("You asked BoundaryComposition::Manager::get_boundary_composition_model() for a "
-                             "boundary composition model of type <" + boost::core::demangle(typeid(BoundaryCompositionType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "boundary composition model in the input file."));
-
-      for (const auto &p : boundary_composition_objects)
-        if (Plugins::plugin_type_matches<BoundaryCompositionType>(*p))
-          return Plugins::get_plugin_as_type<BoundaryCompositionType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<BoundaryCompositionType>(**(boundary_composition_objects.begin()));
+      return this->template get_matching_plugin_object<BoundaryCompositionType>();
     }
 
 

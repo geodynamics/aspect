@@ -117,16 +117,16 @@ namespace aspect
       // their own parameters
       for (const auto &model_name : model_names)
         {
-          initial_composition_objects.push_back (std::unique_ptr<Interface<dim>>
-                                                 (std::get<dim>(registered_plugins)
-                                                  .create_plugin (model_name,
-                                                                  "Initial composition model::Model names")));
+          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
+                                          (std::get<dim>(registered_plugins)
+                                           .create_plugin (model_name,
+                                                           "Initial composition model::Model names")));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_composition_objects.back()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());
 
-          initial_composition_objects.back()->parse_parameters (prm);
-          initial_composition_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
         }
     }
 
@@ -136,7 +136,7 @@ namespace aspect
     void
     Manager<dim>::update()
     {
-      for (auto &initial_composition_object : initial_composition_objects)
+      for (auto &initial_composition_object : this->plugin_objects)
         initial_composition_object->update();
     }
 
@@ -150,7 +150,7 @@ namespace aspect
       double composition = 0.0;
       int i = 0;
 
-      for (const auto &initial_composition_object : initial_composition_objects)
+      for (const auto &initial_composition_object : this->plugin_objects)
         {
           composition = model_operators[i](composition,
                                            initial_composition_object->initial_composition(position,n_comp));
@@ -173,7 +173,7 @@ namespace aspect
     const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_initial_composition_conditions () const
     {
-      return initial_composition_objects;
+      return this->plugin_objects;
     }
 
 
