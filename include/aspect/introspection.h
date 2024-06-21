@@ -275,9 +275,11 @@ namespace aspect
        */
       struct PolynomialDegree
       {
-        unsigned int       velocities;
-        unsigned int       temperature;
-        unsigned int       compositional_fields;
+        unsigned int              max_degree;
+        unsigned int              velocities;
+        unsigned int              temperature;
+        std::vector<unsigned int> compositional_fields;
+        unsigned int              max_compositional_field;
       };
 
       /**

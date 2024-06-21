@@ -689,7 +689,8 @@ namespace aspect
     std::vector<bool>              use_discontinuous_composition_discretization;
     bool                           have_discontinuous_composition_discretization;
     unsigned int                   temperature_degree;
-    unsigned int                   composition_degree;
+    std::vector<unsigned int>      composition_degrees;
+    unsigned int                   max_composition_degree;
     std::string                    pressure_normalization;
     MaterialModel::MaterialAveraging::AveragingOperation material_averaging;
 

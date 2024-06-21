@@ -201,7 +201,7 @@ namespace aspect
     if (this->is_temperature())
       return introspection.polynomial_degree.temperature;
     else
-      return introspection.polynomial_degree.compositional_fields;
+      return introspection.polynomial_degree.compositional_fields[compositional_variable];
   }
 
 

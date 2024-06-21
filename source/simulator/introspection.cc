@@ -124,7 +124,9 @@ namespace aspect
 
       polynomial_degree.velocities = parameters.stokes_velocity_degree;
       polynomial_degree.temperature = parameters.temperature_degree;
-      polynomial_degree.compositional_fields = parameters.composition_degree;
+      polynomial_degree.compositional_fields = parameters.composition_degrees;
+      polynomial_degree.max_compositional_field = parameters.max_composition_degree;
+      polynomial_degree.max_degree = std::max({parameters.stokes_velocity_degree, parameters.temperature_degree, parameters.max_composition_degree});
 
       return polynomial_degree;
     }
@@ -145,10 +147,10 @@ namespace aspect
                                                                            :
                                                                            parameters.stokes_velocity_degree);
       quadratures.temperature = reference_cell.get_gauss_type_quadrature<dim>(parameters.temperature_degree+1);
-      quadratures.compositional_fields = reference_cell.get_gauss_type_quadrature<dim>(parameters.composition_degree+1);
+      quadratures.compositional_fields = reference_cell.get_gauss_type_quadrature<dim>(parameters.max_composition_degree+1);
       quadratures.system = reference_cell.get_gauss_type_quadrature<dim>(std::max({parameters.stokes_velocity_degree,
                                                                                    parameters.temperature_degree,
-                                                                                   parameters.composition_degree
+                                                                                   parameters.max_composition_degree
                                                                                   }) + 1);
 
       return quadratures;
@@ -170,11 +172,9 @@ namespace aspect
                              :
                              parameters.stokes_velocity_degree);
       quadratures.temperature = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.temperature_degree+1);
-      quadratures.compositional_fields = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.composition_degree+1);
-      quadratures.system = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(std::max({parameters.stokes_velocity_degree,
-                           parameters.temperature_degree,
-                           parameters.composition_degree
-                                                                                                           }) + 1);
+      quadratures.compositional_fields = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.max_composition_degree+1);
+      quadratures.system = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(
+                             std::max({parameters.stokes_velocity_degree, parameters.temperature_degree, parameters.max_composition_degree}) + 1);
 
       return quadratures;
     }
@@ -253,7 +253,9 @@ namespace aspect
     // "Q2,Q2,DGQ1,Q2", we actually create "Q2^2, DGQ1, Q2":
     for (unsigned int c=0; c<parameters.n_compositional_fields; ++c)
       {
-        if (c>0 && parameters.use_discontinuous_composition_discretization[c] == parameters.use_discontinuous_composition_discretization[c-1])
+        if (c>0
+            && parameters.use_discontinuous_composition_discretization[c] == parameters.use_discontinuous_composition_discretization[c-1]
+            && parameters.composition_degrees[c] == parameters.composition_degrees[c-1])
           {
             // reuse last one because it is the same
             variables.back().multiplicity += 1;
@@ -262,7 +264,7 @@ namespace aspect
         else
           {
             std::shared_ptr<FiniteElement<dim>> fe = internal::new_FE_Q_or_DGQ<dim>(parameters.use_discontinuous_composition_discretization[c],
-                                                                                     parameters.composition_degree);
+                                                                                     parameters.composition_degrees[c]);
             variables.push_back(VariableDeclaration<dim>("compositions", fe, 1, 1));
           }
       }
