@@ -736,20 +736,35 @@ namespace aspect
     pcout << solver_control.last_step()
           << " iterations." << std::endl;
 
-    if ((advection_field.is_discontinuous(introspection)
-         &&
-         (
-           (advection_field.is_temperature() && parameters.use_limiter_for_discontinuous_temperature_solution)
-           ||
-           (!advection_field.is_temperature() && parameters.use_limiter_for_discontinuous_composition_solution[advection_field.compositional_variable])
-         )))
+    if (advection_field.is_discontinuous(introspection))
       {
-        apply_limiter_to_dg_solutions(advection_field);
-        // by applying the limiter we have modified the solution to no longer
-        // satisfy the equation. Therefore the residual is meaningless and cannot
-        // converge to zero in nonlinear iterations. Disable residual computation
-        // for this field.
-        return 0.0;
+        const typename Parameters<dim>::DGLimiterType::Kind
+        limiter = (advection_field.is_temperature() ?
+                   parameters.limiter_for_discontinuous_temperature_solution :
+                   parameters.limiter_for_discontinuous_composition_solution[advection_field.compositional_variable]);
+
+        switch (limiter)
+          {
+            case Parameters<dim>::DGLimiterType::boundary_preserving:
+              apply_BP_limiter_to_dg_solutions(advection_field);
+              break;
+            case Parameters<dim>::DGLimiterType::WENO:
+              apply_WENO_limiter_to_dg_solutions(advection_field);
+              break;
+            case Parameters<dim>::DGLimiterType::none:
+              break;
+            default:
+              AssertThrow(false, ExcNotImplemented());
+          }
+
+        if (limiter != Parameters<dim>::DGLimiterType::none)
+          // by applying the limiter we have modified the solution to no longer
+          // satisfy the equation. Therefore the residual is meaningless and cannot
+          // converge to zero in nonlinear iterations. Disable residual computation
+          // for this field.
+          return 0.0;
+        else
+          return initial_residual;
       }
 
     return initial_residual;
