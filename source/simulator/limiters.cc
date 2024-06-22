@@ -414,11 +414,11 @@ namespace aspect
                         }
                       else
                         {
-                          // Neighbor is taking responsibility for assembly of this face, bacause
+                          // Neighbor is taking responsibility for assembly of this face, because
                           // either (1) neighbor is coarser, or
                           //        (2) neighbor is equally-sized and
                           //           (a) neighbor is on a different subdomain, with lower subdomain_id(), or
-                          //           (b) nieghbor is on the same subdomain and has lower index().
+                          //           (b) neighbor is on the same subdomain and has lower index().
                         }
                     }
                   else
