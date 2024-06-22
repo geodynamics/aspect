@@ -262,9 +262,56 @@ namespace aspect
     template <typename InterfaceType>
     void ManagerBase<InterfaceType>::update()
     {
-      for (const auto &plugin : plugin_objects)
+      // call the update() functions of all plugins:
+      for (const auto &p : plugin_objects)
         {
-          plugin->update();
+          try
+            {
+              p->update ();
+            }
+
+          // plugins that throw exceptions usually do not result in
+          // anything good because they result in an unwinding of the stack
+          // and, if only one processor triggers an exception, the
+          // destruction of objects often causes a deadlock. thus, if
+          // an exception is generated, catch it, print an error message,
+          // and abort the program
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running plugin <"
+                        << typeid(*p).name()
+                        << ">: " << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+          catch (...)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running plugin <"
+                        << typeid(*p).name()
+                        << ">: " << std::endl;
+              std::cerr << "Unknown exception!" << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
         }
     }
 
