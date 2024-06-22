@@ -74,19 +74,6 @@ namespace aspect
     {
       public:
         /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
-        /**
-         * Update function. Called once at the beginning of a timestep to
-         * update all plugin objects.
-        */
-        void
-        update() override;
-
-        /**
          * Declare the parameters of all known initial conditions plugins, as
          * well as of ones this class has itself.
          */

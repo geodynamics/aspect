@@ -40,22 +40,6 @@ namespace aspect
     // -------------------------------- Deal with registering boundary_composition models and automating
     // -------------------------------- their setup and selection at run time
 
-    template <int dim>
-    Manager<dim>::~Manager()
-      = default;
-
-
-
-    template <int dim>
-    void
-    Manager<dim>::update ()
-    {
-      for (auto &p : this->plugin_objects)
-        p->update();
-    }
-
-
-
     namespace
     {
       std::tuple

@@ -307,20 +307,6 @@ namespace aspect
 
 
       template <int dim>
-      inline
-      Manager<dim>::Manager ()
-        = default;
-
-
-
-      template <int dim>
-      inline
-      Manager<dim>::~Manager ()
-        = default;
-
-
-
-      template <int dim>
       void
       Manager<dim>::initialize ()
       {
@@ -338,16 +324,6 @@ namespace aspect
           {
             p->initialize();
           }
-      }
-
-
-
-      template <int dim>
-      void
-      Manager<dim>::update ()
-      {
-        for (const auto &p : this->plugin_objects)
-          p->update();
       }
 
 

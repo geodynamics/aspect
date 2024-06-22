@@ -118,21 +118,6 @@ namespace aspect
     {
       public:
         /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
-        /**
-         * Update all of the mesh refinement objects that have been requested
-         * in the input file. Individual mesh refinement objects may choose to
-         * implement an update function to modify object variables once per
-         * time step.
-         */
-        void
-        update () override;
-
-        /**
          * Execute all of the mesh refinement objects that have been requested
          * in the input file. The error indicators are then each individually
          * normalized and merged according to the operation specified in the
