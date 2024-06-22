@@ -107,24 +107,6 @@ namespace aspect
     {
       public:
         /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
-        /**
-         * A function that is called at the beginning of each time step and
-         * calls the corresponding functions of all created plugins.
-         *
-         * The point of this function is to allow complex boundary temperature
-         * models to do an initialization step once at the beginning of each
-         * time step. An example would be a model that needs to call an
-         * external program to compute the temperature change at a boundary.
-         */
-        void
-        update () override;
-
-        /**
          * Declare the parameters of all known boundary temperature plugins, as
          * well as the ones this class has itself.
          */

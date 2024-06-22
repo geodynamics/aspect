@@ -36,12 +36,6 @@ namespace aspect
     // -------------------------------- Deal with registering initial_temperature models and automating
     // -------------------------------- their setup and selection at run time
 
-    template <int dim>
-    Manager<dim>::~Manager()
-      = default;
-
-
-
     namespace
     {
       std::tuple
@@ -118,16 +112,6 @@ namespace aspect
           this->plugin_objects.back()->parse_parameters (prm);
           this->plugin_objects.back()->initialize ();
         }
-    }
-
-
-
-    template <int dim>
-    void
-    Manager<dim>::update()
-    {
-      for (auto &initial_temperature_object : this->plugin_objects)
-        initial_temperature_object->update();
     }
 
 

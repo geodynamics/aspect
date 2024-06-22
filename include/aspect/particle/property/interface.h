@@ -517,28 +517,11 @@ namespace aspect
       {
         public:
           /**
-           * Empty constructor for Manager
-           */
-          Manager ();
-
-          /**
-           * Destructor for Manager
-           */
-          ~Manager () override;
-
-          /**
            * Initialization function. This function is called once at the
            * beginning of the program after parse_parameters is run.
            */
           void
           initialize () override;
-
-          /**
-           * Update function. This function is called once at the
-           * beginning of each timestep.
-           */
-          void
-          update () override;
 
           /**
            * Initialization function for particle properties. This function is
