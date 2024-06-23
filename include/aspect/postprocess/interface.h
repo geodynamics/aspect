@@ -110,8 +110,9 @@ namespace aspect
          * of course needs to be able to access these other postprocessors.
          * This can be done by deriving your postprocessor from
          * SimulatorAccess, and then using the
-         * SimulatorAccess::get_postprocess_manager::get_matching_postprocessor
-         * function.
+         * SimulatorAccess::get_postprocess_manager() function, followed
+         * by asking the resulting object via get_matching_plugin_object()
+         * for a specific postprocessor object.
          */
         virtual
         std::list<std::string>
