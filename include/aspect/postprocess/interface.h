@@ -193,9 +193,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_plugin_object() and
+         *   Plugins::ManagerBase::get_matching_plugin_object() functions of the base
+         *   class of the current class.
          */
         template <typename PostprocessorType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,PostprocessorType>::value>>
+        DEAL_II_DEPRECATED
         bool
         has_matching_postprocessor () const;
 
@@ -209,9 +215,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_plugin_object() and
+         *   Plugins::ManagerBase::get_matching_plugin_object() functions of the base
+         *   class of the current class.
          */
         template <typename PostprocessorType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,PostprocessorType>::value>>
+        DEAL_II_DEPRECATED
         const PostprocessorType &
         get_matching_postprocessor () const;
 
