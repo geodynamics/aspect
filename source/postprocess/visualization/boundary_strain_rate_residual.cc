@@ -73,7 +73,7 @@ namespace aspect
         const double unit_scaling_factor = this->convert_output_to_years() ? year_in_seconds : 1.0;
 
         const Postprocess::BoundaryStrainRateResidualStatistics<dim> &boundary_strain_rate_residual_statistics =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryStrainRateResidualStatistics<dim>>();
+          this->get_postprocess_manager().template get_matching_plugin_object<Postprocess::BoundaryStrainRateResidualStatistics<dim>>();
 
         // We only want the output at the top boundary, so only compute it if the current cell
         // has a face at the top boundary.
@@ -106,7 +106,7 @@ namespace aspect
 
             }
 
-        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim>>();
+        const auto &viz = this->get_postprocess_manager().template get_matching_plugin_object<Postprocess::Visualization<dim>>();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
 

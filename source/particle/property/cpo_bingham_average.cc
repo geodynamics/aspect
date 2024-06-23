@@ -252,7 +252,7 @@ namespace aspect
         {
           // Get a pointer to the CPO particle property.
           cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
-                                    this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>());
+                                    this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_plugin_object<Particle::Property::CrystalPreferredOrientation<dim>>());
 
           random_number_seed = prm.get_integer ("Random number seed");
           n_grains = cpo_particle_property->get_number_of_grains();
