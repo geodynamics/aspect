@@ -9,20 +9,13 @@ Loading shared library <./libfind_boundary_composition_model_fail_1.debug.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
----------------------------------------------------------
-TimerOutput objects finalize timed values printed to the
-screen by communicating over MPI in their destructors.
-Since an exception is currently uncaught, this
-synchronization (and subsequent output) will be skipped
-to avoid a possible deadlock.
----------------------------------------------------------
 
 
 ----------------------------------------------------
-Exception 'ExcMessage("You asked the object managing a collection of plugins for a " "plugin object of type <" + boost::core::demangle(typeid(PluginType).name()) + "> " "that could not be found in the current model. You need to " "activate this plugin in the input file for it to be " "available.")' on rank 0 on processing: 
+Exception on MPI process <0> while running plugin <N6aspect19BoundaryTemperature4Box2ILi2EEE>: 
 
 --------------------------------------------------------
-An error occurred in line <291> of file </home/bangerth/p/deal.II/1/projects/aspect/include/aspect/plugins.h> in function
+An error occurred in line <338> of file </home/bangerth/p/deal.II/1/projects/aspect/include/aspect/plugins.h> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
     has_matching_plugin_object<PluginType> ()
