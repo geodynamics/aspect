@@ -23,7 +23,8 @@
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/utilities.h>
-#include "boost/lexical_cast.hpp"
+
+#include <boost/lexical_cast.hpp>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
@@ -87,7 +88,7 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "If only one value is given, then all use the same value. "
                            "Units: None");
-        prm.declare_entry ("Reference temperature for Frank Kamenetskii",
+        prm.declare_entry ("Reference temperatures for Frank Kamenetskii",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double (0.)),
                            "A reference temperature in the viscosity approximation which "
@@ -96,7 +97,7 @@ namespace aspect
                            "or only those corresponding to chemical compositions. If only one "
                            "value is given, then all use the same value. "
                            "Units: K");
-        prm.declare_entry ("Reference pressure for Frank Kamenetskii",
+        prm.declare_entry ("Reference pressures for Frank Kamenetskii",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double (0.)),
                            "A reference pressure in the viscosity approximation which "
@@ -150,12 +151,12 @@ namespace aspect
         pressure_prefactors_frank_kamenetskii = Utilities::MapParsing::parse_map_to_double_array(prm.get("Pressure prefactors for Frank Kamenetskii"),
                                                 options);
 
-        options.property_name = "Reference temperature for Frank Kamenetskii";
-        reference_temperatures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference temperature for Frank Kamenetskii"),
+        options.property_name = "Reference temperatures for Frank Kamenetskii";
+        reference_temperatures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference temperatures for Frank Kamenetskii"),
                                                                                   options);
 
-        options.property_name = "Reference pressure for Frank Kamenetskii";
-        reference_pressures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference pressure for Frank Kamenetskii"),
+        options.property_name = "Reference pressures for Frank Kamenetskii";
+        reference_pressures = Utilities::MapParsing::parse_map_to_double_array(prm.get("Reference pressures for Frank Kamenetskii"),
                                                                                options);
 
         // If the reference temperatures or pressures are given the value of std::numeric_limits<double>::max()
