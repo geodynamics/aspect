@@ -58,7 +58,7 @@ Checks: >
   use-emplace,
   mpi-*,
   performance-*,
-  -performance-avoid-endl
+  -performance-avoid-endl,
   -performance-enum-size,
   -performance-inefficient-string-concatenation,
-  -performance-no-automatic-move,
+  -performance-no-automatic-move
