@@ -1231,6 +1231,15 @@ namespace aspect
                                "particle weight is recommended. Before adding the weights "
                                "of particles, each cell already carries a weight of 1000 to "
                                "account for the cost of field-based computations.");
+            prm.declare_entry ("Update ghost particles", "true",
+                               Patterns::Bool (),
+                               "Some particle interpolation algorithms require knowledge "
+                               "about particles in neighboring cells. To allow this, "
+                               "particles in ghost cells need to be exchanged between the "
+                               "processes neighboring this cell. This parameter determines "
+                               "whether this transport is happening. This parameter is "
+                               "deprecated and will be removed in the future. Ghost particle "
+                               "updates are always performed. Please set the parameter to `true'.");
 
             Generator::declare_parameters<dim>(prm);
             Integrator::declare_parameters<dim>(prm);
@@ -1281,6 +1290,11 @@ namespace aspect
                                "that is smaller than or equal to the 'Maximum particles per cell' parameter."));
 
         particle_weight = prm.get_integer("Particle weight");
+
+        const bool update_ghost_particles = prm.get_bool("Update ghost particles");
+        AssertThrow(update_ghost_particles == true,
+                    ExcMessage("The 'Update ghost particles' parameter is deprecated and will be removed in the future. "
+                               "Ghost particle updates are always performed. Please set the parameter to `true'."));
 
         const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
         AssertThrow(Utilities::has_unique_entries(strategies),
