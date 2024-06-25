@@ -116,7 +116,7 @@ def move_particle_postprocess_parameters_back(parameters):
 def remove_update_ghost_particles_parameter(parameters):
     """ Remove the parameter 'Update ghost particles'. """
 
-    # Find the particle parameters and move
+    # Find the "Update ghost particles" parameter and remove
     if "Particles" in parameters:
         if "Update ghost particles" in parameters["Particles"]["value"]:
             del parameters["Particles"]["value"]["Update ghost particles"]
