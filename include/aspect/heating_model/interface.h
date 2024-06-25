@@ -273,9 +273,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_plugin_object() and
+         *   Plugins::ManagerBase::get_matching_plugin_object() functions of the base
+         *   class of the current class.
          */
         template <typename HeatingModelType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,HeatingModelType>::value>>
+        DEAL_II_DEPRECATED
         bool
         has_matching_heating_model () const;
 
@@ -289,9 +295,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_plugin_object() and
+         *   Plugins::ManagerBase::get_matching_plugin_object() functions of the base
+         *   class of the current class.
          */
         template <typename HeatingModelType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,HeatingModelType>::value>>
+        DEAL_II_DEPRECATED
         const HeatingModelType &
         get_matching_heating_model () const;
 

@@ -59,7 +59,7 @@ namespace aspect
     bool
     Manager<dim>::adiabatic_heating_enabled() const
     {
-      return has_matching_heating_model<HeatingModel::AdiabaticHeating<dim>>() ;
+      return this->template has_matching_plugin_object<HeatingModel::AdiabaticHeating<dim>>() ;
     }
 
 
@@ -68,7 +68,7 @@ namespace aspect
     bool
     Manager<dim>::shear_heating_enabled() const
     {
-      return has_matching_heating_model<HeatingModel::ShearHeating<dim>>() ;
+      return this->template has_matching_plugin_object<HeatingModel::ShearHeating<dim>>() ;
     }
 
 

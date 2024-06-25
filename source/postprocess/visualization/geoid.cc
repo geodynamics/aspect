@@ -68,7 +68,7 @@ namespace aspect
           quantity(0) = 0;
 
         const Postprocess::Geoid<dim> &geoid =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim>>();
+          this->get_postprocess_manager().template get_matching_plugin_object<Postprocess::Geoid<dim>>();
 
         auto cell = input_data.template get_cell<dim>();
 
