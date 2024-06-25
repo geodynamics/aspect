@@ -18,7 +18,7 @@ Exception on MPI process <0> while running plugin <N6aspect19BoundaryTemperature
 An error occurred in line <338> of file </home/bangerth/p/deal.II/1/projects/aspect/include/aspect/plugins.h> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
-    has_matching_plugin_object<PluginType> ()
+    has_matching_plugin<PluginType> ()
 Additional information: 
     You asked the object managing a collection of plugins for a plugin
     object of type <aspect::BoundaryComposition::Box<2>> that could not be

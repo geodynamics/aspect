@@ -446,7 +446,7 @@ namespace aspect
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
 
-    if (postprocess_manager.template has_matching_plugin_object<Postprocess::Particles<dim>>())
+    if (postprocess_manager.template has_matching_plugin<Postprocess::Particles<dim>>())
       {
         particle_worlds.emplace_back(std::move(std::make_unique<Particle::World<dim>>()));
         for (unsigned int particle_world_index = 0 ; particle_world_index < particle_worlds.size(); ++particle_world_index)

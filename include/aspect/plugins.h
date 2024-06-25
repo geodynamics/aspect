@@ -232,7 +232,7 @@ namespace aspect
         template <typename PluginType,
                   typename = typename std::enable_if_t<std::is_base_of<InterfaceType,PluginType>::value>>
         bool
-        has_matching_plugin_object () const;
+        has_matching_plugin () const;
 
         /**
          * Go through the list of all plugins that have been selected
@@ -248,7 +248,7 @@ namespace aspect
         template <typename PluginType,
                   typename = typename std::enable_if_t<std::is_base_of<InterfaceType,PluginType>::value>>
         const PluginType &
-        get_matching_plugin_object () const;
+        get_matching_plugin () const;
 
       protected:
         /**
@@ -320,7 +320,7 @@ namespace aspect
     template <typename PluginType, typename>
     inline
     bool
-    ManagerBase<InterfaceType>::has_matching_plugin_object () const
+    ManagerBase<InterfaceType>::has_matching_plugin () const
     {
       for (const auto &p : plugin_objects)
         if (Plugins::plugin_type_matches<PluginType>(*p))
@@ -333,9 +333,9 @@ namespace aspect
     template <typename PluginType, typename>
     inline
     const PluginType &
-    ManagerBase<InterfaceType>::get_matching_plugin_object () const
+    ManagerBase<InterfaceType>::get_matching_plugin () const
     {
-      AssertThrow(has_matching_plugin_object<PluginType> (),
+      AssertThrow(has_matching_plugin<PluginType> (),
                   ExcMessage("You asked the object managing a collection of plugins for a "
                              "plugin object of type <" + boost::core::demangle(typeid(PluginType).name()) + "> "
                              "that could not be found in the current model. You need to "

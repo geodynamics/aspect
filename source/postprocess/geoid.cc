@@ -182,7 +182,7 @@ namespace aspect
     {
       // Get a pointer to the boundary densities postprocessor.
       const Postprocess::BoundaryDensities<3> &boundary_densities =
-        this->get_postprocess_manager().template get_matching_plugin_object<Postprocess::BoundaryDensities<3>>();
+        this->get_postprocess_manager().template get_matching_plugin<Postprocess::BoundaryDensities<3>>();
 
       const double top_layer_average_density = boundary_densities.density_at_top();
       const double bottom_layer_average_density = boundary_densities.density_at_bottom();
@@ -270,7 +270,7 @@ namespace aspect
                       {
                         // Get a reference to the dynamic topography postprocessor.
                         const Postprocess::DynamicTopography<3> &dynamic_topography =
-                          this->get_postprocess_manager().template get_matching_plugin_object<Postprocess::DynamicTopography<3>>();
+                          this->get_postprocess_manager().template get_matching_plugin<Postprocess::DynamicTopography<3>>();
 
                         // Get the already-computed dynamic topography solution.
                         const LinearAlgebra::BlockVector &topo_vector = dynamic_topography.topography_vector();
@@ -317,7 +317,7 @@ namespace aspect
                       {
                         // Get a reference to the dynamic topography postprocessor.
                         const Postprocess::DynamicTopography<3> &dynamic_topography =
-                          this->get_postprocess_manager().template get_matching_plugin_object<Postprocess::DynamicTopography<3>>();
+                          this->get_postprocess_manager().template get_matching_plugin<Postprocess::DynamicTopography<3>>();
 
                         // Get the already-computed dynamic topography solution.
                         const LinearAlgebra::BlockVector &topo_vector = dynamic_topography.topography_vector();
