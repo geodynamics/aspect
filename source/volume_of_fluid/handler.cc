@@ -427,7 +427,7 @@ namespace aspect
     if ( this->get_parameters().initial_adaptive_refinement > 0 ||
          this->get_parameters().adaptive_refinement_interval > 0 )
       {
-        AssertThrow(this->get_mesh_refinement_manager().template has_matching_plugin_object<MeshRefinement::VolumeOfFluidInterface<dim>>(),
+        AssertThrow(this->get_mesh_refinement_manager().template has_matching_plugin<MeshRefinement::VolumeOfFluidInterface<dim>>(),
                     ExcMessage("Volume of Fluid Interface Tracking requires that the 'volume of fluid interface' strategy be used for AMR"));
 
         AssertThrow(this->get_parameters().adaptive_refinement_interval <(1/this->get_parameters().CFL_number),
