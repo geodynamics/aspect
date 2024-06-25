@@ -372,6 +372,8 @@ namespace aspect
     class SchurComplementOperator
     {
       public:
+        virtual ~SchurComplementOperator() = default;
+
         virtual void vmult(TrilinosWrappers::MPI::Vector &dst,
                            const TrilinosWrappers::MPI::Vector &src) const=0;
         virtual unsigned int n_iterations() const=0;
