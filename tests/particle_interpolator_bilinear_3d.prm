@@ -101,7 +101,6 @@ end
 subsection Particles
   set List of particle properties = initial composition
   set Interpolation scheme = bilinear least squares
-  set Update ghost particles   = true
   set Particle generator name = reference cell
 
   subsection Interpolator

@@ -99,7 +99,6 @@ end
 
 subsection Particles
   set List of particle properties = velocity, function, initial composition
-  set Update ghost particles = true
   set Particle generator name = random uniform
 
   subsection Function

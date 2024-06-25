@@ -116,7 +116,6 @@ end
 subsection Particles
   set List of particle properties = velocity, initial composition
   set Interpolation scheme = cell average
-  set Update ghost particles = true
   set Particle generator name = random uniform
 
   subsection Generator

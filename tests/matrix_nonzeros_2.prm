@@ -90,7 +90,6 @@ end
 subsection Particles
   set List of particle properties = initial composition
   set Interpolation scheme = cell average
-  set Update ghost particles = true
 
   subsection Generator
     subsection Probability density function
