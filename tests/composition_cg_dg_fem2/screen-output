@@ -85,7 +85,7 @@ system preconditioner matrix nnz by block:
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
-     Compositions min/max/mass: 2.282e-10/0.9985/0.5 // -0.02062/1.033/0.4583 // -0.02062/1.033/0.4583 // -0.1054/1.099/0.375 // -0.1495/1.157/0.3749
+     Compositions min/max/mass: 2.282e-10/0.9985/0.5 // -0.02062/1.033/0.4583 // -0.02062/1.033/0.4583 // -0.1054/1.098/0.375 // -0.1495/1.157/0.3749
                                 
 Total system matrix memory consumption: 0.21 MB.
 Total system matrix nnz: 8,489

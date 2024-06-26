@@ -312,7 +312,8 @@ namespace aspect
         Quadrature<dim>       velocities;
         Quadrature<dim>       pressure;
         Quadrature<dim>       temperature;
-        Quadrature<dim>       compositional_fields;
+        Quadrature<dim>       compositional_field_max;
+        std::vector<Quadrature<dim>> compositional_fields;
         Quadrature<dim>       system;
       };
 

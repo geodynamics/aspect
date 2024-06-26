@@ -1507,7 +1507,7 @@ namespace aspect
     const Quadrature<dim> &quadrature_formula_0
       = (advection_field.is_temperature() ?
          introspection.quadratures.temperature :
-         introspection.quadratures.compositional_fields);
+         introspection.quadratures.compositional_fields[advection_field.compositional_variable]);
     const unsigned int n_q_points_0 = quadrature_formula_0.size();
 
     // fe values for points evaluation

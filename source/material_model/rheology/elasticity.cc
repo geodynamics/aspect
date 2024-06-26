@@ -376,7 +376,7 @@ namespace aspect
                   get_averaging_operation_for_viscosity(this->get_parameters().material_averaging);
                 MaterialAveraging::average(averaging_operation_for_viscosity,
                                            in.current_cell,
-                                           this->introspection().quadratures.compositional_fields,
+                                           Quadrature<dim>(quadrature_positions),
                                            this->get_mapping(),
                                            in.requested_properties,
                                            out_copy);

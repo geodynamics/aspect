@@ -37,7 +37,7 @@ namespace aspect
         return {"", ""};
 
       // create a quadrature formula based on the compositional element alone.
-      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.compositional_fields;
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.compositional_field_max;
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
