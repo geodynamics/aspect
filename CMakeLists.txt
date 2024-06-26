@@ -748,14 +748,14 @@ set(TARGET_SRC
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   add_executable(${TARGET_EXE_DEBUG} ${TARGET_SRC})
   set_property(TARGET ${TARGET_EXE_DEBUG}
-               PROPERTY OUTPUT_NAME aspect.debug)
+               PROPERTY OUTPUT_NAME aspect-debug)
   deal_ii_setup_target(${TARGET_EXE_DEBUG} DEBUG)
 endif()
 
 if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   add_executable(${TARGET_EXE_RELEASE} ${TARGET_SRC})
   set_property(TARGET ${TARGET_EXE_RELEASE}
-               PROPERTY OUTPUT_NAME aspect.release)
+               PROPERTY OUTPUT_NAME aspect-release)
   deal_ii_setup_target(${TARGET_EXE_RELEASE} RELEASE)
 endif()
 
