@@ -1,5 +1,5 @@
 New: ASPECT now supports compositional fields with
 different discretizations (continuous or discontinuous)
-at the same time.
+and different polynomial degrees at the same time.
 <br>
 (Timo Heister, 2024/06/18)
