@@ -25,6 +25,12 @@ namespace aspect
 {
   namespace Particle
   {
+    ParticleInterfaceBase::ParticleInterfaceBase()
+      : particle_world_index(numbers::invalid_unsigned_int)
+    {}
+
+
+
     void
     ParticleInterfaceBase::set_particle_world_index(const unsigned int particle_world_index)
     {
