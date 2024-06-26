@@ -755,12 +755,6 @@ namespace aspect
           unsigned int particle_world_index;
 
           /**
-           * Stores the names of the plugins which are present
-           * in the order they are executed.
-           */
-          std::vector<std::string> plugin_names;
-
-          /**
            * A class that stores all information about the particle properties,
            * their association with property plugins and their storage pattern.
            */

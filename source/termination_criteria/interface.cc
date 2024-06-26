@@ -68,7 +68,7 @@ namespace aspect
 
       // call the execute() functions of all plugins we have
       // here in turns.
-      std::list<std::string>::const_iterator  itn = termination_obj_names.begin();
+      std::vector<std::string>::const_iterator  itn = this->plugin_names.begin();
       for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
            p = this->plugin_objects.begin();
            p != this->plugin_objects.end(); ++p,++itn)
@@ -223,7 +223,7 @@ namespace aspect
           this->plugin_objects.back()->parse_parameters (prm);
           this->plugin_objects.back()->initialize ();
 
-          termination_obj_names.push_back(plugin_name);
+          this->plugin_names.push_back(plugin_name);
         }
     }
 

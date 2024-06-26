@@ -105,10 +105,10 @@ namespace aspect
       // parameters we declare here
       prm.enter_subsection ("Heating model");
       {
-        model_names
+        this->plugin_names
           = Utilities::split_string_list(prm.get("List of model names"));
 
-        AssertThrow(Utilities::has_unique_entries(model_names),
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Heating model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
@@ -117,7 +117,7 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (auto &model_name : model_names)
+      for (auto &model_name : this->plugin_names)
         {
           this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
                                           (std::get<dim>(registered_plugins)
@@ -204,7 +204,7 @@ namespace aspect
     const std::vector<std::string> &
     Manager<dim>::get_active_heating_model_names () const
     {
-      return model_names;
+      return this->plugin_names;
     }
 
 

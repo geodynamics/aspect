@@ -264,12 +264,6 @@ namespace aspect
                         << "> among the names of registered boundary temperature objects.");
       private:
         /**
-         * A list of names of boundary temperature objects that have been requested
-         * in the parameter file.
-         */
-        std::vector<std::string> model_names;
-
-        /**
          * A list of enums of boundary temperature operators that have been
          * requested in the parameter file. Each name is associated
          * with a model_name, and is used to modify the temperature

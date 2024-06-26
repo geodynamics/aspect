@@ -329,12 +329,6 @@ namespace aspect
                         << "Could not find entry <"
                         << arg1
                         << "> among the names of registered heating model objects.");
-      private:
-        /**
-         * A list of names of heating model objects that have been requested
-         * in the parameter file.
-         */
-        std::vector<std::string> model_names;
     };
 
 
