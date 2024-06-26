@@ -771,7 +771,7 @@ add_custom_target(aspect ALL
                            $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME>  # executable file name
                            ${CMAKE_BINARY_DIR}/aspect                    # link name
                   DEPENDS ${TARGET_EXE}
-                  COMMENT "Creating symlink $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME> -> aspect")
+                  COMMENT "Creating symlink from ${TARGET_EXE} to './aspect'")
 install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
 	TYPE BIN)
 
