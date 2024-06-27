@@ -148,26 +148,26 @@ namespace aspect
         if (use_diffusion_creep)
           {
             diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            eta_creep_guess = std::min(diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition), maximum_viscosity);
+            eta_creep_guess = std::min(diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition), eta_creep_guess);
           }
 
         if (use_dislocation_creep)
           {
             dislocation_creep_parameters = dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            eta_creep_guess = std::min(dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition), maximum_viscosity);
+            eta_creep_guess = std::min(dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition), eta_creep_guess);
           }
 
         if (use_peierls_creep)
           {
             peierls_creep_parameters = peierls_creep->compute_creep_parameters(composition);
-            eta_creep_guess = std::min(peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition), maximum_viscosity);
+            eta_creep_guess = std::min(peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition), eta_creep_guess);
           }
 
         if (use_drucker_prager)
           {
             drucker_prager_parameters = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
             eta_creep_guess = std::min(drucker_prager->compute_viscosity(drucker_prager_parameters.cohesion,
-                                                                         drucker_prager_parameters.angle_internal_friction, pressure, edot_ii, drucker_prager_parameters.max_yield_stress), maximum_viscosity);
+                                                                         drucker_prager_parameters.angle_internal_friction, pressure, edot_ii, drucker_prager_parameters.max_yield_stress), eta_creep_guess);
           }
 
         double log_creep_stress = std::log(2. * eta_creep_guess * edot_ii);
