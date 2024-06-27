@@ -1,0 +1,7 @@
+Changed: The CompositeViscoPlastic rheology in ASPECT now uses
+the DruckerPragerPower rheology and the approximate Peierls flow
+rheology. This has enabled the internal solve for equilibrium
+strain-rate partitioning to use a more efficient log-stress
+Newton scheme.
+<br>
+(Bob Myhill, 2024/06/27)
