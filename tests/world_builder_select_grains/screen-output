@@ -1,0 +1,16 @@
+
+Number of active cells: 512 (on 4 levels)
+Number of degrees of freedom: 35,120 (14,739+729+4,913+4,913+4,913+4,913)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+
+   Postprocessing:
+     Compositions min/max/mass:   0/1/8.333e+14 // 0/0/0 // 0/0/0
+     Writing graphical output:    output-world_builder_select_grains/solution/solution-00000
+     Writing particle output:     output-world_builder_select_grains/particles/particles-00000
+     Writing particle cpo output: output-world_builder_select_grains/particles_cpo/CPO-00000
+
+Termination requested by criterion: end time
+
+
+
