@@ -722,6 +722,7 @@ namespace aspect
         this->plugin_objects.emplace_back (std::make_unique<IntegratorProperties<dim>>());
         this->plugin_objects.back()->set_particle_world_index(particle_world_index);
         this->plugin_objects.back()->parse_parameters (prm);
+        this->plugin_names.emplace_back("internal: integrator properties");
       }
 
 
