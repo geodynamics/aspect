@@ -943,7 +943,7 @@ namespace aspect
                          "discontinuous field. "
                          "Units: None.");
       prm.declare_entry ("Composition polynomial degree", "2",
-                         Patterns::Integer (0),
+                         Patterns::List(Patterns::Integer (0)),
                          "The polynomial degree to use for the composition variable(s). "
                          "As an example, a value of 2 for this parameter will yield "
                          "either the element $Q_2$ or $DGQ_2$ for the compositional "
@@ -1752,7 +1752,14 @@ namespace aspect
     {
       stokes_velocity_degree = prm.get_integer ("Stokes velocity polynomial degree");
       temperature_degree     = prm.get_integer ("Temperature polynomial degree");
-      composition_degree     = prm.get_integer ("Composition polynomial degree");
+      composition_degrees    = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_unsigned_int(Utilities::split_string_list(prm.get("Composition polynomial degree"))),
+                                                                       n_compositional_fields,
+                                                                       "Composition polynomial degree");
+      if (n_compositional_fields > 0)
+        max_composition_degree = *std::max_element(composition_degrees.begin(), composition_degrees.end());
+      else
+        max_composition_degree = numbers::invalid_unsigned_int;
+
       use_locally_conservative_discretization
         = prm.get_bool ("Use locally conservative discretization");
       use_equal_order_interpolation_for_stokes
@@ -1767,10 +1774,10 @@ namespace aspect
         (std::find(use_discontinuous_composition_discretization.begin(), use_discontinuous_composition_discretization.end(), true)
          != use_discontinuous_composition_discretization.end());
 
-      // TODO: this needs to be modified once we lift the restriction that all compositions have the same degree.
-      AssertThrow(have_discontinuous_composition_discretization == true || composition_degree > 0,
-                  ExcMessage("Using a composition polynomial degree of 0 (cell-wise constant composition) "
-                             "is only supported if a discontinuous composition discretization is selected."));
+      for (unsigned int c=0; c<n_compositional_fields; ++c)
+        AssertThrow(use_discontinuous_composition_discretization[c] == true || composition_degrees[c] > 0,
+                    ExcMessage("Using a composition polynomial degree of 0 (cell-wise constant composition) "
+                               "is only supported if a discontinuous composition discretization is selected."));
 
       prm.enter_subsection ("Stabilization parameters");
       {

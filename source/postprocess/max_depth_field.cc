@@ -38,7 +38,7 @@ namespace aspect
       // be defensive about determining that a compositional field actually exists
       AssertThrow(this->n_compositional_fields() > 0,
                   ExcMessage("This postprocessor cannot be used without compositional fields."));
-      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.compositional_fields;
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.compositional_field_max;
 
       const unsigned int n_q_points = quadrature_formula.size();
 

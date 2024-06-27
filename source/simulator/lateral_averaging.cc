@@ -589,13 +589,9 @@ namespace aspect
     else
       geometry_unique_depth_direction = numbers::invalid_unsigned_int;
 
-    const unsigned int max_fe_degree = std::max(this->introspection().polynomial_degree.velocities,
-                                                std::max(this->introspection().polynomial_degree.temperature,
-                                                         this->introspection().polynomial_degree.compositional_fields));
-
     // We want to integrate over a polynomial of degree p = max_fe_degree, for which we
     // need a quadrature of at least q, with p <= 2q-1 --> q >= (p+1)/2
-    const unsigned int lateral_quadrature_degree = static_cast<unsigned int>(std::ceil((max_fe_degree+1.0)/2.0));
+    const unsigned int lateral_quadrature_degree = static_cast<unsigned int>(std::ceil((this->introspection().polynomial_degree.max_degree+1.0)/2.0));
 
     std::unique_ptr<Quadrature<dim>> quadrature_formula;
     if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)

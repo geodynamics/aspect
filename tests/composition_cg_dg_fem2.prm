@@ -1,11 +1,11 @@
-# Test CG and DG compositional fields at the same time
+# Test different composition degrees and cg/dg
 #
 # copied from discontinuous_composition_1.prm
 
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 1
+set End time                               = 0.1
 set Use years in output instead of seconds = false
 
 subsection Geometry model
@@ -53,6 +53,7 @@ end
 
 subsection Material model
   set Model name = simple
+  set Material averaging = harmonic average only viscosity
 
   subsection Simple model
     set Thermal conductivity          = 1e-6
@@ -69,11 +70,12 @@ end
 
 subsection Discretization
   set Use discontinuous temperature discretization = false
-  set Use discontinuous composition discretization = true,false
+  set Use discontinuous composition discretization = true,false,false,false,true
+  set Composition polynomial degree = 0,2,2,1,1
 end
 
 subsection Postprocess
-  set List of postprocessors = temperature statistics, composition statistics
+  set List of postprocessors = temperature statistics, composition statistics, matrix statistics
 end
 
 # This is the new part: We declare that there will
@@ -83,7 +85,7 @@ end
 # units of the domain and zero otherwise in the first case,
 # and one in the top most 0.2 height units in the latter.
 subsection Compositional fields
-  set Number of fields = 2
+  set Number of fields = 5
 end
 
 subsection Initial composition model
@@ -91,6 +93,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0)
+    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0); if(y>0.8, 1, 0); if(y>0.8, 1, 0); if(y>0.8, 1, 0)
   end
 end

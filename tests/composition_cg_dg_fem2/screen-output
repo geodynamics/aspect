@@ -1,0 +1,113 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 535 (162+25+81+16+81+81+25+64)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Solving C_3 system ... 0 iterations.
+   Solving C_4 system ... 0 iterations.
+   Solving C_5 system ... 0 iterations.
+   Solving Stokes system... 10+0 iterations.
+
+Number of active cells: 40 (on 4 levels)
+Number of degrees of freedom: 1,275 (386+55+193+40+193+193+55+160)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Solving C_3 system ... 0 iterations.
+   Solving C_4 system ... 0 iterations.
+   Solving C_5 system ... 0 iterations.
+   Solving Stokes system... 13+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: 0/1/0.5 // 0/1/0.4583 // 0/1/0.4583 // 0/1/0.375 // 0/1/0.375
+                                
+Total system matrix memory consumption: 0.21 MB.
+Total system matrix nnz: 8,489
+system matrix nnz by block: 
+           0           0           0           0           0           0           0           0
+           0           0           0           0           0           0           0           0
+           0           0       2,157           0           0           0           0           0
+           0           0           0         180           0           0           0           0
+           0           0           0           0       2,845           0           0           0
+           0           0           0           0           0           0           0           0
+           0           0           0           0           0           0         427           0
+           0           0           0           0           0           0           0       2,880
+
+Total system preconditioner matrix memory consumption: 0.00 MB.
+Total system preconditioner matrix nnz: 0
+system preconditioner matrix nnz by block: 
+
+
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 10 iterations.
+   Solving C_3 system ... 10 iterations.
+   Solving C_4 system ... 6 iterations.
+   Solving C_5 system ... 3 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: 1.106e-10/0.9992/0.5 // -0.0158/1.028/0.4583 // -0.0158/1.028/0.4583 // -0.07232/1.07/0.375 // -0.1145/1.119/0.375
+                                
+Total system matrix memory consumption: 0.21 MB.
+Total system matrix nnz: 8,489
+system matrix nnz by block: 
+           0           0           0           0           0           0           0           0
+           0           0           0           0           0           0           0           0
+           0           0       2,157           0           0           0           0           0
+           0           0           0         180           0           0           0           0
+           0           0           0           0       2,845           0           0           0
+           0           0           0           0           0           0           0           0
+           0           0           0           0           0           0         427           0
+           0           0           0           0           0           0           0       2,880
+
+Total system preconditioner matrix memory consumption: 0.00 MB.
+Total system preconditioner matrix nnz: 0
+system preconditioner matrix nnz by block: 
+
+
+*** Timestep 2:  t=0.1 seconds, dt=0.0375 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 3 iterations.
+   Solving C_2 system ... 10 iterations.
+   Solving C_3 system ... 10 iterations.
+   Solving C_4 system ... 6 iterations.
+   Solving C_5 system ... 3 iterations.
+   Solving Stokes system... 13+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+     Compositions min/max/mass: 2.282e-10/0.9985/0.5 // -0.02062/1.033/0.4583 // -0.02062/1.033/0.4583 // -0.1054/1.098/0.375 // -0.1495/1.157/0.3749
+                                
+Total system matrix memory consumption: 0.21 MB.
+Total system matrix nnz: 8,489
+system matrix nnz by block: 
+           0           0           0           0           0           0           0           0
+           0           0           0           0           0           0           0           0
+           0           0       2,157           0           0           0           0           0
+           0           0           0         180           0           0           0           0
+           0           0           0           0       2,845           0           0           0
+           0           0           0           0           0           0           0           0
+           0           0           0           0           0           0         427           0
+           0           0           0           0           0           0           0       2,880
+
+Total system preconditioner matrix memory consumption: 0.00 MB.
+Total system preconditioner matrix nnz: 0
+system preconditioner matrix nnz by block: 
+
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,927 (578+81+289+64+289+289+81+256)
+
+Termination requested by criterion: end time
+
+
+
