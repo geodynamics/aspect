@@ -38,6 +38,11 @@ namespace aspect
     {
       public:
         /**
+         * Constructor.
+         */
+        ParticleInterfaceBase();
+
+        /**
          * @brief Set which particle world the plugin belongs to.
          *
          * @param particle_world_index The index of the particle world this plugin belongs to.

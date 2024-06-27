@@ -750,6 +750,11 @@ namespace aspect
 
         private:
           /**
+           * Stores the index to the particle world, to which this manager belongs.
+           */
+          unsigned int particle_world_index;
+
+          /**
            * Stores the names of the plugins which are present
            * in the order they are executed.
            */
