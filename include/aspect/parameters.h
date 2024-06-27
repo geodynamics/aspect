@@ -314,6 +314,41 @@ namespace aspect
     };
 
     /**
+     * A struct to provide the different choices of limiters for
+     * the discontinuous Galerkin method.
+     */
+    struct DGLimiterType
+    {
+      enum Kind
+      {
+        boundary_preserving,
+        WENO,
+        none
+      };
+
+      static
+      Kind
+      parse(const std::string &input)
+      {
+        if (input == "boundary preserving")
+          return boundary_preserving;
+        else if (input == "WENO")
+          return WENO;
+        else if (input == "none")
+          return none;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+
+      static const std::string pattern()
+      {
+        return "boundary preserving|WENO|none";
+      }
+    };
+
+    /**
      * This enum represents the different choices for the linear solver
      * for the Stoke system. See @p stokes_solver_type.
      */
@@ -656,12 +691,15 @@ namespace aspect
     std::vector<double>            stabilization_beta;
     double                         stabilization_gamma;
     double                         discontinuous_penalty;
-    bool                           use_limiter_for_discontinuous_temperature_solution;
-    std::vector<bool>              use_limiter_for_discontinuous_composition_solution;
+    typename DGLimiterType::Kind   limiter_for_discontinuous_temperature_solution;
+    std::vector<typename DGLimiterType::Kind> limiter_for_discontinuous_composition_solution;
     double                         global_temperature_max_preset;
     double                         global_temperature_min_preset;
     std::vector<double>            global_composition_max_preset;
     std::vector<double>            global_composition_min_preset;
+    double                         temperature_KXRCF_indicator_threshold;
+    std::vector<double>            composition_KXRCF_indicator_threshold;
+    double                         WENO_linear_weight;
 
     std::vector<std::string>       compositional_fields_with_disabled_boundary_entropy_viscosity;
     /**

@@ -427,6 +427,14 @@ namespace aspect
       void
       get_artificial_viscosity_composition(Vector<float> &viscosity_per_cell,
                                            const unsigned int compositional_variable) const;
+
+      /**
+       * Compute the KXRCF indicator on each locally owned cell for a specific
+       * advection field.
+       */
+      void
+      compute_KXRCF_indicators(Vector<float> &KXRCF_indicators,
+                               const unsigned int field_index) const;
       /** @} */
 
 

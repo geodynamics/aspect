@@ -1373,10 +1373,29 @@ namespace aspect
        * the discontinuous Galerkin solution will stay in the prescribed bounds.
        *
        * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
+       * <code>source/simulator/limiters.cc</code>.
        */
-      void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
+      void apply_BP_limiter_to_dg_solutions (const AdvectionField &advection_field);
 
+      /**
+       * Apply the WENO limiter to the discontinuous Galerkin solutions.
+       * The WENO scheme implemented in this function is proposed by Zhong and Shu, 2013.
+       *
+       * This function is implemented in
+       * <code>source/simulator/limiters.cc</code>.
+       */
+      void apply_WENO_limiter_to_dg_solutions (const AdvectionField &advection_field);
+
+      /**
+       * Compute the KXRCF indicator that detect shocks in the advection field.
+       * The KXRCF indicator is used by the WENO limiter.
+       *
+       * This function is implemented in
+       * <code>source/simulator/limiters.cc</code>.
+       */
+      template <typename T>
+      void compute_KXRCF_indicators(Vector<T> &KXRCF_indicators,
+                                    const AdvectionField &advection_field) const;
 
       /**
        * Compute the reactions in case of operator splitting:

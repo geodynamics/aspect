@@ -1139,47 +1139,51 @@ namespace aspect
                            "is largely empirically decided -- it must be large enough to ensure "
                            "the bilinear form is coercive, but not so large as to penalize "
                            "discontinuity at all costs.");
-        prm.declare_entry ("Use limiter for discontinuous temperature solution", "false",
-                           Patterns::Bool (),
-                           "Whether to apply the bound preserving limiter as a correction after computing "
-                           "the discontinuous temperature solution. The limiter will only have an "
-                           "effect if the 'Global temperature maximum' and "
-                           "'Global temperature minimum' parameters are defined in the .prm file. "
-                           "This limiter keeps the discontinuous solution in the range given by "
-                           "'Global temperature maximum' and 'Global temperature minimum'. "
-                           "Because this limiter modifies the solution it no longer "
-                           "satisfies the assembled equation. Therefore, "
-                           "the nonlinear residual for this field is meaningless, and in nonlinear "
-                           "solvers we will ignore the residual for this field to evaluate "
+        prm.declare_entry ("Limiter for discontinuous temperature solution", "none",
+                           Patterns::Selection(DGLimiterType::pattern()),
+                           "The type of limiter to apply to the discontinuous temperature solution. "
+                           "Available options are:\n"
+                           "  * `boundary preserving': a limiter that keeps the discontinuous solution "
+                           "in the range given by `Global temperature maximum' and `Global temperature "
+                           "minimum'.\n"
+                           "  * `WENO': a limiter that eliminates spurious oscillations by reconstructing "
+                           "a polynomial function in places where shocks are detected.\n"
+                           "  * `none`: if chosen, no limiter is applied to the discontinuous solution.\n"
+                           "Note that if this entry is not set to `none', then the limiter will modify "
+                           "the solution, so the nonlinear residual for this field is meaning less, and "
+                           "in nonlinear solvers we will ignore the residual for this field to evaluate "
                            "if the nonlinear solver has converged.");
-        prm.declare_entry ("Use limiter for discontinuous composition solution", "false",
-                           Patterns::List(Patterns::Bool()),
-                           "Whether to apply the bound preserving limiter as a correction after having "
-                           "the discontinuous composition solution. The limiter will only have an "
-                           "effect if the 'Global composition maximum' and "
-                           "'Global composition minimum' parameters are defined in the .prm file. "
-                           "This limiter keeps the discontinuous solution in the range given by "
-                           "Global composition maximum' and 'Global composition minimum'. "
-                           "The number of input values in this parameter separated by ',' has to be "
-                           "one or the number of the compositional fields. When only one value "
-                           "is supplied, this same value is assumed for all compositional fields, otherwise "
-                           "each value represents if the limiter should be applied to the respective "
-                           "compositional field. "
-                           "Because this limiter modifies the solution it no longer "
-                           "satisfies the assembled equation. Therefore, "
-                           "the nonlinear residual for this field is meaningless, and in nonlinear "
-                           "solvers we will ignore the residual for this field to evaluate "
+        prm.declare_entry ("Limiter for discontinuous composition solution", "none",
+                           Patterns::List(Patterns::Selection(DGLimiterType::pattern())),
+                           "The type of limiter to apply to the discontinuous composition solution. The "
+                           "number of the input values separated by ',' has to be one or the same as the "
+                           "number of the compositional fields. When only one value is supplied, this "
+                           "same value is assumed for all compositional fields.\n"
+                           "Available options are:\n"
+                           "  * `boundary preserving': a limiter that keeps the discontinuous solution "
+                           "in the range given by `Global temperature maximum' and `Global temperature "
+                           "minimum'.\n"
+                           "  * `WENO': a limiter that eliminates spurious oscillations by reconstructing "
+                           "a polynomial function in places where shocks are detected.\n"
+                           "  * `none`: if chosen, no limiter is applied to the discontinuous solution.\n"
+                           "Note that if this entry is not set to `none', then the limiter will modify "
+                           "the solution, so the nonlinear residual for this field is meaning less, and "
+                           "in nonlinear solvers we will ignore the residual for this field to evaluate "
                            "if the nonlinear solver has converged.");
         prm.declare_entry ("Global temperature maximum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::Double (),
                            "The maximum global temperature value that will be used in the bound preserving "
-                           "limiter for the discontinuous solutions from temperature advection fields.");
+                           "limiter for the discontinuous solutions from temperature advection fields. "
+                           "The input value is active only when `Limiter for discontinuous temperature "
+                           "solution' is set to `boundary preserving'.");
         prm.declare_entry ("Global temperature minimum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                            Patterns::Double (),
                            "The minimum global temperature value that will be used in the bound preserving "
-                           "limiter for the discontinuous solutions from temperature advection fields.");
+                           "limiter for the discontinuous solutions from temperature advection fields."
+                           "The input value is active only when `Limiter for discontinuous temperature "
+                           "solution' is set to `boundary preserving'.");
         prm.declare_entry ("Global composition maximum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double ()),
@@ -1187,7 +1191,9 @@ namespace aspect
                            "limiter for the discontinuous solutions from composition advection fields. "
                            "The number of the input 'Global composition maximum' values separated by ',' has to be "
                            "one or the same as the number of the compositional fields. When only one value "
-                           "is supplied, this same value is assumed for all compositional fields.");
+                           "is supplied, this same value is assumed for all compositional fields. "
+                           "The input value is active only when `Limiter for discontinuous composition "
+                           "solution' is set to `boundary preserving'.");
         prm.declare_entry ("Global composition minimum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                            Patterns::List(Patterns::Double ()),
@@ -1195,7 +1201,31 @@ namespace aspect
                            "limiter for the discontinuous solutions from composition advection fields. "
                            "The number of the input 'Global composition minimum' values separated by ',' has to be "
                            "one or the same as the number of the compositional fields. When only one value "
-                           "is supplied, this same value is assumed for all compositional fields.");
+                           "is supplied, this same value is assumed for all compositional fields. "
+                           "The input value is active only when `Limiter for discontinuous composition "
+                           "solution' is set to `boundary preserving'.");
+        prm.declare_entry ("Temperature KXRCF indicator threshold", "1.0",
+                           Patterns::Double(0.0),
+                           "The threshold of KXRCF indicator for the temperature field. If the KXRCF indicator "
+                           "of a cell is greater than the threshold, then the cell is marked as 'troubled' "
+                           "and will be smoothed by the WENO limiter. "
+                           "The input value is active only when `Limiter for discontinuous temperature "
+                           "solution' is set to `WENO'.");
+        prm.declare_entry ("Composition KXRCF indicator threshold", "1.0",
+                           Patterns::Double(0.0),
+                           "The threshold of KXRCF indicator for the temperature field. If the KXRCF indicator "
+                           "of a cell is greater than the threshold, then the cell is marked as 'troubled' "
+                           "and will be smoothed by the WENO limiter. The number of the input values "
+                           "separated by ',' has to be one or the same as the number of the compositional "
+                           "fields. When only one value is supplied, this same value is assumed for all "
+                           "compositional fields. "
+                           "The input value is active only when `Limiter for discontinuous composition "
+                           "solution' is set to `WENO'.");
+        prm.declare_entry ("WENO linear weight of neighbor cells", "0.001",
+                           Patterns::Double(0.0, 1.0),
+                           "The liear weight of neighbor cells in WENO scheme. The larger this value is, "
+                           "the more information of neighbor cells will be involved in the polynomial "
+                           "reconstruction.");
       }
       prm.leave_subsection ();
     }
@@ -1787,13 +1817,16 @@ namespace aspect
 
         stabilization_gamma                 = prm.get_double ("gamma");
         discontinuous_penalty               = prm.get_double ("Discontinuous penalty");
-        use_limiter_for_discontinuous_temperature_solution
-          = prm.get_bool("Use limiter for discontinuous temperature solution");
-        use_limiter_for_discontinuous_composition_solution
-          = Utilities::possibly_extend_from_1_to_N(Utilities::string_to_bool
-                                                   (Utilities::split_string_list(prm.get("Use limiter for discontinuous composition solution"))),
-                                                   n_compositional_fields,
-                                                   "Use limiter for discontinuous composition solution");
+
+        limiter_for_discontinuous_temperature_solution = DGLimiterType::parse(prm.get("Limiter for discontinuous temperature solution"));
+        std::vector<std::string> x_limiter_for_discontinuous_composition_solution =
+          Utilities::possibly_extend_from_1_to_N(Utilities::split_string_list(prm.get("Limiter for discontinuous composition solution")),
+                                                 n_compositional_fields,
+                                                 "Limiter for discontinuous composition solution");
+        limiter_for_discontinuous_composition_solution.resize(n_compositional_fields);
+        for (unsigned int c = 0; c < n_compositional_fields; ++c)
+          limiter_for_discontinuous_composition_solution[c] = DGLimiterType::parse(x_limiter_for_discontinuous_composition_solution[c]);
+
         global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
         global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
         global_composition_max_preset       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
@@ -1804,6 +1837,14 @@ namespace aspect
                                                                                       (Utilities::split_string_list(prm.get ("Global composition minimum"))),
                                                                                       n_compositional_fields,
                                                                                       "Global composition minimum");
+
+        temperature_KXRCF_indicator_threshold = prm.get_double ("Temperature KXRCF indicator threshold");
+        composition_KXRCF_indicator_threshold = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
+                                                                                        (Utilities::split_string_list(prm.get("Composition KXRCF indicator threshold"))),
+                                                                                        n_compositional_fields,
+                                                                                        "Composition KXRCF indicator threshold");
+        WENO_linear_weight = prm.get_double("WENO linear weight of neighbor cells");
+
         compositional_fields_with_disabled_boundary_entropy_viscosity =
           Utilities::split_string_list(prm.get("List of compositional fields with disabled boundary entropy viscosity"));
 

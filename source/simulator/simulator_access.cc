@@ -322,6 +322,19 @@ namespace aspect
 
 
   template <int dim>
+  void
+  SimulatorAccess<dim>::compute_KXRCF_indicators(Vector<float> &KXRCF_indicators,
+                                                 const unsigned int field_index) const
+  {
+    const typename Simulator<dim>::AdvectionField advection_field =
+      (field_index == 0 ? Simulator<dim>::AdvectionField::temperature()
+       : Simulator<dim>::AdvectionField::composition(field_index-1));
+    simulator->compute_KXRCF_indicators(KXRCF_indicators, advection_field);
+  }
+
+
+
+  template <int dim>
   const LinearAlgebra::BlockVector &
   SimulatorAccess<dim>::get_current_linearization_point () const
   {
