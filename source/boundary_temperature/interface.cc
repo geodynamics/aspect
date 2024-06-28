@@ -72,29 +72,29 @@ namespace aspect
       // parameters we declare here
       prm.enter_subsection ("Boundary temperature model");
       {
-        model_names
+        this->plugin_names
           = Utilities::split_string_list(prm.get("List of model names"));
 
-        AssertThrow(Utilities::has_unique_entries(model_names),
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Boundary temperature model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         const std::string model_name = prm.get ("Model name");
 
-        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
+        AssertThrow (model_name == "unspecified" || this->plugin_names.size() == 0,
                      ExcMessage ("The parameter 'Model name' is only used for reasons"
                                  "of backwards compatibility and can not be used together with "
                                  "the new functionality 'List of model names'. Please add your "
                                  "boundary temperature model to the list instead."));
 
         if (!(model_name == "unspecified"))
-          model_names.push_back(model_name);
+          this->plugin_names.push_back(model_name);
 
         // create operator list
         std::vector<std::string> model_operator_names =
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                  model_names.size(),
+                                                  this->plugin_names.size(),
                                                   "List of model operators");
         model_operators = Utilities::create_model_operator_list(model_operator_names);
 
@@ -111,7 +111,7 @@ namespace aspect
             // If that is indeed the case, clear the model_operators vector. Otherwise, raise an exception.
             if (fixed_temperature_boundary_indicators.size() == 0)
               {
-                AssertThrow(model_names.size() == 0,
+                AssertThrow(this->plugin_names.size() == 0,
                             ExcMessage ("You have indicated that you wish to apply a boundary temperature "
                                         "model, but the <Fixed temperature boundary indicators> parameter "
                                         "is empty. Please use this parameter to specify the boundaries "
@@ -134,7 +134,7 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (auto &model_name : model_names)
+      for (auto &model_name : this->plugin_names)
         {
           // create boundary temperature objects
           this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
@@ -204,7 +204,7 @@ namespace aspect
     const std::vector<std::string> &
     Manager<dim>::get_active_boundary_temperature_names () const
     {
-      return model_names;
+      return this->plugin_names;
     }
 
 

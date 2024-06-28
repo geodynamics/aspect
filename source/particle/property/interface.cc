@@ -563,7 +563,7 @@ namespace aspect
       bool
       Manager<dim>::plugin_name_exists(const std::string &name) const
       {
-        return (std::find(plugin_names.begin(),plugin_names.end(),name) != plugin_names.end());
+        return (std::find(this->plugin_names.begin(),this->plugin_names.end(),name) != this->plugin_names.end());
       }
 
 
@@ -580,8 +580,8 @@ namespace aspect
         AssertThrow(plugin_name_exists(second),
                     ExcMessage("Could not find a plugin with the name <" + second + ">."));
 
-        return (std::find(plugin_names.begin(),plugin_names.end(),first)
-                < std::find(plugin_names.begin(),plugin_names.end(),second));
+        return (std::find(this->plugin_names.begin(),this->plugin_names.end(),first)
+                < std::find(this->plugin_names.begin(),this->plugin_names.end(),second));
       }
 
 
@@ -590,15 +590,15 @@ namespace aspect
       unsigned int
       Manager<dim>::get_plugin_index_by_name(const std::string &name) const
       {
-        const std::vector<std::string>::const_iterator plugin = std::find(plugin_names.begin(),
-                                                                          plugin_names.end(),
+        const std::vector<std::string>::const_iterator plugin = std::find(this->plugin_names.begin(),
+                                                                          this->plugin_names.end(),
                                                                           name);
 
-        AssertThrow(plugin != plugin_names.end(),
+        AssertThrow(plugin != this->plugin_names.end(),
                     ExcMessage("The particle property manager was asked for a plugin "
                                "with the name <" + name + ">, but no such plugin could "
                                "be found."));
-        return std::distance(plugin_names.begin(),plugin);
+        return std::distance(this->plugin_names.begin(),plugin);
       }
 
 
@@ -684,28 +684,28 @@ namespace aspect
                 ExcMessage ("No postprocessors registered!?"));
 
         // now also see which derived quantities we are to compute
-        plugin_names = Utilities::split_string_list(prm.get("List of particle properties"));
-        AssertThrow(Utilities::has_unique_entries(plugin_names),
+        this->plugin_names = Utilities::split_string_list(prm.get("List of particle properties"));
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Particles/List of particle properties' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         // see if 'all' was selected (or is part of the list). if so
         // simply replace the list with one that contains all names
-        if (std::find (plugin_names.begin(),
-                       plugin_names.end(),
-                       "all") != plugin_names.end())
+        if (std::find (this->plugin_names.begin(),
+                       this->plugin_names.end(),
+                       "all") != this->plugin_names.end())
           {
-            plugin_names.clear();
+            this->plugin_names.clear();
             for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim>>::PluginInfo>::const_iterator
                  p = std::get<dim>(registered_plugins).plugins->begin();
                  p != std::get<dim>(registered_plugins).plugins->end(); ++p)
-              plugin_names.push_back (std::get<0>(*p));
+              this->plugin_names.push_back (std::get<0>(*p));
           }
 
         // then go through the list, create objects and let them parse
         // their own parameters
-        for (auto &plugin_name : plugin_names)
+        for (auto &plugin_name : this->plugin_names)
           {
             this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
                                                .create_plugin (plugin_name,
@@ -722,6 +722,7 @@ namespace aspect
         this->plugin_objects.emplace_back (std::make_unique<IntegratorProperties<dim>>());
         this->plugin_objects.back()->set_particle_world_index(particle_world_index);
         this->plugin_objects.back()->parse_parameters (prm);
+        this->plugin_names.emplace_back("internal: integrator properties");
       }
 
 

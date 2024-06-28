@@ -208,12 +208,6 @@ namespace aspect
                         << "Could not find entry <"
                         << arg1
                         << "> among the names of registered termination criteria objects.");
-      private:
-        /**
-         * A list of names corresponding to the termination criteria in the
-         * termination_objects.
-         */
-        std::list<std::string>                       termination_obj_names;
     };
 
 

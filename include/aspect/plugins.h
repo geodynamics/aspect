@@ -214,6 +214,11 @@ namespace aspect
     {
       public:
         /**
+         * Destructor.
+         */
+        ~ManagerBase () override;
+
+        /**
          * A function that is called at the beginning of each time step,
          * calling the update function of the individual heating models.
          */
@@ -256,7 +261,25 @@ namespace aspect
          * parameter file.
          */
         std::list<std::unique_ptr<InterfaceType>> plugin_objects;
+
+        /**
+         * A list of names used in the input file to identify plugins,
+         * corresponding to the plugin objects stored in the previous variable.
+         */
+        std::vector<std::string> plugin_names;
     };
+
+
+
+    template <typename InterfaceType>
+    ManagerBase<InterfaceType>::~ManagerBase()
+    {
+      // Not all derived manager classes currently set the 'plugin_names'
+      // variable, but for those that do, they better have as many names
+      // as there are plugins.
+      if (plugin_names.size() > 0)
+        Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+    }
 
 
     template <typename InterfaceType>

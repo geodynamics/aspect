@@ -202,12 +202,6 @@ namespace aspect
                         << "> among the names of registered initial temperature objects.");
       private:
         /**
-         * A list of names of initial temperature objects that have been requested
-         * in the parameter file.
-         */
-        std::vector<std::string> model_names;
-
-        /**
          * A list of enums of initial temperature operators that have been
          * requested in the parameter file. Each entry is used to modify the
          * initial temperature field with the values from the associated plugin
