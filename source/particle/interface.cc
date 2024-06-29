@@ -19,7 +19,7 @@
  */
 
 #include <aspect/particle/interface.h>
-
+#include <deal.II/base/numbers.h>
 
 namespace aspect
 {
