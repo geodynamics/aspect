@@ -12,6 +12,7 @@ set Use years in output instead of seconds = false
 set Nonlinear solver tolerance             = 1e-5
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 10 # to localize deformation, more iterations are needed
+set Nonlinear solver failure strategy = continue with next timestep
 
 ############### Parameters describing the model
 # We consider a 2D box of 40x10 km of which the elements are of unit aspect ratio.

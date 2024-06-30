@@ -4,6 +4,7 @@ set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver failure strategy = continue with next timestep
 set Max nonlinear iterations               = 10
 set Output directory                       = visco_plastic_viscous_strain_weakening
 

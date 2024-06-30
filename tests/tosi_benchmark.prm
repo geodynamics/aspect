@@ -6,3 +6,4 @@ include $ASPECT_SOURCE_DIR/benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm
 set Additional shared libraries            = ./libtosi_benchmark.so
 set End time                               = 0.005
 set Max nonlinear iterations               = 15
+set Nonlinear solver failure strategy = continue with next timestep

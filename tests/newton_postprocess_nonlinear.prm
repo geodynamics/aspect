@@ -9,6 +9,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 5
+set Nonlinear solver failure strategy = continue with next timestep
 set CFL number                             = 0.5
 set Maximum time step                      = 5
 set Timing output frequency                = 1

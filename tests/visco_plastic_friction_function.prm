@@ -8,6 +8,7 @@ set End time                               = 3
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
+set Nonlinear solver failure strategy = continue with next timestep
 set Output directory                       = visco_plastic_friction_function
 set Timing output frequency                = 1
 set Maximum time step                      = 1

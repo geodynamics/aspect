@@ -9,6 +9,8 @@ set Output directory                       = periodic
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 3
+set Nonlinear solver failure strategy = continue with next timestep
+set Output directory                       = particle_property_integrated_strain_invariant
 
 subsection Geometry model
   set Model name = box

@@ -110,7 +110,8 @@ Number of degrees of freedom: 6,417 (2,406+402+1,203+1,203+1,203)
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.09111e-05, 6.2345e-05, 0, 0.0441691
       Relative nonlinear residual (total system) after nonlinear iteration 10: 0.0441691
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      RMS, max velocity:                  1.64e-07 m/year, 8.46e-07 m/year
      Temperature min/avg/max:            1600 K, 1833 K, 1993 K

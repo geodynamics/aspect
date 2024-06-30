@@ -4,6 +4,7 @@
 include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
 
 set Nonlinear solver scheme = single Advection, iterated defect correction Stokes
+set Nonlinear solver failure strategy = continue with next timestep
 set End time                               = 0.0022
 
 subsection Solver parameters

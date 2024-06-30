@@ -13,7 +13,8 @@ Number of mesh deformation degrees of freedom: 1,071
    Solving Stokes system... 0+180 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.146052
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      Writing graphical output: output-crustal_model_3D/solution/solution-00000
      RMS, max velocity:        0.0098 m/year, 0.0264 m/year

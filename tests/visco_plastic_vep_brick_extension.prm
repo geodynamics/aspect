@@ -11,6 +11,7 @@ set Dimension                              = 2
 set End time                               = 5e3
 set Nonlinear solver tolerance             = 1e-7
 set Max nonlinear iterations               = 4
+set Nonlinear solver failure strategy = continue with next timestep
 set Output directory                       = visco_plastic_vep_brick_extension
 
 subsection Solver parameters

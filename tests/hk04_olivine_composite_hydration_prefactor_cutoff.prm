@@ -12,6 +12,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/hk04_olivine_composite_hydration_prefactor.prm
 
+set Nonlinear solver failure strategy = continue with next timestep
 
 # Set the bound water everywhere in the model to be 0.
 subsection Initial composition model

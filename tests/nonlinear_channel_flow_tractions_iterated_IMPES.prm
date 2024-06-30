@@ -12,6 +12,7 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme = iterated Advection and Stokes
 set Max nonlinear iterations = 100
+set Nonlinear solver failure strategy = continue with next timestep
 set Nonlinear solver tolerance = 1e-10
 set Additional shared libraries = ../benchmarks/nonlinear_channel_flow/libsimple_nonlinear.so
 

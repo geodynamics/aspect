@@ -7,6 +7,7 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_201
 #  Global parameters
 set Dimension                              = 2
 set Max nonlinear iterations               = 2
+set Nonlinear solver failure strategy = continue with next timestep
 set Output directory                       = visco_plastic_gerya_2019_vp
 
 # Reduce the number of global refinements from 5 to 3

@@ -7,6 +7,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 1
+set Nonlinear solver failure strategy = continue with next timestep
 set CFL number                             = 0.5
 set Output directory                       = dynamic_friction
 set Timing output frequency                = 1

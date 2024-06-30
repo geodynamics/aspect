@@ -304,6 +304,10 @@ namespace aspect
                                    "instead"));
           }
 
+        if (this->get_parameters().nonlinear_solver_failure_strategy
+            == Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size)
+          model_names.insert(model_names.begin(), "repeat on nonlinear solver failure");
+
         prm.leave_subsection();
 
         for (const auto &model_name : model_names)

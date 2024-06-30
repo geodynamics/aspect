@@ -5,6 +5,7 @@ include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_chan
 
 set Nonlinear solver scheme = single Advection, iterated defect correction Stokes
 set Max nonlinear iterations = 10
+set Nonlinear solver failure strategy = continue with next timestep
 
 subsection Material model
   set Material averaging = harmonic average

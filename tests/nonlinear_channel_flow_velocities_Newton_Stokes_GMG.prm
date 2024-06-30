@@ -1,6 +1,7 @@
 include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm
 
 set Nonlinear solver tolerance = 1e-11
+set Nonlinear solver failure strategy = continue with next timestep
 
 subsection Solver parameters
   subsection Newton solver parameters

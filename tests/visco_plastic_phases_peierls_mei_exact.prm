@@ -5,6 +5,7 @@
 
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_peierls_mei_exact.prm
 
+set Nonlinear solver failure strategy = continue with next timestep
 
 subsection Compositional fields
   set Number of fields = 1

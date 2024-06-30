@@ -10,7 +10,7 @@
 # test, we include the latter parameter file and only change relevant parameters.
 include $ASPECT_SOURCE_DIR/tests/reactive_fluid_transport_zero_solubility.prm
 
-set Output directory                       = reactive_fluid_transport_no_reaction
+set Nonlinear solver failure strategy = continue with next timestep
 
 # As there are no reactions between the fluid and solid,
 # there is no need to use operator splitting.

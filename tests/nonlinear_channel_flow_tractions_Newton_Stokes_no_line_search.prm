@@ -1,5 +1,6 @@
 include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_tractions_Newton_Stokes.prm
 
+set Nonlinear solver failure strategy = continue with next timestep
 
 subsection Solver parameters
   subsection Newton solver parameters

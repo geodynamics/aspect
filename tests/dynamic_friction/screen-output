@@ -11,7 +11,8 @@ Number of mesh deformation degrees of freedom: 594
    Solving Stokes system... 0+15 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999994
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      RMS, max velocity: 0.00687 m/year, 0.01 m/year
 
@@ -27,7 +28,8 @@ Number of mesh deformation degrees of freedom: 2,090
    Solving Stokes system... 0+17 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999999
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      RMS, max velocity: 0.00687 m/year, 0.01 m/year
 

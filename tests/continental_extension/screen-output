@@ -18,7 +18,8 @@ Number of mesh deformation degrees of freedom: 462
       Newton system information: Norm of the rhs: 2.88429e+14
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      Temperature min/avg/max: 273 K, 1052 K, 1613 K
 
@@ -37,7 +38,8 @@ Number of mesh deformation degrees of freedom: 462
       Newton system information: Norm of the rhs: 2.35285e+13
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.149257
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
      Temperature min/avg/max: 273 K, 1052 K, 1613 K
 

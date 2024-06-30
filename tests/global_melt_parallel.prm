@@ -10,6 +10,7 @@ set Maximum time step                      = 1e6
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = with_melt
 set Max nonlinear iterations               = 4
+set Nonlinear solver failure strategy = continue with next timestep
 set Nonlinear solver tolerance             = 1e-5
 
 # The number of space dimensions you want to run this program in.

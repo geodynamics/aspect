@@ -14,6 +14,7 @@ set CFL number                             = 1.0
 set Maximum time step                      = 1e6
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 20
+set Nonlinear solver failure strategy = continue with next timestep
 set Nonlinear solver tolerance             = 5e-9
 
 # The number of space dimensions you want to run this program in.

@@ -5,6 +5,7 @@ include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_chan
 
 set Additional shared libraries = $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/libsimple_nonlinear.so
 set Max nonlinear iterations = 10
+set Nonlinear solver failure strategy = continue with next timestep
 
 subsection Material model
   set Material averaging = harmonic average

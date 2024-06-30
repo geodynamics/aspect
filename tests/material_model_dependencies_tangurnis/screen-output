@@ -35,7 +35,8 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0801765
 
-
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
    Postprocessing:
 viscosity depends on
 density depends on

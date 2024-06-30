@@ -10,6 +10,8 @@ set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Output directory                       = reactive_fluid_transport_zero_solubility
 set Max nonlinear iterations               = 1
+set Nonlinear solver failure strategy = continue with next timestep
+set Output directory                       = particle_property_integrated_strain_invariant
 set Nonlinear solver tolerance             = 1e-5
 
 # The number of space dimensions you want to run this program in.
