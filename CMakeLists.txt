@@ -379,6 +379,12 @@ if(ASPECT_USE_FP_EXCEPTIONS)
   endif()
 endif()
 
+# include Fastscape and Xtensor files 
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/fastscape/include/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/xtensor/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtl/include/")
+
 
 
 # ##############################################################################
