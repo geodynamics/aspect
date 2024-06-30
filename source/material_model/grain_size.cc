@@ -320,20 +320,47 @@ namespace aspect
             const double dislocation_strain_rate = second_strain_rate_invariant
                                                    * current_viscosity / current_dislocation_viscosity;
 
+            double stress = 2.0 * second_strain_rate_invariant * std::min(std::max(min_eta,current_viscosity),max_eta);
+
+            // If material is yielding, all strain rate is plastic strain rate (the rock is breaking).
+            bool is_yielding = false;
+            if (enable_drucker_prager_rheology)
+              {
+                const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+                const double depth = this->get_geometry_model().depth(in.position[i]);
+                const double rho_g = density(in.temperature[i], pressures[i], in.composition[i], in.position[i]) * gravity_norm;
+
+                // We do not fill the phase function index, because that will be done internally in the get_phase_index() function
+                MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i], pressures[i], depth, rho_g, numbers::invalid_unsigned_int);
+
+                const Rheology::DruckerPragerParameters drucker_prager_parameters = compute_drucker_prager_inputs(phase_inputs);
+
+                // We use the adiabatic pressure for grain size evolution, so we also use it for plasticity here.
+                const double yield_stress = compute_yield_stress(pressures[i], drucker_prager_parameters);
+                stress = std::min(stress, yield_stress);
+                is_yielding = true;
+              }
+
             double grain_size_reduction_rate = 0.0;
 
             if (grain_size_evolution_formulation == Formulation::paleowattmeter)
               {
+                double strain_rate_for_reduction = boundary_area_change_work_fraction[phase_indices[i]] * dislocation_strain_rate;
+                if (is_yielding)
+                  strain_rate_for_reduction = yielding_work_fraction[phase_indices[i]] * second_strain_rate_invariant;
+
                 // paleowattmeter: Austin and Evans (2007): Paleowattmeters: A scaling relation for dynamically recrystallized grain size. Geology 35, 343-346
-                const double stress = 2.0 * second_strain_rate_invariant * std::min(std::max(min_eta,current_viscosity),max_eta);
-                grain_size_reduction_rate = 2.0 * stress * boundary_area_change_work_fraction[phase_indices[i]] * dislocation_strain_rate * grain_size * grain_size
+                grain_size_reduction_rate = 2.0 * stress * strain_rate_for_reduction * grain_size * grain_size
                                             / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]]);
               }
             else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
               {
+                double strain_rate_for_reduction = partitioning_fraction * second_strain_rate_invariant;
+                if (is_yielding)
+                  strain_rate_for_reduction = yielding_work_fraction[phase_indices[i]] * second_strain_rate_invariant;
+
                 // pinned_grain_damage: Mulyukova and Bercovici (2018) Collapse of passive margins by lithospheric damage and plunging grain size. Earth and Planetary Science Letters, 484, 341-352.
-                const double stress = 2.0 * second_strain_rate_invariant * std::min(std::max(min_eta,current_viscosity),max_eta);
-                grain_size_reduction_rate = 2.0 * stress * partitioning_fraction * second_strain_rate_invariant * grain_size * grain_size
+                grain_size_reduction_rate = 2.0 * stress * strain_rate_for_reduction * grain_size * grain_size
                                             * roughness_to_grain_size
                                             / (geometric_constant[phase_indices[i]] * grain_boundary_energy[phase_indices[i]] * phase_distribution);
               }
@@ -519,6 +546,88 @@ namespace aspect
       Assert(i<dislocation_viscosity_iteration_number,ExcInternalError());
 
       return dis_viscosity;
+    }
+
+
+
+    template <int dim>
+    Rheology::DruckerPragerParameters
+    GrainSize<dim>::
+    compute_drucker_prager_inputs (MaterialUtilities::PhaseFunctionInputs<dim> &phase_inputs) const
+    {
+      // The following handles phases
+      std::vector<unsigned int> n_phases = {n_phase_transitions+1};
+      std::vector<double> phase_function_values(n_phase_transitions, 0.0);
+
+      for (unsigned int k=0; k<n_phase_transitions; ++k)
+        {
+          phase_inputs.phase_index = k;
+          phase_function_values[k] = phase_function.compute_value(phase_inputs);
+        }
+
+      // In the grain size material model, viscosity does not depend on composition,
+      // so we set the compositional index for the Drucker-Prager parameters to 0.
+      return drucker_prager_plasticity.compute_drucker_prager_parameters(0,
+                                                                         phase_function_values,
+                                                                         n_phases);
+    }
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
+    get_pressure_for_yielding (const double pressure,
+                               const double adiabatic_pressure) const
+    {
+      return use_adiabatic_pressure_for_yielding
+             ?
+             adiabatic_pressure
+             :
+             std::max(pressure,0.0);
+    }
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
+    compute_yield_stress (const double pressure_for_yielding,
+                          const Rheology::DruckerPragerParameters &drucker_prager_parameters) const
+    {
+      return drucker_prager_plasticity.compute_yield_stress(drucker_prager_parameters.cohesion,
+                                                            drucker_prager_parameters.angle_internal_friction,
+                                                            pressure_for_yielding,
+                                                            drucker_prager_parameters.max_yield_stress);
+    }
+
+
+
+    template <int dim>
+    double
+    GrainSize<dim>::
+    plastic_viscosity (const double pressure_for_yielding,
+                       const double second_strain_rate_invariant,
+                       const double viscous_viscosity,
+                       const Rheology::DruckerPragerParameters &drucker_prager_parameters) const
+    {
+      // Calculate non-yielding (viscous) stress magnitude.
+      const double non_yielding_stress = 2. * viscous_viscosity * second_strain_rate_invariant;
+      const double yield_stress = compute_yield_stress (pressure_for_yielding, drucker_prager_parameters);
+
+      double effective_viscosity = viscous_viscosity;
+
+      // Apply plastic yielding:
+      // If the non-yielding stress is greater than the yield stress,
+      // rescale the viscosity back to yield surface
+      if (non_yielding_stress >= yield_stress)
+        {
+          effective_viscosity = drucker_prager_plasticity.compute_viscosity(drucker_prager_parameters.cohesion,
+                                                                            drucker_prager_parameters.angle_internal_friction,
+                                                                            pressure_for_yielding,
+                                                                            second_strain_rate_invariant,
+                                                                            drucker_prager_parameters.max_yield_stress,
+                                                                            effective_viscosity);
+        }
+      return effective_viscosity;
     }
 
 
@@ -817,8 +926,6 @@ namespace aspect
 
           if (in.requests_property(MaterialProperties::viscosity))
             {
-              double effective_viscosity;
-              double disl_viscosity = std::numeric_limits<double>::max();
               Assert(std::isfinite(in.strain_rate[i].norm()),
                      ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                 "not filled by the caller."));
@@ -842,62 +949,31 @@ namespace aspect
                                                                 second_strain_rate_invariant,
                                                                 phase_indices[i]);
 
+              double effective_viscosity = diff_viscosity;
+              double disl_viscosity = std::numeric_limits<double>::max();
+
               if (std::abs(second_strain_rate_invariant) > 1e-30)
                 {
                   disl_viscosity = dislocation_viscosity(in.temperature[i], adiabatic_temperature, adiabatic_pressures[i], in.strain_rate[i], phase_indices[i], diff_viscosity);
                   effective_viscosity = disl_viscosity * diff_viscosity / (disl_viscosity + diff_viscosity);
                 }
-              else
-                effective_viscosity = diff_viscosity;
+              const double non_yielding_stress = 2. * effective_viscosity * second_strain_rate_invariant;
 
               if (enable_drucker_prager_rheology)
                 {
-                  // Calculate non-yielding (viscous) stress magnitude.
-                  const double non_yielding_stress = 2. * effective_viscosity * second_strain_rate_invariant;
-
-                  // The following handles phases
-                  std::vector<unsigned int> n_phases = {n_phase_transitions+1};
-                  std::vector<double> phase_function_values(n_phase_transitions, 0.0);
-
-                  for (unsigned int k=0; k<n_phase_transitions; ++k)
-                    {
-                      phase_inputs.phase_index = k;
-                      phase_function_values[k] = phase_function.compute_value(phase_inputs);
-                    }
-
-                  // In the grain size material model, viscosity does not depend on composition,
-                  // so we set the compositional index for the Drucker-Prager parameters to 0.
-                  const Rheology::DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(0,
-                                                                                      phase_function_values,
-                                                                                      n_phases);
-                  const double pressure_for_yielding = use_adiabatic_pressure_for_yielding
-                                                       ?
-                                                       adiabatic_pressures[i]
-                                                       :
-                                                       std::max(in.pressure[i],0.0);
-
-                  const double yield_stress = drucker_prager_plasticity.compute_yield_stress(drucker_prager_parameters.cohesion,
-                                                                                             drucker_prager_parameters.angle_internal_friction,
-                                                                                             pressure_for_yielding,
-                                                                                             drucker_prager_parameters.max_yield_stress);
-
-                  // Apply plastic yielding:
-                  // If the non-yielding stress is greater than the yield stress,
-                  // rescale the viscosity back to yield surface
-                  if (non_yielding_stress >= yield_stress)
-                    {
-                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(drucker_prager_parameters.cohesion,
-                                                                                        drucker_prager_parameters.angle_internal_friction,
-                                                                                        pressure_for_yielding,
-                                                                                        second_strain_rate_invariant,
-                                                                                        drucker_prager_parameters.max_yield_stress,
-                                                                                        effective_viscosity);
-                    }
+                  const Rheology::DruckerPragerParameters drucker_prager_parameters = compute_drucker_prager_inputs(phase_inputs);
+                  const double pressure_for_yielding = get_pressure_for_yielding (in.pressure[i], adiabatic_pressures[i]);
+                  effective_viscosity = plastic_viscosity (pressure_for_yielding,
+                                                           second_strain_rate_invariant,
+                                                           effective_viscosity,
+                                                           drucker_prager_parameters);
 
                   PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
 
                   if (plastic_out != nullptr)
                     {
+                      const double yield_stress = compute_yield_stress(pressure_for_yielding, drucker_prager_parameters);
+
                       plastic_out->cohesions[i] = drucker_prager_parameters.cohesion;
                       plastic_out->friction_angles[i] = drucker_prager_parameters.angle_internal_friction;
                       plastic_out->yield_stresses[i] = yield_stress;
@@ -1111,6 +1187,11 @@ namespace aspect
           prm.declare_entry ("Work fraction for boundary area change", "0.1",
                              Patterns::List (Patterns::Double (0.)),
                              "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
+                             "List must have one more entry than the Phase transition depths. "
+                             "Units: \\si{\\joule\\per\\meter\\squared}.");
+          prm.declare_entry ("Work fraction for boundary area change when yielding", "0.2",
+                             Patterns::List (Patterns::Double (0.)),
+                             "The fraction $\\chi$ of work done by plastic tielding to change the grain boundary area. "
                              "List must have one more entry than the Phase transition depths. "
                              "Units: \\si{\\joule\\per\\meter\\squared}.");
           prm.declare_entry ("Geometric constant", "3.",
@@ -1396,6 +1477,8 @@ namespace aspect
                                                   (Utilities::split_string_list(prm.get ("Average specific grain boundary energy")));
           boundary_area_change_work_fraction    = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Work fraction for boundary area change")));
+          yielding_work_fraction                = Utilities::string_to_double
+                                                  (Utilities::split_string_list(prm.get ("Work fraction for boundary area change when yielding")));
           geometric_constant                    = Utilities::string_to_double
                                                   (Utilities::split_string_list(prm.get ("Geometric constant")));
 
@@ -1567,6 +1650,11 @@ namespace aspect
 
           std::vector<unsigned int> n_phases = {n_phase_transitions+1};
           drucker_prager_plasticity.parse_parameters(prm, std::make_unique<std::vector<unsigned int>> (n_phases));
+
+          if (enable_drucker_prager_rheology)
+            AssertThrow(n_phases[0] == yielding_work_fraction.size(),
+                        ExcMessage("Error: The list of ``Work fraction for boundary area change when yielding'' "
+                                   "does not have the correct length! It needs to have one entry per phase."));
         }
         prm.leave_subsection();
       }
