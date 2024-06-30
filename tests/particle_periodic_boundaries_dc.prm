@@ -26,6 +26,7 @@ end
 
 subsection Particles
   set Interpolation scheme = bilinear least squares
+  set Update ghost particles = true
 
   subsection Generator
     subsection Probability density function
