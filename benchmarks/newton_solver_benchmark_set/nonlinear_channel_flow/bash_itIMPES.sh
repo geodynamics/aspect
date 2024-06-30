@@ -42,11 +42,11 @@ elif [ $materialmodelnameShort == "VP2" ]; then
  materialmodelname="viscoplastic2"
 fi
 
-SOLVER_SHORT="itIMPES" #"NS" #NS"
+SOLVER_SHORT="itAdandSt" #"NS" #NS"
 SOLVER="NS"
 if [ $SOLVER_SHORT == "NS" ]; then
  SOLVER="Newton Stokes"
-elif [ $SOLVER_SHORT == "itIMPES" ]; then
+elif [ $SOLVER_SHORT == "itAdandSt" ]; then
  SOLVER="iterated Advection and Stokes"
 fi
 

@@ -139,7 +139,7 @@ namespace aspect
         //
         // Note that we store exactly the same number of grains of all minerals (e.g. olivine and enstatite
         // grains), although their volume fractions may not be the same. We need a minimum amount
-        // of grains per tracer to perform reliable statistics on it. This minimum is the same for all phases.
+        // of grains per particle to perform reliable statistics on it. This minimum is the same for all phases.
         // and enstatite.
         //
         // Furthermore, for this plugin the following dims are always 3. When using 2d an infinitely thin 3d domain is assumed.

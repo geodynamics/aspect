@@ -5,7 +5,7 @@ set Dimension = 2
 set Output directory                       = output_free_surface_iterated_stokes_gmg
 
 subsection Mesh refinement
-  set Initial global refinement          = 3                      # default: 2
+  set Initial global refinement          = 3
 end
 
 subsection Solver parameters

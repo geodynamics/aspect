@@ -107,7 +107,7 @@ end
 
 subsection Boundary composition model
   set Fixed composition boundary indicators = bottom
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Material model

@@ -51,11 +51,6 @@ subsection Mesh refinement
   set Initial global refinement          = 5
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
   set Zero velocity boundary indicators       = 0, 2, 3

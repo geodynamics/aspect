@@ -1,6 +1,11 @@
 # A script for the stream editor sed to update .cc and .h files from the
 # naming scheme used in ASPECT 1.5.0 to ASPECT 2.0.0.
 
+# This script is now outdated, because it interferes with valid names in the current
+# ASPECT version. It is kept in case it is needed, and you can reactivate the
+# script by moving it into the parent folder. Use with care and check
+# every change that this script suggests.
+
 # Rename fluid pressure boundary conditions
 s/fluid_pressure_boundary_conditions/boundary_fluid_pressure/g
 s/FluidPressureBoundaryConditions/BoundaryFluidPressure/g

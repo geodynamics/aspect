@@ -40,7 +40,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set Allow fixed temperature on outflow boundaries = false
-  set Model name = function
+  set List of model names = function
 
   subsection Function
     set Variable names      = x,y

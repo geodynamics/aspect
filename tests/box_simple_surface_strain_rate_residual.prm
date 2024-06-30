@@ -23,7 +23,7 @@ end
 
 subsection Boundary temperature model
   set List of model names = initial temperature
-  set Fixed temperature boundary indicators   = 0,1,2,3        # default:
+  set Fixed temperature boundary indicators   = 0,1,2,3
 
   subsection Initial temperature
     set Maximal temperature = 101.0
@@ -36,7 +36,7 @@ subsection Boundary composition model
 end
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 100e3
@@ -64,7 +64,7 @@ subsection Boundary velocity model
 end
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
 
   subsection Function
     set Function expression = 100.0

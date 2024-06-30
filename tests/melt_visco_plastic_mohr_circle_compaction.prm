@@ -46,7 +46,6 @@ subsection Prescribed Stokes solution
   end
 end
 
-
 subsection Material model
   set Model name = EXPERIMENTAL melt visco plastic
 

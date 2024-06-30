@@ -28,12 +28,12 @@ materialmodelname="DP"
 phi=30
 declare -a vel=(25 50 125)
 declare -a BV=("1e23" "1e24" "5e24")
-SOLVER_SHORT="NS" #"itIMPES"
-SOLVER="iterated IMPES"
+SOLVER_SHORT="NS" #"itAdandSt"
+SOLVER="iterated Advection and Stokes"
 if [ $SOLVER_SHORT == "NS" ]; then
 SOLVER="Newton Stokes"
-elif [ $SOLVER_SHORT == "itIMPES" ]; then
-SOLVER="iterated IMPES"
+elif [ $SOLVER_SHORT == "itAdandSt" ]; then
+SOLVER="iterated Advection and Stokes"
 fi  
 declare -a OS=("9e-1" "1e-1" "1e-2" "1e-8") #"1e-7" "1e-6" "1e-5" "1e-4" "1e-3" "1e-2" "1e-1" "5e-1" "9e-1") #"9e-1" "5e-1" "1e-1" "1e-2" "1e-4")
 

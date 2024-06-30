@@ -1635,7 +1635,7 @@ namespace aspect
       // reduce grain size.
       if (out.template get_additional_output<DislocationViscosityOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::DislocationViscosityOutputs<dim>> (n_points));
         }
@@ -1643,7 +1643,7 @@ namespace aspect
       // We need the prescribed field outputs to interpolate the grain size onto a compositional field.
       if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
@@ -1652,7 +1652,7 @@ namespace aspect
       if (use_table_properties
           && out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
@@ -1660,7 +1660,7 @@ namespace aspect
       if (this->get_parameters().temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field &&
           out.template get_additional_output<PrescribedTemperatureOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>> (n_points));
         }
@@ -1668,14 +1668,14 @@ namespace aspect
       // We need additional field outputs for the unscaled viscosity
       if (out.template get_additional_output<UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<UnscaledViscosityAdditionalOutputs<dim>> (n_points));
         }
 
       if (out.template get_additional_output<MaterialTypeAdditionalOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialTypeAdditionalOutputs<dim>> (n_points));
         }
