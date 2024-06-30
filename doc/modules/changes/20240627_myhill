@@ -1,0 +1,7 @@
+New: ASPECT now has a DruckerPragerPower rheology. This rheology
+is based on the DruckerPrager rheology, but the strain-rate-independent
+yield stress is replaced with a power-law rheology. The parameters
+"Reference plastic strain rate" and "Plastic stress exponent" control
+how the yield stress varies with strain rate.
+<br>
+(Bob Myhill, 2024/06/27)

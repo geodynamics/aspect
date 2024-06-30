@@ -27,7 +27,7 @@
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/peierls_creep.h>
-#include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/material_model/rheology/drucker_prager_power.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -100,17 +100,11 @@ namespace aspect
                                          const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
-           * Compute the strain rate and first stress derivative
-           * as a function of stress based on the composite viscous creep law.
+           * Compute the natural logarithm of the strain rate from
+           * individual log strain rate components.
            */
           std::pair<double, double>
-          compute_strain_rate_and_derivative (const double creep_stress,
-                                              const double pressure,
-                                              const double temperature,
-                                              const DiffusionCreepParameters diffusion_creep_parameters,
-                                              const DislocationCreepParameters dislocation_creep_parameters,
-                                              const PeierlsCreepParameters peierls_creep_parameters,
-                                              const DruckerPragerParameters drucker_prager_parameters) const;
+          calculate_log_strain_rate_and_deriv(const std::vector<std::pair<double, double>> &log_edot_and_deriv) const;
 
         private:
 
@@ -129,17 +123,23 @@ namespace aspect
           std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
           std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
           std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
-          std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
+          std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager;
 
           DruckerPragerParameters drucker_prager_parameters;
 
           unsigned int number_of_compositions;
           double minimum_viscosity;
           double maximum_viscosity;
+          double limiting_creep_viscosity;
 
           double min_strain_rate;
           double strain_rate_residual_threshold;
           unsigned int stress_max_iteration_number;
+
+          /**
+           * Useful number to aid in adding together exponentials
+           */
+          const double logmin = std::log(std::numeric_limits<double>::min());
       };
     }
   }
