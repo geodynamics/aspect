@@ -342,9 +342,11 @@ namespace aspect
     OperatorCellData<dim,number>::memory_consumption() const
     {
       return viscosity.memory_consumption()
-             + newton_factor_wrt_pressure_table.memory_consumption()
+             + viscosity_derivative_wrt_pressure_table.memory_consumption()
              + strain_rate_table.memory_consumption()
-             + newton_factor_wrt_strain_rate_table.memory_consumption();
+             + viscosity_derivative_wrt_strain_rate_table.memory_consumption()
+             + dilation_derivative_wrt_pressure_table.memory_consumption()
+             + dilation_derivative_wrt_strain_rate_table.memory_consumption();
     }
 
 
@@ -355,9 +357,11 @@ namespace aspect
     {
       enable_newton_derivatives = false;
       viscosity.clear();
-      newton_factor_wrt_pressure_table.clear();
+      viscosity_derivative_wrt_pressure_table.clear();
       strain_rate_table.clear();
-      newton_factor_wrt_strain_rate_table.clear();
+      viscosity_derivative_wrt_strain_rate_table.clear();
+      dilation_derivative_wrt_pressure_table.clear();
+      dilation_derivative_wrt_strain_rate_table.clear();
     }
   }
 
@@ -455,8 +459,18 @@ namespace aspect
             const VectorizedArray<number> val_p_q = p_eval.get_value(q);
 
             // Terms to be tested by phi_p:
-            const VectorizedArray<number> pressure_terms =
+            VectorizedArray<number> pressure_terms =
               -cell_data->pressure_scaling * div_u_q;
+
+            if (cell_data->enable_newton_derivatives &&
+                cell_data->enable_prescribed_dilation)
+              {
+                pressure_terms += ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
+                                    * sym_grad_u_q )
+                                  +
+                                  ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
+                                    * cell_data->pressure_scaling * val_p_q );
+              }
 
             // Terms to be tested by the symmetric gradients of phi_u:
             SymmetricTensor<2,dim,VectorizedArray<number>>
@@ -477,9 +491,9 @@ namespace aspect
                 VectorizedArray<number> deta_dp_times_p(0.);
                 for (const unsigned int r : u_eval.quadrature_point_indices())
                   {
-                    deta_deps_times_sym_grad_u += cell_data->newton_factor_wrt_strain_rate_table(cell,r)
+                    deta_deps_times_sym_grad_u += cell_data->viscosity_derivative_wrt_strain_rate_table(cell,r)
                                                   * sym_grad_u[r];
-                    deta_dp_times_p += cell_data->newton_factor_wrt_pressure_table(cell,r) * val_p[r];
+                    deta_dp_times_p += cell_data->viscosity_derivative_wrt_pressure_table(cell,r) * val_p[r];
                     if (cell_data->symmetrize_newton_system)
                       eps_times_sym_grad_u += cell_data->strain_rate_table(cell,r) * sym_grad_u[r];
                   }
@@ -487,7 +501,7 @@ namespace aspect
                 velocity_terms +=
                   ( cell_data->symmetrize_newton_system ?
                     ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
-                      cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
+                      cell_data->viscosity_derivative_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
                     2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u )
                   +
                   2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
@@ -1375,8 +1389,15 @@ namespace aspect
           const unsigned int n_q_points = quadrature_formula.size();
 
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
-          active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
-          active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          active_cell_data.viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          active_cell_data.viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+
+          if (sim.parameters.enable_prescribed_dilation)
+            {
+              active_cell_data.enable_prescribed_dilation = true;
+              active_cell_data.dilation_derivative_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
+              active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+            }
 
           for (unsigned int cell=0; cell<n_cells; ++cell)
             {
@@ -1435,12 +1456,12 @@ namespace aspect
                                             :
                                             1.0;
 
-                      active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
+                      active_cell_data.viscosity_derivative_wrt_pressure_table(cell,q)[i]
                         = derivatives->viscosity_derivative_wrt_pressure[q] *
                           derivatives->viscosity_derivative_averaging_weights[q] *
                           newton_derivative_scaling_factor;
-                      Assert(std::isfinite(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]),
-                             ExcMessage("active_cell_data.newton_factor_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]) +
+                      Assert(std::isfinite(active_cell_data.viscosity_derivative_wrt_pressure_table(cell,q)[i]),
+                             ExcMessage("active_cell_data.viscosity_derivative_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.viscosity_derivative_wrt_pressure_table(cell,q)[i]) +
                                         ". Relevant variables are derivatives->viscosity_derivative_wrt_pressure[q] = " + std::to_string(derivatives->viscosity_derivative_wrt_pressure[q]) +
                                         ", derivatives->viscosity_derivative_averaging_weights[q] = " + std::to_string(derivatives->viscosity_derivative_averaging_weights[q]) +
                                         ", and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
@@ -1451,16 +1472,39 @@ namespace aspect
                             active_cell_data.strain_rate_table(cell, q)[m][n][i]
                               = effective_strain_rate[m][n];
 
-                            active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
+                            active_cell_data.viscosity_derivative_wrt_strain_rate_table(cell, q)[m][n][i]
                               = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n] *
                                 derivatives->viscosity_derivative_averaging_weights[q] *
                                 newton_derivative_scaling_factor * alpha;
 
                             Assert(std::isfinite(active_cell_data.strain_rate_table(cell, q)[m][n][i]),
                                    ExcMessage("active_cell_data.strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.strain_rate_table(cell, q)[m][n][i])));
-                            Assert(std::isfinite(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]),
-                                   ExcMessage("active_cell_data.newton_factor_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i])));
+                            Assert(std::isfinite(active_cell_data.viscosity_derivative_wrt_strain_rate_table(cell, q)[m][n][i]),
+                                   ExcMessage("active_cell_data.viscosity_derivative_wrt_strain_rate_table has an element which is not finite: " + std::to_string(active_cell_data.viscosity_derivative_wrt_strain_rate_table(cell, q)[m][n][i])));
                           }
+
+                      if (active_cell_data.enable_prescribed_dilation == true)
+                        {
+                          active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]
+                            = derivatives->dilation_derivative_wrt_pressure[q] *
+                              newton_derivative_scaling_factor;
+                          Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
+                                 ExcMessage("active_cell_data.dilation_derivative_wrt_pressure_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
+                                            ". Relevant variables are derivatives->dilation_derivative_wrt_pressure[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
+                                            " and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+
+                          for (unsigned int m=0; m<dim; ++m)
+                            for (unsigned int n=0; n<dim; ++n)
+                              {
+                                active_cell_data.dilation_derivative_wrt_strain_rate_table(cell,q)[m][n][i]
+                                  = derivatives->dilation_derivative_wrt_strain_rate[q][m][n] *
+                                    newton_derivative_scaling_factor;
+                                Assert(std::isfinite(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]),
+                                       ExcMessage("active_cell_data.dilation_derivative_wrt_strain_rate_table is not finite: " + std::to_string(active_cell_data.dilation_derivative_wrt_pressure_table(cell,q)[i]) +
+                                                  ". Relevant variables are derivatives->dilation_derivative_wrt_strain_rate[q] = " + std::to_string(derivatives->dilation_derivative_wrt_pressure[q]) +
+                                                  " and newton_derivative_scaling_factor = " + std::to_string(newton_derivative_scaling_factor)));
+                              }
+                        }
                     }
                 }
             }
@@ -1476,9 +1520,11 @@ namespace aspect
           // delete data used for Newton derivatives if necessary
           // TODO: use Table::clear() once implemented in 10.0.pre
           active_cell_data.enable_newton_derivatives = false;
-          active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(0,0));
-          active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.dilation_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.dilation_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
 
           for (unsigned int level=0; level<n_levels; ++level)
             level_cell_data[level].enable_newton_derivatives = false;

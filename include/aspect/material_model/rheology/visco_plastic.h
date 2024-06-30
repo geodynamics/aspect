@@ -108,6 +108,13 @@ namespace aspect
        * The current cohesion.
        */
       std::vector<double> current_cohesions;
+
+      /**
+       * The plastic dilation terms, defined as the product of the
+       * plastic multiplier and the derivative of plastic potential
+       * with respect to negative pressure.
+       */
+      std::vector<double> plastic_dilation;
     };
 
     namespace Rheology
@@ -149,7 +156,7 @@ namespace aspect
            */
           void compute_viscosity_derivatives(const unsigned int point_index,
                                              const std::vector<double> &volume_fractions,
-                                             const std::vector<double> &composition_viscosities,
+                                             const IsostrainViscosities &isostrain_values,
                                              const MaterialModel::MaterialModelInputs<dim> &in,
                                              MaterialModel::MaterialModelOutputs<dim> &out,
                                              const std::vector<double> &phase_function_values = std::vector<double>(),

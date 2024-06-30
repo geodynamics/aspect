@@ -46,6 +46,11 @@ namespace aspect
         double angle_internal_friction;
 
         /**
+         * Dilation angle (psi) for the current composition and phase
+         */
+        double angle_dilation;
+
+        /**
          * Cohesion for the current composition and phase
          */
         double cohesion;
@@ -138,9 +143,21 @@ namespace aspect
           compute_derivative (const double angle_internal_friction,
                               const double effective_strain_rate) const;
 
+          /**
+           * Compute the plastic dilation term, which is defined as the product of
+           * the plastic multiplier and the derivative of plastic potential with
+           * respect to minus pressure.
+           */
+          double
+          compute_plastic_dilation (const double angle_dilation,
+                                    const double non_yielding_viscosity,
+                                    const double effective_viscosity,
+                                    const double effective_strain_rate) const;
+
         private:
 
           std::vector<double> angles_internal_friction;
+          std::vector<double> angles_dilation;
           std::vector<double> cohesions;
           double max_yield_stress;
 
