@@ -672,6 +672,75 @@ namespace aspect
            */
           unsigned int n_phases_total;
       };
+
+      /**
+       * A class to compute the values of phase functions
+       * based on lookup tables. The class can handle
+       * an arbitrary numbers of phase transitions.
+       */
+      template <int dim>
+      class PhaseFunctionLookup: public ::aspect::SimulatorAccess<dim>
+      {
+        public:
+          /**
+           * Return vector of phase names used from lookup table.
+           */
+          const std::vector<std::vector<std::string>> &
+          get_phase_names () const;
+
+          /**
+           * Return the total number of phases.
+           */
+          unsigned int n_phases () const;
+
+          /**
+           * Return how many phases there are for each composition.
+           */
+          const std::vector<unsigned int> &
+          n_phases_for_each_composition () const;
+
+          /**
+           * Percentage of material that has already undergone the phase
+           * transition to the higher-pressure material (this is done
+           * individually for each transition and summed up in the end)
+           */
+          double compute_value (const PhaseFunctionInputs<dim> &in) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           * Note that this class does not declare its own subsection,
+           * i.e. the parameters will be declared in the subsection that
+           * was active before calling this function.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           * Note that this class does not declare its own subsection,
+           * i.e. the parameters will be parsed from the subsection that
+           * was active before calling this function.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * A vector that stores names of phases used to set phase functions.
+           */
+          std::vector<std::vector<std::string>> transition_lookup_phases;
+
+          /**
+           * A vector that stores how many phases there are for each compositional field.
+           */
+          std::vector<unsigned int> n_phases_per_composition;
+
+          /**
+           * Total number of phases over all compositional fields
+           */
+          unsigned int n_phases_total;
+      };
     }
   }
 }
