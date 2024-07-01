@@ -1,0 +1,20 @@
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 134 (50+9+25+25+25)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.2054e-17, 1.34414e-16, 0, 5.09696e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 5.09696e-16
+
+
+   Postprocessing:
+     Writing graphical output: output-darcy_velocity_viz/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
