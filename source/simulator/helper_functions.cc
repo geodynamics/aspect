@@ -2242,7 +2242,7 @@ namespace aspect
                                "Please check the consistency of your input file."));
 
         const bool use_simplified_adiabatic_heating =
-          heating_model_manager.template get_matching_plugin<HeatingModel::AdiabaticHeating<dim>>()
+          heating_model_manager.template get_matching_active_plugin<HeatingModel::AdiabaticHeating<dim>>()
           .use_simplified_adiabatic_heating();
 
         AssertThrow(use_simplified_adiabatic_heating == true,

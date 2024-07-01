@@ -180,7 +180,7 @@ namespace aspect
 
       // Get a reference to the CPO particle property.
       const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-        manager.template get_matching_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
+        manager.template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
       const unsigned int n_grains = cpo_particle_property.get_number_of_grains();
       const unsigned int n_minerals = cpo_particle_property.get_number_of_minerals();

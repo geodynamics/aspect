@@ -147,7 +147,7 @@ namespace aspect
       {
         // Get a reference to the CPO particle property.
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
+          this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
 
         const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
