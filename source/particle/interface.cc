@@ -26,7 +26,7 @@ namespace aspect
   namespace Particle
   {
     ParticleInterfaceBase::ParticleInterfaceBase()
-      : particle_world_index(numbers::invalid_unsigned_int)
+      : particle_world_index(dealii::numbers::invalid_unsigned_int)
     {}
 
 
