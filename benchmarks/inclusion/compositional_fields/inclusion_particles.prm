@@ -102,7 +102,6 @@ subsection Particles
   set Integration scheme = rk2
   set Interpolation scheme = cell average
   set Maximum particles per cell = 16384
-  set Update ghost particles = true
   set Particle generator name = reference cell
 
   subsection Function

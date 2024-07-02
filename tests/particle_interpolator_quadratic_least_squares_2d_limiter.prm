@@ -15,7 +15,6 @@ subsection Postprocess
 end
 
 subsection Particles
-  set Update ghost particles = true
   set Load balancing strategy = none
   set Minimum particles per cell = 7
 

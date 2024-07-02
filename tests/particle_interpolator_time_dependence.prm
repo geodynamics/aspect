@@ -99,7 +99,6 @@ end
 
 subsection Particles
   set List of particle properties = initial composition
-  set Update ghost particles   = true
 
   subsection Generator
     subsection Probability density function

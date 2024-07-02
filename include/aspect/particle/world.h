@@ -443,15 +443,6 @@ namespace aspect
         unsigned int particle_weight;
 
         /**
-         * Some particle interpolation algorithms require knowledge
-         * about particles in neighboring cells. To allow this,
-         * particles in ghost cells need to be exchanged between the
-         * processes neighboring this cell. This parameter determines
-         * whether this transport is happening.
-         */
-        bool update_ghost_particles;
-
-        /**
          * Get a map between subdomain id and the neighbor index. In other words
          * the returned map answers the question: Given a subdomain id, which
          * neighbor of the current processor's domain (in terms of a contiguous

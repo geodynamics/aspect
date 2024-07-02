@@ -33,7 +33,6 @@ subsection Particles
   set List of particle properties = grain size
   set Load balancing strategy = none
   set Integration scheme = rk2
-  set Update ghost particles = true
 
   subsection Generator
     subsection Probability density function

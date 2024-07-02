@@ -108,7 +108,6 @@ end
 subsection Particles
   set List of particle properties = initial composition
   set Interpolation scheme = nearest neighbor
-  set Update ghost particles = true
   set Maximum particles per cell = 10
   set Minimum particles per cell = 10
   set Particle generator name = uniform box

@@ -108,7 +108,6 @@ subsection Particles
   set List of particle properties = function
   set Integration scheme = rk2
   set Interpolation scheme = cell average
-  set Update ghost particles = true
   set Particle generator name = reference cell
 
   subsection Function

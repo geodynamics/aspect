@@ -76,7 +76,6 @@ subsection Particles
   set Integration scheme = rk2
   set Interpolation scheme = bilinear least squares
   set List of particle properties = particle density
-  set Update ghost particles = true
   set Particle generator name = random uniform
   set Load balancing strategy = add particles
   set Minimum particles per cell = 12

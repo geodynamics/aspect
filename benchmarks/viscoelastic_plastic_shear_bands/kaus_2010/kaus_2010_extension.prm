@@ -227,7 +227,6 @@ subsection Particles
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, viscoplastic strain invariants, elastic stress
   set Interpolation scheme        = cell average
-  set Update ghost particles      = true
   set Particle generator name     = reference cell
 
   subsection Generator
