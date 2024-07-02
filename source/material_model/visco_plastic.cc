@@ -247,7 +247,7 @@ namespace aspect
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
 
                 rheology->compute_viscosity_derivatives(i, volume_fractions,
-                                                        isostrain_viscosities.composition_viscosities,
+                                                        isostrain_viscosities,
                                                         in, out, phase_function_values,
                                                         n_phase_transitions_for_each_chemical_composition);
             }
@@ -297,6 +297,14 @@ namespace aspect
                   elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
                 }
             }
+
+          // Compute the arithmetic average of plastic dilation term if necessary
+          if (PrescribedPlasticDilation<dim> *plastic_dilation =
+                out.template get_additional_output<PrescribedPlasticDilation<dim>>())
+            plastic_dilation->dilation[i]
+              = MaterialUtilities::average_value (volume_fractions,
+                                                  isostrain_viscosities.plastic_dilation,
+                                                  MaterialUtilities::arithmetic);
         }
 
       // If we use the full strain tensor, compute the change in the individual tensor components.
@@ -340,7 +348,7 @@ namespace aspect
         {
           MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
 
-          EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
+          EquationOfState::MulticomponentCompressible<dim>::declare_parameters (prm);
 
           Rheology::ViscoPlastic<dim>::declare_parameters(prm);
 
@@ -402,8 +410,7 @@ namespace aspect
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
-          equation_of_state.parse_parameters (prm,
-                                              std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+          equation_of_state.parse_parameters(prm);
 
           // Make options file for parsing maps to double arrays
           std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();

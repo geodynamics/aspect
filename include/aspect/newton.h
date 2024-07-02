@@ -63,6 +63,16 @@ namespace aspect
          * derivatives when material averaging is applied.
          */
         std::vector<double> viscosity_derivative_averaging_weights;
+
+        /**
+         * The derivatives of the prescribed dilation with respect to strain rate.
+         */
+        std::vector<SymmetricTensor<2,dim>> dilation_derivative_wrt_strain_rate;
+
+        /**
+         * The derivatives of the prescribed dilation term with respect to pressure.
+         */
+        std::vector<double> dilation_derivative_wrt_pressure;
     };
   }
 

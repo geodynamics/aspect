@@ -67,6 +67,8 @@ namespace aspect
         AssertThrow(elastic_out != nullptr,
                     ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
 
+      const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
+
       // First loop over all dofs and find those that are in the Stokes system
       // save the component (pressure and dim velocities) each belongs to.
       for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
@@ -229,6 +231,17 @@ namespace aspect
                          )
                          * JxW;
                     }
+
+              if (enable_prescribed_dilation)
+                {
+                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                      data.local_matrix(i,j) -= pressure_scaling * pressure_scaling
+                                                * scratch.phi_p[i] * scratch.phi_p[j]
+                                                * derivatives->dilation_derivative_wrt_pressure[q]
+                                                * JxW;
+
+                }
             }
         }
 #if DEBUG
@@ -523,6 +536,23 @@ namespace aspect
                                              Utilities::to_string(data.local_matrix(i,j)) +
                                              " = " + Utilities::to_string(eta)));
                         }
+                    }
+
+                  if (enable_prescribed_dilation)
+                    {
+                      std::vector<double> dilation_differentiations(stokes_dofs_per_cell);
+                      for (unsigned int k=0; k<stokes_dofs_per_cell; ++k)
+                        dilation_differentiations[k] =
+                          ( derivatives->dilation_derivative_wrt_strain_rate[q] * scratch.grads_phi_u[k]
+                            + derivatives->dilation_derivative_wrt_pressure[q] * pressure_scaling * scratch.phi_p[k]
+                          ) * derivative_scaling_factor;
+
+                      for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                        for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                          data.local_matrix(i,j) += pressure_scaling
+                                                    * scratch.phi_p[i]
+                                                    * dilation_differentiations[j]
+                                                    * JxW;
                     }
                 }
             }

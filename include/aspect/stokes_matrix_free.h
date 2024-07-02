@@ -126,6 +126,12 @@ namespace aspect
       bool apply_stabilization_free_surface_faces;
 
       /**
+       * If true, derivatives of the prescribed dilation are
+       * part of the operator.
+       */
+      bool enable_prescribed_dilation;
+
+      /**
        * Table which stores viscosity values for each cell.
        *
        * If the second dimension is of size 1, the viscosity is
@@ -144,7 +150,7 @@ namespace aspect
        * variables: viscosity derivative with respect to pressure,
        * the Newton derivative scaling factor, and the averaging weight.
        */
-      Table<2, VectorizedArray<number>> newton_factor_wrt_pressure_table;
+      Table<2, VectorizedArray<number>> viscosity_derivative_wrt_pressure_table;
 
       /**
        * Table which stores the product of the following four
@@ -154,7 +160,20 @@ namespace aspect
        * is PD or SPD, otherwise, it is 1.
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-      newton_factor_wrt_strain_rate_table;
+      viscosity_derivative_wrt_strain_rate_table;
+
+      /**
+       * Table which stores the product of the dilation derivative
+       * with respect to pressure and the Newton derivative scaling factor.
+       */
+      Table<2, VectorizedArray<number>> dilation_derivative_wrt_pressure_table;
+
+      /**
+       * Table which stores the product of the dilation derivative
+       * with respect to strain rate and the Newton derivative scaling factor.
+       */
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+      dilation_derivative_wrt_strain_rate_table;
 
       /**
        * Table which stores the product of the pressure perturbation
