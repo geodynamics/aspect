@@ -111,7 +111,7 @@ namespace aspect
          * This can be done by deriving your postprocessor from
          * SimulatorAccess, and then using the
          * SimulatorAccess::get_postprocess_manager() function, followed
-         * by asking the resulting object via get_matching_plugin()
+         * by asking the resulting object via get_matching_active_plugin()
          * for a specific postprocessor object.
          */
         virtual
@@ -196,8 +196,8 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_plugin() and
-         *   Plugins::ManagerBase::get_matching_plugin() functions of the base
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
          *   class of the current class.
          */
         template <typename PostprocessorType,
@@ -218,8 +218,8 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_plugin() and
-         *   Plugins::ManagerBase::get_matching_plugin() functions of the base
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
          *   class of the current class.
          */
         template <typename PostprocessorType,
@@ -352,7 +352,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_postprocessor () const
     {
-      return this->template has_matching_plugin<PostprocessorType>();
+      return this->template has_matching_active_plugin<PostprocessorType>();
     }
 
 
@@ -363,7 +363,7 @@ namespace aspect
     const PostprocessorType &
     Manager<dim>::get_matching_postprocessor () const
     {
-      return this->template get_matching_plugin<PostprocessorType>();
+      return this->template get_matching_active_plugin<PostprocessorType>();
     }
 
 

@@ -149,8 +149,8 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_plugin() and
-         *   Plugins::ManagerBase::get_matching_plugin() functions of the base
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
          *   class of the current class.
          */
         template <typename InitialCompositionType,
@@ -171,8 +171,8 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_plugin() and
-         *   Plugins::ManagerBase::get_matching_plugin() functions of the base
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
          *   class of the current class.
          */
         template <typename InitialCompositionType,
@@ -220,7 +220,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_initial_composition_model () const
     {
-      return this->template has_matching_plugin<InitialCompositionType>();
+      return this->template has_matching_active_plugin<InitialCompositionType>();
     }
 
 
@@ -230,7 +230,7 @@ namespace aspect
     const InitialCompositionType &
     Manager<dim>::get_matching_initial_composition_model () const
     {
-      return this->template get_matching_plugin<InitialCompositionType>();
+      return this->template get_matching_active_plugin<InitialCompositionType>();
     }
 
 

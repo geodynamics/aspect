@@ -162,8 +162,8 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_plugin() and
-         *   Plugins::ManagerBase::get_matching_plugin() functions of the base
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
          *   class of the current class.
          */
         template <typename MeshRefinementType,
@@ -184,8 +184,8 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_plugin() and
-         *   Plugins::ManagerBase::get_matching_plugin() functions of the base
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
          *   class of the current class.
          */
         template <typename MeshRefinementType,
@@ -273,7 +273,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_mesh_refinement_strategy () const
     {
-      return this->template has_matching_plugin<MeshRefinementType>();
+      return this->template has_matching_active_plugin<MeshRefinementType>();
     }
 
 
@@ -284,7 +284,7 @@ namespace aspect
     const MeshRefinementType &
     Manager<dim>::get_matching_mesh_refinement_strategy () const
     {
-      return this->template get_matching_plugin<MeshRefinementType>();
+      return this->template get_matching_active_plugin<MeshRefinementType>();
     }
 
 
