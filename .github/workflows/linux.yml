@@ -39,7 +39,7 @@ jobs:
         mkdir build-no-unity
         cd build-no-unity
         cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' ..
-        make -j 2
+        make -j 4
         ./aspect --test
 
   linux:
@@ -89,7 +89,7 @@ jobs:
         cd build
         /usr/bin/cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON \
                        -D CMAKE_CXX_FLAGS='-Werror' -D ASPECT_INSTALL_EXAMPLES=ON ..
-        make -j 2
+        make -j 4
         ./aspect --test
     - name: doc
       run: |
@@ -138,7 +138,7 @@ jobs:
         -D ASPECT_COMPARE_TEST_RESULTS='${{ matrix.compare-tests }}' \
         -D CMAKE_UNITY_BUILD_BATCH_SIZE=8 \
         ..
-        ninja -j 2
+        ninja -j 4
         ./aspect --test
     - name: prebuild tests
       run: |
