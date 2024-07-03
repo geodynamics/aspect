@@ -96,7 +96,7 @@ namespace aspect
                                     const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
-           * Compute the viscosity based on the diffusion creep law.
+           * Compute the viscosity based on the diffusion creep law with a fixed grain size.
            * If @p n_phase_transitions_per_composition points to a vector of
            * unsigned integers this is considered the number of phase transitions
            * for each compositional field and viscosity will be first computed on
@@ -110,8 +110,23 @@ namespace aspect
                              const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
+           * Compute the viscosity based on the diffusion creep law with a variable grain size.
+           * If @p n_phase_transitions_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
+          double
+          compute_viscosity (const double pressure,
+                             const double temperature,
+                             const double grain_size,
+                             const unsigned int composition,
+                             const std::vector<double> &phase_function_values = std::vector<double>(),
+                             const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+
+          /**
            * Compute the strain rate and first stress derivative as a function
-           * of stress based on the diffusion creep law.
+           * of stress based on the diffusion creep law with a fixed grain size.
            */
           std::pair<double, double>
           compute_strain_rate_and_derivative (const double stress,
@@ -120,13 +135,37 @@ namespace aspect
                                               const DiffusionCreepParameters creep_parameters) const;
 
           /**
+           * Compute the strain rate and first stress derivative as a function
+           * of stress based on the diffusion creep law with a variable grain size.
+           */
+          std::pair<double, double>
+          compute_strain_rate_and_derivative (const double stress,
+                                              const double pressure,
+                                              const double temperature,
+                                              const double grain_size,
+                                              const DiffusionCreepParameters creep_parameters) const;
+
+          /**
            * Compute the logarithm of strain rate and first derivative with respect to
-           * the logarithm of the stress based on the diffusion creep law.
+           * the logarithm of the stress based on the diffusion creep law
+           * with a fixed grain size.
            */
           std::pair<double, double>
           compute_log_strain_rate_and_derivative (const double log_stress,
                                                   const double pressure,
                                                   const double temperature,
+                                                  const DiffusionCreepParameters creep_parameters) const;
+
+          /**
+           * Compute the logarithm of strain rate and first derivative with respect to
+           * the logarithm of the stress based on the diffusion creep law
+           * with a variable grain size.
+           */
+          std::pair<double, double>
+          compute_log_strain_rate_and_derivative (const double log_stress,
+                                                  const double pressure,
+                                                  const double temperature,
+                                                  const double grain_size,
                                                   const DiffusionCreepParameters creep_parameters) const;
 
         private:
@@ -159,7 +198,7 @@ namespace aspect
           /**
            * Diffusion creep grain size d.
            */
-          double grain_size;
+          double fixed_grain_size;
       };
     }
   }
