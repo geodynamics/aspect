@@ -47,6 +47,11 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
+  prm.set("Include diffusion creep in composite rheology", "true");
+  prm.set("Include dislocation creep in composite rheology", "true");
+  prm.set("Include Peierls creep in composite rheology", "true");
+  prm.set("Include Drucker Prager plasticity in composite rheology", "true");
+  prm.set("Peierls creep flow law", "viscosity approximation");
   prm.set("Maximum yield stress", "5e8");
   composite_creep->parse_parameters(prm, n_phases);
 
@@ -66,7 +71,6 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
   peierls_creep->initialize_simulator (simulator_access.get_simulator());
   peierls_creep->declare_parameters(prm);
-  prm.set("Peierls creep flow law", "viscosity approximation");
   peierls_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager;

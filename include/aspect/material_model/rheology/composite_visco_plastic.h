@@ -104,7 +104,7 @@ namespace aspect
            * individual log strain rate components.
            */
           std::pair<double, double>
-          calculate_log_strain_rate_and_deriv(const std::vector<std::pair<double, double>> &log_edot_and_deriv) const;
+          calculate_log_strain_rate_and_deriv(const std::array<std::pair<double, double>, 5> &logarithmic_strain_rates_and_stress_derivatives) const;
 
         private:
 
@@ -115,6 +115,11 @@ namespace aspect
           bool use_dislocation_creep;
           bool use_peierls_creep;
           bool use_drucker_prager;
+
+          /**
+           * Vector storing which flow mechanisms are active
+           */
+          std::vector<unsigned int> active_flow_mechanisms;
 
           /**
            * Pointers to objects for computing deformation mechanism

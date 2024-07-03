@@ -27,6 +27,7 @@
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/simulator_access.h>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -41,6 +42,7 @@ namespace aspect
       {
         public:
           DruckerPragerPower();
+
           /**
            * Declare the parameters this function takes through input files.
            */
@@ -100,15 +102,52 @@ namespace aspect
           std::pair<double, double>
           compute_log_strain_rate_and_derivative (const double log_stress,
                                                   const double pressure,
-                                                  const DruckerPragerParameters p) const;
+                                                  const DruckerPragerParameters &p) const;
 
         private:
-
+          /**
+           * The Drucker-Prager power-law rheology approximates the
+           * standard Drucker-Prager plastic model. The standard model
+           * involves a simple plastic element that yields at a stress of
+           * (6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) / (sqrt(3.0) * (3.0 + sin_phi))
+           * in 3D or
+           * cohesion * cos_phi + pressure * sin_phi in 2D.
+           * The "Power-Law" modification replaces the yield criterion
+           * with a power law dependence of stress on the strain rate:
+           * stress = yield_stress * (edot/edot_ref)^(1/n).
+           * In the limit that n -> infinity, the model
+           * approaches the classic Drucker-Prager model.
+           *
+           * Phi is an angle of internal friction, that is
+           * input by the user in degrees, but stored as radians.
+           */
           std::vector<double> angles_internal_friction;
+
+          /**
+           * The cohesion is provided and stored in Pa.
+           */
           std::vector<double> cohesions;
+
+          /**
+           * The yield stress is limited to a constant value, stored in Pa.
+           */
           double max_yield_stress;
+
+          /**
+           * The reference strain rate at which the stress is equal to the
+           * "yield stress".
+           */
           double drucker_prager_edot_ref;
+
+          /**
+           * The natural logarithm of the reference strain rate, stored for
+           * convenience.
+           */
           double drucker_prager_log_edot_ref;
+
+          /**
+           * The stress exponent n of the pseudo-plastic element.
+           */
           double drucker_prager_stress_exponent;
 
       };

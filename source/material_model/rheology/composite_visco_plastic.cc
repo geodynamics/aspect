@@ -173,29 +173,32 @@ namespace aspect
         double log_creep_stress = std::log(2. * eta_creep_guess * edot_ii);
 
         // 2) Calculate the total strain rate given by this creep stress.
-        // This is not the same as the real strain rate because now *all* the mechanisms can accommodate some strain.
-        // Some strain is also partitioned into the maximum viscosity damper,
-        // which has an effective viscosity of
-        std::vector<std::pair<double, double>> log_edot_and_deriv;
+        // This will not be equal to the real total strain rate because
+        // the creep stress has been calculated assuming that only one mechanism can
+        // accommodate strain, whereas now we allow all the mechanisms to
+        // accommodate strain.
+        // Some strain is also partitioned into a "hard" viscosity damper,
+        // which is designed to limit the effective viscosity between minimum and
+        // maximum bounds and has an effective viscosity of eta_max - eta_min.
+        std::array<std::pair<double, double>, 5> log_edot_and_deriv;
 
         if (use_diffusion_creep)
-          log_edot_and_deriv.push_back(diffusion_creep->compute_log_strain_rate_and_derivative (log_creep_stress, pressure, temperature, diffusion_creep_parameters));
+          log_edot_and_deriv[0] = diffusion_creep->compute_log_strain_rate_and_derivative(log_creep_stress, pressure, temperature, diffusion_creep_parameters);
 
         if (use_dislocation_creep)
-          log_edot_and_deriv.push_back(dislocation_creep->compute_log_strain_rate_and_derivative (log_creep_stress, pressure, temperature, dislocation_creep_parameters));
+          log_edot_and_deriv[1] = dislocation_creep->compute_log_strain_rate_and_derivative (log_creep_stress, pressure, temperature, dislocation_creep_parameters);
 
         if (use_peierls_creep)
-          log_edot_and_deriv.push_back(peierls_creep->compute_approximate_log_strain_rate_and_derivative(log_creep_stress, pressure, temperature, peierls_creep_parameters));
+          log_edot_and_deriv[2] = peierls_creep->compute_approximate_log_strain_rate_and_derivative(log_creep_stress, pressure, temperature, peierls_creep_parameters);
 
         if (use_drucker_prager)
-          log_edot_and_deriv.push_back(drucker_prager->compute_log_strain_rate_and_derivative (log_creep_stress, pressure, drucker_prager_parameters));
+          log_edot_and_deriv[3] = drucker_prager->compute_log_strain_rate_and_derivative (log_creep_stress, pressure, drucker_prager_parameters);
 
-        log_edot_and_deriv.push_back(std::make_pair(log_creep_stress - std::log(2. * limiting_creep_viscosity), 1.));
+        log_edot_and_deriv[4] = std::make_pair(log_creep_stress - std::log(2. * limiting_creep_viscosity), 1.);
 
         // 3) Calculate the total log strain rate
         std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_log_strain_rate_and_deriv(log_edot_and_deriv);
         double strain_rate_residual = log_edot_ii_and_deriv_iterate.first - log_edot_ii;
-
 
         // In this rheology model, the total strain rate is partitioned between
         // different flow laws. We do not know how the strain is partitioned
@@ -208,17 +211,20 @@ namespace aspect
         while (std::abs(strain_rate_residual) > strain_rate_residual_threshold
                && stress_iteration < stress_max_iteration_number)
           {
-
+            // Apply the Newton update for the log creep stress using the
+            // strain-rate residual and strain-rate stress derivative
             double delta_log_creep_stress = strain_rate_residual/log_edot_ii_and_deriv_iterate.second;
             log_creep_stress += delta_log_creep_stress;
 
-            for (auto &p : log_edot_and_deriv)
-              p.first = p.first + p.second * delta_log_creep_stress;
+            // Update the strain rates of all mechanisms with the new stress
+            for (auto &i : active_flow_mechanisms)
+              log_edot_and_deriv[i].first += log_edot_and_deriv[i].second * delta_log_creep_stress;
 
+            // Compute the new log strain rate residual and log stress derivative
             log_edot_ii_and_deriv_iterate = calculate_log_strain_rate_and_deriv(log_edot_and_deriv);
             strain_rate_residual = log_edot_ii - log_edot_ii_and_deriv_iterate.first;
 
-            stress_iteration += 1;
+            ++stress_iteration;
 
             // If anything that would be used in the next iteration is not finite, the
             // Newton iteration would trigger an exception and we want to abort the
@@ -250,32 +256,8 @@ namespace aspect
 
         // The components of partial_strain_rates must be provided in the order
         // dictated by make_strain_rate_additional_outputs_names
-        int idx = 0;
-        if (use_diffusion_creep)
-          {
-            partial_strain_rates[0] = std::exp(log_edot_and_deriv[idx].first);
-            idx += 1;
-          }
-
-        if (use_dislocation_creep)
-          {
-            partial_strain_rates[1] = std::exp(log_edot_and_deriv[idx].first);
-            idx += 1;
-          }
-
-        if (use_peierls_creep)
-          {
-            partial_strain_rates[2] = std::exp(log_edot_and_deriv[idx].first);
-            idx += 1;
-          }
-
-        if (use_drucker_prager)
-          {
-            partial_strain_rates[3] = std::exp(log_edot_and_deriv[idx].first);
-            idx += 1;
-          }
-
-        partial_strain_rates[4] = total_stress/(2.*maximum_viscosity);
+        for (auto &i : active_flow_mechanisms)
+          partial_strain_rates[i] = std::exp(log_edot_and_deriv[i].first);
 
         // Now we return the viscosity using the total stress
         return total_stress/(2.*edot_ii);
@@ -290,29 +272,40 @@ namespace aspect
       }
 
 
+
       template <int dim>
       std::pair<double, double>
-      CompositeViscoPlastic<dim>::calculate_log_strain_rate_and_deriv(const std::vector<std::pair<double, double>> &log_edot_and_deriv) const
+      CompositeViscoPlastic<dim>::calculate_log_strain_rate_and_deriv(const std::array<std::pair<double, double>, 5> &logarithmic_strain_rates_and_stress_derivatives) const
       {
-        // dlneps_dlnsigma = sum_i(stress_exponent_i * edot_i) / sum_i(edot_i)
-        // delta_lneps = log(sum_i(edot_i)) - log(edot)
-        double edot = 0.0;
-        double sumedotn = 0.0;
+        // The total strain rate
+        double strain_rate_sum = 0.0;
 
-        for (const auto &p : log_edot_and_deriv)
+        // The sum of the stress derivatives multiplied by the mechanism strain rates
+        double weighted_stress_derivative_sum = 0.0;
+
+        // The first derivative of log(strain rate) with respect to log(stress)
+        // is computed as sum_i(stress_exponent_i * edot_i) / sum_i(edot_i)
+        // i.e., the stress exponents weighted by strain rate fraction
+        // summed over the individual flow mechanisms (i).
+
+        // Loop over all flow laws and add their contributions
+        // to the strain rate and stress derivative
+        for (const auto &log_strain_rate_and_stress_derivative : logarithmic_strain_rates_and_stress_derivatives)
           {
-            double log_edot = p.first;
+            double mechanism_log_strain_rate = log_strain_rate_and_stress_derivative.first;
 
             // Check if the exponent is within bounds to prevent underflow
-            if (log_edot >= logmin)
+            if (mechanism_log_strain_rate >= logmin)
               {
-                double edot_i = std::exp(log_edot);
-                edot += edot_i;
-                sumedotn += p.second * edot_i;
+                const double mechanism_strain_rate = std::exp(mechanism_log_strain_rate);
+                const double log_stress_derivative = log_strain_rate_and_stress_derivative.second;
+                strain_rate_sum += mechanism_strain_rate;
+                weighted_stress_derivative_sum += log_stress_derivative * mechanism_strain_rate;
               }
           }
-        return std::make_pair(std::log(edot), sumedotn/edot);
+        return std::make_pair(std::log(strain_rate_sum), weighted_stress_derivative_sum/strain_rate_sum);
       }
+
 
 
       template <int dim>
@@ -401,12 +394,15 @@ namespace aspect
         // Rheological parameters
 
         // Diffusion creep parameters
-        use_diffusion_creep = prm.get_bool ("Include diffusion creep in composite rheology");
+
+        use_diffusion_creep = prm.get_bool("Include diffusion creep in composite rheology");
         if (use_diffusion_creep)
           {
             diffusion_creep = std::make_unique<Rheology::DiffusionCreep<dim>>();
             diffusion_creep->initialize_simulator (this->get_simulator());
             diffusion_creep->parse_parameters(prm, expected_n_phases_per_composition);
+
+            active_flow_mechanisms.push_back(0);
           }
 
         // Dislocation creep parameters
@@ -416,6 +412,8 @@ namespace aspect
             dislocation_creep = std::make_unique<Rheology::DislocationCreep<dim>>();
             dislocation_creep->initialize_simulator (this->get_simulator());
             dislocation_creep->parse_parameters(prm, expected_n_phases_per_composition);
+
+            active_flow_mechanisms.push_back(1);
           }
 
         // Peierls creep parameters
@@ -425,6 +423,7 @@ namespace aspect
             peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
             peierls_creep->initialize_simulator (this->get_simulator());
             peierls_creep->parse_parameters(prm, expected_n_phases_per_composition);
+            active_flow_mechanisms.push_back(2);
 
             AssertThrow((prm.get ("Peierls creep flow law") == "viscosity approximation"),
                         ExcMessage("The Peierls creep flow law parameter needs to be set to viscosity approximation."));
@@ -438,11 +437,13 @@ namespace aspect
             drucker_prager = std::make_unique<Rheology::DruckerPragerPower<dim>>();
             drucker_prager->initialize_simulator (this->get_simulator());
             drucker_prager->parse_parameters(prm, expected_n_phases_per_composition);
+            active_flow_mechanisms.push_back(3);
           }
 
-        AssertThrow(use_diffusion_creep == true || use_dislocation_creep == true || use_peierls_creep == true || use_drucker_prager == true,
-                    ExcMessage("You need to include at least one deformation mechanism."));
+        active_flow_mechanisms.push_back(4);
 
+        AssertThrow(active_flow_mechanisms.size() != 1,
+                    ExcMessage("You need to include at least one deformation mechanism."));
       }
     }
   }

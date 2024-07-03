@@ -348,8 +348,8 @@ namespace aspect
         * s = b*p*q*c*d/(1. - c)
         * log_arrhenius = -b*d
         *
-        * edot_ii = log_A + (s + n) * std::log(stress) - s * std::log(gamma*peierls_stress) + log_arrhenius
-        * deriv = (s + n)
+        * log_strain_rate = log_A + (s + n) * std::log(stress) - s * std::log(gamma*peierls_stress) + log_arrhenius
+        * total_stress_exponent = (s + n)
         */
         const PeierlsCreepParameters p = creep_parameters;
 
@@ -359,10 +359,10 @@ namespace aspect
         const double s = b*p.glide_parameter_p*p.glide_parameter_q*c*d/(1. - c);
         const double log_arrhenius = -b*d;
 
-        const double deriv = s + p.stress_exponent;
-        const double edot_ii = std::log(p.prefactor) + deriv * log_stress - s * std::log(p.fitting_parameter*p.peierls_stress) + log_arrhenius;
+        const double total_stress_exponent = s + p.stress_exponent;
+        const double log_strain_rate = std::log(p.prefactor) + total_stress_exponent * log_stress - s * std::log(p.fitting_parameter*p.peierls_stress) + log_arrhenius;
 
-        return std::make_pair(edot_ii, deriv);
+        return std::make_pair(log_strain_rate, total_stress_exponent);
       }
 
 
