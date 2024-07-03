@@ -359,7 +359,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           const unsigned int water_idx = this->introspection().compositional_index_for_name("water_content");
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
@@ -399,7 +399,7 @@ namespace aspect
       if (this->get_parameters().use_operator_splitting
           && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }

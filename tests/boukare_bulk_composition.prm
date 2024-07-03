@@ -13,7 +13,7 @@ set CFL number                             = 1.0
 set Use years in output instead of seconds = true
 set End time                               = 6e5
 set Output directory                       = output_bulk_3
-set Nonlinear solver scheme                = iterated IMPES
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
 set Nonlinear solver tolerance             = 1e-4
 set Pressure normalization                 = surface
@@ -114,7 +114,7 @@ end
 subsection Boundary composition model
   set Allow fixed composition on outflow boundaries = false
   set Fixed composition boundary indicators   = top
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Heating model

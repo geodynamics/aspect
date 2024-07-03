@@ -100,7 +100,7 @@ end
 subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 2
-  set Initial global refinement          = 5                       # default: 2
+  set Initial global refinement          = 5
   set Minimum refinement level                            = 5
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.03

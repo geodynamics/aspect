@@ -25,18 +25,18 @@ done
 # remove the backup file. We can not use this file
 # instead of the .bak file, because it is overwritten by every script,
 # and so it is only a backup of the last execution.
-for script in `ls ${SCRIPT_FOLDER}/*.sed`; do
+for script in `find ${SCRIPT_FOLDER} -maxdepth 1 -name *.sed`; do
   sed -i.tmp -f $script "$@"
 done
 
-for script in `ls ${SCRIPT_FOLDER}/*.pl`; do
+for script in `find ${SCRIPT_FOLDER} -maxdepth 1 -name *.pl`; do
   for file in $@ ; do
     cat "$file" | perl $script > "$file.tmp"
     mv "$file.tmp" "$file"
   done
 done
 
-for script in `ls ${SCRIPT_FOLDER}/*.py`; do
+for script in `find ${SCRIPT_FOLDER} -maxdepth 1 -name *.py`; do
   for file in $@ ; do
     echo $file
     python3 $script $file "$file.tmp"
