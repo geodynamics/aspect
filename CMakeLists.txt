@@ -65,6 +65,9 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
   )
 endif()
 
+# Then convert the awkward tri-state CMAKE_BUILD_TYPE into two bi-state
+# variables ASPECT_BUILD_DEBUG and ASPECT_BUILD_RELEASE that are either
+# ON or OFF.
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Release" OR
    "${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR
    "${CMAKE_BUILD_TYPE}" STREQUAL "DebugRelease" )
@@ -350,8 +353,33 @@ if(ASPECT_WITH_WORLD_BUILDER)
 endif()
 message(STATUS "")
 
-# Other stuff about external tools:
-set(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored output when compiling with gcc and clang.")
+
+#
+# Other stuff about external tools and how we interact with the system:
+#
+
+# Depending on whether we link statically or allow for shared libs,
+# we can or can not load plugins via external shared libs. Pass this
+# down during compilation so we can disable it in the code.
+set(ASPECT_USE_SHARED_LIBS ON CACHE BOOL "If ON, we support loading shared plugin files.")
+if(DEAL_II_STATIC_EXECUTABLE STREQUAL "ON")
+  message(STATUS "Creating a statically linked executable")
+  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+endif()
+
+
+# Generate compile_commands.json for tooling (VS Code, etc.)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(FORCE_COLORED_OUTPUT ON
+    CACHE BOOL "Forces colored output when compiling with gcc and clang.")
+
+# Query the current git commit so we can put it into the start-up
+# message of ASPECT.
+include(${CMAKE_SOURCE_DIR}/cmake/macro_aspect_query_git_information.cmake)
+ASPECT_QUERY_GIT_INFORMATION("ASPECT")
+configure_file(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in
+               ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
+
 
 # Check if we can raise floating point exceptions.
 #
@@ -379,6 +407,26 @@ if(ASPECT_USE_FP_EXCEPTIONS)
   endif()
 endif()
 
+# Check if we want to precompile header files. This speeds up compile time,
+# but can fail on some machines with old CMake. Starting with CMake 3.16
+# there is native support inside CMake and we can precompile headers.
+#
+# While there, also set up the variable to use "unity" builds.
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+  set(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
+  set(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
+else()
+  set(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
+  set(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
+endif()
+
+if(ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  # Intel 19.1 produces internal compiler errors inside bundled boost with
+  # precompiled headers, so we deactivate it:
+  set(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
+endif()
+
+
 
 
 # ##############################################################################
@@ -388,6 +436,20 @@ endif()
 message(STATUS "")
 message(STATUS "===== Configuring ASPECT build targets =============")
 
+
+# ##############################################################################
+# Generate config.h
+
+# First, define macro with the source directory that will be exported in
+# config.h. This can be used to hard-code the location of data files, such as
+# in $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/*
+set(ASPECT_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+
+# And finally generate the file
+configure_file(
+  ${CMAKE_SOURCE_DIR}/include/aspect/config.h.in
+  ${CMAKE_BINARY_DIR}/include/aspect/config.h
+  )
 
 
 # ##############################################################################
@@ -420,11 +482,6 @@ endforeach()
 include_directories(BEFORE ${CMAKE_BINARY_DIR}/include include)
 include_directories(AFTER  contrib/catch)
 
-# Generate compile_commands.json for tooling (VS Code, etc.)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-
-
 # Set the name of the main targets in the form of
 # TARGET_EXE/LIB_DEBUG/RELEASE. Set TARGET_EXE as the debug build,
 # unless we have only release mode enabled.
@@ -444,10 +501,6 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   endif()
 endif()
 
-
-include(${CMAKE_SOURCE_DIR}/cmake/macro_aspect_query_git_information.cmake)
-ASPECT_QUERY_GIT_INFORMATION("ASPECT")
-configure_file(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
 
 message(STATUS "Writing externally readable configuration information")
 include(CMakePackageConfigHelpers)
@@ -667,15 +720,6 @@ add_custom_target(info
   )
 
 
-# Depending on whether we link statically or allow for shared libs,
-# we can or can not load plugins via external shared libs. Pass this
-# down during compilation so we can disable it in the code
-set(ASPECT_USE_SHARED_LIBS ON CACHE BOOL "If ON, we support loading shared plugin files.")
-if(DEAL_II_STATIC_EXECUTABLE STREQUAL "ON")
-  message(STATUS "Creating a statically linked executable")
-  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-endif()
-
 INCLUDE (CheckCXXSourceCompiles)
 
 set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
@@ -856,39 +900,6 @@ endif()
 
 
 
-#
-# generate config.h
-#
-
-# Define macro with the source directory that will be exported in
-# config.h. This can be used to hard-code the location of data files, such as
-# in $ASPECT_SOURCE_DIR/data/velocity-boundary-conditions/gplates/*
-set(ASPECT_SOURCE_DIR ${CMAKE_SOURCE_DIR})
-
-# And finally generate the file
-configure_file(
-  ${CMAKE_SOURCE_DIR}/include/aspect/config.h.in
-  ${CMAKE_BINARY_DIR}/include/aspect/config.h
-  )
-
-
-# Check if we want to precompile header files. This speeds up compile time,
-# but can fail on some machines with old CMake. Starting with CMake 3.16
-# there is native support inside CMake and we can precompile headers.
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-  set(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
-  set(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
-else()
-  set(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
-  set(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
-endif()
-
-if(ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-  # Intel 19.1 produces internal compiler errors inside bundled boost with
-  # precompiled headers, so we deactivate it:
-  set(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
-endif()
-
 if(ASPECT_PRECOMPILE_HEADERS)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     message(STATUS "Precompiling common header files.")
@@ -906,9 +917,6 @@ if(ASPECT_PRECOMPILE_HEADERS)
   else()
     message(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.16 and newer versions.")
   endif()
-
-else()
-  message(STATUS "Disabling precompiling headers.")
 endif()
 
 if(ASPECT_UNITY_BUILD)
@@ -926,8 +934,6 @@ else()
       set_property(TARGET ${_T} PROPERTY UNITY_BUILD FALSE)
     endforeach()
   endif()
-
-  message(STATUS "Disabling unity build.")
 endif()
 
 
