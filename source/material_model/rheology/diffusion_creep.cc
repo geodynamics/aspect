@@ -92,6 +92,20 @@ namespace aspect
                                               const std::vector<double> &phase_function_values,
                                               const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
+        return compute_viscosity(pressure, temperature, fixed_grain_size, composition, phase_function_values, n_phase_transitions_per_composition);
+      }
+
+
+
+      template <int dim>
+      double
+      DiffusionCreep<dim>::compute_viscosity (const double pressure,
+                                              const double temperature,
+                                              const double grain_size,
+                                              const unsigned int composition,
+                                              const std::vector<double> &phase_function_values,
+                                              const std::vector<unsigned int> &n_phase_transitions_per_composition) const
+      {
         const DiffusionCreepParameters p = compute_creep_parameters(composition,
                                                                     phase_function_values,
                                                                     n_phase_transitions_per_composition);
@@ -124,12 +138,26 @@ namespace aspect
       }
 
 
+
       template <int dim>
       std::pair<double, double>
       DiffusionCreep<dim>::compute_strain_rate_and_derivative (const double stress,
                                                                const double pressure,
                                                                const double temperature,
                                                                const DiffusionCreepParameters creep_parameters) const
+      {
+        return compute_strain_rate_and_derivative(stress, pressure, temperature, fixed_grain_size, creep_parameters);
+      }
+
+
+
+      template <int dim>
+      std::pair<double, double>
+      DiffusionCreep<dim>::compute_strain_rate_and_derivative(const double stress,
+                                                              const double pressure,
+                                                              const double temperature,
+                                                              const double grain_size,
+                                                              const DiffusionCreepParameters creep_parameters) const
       {
         // Power law creep equation
         //   edot_ii_partial = A * stress^n * d^-m * exp(-(E + P*V)/(RT))
@@ -140,8 +168,8 @@ namespace aspect
         // For diffusion creep, n = 1 (strain rate is linearly dependent on stress).
         const double dstrain_rate_dstress_diffusion = creep_parameters.prefactor *
                                                       std::pow(grain_size, -creep_parameters.grain_size_exponent) *
-                                                      std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
-                                                               (constants::gas_constant*temperature));
+                                                      std::exp(-(creep_parameters.activation_energy + pressure * creep_parameters.activation_volume) /
+                                                               (constants::gas_constant * temperature));
 
         const double strain_rate_diffusion = stress * dstrain_rate_dstress_diffusion;
 
@@ -149,11 +177,25 @@ namespace aspect
       }
 
 
+
       template <int dim>
       std::pair<double, double>
       DiffusionCreep<dim>::compute_log_strain_rate_and_derivative (const double log_stress,
                                                                    const double pressure,
                                                                    const double temperature,
+                                                                   const DiffusionCreepParameters creep_parameters) const
+      {
+        return compute_log_strain_rate_and_derivative (log_stress, pressure, temperature, fixed_grain_size, creep_parameters);
+      }
+
+
+
+      template <int dim>
+      std::pair<double, double>
+      DiffusionCreep<dim>::compute_log_strain_rate_and_derivative (const double log_stress,
+                                                                   const double pressure,
+                                                                   const double temperature,
+                                                                   const double grain_size,
                                                                    const DiffusionCreepParameters creep_parameters) const
       {
         // Power law creep equation
@@ -173,7 +215,6 @@ namespace aspect
 
         return std::make_pair(log_strain_rate_diffusion, dlog_strain_rate_dlog_stress_diffusion);
       }
-
 
 
 
@@ -270,7 +311,7 @@ namespace aspect
         activation_volumes_diffusion = Utilities::MapParsing::parse_map_to_double_array(prm.get("Activation volumes for diffusion creep"),
                                                                                         options);
 
-        grain_size = prm.get_double("Grain size");
+        fixed_grain_size = prm.get_double("Grain size");
 
         // Check that there are no entries set to zero,
         // for example because the entry is for a field
