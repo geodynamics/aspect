@@ -8,7 +8,7 @@ on:
   # pull_request: disable testing of PRs because it is too slow
 
 concurrency:
-  group: ${{ github.actor }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -24,17 +24,10 @@ jobs:
     # run clang-tidy
     name: tidy
     runs-on: [ubuntu-latest]
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - image: "geodynamics/aspect-tester:noble-dealii-master-clang"
-            result-file: "clang-tidy-results.txt"
-            container-options: '--user 0 --name container'
 
     container:
-      image: ${{ matrix.image }}
-      options: ${{ matrix.container-options }}
+      image: "geodynamics/aspect-tester:noble-dealii-master-clang"
+      options: '--user 0 --name container'
 
     steps:
     - uses: actions/checkout@v4
@@ -43,7 +36,7 @@ jobs:
         mkdir build
         cd build
         ../contrib/utilities/run_clang_tidy.sh $PWD/..
-        mv output.txt ${{ matrix.result-file }}
+        mv output.txt clang-tidy-results.txt
     - name: compile
       run: |
         cd build
@@ -56,5 +49,5 @@ jobs:
     - name: archive test results
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.result-file }}
-        path: build/${{ matrix.result-file }}
+        name: clang-tidy-results.txt
+        path: build/clang-tidy-results.txt
