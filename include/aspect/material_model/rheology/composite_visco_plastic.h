@@ -76,6 +76,7 @@ namespace aspect
           double
           compute_viscosity (const double pressure,
                              const double temperature,
+                             const double grain_size,
                              const std::vector<double> &volume_fractions,
                              const SymmetricTensor<2,dim> &strain_rate,
                              std::vector<double> &partial_strain_rates,
@@ -93,6 +94,7 @@ namespace aspect
           double
           compute_composition_viscosity (const double pressure,
                                          const double temperature,
+                                         const double grain_size,
                                          const unsigned int composition,
                                          const SymmetricTensor<2,dim> &strain_rate,
                                          std::vector<double> &partial_strain_rates,
