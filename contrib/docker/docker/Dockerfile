@@ -44,7 +44,7 @@ RUN git clone https://github.com/geodynamics/aspect.git $Aspect_DIR && \
     cd ${Aspect_DIR}/build && \
     cmake -DCMAKE_BUILD_TYPE=DebugRelease -DCMAKE_INSTALL_PREFIX=$Aspect_DIR \
     -DASPECT_INSTALL_EXAMPLES=ON .. && \
-    make -j2 && make install && make clean && \
+    make -j 4 && make install && make clean && \
     ln -s $Aspect_DIR/bin/aspect $Aspect_DIR/aspect && \
     ln -s $Aspect_DIR/bin/aspect-release $Aspect_DIR/aspect-release
 
