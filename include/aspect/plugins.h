@@ -247,6 +247,9 @@ namespace aspect
          * to it. If no postprocessor is active that matches the given type,
          * throw an exception.
          *
+         * The returned object is necessarily an element in the list returned by
+         * `get_active_plugins()`, but cast to a derived type.
+         *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
          */
@@ -254,6 +257,23 @@ namespace aspect
                   typename = typename std::enable_if_t<std::is_base_of<InterfaceType,PluginType>::value>>
         const PluginType &
         get_matching_active_plugin () const;
+
+        /**
+         * Return a list of plugin objects that have been requested in the
+         * parameter file and that are, consequently, active in the current
+         * manager object.
+         */
+        const std::list<std::unique_ptr<InterfaceType>> &
+        get_active_plugins () const;
+
+        /**
+         * Return a list of names used in the input file to select plugins,
+         * and that are, consequently, active in the current manager object.
+         * The names in the returned list correspond to the objects returned
+         * by `get_active_plugins()`.
+         */
+        const std::vector<std::string> &
+        get_active_plugin_names () const;
 
       protected:
         /**
@@ -372,6 +392,25 @@ namespace aspect
       // We will never get here, because we had the Assert above. Just to avoid warnings.
       return Plugins::get_plugin_as_type<PluginType>(**(plugin_objects.begin()));
     }
+
+
+
+    template <typename InterfaceType>
+    const std::list<std::unique_ptr<InterfaceType>> &
+    ManagerBase<InterfaceType>::get_active_plugins () const
+    {
+      return plugin_objects;
+    }
+
+
+
+    template <typename InterfaceType>
+    const std::vector<std::string> &
+    ManagerBase<InterfaceType>::get_active_plugin_names () const
+    {
+      return plugin_names;
+    }
+
   }
 
   namespace internal
