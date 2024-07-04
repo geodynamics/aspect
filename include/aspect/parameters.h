@@ -321,7 +321,7 @@ namespace aspect
     {
       enum Kind
       {
-        boundary_preserving,
+        bound_preserving,
         WENO,
         none
       };
@@ -330,8 +330,8 @@ namespace aspect
       Kind
       parse(const std::string &input)
       {
-        if (input == "boundary preserving")
-          return boundary_preserving;
+        if (input == "bound preserving")
+          return bound_preserving;
         else if (input == "WENO")
           return WENO;
         else if (input == "none")
@@ -344,7 +344,7 @@ namespace aspect
 
       static const std::string pattern()
       {
-        return "boundary preserving|WENO|none";
+        return "bound preserving|WENO|none";
       }
     };
 

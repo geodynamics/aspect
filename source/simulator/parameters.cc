@@ -1143,7 +1143,7 @@ namespace aspect
                            Patterns::Selection(DGLimiterType::pattern()),
                            "The type of limiter to apply to the discontinuous temperature solution. "
                            "Available options are:\n"
-                           "  * `boundary preserving': a limiter that keeps the discontinuous solution "
+                           "  * `bound preserving': a limiter that keeps the discontinuous solution "
                            "in the range given by `Global temperature maximum' and `Global temperature "
                            "minimum'.\n"
                            "  * `WENO': a limiter that eliminates spurious oscillations by reconstructing "
@@ -1160,7 +1160,7 @@ namespace aspect
                            "number of the compositional fields. When only one value is supplied, this "
                            "same value is assumed for all compositional fields.\n"
                            "Available options are:\n"
-                           "  * `boundary preserving': a limiter that keeps the discontinuous solution "
+                           "  * `bound preserving': a limiter that keeps the discontinuous solution "
                            "in the range given by `Global temperature maximum' and `Global temperature "
                            "minimum'.\n"
                            "  * `WENO': a limiter that eliminates spurious oscillations by reconstructing "
@@ -1176,14 +1176,14 @@ namespace aspect
                            "The maximum global temperature value that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from temperature advection fields. "
                            "The input value is active only when `Limiter for discontinuous temperature "
-                           "solution' is set to `boundary preserving'.");
+                           "solution' is set to `bound preserving'.");
         prm.declare_entry ("Global temperature minimum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                            Patterns::Double (),
                            "The minimum global temperature value that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from temperature advection fields."
                            "The input value is active only when `Limiter for discontinuous temperature "
-                           "solution' is set to `boundary preserving'.");
+                           "solution' is set to `bound preserving'.");
         prm.declare_entry ("Global composition maximum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double ()),
@@ -1193,7 +1193,7 @@ namespace aspect
                            "one or the same as the number of the compositional fields. When only one value "
                            "is supplied, this same value is assumed for all compositional fields. "
                            "The input value is active only when `Limiter for discontinuous composition "
-                           "solution' is set to `boundary preserving'.");
+                           "solution' is set to `bound preserving'.");
         prm.declare_entry ("Global composition minimum",
                            boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                            Patterns::List(Patterns::Double ()),
@@ -1203,7 +1203,7 @@ namespace aspect
                            "one or the same as the number of the compositional fields. When only one value "
                            "is supplied, this same value is assumed for all compositional fields. "
                            "The input value is active only when `Limiter for discontinuous composition "
-                           "solution' is set to `boundary preserving'.");
+                           "solution' is set to `bound preserving'.");
         prm.declare_entry ("Temperature KXRCF indicator threshold", "1.0",
                            Patterns::Double(0.0),
                            "The threshold of KXRCF indicator for the temperature field. If the KXRCF indicator "

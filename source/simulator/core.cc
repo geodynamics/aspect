@@ -486,15 +486,15 @@ namespace aspect
       map->initialize(MappingQGeneric<dim>(4), triangulation);
 
     bool bp_limiter_enabled = (parameters.limiter_for_discontinuous_temperature_solution
-                               == Parameters<dim>::DGLimiterType::boundary_preserving);
+                               == Parameters<dim>::DGLimiterType::bound_preserving);
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       bp_limiter_enabled = bp_limiter_enabled || (parameters.limiter_for_discontinuous_composition_solution[c]
-                                                  == Parameters<dim>::DGLimiterType::boundary_preserving);
+                                                  == Parameters<dim>::DGLimiterType::bound_preserving);
 
     // Check that BP limiters are only used with cartesian mapping
     if (bp_limiter_enabled)
       AssertThrow(geometry_model->natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian,
-                  ExcMessage("The boundary preserving limiter for the discontinuous temperature and composition solutions "
+                  ExcMessage("The bound preserving limiter for the discontinuous temperature and composition solutions "
                              "has not been tested in non-Cartesian geometries and currently requires "
                              "the use of a Cartesian geometry model."));
 

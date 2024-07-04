@@ -745,7 +745,7 @@ namespace aspect
 
         switch (limiter)
           {
-            case Parameters<dim>::DGLimiterType::boundary_preserving:
+            case Parameters<dim>::DGLimiterType::bound_preserving:
               apply_BP_limiter_to_dg_solutions(advection_field);
               break;
             case Parameters<dim>::DGLimiterType::WENO:
