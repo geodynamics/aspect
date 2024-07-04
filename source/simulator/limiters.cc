@@ -1,4 +1,6 @@
 #include <aspect/simulator.h>
+#include <aspect/volume_of_fluid/handler.h>
+#include <aspect/mesh_deformation/interface.h>
 
 namespace aspect
 {
