@@ -20,7 +20,6 @@ end
 subsection Mesh deformation
   set Additional tangential mesh velocity boundary indicators = right
   set Mesh deformation boundary indicators = top: fastscape
-  set Surface stabilization theta = 1.0 
 
   subsection Fastscape
   ...

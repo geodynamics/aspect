@@ -138,12 +138,19 @@ end
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
 # are unconstrained (i.e. 'free').
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
+  set Prescribed velocity boundary indicators = left: function, right:function
 
   subsection Function
     set Variable names      = x,y
     set Function constants  = v=0.0025, w=200.e3, d=100.e3
-    set Function expression = if (x < w/2 , -v, v) ; v*2*d/w
+    set Function expression = if (x < w/2 , -v, v) ; 0
+  end
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = bottom: initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point = 10000,0
   end
 end
 
