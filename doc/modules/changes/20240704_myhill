@@ -1,0 +1,5 @@
+Added: The DiffusionCreep rheology module can now
+calculate viscosities and strain rates with grain size
+as an variable argument.
+<br>
+(Bob Myhill, 2024/07/04)
