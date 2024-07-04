@@ -1223,7 +1223,7 @@ namespace aspect
                            "solution' is set to `WENO'.");
         prm.declare_entry ("WENO linear weight of neighbor cells", "0.001",
                            Patterns::Double(0.0, 1.0),
-                           "The liear weight of neighbor cells in WENO scheme. The larger this value is, "
+                           "The linear weight of neighbor cells in WENO scheme. The larger this value is, "
                            "the more information of neighbor cells will be involved in the polynomial "
                            "reconstruction.");
       }
