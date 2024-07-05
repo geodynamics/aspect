@@ -45,10 +45,10 @@ def reformat_limiter_settings(parameters):
                     use_limiter = subsection[old_entries[i]]["value"]
                     del subsection[old_entries[i]]
 
-                    # If limiter is used, then set the value of the new entry to "boundary preserving"
+                    # If limiter is used, then set the value of the new entry to "bound preserving"
                     if use_limiter == "true":
                         subsection[new_entries[i]] = {"comment"         : "", 
-                                                      "value"           : "boundary preserving",  
+                                                      "value"           : "bound preserving",  
                                                       "type"            : "parameter", 
                                                       "alignment spaces": 1}
 
