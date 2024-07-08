@@ -1,0 +1,33 @@
+# This parameter file modifies the benchmark 20kmh_05drho.prm to use the WENO limiter
+# for viscoelastic stress components.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/20km_opentopbot.prm
+
+set Output directory = 20kmh_05drho_weno
+
+
+subsection Discretization
+  subsection Stabilization parameters
+    # Use WENO limiter for viscoelastic stress components, while using the
+    # bound-preserving limiter for the chemical field
+    set Limiter for discontinuous composition solution = WENO, WENO, WENO, bound preserving
+    # In this benchmark, the spurious oscillations at the boundaries of the beam
+    # are extremely serious, so we set the linear weight of neighbor cells one
+    # magnitude greater than the default value to make the reconstructed solution
+    # smoother.
+    set WENO linear weight of neighbor cells = 0.01
+    # The global maximum and minimum values are only used by the chemical field.
+    set Global composition maximum = 1.0
+    set Global composition minimum = 0.0
+  end
+end
+
+# Visualize the KXRCF indicator for ve_stress_xy
+subsection Postprocess
+  subsection Visualization
+    set List of output variables = material properties, strain rate, kxrcf indicator
+    subsection KXRCF indicator
+      set Name of advection field = ve_stress_xy
+    end
+  end
+end
