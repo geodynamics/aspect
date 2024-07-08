@@ -54,8 +54,8 @@ namespace aspect
 
       std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
-      const auto &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
-      const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
+      const auto &heating_model_objects = this->get_heating_model_manager().get_active_plugins();
+      const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_plugin_names();
 
       HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, this->n_compositional_fields());
 
