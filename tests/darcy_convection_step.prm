@@ -27,7 +27,8 @@
 # pemeability is 1e-6, and gravity is set to -10. This results in a fluid
 # velocity of 24.25 m/yr. The mesh is 2.5 km x 2.5 km, and with CFL = 1,
 # this means that the time step should be 2500 m / 24.25 m/yr = 103.11
-
+# This also serves as a test for the 'darcy velocity' postprocessor, by
+# confirming that the darcy velocity is 24.25 m/yr.
 ############### Global parameters
 
 set Dimension                              = 2
@@ -154,6 +155,11 @@ subsection Melt settings
   set Include melt transport             = false
 end
 
+# Output the darcy velocity
 subsection Postprocess
-  set List of postprocessors =
+  set List of postprocessors = visualization
+  subsection Visualization
+    set List of output variables = darcy velocity
+    set Output format            = gnuplot
+  end
 end
