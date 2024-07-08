@@ -504,6 +504,7 @@ namespace aspect
     // troubled cell indicator.
     const unsigned int degree = advection_field.polynomial_degree(introspection);
     const double power = (degree + 1.0) / 2.0;
+    const double scaling_factor = 1. / global_Omega_diameter;
 
     const unsigned int block_idx = advection_field.block_index(introspection);
     const double epsilon = std::max(1e-20,
@@ -513,7 +514,10 @@ namespace aspect
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
-          const double h_pow = std::pow(cell->diameter(), power);
+          // The characteristic mesh spacing is calculated by d/D, where
+          // d and D are the diameters of the present cell and the geometry
+          // model, respectively.
+          const double h_pow = std::pow(cell->diameter() * scaling_factor, power);
           const auto cell_data = data.find(cell->active_cell_index());
           if (cell_data->second.inflow_face_area == 0.0)
             KXRCF_indicators[cell->active_cell_index()] = 0.0;
