@@ -1147,7 +1147,8 @@ namespace aspect
                            "in the range given by `Global temperature maximum' and `Global temperature "
                            "minimum'.\n"
                            "  * `WENO': a limiter that eliminates spurious oscillations by reconstructing "
-                           "a polynomial function in places where shocks are detected.\n"
+                           "a polynomial function in places where shocks are detected, as described in "
+                           "\\cite{zhong:etal:2013}.\n"
                            "  * `none`: if chosen, no limiter is applied to the discontinuous solution.\n"
                            "Note that if this entry is not set to `none', then the limiter will modify "
                            "the solution, so the nonlinear residual for this field is meaning less, and "
@@ -1164,7 +1165,8 @@ namespace aspect
                            "in the range given by `Global temperature maximum' and `Global temperature "
                            "minimum'.\n"
                            "  * `WENO': a limiter that eliminates spurious oscillations by reconstructing "
-                           "a polynomial function in places where shocks are detected.\n"
+                           "a polynomial function in places where shocks are detected, as described in "
+                           "\\cite{zhong:etal:2013}.\n"
                            "  * `none`: if chosen, no limiter is applied to the discontinuous solution.\n"
                            "Note that if this entry is not set to `none', then the limiter will modify "
                            "the solution, so the nonlinear residual for this field is meaning less, and "
@@ -1201,31 +1203,32 @@ namespace aspect
                            "limiter for the discontinuous solutions from composition advection fields. "
                            "The number of the input 'Global composition minimum' values separated by ',' has to be "
                            "one or the same as the number of the compositional fields. When only one value "
-                           "is supplied, this same value is assumed for all compositional fields. "
+                           "is supplied, this same value is assumed for all compositional fields.\n"
                            "The input value is active only when `Limiter for discontinuous composition "
                            "solution' is set to `bound preserving'.");
         prm.declare_entry ("Temperature KXRCF indicator threshold", "1.0",
                            Patterns::Double(0.0),
-                           "The threshold of KXRCF indicator for the temperature field. If the KXRCF indicator "
-                           "of a cell is greater than the threshold, then the cell is marked as 'troubled' "
-                           "and will be smoothed by the WENO limiter. "
+                           "The threshold of KXRCF indicator for the temperature field, as described in "
+                           "\\cite{Krivodonova:etal:2004}. If the KXRCF indicator of a cell is greater than "
+                           "the threshold, then the cell is marked as 'troubled' and will be smoothed by "
+                           "the WENO limiter.\n"
                            "The input value is active only when `Limiter for discontinuous temperature "
                            "solution' is set to `WENO'.");
         prm.declare_entry ("Composition KXRCF indicator threshold", "1.0",
                            Patterns::Double(0.0),
-                           "The threshold of KXRCF indicator for the temperature field. If the KXRCF indicator "
-                           "of a cell is greater than the threshold, then the cell is marked as 'troubled' "
-                           "and will be smoothed by the WENO limiter. The number of the input values "
-                           "separated by ',' has to be one or the same as the number of the compositional "
-                           "fields. When only one value is supplied, this same value is assumed for all "
-                           "compositional fields. "
+                           "The threshold of KXRCF indicator for the temperature field, as described in "
+                           "\\cite{Krivodonova:etal:2004}. If the KXRCF indicator of a cell is greater than "
+                           "the threshold, then the cell is marked as 'troubled' and will be smoothed by "
+                           "the WENO limiter. The number of the input values separated by ',' has to be one "
+                           "or the same as the number of the compositional fields. When only one value is "
+                           "supplied, this same value is assumed for all compositional fields.\n"
                            "The input value is active only when `Limiter for discontinuous composition "
                            "solution' is set to `WENO'.");
         prm.declare_entry ("WENO linear weight of neighbor cells", "0.001",
                            Patterns::Double(0.0, 1.0),
                            "The linear weight of neighbor cells in WENO scheme. The larger this value is, "
                            "the more information of neighbor cells will be involved in the polynomial "
-                           "reconstruction.");
+                           "reconstruction. See \\cite{zhong:etal:2013} for detail.");
       }
       prm.leave_subsection ();
     }
