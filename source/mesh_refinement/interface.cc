@@ -382,10 +382,9 @@ namespace aspect
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
       for (auto &plugin_name : plugin_names)
         {
-          this->plugin_objects.emplace_back (std::unique_ptr<Interface<dim>>
-                                             (std::get<dim>(registered_plugins)
-                                              .create_plugin (plugin_name,
-                                                              "Mesh refinement::Refinement criteria merge operation")));
+          this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
+                                             .create_plugin (plugin_name,
+                                                             "Mesh refinement::Refinement criteria merge operation"));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());

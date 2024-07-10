@@ -308,10 +308,9 @@ namespace aspect
 
         for (const auto &model_name : model_names)
           {
-            this->plugin_objects.emplace_back (std::unique_ptr<Interface<dim>>
-                                               (std::get<dim>(registered_plugins)
-                                                .create_plugin (model_name,
-                                                                "Time stepping::Model names")));
+            this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
+                                               .create_plugin (model_name,
+                                                               "Time stepping::Model names"));
 
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
               sim->initialize_simulator (this->get_simulator());
