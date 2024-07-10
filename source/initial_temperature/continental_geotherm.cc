@@ -43,7 +43,7 @@ namespace aspect
     initialize ()
     {
       // Check that the required radioactive heating model ("compositional heating") is used
-      const std::vector<std::string> &heating_models = this->get_heating_model_manager().get_active_heating_model_names();
+      const std::vector<std::string> &heating_models = this->get_heating_model_manager().get_active_plugin_names();
       AssertThrow(std::find(heating_models.begin(), heating_models.end(), "compositional heating") != heating_models.end(),
                   ExcMessage("The continental geotherm initial temperature plugin requires the compositional heating plugin."));
 

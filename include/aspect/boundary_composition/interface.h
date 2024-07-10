@@ -139,14 +139,22 @@ namespace aspect
         /**
          * Return a list of names of all boundary composition models currently
          * used in the computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugin_names()
+         *   instead.
          */
+        DEAL_II_DEPRECATED
         const std::vector<std::string> &
         get_active_boundary_composition_names () const;
 
         /**
          * Return a list of pointers to all boundary composition models
          * currently used in the computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugins()
+         *   instead.
          */
+        DEAL_II_DEPRECATED
         const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_boundary_composition_conditions () const;
 
