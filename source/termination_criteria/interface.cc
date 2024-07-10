@@ -214,10 +214,10 @@ namespace aspect
       // their own parameters
       for (const auto &plugin_name : plugin_names)
         {
-          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
-                                          (std::get<dim>(registered_plugins)
-                                           .create_plugin (plugin_name,
-                                                           "Termination criteria::Termination criteria")));
+          this->plugin_objects.emplace_back (std::unique_ptr<Interface<dim>>
+                                             (std::get<dim>(registered_plugins)
+                                              .create_plugin (plugin_name,
+                                                              "Termination criteria::Termination criteria")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());
           this->plugin_objects.back()->parse_parameters (prm);
