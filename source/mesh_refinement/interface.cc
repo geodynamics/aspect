@@ -343,13 +343,12 @@ namespace aspect
 
       // find out which plugins are requested and the various other
       // parameters we declare here
-      std::vector<std::string> plugin_names;
       prm.enter_subsection("Mesh refinement");
       {
-        plugin_names
+        this->plugin_names
           = Utilities::split_string_list(prm.get("Strategy"));
 
-        AssertThrow(Utilities::has_unique_entries(plugin_names),
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Mesh refinement/Strategy' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
@@ -359,13 +358,13 @@ namespace aspect
         scaling_factors
           = Utilities::string_to_double(
               Utilities::split_string_list(prm.get("Refinement criteria scaling factors")));
-        AssertThrow (scaling_factors.size() == plugin_names.size()
+        AssertThrow (scaling_factors.size() == this->plugin_names.size()
                      ||
                      scaling_factors.size() == 0,
                      ExcMessage ("The number of scaling factors given here must either be "
                                  "zero or equal to the number of chosen refinement criteria."));
         if (scaling_factors.size() == 0)
-          scaling_factors = std::vector<double> (plugin_names.size(), 1.0);
+          scaling_factors = std::vector<double> (this->plugin_names.size(), 1.0);
 
         if (prm.get("Refinement criteria merge operation") == "plus")
           merge_operation = plus;
@@ -378,9 +377,9 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      AssertThrow (plugin_names.size() >= 1,
+      AssertThrow (this->plugin_names.size() >= 1,
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
-      for (auto &plugin_name : plugin_names)
+      for (auto &plugin_name : this->plugin_names)
         {
           this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
                                           (std::get<dim>(registered_plugins)
