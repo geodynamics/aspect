@@ -1110,8 +1110,8 @@ namespace aspect
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2>>,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<3>>> registered_visualization_plugins;
     }
