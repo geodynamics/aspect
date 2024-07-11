@@ -1151,7 +1151,7 @@ namespace aspect
                            "\\cite{zhong:etal:2013}.\n"
                            "  * `none`: if chosen, no limiter is applied to the discontinuous solution.\n"
                            "Note that if this entry is not set to `none', then the limiter will modify "
-                           "the solution, so the nonlinear residual for this field is meaning less, and "
+                           "the solution, so the nonlinear residual for this field is meaningless, and "
                            "in nonlinear solvers we will ignore the residual for this field to evaluate "
                            "if the nonlinear solver has converged.");
         prm.declare_entry ("Limiter for discontinuous composition solution", "none",
