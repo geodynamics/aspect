@@ -642,8 +642,8 @@ namespace aspect
       namespace
       {
         std::tuple
-        <void *,
-        void *,
+        <aspect::internal::Plugins::UnusablePluginList,
+        aspect::internal::Plugins::UnusablePluginList,
         aspect::internal::Plugins::PluginList<Property::Interface<2>>,
         aspect::internal::Plugins::PluginList<Property::Interface<3>>> registered_plugins;
       }

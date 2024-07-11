@@ -190,8 +190,8 @@ namespace aspect
       namespace
       {
         std::tuple
-        <void *,
-        void *,
+        <aspect::internal::Plugins::UnusablePluginList,
+        aspect::internal::Plugins::UnusablePluginList,
         aspect::internal::Plugins::PluginList<Interface<2>>,
         aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
       }
