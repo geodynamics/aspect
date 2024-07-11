@@ -96,7 +96,8 @@ namespace aspect
                                     const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
-           * Compute the viscosity based on the diffusion creep law with a fixed grain size.
+           * Compute the viscosity based on the diffusion creep law with
+           * the fixed grain size given in the input file.
            * If @p n_phase_transitions_per_composition points to a vector of
            * unsigned integers this is considered the number of phase transitions
            * for each compositional field and viscosity will be first computed on
@@ -110,7 +111,7 @@ namespace aspect
                              const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
-           * Compute the viscosity based on the diffusion creep law with a variable grain size.
+           * Compute the viscosity based on the diffusion creep law for the given @p grain_size.
            * If @p n_phase_transitions_per_composition points to a vector of
            * unsigned integers this is considered the number of phase transitions
            * for each compositional field and viscosity will be first computed on
@@ -126,7 +127,8 @@ namespace aspect
 
           /**
            * Compute the strain rate and first stress derivative as a function
-           * of stress based on the diffusion creep law with a fixed grain size.
+           * of stress based on the diffusion creep law with
+           * the fixed grain size given in the input file.
            */
           std::pair<double, double>
           compute_strain_rate_and_derivative (const double stress,
@@ -136,7 +138,7 @@ namespace aspect
 
           /**
            * Compute the strain rate and first stress derivative as a function
-           * of stress based on the diffusion creep law with a variable grain size.
+           * of stress based on the diffusion creep law for the given @p grain_size.
            */
           std::pair<double, double>
           compute_strain_rate_and_derivative (const double stress,
@@ -148,7 +150,7 @@ namespace aspect
           /**
            * Compute the logarithm of strain rate and first derivative with respect to
            * the logarithm of the stress based on the diffusion creep law
-           * with a fixed grain size.
+           * with the fixed grain size given in the input file.
            */
           std::pair<double, double>
           compute_log_strain_rate_and_derivative (const double log_stress,
@@ -159,7 +161,7 @@ namespace aspect
           /**
            * Compute the logarithm of strain rate and first derivative with respect to
            * the logarithm of the stress based on the diffusion creep law
-           * with a variable grain size.
+           * for the given @p grain_size.
            */
           std::pair<double, double>
           compute_log_strain_rate_and_derivative (const double log_stress,
@@ -196,7 +198,9 @@ namespace aspect
           std::vector<double> activation_volumes_diffusion;
 
           /**
-           * Diffusion creep grain size d.
+           * Diffusion creep grain size d.  This is read from the
+           * input file, and is only used by the functions that do
+           * not take the grain size as additional argument.
            */
           double fixed_grain_size;
       };

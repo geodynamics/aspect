@@ -257,6 +257,11 @@ namespace aspect
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\meter\\cubed\\per\\mole}.");
         prm.declare_entry ("Grain size", "1e-3", Patterns::Double (0.),
+                           "The fixed grain size of the material. "
+                           "This grain size is only used if the parent "
+                           "material model does not provide its own "
+                           "(possibly variable) grain size when "
+                           "calling this rheology."
                            "Units: \\si{\\meter}.");
       }
 
