@@ -278,23 +278,22 @@ namespace aspect
         minimum_time_step_size = prm.get_double("Minimum time step size")
                                  * (this->convert_output_to_years() ? year_in_seconds : 1.0);
 
-        std::vector<std::string>
-        model_names
+        this->plugin_names
           = Utilities::split_string_list(prm.get("List of model names"));
 
-        AssertThrow(Utilities::has_unique_entries(model_names),
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Time stepping/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
-        if (model_names.size()==0)
+        if (this->plugin_names.size()==0)
           {
             // handle the default case, where the user has not chosen any time stepping scheme explicitly:
 
-            model_names.emplace_back("convection time step");
+            this->plugin_names.emplace_back("convection time step");
 
             if (this->get_parameters().use_conduction_timestep)
-              model_names.emplace_back("conduction time step");
+              this->plugin_names.emplace_back("conduction time step");
           }
         else
           {
@@ -306,7 +305,7 @@ namespace aspect
 
         prm.leave_subsection();
 
-        for (const auto &model_name : model_names)
+        for (const auto &model_name : this->plugin_names)
           {
             this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
                                                .create_plugin (model_name,

@@ -194,25 +194,24 @@ namespace aspect
               ExcMessage ("No termination criteria plugins registered!?"));
 
       // first find out which plugins are requested
-      std::vector<std::string> plugin_names;
       prm.enter_subsection("Termination criteria");
       {
-        plugin_names = Utilities::split_string_list(prm.get("Termination criteria"));
-        AssertThrow(Utilities::has_unique_entries(plugin_names),
+        this->plugin_names = Utilities::split_string_list(prm.get("Termination criteria"));
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Termination criteria/Termination criteria' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         // as described, the end time plugin is always active
-        if (std::find (plugin_names.begin(), plugin_names.end(), "end time")
-            == plugin_names.end())
-          plugin_names.emplace_back("end time");
+        if (std::find (this->plugin_names.begin(), this->plugin_names.end(), "end time")
+            == this->plugin_names.end())
+          this->plugin_names.emplace_back("end time");
       }
       prm.leave_subsection();
 
       // go through the list, create objects, initialize them, and let them parse
       // their own parameters
-      for (const auto &plugin_name : plugin_names)
+      for (const auto &plugin_name : this->plugin_names)
         {
           this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
                                              .create_plugin (plugin_name,
@@ -221,8 +220,6 @@ namespace aspect
             sim->initialize_simulator (this->get_simulator());
           this->plugin_objects.back()->parse_parameters (prm);
           this->plugin_objects.back()->initialize ();
-
-          this->plugin_names.push_back(plugin_name);
         }
     }
 

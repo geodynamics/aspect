@@ -96,7 +96,6 @@ namespace aspect
                                                   this->plugin_names.size(),
                                                   "List of model operators");
         model_operators = Utilities::create_model_operator_list(model_operator_names);
-
       }
       prm.leave_subsection ();
 
