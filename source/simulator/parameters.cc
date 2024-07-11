@@ -1215,7 +1215,7 @@ namespace aspect
                            "The input value is active only when `Limiter for discontinuous temperature "
                            "solution' is set to `WENO'.");
         prm.declare_entry ("Composition KXRCF indicator threshold", "1.0",
-                           Patterns::Double(0.0),
+                           Patterns::List(Double(0.0)),
                            "The threshold of KXRCF indicator for the temperature field, as described in "
                            "\\cite{Krivodonova:etal:2004}. If the KXRCF indicator of a cell is greater than "
                            "the threshold, then the cell is marked as 'troubled' and will be smoothed by "
