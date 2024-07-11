@@ -114,8 +114,20 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(KXRCFIndicator,
                                                   "kxrcf indicator",
                                                   "A visualization output object that generates output "
-                                                  "showing the value of the KXRCF indicator on each "
-                                                  "cell."
+                                                  "showing the value of the KXRCF indicator for a given "
+                                                  "advection field (either temperature or compositional "
+                                                  "field) on each cell. The KXRCF indicator is a metric "
+                                                  "of discontinuity for hyperbolic conservation laws. "
+                                                  "If the KXRCF value of a cell is higher than the value of "
+                                                  "``Temperature/Composition KXRCF indicator threshold'' "
+                                                  "of the corresponding field in the input parameter file, "
+                                                  "the cell will be identified as a ``troubled-cell'' that "
+                                                  "should be smoothed by the WENO limiter. For details, see "
+                                                  "\\cite{Krivodonova:etal:2004}."
+                                                  "\n\n"
+                                                  "This postprocessor should only be used for discontinuous "
+                                                  "advection fields. Otherwise, the postprocessor will produce "
+                                                  "a meaningless visualization output."
                                                   "\n\n"
                                                   "Physical units: none.")
     }
