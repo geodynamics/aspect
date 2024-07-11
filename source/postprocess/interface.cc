@@ -226,10 +226,9 @@ namespace aspect
       // their own parameters
       for (unsigned int name=0; name<postprocessor_names.size(); ++name)
         {
-          this->plugin_objects.push_back (std::unique_ptr<Interface<dim>>
-                                          (std::get<dim>(registered_plugins)
-                                           .create_plugin (postprocessor_names[name],
-                                                           "Postprocessor plugins")));
+          this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
+                                             .create_plugin (postprocessor_names[name],
+                                                             "Postprocessor plugins"));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());
 
