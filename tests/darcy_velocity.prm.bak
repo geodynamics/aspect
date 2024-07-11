@@ -1,0 +1,145 @@
+#########################################################
+# This is a test for the new advection method that advects a
+# compositional field with the fluid velocity prescribed by
+# Darcy's Law. Darcy's law is approximated here with:
+# u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)
+# u_f = fluid velocity
+# u_s = solid velocity
+# K_D = Darcy Coefficient
+# phi = porosity
+# rho_f = fluid density
+# rhos_s = solid density
+# g = gravity
+# The second term on the rhs of Darcy's Law only contributes
+# to the component of the  fluid velocity parallel to the gravity
+# vector, which is proportional to the buoyancy of the fluid phase.
+
+# The initial porosity is uniform everywhere, and in the
+# center of the model is a blob of 'fluid' and 'solid'.
+# The solid has a prescribed x velocity, and so the fluid
+# blob should be advected horizontally with the solid velocity and
+# vertically as it rises up due to its buoyancy.
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 500
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 5
+set CFL number                             = 0.5
+set Output directory                       = darcy_velocity
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Maximum time step                      = 500
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 200000
+    set Y extent = 100000
+    set X repetitions = 2
+  end
+end
+
+# This model is only designed to predict fluid velocities arising from initial prescribed values in porosity.
+# As such, no variations in temperature are needed and both the boundary and initial temperatures are held constant.
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression       = 293
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = top, bottom, left, right
+
+  subsection Box
+    set Bottom temperature = 293
+    set Top temperature    = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x:function, right x:function
+  set Tangential velocity boundary indicators = top, bottom
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y,t
+    set Function expression = 1;0
+  end
+end
+
+############### Compositional fields
+# We want to use three compositional fields, the porosity and
+# and two additional fields. The solid field will be advected with
+# the solid speed prescribed above, and the fluid field will be advected
+# as the sum of the solid velocity and the vertical buoyancy the fluid has.
+# The porosity field is uniform to allow for a uniform fluid velocity. The
+# fluid field is a circle of radius 12.5km at the center of the model domain.
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, fluid
+  set Compositional field methods = darcy field, darcy field
+  set Types of fields = porosity, generic
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=12500, A_f=0.2, A_s = 1.0
+    set Function expression = A_f; if((x - x0)*(x - x0) + (y - y0)*(y - y0) <= c*c, A_s, 0)
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+  set Fixed composition boundary indicators = bottom, top, left, right
+  set Allow fixed composition on outflow boundaries = true
+end
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# The 'melting rate' material model from rising_melt_blob.cc is being
+# used since it provides terms for the fluid phase in this test. Melt
+# is not actually turned on, but the structure of the material model is
+# being used to fill fluid related parameters.
+subsection Material model
+  set Model name = melting rate
+end
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, maximum depth of field
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = false
+  end
+end

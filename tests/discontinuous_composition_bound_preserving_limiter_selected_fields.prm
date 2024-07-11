@@ -80,8 +80,6 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
-    # apply the limiter to the DG solution of field 1, but not field 2
-    set Use limiter for discontinuous composition solution = true, false
     set Global composition maximum = 1.0, 1.0
     set Global composition minimum = 0.0, 0.0
   end

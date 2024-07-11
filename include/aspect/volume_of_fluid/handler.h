@@ -24,7 +24,7 @@
 #include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
 #include <aspect/volume_of_fluid/field.h>
-#include <aspect/volume_of_fluid/assembly.h>
+#include <aspect/volume_of_fluid/simulator/assemblers/interface.h>
 
 #include <boost/serialization/map.hpp>
 

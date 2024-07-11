@@ -1,0 +1,7 @@
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Thermal conductivity formulation = p-T-dependent
+  end
+end

@@ -17,9 +17,9 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = true
     set Global composition maximum = 1
     set Global composition minimum = -1
+    set Limiter for discontinuous composition solution = bound preserving
   end
 end
 
@@ -107,7 +107,7 @@ end
 
 subsection Boundary composition model
   set Fixed composition boundary indicators = bottom
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Material model

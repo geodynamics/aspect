@@ -1,0 +1,12 @@
+# Like visualization_strain_rate_tensor.prm but with point-wise output
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/tests/visualization_strain_rate_tensor.prm
+
+
+subsection Postprocess
+  subsection Visualization
+    set Point-wise stress and strain = true
+  end
+end

@@ -1,0 +1,111 @@
+# like matrix_nonzeros_5 but with different solver schemes
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0.3
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = no Advection, single Stokes
+
+############### Parameters describing the model
+# Let us here choose again a box domain of size 2x1
+# where we fix the temperature at the bottom and top,
+# allow free slip along the bottom, left and right,
+# and prescribe the velocity along the top using the
+# `function' description.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+# We then set the temperature to one at the bottom and zero
+# at the top:
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 2, 3
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+# The velocity along the top boundary models a spreading
+# center that is moving left and right:
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2
+  set Prescribed velocity boundary indicators = 3: function
+
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Compositional field methods = static, field, field
+end
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient. The default
+# strength for gravity is one. The material model is the
+# same as before.
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = if(z<0.5+0.4*sin((x-0.5)*pi),1,0);0;1
+  end
+end
+
+subsection Material model
+  set Model name = composition reaction
+
+  subsection Composition reaction model
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1
+    set Density differential for compositional field 1 = -5
+    set Density differential for compositional field 2 = 5
+    set Reaction depth                = 0.2
+  end
+end
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, memory statistics, matrix statistics
+
+  subsection Memory statistics
+    set Output peak virtual memory (VmPeak) = false
+  end
+end

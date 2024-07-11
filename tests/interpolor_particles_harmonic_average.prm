@@ -15,7 +15,6 @@ subsection Compositional fields
   set Mapped particle properties  =
 end
 
-
 subsection Initial composition model
   set Model name = unspecified
 end

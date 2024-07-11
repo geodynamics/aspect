@@ -1,0 +1,43 @@
+# Like grain size growth one cell, but with particles.
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_growth_one_cell.prm
+
+
+############### Global parameters
+
+set Dimension                              = 2
+set End time                               = 1e6
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields   = grain_size
+  set Compositional field methods = particles
+  set Mapped particle properties = grain_size:grain_size
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, velocity statistics, particles, ODE statistics
+
+  subsection Particles
+    set Time between data output = 1e6
+  end
+end
+
+# We use particles to advect the grain size.
+subsection Particles
+  set Interpolation scheme = cell average
+  set List of particle properties = grain size
+  set Load balancing strategy = none
+  set Integration scheme = rk2
+  set Update ghost particles = true
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 50000
+    end
+  end
+end

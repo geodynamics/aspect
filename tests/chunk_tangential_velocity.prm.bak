@@ -1,0 +1,92 @@
+# This test makes sure the issue discussed in
+# https://github.com/geodynamics/aspect/issues/3359
+# has been fixed (accurate tangential velocity
+# boundary conditions for models with chunk
+# geometry and a free surface boundary).
+
+set Dimension                              = 2
+set Adiabatic surface temperature          = 273
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Pressure normalization                 = no
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Viscosity = 8.e18
+  end
+end
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk minimum longitude = 0
+    set Chunk maximum longitude = 90
+    set Chunk inner radius = 5620.e3
+    set Chunk outer radius = 6370.e3
+    set Longitude repetitions = 13
+    set Radius repetitions = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.8
+  end
+end
+
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = east,west
+  set Mesh deformation boundary indicators = outer:free surface
+
+  subsection Free surface
+    set Surface velocity projection      = normal
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = inner, west, east
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = outer: function
+
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r,theta,t
+    set Function expression = 0;0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = inner, outer
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Outer temperature = 273
+    set Inner temperature = 273
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Strategy                                 = minimum refinement function
+end
+
+subsection Postprocess
+  set List of postprocessors = topography, velocity statistics, heat flux statistics
+end

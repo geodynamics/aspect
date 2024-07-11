@@ -1,0 +1,90 @@
+# The 2D Stokes in an annulus benchmark, for which an
+# analytical solution is available.
+#
+# See the manual for more information.
+
+# We use a 2d setup. Since we are only interested
+# in an instantaneous solution, we set the end time
+# equal to the start time to force a single time
+# step before the program terminates.
+
+set Additional shared libraries            = ../plugin/libannulus.so
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = no Advection, single Stokes
+set Output directory                       = output
+set Pressure normalization                 = surface
+
+# Because the temperature plays no role in this model we need not
+# bother to describe temperature boundary conditions or
+# the material parameters that pertain to the temperature.
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  # NOTE: the analytical solutions are hard-coded
+  # to these geometry values: do not change them.
+  subsection Spherical shell
+    set Inner radius = 1
+    set Outer radius = 2
+    set Opening angle = 360
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom : AnnulusBoundary, \
+                                                top : AnnulusBoundary
+end
+
+subsection Material model
+  set Model name = AnnulusMaterial
+end
+
+subsection Gravity model
+  set Model name = annulus gravity
+end
+
+# k controls the number of convection cells.
+subsection Annulus benchmark
+  set k = 4
+end
+
+# Temperature does not influence this benchmark
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+# Disable adaptive mesh refinement
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, AnnulusPostprocessor
+
+  subsection Dynamic topography
+    set Density above = 0
+    set Density below = 0
+  end
+
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate, dynamic topography, AnnulusVisualizationPostprocessor
+    set Time between graphical output = 0
+  end
+end
+
+# Increase Stokes solver accuracy to ensure convergence to
+# very low error values
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end

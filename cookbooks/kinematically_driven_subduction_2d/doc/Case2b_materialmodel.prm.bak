@@ -1,0 +1,25 @@
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    # The benchmark uses two different reference temperatures for the compositions:
+    # 1573.15 K for the asthenosphere, thermal_OP and thermal_SP, and 473.15 K for
+    # the rest of the compositions.
+    # As ASPECT only allows for one reference temperature, we have instead adapted
+    # the reference density for the mantle compositions. To do this, we took the initial
+    # temperature and the midpoint depth of the layers and equated the density equation
+    # using the benchmark reference density rho_0_1 (3200 kg/m3) and temperature T_0_1 (1573.15 K), and
+    # the density equation using the 473.15 K reference temperature to obtain the new reference density rho_0_2.
+    # For the left thermal layer, the initial temperature at the midpoint is 1355 K, so
+    # new reference density can be derived as follows:
+    # rho_0_1 * (1 - alpha * (T - T_0_1)) = rho_0_2 * (1 - alpha * (T - T_0_2)),
+    # 3200 * (1 - 2.5e-5 * (1355 - 1573.15)) = rho_0_2 * (1 - 2.5e-5 * (1355 - 473.15))
+    # rho_0_2 = 3290.66.
+    set Reference temperature         = 473.15
+    set Densities                     = 3290.66,3000.0,3000.0,3250.0,3250.0,3290.66,3290.66,3200.0
+
+    # Compared to Case 2a, thermal expansivity is no longer zero and therefore temperature
+    # feeds into the density and therefore the Stokes equations
+    set Thermal expansivities         = 2.5e-5
+  end
+end

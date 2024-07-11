@@ -1,0 +1,7 @@
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end

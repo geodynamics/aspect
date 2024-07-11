@@ -1,0 +1,13 @@
+# test for benchmarks/layeredflow/
+
+include $ASPECT_SOURCE_DIR/benchmarks/layeredflow/layeredflow.prm
+
+set Dimension                              = 2
+
+subsection Mesh refinement
+  set Initial global refinement          = 4
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, LayeredFlowPostprocessor
+end

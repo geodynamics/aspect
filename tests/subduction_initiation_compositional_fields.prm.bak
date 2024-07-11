@@ -1,0 +1,51 @@
+# Parameter file for replicating Matsumoto & Tomoda 1983
+# see cookbooks/subduction_initiation for more details
+
+include $ASPECT_SOURCE_DIR/cookbooks/subduction_initiation/subduction_initiation.prm.base
+
+set Dimension                              = 2
+set End time                               = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement   = 0
+  set Initial global refinement     = 3
+end
+
+#materials are:
+# asthenosphere left,
+# asthenosphere right,
+# lithosphere left,
+# lithosphere right,
+# water.
+
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Densities = 3200, 3200, 3300, 3300, 1030
+    set Viscosities = 1e21, 1e21, 1e22, 1e22, 1e18
+    set Viscosity averaging scheme = harmonic
+    set Thermal expansivities = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 4
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = L0=300e3, H=180e3
+    set Function expression = if((x>=L0 && y<H-18e3),1,0) ;\
+                              if((x<=L0 && y>H-60e3 && y<=H-10e3),1,0) ;\
+                              if((x>=L0 && y>=H-18e3 && y<=H-8e3),1,0) ;\
+                              if((x<=L0 && y>H-10e3) || (x>=L0 && y>H-8e3),1,0)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, pressure statistics, material statistics, global statistics
+end

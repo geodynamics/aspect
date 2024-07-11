@@ -1,0 +1,156 @@
+# Fractionation example.
+# This test is similar to the boukare_melting_diagram,
+# but evolves over time. Consequently, the melt and solid
+# composition in the two-phase region should reflect the
+# melting diagram at the end of the model run.
+
+# To plot the output:
+# gnuplot
+# set view map
+# splot "solution-00000.0000.gnuplot" using 1:2:11 palette
+
+
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 2
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is. We
+# also designate an output directory.
+set Use years in output instead of seconds = true
+set End time                               = 2e6
+set Nonlinear solver scheme                = first timestep only, single Stokes
+set Max nonlinear iterations               = 3
+set Pressure normalization                 = surface
+set Surface pressure                       = 120.e9
+set Adiabatic surface temperature          = 5000
+set Use operator splitting = true
+set Maximum time step                      = 1e6
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = porosity, molar_Fe_in_solid, molar_Fe_in_melt
+end
+
+subsection Melt settings
+  set Include melt transport               = true
+  set Melt scaling factor threshold        = 1e6
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+
+  subsection Operator splitting parameters
+    set Reaction time step                     = 1e5
+    set Reaction solver type                   = fixed step
+  end
+end
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Function constants  = amplitude=500, width=50000, b=100000
+    set Function expression = 3400 + 1600 * y
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0; x; x
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       =
+  set Prescribed velocity boundary indicators =
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Heating model
+  set List of model names =
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Material model
+  set Model name = melt boukare
+
+  subsection Melt boukare
+    set Thermal conductivity          = 8.5
+    set Reference shear viscosity     = 5e22
+    set Thermal viscosity exponent    = 10
+    set Exponential melt weakening factor    = 0
+    set Include melting and freezing  = true
+    set Melting time scale for operator splitting = 1e5
+  end
+end
+
+# The settings above all pertain to the description of the
+# continuous partial differential equations we want to solve.
+# The following section deals with the discretization of
+# this problem, namely the kind of mesh we want to compute
+# on. We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 5
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = composition threshold
+  set Minimum refinement level                 = 0
+
+  subsection Composition threshold
+    set Compositional field thresholds = 0.1,1,1
+  end
+end
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set Output format = gnuplot
+    set List of output variables = material properties, nonadiabatic temperature, melt fraction
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity,compressibility
+    end
+  end
+end

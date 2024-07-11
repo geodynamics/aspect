@@ -1,0 +1,16 @@
+# A test for the grain size material model with the GMG
+# solver. We want to make sure no floating point exceptions
+# are thrown when material properties are averaged.
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
+
+
+subsection Material model
+  set Material averaging = geometric average only viscosity
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end

@@ -1,0 +1,110 @@
+# A testcase that demonstrates compressibility. It solves the
+# equations on a box with Dirichlet boundary conditions equal to
+# (0,1) at the bottom boundary, a tangential velocity at the sides
+# and a free boundary at the top.
+#
+# We then choose a density rho=1+p and a compressibility that leads
+# to an exponential density profile rho=e^z, i.e.
+# compressibility=1/rho drho/dp=1/(1+p). The mass flux (product of density
+# and velocity) into the box and out of the box should be the same.
+#
+# We can only tell that the correct mass flux is computed in a
+# postprocessor, which we implement in the .cc file.
+#
+#
+# The correct solution has an exponentially increasing pressure and
+# density (top to bottom) where p(z)=e^(1-z)-1  (depth=1-z) and
+# rho(z)=e^(1-z). To conserve mass, this then requires a velocity
+# in z-direction equal to
+#    v(z) = e^(-(1-z))
+# However, this is the product of the equation
+#    div(rho u) = 0
+# which we instead solve in each iteration as
+#    div u = -1/rho drho/dp u^* . g
+# where u^* is a linearization point. In the first iteration, we start
+# with u^*=0, so we solve
+#    div u = 0
+# and the velocity field is of course completely wrong (it does not
+# accelerate towards the top as expected but is in fact constant).
+#
+# This testcase therefore verifies that we compute this wrong solution
+# in the first iteration. We use the no Advection, iterated Stokes/max_nonlinear_iterations=1
+# option for the solver scheme.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+
+# no gravity. the pressure will equal just the dynamic component
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1.0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+# temperature field doesn't matter. set it to zero
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Material model
+  set Model name = compressibility
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1
+  set Prescribed velocity boundary indicators = 2: function
+
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 0;1
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = compressibility, visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = density
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+  end
+end

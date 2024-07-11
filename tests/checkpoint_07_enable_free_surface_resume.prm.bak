@@ -1,0 +1,31 @@
+# Test to start a model without free surface but with a zero mesh deformation
+# enabled and write a checkpoint (this test).
+# Another test (checkpoint_07_enable_free_surface_resume) will then test to
+# resume from this checkpoint and enable a free surface.
+
+# based on checkpoint_06_free_surface
+
+# DEPENDS-ON: checkpoint_07_enable_free_surface_create
+
+include $ASPECT_SOURCE_DIR/tests/checkpoint_07_enable_free_surface_create.prm
+
+set Dimension = 2
+set Resume computation = true
+set Pressure normalization = no
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators =
+end
+
+# Enabling the free surface during the model run can throw off
+# the solver. Loosen the tolerance of the A block preconditioner
+# to allow for solver convergence.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver A block tolerance = 1e-1
+  end
+end

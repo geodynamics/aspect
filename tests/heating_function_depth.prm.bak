@@ -1,0 +1,16 @@
+# A test for the function heating plugin.
+# The heating function is given in terms of depth.
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/heating_function.prm
+
+
+subsection Heating model
+  set List of model names = function
+
+  subsection Function
+    set Coordinate system = depth
+    set Function expression = x
+  end
+end

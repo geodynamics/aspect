@@ -1,0 +1,10 @@
+subsection Initial composition model
+  set Model name = function
+  set Volume of fluid initialization type = C_1:level set
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926, a=0.02
+    set Function expression = 0.2+a*cos(pi*x/0.9142)-z
+  end
+end

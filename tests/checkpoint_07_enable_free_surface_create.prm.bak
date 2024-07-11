@@ -1,0 +1,74 @@
+# Test to start a model without free surface but with a zero mesh deformation
+# enabled and write a checkpoint (this test).
+# Another test (checkpoint_07_enable_free_surface_resume) will then test to
+# resume from this checkpoint and enable a free surface.
+
+# based on checkpoint_06_free_surface
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 3e7
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Pressure normalization                 = surface
+
+subsection Checkpointing
+  set Steps between checkpoint = 4
+end
+
+subsection Gravity model
+  set Model name = radial constant
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+end
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+end
+
+subsection Material model
+  set Model name = simple
+  set Material averaging = none
+
+  subsection Simple model
+    set Viscosity = 1e20
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: boundary function
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top
+  set Zero velocity boundary indicators       = bottom
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, temperature statistics, velocity statistics
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set Time between graphical output = 1e6
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type =  block AMG
+  end
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = false
+end

@@ -1,0 +1,11 @@
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 6266e3
+    set Outer radius = 6276e3
+    set Custom mesh subdivision = number of slices
+    set Number of slices = 1
+    set Initial lateral refinement = 5
+  end
+end

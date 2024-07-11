@@ -1,0 +1,59 @@
+# document crash/FPE that happens when doing geometric averaging
+# with viscosities in 3d (due to an overflow)
+
+set Dimension                               = 3
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk inner radius      = 1
+    set Chunk outer radius      = 2
+    set Chunk minimum latitude  = 37
+    set Chunk maximum latitude  = 49
+    set Chunk minimum longitude = -132
+    set Chunk maximum longitude = -116
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names    = initial temperature
+  set Fixed temperature boundary indicators     = inner, outer
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators   = outer
+  set Zero velocity boundary indicators         = inner
+end
+
+subsection Material model
+  set Material averaging    = geometric average
+  set Model name            = simple
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age bottom boundary layer = 1e6
+    set Age top boundary layer = 5e6
+    set Amplitude = 100
+    set Position = center
+    set Radius = 100e3
+    set Subadiabaticity = 0
+  end
+end
+
+subsection Gravity model
+  set Model name    = ascii data
+end
+
+subsection Mesh refinement
+  set Initial global refinement             = 3
+  set Initial adaptive refinement           = 0
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 0
+end

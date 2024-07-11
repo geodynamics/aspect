@@ -1,0 +1,30 @@
+include ./mantle_setup_start.prm
+
+set Dimension                              = 2
+set End time                               = 3e8
+set Resume computation                     = true
+set Nonlinear solver tolerance             = 1e-4
+
+subsection Melt settings
+  set Include melt transport               = true
+  set Melt scaling factor threshold        = 1e-8
+end
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 2e2
+    set Reaction time steps per advection step = 20
+  end
+end
+
+subsection Material model
+  subsection Melt boukare
+    set Melting time scale for operator splitting = 1e3
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 2
+  set Time steps between mesh refinement       = 3
+end

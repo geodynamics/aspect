@@ -1,0 +1,30 @@
+# Test TimeStepping plugin "repeat on cutback" by having a change in
+# prescribed surface velocity in combination with the advection
+# of particles. There are two compositional fields, one based on
+# the field method and one on the particle method. The initial condition
+# for the fields is the same (identical to the temperature field).
+# For sufficient mesh and particle resolution,
+# the end result for the two fields should be practically the same.
+# Same as time_stepping_repeat_particles.prm except for the prescribed
+# boundary velocity and the iterative Advection scheme.
+# For this scheme, the particle positions and properties
+# have to be restored before each second or later nonlinear iteration
+# within a timestep. The sudden change in surface velocity is
+# less extreme so that the second temperature nonlinear iteration after
+# the change still converges.
+
+include $ASPECT_SOURCE_DIR/tests/time_stepping_repeat_particles.prm
+
+set Dimension                  = 2
+set Nonlinear solver scheme    = iterated Advection and Stokes
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+  set Prescribed velocity boundary indicators = top: function
+
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(t<0.75, if(x<0.5,-1,1), if(x<0.5,-15,15)); 0
+  end
+end

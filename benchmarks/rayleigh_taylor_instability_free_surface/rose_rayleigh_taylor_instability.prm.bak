@@ -1,0 +1,49 @@
+# Input file for the 2D Rayleigh Taylor benchmark described
+# in Rose et al. (2017, 10.1016/j.pepi.2016.11.007).
+# The benchmark considers a denser, more viscous layer
+# overlying lighter, less viscous mantle. The interface
+# between the layers is perturbed, leading to drips along
+# the vertical domain boundaries. A free surface allows
+# for the development of surface topography.
+# Compared to the setup in Kaus et al. (2010), the resolution
+# of the layer interface is higher and therefore a timestep
+# of 5000 yr is still stable without free surface stabilization,
+# while a timestep of 10,000 yr is not.
+
+############### Global parameters
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/rayleigh_taylor_instability_free_surface/kaus_rayleigh_taylor_instability.prm
+
+set Start time                             = 0
+set Maximum time step                      = 1e5
+set End time                               = 6e6
+set CFL number                             = 0.2
+set Output directory                       = output_Rose_stab_CFL02
+
+############### Boundary conditions
+subsection Mesh deformation
+  set Mesh deformation boundary indicators                    = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+    set Surface velocity projection      = vertical
+  end
+end
+
+############### Mesh refinement
+# The Rose et al. (2017) paper considers a maximum local resolution
+# of ~1 km by using global and adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 4
+  set Initial global refinement          = 5
+  set Refinement fraction                = 0.95
+  set Coarsening fraction                = 0.05
+  set Strategy                           = composition, boundary
+  set Time steps between mesh refinement = 5
+
+  subsection Boundary
+    set Boundary refinement indicators = top
+  end
+end

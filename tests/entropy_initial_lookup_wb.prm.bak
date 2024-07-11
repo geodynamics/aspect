@@ -1,0 +1,141 @@
+# Entropy field initiated with a temperature field of a subduction slab
+# using the World Builder and a table lookup of (P, T) -> S.
+
+set Dimension = 2
+set Use years in output instead of seconds = true
+set Start time = 0
+set End time = 0
+set Output directory = output_3
+set Timing output frequency = 10
+set Pressure normalization = surface
+set Surface pressure = 0
+set Adiabatic surface temperature = 1573.0
+set Resume computation = false
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set World builder file = $ASPECT_SOURCE_DIR/tests/entropy_initial_lookup_wb.wb
+
+subsection Discretization
+  set Composition polynomial degree = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree = 2
+  set Use discontinuous composition discretization = false
+end
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+# Geometry:
+#   The mesh is a 2-D chunk that spans 171.5 degree in longitude
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk inner radius = 3.481e6
+    set Chunk outer radius = 6.371e6
+    set Chunk maximum longitude = 1.7150e+02
+    set Chunk minimum longitude = 0.0
+    set Longitude repetitions = 6
+  end
+end
+
+# Mesh refinement:
+#   We combine the strategies of the isosurfaces with the viscosity.
+#   In this way, we can refine the level of the refinement in the
+#   slab core controlled by the colder temperature in the slab.
+subsection Mesh refinement
+  set Initial global refinement = 3
+  set Initial adaptive refinement = 3
+  set Minimum refinement level = 3
+  set Strategy = isosurfaces, minimum refinement function, viscosity
+  set Time steps between mesh refinement = 10
+  set Refinement fraction = 0.2
+  set Coarsening fraction = 0.2
+  set Run postprocessors on initial refinement = true
+  set Skip solvers on initial refinement = true
+
+  subsection Isosurfaces
+    set Isosurfaces = max, max, Temperature: 270.0 | 1173.0
+  end
+
+  subsection Minimum refinement function
+    set Coordinate system = spherical
+    set Variable names = r,phi,t
+    set Function constants = Ro=6.3710e+06, UM=670e3, DD=100e3
+    set Function expression = ((Ro-r<UM)? \
+                                   ((Ro-r<DD)? 5: 3): 0.0)
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+# Initial temperature:
+# A slab structure is configured by the WorldBuilder
+subsection Initial temperature model
+  set List of model names = world builder
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3500
+    set Outer temperature = 273
+  end
+end
+
+# We solve the entropy equation for the compositional field with name
+# 'entropy'. Temperature and density are then computed based on entropy and
+# pressure.
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = entropy, density_field
+  set Types of fields = entropy, density
+  set Compositional field methods = field, prescribed field
+end
+
+# We look up the values of entropies from another look-up table.
+# This table looks up the value of entropy from a pair of temperature and pressure.
+subsection Initial composition model
+  set List of model names = entropy table lookup
+
+  subsection Entropy table lookup
+    set Data directory = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable/
+    set Material file name = material_table_temperature_pressure.txt
+  end
+end
+
+# We use a data table for pyrolite computed using the thermodynamic
+# modeling software Perple_X.
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable/
+    set Material file name               = material_table_entropy_pressure.txt
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
+    set Thermal conductivity             = 0.1
+  end
+end
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e6
+    set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
+    set Output format = gnuplot
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
+    end
+  end
+end

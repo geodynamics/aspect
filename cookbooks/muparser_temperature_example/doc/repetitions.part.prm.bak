@@ -1,0 +1,15 @@
+# Want a 2D box 5000 km wide by 1000 km deep (5e6 x 1e6  meters)
+# The variable repetitions divides the whole domain into 5 boxes (1000 x 1000 km)
+# as the 0th level mesh refinement: this is needed so elements are squares
+# and not elongated rectangles.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 5e6
+    set Y extent = 1e6
+    set X repetitions = 5
+    set Y repetitions = 1
+  end
+end

@@ -1,0 +1,95 @@
+# Test MeshRefinement::CompositionGradient
+
+set Adiabatic surface temperature          = 1623
+set CFL number                             = 1.0
+set Dimension                              = 2
+set End time                               = 0.08
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+subsection Prescribed Stokes solution
+  set Model name = circle
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = Alice, Bob
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0,1,2,3
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 0.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = l=250000
+    set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if(x+y<0.4,1.0,0.1);1.0+exp(-(x-0.5)^2/0.05-(y-0.4)^2/0.05)
+    set Variable names      = x,y
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.4
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Strategy = composition gradient
+  set Additional refinement times              = 0.02,0.04,0.06
+
+  subsection Composition gradient
+    set Compositional field scaling factors = 0.0, 1.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,temperature statistics,composition statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = artificial viscosity
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+  end
+end

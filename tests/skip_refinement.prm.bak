@@ -1,0 +1,165 @@
+# A simulation with adaptive refinement only based on minimum
+# refinement function. As a consequence, refinement will not change
+# the mesh after the minimum refinement is reached. Confirm that
+# ASPECT detects this and skips the mesh refinement routines.
+
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 100
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set CFL number                             = 0.5
+set Maximum time step                      = 50
+set Pressure normalization                 = no
+
+# Solver parameters
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps = 2000
+    set Linear solver tolerance = 1e-7
+    set GMRES solver restart length = 50
+  end
+end
+
+# Model geometry
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 2
+    set Y repetitions = 4
+    set X extent      = 1500e3
+    set Y extent      = 2891e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 1
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = y>=2791.e3 ? 4 : 1
+  end
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left,right
+
+  subsection Free surface
+    set Surface velocity projection = normal
+  end
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+# Prescribe a fixed vertical traction on the top boundary
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top y: function
+
+  subsection Function
+    set Variable names = x,y,t
+    set Function constants  = r0=100.e3, H0=1.e3, t1=90.e3, t2=100.e3, rhoi=931, g=9.815
+    set Function expression = 0; (x^2+y^2)<r0^2 ? t<t1 ? abs(cos(t/100.*pi))==1.0 ? -g*H0*rhoi*t/t1 : -g*H0*rhoi*(t+50.)/t1 : t<t2 ? abs(cos(t/100.*pi))==1.0 ? -g*H0*rhoi*(1-(t-t1)/(t2-t1)) : -g*H0*rhoi*(1-(t+50.-t1)/(t2-t1)) : 0 : 0;
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 7
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, LM, TZ, UM, Lith
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; if(y<=2221e3,1,0); if(y<=2471e3 && y>2221e3,1,0); if(y<=2821e3 && y>2471e3,1,0); if(y>2821e3,1,0);
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = true
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = viscoelastic
+  set Material averaging = harmonic average only viscosity
+
+  subsection Viscoelastic
+    set Densities                   = 4978, 4978, 4978, 4978, 4978, 3871, 3438, 3037
+    set Viscosities                 = 2.e21, 2.e21, 2.e21, 2.e21, 2.e21, 1.e21, 1.e21, 1.e40
+    set Elastic shear moduli        = 2.28340e11, 2.28340e11, 2.28340e11, 2.28340e11, 2.28340e11, 1.05490e11, 0.70363e11, 0.50605e11
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 2.5
+    set Viscosity averaging scheme  = harmonic
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.815
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = visualization, basic statistics, composition statistics, temperature statistics, topography, velocity statistics
+
+  subsection Visualization
+    set List of output variables = material properties, nonadiabatic pressure, strain rate
+    set Time between graphical output = 10000
+    set Interpolate output = false
+    set Number of grouped files = 1
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+end

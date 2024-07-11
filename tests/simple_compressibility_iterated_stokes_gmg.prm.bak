@@ -1,0 +1,19 @@
+# like simple_compressibility_iterated_stokes.prm but using GMG
+
+include $ASPECT_SOURCE_DIR/tests/simple_compressibility_iterated_stokes.prm
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end

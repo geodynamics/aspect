@@ -13,7 +13,6 @@ set Nonlinear solver scheme                = no Advection, single Stokes
 set Max nonlinear iterations               = 1
 set Use years in output instead of seconds = false
 
-
 # Follow as closely as possible the parameters from Rudi et al. (2017)
 subsection Solver parameters
   subsection Stokes solver parameters
@@ -25,8 +24,9 @@ subsection Solver parameters
     set Use weighted BFBT for Schur complement          = false
     set Krylov method for cheap solver steps            = GMRES
   end
+
   subsection AMG parameters
-   set AMG aggregation threshold = 0.02
+    set AMG aggregation threshold = 0.02
   end
 end
 

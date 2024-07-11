@@ -1,0 +1,95 @@
+# Test the 'surface elevation' visualization postprocessor using a
+# model that imposes an initial topography that is read from a data file
+# that describes global topography at 1-degree resolution.
+
+
+##############################################3
+# Start with a copy of chunk_initial_topography_ascii_data_3d.prm,
+# but with a different data file (a global topography description
+# with 1 degree accuracy
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+
+###################################
+# This is the part that is different: Specifically, do not actually
+# solve anything, and output the elevation so that we can inspect it.
+# Also use a higher mesh resolution
+set Nonlinear solver scheme = no Advection, no Stokes
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Initial topography model
+    set Model name = ascii data
+
+    subsection Ascii data model
+      set Data directory       = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/
+      set Data file name       = global_1deg.txt.gz
+    end
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = function
+  set Fixed temperature boundary indicators   = inner, outer
+
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Skip solvers on initial refinement = false
+  set Strategy                           = topography
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators =
+  set Zero velocity boundary indicators       = inner
+end
+
+# The ascii data file prescribes a topography between -2000 m and
+# +9000 m. The topography postprocessor output should match with this.
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = surface elevation
+  end
+end

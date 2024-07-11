@@ -1,0 +1,106 @@
+# Copy of visco_plastic.prm, but include a phase transition for the EoS
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Output directory                       = visco_plastic
+set Timing output frequency                = 1
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 273
+    set Left temperature   = 273
+    set Right temperature  = 273
+    set Top temperature    = 273
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Phase transition depths = 50e3
+    set Phase transition widths = 1e3
+    set Phase transition temperatures = 273
+    set Phase transition Clapeyron slopes = 0
+    set Densities = background:3300|3400
+    set Thermal expansivities = background:3.5e-5|2e-5
+    set Heat capacities = background:1200|1000
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 5.e-23
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization, material statistics
+
+  subsection Visualization
+    set List of output variables = material properties
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

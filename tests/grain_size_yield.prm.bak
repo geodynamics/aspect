@@ -1,0 +1,55 @@
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield.prm
+
+
+# Global parameters
+set Dimension                              = 2
+set Adiabatic surface temperature          = 273
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Reference density                    = 3300
+    set Thermal conductivity                 = 3.3
+    set Thermal expansion coefficient        = 0.000035
+    set Reference compressibility            = 0
+    set Minimum viscosity                    = 1e17
+    set Maximum viscosity                    = 1e28
+    set Reference temperature                = 293
+    set Grain growth rate constant           = 0
+    set Work fraction for boundary area change = 0
+
+    # Diffusion creep
+    # new scaled prefactors to match vertical viscosity profile
+    set Diffusion creep prefactor            = 1e-30
+    set Diffusion creep exponent             = 1
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 0
+    set Diffusion activation volume          = 0
+    set Dislocation viscosity iteration threshold = 1e-3
+
+    # No dislocation creep
+    set Dislocation creep prefactor          = 5.e-23
+    set Dislocation creep exponent           = 1
+    set Dislocation activation energy        = 0
+    set Dislocation activation volume        = 0
+    set Use Drucker-Prager rheology          = true
+    set Cohesions                            = 1e6
+    set Angles of internal friction          = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields   = grain_size
+  set Types of fields = grain size
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1
+  end
+end

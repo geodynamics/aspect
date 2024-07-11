@@ -1,0 +1,26 @@
+# Like rotate_shape_supg but with discontinuous Galerkin method
+# and WENO limiter
+
+set Dimension                              = 2
+
+include rotate_shape_supg.prm
+
+set Output directory                       = output-rotate-shape-dg-weno
+
+subsection Discretization
+  set Use discontinuous temperature discretization = true
+  set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+    set Limiter for discontinuous temperature solution = WENO
+    set Limiter for discontinuous composition solution = WENO
+  end
+end
+
+subsection Postprocess
+  subsection Visualization
+    set List of output variables = kxrcf indicator
+    subsection KXRCF indicator
+      set Name of advection field = C_1
+    end
+  end
+end

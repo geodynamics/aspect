@@ -1,0 +1,215 @@
+# This is a cookbook for a convection model with realistic material properties.
+# Specifically, it uses material properties read in from a look-up table
+# computed with mineral physics software and the projected density approximation.
+# It is a quarter of a spherical shell and uses periodic boundary conditions.
+
+set Dimension                              = 2
+set End time                               = 3e8
+set Adiabatic surface temperature          = 1613.0
+set Output directory                       = output-steinberger
+
+# Because the model is compressible, we use a nonlinear solver.
+# We here choose a tolerance of 1e-3 to limit model runtime, but in a
+# research application one would test what tolerance would be required
+# to obtain a sufficiently accurate solution, and 1e-3 is a quite large
+# value.
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-3
+
+# We run a 2d convection model in a quarter of a spherical shell.
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000
+    set Phi periodic = true
+  end
+end
+
+# Both the top and bottom boundaries allow for free slip.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+# Because the model has periodic side boundary conditions and free
+# slip at top and bottom, there is a rotational nullspace. We fix this
+# by setting the net rotation to zero.
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+# We use the gravity model from PREM.
+subsection Gravity model
+  set Model name = ascii data
+end
+
+# The temperature is prescribed at the top and bottom boundaries.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3773
+    set Outer temperature = 273
+  end
+end
+
+# The initial temperature model consists of an adiabatic profile,
+# thermal boundary layers at the surface and the core-mantle boundary,
+# and a small harmonic perturbation to initiate convection.
+subsection Initial temperature model
+  set List of model names = adiabatic, function
+
+  subsection Function
+    set Coordinate system   = spherical
+    set Variable names      = r, phi
+    set Function constants  = r0 = 3481000, r1 = 6371000
+    set Function expression = 30 * sin((r-r0)/(r1-r0)*pi)*sin(16*phi) + 20 * sin(2*(r-r0)/(r1-r0)*pi)*sin(12*phi)
+  end
+
+  subsection Adiabatic
+    set Age top boundary layer = 1e8
+    set Age bottom boundary layer = 1e8
+  end
+end
+
+# The model uses the Steinberger material model, which uses a viscosity
+# profile constrained by mineral physics and the geoid, and which can read
+# in material properties from a look-up table.
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    # This data directory contains the files for the viscosity profile,
+    # the lateral viscosity variations due to temperature, and all
+    # material files containing look-up tables computed by mineral physics
+    # software providing density, thermal expansivity and specific heat.
+    set Data directory                                = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Lateral viscosity file name                   = temp-viscosity-prefactor.txt
+    set Material file names                           = pyr-ringwood88.txt
+    set Radial viscosity file name                    = radial-visc-simple.txt
+
+    # Because of the resolution in this cookbook we limit the lateral viscosity
+    # variations to three orders of magnitude in both directions (for a total of
+    # six orders of magnitude). We then additionally limit the overall viscosity
+    # between 1e20 Pa s and 5e23 Pa s. This allows the features of the flow field
+    # to be resolved. In the Earth, we would expect higher viscosities in the
+    # lithosphere and lower viscosities in plumes and near the core-mantle boundary.
+    # In addition, this model only accounts for diffusion creep, so the
+    # lithosphere has a high viscosity and forms a stagnant lid on top of the
+    # model. In order to have more realistic subduction in a model like this,
+    # one would have to either prescribe plate velocities at the surface
+    # (forcing plates to subduct) or take into account plastic yielding (so that
+    # the lithosphere can break).
+    set Maximum lateral viscosity variation           = 1e3
+    set Maximum viscosity                             = 5e23
+    set Minimum viscosity                             = 1e20
+
+    # We base our viscosity profile on the adiabat computed based on the
+    # material properties used in the model rather than the laterally
+    # averaged temperature.
+    set Use lateral average temperature for viscosity = false
+
+    # We do not want to include latent heat in our model, mainly because it
+    # can lead to a lot of numerical problems. In a research application, a
+    # model like this should include latent heat. In that case, the formatting
+    # of the look-up table determines if this parameter needs to be set to true
+    # or false. If the look-up table contains the effective thermal expansivity
+    # and specific heat, which includes the effect of phase transformations,
+    # then this parameter still needs to be set to false, because latent heat is
+    # already included automatically when using the properties from the look-up
+    # table. If the look-up table contains thermal expansivity and specific heat
+    # without the effect of phase transitions, then this parameters can be set
+    # to true to compute latent heat effects based on the pressure and
+    # temperature derivatives of the specific enthalpy (using the approach of
+    # Nakagawa et al., 2009).
+    set Latent heat                                   = false
+  end
+end
+
+# Our material model is compressible and includes the temperature gradient
+# caused by adiabatic heating. Consequently, we include both adiabatic heating
+# and shear heating.
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+end
+
+# Since our model is compressible, the most accurate way to solve the mass
+# conservation equation implemented in ASPECT is to use the 'projected density
+# approximation'. This way, ASPECT will compute the density gradients in the
+# mass conservation directly from the density field (interpolated onto the
+# finite element grid) rather than approximating it with a reference profile
+# or temperature/pressure derivatives of the density. The temperature equation
+# uses the real density (rather than a reference profile) as well.
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+# In order to use the projected density approximation, the model needs a
+# compositional field that the density values can be interpolated on. Here, this
+# field is called 'density_field'. We assign the field the type 'density', so
+# that ASPECT knows that this is the field it should use to compute the density
+# gradient required to solve the equations. ASPECT does not need to solve an
+# equation for this field, it only needs to interpolate the density values onto
+# it. This is covered by the compositional field method 'prescribed field'.
+# For fields of this type, the material model provides the values that should be
+# interpolated onto the field.
+subsection Compositional fields
+  set Number of fields                   = 1
+  set Names of fields                    = density_field
+  set Types of fields                    = density
+  set Compositional field methods        = prescribed field
+end
+
+# We refine the mesh near the boundaries, and where temperature variations are
+# large. In addition, we make sure that in the transition zone, where both the
+# viscosity and the density change a lot, we use the highest refinement level.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 5
+  set Refinement fraction                = 0.95
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature, boundary, minimum refinement function
+  set Time steps between mesh refinement = 5
+
+  subsection Boundary
+    set Boundary refinement indicators = top, bottom
+  end
+
+  subsection Minimum refinement function
+    set Coordinate system   = depth
+    set Variable names      = depth, phi
+    set Function expression = if(depth<700000, 6, 5)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = material properties, nonadiabatic temperature, named additional outputs
+    set Time between graphical output = 1e6
+  end
+end
+
+# This model is compressible and has moderately strong viscosity variations.
+# To make sure the Stokes solver converges, we increase the GMRES solver restart
+# length. This takes more time for each iteration, but the solver usually
+# converges within fewer iterations. We also increase the number of cheap Stokes
+# solver steps because the cheap solver can often already solve the problem, and
+# it is quicker than the expensive solver.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set GMRES solver restart length = 200
+    set Number of cheap Stokes solver steps = 500
+  end
+end
+
+# We also write out checkpoints in case we want to restart the simulation.
+subsection Checkpointing
+  set Steps between checkpoint = 10
+end

@@ -1,0 +1,69 @@
+# Enable if: ASPECT_WITH_WORLD_BUILDER
+# This test is a copy of world_builder_simple.prm and checks that we can select
+# a subset of compositions for which to evaluate the world builder.
+
+set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_select_composition.wb
+set Use years in output instead of seconds = false
+set Adiabatic surface temperature = 1613
+set End time = 0
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Function expression = if(x > 1500000,1.0,0.0);0.0;0.0
+    set Composition reference profile = function
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = 1
+  set Tangential velocity boundary indicators = 0, 2, 3
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = Crust, Lithosphere, Continent
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1500e3
+    set Y extent = 200e3
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set Model name = world builder
+end
+
+subsection Initial composition model
+  set List of model names = world builder
+
+  subsection World builder
+    set List of relevant compositions = Crust
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference temperature = 1613
+    set Viscosity = 1e21
+    set Thermal conductivity = 1e-06
+    set Density differential for compositional field 1 = 500
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 5
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics
+end

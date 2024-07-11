@@ -1,0 +1,17 @@
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/cookbooks/van-keken/van-keken-smooth.prm
+
+set End time = 0.0
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 3
+end
+
+subsection Postprocess
+  subsection Visualization
+    set Interpolate output = true
+    set Write higher order output = true
+  end
+end

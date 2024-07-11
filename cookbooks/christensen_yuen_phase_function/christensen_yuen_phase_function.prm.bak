@@ -1,0 +1,172 @@
+# This is a setup for convection in a 2D box with a phase transition
+# in the center, and corresponds to the setup of the Boussinesq cases
+# in Christensen & Yuen 1985.
+
+set Dimension                              = 2
+set End time                               = 2e8
+set Output directory                       = christensen_yuen
+
+# We use a nonlinear solver to make sure any nonlinearity that may be
+# associated with the phase transition is resolved, and we use a large
+# value for the Maximum nonlinear iterations to make it obvious if the
+# nonlinear solver does not converge. Usually, the nonlinear solver
+# should converge within 1-5 iterations.
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 500
+set Maximum time step                      = 1e5
+set Adiabatic surface temperature = 500
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+# This model assumes the Boussinesq approximation, so it is
+# incompressible and has a constant reference density.
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# For the Boussinesq approximation, all heating terms are switched off.
+subsection Heating model
+  set List of model names =
+end
+
+# The model domain is a quadratic box.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1350000
+    set Y extent = 1350000
+  end
+end
+
+# Set the reference profile.
+# The temperature on the reference profile is 500 K, halfway between the
+# top temperature of 0 K and the bottom temperature of 1000 K.
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function constants = density=1000
+    set Function expression = 500; density*10*depth; density
+    set Variable names = depth
+  end
+end
+
+# This temperature initial condition resembles the one on Christensen & Yuen, 1985.
+# It has conductive boundary layers at the top and bottom, and sinusoidal
+# temperature perturbations.
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function constants = delta=0.1, A=10, h=1350000, pi=3.1416
+    set Variable names = x,z
+    set Function expression = 500 + 500*(erfc(z/(h*delta)) - erfc((1-z/h)/delta)) + A*cos(pi*x/h)*sin(pi*z/h) + A*cos(2*pi*x/h)*sin(pi*z/h) + A*cos(pi*x/h)*sin(2*pi*z/h) + A*cos(2*pi*x/h)*sin(2*pi*z/h)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = box
+
+  subsection Box
+    set Top temperature = 0
+    set Bottom temperature = 1000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+# This material model uses phase functions.
+# The model in Christensen & Yuen is nondimensional, but we want to keep
+# Earth-like parameters. To achieve this, we set all material
+# properties to multiples of 10, and then control the three important
+# model parameters by setting:
+#
+# k = 2.460375e7 / Ra,                                      to control the Rayleigh number,
+# deltarho = 2 alpha rho DeltaT = 200 kg/m3,                to achieve Rb = 2Ra, as in Christensen & Yuen,
+# gamma = P * Ra/Rb * rho g h / DeltaT = P/2 * 1.35e7 Pa/K, to set the phase buoyancy parameter.
+#
+# (for a more detailed explanation, see the corresponding cookbook description in the manual).
+
+subsection Material model
+  set Model name = latent heat
+  set Material averaging = harmonic average only viscosity
+
+  subsection Latent heat
+    # All parameters in the equation of state are constant, and the mode is incompressible.
+    set Reference temperature                          = 500
+    set Reference density                              = 1000
+    set Reference specific heat                        = 1000
+    set Thermal expansion coefficient                  = 1e-4
+    set Compressibility                                = 0
+    set Thermal conductivity                           = 246.03750       # k = 2.460375e7/Ra, corresponds to Ra = 1e5
+
+    # There is one phase transition in the center of the box (at a depth of 675 km),
+    # with a width of 67.5 km (5% of the box height).
+    # It occurs at that depth if the temperature corresponds to the reference temperature (500 K);
+    # for different temperatures the depth changes according to the Clapeyron slope (-2.7 MPa/K).
+    # At the phase transition, the density increases from its reference value of 1000 kg/m^3 to
+    # 1200 kg/m^3.
+    set Define transition by depth instead of pressure = true
+    set Phase transition depths                        = 675000
+    set Phase transition widths                        = 67500
+    set Phase transition temperatures                  = 500
+    set Phase transition Clapeyron slopes              = -2700000        # gamma = P * Ra/Rb, corresponds to P = -0.4
+    set Phase transition density jumps                 = 200             # deltarho = 2 alpha rho DeltaT (Rb = 2Ra)
+    set Corresponding phase for density jump           = 0
+
+    # The viscosity is constant
+    set Viscosity                                      = 1e20
+    set Minimum viscosity                              = 1e20
+    set Maximum viscosity                              = 1e20
+    set Viscosity prefactors                           = 1,1
+    set Thermal viscosity exponent                     = 0.0
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 6
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+# Stop the model run when a steady state heat flux is reached.
+# Some of the models do not reach steady state and will continue
+# until the end time is reached.
+subsection Termination criteria
+  set Termination criteria = end time, steady state heat flux
+
+  subsection Steady state heat flux
+    set Maximum relative deviation = 0.005
+    set Time in steady state = 1e7
+    set Boundary indicators = top
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, heating statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set List of output variables      = material properties, adiabat, strain rate
+
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
+  end
+end

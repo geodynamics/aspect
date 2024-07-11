@@ -1,0 +1,203 @@
+# This is a model of a mid-ocean ridge with a transform fault,
+# specifically, it is a model that reproduces the setup of Behn et
+# al., 2007: Thermal structure of oceanic transform faults.
+# This input file covers case 1 from that publication (with a
+# constant viscosity).
+
+# We use the Geodynamic World Builder to create the initial temperature.
+# Therefore, we have to specify the location of the GWB input file
+# that we want to use. The file we use here is located in the cookbooks
+# folder of the GWB repository. See the corresponding tutorial in the
+# Geodynamic World Builder on how to create this file.
+set World builder file = $ASPECT_SOURCE_DIR/contrib/world_builder/cookbooks/3d_cartesian_transform_fault/3d_cartesian_transform_fault.wb
+
+# We run the model for 10 million years.
+set End time                               = 1e7
+set Output directory                       = transform-fault-behn-2007
+set Dimension                              = 3
+
+# We set the average pressure at the surface to 0.
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Note that the adiabatic surface temperature should be consistent with the
+# value assumed in the GWB input file, given in the parameter 'potential
+# mantle temperature'.
+set Adiabatic surface temperature          = 1573.15
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 50
+
+# We use the geometric multigrid solver, but because this is a difficult
+# linear problem to solve with a large viscosity contrast, we increase the
+# number of cheap iterations and the restart length to make sure it
+# converges.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set GMRES solver restart length = 200
+    set Number of cheap Stokes solver steps = 5000
+    set Stokes solver type = block GMG
+  end
+end
+
+# The model is a box with a width of 250 x 100 km and a depth of 100 km.
+# The number of X, Y and Z repetitions determine the shape of the coarsest
+# mesh cells (that will then be refined adaptively) relative to the
+# shape of the box. To achieve an aspect ratio of approximately one
+# for the cells, we choose more X than Y and Z repetitions.
+# Note that the geometry should be consistent with the geometry assumed in
+# in the GWB input file. Specifically, that means making sure that the
+# whole model domain lies inside the area prescribed by the coordinates
+# of the oceanic plate feature given in the GWB input file.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 250000
+    set Y extent  = 100000
+    set Z extent  = 100000
+    set X repetitions = 5
+    set Y repetitions = 2
+    set Z repetitions = 2
+  end
+end
+
+# Since we model an oceanic plate moving away from the ridge axis, we
+# prescribe the plate velocity of 3 cm/yr at the surface. Depending on
+# the side of the transform fault we are on, the velocity points either
+# in negative or positive x direction.
+# As per Behn et al., 2007: The base of the model is stress free.
+# Symmetric boundary conditions are imposed on the sides of the model space
+# parallel to the spreading direction, and the boundaries perpendicular to
+# spreading are open to convective flux (we prescribe the lithostatic
+# pressure).
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = front, back
+  set Prescribed velocity boundary indicators = top: function
+
+  subsection Function
+    set Function constants  = spreading_rate=0.03
+    set Variable names      = x,y,z
+    set Function expression = if(x<50000 || (x<200000 && y<50000), -spreading_rate, spreading_rate); 0; 0
+  end
+end
+
+# We prescribe a boundary traction in vertical direction at the bottom and
+# and right boundaries, setting it to the lithostatic pressure to allow
+# for free in- and outflow of material.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:initial lithostatic pressure, left:initial lithostatic pressure, bottom:initial lithostatic pressure
+
+  # We choose the representative point at 125 km from the ridge, which
+  # is in the middle between the distance of the old (200 km) and young
+  # (50 km) ridge segment at each side.
+  subsection Initial lithostatic pressure
+    set Number of integration points = 1000
+    set Representative point         = 175000,0,0
+  end
+end
+
+# The initial temperature comes form the Geodynamic World Builder.
+subsection Initial temperature model
+  set List of model names = world builder
+end
+
+# We prescribe the surface temperature at the top and the mantle potential temperature
+# at the bottom.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = box
+
+  subsection Box
+    set Top temperature = 273.15
+    set Bottom temperature = 1573.15
+  end
+end
+
+subsection Material model
+  # Because we use the GMG solver, we need to average the viscosity.
+  set Material averaging = project to Q1 only viscosity
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    # Reference temperature and viscosity
+    set Reference temperature = 1573.15
+
+    # Limit the viscosity. The maximum value is 1e23 Pa s as given in
+    # Behn et al. 2007. The minimum value should never be reached, since
+    # the viscosity should never drop below the reference value of
+    # 1e19 Pa s.
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e23
+    set Heat capacities       = 1000
+    set Densities             = 3300           # Value from Behn et al., 2007
+    set Thermal expansivities = 0              # Thermal buoyancy is ignored in Behn et al., 2007
+    set Define thermal conductivities = true
+    set Thermal conductivities        = 3.5
+    set Viscous flow law      = diffusion
+    set Activation volumes for diffusion creep  = 0
+    set Grain size            = 1
+
+    # The reference viscosity is 1e19 Pa s, and viscosity does
+    # not depend on pressure.
+    # Case 1 in Behn et al. (2007) has a constant viscosity as used here.
+    set Prefactors for diffusion creep          = 5e-20
+    set Activation energies for diffusion creep = 0
+
+    # Plasticity parameters - irrelevant
+    # set to very high value so that it is not used
+    set Cohesions = 1e15
+  end
+end
+
+# The gravity points downward and is set to 10.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# The highest resolution in Behn et al is 3.75 km near the transform fault.
+# The coarse cells have a size of 50 km, which corresponds to 4 global
+# refinements.
+subsection Mesh refinement
+  set Time steps between mesh refinement = 0
+  set Initial global refinement = 4
+  set Initial adaptive refinement = 0          # For a higher resolution near the transform fault, set this to 2
+  set Strategy = minimum refinement function
+  set Skip solvers on initial refinement = true
+  set Minimum refinement level = 4
+
+  # Using initial adpative refinements 2 would allow for an increased
+  # resolution near the transform faults.
+  subsection Minimum refinement function
+    set Coordinate system = cartesian
+    set Function expression = if((x<60000 && x>40000 && y>45000 && z>70000) || (x<210000 && x>190000 && y<=55000 && z>70000) || ((x>40000 && x<210000 && y>40000 && y<60000 && z>70000)), 6, 4)
+    set Variable names = x,y,z
+  end
+end
+
+# The model does not include any heating terms.
+subsection Heating model
+  set List of model names =
+end
+
+# Below, we describe the variables we want to include in the graphical output.
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, mass flux statistics
+
+  subsection Visualization
+    set List of output variables      = material properties, nonadiabatic temperature, strain rate, melt fraction
+    set Point-wise stress and strain  = true
+    set Number of grouped files       = 0
+    set Interpolate output            = false
+    set Output format                 = vtu
+    set Time between graphical output = 1e5
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, thermal conductivity
+    end
+  end
+end

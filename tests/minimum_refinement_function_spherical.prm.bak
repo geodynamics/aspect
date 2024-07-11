@@ -1,0 +1,136 @@
+# Copy of the minimum_refinement_function_cartesian test, adjusted to
+# spherical geometry and refinement coordinates. The minimum refinement
+# formula in this test uses spherical coordinates and refines exactly
+# those regions of the model that are assigned the highest temperatures
+# by the initial condition 'harmonic perturbation'.
+
+# MPI: 2
+
+set Adiabatic surface temperature          = 1623
+set CFL number                             = 1.0
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 0
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+set Use years in output instead of seconds = true
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 0,1
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 3773
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 273
+  end
+end
+
+subsection Discretization
+  subsection Stabilization parameters
+    # The $\beta$ factor in the artificial viscosity stabilization. An
+    # appropriate value for 2d is 0.078 and 0.117 for 3d. Units: None.
+    set beta  = 0.078
+
+    # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
+    set cR    = 0.33
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 250000
+    set Outer radius  = 500000
+    set Opening angle = 90
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+
+  subsection Harmonic perturbation
+    set Magnitude = 200
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Additional refinement times              =
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.3
+  set Initial adaptive refinement              = 3
+  set Initial global refinement                = 2
+  set Normalize individual refinement criteria = true
+  set Refinement criteria merge operation      = max
+  set Run postprocessors on initial refinement = true
+  set Strategy                                 = minimum refinement function
+  set Time steps between mesh refinement       = 1
+
+  subsection Minimum refinement function
+    set Coordinate system      = spherical
+    set Function constants     =
+    set Function expression    = 2 + 3*sin((r+250000)*pi/250000)*sin(6*phi)
+    set Variable names         = r,phi
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+  set Zero velocity boundary indicators       =
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average
+
+  subsection Depth average
+    # The time interval between each generation of graphical output files. A
+    # value of zero indicates that output should be generated in each time
+    # step. Units: years if the 'Use years in output instead of seconds'
+    # parameter is set; seconds otherwise.
+    set Time between graphical output = 0
+  end
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      =
+
+    # VTU file output supports grouping files from several CPUs into one file
+    # using MPI I/O when writing on a parallel filesystem. Select 0 for no
+    # grouping. This will disable parallel file output and instead write one
+    # file per processor in a background thread. A value of 1 will generate
+    # one big file containing the whole solution.
+    set Number of grouped files       = 0
+
+    # The file format to be used for graphical output.
+    set Output format                 = gnuplot
+
+    # The time interval between each generation of graphical output files. A
+    # value of zero indicates that output should be generated in each time
+    # step. Units: years if the 'Use years in output instead of seconds'
+    # parameter is set; seconds otherwise.
+    set Time between graphical output = 0
+  end
+end

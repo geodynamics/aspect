@@ -1,0 +1,111 @@
+# This is a test that makes sure that the ascii data slice model
+# reads in 3d files for the initial composition correctly, and
+# and then rotates them to the correct 2d plane.
+# The output was verified with a 3d version of the model, using
+# the same data file.
+
+set Dimension = 2
+set Use years in output instead of seconds = true
+set Output directory                       = ascii-data-slice
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Start time                             = 0
+set End time                               = 0
+set Adiabatic surface temperature          = 1600.0
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance                         = 1e-4
+    set Stokes solver type                              = block GMG
+    set Number of cheap Stokes solver steps             = 5000
+    set GMRES solver restart length                     = 1000
+    set Maximum number of expensive Stokes solver steps = 0
+    set Use full A block as preconditioner              = true
+    set Linear solver A block tolerance                 = 1e-2
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement = 3
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = composition_1
+  set Compositional field methods = static
+end
+
+subsection Initial composition model
+  set List of model names = ascii data
+
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
+    set Data file name = shell_3d_2.txt
+    set Slice dataset in 2D plane = true
+    set First point on slice  = 0.3, -1, 0
+    set Second point on slice = 0.4, 1, -1
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net surface rotation
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3700
+    set Outer temperature = 273
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer    = 1e8
+    set Age bottom boundary layer = 1e8
+  end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+end
+
+subsection Gravity model
+  set Model name = radial constant
+end
+
+subsection Material model
+  set Model name         = simple
+  set Material averaging = harmonic average
+
+  subsection Simple model
+    set Viscosity = 1e22
+    set Thermal viscosity exponent = 10.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors         = velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables      = adiabat, material properties, gravity, nonadiabatic temperature, nonadiabatic pressure
+    set Output format  = gnuplot
+  end
+end

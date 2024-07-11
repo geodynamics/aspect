@@ -1,0 +1,46 @@
+#this tests the temperature dependence of the viscous strain weakening factor
+
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_viscous_strain_weakening.prm
+
+set Output directory = visco_plastic_yield_temperature_activated_viscous_strain_weakening
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(x>=25.e3&x<=75.e3&y>=25.e3&y<=75.e3,0.5,0);
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Use temperature activated strain softening  = true
+    set Lower temperature for onset of strain weakening = 800
+    set Lower temperature for maximum strain weakening  = 900
+    set Upper temperature for maximum strain weakening  = 1000
+    set Upper temperature for onset of strain weakening = 1100
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,y
+    set Function constants = h=100e3,ts1=800,ts2=1200
+    set Function expression =  ts1 + ((ts2-ts1))*(h-y)/h;
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1200
+    set Top temperature    =  800
+  end
+end

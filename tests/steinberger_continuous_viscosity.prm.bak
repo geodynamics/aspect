@@ -1,0 +1,18 @@
+# This test is like the steinberger cookbook, but with the continuous version
+# of the viscosity profile.
+
+include $ASPECT_SOURCE_DIR/cookbooks/steinberger/steinberger.prm
+
+set End time                             = 2e6
+set Nonlinear solver scheme              = single Advection, single Stokes
+
+subsection Material model
+  subsection Steinberger model
+    set Radial viscosity file name       = radial-visc-continuous.txt
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end

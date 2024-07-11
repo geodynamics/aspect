@@ -1,0 +1,32 @@
+# this nearly empty .prm is used to generate parameters.tex
+# by running aspect.
+# sadly we need to set a few where there are no default values:
+
+set End time = 0.0
+
+subsection Geometry model
+  set Model name = box
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = left, right, bottom, top
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

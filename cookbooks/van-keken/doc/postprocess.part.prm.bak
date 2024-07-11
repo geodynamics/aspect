@@ -1,0 +1,3 @@
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end

@@ -1,0 +1,102 @@
+# test gmg + project to Q1 only viscosity
+set Dimension                              = 2
+set End time                               = 0
+set Adiabatic surface temperature          = 1613.0
+set Output directory                       = test
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 360
+    set Outer radius  = 6371000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3700
+    set Outer temperature = 273
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = adiabatic, function
+
+  subsection Function
+    set Coordinate system   = spherical
+    set Variable names      = r, phi
+    set Function constants  = r0 = 3481000, r1 = 6371000
+    set Function expression = 30 * sin((r-r0)/(r1-r0)*pi)*sin(16*phi) + 20 * sin(2*(r-r0)/(r1-r0)*pi)*sin(12*phi)
+  end
+
+  subsection Adiabatic
+    set Age top boundary layer = 7e7
+    set Age bottom boundary layer = 1e8
+  end
+end
+
+subsection Material model
+  set Model name = Steinberger
+  set Material averaging = project to Q1 only viscosity
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Material file names              = pyr-ringwood88.txt
+    set Radial viscosity file name       = radial-visc-simple.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Use lateral average temperature for viscosity  = false
+    set Maximum viscosity                = 1.5e23
+    set Minimum viscosity                = 5e19
+    set Maximum lateral viscosity variation = 1e4
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = material properties, nonadiabatic temperature, named additional outputs
+    set Time between graphical output = 1e6
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set GMRES solver restart length = 200
+    set Number of cheap Stokes solver steps = 500
+  end
+
+  subsection Matrix Free
+    set Output details = true
+  end
+end

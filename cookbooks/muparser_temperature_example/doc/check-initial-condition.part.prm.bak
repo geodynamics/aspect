@@ -1,0 +1,18 @@
+# Dimension, end-time (years) and output directory
+# Only does zeroth time-step to show that initial condition works
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 0
+
+# If you have a large model or a model with large viscosity variation and you
+# want to run the 0th timestep more quickly in order to just check in the initial
+# condition (IC), you can set these solver tolerance values to larger numbers, but
+# this means the solution will not be converged.
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance            = 1e-6 # can set to 1e-3 for checking IC
+  end
+end

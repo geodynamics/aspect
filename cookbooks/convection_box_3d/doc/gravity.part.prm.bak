@@ -1,0 +1,7 @@
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e16   # = Ra / Thermal expansion coefficient
+  end
+end

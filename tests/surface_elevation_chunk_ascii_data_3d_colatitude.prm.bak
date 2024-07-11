@@ -1,0 +1,32 @@
+# Test the 'surface elevation' visualization postprocessor using a
+# model that imposes an initial topography.
+
+set Dimension = 3
+
+## From here on, this is a copy of the chunk_initial_topography_ascii_data_3d_colatitude.prm
+## file because apparently we cannot recursively include .prm files.
+include $ASPECT_SOURCE_DIR/tests/chunk_initial_topography_ascii_data_3d.prm
+
+set Nonlinear solver scheme = no Advection, no Stokes
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Initial topography model
+    set Model name = ascii data
+
+    subsection Ascii data model
+      set Data directory       = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
+      set Data file name       = shell_3d_outer_2.0.txt
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = surface elevation
+  end
+end

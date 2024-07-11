@@ -1,0 +1,11 @@
+# similar to solver_history.prm, but check the stokes residual postprocessor
+# instead of using the signal directly.
+
+include $ASPECT_SOURCE_DIR/tests/stokes_residual.prm
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

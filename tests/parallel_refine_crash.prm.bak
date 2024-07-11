@@ -1,0 +1,112 @@
+# MPI: 4
+
+# Test case that showed two problems:
+#
+# 1. Parallel mesh smoothing would interfere with minimum refinement function
+# leading to missing refinement when run with few cells per processor.
+# 2. This leads to a crash with periodic constraints because of a hanging node.
+#
+# File shows the problem with 7 or more MPI ranks.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 1000
+set Maximum time step                      = 20000
+set Output directory                       = test_periodic
+set Pressure normalization                 = no #surface
+set Surface pressure                       = 0
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100e3
+    set Y extent = 150e3
+    set Z extent = 200e3
+    set X repetitions = 2
+    set Y repetitions = 3
+    set Z repetitions = 4
+    set Y periodic        = true
+  end
+end
+
+# We do not consider temperature in this setup
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+# X boundaries are periodic, and the rest are tangential.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0   # = Ra
+  end
+end
+
+# Dimensionless
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# We set our global refinement at the resolution level we want at the surface. As of now,
+# FastScape initial resolution is determined based off this.
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 2
+  set Time steps between mesh refinement       = 0
+  set Refinement fraction = 0.5
+  set Strategy                                 =  minimum refinement function, maximum refinement function
+  set Run postprocessors on initial refinement            = true
+
+  subsection Maximum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if( z>=150.e3 , if( z>=160.e3, if( z>=170.e3, 4 , 3 ) , 2 ) , 1 )
+  end
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if( z>=150.e3 , if( z>=160.e3, if( z>=170.e3, 4 , 3 ) , 2 ) , 1 )
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables      = strain rate, error indicator, partition
+    set Interpolate output = true
+  end
+end

@@ -1,0 +1,39 @@
+# This is a test for the cookbook described in
+# $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/models
+
+include $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/2D_slice_with_faults_and_cratons.prm
+
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/plugins/libtomography_based_plate_motions.release.so
+set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/world_builder_smac_cratons_faults_2D.json
+set Output directory                       = output
+set Max nonlinear iterations               = 1
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 1
+  set Initial global refinement = 1
+  set Skip solvers on initial refinement = true
+end
+
+subsection Material model
+  set Model name                    = tomography based plate motions
+
+  subsection Tomography based plate motions model
+    subsection Density velocity scaling
+      set Data directory                            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
+      set Data file name                            = rho_vs_scaling.txt
+    end
+
+    subsection Temperature velocity scaling
+      set Data directory                            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
+      set Data file name                            = dT_vs_scaling.txt
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors         = boundary velocity residual statistics, velocity boundary statistics, visualization, heat flux statistics, depth average
+
+  subsection Visualization
+    set Output format                = gnuplot
+  end
+end

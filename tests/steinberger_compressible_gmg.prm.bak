@@ -1,0 +1,18 @@
+# Like steinberger_compressible but with GMG and harmonic averaging for viscosity
+
+include $ASPECT_SOURCE_DIR/tests/steinberger_compressible.prm
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, heat flux statistics
+end

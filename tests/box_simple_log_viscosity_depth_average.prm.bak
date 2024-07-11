@@ -1,0 +1,104 @@
+# Test geometric depth averaging of visocity using  material model in 2d box
+# using a file # to specify depth-dependence.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Geometry of the domain. In order to test the depth averaging,
+# we use the X and Y repetitions such that four equal depth
+# layers of visocisty are created in the depth-dependent material
+# model.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2e6
+    set Y extent = 2e6
+    set X repetitions = 24
+    set Y repetitions = 24
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=10.0, L=3.0e6, pi=3.1415926536, k=1
+    set Function expression = 2773.0 - z/L*(2500.0) + p*cos(k*pi*x/L)*sin(k*pi*z/L/2.0)
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
+
+  subsection Box
+    set Bottom temperature = 2773
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 273.0
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc).
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Material model
+  set Model name = depth dependent
+
+  subsection Depth dependent model
+    set Base model = simple
+    set Depth dependence method = List
+    set Depth list =  5e5, 1e6, 1.5e6, 2e6
+    set Viscosity list = 1e23, 1e21, 1e22, 1e21
+    set Reference viscosity = 1e21
+  end
+
+  subsection Simple model
+    set Reference density             = 3300.0
+    set Reference specific heat       = 1250.0
+    set Reference temperature         = 0
+    set Thermal conductivity          = 0
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1e24
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average
+
+  subsection Depth average
+    set List of output variables = log viscosity, viscosity
+    set Time between graphical output = 0
+    set Number of zones = 2
+    set Depth boundaries of zones = 0, 1e6, 2e6
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end

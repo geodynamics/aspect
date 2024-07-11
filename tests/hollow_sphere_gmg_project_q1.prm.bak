@@ -1,0 +1,29 @@
+# The 3D HollowSphere benchmark solved with the block
+# GMG preconditioner and project to Q1 only viscosity
+# averaging
+
+include $ASPECT_SOURCE_DIR/benchmarks/hollow_sphere/hollow_sphere.prm
+
+set Dimension = 3
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 100
+  end
+end
+
+subsection Material model
+  set Model name = HollowSphereMaterial
+  set Material averaging = project to Q1 only viscosity
+end
+
+subsection Postprocess
+  set List of postprocessors = HollowSpherePostprocessor
+end

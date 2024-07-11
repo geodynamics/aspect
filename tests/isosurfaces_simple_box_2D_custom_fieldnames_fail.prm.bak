@@ -1,0 +1,21 @@
+# This input file tests the isosurface mesh refinement plugin
+include $ASPECT_SOURCE_DIR/tests/isosurfaces_simple_box_2D.prm
+
+
+# EXPECT FAILURE
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = field1, FieldB, fIEld_C
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
+  set Strategy = isosurfaces
+
+  subsection Isosurfaces
+    set Isosurfaces = 4,    4,    Temperature: 0 | 600,   C_2 : 0.0 | 0.5 ;\
+                      0,    0,    Temperature: 1600 | 3000,   C_2 : 0.0 | 0.5
+  end
+end

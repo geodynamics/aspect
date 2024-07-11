@@ -1,0 +1,8 @@
+include $ASPECT_SOURCE_DIR/cookbooks/magnetic_stripes/magnetic_stripes.prm
+
+set Dimension = 2
+set End time = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+end

@@ -1,0 +1,23 @@
+# This is a test for the grain_size_ridge cookbook.
+# We loosen the solver tolerance to make it run faster.
+
+include $ASPECT_SOURCE_DIR/cookbooks/grain_size_ridge/grain_size_ridge.prm
+
+set End time                    = 500
+set Nonlinear solver tolerance  = 1e-4
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 5e-5
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 4
+  set Initial adaptive refinement = 0
+  set Minimum refinement level = 4
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, velocity statistics, mass flux statistics, particles, ODE statistics
+end

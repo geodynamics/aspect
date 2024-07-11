@@ -1,0 +1,154 @@
+# A model of a plume arriving at the base of a plate.
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1e7
+set Use years in output instead of seconds = true
+set Output directory                       = output-heat-flow-plume
+set Adiabatic surface temperature          = 1600
+set Maximum time step                      = 1e6
+
+############### Parameters describing the model
+# Let us choose a box domain (400 km wide and 200 km in depth)
+# where we fix the temperature at the bottom and top,
+# allow free slip along the bottom, left and right,
+# and prescribe the velocity along the top using the
+# `function' description.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 400000
+    set Y extent = 200000
+    set X repetitions = 2
+  end
+end
+
+# In order to allow plume material to flow in with the
+# temperature selected in the initial temperature section,
+# we apply the initial temperature as the boundary temperature.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Maximal temperature = 1600
+    set Minimal temperature = 293
+  end
+end
+
+# In this model we want material to be able to (1) flow in freely
+# through the base, (2) flow freely in the horizontal direction
+# through the left and right walls where the vertical velocity is 0,
+# and (3) have a velocity of zero at the top boundary. This is
+# achieved through a combination of velocity and pressure boundary
+# conditions, where only the vertical (y) component of the velocity
+# is set to 0 on the left and right walls, while the x and y velocity
+# are both set to zero on the top boundary.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left y: function, right y:function, top:function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 0;0
+  end
+end
+
+# We allow inflow and outflow at the model base by setting the traction
+# boundary condition to the initial lithostatic pressure. On the left
+# and right boundaries, the x component of the  boundary traction is
+# also set to the initial lithostatic pressure, which enables horizontal
+# inflow and outflow.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = bottom:initial lithostatic pressure,right x:initial lithostatic pressure, left x:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Representative point = 0,0
+    set Number of integration points = 1000
+  end
+end
+
+# We then choose a vertical gravity model.
+subsection Gravity model
+  set Model name = vertical
+end
+
+# The initial temperature is set to the value of the
+# Adiabatic surface temperature, in this case 1600 K,
+# but with a cold boundary layer at the surface and a
+# hot thermal anomaly at the base of the model
+# representing a plume. The age of the cold top
+# boundary layer determines its thickness.
+subsection Initial temperature model
+  set List of model names = adiabatic, function
+
+  subsection Adiabatic
+    # This is the age of the top boundary layer in years.
+    set Age top boundary layer = 1
+  end
+
+  # The constant DeltaT determines the amplitude of the temperature anomaly,
+  # which is a 2d Gaussian located at the center of the bottom boundary.
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = DeltaT=0
+    set Function expression = DeltaT * exp(-((z*z)+(x-200000)*(x-200000))/(5e8))
+  end
+end
+
+# This model uses the composition reaction material model,
+# where most material properties are constant, except for the
+# viscosity and the density, which depend on temperature as
+# expressed by the Thermal viscosity exponent and the
+# Thermal expansion coefficient. At the Reference temperature,
+# the viscosity equals the value set with the Viscosity
+# parameter.
+subsection Material model
+  set Model name = composition reaction
+
+  subsection Composition reaction model
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 2e19
+    set Thermal viscosity exponent    = 10.0
+    set Reference temperature         = 1600
+  end
+end
+
+# This part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed.
+# Here, the mesh is designed to be finer at the surface than at
+# the bottom of the model to better capture the conductive cooling
+# of the plates. It initially undergoes two global refinements and
+# four adaptive refinements in the first time step, but is not
+# refined further (i.e., it remains static) throughout the model
+# run. The adaptive refinements use the minimum refinement function
+# to increase the resolution towards the model surface in a
+# piece-wise fashion at depths of 7 and 30 kilometers.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 4
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Variable names = depth, z
+    set Function expression = if(depth<7000,6,if(depth<30000,5,4))
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, heat flux densities
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set List of output variables = material properties, heat flux map, vertical heat flux
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, specific heat, viscosity, thermal conductivity
+    end
+  end
+end

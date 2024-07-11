@@ -1,0 +1,103 @@
+# Listing of Parameters
+# ---------------------
+# Set up the solitary wave benchmark
+# (Barcilon & Richter, 1986; Simpson & Spiegelman, 2011;
+# Keller et al., 2013; Schmeling, 200
+
+set Additional shared libraries            = ./libsolitary_wave.so
+
+# A non-linear solver has to be used for models with melt migration
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 10
+set Nonlinear solver tolerance             = 1e-5
+
+# The end time is chosen in such a way that the solitary wave travels
+# approximately 5 times its wavelength during the model time.
+set End time                               = 6e6
+
+# To model melt migration, there has to be a compositional field with
+# the name 'porosity'.
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+# Enable modeling of melt migration in addition to the advection of
+# solid material.
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+######### Parameters for the porosity field ########################
+
+# We use the initial conditions and material model from the
+# solitary wave plugin and choose a wave with an amplitude of
+# 0.01 and a background porosity of 0.001.
+subsection Initial composition model
+  set Model name = Solitary wave initial condition
+
+  subsection Solitary wave initial condition
+    set Offset = 200
+    set Read solution from file = true
+    set Amplitude = 0.01
+    set Background porosity = 0.001
+  end
+end
+
+subsection Material model
+  set Model name = Solitary Wave
+end
+
+# As material is flowing in, we prescribe the porosity at the
+# upper and lower boundary.
+subsection Boundary composition model
+  set List of model names = initial composition
+  set Fixed composition boundary indicators   = 2,3
+end
+
+# As we know that our solution does not have any steep gradients
+# we can use a low stabilization to avoid too much diffusion.
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.001
+  end
+end
+
+######### Model geometry ##############################################
+
+# Our domain is a pseudo-1D-profile 400 m in height, but only a few elements wide
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 10
+    set Y extent  = 400
+    set Y repetitions = 40
+  end
+end
+
+######### Velocity boundary conditions ################################
+
+# We apply the phase speed of the wave here, so that it always stays in the
+# same place in our model. The phase speed is c = 5.25e-11 m/s, but we have
+# to convert it to m/years using the same conversion that is used internally
+# in ASPECT: year_in_seconds = 60*60*24*365.2425.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+
+  subsection Function
+    set Function expression = 0;-1.65673998e-4
+  end
+end
+
+# Postprocessor for the error calculation
+subsection Postprocess
+  set List of postprocessors = solitary wave statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-10
+  end
+end

@@ -1,0 +1,101 @@
+# A test for the exact Peierls creep flow law
+# with the visco_plastic material model.
+# Following the general Peierls creep flow law of Idrissi
+# et al. 2016 and assuming a strain rate of 1e-15 s^-1. The stress
+# from the Peierls rheology is limited by the cutoff stress
+# of 1000 Pa, so a viscosity of 5e17 Pa*s is computed instead
+# from:
+#     1000 / 1e-15 / 2.0 = 5e17
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 3.e2
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# No boundary-driven deformation, but the strain-rate used by the material
+# model is set in the material model section through the parameters
+# "Reference strain rate" and "Minimum strain rate".
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1673
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference strain rate                     = 1e-15
+    set Minimum strain rate                       = 1e-15
+
+    # dislocation creep parameters
+    # These values produce such a sufficiently high viscosity that the
+    # composite viscosity between the diffusion and dislocation creep
+    # is effectively equal to the Peierls creep viscosity.
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep          = 1.e-50
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0
+    set Activation volumes for dislocation creep  = 0
+
+    # Peierls creep parameters
+    set Include Peierls creep                     = true
+    set Peierls creep flow law                    = exact
+    set Prefactors for Peierls creep              = 1e6
+    set Activation energies for Peierls creep     = 566.e3
+    set Activation volumes for Peierls creep      = 0.
+    set Peierls stresses                          = 3.8e9
+    set Stress exponents for Peierls creep        = 0.0
+    set Peierls fitting parameters                = 0.15
+    set Peierls glide parameters p                = 0.5
+    set Peierls glide parameters q                = 2.0
+    set Peierls strain rate residual tolerance    = 1e-22
+    set Maximum Peierls strain rate iterations    = 40
+    set Cutoff stresses for Peierls creep         = 1000
+    set Apply strict stress cutoff for Peierls creep = true
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = material statistics
+end

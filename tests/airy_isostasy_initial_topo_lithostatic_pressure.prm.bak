@@ -1,0 +1,41 @@
+# We setup three columns, of which the middle column has a higher density
+# and viscosity. By choosing a free surface in combination with a
+# prescribed lithostatic pressure,
+# we see the middle column sink until isostasy is reached (if end time is increased)
+# Compared to airy_isostasy.prm, we start off with a nonzero initial topography.
+# This test in particular tests the point_is_in_domain function of the geometry
+# model. It should take into account the initial topography and find that the
+# Representative point lies within the domain. At x = 0.2, the initial topography
+# is namely 0.02948.
+
+include $ASPECT_SOURCE_DIR/tests/airy_isostasy.prm
+
+set Dimension = 2
+
+# The point_is_in_domain function is only called in
+# timestep 0, so we do not need to run the test further.
+set End time                               = 0
+
+subsection Geometry model
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+      set Function constants = L=1, R=0.05, C=0.5
+      set Function expression = R * cos(pi*(x-C)/(L))
+      set Maximum topography value = 0.05
+    end
+  end
+end
+
+# The representative point determines where the pressure
+# profile is calculated. We pick a point in the left
+# column which has some initial topography prescribed.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = 2 y: initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Number of integration points = 260
+    set Representative point         = 0.2,1.02
+  end
+end

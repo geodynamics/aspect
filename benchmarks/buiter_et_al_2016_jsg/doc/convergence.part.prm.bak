@@ -1,0 +1,44 @@
+# Note that the Linear/Nonlinear solver tolerance should be sufficiently strict
+# to avoid numerical instabilities.
+set Nonlinear solver scheme                 = single Advection, iterated Stokes
+set Nonlinear solver tolerance               = 1e-7
+set Max nonlinear iterations                = 100
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance             = 1e-8
+    set Number of cheap Stokes solver steps = 0
+
+    # A higher restart length makes the solver more robust for large viscosity
+    # contrasts.
+    set GMRES solver restart length         = 200
+  end
+end
+
+# The  discontinuous composition bound preserving limiter produces sharp
+# interfaces between compositional layers.
+subsection Discretization
+  set Use discontinuous composition discretization   = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum                 = 1, 1, 1, 1, 1, 100
+    set Global composition minimum                 = 0, 0, 0, 0, 0, 0
+  end
+end
+
+# Material properties
+# Using harmonic material averaging is required to achieve reasonable
+# convergence behavior, particulally when the viscosity contrast is large.
+subsection Material model
+  set Material averaging                             = harmonic average
+  set Model name                                     = visco plastic
+
+  subsection Visco Plastic
+    # The viscosity contrast is 10^7 here and any value higher than this causes
+    # divergence of the solver.
+    set Minimum viscosity                            = 1e5
+    set Maximum viscosity                            = 1e12
+    set Viscosity averaging scheme                   = harmonic
+  end
+end

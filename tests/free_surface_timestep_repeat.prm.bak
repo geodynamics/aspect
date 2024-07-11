@@ -1,0 +1,176 @@
+# This test is based on
+# /benchmarks/free_surface_tractions/viscoelastic/free_surface_VE_cylinder_2D_loading.prm
+# and checks that we can repeat time steps with mesh deformation enabled.
+
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 2
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set CFL number                             = 0.001
+set Maximum time step                      = 1
+set Output directory                       = output_free_surface_VE_cylinder_2D_loading-repeat
+set Timing output frequency                = 10
+set Pressure normalization                 = no
+
+subsection Time stepping
+  set List of model names = convection time step, repeat on cutback
+  set Minimum time step size = 0.5
+
+  subsection Repeat on cutback
+    set Relative repeat threshold = 0.99
+  end
+end
+
+# Model geometry (500x500 km, 50 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 500e3
+    set Y extent      = 500e3
+  end
+end
+
+# Mesh refinement specifications
+# Mesh refinement does not seem to affect
+# deformation of free surface (at least in 2-D).
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 1
+  set Time steps between mesh refinement = 1
+  set Strategy         = strain rate
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = left,right
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Surface velocity projection      = normal
+  end
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+# Prescribe a fixed vertical traction on the top boundary
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top y: function
+
+  subsection Function
+    set Variable names = x,y,t
+
+    #set Function expression = 0; 1.e9 + -20.e3*x
+    set Function constants  = r0=100.e3, H0=1.e3, t1=1.e3, rhoi=900, g=9.8, t0=1.e3
+
+    # r0 is load radius, H0 is load height, t1 is time load is fully removed,
+    # rhoi is density of ice/load
+    # option to linearly thin load beginning at time t0.
+    set Function expression = 0; if (x<r0 ,if(t<t0,-g*H0*rhoi,if(t<t1,-g*H0*rhoi*(1-(t-t0)/t1),0)), 0)
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0;
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = true
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities                   = 3300
+    set Viscosities                 = 3.e20
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 3
+    set Viscosity averaging scheme  = harmonic
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.8
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, temperature statistics, topography, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate
+    set Time between graphical output = 2
+    set Interpolate output = true
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+
+  subsection Topography
+    set Output to file = true
+    set Time between text output = 2
+  end
+end
+
+# Termination criteria
+subsection Termination criteria
+  set Termination criteria = end time
+end

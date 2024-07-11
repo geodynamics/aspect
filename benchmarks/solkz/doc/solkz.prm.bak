@@ -1,0 +1,60 @@
+# A description of the SolKZ benchmark for which a known solution
+# is available. See the manual for more information.
+
+set Additional shared libraries            = ./libsolkz.so
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Output directory                       = output
+set Pressure normalization                 = volume
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Material model
+  set Model name = SolKzMaterial
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+############### Parameters describing the temperature field
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+############### Parameters describing the discretization
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Use locally conservative discretization = false
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = SolKzPostprocessor, visualization
+end

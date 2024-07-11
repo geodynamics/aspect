@@ -1,0 +1,17 @@
+# Test cookbooks/cookbooks/bunge_et_al_mantle_convection/
+
+
+include $ASPECT_SOURCE_DIR/cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm
+
+set End time                               = 1e2
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Time steps between mesh refinement = 0
+end
+
+# Post processing
+subsection Postprocess
+  #  set List of postprocessors = temperature statistics
+end

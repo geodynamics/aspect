@@ -1,0 +1,20 @@
+# blankenbach case 2a as described in benchmarks/blankenbach/README.md
+
+include $ASPECT_SOURCE_DIR/benchmarks/blankenbach/base_case2a.prm
+
+set End time                               = 0.02
+set CFL number = 5.0
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = z1=0.102367, z2=0.897633, pi=3.14159265359
+    set Function expression = if(z<z1,0.5+0.5*(z1-z)/z1,if(z>z2,0.5*(1-z)/(1-z2),0.5)) + 0.1 * cos(x*pi) * sin(z*pi)
+    set Variable names      = x,z
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, heating statistics
+end

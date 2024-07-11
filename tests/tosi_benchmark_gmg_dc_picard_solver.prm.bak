@@ -1,0 +1,17 @@
+# Test GMG  iterated defect correction Stokes solver based on
+# benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
+
+set Nonlinear solver scheme = single Advection, iterated defect correction Stokes
+set End time                               = 0.0022
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end

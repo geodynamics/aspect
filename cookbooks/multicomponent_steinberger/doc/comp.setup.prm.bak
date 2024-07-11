@@ -1,0 +1,12 @@
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function constants  = a=2744.3e3, size=400e3, k=-7e-7, c=2.9367
+    set Function expression = ( (sqrt(x^2+y^2)>=3981.e3 && (x-a)^2+(y-a)^2<=size^2) ? (0.15) : \
+                              (sqrt(x^2+y^2)<3981.e3 && sqrt(x^2+y^2)>=3481.e3) ? \
+                              (c+k*sqrt(x^2+y^2)) : (0) )
+  end
+end

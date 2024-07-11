@@ -1,0 +1,96 @@
+# This parameter file modifies the 2D benchmark 'viscoelastic_bending_beam'.
+# It has been modified to model a much larger beam, and to have an open top
+# and bottom boundary to allow the inelastic, low viscosity fluid surrounding the beam to
+# be more easily displaced while the beam flexes.
+#
+# The benchmark examines bending of a viscoelastic beam surrounded by a less dense
+# and viscous (inelastic) fluid. Gravitational forces drive initial bending
+# (elastic strain) of the beam. The analytic solution is from Geodynamics 3rd Edition by
+# Turcotte and Schubert, Chapter 3.10 (eq. 3.85 for flexure and 3.86 for stress).
+# Models have been tested for deflections that are no greater than half the thickness of
+# the beam. More flexure could potentially lead to a breakdown of the fit since the analytic
+# solution assumes small deflection relative to the thickness.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
+
+
+# Global parameters
+set Start time                             = 0
+set End time                               = 200e3
+set Use years in output instead of seconds = true
+set Maximum time step                      = 1e3
+set Output directory                       = 20kmh_05drho
+
+# Model geometry (240x160 km, 1 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 160
+    set Y repetitions = 80
+    set X extent      = 320e3
+    set Y extent      = 160e3
+  end
+end
+
+# Mesh refinement
+subsection Mesh refinement
+  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 1
+  set Strategy                           = viscosity
+end
+
+# override boundary conditions:
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = left
+  set Tangential velocity boundary indicators = right
+end
+
+# Traction Boundary Conditions
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top: initial lithostatic pressure, bottom: initial lithostatic pressure
+
+  # Set the point for the open top and bottom boundaries
+
+  subsection Initial lithostatic pressure
+    set Representative point = 320e3, 0
+    set Number of integration points = 10000
+  end
+end
+
+# Spatial domain of different compositional fields
+# Make the beam 9x longer than it is wide to ensure the 'thin' approximation is valid
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; if ( 180e3>=x && y>=100e3 && y<=120e3, 1, 0)
+  end
+end
+
+# Material model
+# The density contrast has to be small with such a large beam to preserve the small deflection approximation
+subsection Material model
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities            =  2800,  2800,  2800,  2800,  2805
+    set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e24
+    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
+  end
+end
+
+# Post processing
+subsection Postprocess
+  subsection Visualization
+    set Number of grouped files = 1
+  end
+end
+
+# Termination criteria
+subsection Termination criteria
+  set Termination criteria = end time
+end

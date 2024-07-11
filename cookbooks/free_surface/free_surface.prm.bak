@@ -1,0 +1,141 @@
+# This is a very simple cookbook which demonstrates the use of a free surface
+# for computing surface topography. The model is a 2D box, with a rising blob
+# beneath a free surface that generates an initially increasing and then
+# decaying surface topography while its heat diffuses. We output the maximum
+# and minimum topography at every time step to document the evolution of
+# topography.
+
+set Dimension                              = 2
+set End time                               = 2e7
+set Use years in output instead of seconds = true
+set Output directory                       = output-free_surface
+
+# Free surface calculations are typically more difficult to stabilize, and tend
+# to mesh oscillations, in particular for the initial time steps. Thus, we limit
+# the initial time steps to a smaller size (1000 years, and we allow each time
+# step to only grow by 30% compared to the last one to avoid jumps in time step
+# length). We could also reduce the CFL number to decrease all time steps, but
+# that would slow down the whole model instead of just the first time steps.
+set Maximum first time step                = 1e3
+set Maximum relative increase in time step = 30
+set CFL number                             = 1.0
+
+# Pressure normalization must be set to ``no'' for free surface models, as its
+# equations are based on the assumption that the pressure is zero at the free
+# surface.
+set Pressure normalization                 = no
+
+# We can use any of the normal geometry models for free surface modeling, we
+# just need to specify further down which surface is to be the free one. We
+# here use a box model with vertical downwards gravity.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 500.e3
+    set Y extent = 200.e3
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Here is the major new section for this parameter file, specifying the
+# parameters for running free surface calculations.
+subsection Mesh deformation
+  # We specify a comma delimited list of all boundaries for which the mesh will
+  # deform (the top boundary), and the method by which their deformation is
+  # determined (in this case a free surface).
+  set Mesh deformation boundary indicators = top: free surface
+
+  # We can specify the free surface stabilization parameter
+  # theta, between zero and one with 0.5 being the default.
+  # If the parameter is zero, there is no stabilization
+  # and you are likely to see a sloshing instability develop. If
+  # it is one, the surface should be the most stable, though you
+  # may find that the rates that it moves are fairly damped.
+  # See the paper describing the free surface for more details on
+  # this parameter.
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+# Here we specify that the model has free slip velocity boundary conditions for
+# the sides and bottom. We do not specify a boundary condition for the top,
+# which is equivalent to a zero stress boundary condition. This means while the
+# section above describes how the mesh deforms, this section still describes
+# how the velocity should behave at these boundaries, and only the combination
+# of prescribing the mesh to move with the velocity and allowing the velocity
+# to move through the boundary generates the effect we commonly call "free
+# surface".
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+# We prescribe a zero boundary temperature, as we are just modeling a single
+# rising blob
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right, bottom, top
+  set List of model names = constant
+
+  subsection Constant
+    set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
+  end
+end
+
+# Our temperature initial conditions are simply a blob of hot
+# rock in the center of the domain.
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = sqrt((x-250.e3)^2 + (y-100.e3)^2) < 25.e3 ? 200.0 : 0.0
+  end
+end
+
+# A fairly standard simple material model, except we use an
+# artificially low thermal conductivity to keep our anomaly
+# from diffusing too fast.
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 1.0
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e20
+  end
+end
+
+# For simplicity we disable adaptive mesh refinement,
+# although it would significantly speed up this model
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0
+end
+
+# We also include the topography postprocessor, which just calculates
+# the maximum and minimum topography on your free surface at
+# every time step.
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, topography
+
+  subsection Visualization
+    set Time between graphical output = 1.e6
+  end
+end

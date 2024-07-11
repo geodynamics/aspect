@@ -1,0 +1,68 @@
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Boundary temperature model
+  set List of model names = box # Test comment
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Gravity model
+  #test comment3
+  set Model name = vertical#test comment2
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 3.3
+    set Y extent = 2.2
+    set Z extent = 1.1
+    set Box origin X coordinate = -1.9
+    set Box origin Y coordinate = 2.5
+    set Box origin Z coordinate = 3.1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+  end
+end

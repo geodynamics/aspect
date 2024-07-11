@@ -1,0 +1,84 @@
+# A testcase for the "Point-wise stress and strain" setting for the "strain
+# rate" visualization postprocessor. It solves the equations on a box with
+# Dirichlet boundary conditions equal to (z*z,0), which then is also the
+# velocity everywhere. This yields a linear strain rate.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1, 2, 3
+end
+
+# no gravity. the pressure will equal just the dynamic component
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+# temperature field doesn't matter. set it to zero
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = x
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0: function, 1: function, 2: function, 3: function
+
+  subsection Function
+    set Variable names = x,z
+    set Function expression = z*z;0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set Point-wise stress and strain = false
+    set Output format = gnuplot
+    set List of output variables = strain rate
+  end
+end

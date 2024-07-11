@@ -1,0 +1,138 @@
+# This model tests the reactive material model "zero solubility"
+# reaction scenario, where all of the bound fluid in a solid
+# with zero solubility should go into the free fluid phase
+# (tracked by porosity field). The model begins with no free fluid
+# (zero porosity) and 1% bound fluid (0.01). For a fluid reaction
+# time scale of 1e3 years and a time step size of 10e3 years,
+# the reaction should be complete at the end of the first time step
+# giving a porosity of 0.01 and a bound fluid value of 0.
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Output directory                       = reactive_fluid_transport_zero_solubility
+set Max nonlinear iterations               = 1
+set Nonlinear solver tolerance             = 1e-5
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+set End time                               = 10e3
+
+# Because the model includes reactions that might be on a faster time scale
+# than the time step of the model (release of bound fluid into free fluid),
+# we use the operator splitting scheme.
+set Use operator splitting                     = true
+
+# Melt transport is turned on to ensure it works
+# with this reaction scheme. If set to false,
+# a separate velocity and pressure would not be
+# calculated for the fluid phase, and the porosity
+# field would be advected with the solid velocity
+# unless a separate advection scheme is specified.
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+# There are two compositional fields, one that tracks the amount of free fluid
+# (the porosity) and one that tracks the amount of bound fluid (bound_fluid).
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, bound_fluid
+end
+
+# Initially, there is no free water (the porosity is zero) and the water content
+# of the material is 1%.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0; 0.01
+  end
+end
+
+# The composition is not fixed on any boundary
+subsection Boundary composition model
+  set Fixed composition boundary indicators =
+  set List of model names = initial composition
+end
+
+# Free slip on all sides
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+# The model is 2x2 km
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 2e3
+    set Y extent  = 2e3
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# The temperature is not important for this model, so we simply
+# set it to 1600 K everywhere (including the boundary).
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Maximal temperature = 1600
+    set Minimal temperature = 1600
+  end
+end
+
+# The reactive fluid transport model is composited
+# on top of the visco plastic material model.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model = visco plastic
+    set Reference fluid density = 2995
+    set Shear to bulk viscosity ratio = 0.1
+    set Reference fluid viscosity = 10
+    set Reference permeability = 2.5e-6
+    set Exponential fluid weakening factor = 0
+    set Fluid reaction time scale for operator splitting = 1e3
+    set Fluid-solid reaction scheme = zero solubility
+  end
+
+  subsection Visco Plastic
+    set Reference temperature                   = 1600
+    set Prefactors for diffusion creep          = 5e-21
+    set Viscous flow law = diffusion
+    set Densities                   = 3000
+    set Viscosity averaging scheme  = harmonic
+    set Minimum viscosity           = 1e19
+    set Maximum viscosity           = 1e19
+  end
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, melt statistics, velocity statistics
+end

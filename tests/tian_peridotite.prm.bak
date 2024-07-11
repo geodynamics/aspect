@@ -1,0 +1,122 @@
+# This model generates a representation of a phase diagram for the equilibrium
+# wt% water that can be stored in an upper mantle peridotite (PUM) as shown in
+# Figure 11 of  Tian et. al., 2019. This model reproduces that phase diagram
+# (very low res by default), with an important caveat being that the pressure axis
+# is inverted relative to the ASPECT output. A surface pressure of 600 MPa is imposed
+# to reproduce the pressure axis,and a lateral temperature gradient is imposed to
+# reproduce the temperature axis.
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 10
+set Nonlinear solver tolerance             = 1e-5
+set Surface pressure                       = 0.6e9
+set Dimension                              = 2
+set End time                               = 1e3
+set Maximum time step                      = 1e3
+set Use operator splitting                 = true
+
+# The Tian approximation implementation requires that all 4 rock compositions exist
+# as compositional fields, though they do not have to all be non zero.
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+end
+
+# Specify that the entire domain is peridotite, with an initial bound water content
+# of 11% everywhere, the bound_water will evolve to the parametrized phase diagram
+# for peridotite.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = initial_porosity=0.0, initial_bound_water=0.11
+    set Function expression = initial_porosity; \
+                              initial_bound_water; \
+                              1; \
+                              0; \
+                              0; \
+                              0
+  end
+end
+
+# Zero velocity boundaries
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = left, right, top, bottom
+end
+
+# Make the model 200km x 200km so that the Pressure extends to 6 GPa,
+# as in phase diagrams from Tian et al., 2019
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 200e3
+    set Y extent  = 200e3
+    set Y repetitions = 1
+    set X repetitions = 1
+  end
+end
+
+# 10 m/s^2 vertical gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Lateral temperature gradient from 300 - 1000 C, as in
+# phase diagrams from Tian et al., 2019
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function constants  = Tmin=573, Tmax=1273
+    set Function expression = Tmin + (Tmax - Tmin) * x/200e3
+  end
+end
+
+# Keep the temperature fixed
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom, right, left
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Maximal temperature = 573
+    set Minimal temperature = 1273
+  end
+end
+
+# Material model, using the simpler base model and selecting the tian approximation
+# as the fluid solid reaction scheme for the reactive fluid transport model.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = simpler
+    set Reference fluid density                          = 3000
+    set Fluid reaction time scale for operator splitting = 1e2
+    set Fluid-solid reaction scheme                      = tian approximation
+    set Maximum weight percent water in peridotite       = 11
+  end
+
+  subsection Simpler model
+    set Reference density             = 3000.0
+    set Thermal expansion coefficient = 1e-5
+  end
+end
+
+subsection Melt settings
+  set Include melt transport = true
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = composition statistics
+end

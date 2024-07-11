@@ -1,0 +1,147 @@
+# Conduction along an adiabat. Initially all material starts on one adiabat
+# (at constant entropy), with no material inflow. The adiabatic reference
+# profile is computed based on this initial entropy, using a look-up table
+# for orthopyroxene, which has one narrow phase transition in the center of
+# the model. The temperature is fixed at the top, and the bottom is set as
+# an insulating boundary. Consequently, the model should cool down over
+# time as heat flows out conductively through the top boundary, eventually
+# reaching a constant temperature.
+
+
+set Additional shared libraries            = ./plugins/libentropy_plugins.so
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 2.5e11
+set Maximum time step                      = 1e7
+set Output directory                       = output-entropy-conduction
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600.1243896484375
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 13000
+    set Y extent = 1300000
+    set Y repetitions = 200
+  end
+end
+
+subsection Initial temperature model
+  # We convert the initial temperature from the
+  # initial entropy.
+  # The value below corresponds to the entropy of 2534 J/kg/K
+  # used as the top boundary condition and the initial condition.
+  set Model name = prescribed temperature
+end
+
+subsection Adiabatic conditions model
+  # 'compute entropy profile' computes arbitrary adiabats
+  # internally, based on the data table.
+  set Model name = compute entropy profile
+
+  subsection Compute entropy profile
+    # Entropy equivalent to T=1600 K according to the used table
+    set Surface entropy = 2534
+  end
+end
+
+# We prescribe temperatures according to the data table.
+# This output is computed in the material model.
+subsection Temperature field
+  set Temperature method = prescribed field with diffusion
+end
+
+# We solve the entropy equation for the compositional field with name
+# 'entropy'. Temperature and density are then computed based on entropy and
+# pressure.
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = entropy, density_field
+  set Types of fields = entropy, density
+  set Compositional field methods = field, prescribed field
+end
+
+subsection Boundary temperature model
+  # No temperature boundary conditions,
+  # as the temperature equation is not solved
+  set Fixed temperature boundary indicators = top
+  set List of model names = initial temperature
+end
+
+# We prescribe the entropy at the top.
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top
+  set List of model names = function
+
+  subsection Function
+    # Only the first component (entropy) matters, the other equations
+    # are not solved but computed from entropy.
+    set Function expression = 2534; 3300
+  end
+end
+
+# Prescribing closed boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, left, right, bottom
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# We start at the same entropy as the one used for the
+# adiabatic profile.
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    # Entropy equivalent to T=1600 K according to table
+    set Function expression = 2534; 0.0
+  end
+end
+
+# We use a data table for orthopyroxene computed using the thermodynamic
+# modeling software HeFESTo.
+# We use a very large viscosity to make sure the material does not move.
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
+    set Material file name               = material_table.txt
+    set Maximum viscosity                = 1e30
+    set Minimum viscosity                = 1e30
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
+    set Thermal conductivity             = 4.7
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e8
+    set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
+    end
+  end
+end

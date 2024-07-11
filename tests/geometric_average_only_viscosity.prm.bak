@@ -1,0 +1,80 @@
+# This is a setup to test geometric averaging of the viscosity
+# and that it works with the GMG.
+# The viscosity in the model decreases exponentially from left to
+# right from 1e14 Pa s to 1e10 Pa s. The model has two cells, so
+# using the geometric average only for the viscosity should lead
+# to a viscosity of 1e11 in the cells on the left and 1e13 in the
+# cells on the right.
+
+set Dimension                              = 2
+set End time                               = 0
+set Adiabatic surface temperature          = 100
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100
+    set Y extent = 100
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,z
+    set Function expression = 200 - x
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = initial temperature
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  set Material averaging = geometric average only viscosity
+
+  subsection Simple model
+    set Viscosity = 1e14
+    set Thermal viscosity exponent = 9.210340372 #ln(10000)
+    set Reference temperature = 100
+    set Minimum thermal prefactor = 1e-6
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables      = material properties
+    set Interpolate output            = false
+  end
+end

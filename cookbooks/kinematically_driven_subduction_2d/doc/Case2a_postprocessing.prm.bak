@@ -1,0 +1,20 @@
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics, temperature statistics, trench location, isotherm depth, composition RMS temperature statistics
+
+  subsection Composition velocity statistics
+    #Sum the velocities of the fields that make up the subducting plate.
+    set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
+  end
+
+  subsection Trench location
+    set Name of trench compositional field = BOC_OP
+  end
+
+  subsection Isotherm depth
+    set Isotherm value = 1073.15
+  end
+
+  subsection Composition RMS temperature statistics
+    set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
+  end
+end

@@ -1,0 +1,154 @@
+# Like the viscous_top_beam.prm test, but including elasticity.
+
+
+# Global parameters
+set Dimension                              = 2
+set End time                               = 2e3
+set Use years in output instead of seconds = true
+set Output directory = output_ve
+set CFL number                             = 0.5
+set Maximum time step                      = 1e3
+
+# Solver settings
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 2000
+  end
+end
+
+# Model geometry (7.5x5 km, 0.1 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 15
+    set Y repetitions = 10
+    set X extent      = 7.5e3
+    set Y extent      = 5e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Element types
+subsection Discretization
+  set Temperature polynomial degree           = 1
+  set Use locally conservative discretization = false
+  set Use discontinuous temperature discretization = false
+  set Use discontinuous composition discretization = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0
+  end
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = top
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; if (x>=3.5e3 && x<=4.0e3 && y>=3.0e3, 1, 0)
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Fixed composition boundary indicators  = bottom, top, right, left
+  set List of model names                   = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+    set Top temperature    = 293
+  end
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Densities            =  2800,  2800,  2800,  2800,  6000
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5.e-19, 5.e-19, 5.e-19, 5.e-19, 5.e-25
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
+    set Fixed elastic time step     = 2e3
+    set Use fixed elastic time step = true
+    set Viscosity averaging scheme  = maximum composition
+    set Cohesions = 1.e50
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate, stress second invariant, principal stress
+    set Output format = gnuplot
+    set Time steps between graphical output = 1
+    set Interpolate output = true
+
+    subsection Principal stress
+      set Use deviatoric stress = true
+    end
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+end

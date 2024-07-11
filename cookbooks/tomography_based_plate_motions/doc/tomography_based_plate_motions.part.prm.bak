@@ -1,0 +1,53 @@
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = grain_size, Vp, Vs, vs_anomaly, faults, continents
+  set Compositional field methods = static, static, static, static, static, static
+end
+
+subsection Initial composition model
+  set List of model names = ascii data, world builder
+
+  subsection Ascii data model
+    set Data directory = ../../input_data/
+    set Data file name = LLNL_model_cropped_cratons_faults.txt.gz
+    set Slice dataset in 2D plane = true
+  end
+
+  subsection World builder
+    set List of relevant compositions = faults, continents
+  end
+end
+
+subsection Temperature field
+  set Temperature method = prescribed field
+end
+
+subsection Material model
+  set Model name         = tomography based plate motions
+  set Material averaging = harmonic average only viscosity
+
+  subsection Tomography based plate motions model
+    set Uppermost mantle thickness                  = 300000
+    set Use depth dependent viscosity               = true
+    set Use depth dependent density scaling         = true
+    set Use depth dependent temperature scaling     = true
+    set Use faults                                  = true
+    set Fault viscosity                             = 1e19
+    set Use cratons                                 = true
+    set Craton viscosity                            = 1e25
+    set Asthenosphere viscosity                     = 1e20
+
+    subsection Ascii data model
+      set Data directory                            = ../../input_data/viscosity_profiles/
+      set Data file name                            = steinberger_source-1.txt
+    end
+
+    subsection Density velocity scaling
+      set Data file name                            = rho_vs_scaling.txt
+    end
+
+    subsection Temperature velocity scaling
+      set Data file name                            = dT_vs_scaling.txt
+    end
+  end
+end

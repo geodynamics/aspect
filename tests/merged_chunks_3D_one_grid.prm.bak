@@ -1,0 +1,13 @@
+# exactly the same as merged_chunks_3D.prm but made with one grid
+
+set Dimension = 3
+
+include $ASPECT_SOURCE_DIR/tests/merged_chunks_3D.prm
+
+
+subsection Geometry model
+  subsection Chunk with lithosphere boundary indicators
+    set Use merged grids = false
+    set Inner chunk radius repetitions = 4
+  end
+end

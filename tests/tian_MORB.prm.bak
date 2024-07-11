@@ -1,0 +1,27 @@
+# This model generates a representation of a phase diagram for the equilibrium
+# wt% water that can be stored in a MORB as shown in Figure 5 of Tian et. al., 2019.
+# This model reproduces that phase diagram (very low res by default), with an important
+# caveat being that the pressure axis is inverted relative to the ASPECT output.
+# A surface pressure of 600 MPa is imposed to reproduce the pressure axis,
+# and a lateral temperature gradient is imposed to reproduce the temperature axis.
+include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
+
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = initial_porosity; \
+                              initial_bound_water; \
+                              0; \
+                              0; \
+                              1; \
+                              0
+  end
+end
+
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Maximum weight percent water in MORB                    = 5.3
+  end
+end

@@ -1,0 +1,20 @@
+# Test that GMG can deal with velocity boundary conditions of the form [xyz]:
+#
+# Test is identical to:
+include $ASPECT_SOURCE_DIR/tests/ascii_data_boundary_velocity_2d_box_list.prm
+
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: ascii data,right: ascii data, left x: function, right: function
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps = 200
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end

@@ -1,0 +1,26 @@
+subsection Initial temperature model
+  set List of model operators = add
+  set List of model names = adiabatic, function
+
+  subsection Adiabatic
+    set Age top boundary layer = 5e7
+    set Age bottom boundary layer = 7e8
+
+    subsection Function
+      set Function constants  = k=-7e-7, c=2.9367
+      set Variable names      = x, y
+
+      # if Number of fields = 2, there should be two function expressions
+      set Function expression = (sqrt(x^2+y^2)<3981.e3 ? c+k*sqrt(x^2+y^2) : 0 )
+    end
+  end
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function constants  = Tex=450, a=2744.3e3, size=400e3, Tb=3550, Tab=2663.3, age=2.208e16, kappa=1.16e-6,
+    set Function expression = ( ((x-a)^2+(y-a)^2<=size^2) ? \
+                               ( max(Tex - (Tb-Tab)*erfc( (-3481e3 + sqrt(x^2+y^2)) /2/sqrt(kappa*age) ),0) ) : \
+                              (0) )
+  end
+end

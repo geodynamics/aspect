@@ -1,0 +1,96 @@
+# This input file tests the isosurface mesh refinement plugin
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = no Advection, no Stokes
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 660000
+    set Y extent = 660000
+    set X repetitions = 1
+    set Y repetitions = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x, y
+    set Function expression = if(x < 500000,if(y< 330000,100+x/1000,100+x/250),0)
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x, y
+    set Function expression = if(x < 500000,if(y < 330000,1,0),0);if(x < 500000,0,1);if(x < 500000,if(y < 330000,0,1),0)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 3
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
+  set Strategy = isosurfaces
+
+  subsection Isosurfaces
+    # Although the isosurface entry specifies min/max level 4, refinement level will
+    # not be more than 2 because initial global + initial adaptive = 2
+    set Isosurfaces = 4,    4,    Temperature: 0 | 600,   C_2 : 0.0 | 0.5 ;\
+                      0,    0,    Temperature: 1600 | 3000,   C_2 : 0.0 | 0.5
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0,1,2,3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format            = gnuplot
+  end
+end

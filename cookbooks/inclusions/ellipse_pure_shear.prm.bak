@@ -1,0 +1,13 @@
+include ellipse_ref.prm
+
+set Output directory                       = output-ellipse-pure-shear
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function, top y: function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = v=0.5
+    set Function expression = if (x<0.5,v,-v) ; if (y<0.5,-v,v)
+  end
+end

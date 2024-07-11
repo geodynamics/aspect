@@ -1,0 +1,135 @@
+# This is a test model for the allowing multiple traction models for a single boundary.
+# It reads traction boundary conditions from a file
+# located in the data/traction-boundary-conditions/ascii-data/test/
+# directory and combine it with a traction function and applies them at
+# the left side of a 2d box model.
+
+
+set Adiabatic surface temperature          = 1600
+set CFL number                             = 1.0
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 3
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+# This end time is chosen in such a way that the solitary wave travels
+# approximately 5 times its wavelength during the model time.
+set End time                               = 0 #1e5
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Start time                             = 0
+set Use years in output instead of seconds = true
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 3
+
+  subsection Initial temperature
+    set Minimal temperature = 293
+    set Maximal temperature = 1600
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 3000000
+    set Y extent  = 660000
+    set X repetitions = 9
+    set Y repetitions = 2
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer      = 1e8
+    set Age bottom boundary layer   = 0.0
+    set Amplitude                   = 250
+    set Radius                      = 400000
+  end
+end
+
+subsection Material model
+  set Model name = diffusion dislocation
+  set Material averaging =  harmonic average only viscosity
+
+  subsection Diffusion dislocation
+    set Densities                                 = 3330
+    set Maximum viscosity                         = 1e26
+    set Minimum viscosity                         = 1e17
+    set Heat capacity                             = 1200
+    set Thermal expansivities                     = 3.3e-5
+    set Activation energies for diffusion creep   = 375000
+    set Activation volumes for diffusion creep    = 6e-6
+    set Grain size exponents for diffusion creep  = 4
+    set Prefactors for diffusion creep            = 1.5e-16
+    set Activation energies for dislocation creep = 480000
+    set Prefactors for dislocation creep          = 2e-15
+    set Activation volumes for dislocation creep  = 8e-6
+    set Maximum strain rate ratio iterations      = 10000
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = 0:ascii data, 0:function
+
+  subsection Function
+    set Variable names      = x,y
+
+    # The following line is the stress applied to the side boundaries (in Pa)
+    set Function constants  = stress=2000e6
+    set Function expression = if (y>600e3 ,-stress,0); 0
+  end
+
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/boundary-traction/ascii-data/test/
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1,2,3
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics
+
+  subsection Visualization
+    set List of output variables      = material properties, nonadiabatic temperature, nonadiabatic pressure, strain rate
+    set Number of grouped files       = 0
+    set Interpolate output            = false
+    set Output format                 = vtu
+    set Time between graphical output = 50
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+  end
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 1700
+end
+
+subsection Heating model
+  set List of model names =  latent heat
+end

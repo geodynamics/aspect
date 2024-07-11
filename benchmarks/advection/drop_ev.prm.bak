@@ -1,0 +1,13 @@
+# like drop_supg.prm but with entropy viscosity
+
+set Dimension                              = 2
+
+include drop_supg.prm
+
+set Output directory                       = output-drop-ev
+
+subsection Discretization
+  subsection Stabilization parameters
+    set Stabilization method = entropy viscosity
+  end
+end

@@ -1,0 +1,28 @@
+# We use the Geodynamic World Builder to create the initial temperature.
+# Therefore, we have to specify the location of the GWB input file
+# that we want to use. The file we use here is located in the cookbooks
+# folder of the GWB repository. See the corresponding tutorial in the
+# Geodynamic World Builder on how to create this file.
+set World builder file = $ASPECT_SOURCE_DIR/contrib/world_builder/cookbooks/3d_cartesian_transform_fault/3d_cartesian_transform_fault.wb
+
+# Note that the adiabatic surface temperature should be consistent with the
+# value assumed in the GWB input file, given in the parameter 'potential
+# mantle temperature'.
+set Adiabatic surface temperature          = 1573.15
+
+# The initial temperature comes form the Geodynamic World Builder.
+subsection Initial temperature model
+  set List of model names = world builder
+end
+
+# We prescribe the surface temperature at the top and the mantle potential temperature
+# at the bottom.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = box
+
+  subsection Box
+    set Top temperature = 273.15
+    set Bottom temperature = 1573.15
+  end
+end

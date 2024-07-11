@@ -1,0 +1,12 @@
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference temperature = 1573.15
+    set Heat capacities       = 1000
+    set Densities             = 3300           # Value from Behn et al., 2007
+    set Thermal expansivities = 0              # Thermal buoyancy is ignored in Behn et al., 2007
+    set Define thermal conductivities = true
+    set Thermal conductivities        = 3.5
+  end
+end

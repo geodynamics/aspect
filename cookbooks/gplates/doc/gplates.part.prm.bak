@@ -1,0 +1,17 @@
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = inner, outer
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:gplates
+  set Tangential velocity boundary indicators = bottom
+
+  subsection GPlates model
+    set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
+    set Velocity file name = current_day.gpml
+    set Data file time step = 1e6
+    set Point one = 1.5708,4.87
+    set Point two = 1.5708,5.24
+    set Lithosphere thickness = 660000
+  end
+end

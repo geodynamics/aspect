@@ -1,0 +1,6 @@
+subsection Compositional fields
+  set Number of fields            = 2
+  set Names of fields             = lower, upper
+  set Compositional field methods = particles, particles
+  set Mapped particle properties  = lower:initial lower, upper:initial upper
+end

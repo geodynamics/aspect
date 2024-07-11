@@ -1,0 +1,35 @@
+subsection Material model
+  set Model name = latent heat
+  set Material averaging = harmonic average only viscosity
+
+  subsection Latent heat
+    # All parameters in the equation of state are constant, and the mode is incompressible.
+    set Reference temperature                          = 500
+    set Reference density                              = 1000
+    set Reference specific heat                        = 1000
+    set Thermal expansion coefficient                  = 1e-4
+    set Compressibility                                = 0
+    set Thermal conductivity                           = 246.03750       # k = 2.460375e7/Ra, corresponds to Ra = 1e5
+
+    # There is one phase transition in the center of the box (at a depth of 675 km),
+    # with a width of 67.5 km (5% of the box height).
+    # It occurs at that depth if the temperature corresponds to the reference temperature (500 K);
+    # for different temperatures the depth changes according to the Clapeyron slope (-2.7 MPa/K).
+    # At the phase transition, the density increases from its reference value of 1000 kg/m^3 to
+    # 1200 kg/m^3.
+    set Define transition by depth instead of pressure = true
+    set Phase transition depths                        = 675000
+    set Phase transition widths                        = 67500
+    set Phase transition temperatures                  = 500
+    set Phase transition Clapeyron slopes              = -2700000        # gamma = P * Ra/Rb, corresponds to P = -0.4
+    set Phase transition density jumps                 = 200             # deltarho = 2 alpha rho DeltaT (Rb = 2Ra)
+    set Corresponding phase for density jump           = 0
+
+    # The viscosity is constant
+    set Viscosity                                      = 1e20
+    set Minimum viscosity                              = 1e20
+    set Maximum viscosity                              = 1e20
+    set Viscosity prefactors                           = 1,1
+    set Thermal viscosity exponent                     = 0.0
+  end
+end

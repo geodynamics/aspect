@@ -1,0 +1,11 @@
+include ./plume2D.prm
+
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk minimum longitude = 0
+    set Chunk maximum longitude = 90
+  end
+end

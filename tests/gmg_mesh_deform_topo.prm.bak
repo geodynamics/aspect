@@ -1,0 +1,109 @@
+# A modified 2d convection box with a prescribed, moving surface. The
+# oscillating sin wavee on the surface pushes the rising plume up and
+# down. This test was used to verify that matrix-based and matrix-free
+# give the same solution in a moving domain with mesh deformation.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = false
+set End time                               = 0.0024
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+  set Zero velocity boundary indicators       = left, right
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: boundary function
+
+  # The left and right boundary are allowed to move,
+  # even though the Stokes velocity is zero along these boundaries.
+  set Additional tangential mesh velocity boundary indicators = left,right
+
+  subsection Boundary function
+    set Variable names      = x,y,t
+    set Function expression = 0;  if (x<0.5, 1e+2*sin(x*2*3.14159)*cos(t/0.001), 0)
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e5   # = Ra
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  set Material averaging = harmonic average
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, topography
+
+  subsection Visualization
+    set Time between graphical output = 0.0001
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance                         = 1e-7
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps = 200
+  end
+end

@@ -28,13 +28,12 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = true
-
     # porosity will not exceed 0.21 during set model time.
     # test will have to stay between 0 and 1.
     set Global composition maximum =  1.0, 1.0
     set Global composition minimum =  0.0, 0.0
     set beta  = 0.5
+    set Limiter for discontinuous composition solution = bound preserving
   end
 end
 

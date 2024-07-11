@@ -1,0 +1,21 @@
+set Additional shared libraries = ./libprescribed_temperature_in_field.so
+
+include $ASPECT_SOURCE_DIR/tests/prescribed_temperature_in_field.prm
+
+
+## The temperature will be fixed in the 'Fixed'
+## compositional field. The maximum fixed temperature
+## will also allow temperature to be constrained
+## outside of the fixed compositional model, as long
+## as the temperature is below 500 K.
+subsection Prescribed internal temperature model
+  set Maximum fixed temperature isosurface = 500
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if(x>=0.4, if(y<=0.5, 600, 400), 1000)
+  end
+end

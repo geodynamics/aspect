@@ -1,0 +1,14 @@
+# This test checks whether the compositional field names are
+# processed correctly.
+
+set Dimension = 3
+
+include $ASPECT_SOURCE_DIR/tests/composite_viscous_outputs.prm
+
+set Additional shared libraries = tests/libcheck_compositional_field_names.so
+
+subsection Compositional fields
+  set Number of fields = 7
+  set Names of fields =  Field_1, Field_2, Field_3, Field_4, Field_5, Field_6, Field_7
+  set Types of fields =  chemical composition, stress, grain size, porosity, chemical composition, generic, unspecified
+end

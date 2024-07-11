@@ -1,0 +1,7 @@
+# A test checking that the 'no Advection, no Stokes' nonlinear solver
+# scheme can be used in combination with the strain weakening rheology module
+
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_strain_weakening.prm
+
+set Nonlinear solver scheme                = no Advection, no Stokes
+set Output directory                       = visco_plastic_yield_strain_weakening_no-advect_no_stokes

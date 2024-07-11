@@ -1,0 +1,24 @@
+# Like grain_size_growth.prm, but check that additional
+# material model outputs can be postprocessed correctly.
+
+############### Global parameters
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
+
+set End time = 0
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = named additional outputs
+    set Time between graphical output = 0
+  end
+end

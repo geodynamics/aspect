@@ -5,7 +5,7 @@
 # With increasing resolution, it should return the following
 # maximum depths of the composition fields:
 # 82, 110 and 82 km, resp.
-# The postprocessors viscous dissipation statistics and
+# The postprocessors heating statistics and
 # viscous dissipation per compositional field return
 # the viscous dissipation over the whole domain and
 # per area of each field, resp. With enough resolution,
@@ -146,7 +146,7 @@ subsection Formulation
 end
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, maximum depth of field, viscous dissipation statistics
+  set List of postprocessors = velocity statistics, maximum depth of field, heating statistics
 end
 
 subsection Solver parameters

@@ -1,0 +1,101 @@
+# this test is specifically designed for the bound-preserving limiter
+# A description of the falling box benchmark see the reference:
+# Gerya, T. V., Yuen, D. A., 2003a. Characteristics-based marker-in-cell method
+# with conservative finite-differences schemes for modeling geological flows with
+# strongly variable transport properties
+# This test uses two falling boxes in order to use two different compositional fields
+
+set Dimension                              = 3
+set Start time                             = 0
+set End time                               = 5e5
+set Use years in output instead of seconds = true
+set CFL number                             = .5
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 500e3
+    set Y extent  = 500e3
+    set Z extent  = 500e3
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, front, back, bottom, top
+end
+
+# Thermal expansion coeff = 0 --> no temperature dependence
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3200
+    set Viscosity                     = 1e21
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = 100  # 3300 kg/m^3
+    set Composition viscosity prefactor = 1  # ONLY PARAMETER THAT CHANGES IN THESE TESTS
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function expression = if(((x>125e3)&&(x<375e3)&&(y>125e3)&&(y<375e3)&&(z>125e3)&&(z<375e3)), 1, 0)
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Strategy                           = composition
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 2
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics
+end
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true # apply the limiter to the DG solutions
+    set Global composition maximum = 1.0
+    set Global composition minimum = 0.0
+  end
+end

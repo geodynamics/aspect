@@ -1,0 +1,157 @@
+# This test considers the first timestep of a
+# 2d subduction setup with prescribed in- and outflow.
+# The postprocessor maximum depth of field
+# returns the depth of the deepest point of each field.
+# With increasing resolution, it should return the following
+# maximum depths of the composition fields:
+# 82, 110 and 82 km, resp.
+# The postprocessors viscous dissipation statistics and
+# viscous dissipation per compositional field return
+# the viscous dissipation over the whole domain and
+# per area of each field, resp. With enough resolution,
+# the dissipation over the whole domain should be
+# approx. 8.5 kW/m and that over the subducting plate approx. 4 kW/m.
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set CFL number                             = 0.5
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Adiabatic surface temperature          = 0
+
+# We fix composition on the right boundary,
+# because we have inflow there.
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = right
+  set List of model names = initial composition
+end
+
+# We fix temperature on the top and bottom,
+# as well as on the right boundary because
+# we have inflow through the latter.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, right
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 0
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+# prescribe horizontal in- and outflow through the right boundary
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, bottom, top
+  set Prescribed velocity boundary indicators = right x:function
+
+  subsection Function
+    set Function constants  = cm=100.0
+    set Function expression = if(z<540000.0, (600.0/550.0)/cm, \
+                                 if(z>560000.0, -5.0/cm, \
+                                    ((((-600.0/550.0)-5.0)/-20.0)*((z/1000.0)-560.0)+5.0)*(-1.0/cm))); \
+                              0
+    set Variable names      = x,z
+  end
+end
+
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Reference temperature         = 0.0
+    set Viscosity averaging scheme    = maximum composition
+
+    # background, OP, ML SP, crust SP
+    set Viscosities                   = 1.e20, 1.e23, 1.e23, 1.e20
+    set Densities                     = 3200.0, 3250.0, 3250.0, 3250.0
+    set Thermal conductivities        = 1
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = OP, ML_SP, crust_SP
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function constants  = Ax=1475600.0, Az=670000.0, \
+                              Bx=1500000.0, Bz=670000.0, \
+                              Cx=1358500.0, Cz=588000.0, \
+                              Dx=1382900.0, Dz=588000.0, \
+                              Ex=1530000.0, Ez=560000.0, \
+                              Fz=663000.0, Gz=662000.0, \
+                              Hz=631000.0, Iz=630000.0
+    set Function expression = \
+                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
+                              if((x>=Ex&z>=Ez&z<Gz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
+                              if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)|z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0)
+    set Variable names      = x,z
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent   = 3000e3
+    set Y extent   = 670e3
+    set X repetitions = 4
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# We ignore any temperature effects
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Function constants  =
+    set Function expression = 0
+    set Variable names      = x,y,t
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 2
+  set Initial global refinement                = 4
+  set Minimum refinement level                 = 4
+  set Coarsening fraction                      = 0.01
+  set Refinement fraction                      = 0.95
+  set Skip solvers on initial refinement       = true
+  set Strategy                                 = minimum refinement function
+  set Time steps between mesh refinement       = 16
+
+  subsection Minimum refinement function
+    set Coordinate system = depth
+    set Variable names = x,z,t
+    set Function constants = vel_trans=150e3
+    set Function expression = if(x<vel_trans,6,4)
+  end
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, maximum depth of field, viscous dissipation statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-6
+    set Number of cheap Stokes solver steps = 200
+  end
+end

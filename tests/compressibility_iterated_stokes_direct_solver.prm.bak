@@ -1,0 +1,86 @@
+# Copy of compressibility_iterated_stokes but using a direct solver. This is
+# to check that solve_stokes() returns the correct nonlinear residual.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Max nonlinear iterations               = 5
+
+# no gravity. the pressure will equal just the dynamic component
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+# temperature field doesn't matter. set it to zero
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Material model
+  set Model name = compressibility iterated stokes
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1
+  set Prescribed velocity boundary indicators = 2: function
+
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 0;1
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = compressibility
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = density
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

@@ -1,0 +1,112 @@
+# This cookbook is an extension of the free_surface cookbook. Please see the
+# other cookbook for details about the free surface. This cookbook illustrates
+# how to use an external plugin to modify the material model, and what
+# influence a viscous crust has on the magnitude of surface topography.
+
+# This model loads an additional shared library, which provides another
+# material model that is not part of the main ASPECT code, but instead
+# lies in in a subdirectory of this cookbook folder.
+set Additional shared libraries            = ./plugin/libsimpler_with_crust.so
+set Dimension                              = 2
+set End time                               = 2e7
+set Use years in output instead of seconds = true
+set Output directory                       = output-free_surface_with_crust
+set Maximum first time step                = 1e3
+set Maximum relative increase in time step = 30
+set CFL number                             = 1.0
+set Pressure normalization                 = no
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 500.e3
+    set Y extent = 200.e3
+    set X repetitions = 5
+    set Y repetitions = 2
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right, bottom, top
+  set List of model names = constant
+
+  subsection Constant
+    set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
+  end
+end
+
+# As in the free_surface cookbook our temperature initial conditions are simply
+# a blob of hot rock in the center of the domain.
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = sqrt((x-250.e3)^2 + (y-100.e3)^2) < 25.e3 ? 200.0 : 0.0
+  end
+end
+
+# Because we load the additional shared library at the top, we here have the
+# option to choose the new material model that is described inside that library
+# called 'simpler with crust'. This model has additional input options for the
+# two layers with different viscosities and the depth of the transition between
+# the two layers.
+subsection Material model
+  set Model name = simpler with crust
+
+  subsection Simpler with crust model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 1.0
+    set Thermal expansion coefficient = 4e-5
+    set Lower viscosity               = 1.e20
+    set Upper viscosity               = 1.e23
+    set Jump height                   = 170.e3
+  end
+end
+
+# For simplicity we disable adaptive mesh refinement,
+# although it would significantly speed up this model
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.05
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, topography
+
+  subsection Visualization
+    set List of output variables = material properties
+    set Time between graphical output = 1.e6
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+end

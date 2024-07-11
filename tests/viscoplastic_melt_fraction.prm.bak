@@ -1,0 +1,118 @@
+# This test checks whether the katz2003 mantle melting model in the
+# reactive transport material model produces the correct melt fraction output.
+#
+# Temperature will be held constant throughout model at 1573 K so at 1 GPa
+# melt fraction should be 15% from Katz et. al. 2003 Fig. 4
+
+set Adiabatic surface temperature          = 1573
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 1000
+set Pressure normalization                 = surface
+set Use years in output instead of seconds = true
+set Output directory                       = output-vp-melt-fraction
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = top, bottom
+
+  subsection Initial temperature
+    set Maximal temperature = 1573
+    set Minimal temperature = 1573
+  end
+end
+
+# The composition is not fixed on any boundary
+subsection Boundary composition model
+  set List of model names = initial composition
+  set Fixed composition boundary indicators =
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 100e3
+    set Y extent  = 100e3
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 10
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1573
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0;0
+  end
+end
+
+#The reactive fluid transport material model is composited on top
+# of the visco plastic material model. This example uses the default
+# settings of the visco plastic material model for the solid deformation,
+# which are not important for this test case.
+subsection Material model
+  set Model name =  reactive fluid transport
+  set Material averaging =  harmonic average
+
+  subsection Reactive Fluid Transport Model
+    set Base model = visco plastic
+    set Fluid-solid reaction scheme = katz2003
+  end
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.3
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, melt statistics, pressure statistics, composition statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set List of output variables      = melt fraction, named additional outputs
+    set Time between graphical output = 0
+  end
+end

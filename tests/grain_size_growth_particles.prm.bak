@@ -1,0 +1,49 @@
+# This is a very simple test case that checks
+# that the implementation of the grain growth
+# laws are correct. All parameters, including
+# temperature and pressure, are set to constant
+# values and no dynamic recrystallization is
+# included (the reciprocal required strain is
+# set to zero). Material flows in from the left
+# and flows out at the right boundary with a constant
+# velocity. The grain size
+# should then only depend on the x coordinate
+# following the relation
+#
+# d(x) = (d_0 + A * x)^(1/p)
+#
+# with
+# d_0 = 8e-5 m         (initial grain size)
+# p   = 10             (grain size exponent)
+# A   = 2.0294e-46 1/m
+#
+# leading to a grain size of d=8.8957E-5 m at the
+# right boundary of the model.
+
+############### Global parameters
+
+set Dimension                              = 2
+set End time                               = 50000
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
+
+
+subsection Postprocess
+  set List of postprocessors = composition statistics,temperature statistics, velocity statistics, particles
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+  set List of particle properties = grain size
+  set Integration scheme = rk2
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
+  end
+end

@@ -1,0 +1,37 @@
+# We setup three columns, of which the middle column has a higher density
+# and viscosity. By choosing a free surface in combination with a
+# prescribed lithostatic pressure,
+# we see the middle column sink until isostasy is reached (if end time is increased)
+# Compared to airy_isostasy.prm, we start off with a nonzero initial topography.
+
+include $ASPECT_SOURCE_DIR/tests/airy_isostasy.prm
+
+set Dimension = 2
+set End time                               = 3.5e-9
+
+subsection Geometry model
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+      set Function constants = L=1, R=0.05, C=0.5
+      set Function expression = R * cos(pi*(x-C)/(L))
+      set Maximum topography value = 0.05
+    end
+  end
+end
+
+# The lithostatic pressure at the bottom of the domain
+# is rho * g * h = 1 * 10 * 1 = 10.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = 2 y: function
+
+  subsection Function
+    set Function expression = 0;10
+  end
+end
+
+# Also test the point_is_in_domain function of the geometry model.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, topography, point is in domain
+end

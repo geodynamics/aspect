@@ -1,0 +1,6 @@
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+  end
+end

@@ -154,7 +154,7 @@ subsection Formulation
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics
+  set List of postprocessors = visualization, velocity statistics, heating statistics
 
   subsection Visualization
     set List of output variables      = density, viscosity, strain rate, error indicator

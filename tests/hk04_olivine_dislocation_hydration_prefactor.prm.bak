@@ -1,0 +1,128 @@
+# A test case that checks the water fugacity viscous prefactor
+# multiplication scheme in combination with the visco plastic material model.
+# Following the flow law for wet olivine dislocation creep from
+# Hirth & Kohlstaedt 2004 (10.1029/138GM06), the exact
+# viscosity is calculated in python through:
+# import numpy as np
+# n = 3.5
+# E = 520e3 J/mol
+# V = 22e-6 m^3/mol
+# R = 8.3144621
+# P = 1e9 Pa
+# r = 1.2
+# edot_ii = 1e-13
+# T = 1173 K
+# A_disl = 1600 / 1e6 / 1e6**n / 1e6**r 1/Pa^(4.7)/s
+#
+# A_H2O = 2.6e-5 1/Pa
+# activation_energy_H2O = 40e3 J/mol/K
+# activation_volume_H2O = 10e-6 m^3/mol
+#
+# M_H2O = 0.01801528 kg/mol
+# M_olivine = 0.1470027 kg/mol
+#
+# weight_fraction_h2o = 0.01
+# weight_fraction_olivine = 1 - weight_fraction_h2o
+# COH = (wt_fraction_h2o/M_H2O) / (weight_fraction_olivine/M_olivine) * 1e6
+#
+# fH2O = COH / A_H2O * np.exp((activation_energy_H2O + P*activation_volume_H2O)/(R * T))
+# viscosity_analytic = 0.5 * A_disl**(-1/n) * edot_ii^((1-n)/n) * np.exp((E + P*V) / (n*R*T)) * fH2O**(-r/n)
+# The viscosity should be equal to 1.00291e19, and the material model should return this viscosity.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 1.e9
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = bound_fluid
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.01
+  end
+end
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# No boundary-driven deformation, but the strain-rate used by the material
+# model is set in the material model section through the parameters
+# "Reference strain rate" and "Minimum strain rate".
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Initial temperature conditions
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1173
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    # Dislocation creep parameters
+    # The water fugacity exponent reported by Hirth & Kohlstaedt for dislocation
+    # creep is 1.2, but ASPECT requires that the water fugacity exponent is r/n,
+    # where n is the stress exponent and thus we input 1.2/3.5 = 0.34285714285714286
+    set Reference strain rate                          = 1e-13
+    set Minimum strain rate                            = 1e-13
+    set Viscous flow law                               = dislocation
+    set Prefactors for dislocation creep               = 1.0095317511683098e-25
+    set Stress exponents for dislocation creep         = 3.5
+    set Activation energies for dislocation creep      = 520e3
+    set Activation volumes for dislocation creep       = 22e-6
+    set Water fugacity exponents for dislocation creep = 0.34285714285714286
+    set Viscosity prefactor scheme                     = HK04 olivine hydration
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = material statistics, visualization
+
+  subsection Visualization
+    set Interpolate output       = false
+    set List of output variables = material properties
+    set Output format            = gnuplot
+  end
+end

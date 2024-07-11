@@ -1,0 +1,110 @@
+# This is a test for the artificial viscosity.
+# In particular, it checks that the entropy viscosity
+# for the composition at dirichlet boundaries can be set
+# to 0 if requested.
+
+set Adiabatic surface temperature          = 1623
+set CFL number                             = 0.1
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Dimension                              = 2
+set End time                               = 0.01
+set Use years in output instead of seconds = true
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+subsection Discretization
+  subsection Stabilization parameters
+    set List of compositional fields with disabled boundary entropy viscosity = porosity
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = initial temperature
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top, bottom
+  set List of model names = initial composition
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function, 3:function
+
+  subsection Function
+    set Function constants = u0=0.01,ymid=0.5
+    set Function expression = 1.0;0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+    set X periodic = true
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = l=64000
+    set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = l=64000
+    set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
+    set Variable names      = x,y
+  end
+end
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Thermal conductivity          = 0.0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 3
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, temperature statistics, visualization, entropy viscosity statistics
+
+  subsection Visualization
+    set Interpolate output            = false
+    set List of output variables      = artificial viscosity, artificial viscosity composition
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+
+    subsection Artificial viscosity composition
+      set Name of compositional field = porosity
+    end
+  end
+end

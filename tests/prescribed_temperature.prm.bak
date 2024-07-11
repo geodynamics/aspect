@@ -1,0 +1,85 @@
+# A testcase that demonstrates that interpolating material model
+# outputs into the temperature field works, and that this
+# temperature is actually being used to compute the material
+# properties.
+#
+# The property copied into the temperature field has a large
+# value in the upper half of the box and a low value in the lower
+# half of the box. If viscosities are being computed correctly,
+# then the strain rate should be much larger in the top half.
+
+set Dimension = 2
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1.0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set X periodic = true
+  end
+end
+
+subsection Temperature field
+  set Temperature method = prescribed field
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1
+  end
+end
+
+subsection Material model
+  set Model name = prescribed temperature material
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+    set Thermal viscosity exponent    = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function, bottom:function
+
+  subsection Function
+    set Function expression = y; 0.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, velocity statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = named additional outputs, strain rate, material properties
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+  end
+end

@@ -1,0 +1,15 @@
+# This is a test for the Tosi benchmark using the Newton solver and the full A block
+# as preconditioner. Prior to this test there was a bug assigning the correct assemblers
+# for this case.
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
+
+set Additional shared libraries            = ./libnewton_solver_tosi.so
+set End time                               = 0.0021
+set Max nonlinear iterations               = 15
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use full A block as preconditioner = true
+  end
+end

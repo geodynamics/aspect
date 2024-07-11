@@ -1,0 +1,52 @@
+# test gmg + free surface
+
+include $ASPECT_SOURCE_DIR/benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm
+
+set Dimension = 2
+set End time = 90
+set Output directory = output-crameri-gmg
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
+subsection Material model
+  set Material averaging =  harmonic average
+end
+
+subsection Postprocess
+  subsection Visualization
+    set Output mesh velocity = true
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+subsection Geometry model
+  set Model name = rebound box
+
+  subsection Rebound Box
+    set Order = 1
+    set Amplitude = 7.e3
+  end
+
+  subsection Box
+    set X extent = 28.e5
+    set Y extent = 7.e5
+    set X repetitions = 60
+    set Y repetitions = 15
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+end

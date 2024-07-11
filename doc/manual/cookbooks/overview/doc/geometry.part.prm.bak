@@ -1,0 +1,10 @@
+set Dimension = 2
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end

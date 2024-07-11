@@ -1,0 +1,144 @@
+##### test for boundary traction function using spherical coordinates
+
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 5
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set CFL number                             = 0.5
+set Maximum time step                      = 2.5
+set Timing output frequency                = 1
+set Pressure normalization                 = no
+
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk inner radius = 5871.e3
+    set Chunk outer radius = 6371.e3
+    set Chunk minimum longitude = 35.0
+    set Chunk maximum longitude = 55.0
+    set Longitude repetitions = 60
+    set Radius repetitions = 10
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
+  set Time steps between mesh refinement = 0
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Coordinate system   = spherical
+    set Variable names      = r,phi
+    set Function expression = r>=6169.e3 ? 2 : 0
+  end
+end
+
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = east, west
+  set Mesh deformation boundary indicators = outer: free surface
+
+  subsection Free surface
+    set Surface velocity projection = normal
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = inner, east, west
+end
+
+subsection Nullspace removal
+  set Remove nullspace = angular momentum
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = outer: function
+
+  subsection Function
+    set Coordinate system = spherical
+    set Use spherical unit vectors = true
+    set Variable names = r,phi,t
+    set Function constants  = alpha1=0.767945, alpha2=0.802851, tend=100., Re=6371.e3, F=10000000
+    set Function expression = phi>=alpha1 && phi<=alpha2 ? -F*t/tend: 0; 0;
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = ve_stress_xx, ve_stress_yy, ve_stress_xy
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0;
+  end
+end
+
+subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = true
+  set List of model names = initial composition
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = inner, outer, east, west
+  set List of model names = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Material model
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities                   = 4450
+    set Viscosities                 = 5.0e20
+    set Elastic shear moduli        = 175.e9
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 2.5
+    set Viscosity averaging scheme  = harmonic
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.8
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, temperature statistics, topography, velocity statistics
+
+  subsection Topography
+    set Output to file = true
+    set Time between text output = 0
+  end
+end
+
+subsection Termination criteria
+  set Termination criteria = end time
+end

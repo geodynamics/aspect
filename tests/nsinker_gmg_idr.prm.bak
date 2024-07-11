@@ -1,0 +1,24 @@
+# Nsinker benchmark using geometric multigrid preconditioner
+# with an IDR(2) solver
+
+set Dimension = 3
+
+include $ASPECT_SOURCE_DIR/benchmarks/nsinker/nsinker_gmg.prm
+
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Krylov method for cheap solver steps = IDR(s)
+    set IDR(s) parameter = 2
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end

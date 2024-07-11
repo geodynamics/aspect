@@ -1,0 +1,104 @@
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Output directory                       = visco_plastic_constant_viscosity_prefactor
+set Timing output frequency                = 1
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+# Compositional fields used to track finite strain invariant
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = weak_layer
+end
+
+# The compositional field is only present in the lower half of the model
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if (y<=50e3,1,0)
+  end
+end
+
+# Boundary composition specification
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    # Background and compositional field both have initial viscosity of 1e23 Pa s
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 5.e-24
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+
+    # The compositional field viscosity is reduced by a factor of 10 before yielding
+    set Constant viscosity prefactors = 1., 0.1
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+# named additional outputs includes the weakened cohesions and friction angles
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = material properties
+    set Output format            = gnuplot
+  end
+end

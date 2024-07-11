@@ -1,0 +1,131 @@
+# A test case that checks the water fugacity viscous prefactor
+# multiplication scheme in combination with the visco plastic material model.
+# Following the flow law for wet olivine diffusion creep from
+# Hirth & Kohlstaedt 2004 (10.1029/138GM06), the exact
+# viscosity is calculated in python through:
+# import numpy as np
+# m = 3
+# d = 1e-3 m
+# E = 375e3 J/mol
+# V = 15e-6 m^3/mol
+# R = 8.3144621
+# P = 10e9 Pa
+# r = 0.7
+# T = 1673 K
+# A_diff = 2.5e7 / 1e6 / 1e6**m / 1e6**r 1/Pa^2/m^3/s
+#
+# A_H2O = 26 / 1e6**r 1/Pa
+# activation_energy_H2O = 40e3 J/mol
+# activation_volume_H2O = 10e-6 m^3/mol
+#
+# M_H2O = 18.01528
+# M_olivine = 147.0027
+#
+# weight_fraction_h2o = 0.01
+# weight_fraction_olivine = 1 - weight_fraction_h2o
+# COH = (wt_fraction_h2o/M_H2O) / (weight_fraction_olivine/M_olivine) * 1e6
+#
+# fH2O = COH / A_H2O * np.exp((activation_energy_H2O + P*activation_volume_H2O)/(R * T))
+# viscosity_analytic = 0.5 * A_diff**(-1) * d**(m) * np.exp((E + P*V) / R / T) * fH2O**(-r)
+#
+# In the background composition, r=0.7 and the viscosity should be equal to 2.766e19.
+#
+# In the solid_2 composition, r=0.0 and the viscosity should be equal to 4.924e23.
+# Combined, this should result in an average model viscosity of 2.462e23.
+# The material model should return this viscosity.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 10.e9
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = solid_2, bound_fluid
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if(y<=50e3, 1.0, 0.0); 0.01
+  end
+end
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# No boundary-driven deformation, but the strain-rate used by the material
+# model is set in the material model section through the parameters
+# "Reference strain rate" and "Minimum strain rate".
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Initial temperature conditions
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1673
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    # Diffusion creep parameters
+    # In the background, the water fugacity exponent = 0.7, and this requires
+    # a different prefactor due to the dependence of A_diff on the fugacity exponent r.
+    set Viscous flow law                             = diffusion
+    set Prefactors for diffusion creep               = 1.57739e-21, 2.5e-17, 2.5e-17
+    set Stress exponents for diffusion creep         = 1.0
+    set Activation energies for diffusion creep      = 375e3
+    set Activation volumes for diffusion creep       = 15e-6
+    set Grain size                                   = 1e-3
+    set Water fugacity exponents for diffusion creep = 0.7, 0.0, 0.0
+    set Viscosity prefactor scheme                   = HK04 olivine hydration
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = material statistics, visualization
+
+  subsection Visualization
+    set Interpolate output       = false
+    set List of output variables = material properties
+    set Output format            = gnuplot
+  end
+end

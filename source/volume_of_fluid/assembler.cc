@@ -24,7 +24,7 @@
 #include <aspect/volume_of_fluid/utilities.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/volume_of_fluid/field.h>
-#include <aspect/volume_of_fluid/assembly.h>
+#include <aspect/volume_of_fluid/simulator/assemblers/interface.h>
 
 
 namespace aspect

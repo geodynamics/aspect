@@ -1,0 +1,88 @@
+# This model tests if the maximum refinement function is
+# applied correctly in time step zero during global refinement.
+# The mesh should have the highest refinement level of 4 in the
+# upper quarter of the domain, the lowest refinement level of
+# 0 in the bottom quarter, and an intermediate level of 2 in
+# between.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Output directory                       = refine
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.2
+    set Y extent = 1
+    set Z extent = 1
+    set X repetitions = 5
+    set Y repetitions = 5
+    set Z repetitions = 5
+  end
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 4
+  set Initial adaptive refinement = 0
+  set Time steps between mesh refinement = 0
+  set Strategy = minimum refinement function, maximum refinement function
+  set Minimum refinement level = 0
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if( y>=0.751 , 4, if (y>=0.251, 2, 0))
+  end
+
+  subsection Maximum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if( y>=0.751, 4, if (y>=0.251, 2, 0))
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set List of output variables = partition
+  end
+end

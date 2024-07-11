@@ -1,0 +1,14 @@
+set Additional shared libraries            = ./case-2.3-plugin/libVoT.so
+
+subsection Material model
+  set Model name = VoT
+
+  subsection VoT model
+    set Reference density             = 1
+    set Reference specific heat       = 1.
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-5
+    set Viscosity                     = 1
+  end
+end

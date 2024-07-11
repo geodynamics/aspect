@@ -1,0 +1,13 @@
+# exactly the same as lithosphere_boundary_indicator_3d.prm but made with one grid
+
+set Dimension = 3
+
+include $ASPECT_SOURCE_DIR/tests/lithosphere_boundary_indicator_3d.prm
+
+
+subsection Geometry model
+  subsection Box with lithosphere boundary indicators
+    set Use merged grids = false
+    set Z repetitions = 2
+  end
+end

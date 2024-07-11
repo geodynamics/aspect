@@ -1,0 +1,89 @@
+#########################################################
+# A variation of composition-active (but only because that
+# one has prescribed, variable boundary conditions).
+#
+# We used to have a bug in that when "Use years in output instead of seconds"
+# was set to "true", we would still interpret velocities given in the input
+# file as in m/s. Presumably, people mean to use m/year in that case. See the
+# email thread with Cedric Thieulot, subject "velocity RMS" in December 2012.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 2, 3
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+# Prescribe velocities in the range [-1,1]. Given that above
+# we say that we want years instead of seconds, this is supposed
+# to mean "1 m/year", not "1 m/second".
+#
+# 1m/year is approximately equal to 3.17e-8 m/s.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2
+  set Prescribed velocity boundary indicators = 3: function
+
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(x>1+sin(0.5*pi*t), 1, -1); 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = (1-z)
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity                           = 1e-6
+    set Thermal expansion coefficient                  = 0
+    set Viscosity                                      = 1
+    set Reference density                              = 1
+    set Reference temperature                          = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = density
+    set Time between graphical output = 0
+  end
+end

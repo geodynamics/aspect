@@ -1,0 +1,20 @@
+# This is the "Spherical Shell NSinker" benchmark
+#
+# This file uses the AMG instead of GMG solver
+
+set Additional shared libraries            = ./libnsinker_spherical_shell.so
+
+include gmg.prm
+
+set Dimension                              = 3
+set Output directory = output-amg
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Number of cheap Stokes solver steps             = 2000
+    set Maximum number of expensive Stokes solver steps = 0
+    set Linear solver tolerance                         = 1e-6
+    set GMRES solver restart length                     = 100
+  end
+end

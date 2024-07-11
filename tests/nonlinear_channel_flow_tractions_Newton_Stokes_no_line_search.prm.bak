@@ -1,0 +1,8 @@
+include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_tractions_Newton_Stokes.prm
+
+
+subsection Solver parameters
+  subsection Newton solver parameters
+    set Max Newton line search iterations = 0
+  end
+end

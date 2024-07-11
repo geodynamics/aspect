@@ -1,0 +1,11 @@
+include $ASPECT_SOURCE_DIR/cookbooks/transform_fault_behn_2007/transform_fault_behn_2007.prm
+
+set World builder file = $ASPECT_SOURCE_DIR/contrib/world_builder/cookbooks/3d_cartesian_transform_fault/3d_cartesian_transform_fault.wb
+set Dimension = 3
+set End time = 0
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+  set Initial adaptive refinement = 0
+  set Minimum refinement level = 2
+end

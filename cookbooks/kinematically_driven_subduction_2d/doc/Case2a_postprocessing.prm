@@ -1,5 +1,5 @@
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics, temperature statistics, trench location, isotherm depth, composition RMS temperature statistics
+  set List of postprocessors = visualization, velocity statistics, heating statistics, temperature statistics, trench location, isotherm depth, composition RMS temperature statistics
 
   subsection Composition velocity statistics
     #Sum the velocities of the fields that make up the subducting plate.

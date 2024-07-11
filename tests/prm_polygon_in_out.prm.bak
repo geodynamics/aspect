@@ -1,0 +1,1 @@
+set Additional shared libraries = tests/libprm_polygon_in_out.so

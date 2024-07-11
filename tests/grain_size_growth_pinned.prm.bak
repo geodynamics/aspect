@@ -1,0 +1,34 @@
+# This is a very simple test case that checks
+# that the implementation of the grain growth
+# laws with the pinned grain damage formulation
+# (Mulyukova and Bercovici (2018) are correct.
+# All parameters, including temperature and pressure
+# are set to constant values.
+# Material flows in from the left
+# and flows out at the right boundary with a constant
+# velocity. The grain size
+# should then only depend on the x coordinate
+# following the relation
+#
+# d(x) = (d_0^p + A * x)^(1/p)
+#
+# with
+# d_0 = 8e-5 m                 (initial grain size)
+# p   = 10                     (grain size exponent)
+# A   = 1.334585e-44 1/m^(p-1) (grain growth rate constant * exp(-E/(RT)) / velocity)
+#
+# which means we expect a grain size of 1.296828e-4 m at x = 1e5 m.
+#
+# If this test runs for 2e6 it produces a grain size of
+# 1.29087e-04 m at x = 1e5 m, which is close enough.
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_growth.prm
+
+
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Grain size evolution formulation  = pinned grain damage
+  end
+end

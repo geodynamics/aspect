@@ -1,0 +1,116 @@
+# A simple setup to compute geoid in single degree 2 order 0 perturbation density field.
+# The perturbation is added to a constant density, i.e., degree 0 order 0 component.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 1
+set Adiabatic surface temperature          = 0.0
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Pressure normalization                 = no
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal expansion coefficient = 0.1
+    set Viscosity                     = 1.0
+    set Thermal conductivity          = 1.0
+    set Reference temperature         = 0.0
+    set Reference density             = 1.0
+    set Reference specific heat       = 1.0
+  end
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 2
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 200000
+    set Outer radius = 400000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = inner
+end
+
+subsection Nullspace removal
+  set Remove nullspace = angular momentum
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system = spherical
+    set Function constants = pi=3.1415926536
+    set Variable names = r,phi,theta,t
+    set Function expression = (5/2)*sqrt(5/pi)*(3*(cos(theta))^2-1)
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.8
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0
+  set Strategy                           = density
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = outer: free surface
+
+  subsection Free surface
+    set Surface velocity projection = normal
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, geoid, dynamic topography, topography
+
+  subsection Topography
+    set Output to file = true
+  end
+
+  subsection Dynamic topography
+    set Density above = 0.
+    set Density below = 2.0
+  end
+
+  subsection Geoid
+    set Include surface topography contribution = true
+    set Include CMB topography contribution = true
+    set Maximum degree = 10
+    set Minimum degree = 0
+    set Output data in geographical coordinates = true
+    set Density above = 0
+    set Density below = 2.0
+    set Output geoid anomaly coefficients = true
+    set Output surface topography contribution coefficients = true
+    set Output CMB topography contribution coefficients = true
+    set Output density anomaly contribution coefficients = true
+    set Output gravity anomaly = true
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 1
+end

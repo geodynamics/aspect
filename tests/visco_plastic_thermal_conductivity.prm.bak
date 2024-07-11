@@ -1,0 +1,21 @@
+# A test to check whether using user-specified thermal conductivity
+# values gives identical results to specifying the equivalent
+# thermal diffusivity values. The test visco_plastic_diffusion
+# uses the default values for density (3000 kg/m^3), thermal
+# diffusivity (0.8e-6 m^2/s) and heat capacity (1250 1/K).
+# The thermal conductivity is thus 3000*1250*0.8e-6 = 3.0 (W/(m K)).
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_diffusion.prm
+
+
+# Global parameters
+set Dimension                              = 2
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Define thermal conductivities = true
+    set Thermal conductivities = 3.0
+  end
+end

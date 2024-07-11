@@ -1,0 +1,5 @@
+subsection Gravity model
+  subsection Vertical
+    set Magnitude = 1e6   # = Ra
+  end
+end

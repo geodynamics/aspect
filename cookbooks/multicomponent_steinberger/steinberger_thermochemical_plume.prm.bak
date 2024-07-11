@@ -1,0 +1,166 @@
+# This is a cookbook of modeling a thermochemical plumes using the  multicomponent
+# Steinberger material model. The model setup is similar to Dannberg and Sobolev (2015).
+
+set Output directory                       = output-multicomponent-steinberger
+set CFL number                             = 1.0
+set End time                               = 3e8
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = true
+set Maximum first time step                = 1.e4
+
+# Multiple composition setup
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = basalt_fraction
+  set Types of fields  = chemical composition
+end
+
+# Prescribe the initial composition.
+# The setup is similar to Supplementary Figure 2b (Dannberg and Sobolev, 2015)
+# The constants used in the function:
+# a = coordinate of the center of the circular compositional anomaly
+# size = radius of the compositional anomaly
+# k, c = slope and intercept determine the fraction of eclogite change with depth
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function constants  = a=2744.3e3, size=400e3, k=-7e-7, c=2.9367
+    set Function expression = ( (sqrt(x^2+y^2)>=3981.e3 && (x-a)^2+(y-a)^2<=size^2) ? (0.15) : \
+                              (sqrt(x^2+y^2)<3981.e3 && sqrt(x^2+y^2)>=3481.e3) ? \
+                  (c+k*sqrt(x^2+y^2)) : (0) )
+  end
+end
+
+# The Material model setup is similar to "steinberger.prm" except we have
+# N+1 material file for N compositional fields. The material files are ordered as
+# "background, field#1, field#2, ..."
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Material file names              = pyr_MS95_with_volume_fractions_lo_res.dat, \
+             morb_G13_with_volume_fractions_lo_res.dat
+    set Lateral viscosity file name      = temp-viscosity-prefactor.txt
+    set Radial viscosity file name       = radial-visc-simple.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+
+    # We are using default pressure-temperature dependent thermal conductivity.
+    set Thermal conductivity formulation = p-T-dependent
+
+    # You must set this to false to avoid step-wise viscosity inherited
+    # from the reference profile "radial-visc-simple.txt".
+    set Use lateral average temperature for viscosity = false
+  end
+end
+
+# Prescribe the initial temperature.
+# Here we are using half-space cooling model to set up a 50 Ma top boundary
+# layer and a 700 Ma bottom boundary layer. The setup of the plume excess
+# temperature is similar to Supplementary Figure 2a (Dannberg and Sobolev, 2015)
+# and is described by the function. All the expressions in the boundary
+# temperature model and the function are added to the adiabatic temperature
+# profile because we set the model operators as "add". You can also use
+# "subtract, minimum, maximum, replace if valid".
+
+# The constants used in the function:
+#  Tex = plume excess temperature
+#  Tb = bottom temperature
+#  Tab = the adiabatic bottom temperature, should be consistent with the
+#       adiabatic surfacetemperature of the model.
+#  age = must be consistent with the "Age bottom boundary layer" in seconds
+#  kappa = should be consistent with the characteristic Cp, rho, and k around
+#        the CMB
+subsection Initial temperature model
+  set List of model operators = add
+  set List of model names = adiabatic, function
+
+  subsection Adiabatic
+    set Age top boundary layer = 5e7
+    set Age bottom boundary layer = 7e8
+
+    subsection Function
+      set Function constants  = k=-7e-7, c=2.9367
+      set Variable names      = x, y
+
+      # if Number of fields = 2, there should be two function expressions
+      set Function expression = (sqrt(x^2+y^2)<3981.e3 ? c+k*sqrt(x^2+y^2) : 0 )
+    end
+  end
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function constants  = Tex=450, a=2744.3e3, size=400e3, Tb=3550, Tab=2663.3, age=2.208e16, kappa=1.16e-6,
+    set Function expression = ( ((x-a)^2+(y-a)^2<=size^2) ? \
+                 ( max(Tex - (Tb-Tab)*erfc( (-3481e3 + sqrt(x^2+y^2)) /2/sqrt(kappa*age) ),0) ) : \
+            (0) )
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = 0,1
+
+  subsection Spherical constant
+    set Inner temperature = 3550
+    set Outer temperature = 288
+  end
+end
+
+# generate visualization and statistic files.
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, basic statistics, temperature statistics, heat flux statistics, depth average
+
+  subsection Visualization
+    set Interpolate output            = false
+    set Output format                 = vtu
+    set List of output variables      = depth, material properties, named additional outputs
+    set Time between graphical output = 5e6
+
+    subsection Material properties
+      set List of material properties   = viscosity, density, specific heat, thermal conductivity, thermal expansivity, compressibility
+    end
+  end
+end
+
+# other model setup
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000
+  end
+end
+
+# Free slip on all boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 7
+  set Refinement fraction                = 0.3
+  set Coarsening fraction                = 0.0
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 1
+end

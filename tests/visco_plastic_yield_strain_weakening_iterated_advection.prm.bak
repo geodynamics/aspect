@@ -1,0 +1,44 @@
+# A test to check whether the calculated finite strain invariant
+# (total strain in this case) does not unrealistically accumulate during
+# nonlinear iterations when an iterative Advection scheme is used. We
+# check this by running the postprocessors on every nonlinear iteration.
+# The test output from the composition statistics postprocessor,
+# which prints out min/max/mass of each compositional field, confirms
+# that the total strain does not incorrectly accumulate during successive
+# nonlinear iterations.
+# The test has been slightly modified from the test linked below.
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_strain_weakening.prm
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 2e5
+set Maximum time step                      = 1e5
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+# Set a very strict nonlinear tolerance such that we perform more than
+# one nonlinear iteration after the first time step.
+set Nonlinear solver tolerance             = 1e-14
+
+# Cap the number of nonlinear iterations at 5, as we
+# only need to a few iterations to see how the strain
+# field evolves within each timestep.
+set Max nonlinear iterations               = 5
+set Output directory                       = visco_plastic_yield_strain_weakening_iterated_advection
+
+# Start with no initial (total) strain such that the
+# accumulated strain should be uniform throughout
+# the domain over the course of this model run.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, velocity statistics
+  set Run postprocessors on nonlinear iterations = true
+end

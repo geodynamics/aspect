@@ -1,0 +1,63 @@
+# This test checks the viscoelastic_plastic brick extension benchmark,
+# but reduces the resolution and viscosity seed for the purpose of runtime
+# length. The model runs for five time steps, which reveal that in the first
+# three time steps the second nonlinear iteration requires zero linear Stokes
+# solves. This likely reflects that elastic stresses buildup prior to yielding
+# and the solution does not change significantly during this time.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/kaus_2010/kaus_2010_extension.prm
+
+set Dimension                              = 2
+set End time                               = 5e3
+set Nonlinear solver tolerance             = 1e-7
+set Max nonlinear iterations               = 4
+set Output directory                       = visco_plastic_vep_brick_extension
+
+subsection Solver parameters
+  subsection Newton solver parameters
+    set Nonlinear Newton solver switch tolerance = 1e-2
+    set Max Newton line search iterations        = 2
+  end
+end
+
+# Model geometry (40x10 km, 2 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 5
+  end
+end
+
+# Change seed size from 800x400 to 4000x2000 meters
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; 0; \
+                              if (y<=2.0e3 && x>=18.0e3 && x<=22.0e3, 1, 0);
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, particles
+
+  subsection Particles
+    set Data output format = none
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell  = 2
+  set Maximum particles per cell  = 8
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 2
+    end
+  end
+end

@@ -1,0 +1,177 @@
+# This benchmark examines flexure of a finite-length elastic plate based
+# on the setup described in Choi et al., 2013, JGR, v.118, p.2429-2444,
+# doi:10.1002/jgrb.50148. The model setup has a 50 km long and 5 km thick
+# elastic plate (shear modulus: 30 GPa, viscosity: 1e35 Pa s) overlaying a
+# viscous layer (viscosity: 1e17 Pa s, 12.5 km thick), which both have a density
+# of 2700 kg/m^3. The top of the model is a free surface, while the bottom
+# boundary is zero-slip and the sides are free-slip. The upper right corner
+# of the viscous layer is replaced with a low density (1890 kg/m^3) elastic
+# block, which drives flexure of the elastic plate (right side goes up, left
+# side goes down). The total topography obtained after the model has reached
+# equilibrium is 330 m, with -146.5 m and 183.5 m of topography, respectively,
+# on the left and right sides. The summed value and profiles differ slightly
+# from those reported in Choi et al. (see viscoelastic_plate_flexure.png within
+# the doc/ subdirectory of this folder), but closely match more recent experiments
+# performed by Cedric Thieulot. The curves from the experiments performed by
+# Cedric Thieulot are labeled 'ELEFANT, nelx=150', 'ELEFANT, nelx=250', and
+# '100x35'. For further details on these additional experiments, visit:
+# https://github.com/naliboff/fieldstone/blob/master/python_codes/fieldstone_64/results/flexureplate
+# The figure in this folder (viscoelastic_plate_flexure.png) was made and
+# provided by Cedric Thieulot.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1e3
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set CFL number                             = 0.1
+set Maximum time step                      = 5
+set Output directory                       = output-viscoelastic_plate_flexure
+set Pressure normalization                 = no
+
+# Model geometry (500 m initial resolution)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 100
+    set Y repetitions = 35
+    set X extent      = 50.0e3
+    set Y extent      = 17.5e3
+  end
+end
+
+# Mesh refinement specifications (refine to 250 m)
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Time steps between mesh refinement = 0
+end
+
+# Element types. The temperature polynomial degree is reduced
+# from the default value of 2 to 1, as temperature is not
+# relevant in this problem.
+subsection Discretization
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 1
+  set Use locally conservative discretization = true
+  set Use discontinuous temperature discretization = false
+  set Use discontinuous composition discretization = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0, 0.0
+  end
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = bottom
+  set Tangential velocity boundary indicators = left, right
+end
+
+# Free surface advection (vertical or normal)
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Free surface
+    set Surface velocity projection = normal
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plate, inclusion
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; \
+                              if (y>12.5e3, 1, 0); \
+                              if (x>=45e3 && y>=7.5e3 && y<=12.5e3, 1, 0);
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Fixed composition boundary indicators  =
+  set List of model names = initial composition
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Initial temperature is constant
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities                   =  2700,  2700,  2700,  2700,  2700,  1890
+    set Viscosities                 = 1.e17, 1.e17, 1.e17, 1.e17, 1.e35, 1.e35
+    set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
+    set Fixed elastic time step     = 5
+    set Use fixed elastic time step = false
+    set Viscosity averaging scheme  = maximum composition
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, material statistics, velocity statistics, topography, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate, named additional outputs
+    set Time between graphical output = 100
+    set Interpolate output = true
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+
+  subsection Topography
+    set Output to file           = true
+    set Time between text output = 100
+  end
+end
+
+# Termination criteria
+subsection Termination criteria
+  set Termination criteria = end time
+end

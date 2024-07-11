@@ -1,0 +1,67 @@
+# Load the signal library.
+set Additional shared libraries = ./libprescribed_temperature_in_field.so
+set Dimension   = 2
+set End time    = 10000
+
+subsection Geometry model
+  set Model name = box
+end
+
+## The temperature will be fixed in the 'Fixed'
+## compositional field
+subsection Prescribed internal temperature model
+  set Prescribe internal temperature = true
+  set Names of compositional fields with fixed temperature = Fixed
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = Fixed, Not_fixed
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y
+    set Function expression = if(x<=0.5, 1, 0); if(x>=0.5, 1, 0)
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = if(x<=0.4, 1000, 100)
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom, right, left
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 4
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+  end
+end

@@ -1,0 +1,88 @@
+# This test uses the bound-preserving limiter, but only for
+# one of the two existing fields. Because both fields are
+# set up identically, any difference in the output of the
+# two fields stems from the limiter algorithm.
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 25000
+set Use years in output instead of seconds = true
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 500e3
+    set Y extent  = 500e3
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3200
+    set Viscosity                     = 1e21
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = 100
+    set Composition viscosity prefactor = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = x<251e3 ? 0 : 1; x<251e3 ? 0 : 1;
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = composition
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, composition statistics
+
+  subsection Visualization
+    set Time between graphical output = 0
+  end
+end
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+
+  subsection Stabilization parameters
+    # apply the limiter to the DG solution of field 1, but not field 2
+    set Use limiter for discontinuous composition solution = true, false
+    set Global composition maximum = 1.0, 1.0
+    set Global composition minimum = 0.0, 0.0
+  end
+end

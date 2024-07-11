@@ -1,0 +1,23 @@
+# A test case that checks the water fugacity viscous prefactor
+# multiplication scheme in combination with the visco plastic material model.
+# This test is almost identical to hk04_olivine_composite_hydration_prefactor.prm,
+# with the only difference being that the bound_fluid is 0. This test checks that
+# the HK04 olivine hydration viscosity prefactor scheme will not divide by 0, but
+# will instead use the user input value set using 'Minimum mass fraction bound
+# water content for fugacity'. The default value is 6.15e-6 (i.e. 6.15 ppm wt. H2O),
+# and so following the same calculation outlined in
+# hk04_olivine_composite_hydration_prefactor.prm, where T = 1173 K, P = 1 GPa, and
+# edot_ii = 1e-17 1/s, the material model should return 3.1724782150033374e22 Pa s
+# for the viscosity.
+
+include $ASPECT_SOURCE_DIR/tests/hk04_olivine_composite_hydration_prefactor.prm
+
+
+# Set the bound water everywhere in the model to be 0.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0
+  end
+end

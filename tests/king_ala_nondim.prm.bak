@@ -1,0 +1,163 @@
+# King2010 ALA benchmark
+# like king_ala.prm but using the nondimensional material model
+
+set Dimension                              = 2
+set CFL number                             = 10.0
+set Adiabatic surface temperature          = 0.091
+set Use years in output instead of seconds = false
+set End time                               = 0.15
+
+subsection Discretization
+  subsection Stabilization parameters
+    set alpha                                              = 2
+    set beta                                               = 0.005
+    set cR                                                 = 0.033
+  end
+end
+
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Function constants  = Di=0.25, gamma=1.0
+    set Function expression = 0.091*exp(depth*Di); gamma/Di*(exp(depth*Di/gamma)-1); exp(depth*Di/gamma)  # T,p,rho
+    set Variable names      = depth
+  end
+end
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression =  1* ((1.0-z/L) + p*cos(k*pi*x/L/1.0)*sin(pi*z/L)) +0.091
+  end
+end
+
+# Then follows a section that describes the boundary conditions
+# for the temperature. The model we choose is called 'box' and
+# allows to set a constant temperature on each of the four sides
+# of the box geometry. In our case, we choose something that is
+# heated from below and cooled from above. (As will be seen
+# in the next section, the actual temperature prescribed here
+# at the left and right does not matter.)
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = top, bottom
+
+  subsection Box
+    set Top temperature    = 0.091
+    set Bottom temperature = 1.091
+    set Left temperature   = 0
+    set Right temperature  = 0
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating
+
+  subsection Adiabatic heating
+    # A flag indicating whether the adiabatic heating should be simplified
+    # from $\alpha T (\mathbf u \cdot \nabla p)$
+    # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $. alpha=thermal exp
+
+    # have \alpha rho T w
+    # need: \alpha \rho T w Di
+    set Use simplified adiabatic heating = true
+  end
+end
+
+subsection Formulation
+  set Formulation = anelastic liquid approximation
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+subsection Material model
+  set Model name = nondimensional
+
+  subsection Nondimensional model
+    set Di                      = 0.25
+    set Ra                      = 1e4
+    set Reference density       = 1
+    set Reference specific heat = 1
+    set Use TALA                = false
+    set gamma                   = 1.0
+  end
+end
+
+# The settings above all pertain to the description of the
+# continuous partial differential equations we want to solve.
+# The following section deals with the discretization of
+# this problem, namely the kind of mesh we want to compute
+# on. We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 1.0
+  set Additional refinement times              = 0.35
+end
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average, heating statistics
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+    set Linear solver tolerance = 1e-7
+  end
+end

@@ -674,7 +674,7 @@ namespace aspect
     std::vector<double>            additional_refinement_times;
     unsigned int                   adaptive_refinement_interval;
     bool                           skip_solvers_on_initial_refinement;
-    bool                           skip_setup_initial_conditions_on_initial_refinement;
+    bool                           skip_setup_initial_temperature_on_initial_refinement;
     bool                           run_postprocessors_on_initial_refinement;
     bool                           run_postprocessors_on_nonlinear_iterations;
     /**

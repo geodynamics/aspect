@@ -1,0 +1,17 @@
+# Test Newton GMG solver based on
+# benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_t.prm
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_t.prm
+
+set Additional shared libraries = $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/libsimple_nonlinear.so
+set Max nonlinear iterations = 10
+
+subsection Material model
+  set Material averaging = harmonic average
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end

@@ -1,0 +1,280 @@
+# Listing of Parameters
+# ---------------------
+# In computations, the time step $k$ is chosen according to $k = c \min_K
+# \frac{h_K}{\|u\|_{\infty,K} p_T}$ where $h_K$ is the diameter of cell $K$,
+# and the denominator is the maximal magnitude of the velocity on cell $K$
+# times the polynomial degree $p_T$ of the temperature discretization. The
+# dimensionless constant $c$ is called the CFL number in this program. For
+# time discretizations that have explicit components, $c$ must be less than a
+# constant that depends on the details of the time discretization and that is
+# no larger than one. On the other hand, for implicit discretizations such as
+# the one chosen here, one can choose the time step as large as one wants (in
+# particular, one can choose $c>1$) though a CFL number significantly larger
+# than one will yield rather diffusive solutions. Units: None.
+set CFL number                             = 1.0
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 8e12
+
+# The name of the directory into which all output files should be placed. This
+# may be an absolute or a relative path.
+
+# A flag indicating whether the computation should be resumed from a
+# previously saved state (if true) or start from scratch (if false).
+set Resume computation                     = false
+
+# The start time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set Start time                             = 0
+
+# When computing results for mantle convection simulations, it is often
+# difficult to judge the order of magnitude of results when they are stated in
+# MKS units involving seconds. Rather, some kinds of results such as
+# velocities are often stated in terms of meters per year (or, sometimes,
+# centimeters per year). On the other hand, for non-dimensional computations,
+# one wants results in their natural unit system as used inside the code. If
+# this flag is set to 'true' conversion to years happens; if it is 'false', no
+# such conversion happens.
+set Use years in output instead of seconds = false
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+
+  # A comma separated list of integers denoting those boundaries on which the
+  # temperature is fixed and described by the boundary temperature object
+  # selected in its own section of this input file. All boundary indicators
+  # used by the geometry but not explicitly listed here will end up with
+  # no-flux (insulating) boundary conditions.
+  set Fixed temperature boundary indicators   = 0,1
+
+  subsection Spherical constant
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Inner temperature = 0
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Outer temperature = 0
+  end
+end
+
+subsection Discretization
+  # The polynomial degree to use for the velocity variables in the Stokes
+  # system. Units: None.
+  set Stokes velocity polynomial degree       = 2
+
+  # The polynomial degree to use for the temperature variable. Units: None.
+  set Temperature polynomial degree           = 2
+
+  # The polynomial degree to use for the composition variable(s). Units: None.
+  set Composition polynomial degree           = 2
+
+  # Whether to use a Stokes discretization that is locally conservative at the
+  # expense of a larger number of degrees of freedom (true), or to go with a
+  # cheaper discretization that does not locally conserve mass, although it is
+  # globally conservative (false).
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
+    # None.
+    set alpha = 2
+
+    # The $\beta$ factor in the artificial viscosity stabilization. An
+    # appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None.
+    set beta  = 0.078
+
+    # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
+    set cR    = 0.11
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set List of normalized fields =
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    # Inner radius of the spherical shell. Units: \\si{\\meter}.
+    set Inner radius  = 3481000
+
+    # Opening angle in degrees of the section of the shell that we want to
+    # build. Units: degrees.
+    set Opening angle = 360
+
+    # Outer radius of the spherical shell. Units: \\si{\\meter}.
+    set Outer radius  = 6336000
+  end
+end
+
+subsection Gravity model
+  set Model name = ascii data
+
+  subsection Radial constant
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 9.81
+  end
+end
+
+subsection Initial temperature model
+  set Model name = spherical hexagonal perturbation
+
+  subsection Spherical gaussian perturbation
+    # The amplitude of the perturbation.
+    set Amplitude             = 0.00
+
+    # The angle where the center of the perturbation is placed.
+    set Angle                 = 0e0
+
+    # The non-dimensional radial distance where the center of the perturbation
+    # is placed.
+    set Non-dimensional depth = 0.7
+
+    # The standard deviation of the Gaussian perturbation.
+    set Sigma                 = 0.2
+
+    # The sign of the perturbation.
+    set Sign                  = 1
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,y
+    set Function expression = if(x > 0,0,1)
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
+    set Reference density             = 3300
+
+    # The reference temperature $T_0$. Units: \\si{\\kelvin}.
+    set Reference temperature         = 293
+
+    # The value of the thermal conductivity $k$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.
+    set Thermal conductivity          = 4.7#1e-6
+
+    # The value of the thermal expansion coefficient $\beta$. Units: \\si{\\per\\kelvin}.
+    set Thermal expansion coefficient = 4e-5
+
+    # The value of the constant viscosity. Units: \\si{\\pascal\\second}.
+    set Viscosity                     = 1e22
+  end
+end
+
+subsection Mesh refinement
+  # A list of times so that if the end time of a time step is beyond this
+  # time, an additional round of mesh refinement is triggered. This is mostly
+  # useful to make sure we can get through the initial transient phase of a
+  # simulation on a relatively coarse mesh, and then refine again when we are
+  # in a time range that we are interested in and where we would like to use a
+  # finer mesh. Units: each element of the list has units years if the 'Use
+  # years in output instead of seconds' parameter is set; seconds otherwise.
+  set Additional refinement times        =
+
+  # The number of adaptive refinement steps performed after initial global
+  # refinement but while still within the first time step.
+  set Initial adaptive refinement        = 0
+
+  # The number of global refinement steps performed on the initial coarse
+  # mesh, before the problem is first solved there.
+  set Initial global refinement          = 3
+
+  # The fraction of cells with the largest error that should be flagged for
+  # refinement.
+  set Refinement fraction                = 0.0
+
+  # The fraction of cells with the smallest error that should be flagged for
+  # coarsening.
+  set Coarsening fraction                = 0.00
+
+  # The method used to determine which cells to refine and which to coarsen.
+  set Strategy                           = temperature
+
+  # The number of time steps after which the mesh is to be adapted again based
+  # on computed error indicators.
+  set Time steps between mesh refinement = 5
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0: function, 1:function
+
+  subsection Function
+    # The name of the variables as they will be used in the function,
+    # separated by ','.
+    set Variable names      = x,y
+
+    # Any constant used inside the function which is not a variable name.
+    set Function constants  = pi=3.1415926
+
+    # Vector valued expression for the velocity; separate components by ';'
+    set Function expression = if(x>0,-1.e-14*sqrt(x*x+y*y)*sin(atan(y/x)),1.e-14*sqrt(x*x+y*y)*sin(atan(y/x))); if(x>0,1.e-14*sqrt(x*x+y*y)*cos(atan(y/x)),-1.e-14*sqrt(x*x+y*y)*cos(atan(y/x)))
+  end
+end
+
+subsection Postprocess
+  # A comma separated list of postprocessor objects that should be run at the
+  # end of each time step. Some of these postprocessors will declare their own
+  # parameters which may, for example, include that they will actually do
+  # something only every so many time steps or years. Alternatively, the text
+  # 'all' indicates that all available postprocessors should be run after each
+  # time step.
+  #
+  # The following postprocessors are available:
+  #
+  # `visualization':
+  # A postprocessor that takes the solution and writes it into files that can
+  # be read by a graphical visualization program. Additional run time
+  # parameters are read from the parameter subsection
+  # 'Visualization'.
+  #
+  # `velocity statistics': A postprocessor that computes
+  # some statistics about the velocity field.
+  #
+  # `temperature statistics': A
+  # postprocessor that computes some statistics about the temperature
+  # field.
+  #
+  # `velocity statistics for the table model': A postprocessor that
+  # computes some statistics about the velocity field.
+  #
+  # `heat flux statistics
+  # for the table model': A postprocessor that computes some statistics about
+  # the heat flux across boundaries.
+  #
+  # `heat flux statistics': A postprocessor
+  # that computes some statistics about the heat flux across boundaries.
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average
+
+  subsection Visualization
+    set Interpolate output = false
+    set Number of grouped files       = 0
+
+    # The file format to be used for graphical output.
+    set Output format                 = vtu
+
+    # The time interval between each generation of graphical output files. A
+    # value of zero indicates that output should be generated in each time
+    # step. Units: years if the 'Use years in output instead of seconds'
+    # parameter is set; seconds otherwise.
+    set Time between graphical output = 1e6
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1e6
+    set Number of zones = 10
+  end
+end
+
+subsection Heating model
+  set List of model names =  shear heating
+end

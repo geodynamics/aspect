@@ -1,0 +1,15 @@
+subsection Postprocess
+  set List of postprocessors = gravity calculation,visualization
+
+  subsection Gravity calculation
+    set Sampling scheme = map
+    set Minimum radius = 6621e3
+    set Minimum longitude = -180
+    set Maximum longitude = 179
+    set Number points longitude = 180
+    set Minimum latitude = -90
+    set Maximum latitude = +90
+    set Number points latitude  = 90
+    set Quadrature degree increase = 1
+  end
+end

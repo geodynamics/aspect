@@ -1,0 +1,139 @@
+# This parameter file is a copy of simple_shear.prm but with the added postprocessor
+# "mobility statistics" following Lourenco et al., 2020.
+# Mobility = surface rms velocity / whole domain rms velocity.
+# This result of ~1.73205 in this test is very close to the analytical
+# solution of sqrt(3).
+#
+# This parameter file reproduces an analytical benchmark for the evolution
+# of finite strain in a model of simple shear as described (for a specific
+# application) in McKenzie & Jackson (1983): "The relationship between
+# strain rates, crustal thickening, paleomagnetism, finite strain and
+# fault movements within a deforming zone." They show that the analytical
+# solution for the deformation gradient tensor F in simple shear deformation is:
+#
+# F_xx = 1.0
+# F_xy = u_x,y * t
+# F_yx = 0
+# F_yy = 1.0,
+#
+# where u is the velocity, t is time, and a comma represents a derivative
+# in that particular direction.
+# Because u_x,y = 2.0 / 1.0 is constant in the whole domain (and over time) we expect
+# a constant F at any given time, and in particular:
+# F_xy (t=1.0) = 2.0
+#
+# This parameter file tracks the finite strain in two ways, once by using
+# compositional fields as illustrated in the finite strain cookbook, and
+# once by using a particle that sits and remains in the center of the domain.
+# The results should be the same.
+#
+# Numerical results for particle tracking and compositional fields
+# show equally excellent agreement.
+
+set Dimension                              = 2
+set End time                               = 0.025
+set Use years in output instead of seconds = false
+set Output directory = simple_shear_output_the_mobility
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+    set X periodic = true
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+
+  subsection Function
+    set Function expression = if (y < 0.5, -1, 1); 0
+  end
+end
+
+subsection Material model
+  set Model name = finite strain
+
+  subsection Simple model
+    set Reference density             = 1010
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = strain_xx, strain_xy, strain_yx, strain_yy
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1.0;0.0;0.0;1.0
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = strain rate
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = particles, composition statistics, visualization, mobility statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = strain rate, stress, principal stress
+    set Output format = gnuplot
+    set Time between graphical output = 0.05
+  end
+
+  subsection Particles
+    set Time between data output = 0.05
+    set Data output format = vtu
+  end
+end
+
+subsection Particles
+  set List of particle properties = integrated strain
+  set Particle generator name = ascii file
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
+      set Data file name = simple_shear_particle.dat
+    end
+  end
+end

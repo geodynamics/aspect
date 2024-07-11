@@ -1,0 +1,11 @@
+include ./plume2D.prm
+
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Prefactors for diffusion creep          = 6.26e-23
+    set Activation energies for diffusion creep = 74829.6
+  end
+end

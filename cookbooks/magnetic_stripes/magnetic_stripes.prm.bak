@@ -1,0 +1,241 @@
+# A model of a mid-ocean ridge that shows how magnetic lineations
+# are created on the seafloor as the magnetic field changes its
+# orientation over time.
+
+
+set Additional shared libraries = ./libmagnetic_stripes.so
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 83.5e6
+set Use years in output instead of seconds = true
+set Output directory                       = output-magnetic-stripes
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum = 1
+    set Global composition minimum = -1
+  end
+end
+
+############### Parameters describing the model
+# Let us here choose again a box domain (400 km wide and 100 km in depth)
+# where we fix the temperature at the bottom and top,
+# allow inflow from the bottom and outflow on the left and right,
+# and prescribe the velocity along the top using the
+# `function' description.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 400000
+    set Y extent = 100000
+    set X repetitions = 4
+    set Box origin X coordinate = -200000
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature    = 293
+  end
+end
+
+# The velocity along the top boundary models a spreading
+# center of a mid-ocean ridge.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x:function, right x:function, top: function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = v=1, cm_per_year=0.02
+    set Function expression = if(x>0, v * cm_per_year, -v * cm_per_year); 0
+  end
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = left y:initial lithostatic pressure, right y:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Representative point = 0,0
+    set Number of integration points = 1000
+  end
+end
+
+# We then choose a vertical gravity model and describe the
+# initial temperature as a constant (being equivalent to a
+# plate age of 0).
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 1600
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 0
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = bottom
+  set Model name = initial composition
+end
+
+subsection Material model
+  set Model name = magnetic stripes
+
+  subsection Composition reaction model
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1e23
+  end
+
+  subsection Magnetic stripes model
+    set Reversal times = \
+8.350E+07, 8.272E+07, \
+8.251E+07, 8.243E+07, \
+8.173E+07, 8.155E+07, \
+8.136E+07, 8.135E+07, \
+8.092E+07, 8.046E+07, \
+8.039E+07, 8.028E+07, \
+8.017E+07, 7.992E+07, \
+7.932E+07, 7.921E+07, \
+7.902E+07, 7.888E+07, \
+7.870E+07, 7.861E+07, \
+7.852E+07, 7.827E+07, \
+7.761E+07, 7.736E+07, \
+7.723E+07, 7.693E+07, \
+7.657E+07, 7.641E+07, \
+7.637E+07, 7.633E+07, \
+7.616E+07, 7.613E+07, \
+7.607E+07, 7.594E+07, \
+7.585E+07, 7.543E+07, \
+7.528E+07, 7.524E+07, \
+7.480E+07, 7.448E+07, \
+7.427E+07, 7.419E+07, \
+7.392E+07, 7.386E+07, \
+7.376E+07, 7.362E+07, \
+7.358E+07, 7.255E+07, \
+7.245E+07, 7.240E+07, \
+7.202E+07, 7.197E+07, \
+7.157E+07, 7.142E+07, \
+7.132E+07, 7.110E+07, \
+7.082E+07, 7.079E+07, \
+7.073E+07, 7.068E+07, \
+7.051E+07, 7.036E+07, \
+7.020E+07, 6.999E+07, \
+6.980E+07, 6.942E+07, \
+6.932E+07, 6.889E+07, \
+6.870E+07, 6.861E+07, \
+6.847E+07, 6.835E+07, \
+6.749E+07, 6.721E+07, \
+6.717E+07, 6.701E+07, \
+6.694E+07, 6.677E+07, \
+6.622E+07, 6.589E+07, \
+6.522E+07, 6.472E+07, \
+6.445E+07, 6.337E+07, \
+6.298E+07, 6.278E+07, \
+6.250E+07, 6.218E+07, \
+6.173E+07, 6.164E+07, \
+6.135E+07, 6.125E+07, \
+6.104E+07, 6.101E+07, \
+6.091E+07, 6.075E+07, \
+6.070E+07, 6.043E+07, \
+6.015E+07, 5.997E+07, \
+5.982E+07, 5.970E+07, \
+5.950E+07, 5.938E+07, \
+5.877E+07, 5.872E+07, \
+5.867E+07, 5.832E+07, \
+5.800E+07, 5.785E+07, \
+5.768E+07, 5.755E+07, \
+5.751E+07, 5.695E+07, \
+5.647E+07, 5.553E+07, \
+5.522E+07, 5.499E+07, \
+5.492E+07, 5.476E+07, \
+5.410E+07, 5.384E+07, \
+5.374E+07, 5.340E+07, \
+5.302E+07, 5.256E+07, \
+5.044E+07, 4.996E+07, \
+4.885E+07, 4.856E+07, \
+4.816E+07, 4.797E+07, \
+4.782E+07, 4.716E+07, \
+4.688E+07, 4.603E+07, \
+4.590E+07, 4.565E+07, \
+4.558E+07, 4.539E+07, \
+4.507E+07, 4.395E+07, \
+4.387E+07, 4.337E+07, \
+4.224E+07, 4.198E+07, \
+4.096E+07, 3.971E+07, \
+3.724E+07, 3.559E+07, \
+3.446E+07, 3.379E+07, \
+3.272E+07, 3.255E+07, \
+3.245E+07, 3.176E+07, \
+3.114E+07, 3.084E+07, \
+3.074E+07, 3.070E+07, \
+3.060E+07, 3.015E+07, \
+2.760E+07, 2.711E+07, \
+2.595E+07, 2.559E+07, \
+2.258E+07, 2.222E+07, \
+2.100E+07, 1.987E+07, \
+1.952E+07, 1.876E+07, \
+1.792E+07, 1.589E+07, \
+1.577E+07, 1.476E+07, \
+1.243E+07, 1.216E+07, \
+1.191E+07, 1.050E+07, \
+1.021E+07, 1.013E+07, \
+9.881E+06, 4.425E+06, \
+5.000E+05
+  end
+end
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 4
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Variable names = depth, w
+    set Function expression = if(depth<7000,7,if(depth<10000,6,if(depth<30000,5,if(depth<45000,4,3))))
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set List of output variables = density, heat flux map, vertical heat flux
+  end
+end

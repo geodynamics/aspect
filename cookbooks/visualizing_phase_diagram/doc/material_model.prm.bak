@@ -1,0 +1,15 @@
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference temperature = 273
+    set Maximum viscosity = 1e24
+    set Phase transition depths = background:410e3|520e3|560e3|670e3|670e3|670e3|670e3, spharz: 410e3|520e3|560e3|670e3|670e3|670e3|670e3
+    set Phase transition widths = background:5e3|5e3|5e3|5e3|5e3|5e3|5e3, spharz: 5e3|5e3|5e3|5e3|5e3|5e3|5e3
+    set Phase transition temperatures = background:1662.0|1662.0|1662.0|1662.0|1662.0|1662.0|1662.0, spharz: 1662.0|1662.0|1662.0|1662.0|1662.0|1662.0|1662.0
+    set Phase transition Clapeyron slopes = background:4e6|4.1e6|4e6|-2e6|4e6|-3.1e6|1.3e6, spharz: 4e6|4.1e6|4e6|-2e6|4e6|-3.1e6|1.3e6
+    set Densities = 3300.0
+    set Heat capacities = background: 3300.0|3394.4|3442.1|3453.2|3617.6|3691.5|3774.7|3929.1, spharz: 3235.0|3372.3|3441.7|3441.7|3680.8|3717.8|3759.4|3836.6
+    set Thermal expansivities = 0.0
+  end
+end

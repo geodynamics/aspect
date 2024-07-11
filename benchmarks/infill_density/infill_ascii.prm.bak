@@ -1,0 +1,217 @@
+# This model demonstrates ASPECT's ability to be used to
+# model load induced flexure from a topographic feature
+# on top of the lithosphere. The model uses the viscoelastic
+# material model and is composed of an 'elastic' high viscosity
+# lithosphere and a low viscosity mantle beneath the elastic
+# lithosphere. A time dependent axisymmetric box load is applied
+# to the top boundary using ASCII files, with the center of the load
+# at the left boundary of the 2D cartesian model domain. The model
+# is run for 120'000 years, which is equivalent to 40*tm:
+# tm = eta_m / mu
+# eta_m = mantle viscosity
+# mu = elastic shear modulus
+# tm is the time scale of viscous stress relaxation for the mantle.
+# This allows for virtually all stresses in the mantle to be relaxed
+# and for the elastic lithosphere to be fully compensating the load.
+# The analytic solution for this setup is outlined in the Generic
+# Mapping Tools function grdflexure:
+# <https://docs.generic-mapping-tools.org/6.1/supplements/potential/grdflexure.html>
+
+#  Global parameters
+set Additional shared libraries            = ./libinfill_density.so
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 120e3
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set CFL number                             = 0.1
+set Maximum time step                      = 750
+set Output directory                       = output
+set Pressure normalization                 = no
+
+# Model geometry (1200x1200 km, 80 km spacing in x direction, 40km spacing in y direction)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 15
+    set Y repetitions = 30
+    set X extent      = 1200e3
+    set Y extent      = 1200e3
+  end
+end
+
+# Mesh refinement specifications
+# Refine the mesh in the uppermost part of the model
+# to better capture lithospheric response to the load.
+# (10x5km mesh in the lithosphere)
+subsection Mesh refinement
+  set Initial adaptive refinement              = 2
+  set Initial global refinement                = 1
+  set Time steps between mesh refinement       = 1
+  set Minimum refinement level                 = 0
+  set Strategy                                 = minimum refinement function, strain rate
+
+  subsection Minimum refinement function
+    set Coordinate system                      = cartesian
+    set Variable names                         = x,y,t
+    set Function expression                    = if(y>=1050e3, 3, 0)
+  end
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 1
+  set Use locally conservative discretization = true
+  set Use discontinuous temperature discretization = false
+
+  # Discontinuous (DG) elements are used for compositional fields to more accurately track
+  # the lithosphere-asthenosphere boundary.
+  set Use discontinuous composition discretization = true
+
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum =  1.e13,  1.e13,  1.e13, 1.0
+    set Global composition minimum = -1.e13, -1.e13, -1.e13, 0.0
+  end
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Free surface
+    set Surface velocity projection = normal
+  end
+end
+
+# Velocity boundary conditions
+# The left boundary is set to free slip to allow the lithosphere
+# to vertically deform along this boundary and act as mirror plane
+# for the other 'half' of the load.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left
+end
+
+# Prescribe a fixed vertical traction on the top boundary
+# The right boundary is open in order to allow outflow of the
+# mantle as lithospheric flexure pushes the mantle to the right.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top y: infill ascii data, right: initial lithostatic pressure
+
+  subsection Infill ascii data
+    set Rock density = 2000
+    set Sediment density = 2000
+    set Height for specifying rock infill = 0
+
+    subsection Ascii data model
+      set Data directory = $ASPECT_SOURCE_DIR/benchmarks/infill_density/data/
+      set First data file model time = 0
+      set Data file name = box_2d_%s.%d.txt
+      set Data file time step = 750
+    end
+  end
+
+  subsection Initial lithostatic pressure
+    set Representative point = 1200e3, 0
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, lithosphere
+end
+
+#Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; if(y>=1125e3, 1, 0)
+  end
+end
+
+#Composition boundary conditions
+subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = false
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities                   = 3300
+
+    # The first valueis assigned to the mantle and the next three are assigned to the compositional
+    # fields representing viscoelastic stresses, but significantly these values are not used in the
+    # viscosity calculation (i.e., only values representing lithologies are used). Respectively, the
+    # fourth and fifth values are assigned to the compositional fields representing the lithosphere.
+    set Viscosities                 = 1.e21, 1.e21, 1.e21, 1.e21, 1.e26
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = true
+    set Fixed elastic time step     = 7500
+    set Viscosity averaging scheme  = harmonic
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, temperature statistics, topography, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate, shear stress, boundary indicators
+    set Number of grouped files = 1
+    set Time between graphical output = 7500
+    set Interpolate output = true
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+  end
+
+  subsection Topography
+    set Output to file = true
+    set Time between text output = 7500
+  end
+end
+
+# Termination criteria
+subsection Termination criteria
+  set Termination criteria = end time
+end

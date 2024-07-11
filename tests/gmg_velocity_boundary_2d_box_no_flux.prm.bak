@@ -1,0 +1,100 @@
+set Dimension = 2
+set Use years in output instead of seconds = true
+set Start time = 0
+set End time = 0
+set Output directory = output
+set Pressure normalization = surface
+set Surface pressure = 0
+set Adiabatic surface temperature = 273
+set Nonlinear solver scheme = single Advection, single Stokes
+set CFL number = 0.3
+set Timing output frequency = 1
+
+subsection Discretization
+  set Composition polynomial degree = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree = 2
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Formulation
+  set Formulation = custom
+  set Mass conservation = incompressible
+  set Temperature equation = reference density profile
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 6.7830e+06
+    set Y extent = 2.8900e6
+    set X repetitions = 2
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement = 1
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1, 3
+  set Zero velocity boundary indicators = 0, 2
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = constant
+
+  subsection Constant
+    set Boundary indicator to temperature mappings = bottom: 1673, top: 273
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference temperature = 273
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-15
+    set Minimum viscosity = 1e21
+    set Maximum viscosity = 1e25
+    set Viscosity averaging scheme = harmonic
+    set Thermal diffusivities = 0
+    set Heat capacities = 750.
+    set Densities = 3150
+    set Thermal expansivities = 0
+    set Viscous flow law = diffusion
+    set Prefactors for diffusion creep = 1e-21
+    set Activation energies for diffusion creep = 0
+    set Activation volumes for diffusion creep = 0
+    set Grain size exponents for diffusion creep = 0
+    set Angles of internal friction = 0
+    set Cohesions = 1e15
+  end
+end
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics
+end

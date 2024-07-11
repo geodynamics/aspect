@@ -1,0 +1,64 @@
+# This is a test that makes sure that the ascii data slice model
+# reads in 3d files for the initial temperature correctly, and
+# and then rotates them to the correct 2d plane.
+# The output was verified against the output of the ascii_data_slice
+# test.
+
+set Dimension = 2
+set Use years in output instead of seconds = true
+set Output directory                       = ascii-data-slice-temperature
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Start time                             = 0
+set End time                               = 0
+set Adiabatic surface temperature          = 1600.0
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 0
+  set Initial global refinement = 3
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top,
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net surface rotation
+end
+
+subsection Initial temperature model
+  set List of model names = ascii data
+
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
+    set Data file name = shell_3d_2.txt
+    set Slice dataset in 2D plane = true
+    set First point on slice  = 0.3, -1, 0
+    set Second point on slice = 0.4, 1, -1
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+end
+
+subsection Material model
+  set Model name         = simple
+  set Material averaging = harmonic average
+
+  subsection Simple model
+    set Viscosity = 1e22
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors         = velocity statistics, temperature statistics
+end

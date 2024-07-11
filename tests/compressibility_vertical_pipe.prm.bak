@@ -1,0 +1,5 @@
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/vertical_pipe/vertical_pipe.prm
+
+set End time = 1e6

@@ -1,0 +1,105 @@
+# Like the poiseuille_2d_pressure_bc.prm test, but using GMG instead.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Solver parameters
+  subsection Matrix Free
+    set Output details = true
+  end
+
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps             = 200
+    set Maximum number of expensive Stokes solver steps = 0
+    set Linear solver tolerance                         = 1e-6
+    set GMRES solver restart length                     = 100
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1
+
+  subsection Box
+    set Left temperature = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  set Material averaging = harmonic average
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 1
+    set Thermal conductivity          = 0
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = 0 : function, 1 : function
+
+  subsection Function
+    set Variable names = x,z
+
+    # We want to prescribe a pressure of 2 at the left boundary
+    # and -2 at the right boundary.
+    # The traction in this case is defined as:
+    # tau =  - pressure * normal_vector.
+    # On the left boundary, the outward pointing normal vector is
+    # (-1;0). On the right (1;0).
+    # Therefore:
+    # Left boundary:  tau = - pressure(left) (-1;0) = - (2) (-1;0) = (2;0).
+    # Right boundary: tau = - pressure(right) (1;0) = - (-2) (1;0) = (2;0).
+    # Conveniently, the traction is the same on both boundaries.
+    set Function expression = 2;0
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics
+end

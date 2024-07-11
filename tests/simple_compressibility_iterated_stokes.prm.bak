@@ -1,0 +1,81 @@
+# A variation on the 'compressibility_iterated_stokes' testcase.
+# The only variation is the used material model. This test adapts the
+# 'simple compressible' material model plugin to do the same job as the
+# shared library material model from compressibility_iterated_stokes.cc
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Max nonlinear iterations               = 5
+
+# no gravity. the pressure will equal just the dynamic component
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+# temperature field doesn't matter. set it to zero
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Reference density             = 0.909090909090
+    set Reference compressibility     = 0.01
+    set Reference specific heat       = 1250
+    set Thermal conductivity          = 1e-6
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1
+  set Prescribed velocity boundary indicators = 2: function
+
+  subsection Function
+    set Variable names = x,y
+    set Function expression = 0;1
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = compressibility
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = density
+    set Number of grouped files       = 0
+    set Output format                 = vtu
+    set Time between graphical output = 0
+  end
+end

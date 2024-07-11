@@ -1,0 +1,117 @@
+# This test uses a similar setup as visco_plastic.prm and includes the phase transitions
+# of a complicated set. This is not a realistic case but is only a test for the implementation.
+# Here I am showing the variations of material properties using the "specific heat" field.
+# specifically, the usage of the "Phase transition temperature lower limits" and
+# the "Phase transition temperature upper limits" are demonstrated in this test case.
+# For other compositions, see also:
+# pyrolite: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_pyrolite.prm
+# pyrolite, complicated: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_pyrolite_complicated.prm
+# harzburgite: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_harzburgite.prm
+# basalt: $ASPECT_SOURCE_DIR/tests/visco_plastic_phases_basalt.prm
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = no Advection, no Stokes
+set Max nonlinear iterations               = 1
+set Timing output frequency                = 1
+
+# model geometry
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 20
+    set X extent      = 800e3
+    set Y extent      = 800e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = left, right
+  set List of model names = box
+
+  subsection Box
+    set Left temperature   = 273
+    set Right temperature  = 2000
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x, y
+    set Function constants = XMAX=800e3, Tl=273.0, Tr=2000.0
+    set Function expression = Tl * (x - XMAX)/(-XMAX) + Tr * x / XMAX
+  end
+end
+
+# value for material model
+# The phase transitions are separated into subgroups. subgroups are separated by blanks.
+# Moreover, subsgroups are connected but don't intersect each other
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference temperature = 273
+    set Maximum viscosity = 1e24
+    set Phase transition depths = background:670e3|670e3| 670e3|670e3|670e3| 670e3|670e3
+    set Phase transition widths = background:5e3|5e3| 5e3|5e3|5e3| 5e3|5e3
+    set Phase transition temperatures = background:1662.0|962.0| 962.0|1662.0|1662.0| 1662.0|1662.0
+    set Phase transition temperature lower limits = background:-1e31|-1e31| 1425.0|1425.0|-1e31| 1662.0|1662.0
+    set Phase transition temperature upper limits = background:1425.0|1425.0| 1e31|1662.0|1662.0| 1e31|1e31
+    set Phase transition Clapeyron slopes = background:4e6|-2e6| -2e6|4e6|-3.1e6| -3.1e6|4e6
+    set Thermal diffusivities = 1.0e-6
+    set Heat capacities = background:1000|2000|4000| 3000|4000|4500| 3500|4500
+    set Densities = 3300.0
+    set Thermal expansivities = 0.0
+    set Viscous flow law = diffusion
+    set Prefactors for diffusion creep = 5e-22
+    set Grain size exponents for diffusion creep = 0.0
+    set Activation energies for diffusion creep = 0.0
+    set Activation volumes for diffusion creep = 0.0
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = visualization, material statistics
+
+  subsection Visualization
+    set List of output variables = material properties
+    set Output format = gnuplot
+    set Time between graphical output = 0.1e6
+  end
+end

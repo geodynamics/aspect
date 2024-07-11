@@ -1,0 +1,25 @@
+# Like box_initial_mesh_deformation.prm, but test
+# that periodic boundaries are correctly interpreted as
+# tangential mesh movement boundaries.
+
+include $ASPECT_SOURCE_DIR/tests/box_initial_mesh_deformation.prm
+
+set Dimension                              = 2
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 660000
+    set Y extent = 660000
+    set X periodic = true
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: prescribed deformation
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = top, bottom
+end

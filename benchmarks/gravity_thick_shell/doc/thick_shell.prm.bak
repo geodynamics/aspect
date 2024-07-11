@@ -1,0 +1,11 @@
+subsection Postprocess
+  set List of postprocessors = gravity calculation,visualization
+
+  subsection Gravity calculation
+    set Sampling scheme = list of points
+    set List of radius    = 0,1e6,2e6,3e6,3.5e6,4e6,4.5e6,5e6,5.5e6,6e6,6.371e6,6.5e6,7e6,8e6,9e6,10e6
+    set List of longitude = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+    set List of latitude  = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+    set Quadrature degree increase = 1
+  end
+end

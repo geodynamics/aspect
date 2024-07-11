@@ -1,0 +1,132 @@
+# With this geometry model we add 4 additional boundary
+# indicators to the lithospheric part of the radial
+# boundaries of a chunk.
+
+set Dimension                              = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization                 = surface
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# In 2D the radial boundary indicators are
+# upper|lower east|west.
+# Because we want flow through the upper part of the boundaries
+# we set fixed temperature and composition boundary conditions.
+# For now we set the lower part of the radial boundaries to
+# zero velocity, while prescribing a velocity function on the
+# upper boundaries. Note that this particular example can be accomplished
+# without additional boundary indicators and just prescribing a
+# velocity function on the whole radial boundaries.
+# Along the top and the lithospheric part of the vertical boundaries
+# we prescribe a plate velocity of 1 cm/year.
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = uppereast, upperwest, bottom, top
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+  set Fixed composition boundary indicators   = uppereast, upperwest
+end
+
+subsection Geometry model
+  set Model name = chunk with lithosphere boundary indicators
+
+  # We start the outer chunk at a depth of
+  # 150 km
+  subsection Chunk with lithosphere boundary indicators
+    set Chunk inner radius = 3471000
+    set Chunk outer radius = 6371000
+    set Chunk middle boundary radius = 6221000
+    set Inner chunk radius repetitions = 8
+    set Outer chunk radius repetitions = 1
+    set Chunk minimum longitude = 0
+    set Chunk maximum longitude = 40
+    set Longitude repetitions = 8
+    set Chunk minimum latitude = 0
+    set Chunk maximum latitude = 40
+    set Latitude repetitions = 8
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+# We prescribe one compositional field
+# to represent the lithosphere
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Densities                  = 3300,3250
+    set Reference temperature      = 293
+    set Specific heats             = 1250
+    set Thermal conductivities     = 0.
+    set Thermal expansivities      = 0.
+    set Viscosities                = 1e20,1e22
+    set Viscosity averaging scheme = harmonic
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = uppereast:function, upperwest:function, top:function
+  set Tangential velocity boundary indicators = bottom
+  set Zero velocity boundary indicators       = lowereast, lowerwest
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = vel_mag=0.01
+    set Function expression = -y/sqrt(y*y+x*x)*vel_mag; x/sqrt(y*y+x*x)*vel_mag
+  end
+end
+
+# The lithosphere is represented by a lower density,
+# higher viscosity compositional field.
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = lith_depth=125e3, model_radius=6371e3
+    set Function expression = if(sqrt(x*x+y*y)<(model_radius-lith_depth),0,1)
+  end
+end
+
+# We look at the velocity statistics; max velocity will be
+# the prescribed velocity of 1 cm/year. The boundary indicator
+# visualization shows us the indicators we set at the boundaries.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = boundary indicators
+    set Output format            = gnuplot
+  end
+end

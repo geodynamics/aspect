@@ -1,0 +1,25 @@
+# Test GMG with mesh deformation with adaptive mesh refinement
+# MPI: 4
+#
+# This test fails with dealii::MGLevelGlobalTransfer Dimension 2 not equal to 0.
+
+
+# This test is based on
+include $ASPECT_SOURCE_DIR/tests/function_mesh_deformation_tangential_mesh_velocity.prm
+
+set Dimension = 2
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps = 200
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end
+
+subsection Mesh refinement
+  set Time steps between mesh refinement = 5
+end

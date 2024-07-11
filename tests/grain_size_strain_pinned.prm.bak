@@ -1,0 +1,77 @@
+# A test for the grain size material model. The test imposes simple shear
+# across a 100 km square domain.
+# Over time the model maintains nearly constant temperatures, pressures and
+# strain rates.
+# The model change in grain size can be compared to the analytical
+# equations derived in Mulyukova & Bercovici 2018, which is done
+# in a python notebook stored in
+# $ASPECT_SOURCE_DIR/benchmarks/grain_size_pinned_state/dynamic_grain_size_pinned_state.ipynb
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_strain.prm
+
+set End time = 1
+set Maximum time step = 1
+
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Reference density                = 3400
+    set Thermal conductivity             = 0
+    set Thermal expansion coefficient    = 0
+    set Reference compressibility        = 0
+    set Viscosity                        = 1e18
+    set Minimum viscosity                = 1e16
+    set Reference temperature            = 1600
+    set Recrystallized grain size        =
+    set Grain growth activation energy       = 4e5
+    set Grain growth activation volume       = 0.0
+    set Grain growth rate constant           = 1.92E-010
+    set Grain growth exponent                = 3
+    set Average specific grain boundary energy = 1.0
+    set Geometric constant                   = 3
+    set Grain size evolution formulation     = pinned grain damage
+    set Reciprocal required strain                  = 10
+
+    # Faul and Jackson 2007
+    # Diffusion creep
+    # new scaled prefactors to match vertical viscosity profile
+    set Diffusion creep prefactor            = 3.0e-015 # s^-1 Pa^-1 m^p
+    set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 3.75e5 #J/mol
+    set Diffusion activation volume          = 6e-6 # m^3/mol (from Karato 2010)
+    set Dislocation viscosity iteration threshold = 1e-3
+
+    # Kawazoe et al. (2009)
+    # Dislocation creep
+    set Dislocation creep prefactor          = 1.244507e-15 # s^-1 Pa^-n
+    set Dislocation creep exponent           = 3.5
+    set Dislocation activation energy        = 530000 # J/mol
+    set Dislocation activation volume        = 1.40E-005 # m^3/mol
+
+    subsection Grain damage partitioning
+      set Minimum grain size reduction work fraction  = 1e-1
+    end
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, temperature statistics, velocity statistics, material statistics, visualization, ODE statistics
+
+  subsection Visualization
+    set Time between graphical output = 1
+    set List of output variables = material properties, named additional outputs, heating, strain rate, stress second invariant, stress
+    set Output format = gnuplot
+
+    subsection Material properties
+      set List of material properties = viscosity, density, reaction terms
+    end
+  end
+end

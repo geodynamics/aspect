@@ -1,0 +1,15 @@
+# With this geometry model we add 2 additional boundary
+# indicators to the lithospheric part of the left and right
+# boundary.
+# This test is for a nonzero box Y origin.
+
+include $ASPECT_SOURCE_DIR/tests/lithosphere_boundary_indicator.prm
+
+
+subsection Geometry model
+  set Model name = box with lithosphere boundary indicators
+
+  subsection Box with lithosphere boundary indicators
+    set Box origin Y coordinate = 300000
+  end
+end

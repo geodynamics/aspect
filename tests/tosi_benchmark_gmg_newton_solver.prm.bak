@@ -1,0 +1,18 @@
+# Test Newton GMG solver based on
+# benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input_gmg.prm
+
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/benchmarks/tosi_et_al_2015_gcubed/libtosi_benchmark.so
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/tosi_et_al_2015/input.prm
+
+set End time                               = 0.0022
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end

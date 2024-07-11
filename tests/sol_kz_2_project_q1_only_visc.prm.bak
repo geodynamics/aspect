@@ -1,0 +1,14 @@
+# Solkz benchmark using project to Q1 only viscosity material modeling averaging
+
+include $ASPECT_SOURCE_DIR/benchmarks/solkz/solkz.prm
+
+
+subsection Material model
+  set Model name = SolKzMaterial
+  set Material averaging = project to Q1 only viscosity
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end

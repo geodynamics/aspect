@@ -1,0 +1,38 @@
+# Based on viscoelastic free surface benchmark (with free surface
+# disabled) to show a bug, where we did not include the correct ghost
+# entries for the MappingQEulerian
+# MPI: 3
+
+include $ASPECT_SOURCE_DIR/benchmarks/free_surface_tractions/viscoelastic/free_surface_VE_cylinder_2D_loading.prm
+
+set Dimension                              = 2
+set End time = 10
+
+subsection Material model
+  set Model name = viscoelastic
+  set Material averaging = harmonic average only viscosity
+
+  subsection Viscoelastic
+    set Use fixed elastic time step = true
+    set Fixed elastic time step     = 1e2
+    set Viscosity averaging scheme  = harmonic
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Linear solver tolerance = 1.e-7
+    set Number of cheap Stokes solver steps = 200
+  end
+end
+
+subsection Mesh deformation
+  set Additional tangential mesh velocity boundary indicators = left,right
+  set Mesh deformation boundary indicators = top: boundary function
+
+  subsection Boundary function
+    set Variable names      = x,y,t
+    set Function expression = 0;  -3.168808781e-16*(x-1e5)
+  end
+end

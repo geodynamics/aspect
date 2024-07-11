@@ -1,0 +1,14 @@
+# This input file tests the isosurface mesh refinement plugin
+include $ASPECT_SOURCE_DIR/tests/isosurfaces_simple_box_2D.prm
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
+  set Strategy = isosurfaces
+
+  subsection Isosurfaces
+    set Isosurfaces = max,    max,    Temperature: 0 | 600,   C_2 : 0.0 | 0.5 ;\
+                      min,    min,    Temperature: 1600 | 3000,   C_2 : 0.0 | 0.5
+  end
+end

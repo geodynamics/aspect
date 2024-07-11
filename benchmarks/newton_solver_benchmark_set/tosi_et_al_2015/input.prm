@@ -146,9 +146,9 @@ end
 # - Vrms over the whole domain (velocity statistics)
 # - Vrms along the surface (velocity boundary statistics)
 # - Vmax along the surface (velocity boundary statistics)
-# - average rate of viscous dissipation (tosi viscous dissipation statistics)
-# - average rate of work against gravity (tosi viscous dissipation statistics)
-# - percentage error difference work and dissipation (tosi viscous dissipation statistics)
+# - average rate of viscous dissipation (tosi heating statistics)
+# - average rate of work against gravity (tosi heating statistics)
+# - percentage error difference work and dissipation (tosi heating statistics)
 #
 # Tosi et al. (2015) also report depth averages; averages for viscosity
 # and temperature are produced every 0.05 units of time.

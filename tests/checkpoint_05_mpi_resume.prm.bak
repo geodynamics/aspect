@@ -1,0 +1,12 @@
+# Like checkpoint_01, but in parallel. This test resumes from the checkpoint
+# written by checkpoint_05_mpi_write.  In order for this to work, this test
+# loads a shared library that copies the necessary checkpoint files into the
+# output directory of this test before starting the run.
+#
+# MPI: 2
+# DEPENDS-ON: checkpoint_05_mpi_create
+
+set Dimension = 2
+set Resume computation = true
+
+include $ASPECT_SOURCE_DIR/tests/checkpoint_01.prm

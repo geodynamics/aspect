@@ -1,0 +1,15 @@
+# Test for removing the net surface rotation in 2D spherical
+# shells. Setup is identical to the 'remove_net_rotation' test,
+# except we remove net surface rotation instead of volume rotation.
+# The 'rotation statistics' postprocessor will show negligible
+# surface angular velocity, and higher overall angular velocity
+# than for 'remove_net_rotation'.
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/remove_net_rotation.prm
+
+
+subsection Nullspace removal
+  set Remove nullspace = net surface rotation
+end

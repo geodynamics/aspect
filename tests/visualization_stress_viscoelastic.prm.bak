@@ -1,0 +1,49 @@
+# A testcase for the "stress" visualization postprocessor
+# when elasticity is enabled. The rheology is viscoelastic,
+# but otherwise the test is identical to visualization_stress.prm.
+# In the first timestep, the elastic initial conditions
+# impose zero differential stress. A very high shear modulus relative
+# to the viscosity ensures that the differential stress quickly approaches
+# the value from the original viscous test.
+#
+# The test solves the equations on a box with Dirichlet boundary
+# conditions equal to (z,0), which then is also the velocity everywhere.
+# This yields a constant strain rate [[0,1/2],[1/2,0]].
+#
+# the stress is then simply this tensor times -2*eta plus the pressure and we set
+# eta=42 below. compared to the visualization_shear_stress test, the test
+# also includes a nonzero gravity so that we get a nonconstant pressure
+#
+# the second invariant of the deviatoric stress will be 42.
+
+include $ASPECT_SOURCE_DIR/tests/visualization_stress.prm
+
+set End time                               = 1
+
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Material model
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities                   = 1
+    set Viscosities                 = 42
+    set Elastic shear moduli        = 1e16
+    set Use fixed elastic time step = false
+    set Viscosity averaging scheme  = harmonic
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy
+end
+
+subsection Postprocess
+  subsection Visualization
+    set Time between graphical output = 1
+    set Interpolate output = true
+  end
+end

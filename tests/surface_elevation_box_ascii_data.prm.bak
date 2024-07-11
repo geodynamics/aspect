@@ -1,0 +1,17 @@
+# Test the 'surface elevation' visualization postprocessor using a
+# model that imposes an initial topography.
+
+set Dimension = 3
+
+include $ASPECT_SOURCE_DIR/tests/box_initial_topography_ascii_data.prm
+
+set Nonlinear solver scheme = no Advection, no Stokes
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = surface elevation
+  end
+end

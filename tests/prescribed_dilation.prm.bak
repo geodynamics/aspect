@@ -1,0 +1,71 @@
+# Manufactured solution to test PrescribedDilation
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Output directory                       = output
+set Pressure normalization                 = volume
+
+subsection Formulation
+  set Enable prescribed dilation          = true
+  set Enable additional Stokes RHS            = true
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 2
+    set Y extent  = 2
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:MyBoundary, 1:MyBoundary, 2:MyBoundary, 3:MyBoundary
+end
+
+subsection Material model
+  set Model name = MyMaterial
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 3
+  set Refinement fraction                = 1.0
+  set Coarsening fraction                = 0.0
+  set Strategy                           = velocity
+  set Run postprocessors on initial refinement = true
+end
+
+############### Parameters describing what to do with the solution
+# The final section allows us to choose which postprocessors to
+# run at the end of each time step.
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, MyPostprocessor, visualization
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+    set Number of cheap Stokes solver steps = 0
+  end
+end

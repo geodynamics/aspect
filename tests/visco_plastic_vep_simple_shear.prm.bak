@@ -1,0 +1,7 @@
+# This test checks the viscoelastic_plastic simple shear benchmark,
+# but reduces the end time for the purpose of runtime.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_simple_shear/viscoelastic_plastic_simple_shear.prm
+
+set Dimension                              = 2
+set End time                               = 0.05

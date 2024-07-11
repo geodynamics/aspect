@@ -1,0 +1,25 @@
+# This model tests the reactive fluid transport material
+# 'no reaction' scenario to ensure that there is no reaction
+# between the fluid and solid phases. The values of
+# porosity (0) and the bound fluid (0.01) are initially
+# spatially uniform. The absence of reactions between
+# the two phases and near zero velocities (free-slip on
+# all sides) produces no change in their values through time.
+
+# As this test is very similar to the reactive_fluid_transport_zero_solubility
+# test, we include the latter parameter file and only change relevant parameters.
+include $ASPECT_SOURCE_DIR/tests/reactive_fluid_transport_zero_solubility.prm
+
+set Output directory                       = reactive_fluid_transport_no_reaction
+
+# As there are no reactions between the fluid and solid,
+# there is no need to use operator splitting.
+set Use operator splitting                     = false
+
+# Use the no reaction scheme in the reactive fluid
+# transport model.
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Fluid-solid reaction scheme = no reaction
+  end
+end

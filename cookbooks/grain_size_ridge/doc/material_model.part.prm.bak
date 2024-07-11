@@ -1,0 +1,48 @@
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    # Diffusion creep has a prefactor, a temperature dependence defined by the
+    # activation energy, a pressure dependence defined by the activation volume
+    # and a grain size dependence. We take the activation energy from Hirth &
+    # Kohlstedt, 2003, and pick the prefactor and activation volume so that we
+    # get a reasonable upper mantle viscosity profile and a balance between
+    # diffusion and dislocation creep.
+    set Diffusion creep prefactor                   = 5e-15
+    set Diffusion activation energy                 = 3.75e5
+    set Diffusion activation volume                 = 4e-6
+    set Diffusion creep grain size exponent         = 3
+
+    # Dislocation creep has a prefactor, a temperature dependence defined by the
+    # activation energy, a pressure dependence defined by the activation volume
+    # and a strain-rate dependence defined by the exponent. We take the activation
+    # energy and volume from Hirth & Kohlstedt, 2003, and pick the prefactor so
+    # that we get a reasonable upper mantle viscosity and a balance between
+    # diffusion and dislocation creep.
+    set Dislocation creep prefactor                 = 1e-15
+    set Dislocation activation energy               = 5.3e5
+    set Dislocation activation volume               = 1.4e-5
+    set Dislocation creep exponent                  = 3.5
+    set Dislocation viscosity iteration number      = 10000
+
+    # Grain size is reduced when work is being done by dislocation creep.
+    # Here, 10% of this work goes into reducing the grain size rather than
+    # into shear heating.
+    # Grain size increases with a rate controlled by the grain growth
+    # constant and a temperature-depndence defined by the activation
+    # energy. By setting the activation volume to zero, we disable the
+    # pressure-dependence of grain growth.
+    # The parameter values are taken from Dannberg et al., 2017, G-cubed,
+    # with the parameters being based on Faul and Jackson, 2007.
+    set Work fraction for boundary area change      = 0.1
+    set Grain growth rate constant                  = 1.92e-10
+    set Grain growth activation energy              = 4e5
+    set Grain growth activation volume              = 0
+
+    # Viscosity is cut off at a minimum value of 10^16 Pa s
+    # and a maximum value of 10^23 Pa s.
+    set Maximum viscosity                           = 1e23
+    set Minimum viscosity                           = 1e16
+    set Maximum temperature dependence of viscosity = 1e8
+  end
+end

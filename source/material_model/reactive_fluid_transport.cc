@@ -123,7 +123,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           switch (fluid_solid_reaction_scheme)

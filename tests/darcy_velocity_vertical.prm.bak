@@ -1,0 +1,37 @@
+#########################################################
+# This is a test for the new advection method that advects a
+# compositional field with the fluid velocity prescribed by
+# Darcy's Law. Darcy's law is approximated here with:
+# u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)
+# u_f = fluid velocity
+# u_s = solid velocity
+# K_D = Darcy Coefficient
+# phi = porosity
+# rho_f = fluid density
+# rhos_s = solid density
+# g = gravity
+# The second term on the rhs of Darcy's Law only contributes
+# to the component of the  fluid velocity parallel to the gravity
+# vector, which is proportional to the buoyancy of the fluid phase.
+
+# The initial porosity is uniform everywhere, and in the
+# center of the model is a blob of 'fluid' and 'solid'.
+# The solid has a prescribed y velocity that is exactly the opposite
+# of the Darcy velocity, and so the fluid blob should not move.
+
+############### Global parameters
+
+include $ASPECT_SOURCE_DIR/tests/darcy_velocity.prm
+
+set End time                               = 200
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top y:function, bottom y:function
+  set Tangential velocity boundary indicators = left, right
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y,t
+    set Function expression = 0;-6.31152
+  end
+end

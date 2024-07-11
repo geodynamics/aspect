@@ -1,0 +1,19 @@
+subsection Compositional fields
+  set Number of fields = 1
+  set Compositional field methods = volume of fluid
+end
+
+subsection Volume of Fluid
+  set Number initialization samples = 16
+end
+
+subsection Initial composition model
+  set Model name = function
+  set Volume of fluid initialization type = C_1:level set
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 0.2+0.02*cos(pi*x/0.9142)-z
+  end
+end

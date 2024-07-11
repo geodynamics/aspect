@@ -1,0 +1,27 @@
+# A setup that tests if the nonadiabatic temperature threshold mesh
+# refinement plugin works correctly and that its interaction with the
+# minimum and maximum refinement level plugins makes sense.
+
+include $ASPECT_SOURCE_DIR/cookbooks/convection-box/convection-box.prm
+
+set End time                               = 0.02
+set Adiabatic surface temperature          = 0.5
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 2
+  set Time steps between mesh refinement       = 1
+  set Strategy = nonadiabatic temperature threshold, minimum refinement function, maximum refinement function
+
+  subsection Minimum refinement function
+    set Function expression = if(x > 0.5, 3, 4)
+  end
+
+  subsection Maximum refinement function
+    set Function expression = if(x > 0.5, 4, 5)
+  end
+
+  subsection Nonadiabatic temperature threshold
+    set Threshold = 0.25
+  end
+end

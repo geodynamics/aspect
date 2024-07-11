@@ -1,0 +1,18 @@
+# like prescribed_dilation.prm but using Newton solver
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/prescribed_dilation.prm
+
+set Nonlinear solver scheme = iterated Advection and Newton Stokes
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    #    set Stokes solver type = block GMG
+    #    set Number of cheap Stokes solver steps = 200
+  end
+end
+
+subsection Material model
+  #  set Material averaging = harmonic average
+end

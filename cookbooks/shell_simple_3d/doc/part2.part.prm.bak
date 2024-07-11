@@ -1,0 +1,13 @@
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = outer
+end

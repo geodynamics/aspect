@@ -1,0 +1,122 @@
+# This test adapts tests/particle_periodic_quarter_shell.prm to test the particle
+# handling at periodic boundaries in the polar direction for a quarter
+# spherical shell geometry.
+# The velocity and the initial particle locations are prescribed so that we know
+# where particles should end up. The time step size is precribed in such a way
+# that particles at the outer boundary should move exactly half of a cell in
+# angular direction in each time step, and particles at the inner boundary move
+# exactly a quarter of a cell in angular direction in each time step.
+# (There are 96 cells in longitudinal direction.)
+
+set Dimension                              = 2
+set End time                               = 0.032725
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, no Stokes
+set Maximum time step                      = 0.00818125
+
+# We prescibe rotating flow with an angular velocity increase with radius
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Function expression = -y * sqrt(x*x+y*y); x * sqrt(x*x+y*y)
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Opening angle = 90
+    set Inner radius = 0.5
+    set Outer radius = 1
+    set Phi periodic = true
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1000
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = -10
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = r, phi
+    set Function constants  = pi=3.1415926
+    set Coordinate system = spherical
+    set Function expression = if( r < 4.195 + (0.3*sin(3*phi)) + (0.3*cos(3*phi)), 1, 0)
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = particle count statistics, particles, visualization
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+  set Particle generator name = uniform radial
+  set List of particle properties = function, position, reference position, initial position
+  set Integration scheme = rk2
+
+  subsection Generator
+    subsection Uniform radial
+      set Maximum latitude = 180
+      set Maximum longitude = 89.999
+      set Maximum radius = 0.9999
+      set Minimum latitude = 0.
+      set Minimum longitude = 89
+      set Minimum radius = 0.5001
+      set Radial layers = 10
+      set Number of particles = 50
+    end
+  end
+end

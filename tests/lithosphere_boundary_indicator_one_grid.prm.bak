@@ -1,0 +1,13 @@
+# exactly the same as lithosphere_boundary_indicator.prm but made with one grid
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/tests/lithosphere_boundary_indicator.prm
+
+
+subsection Geometry model
+  subsection Box with lithosphere boundary indicators
+    set Use merged grids = false
+    set Y repetitions = 2
+  end
+end

@@ -1,0 +1,51 @@
+# Parameter file for replicating Matsumoto & Tomoda 1983
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 50e6
+set Use years in output instead of seconds = true
+set CFL number                             = 0.25
+set Pressure normalization                 = surface
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 400e3
+    set Y extent  = 180e3
+    set X repetitions = 2
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement   = 2
+  set Initial global refinement     = 5
+  set Refinement fraction           = 0.9
+  set Strategy                      = composition
+  set Coarsening fraction           = 0
+end

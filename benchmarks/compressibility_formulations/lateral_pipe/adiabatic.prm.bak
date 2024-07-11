@@ -1,0 +1,8 @@
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left
+  set List of model names = box
+
+  subsection Box
+    set Left temperature = 1600
+  end
+end

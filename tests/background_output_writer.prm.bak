@@ -1,0 +1,14 @@
+# This is a copy of the maximum_refinement_function_spherical test,
+# but the real purpose of the test is to check that writing data in
+# the background actually works.
+
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/maximum_refinement_function_spherical.prm
+
+
+subsection Postprocess
+  subsection Visualization
+    set Write in background thread = true
+  end
+end

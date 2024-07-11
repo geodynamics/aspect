@@ -1,0 +1,17 @@
+# This is a copy of simple_incompressible.prm that decreases Stokes solver
+# tolerance to provoke a crash and check the error message and solver history
+# output.
+
+# EXPECT FAILURE
+
+include $ASPECT_SOURCE_DIR/tests/simple_incompressible.prm
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 10
+    set Maximum number of expensive Stokes solver steps = 0
+    set Linear solver tolerance = 1e-35
+    set Stokes solver type = block AMG
+   end
+end

@@ -1,0 +1,19 @@
+# Because we load the additional shared library at the top, we here have the
+# option to choose the new material model that is described inside that library
+# called 'simpler with crust'. This model has additional input options for the
+# two layers with different viscosities and the depth of the transition between
+# the two layers.
+subsection Material model
+  set Model name = simpler with crust
+
+  subsection Simpler with crust model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0.0
+    set Thermal conductivity          = 1.0
+    set Thermal expansion coefficient = 4e-5
+    set Lower viscosity               = 1.e20
+    set Upper viscosity               = 1.e23
+    set Jump height                   = 170.e3
+  end
+end

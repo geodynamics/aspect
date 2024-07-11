@@ -1,0 +1,71 @@
+# a test that verifies that we indeed terminate when a particular file was
+# found in the output directory. the file name we choose is that of a
+# checkpointing file that we write at the end of time step 5, so that we
+# terminate after time step 6
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 1e7
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.2
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors =
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria      = user request
+
+  subsection User request
+    set File name = restart.mesh
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 5
+end

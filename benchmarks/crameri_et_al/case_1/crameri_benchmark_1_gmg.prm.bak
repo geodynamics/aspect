@@ -1,0 +1,27 @@
+# Same as crameri_benchmark_1.prm, but using GMG.
+
+include $ASPECT_SOURCE_DIR/benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm
+
+set Additional shared libraries = $ASPECT_SOURCE_DIR/benchmarks/crameri_et_al/case_1/libcrameri_benchmark_1.so
+set Dimension = 2
+set Output directory = output-crameri-gmg
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+subsection Material model
+  set Material averaging =  harmonic average
+end
+
+subsection Postprocess
+  subsection Visualization
+    set Output mesh velocity = true
+  end
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end

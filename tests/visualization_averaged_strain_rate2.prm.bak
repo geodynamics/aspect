@@ -1,0 +1,12 @@
+# Like visualization_averaged_strain_rate.prm but without averaging turned on.
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/tests/visualization_averaged_strain_rate.prm
+
+
+subsection Postprocess
+  subsection Visualization
+    set Point-wise stress and strain = true
+  end
+end

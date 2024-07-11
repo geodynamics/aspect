@@ -1,0 +1,39 @@
+# Half-space cooling model increasing with age from x>0 to xtr
+# For x>xtr, half-space cooling model with a fixed age.
+# Note, we use 1-erfc instead of erf because the muparser in dealii
+# only knows about erfc. Also, we need to use ymax-y since y=0 at the
+# bottom of the box.
+# vsub is the velocity of the subducting plate in m/s
+# (x/vsub is the age of the subducting plate)
+# ageop is the age of the overriding plate in seconds.
+# Tm is the mantle temperature, Ts is the surface temperature in kelvin
+# kappa is the thermal diffusivity (m^2/s)
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,y
+    set Function constants = ymax=1.0e6, xtrm=2.200e6, vsub=7.927e-10, \
+                               ageop=9.46e14, Tm=1673, Ts=273, kappa=1e-6
+    set Function expression = (((x>0.0) && (x<=xtrm)) ? \
+                                 (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*(x/vsub)))))) : \
+                                 (x>xtrm) ? \
+                                  (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop))))) :\
+                                  (Tm) )
+  end
+end
+
+# Set boundary types and values for temperature
+# Default is zero-flux (keep for sidewalls),
+# so only need set top and bottom to fixed temperature
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1673
+    set Top temperature    = 273
+  end
+end

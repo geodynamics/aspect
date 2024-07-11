@@ -1,0 +1,132 @@
+# A testcase that demonstrates melt transport with a compactible matrix,
+# but incompressible matrix and fluid. It solves the equation on a box
+# with zero velocity boundary conditions at the bottom boundary,
+# tangential velocities at the sides and an open boundary at the top.
+#
+# We the choose a Darcy coefficient (= permeability divided by fluid
+# viscosity) of (1+y^2)/2 and otherwise constant material parameters
+# so that the gradient of the fluid pressure is -1. The velocity
+# should then be y^2/2, the compaction pressure -y and the fluid
+# pressure should be linear.
+#
+# We compute these material properties in a new material model, which
+# is implemented in the .cc file.
+#
+
+set Adiabatic surface temperature          = 1623
+set CFL number                             = 1
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+set End time                               = 0
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+set Use years in output instead of seconds = false
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+# prescribe the fluid pressure as in the analytical solution
+subsection Boundary fluid pressure model
+  set Plugin name = PressureBdry
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = 2,3
+
+  subsection Initial temperature
+    # Temperature at the inner boundary (core mantle boundary). Units: K.
+    set Maximal temperature = 3773
+
+    # Temperature at the outer boundary (lithosphere water/air). Units: K.
+    set Minimal temperature = 273
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+  set Fixed composition boundary indicators   = 0,1,2,3
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1
+    set Y extent  = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    # Magnitude of the gravity vector in $m/s^2$. The direction is always
+    # radially outward from the center of the earth.
+    set Magnitude = 1.0
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 2:function
+  set Tangential velocity boundary indicators = 0,1
+  set Zero velocity boundary indicators       =
+
+  subsection Function
+    set Function expression = 0;0.5*y*y
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.5
+    set Variable names      = x,y
+  end
+end
+
+subsection Material model
+  set Model name = MeltMaterial3
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, velocity boundary statistics
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end

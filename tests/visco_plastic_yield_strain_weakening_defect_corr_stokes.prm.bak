@@ -1,0 +1,4 @@
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_strain_weakening.prm
+
+set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
+set Output directory                       = visco_plastic_yield_strain_weakening_defect_corr_stokes

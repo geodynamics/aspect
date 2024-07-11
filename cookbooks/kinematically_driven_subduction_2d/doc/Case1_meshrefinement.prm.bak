@@ -1,0 +1,23 @@
+# The maximum refinement level will be 6+4 levels,
+# corresponding to a maximum resolution of ~700 m.
+subsection Mesh refinement
+  set Initial adaptive refinement              = 4
+  set Initial global refinement                = 6
+  set Minimum refinement level                 = 6
+  set Normalize individual refinement criteria = true
+  set Refinement criteria merge operation      = plus
+  set Coarsening fraction                      = 0.01
+  set Refinement fraction                      = 0.95
+  set Run postprocessors on initial refinement = false
+  set Skip solvers on initial refinement       = true
+  set Skip setup initial conditions on initial refinement = true
+  set Strategy                                 = minimum refinement function, viscosity
+  set Time steps between mesh refinement       = 16
+
+  subsection Minimum refinement function
+    set Coordinate system = depth
+    set Variable names = x,z,t
+    set Function constants = vel=150e3, L=100e3, crust=10e3
+    set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
+  end
+end

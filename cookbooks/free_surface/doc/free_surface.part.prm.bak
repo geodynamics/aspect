@@ -1,0 +1,41 @@
+set Maximum first time step                = 1e3
+set Maximum relative increase in time step = 30
+set Pressure normalization                 = no
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right, bottom, top
+  set List of model names = constant
+
+  subsection Constant
+    set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = sqrt((x-250.e3)^2 + (y-100.e3)^2) < 25.e3 ? 200.0 : 0.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, topography
+
+  subsection Visualization
+    set Time between graphical output = 1.e6
+  end
+end

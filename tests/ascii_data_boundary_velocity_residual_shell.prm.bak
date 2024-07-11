@@ -1,0 +1,84 @@
+##### simple test for boundary velocity residual visualization object in postprocessing
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set Output directory                       = ascii_data_boundary_velocity_residual_shell
+set End time                               = 0
+set Adiabatic surface temperature          = 1613.0
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Opening angle = 90
+    set Inner radius = 3481000
+    set Outer radius = 6336000
+  end
+end
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+
+  subsection Harmonic perturbation
+    set Magnitude = 30
+    set Reference temperature = 1613
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+  set Fixed temperature boundary indicators   = inner, outer
+
+  subsection Spherical constant
+    set Inner temperature = 3000
+    set Outer temperature = 273
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = west:ascii data, east:ascii data, south:ascii data, inner:ascii data, outer: ascii data
+
+  subsection Ascii data model
+    set Data file name       = shell_3d_%s.0.txt
+    set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
+    set Scale factor = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Viscosity = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, boundary velocity residual statistics
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = boundary velocity residual
+  end
+
+  subsection Boundary velocity residual statistics
+    set Use ascii data = true
+    set Data file name       = shell_3d_boundary_velocity.txt
+    set Data directory = $ASPECT_SOURCE_DIR/data/postprocess/boundary-velocity-residual/
+  end
+end

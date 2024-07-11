@@ -1,0 +1,10 @@
+# Infill density benchmark test
+
+include $ASPECT_SOURCE_DIR/benchmarks/infill_density/infill_ascii.prm
+
+set End time = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 2
+end

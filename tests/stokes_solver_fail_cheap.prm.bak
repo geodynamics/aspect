@@ -1,0 +1,17 @@
+# This is a copy of simple_incompressible.prm that decreases Stokes solver
+# tolerance to provoke a crash and check the error message and solver history
+# output. This test in particular checks that the correct error message is shown
+# if there are only cheap Stokes solver iterations.
+
+# EXPECT FAILURE
+
+include $ASPECT_SOURCE_DIR/tests/simple_incompressible.prm
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-35
+    set Number of cheap Stokes solver steps = 10
+    set Maximum number of expensive Stokes solver steps = 0
+  end
+end

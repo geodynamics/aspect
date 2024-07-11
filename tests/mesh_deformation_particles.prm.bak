@@ -1,0 +1,85 @@
+# Benchmark for free surface with particles
+
+set Dimension = 2
+set End time                               = 0.5
+set Start time                             = 0
+set Nonlinear solver scheme                = single Advection, no Stokes
+set CFL number                             = 1.0
+set Maximum first time step                = 0.5
+set Pressure normalization                 = no
+set Use years in output instead of seconds = false
+set Output directory                       = mesh_def_particles
+
+subsection Prescribed Stokes solution
+  set Model name = function
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set X repetitions = 1
+    set Y repetitions = 1
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: boundary function
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Boundary function
+    set Function expression = 0;if(y<1,0,1)
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles
+
+  subsection Visualization
+    set List of output variables      =
+    set Number of grouped files       = 0
+    set Interpolate output            = false
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = ascii
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell = 1
+  set Maximum particles per cell = 1
+  set List of particle properties = initial position, position, reference position
+  set Particle generator name = uniform box
+
+  subsection Generator
+    subsection Uniform box
+      set Minimum x = 0.5
+      set Maximum x = 1
+      set Minimum y = 0.5
+      set Maximum y = 1
+      set Number of particles = 1
+    end
+  end
+end

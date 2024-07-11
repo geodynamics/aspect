@@ -1,0 +1,67 @@
+# This input file tests the box geometry in
+# combination with the isosurfaces plugin to refine a 3D slab
+include $ASPECT_SOURCE_DIR/tests/isosurfaces_slab_2D.prm
+
+set Dimension = 3
+
+# We take a box geometry and increase the repetitions
+# of the coarse mesh
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 5
+    set Y extent = 1
+    set Z extent = 5
+    set X repetitions = 5
+    set Y repetitions = 1
+    set Z repetitions = 5
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
+  set Strategy = isosurfaces
+
+  subsection Isosurfaces
+    set Isosurfaces = 2,    2,    C_1 : 0.5 | 1.0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1673.0
+    set Top temperature    = 273.0
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0, 1, 2, 3, 4, 5
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x, y, z
+    set Function constants = Xtr=3.0, Dsl=1.0, Zmax=5.0, D0=0.3, Xmax=5.0
+    set Function expression = (x > Xtr + D0) ? ((z + Dsl > Zmax + D0)? 273.0 : 1673.0):\
+                              (((z > x + Xmax - Xtr - Dsl) && (z < x + Xmax - Xtr))? 273.0 : 1673.0)
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x, y, z
+    set Function constants = Xtr=3.0, Dsl=1.0, Zmax=5.0, D0=0.3, Xmax=5.0
+    set Function expression = (x > Xtr + D0) ? ((z + Dsl > Zmax + D0)? 1.0 : 0.0):\
+                              (((z > x + Xmax - Xtr - Dsl) && (z < x + Xmax - Xtr))? 1.0 : 0.0)
+  end
+end

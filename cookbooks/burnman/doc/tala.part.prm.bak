@@ -1,0 +1,5 @@
+subsection Material model
+  subsection Ascii reference profile
+    set Use TALA = true
+  end
+end

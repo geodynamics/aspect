@@ -1,0 +1,87 @@
+# 3d shell with GMG, tangential velocity boundary only
+# based on shell_3d_gmg.prm
+# MPI: 2
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 0.0
+set Output directory                       = output-shell_simple_3d
+set Nonlinear solver scheme                = no Advection, single Stokes
+
+subsection Material model
+  set Model name = simple
+  set Material averaging = harmonic average only viscosity
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 1973
+    set Outer temperature = 973
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1.473e3
+  end
+end
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 1
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 15
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 1
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1.5e6
+    set Output format                 = vtu
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 50
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Linear solver tolerance = 1e-4
+  end
+end

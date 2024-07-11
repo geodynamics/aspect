@@ -1,0 +1,93 @@
+# This setup is a copy of the
+# benchmarks/onset-of-convection/convection-box-base.prm
+# contributed by Max Rudolph, with the difference that
+# parameter values are specified explicitly in the input file
+# (rather than through an ipython notebook).
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Output directory                       = output
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Use conduction timestep                = true
+
+subsection Termination criteria
+  set Termination criteria                 = end step
+  set End step                             = 100
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 9.424777e6 # pi * 3e6
+    set Y extent = 3e6
+    set X repetitions = 3
+    set Y repetitions = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=1, L=9.424777e6, H=3.0e6, pi=3.1415926536, k=2
+    set Function expression = 2500 * (1.0-z/H) - p*cos(k*pi*x/L)*sin(pi*z/H)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 2500
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 4000
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0
+    set Thermal conductivity          = 4.0
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity                     = 1e23
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization
+
+  subsection Visualization
+    set Time steps between graphical output = 5
+  end
+end

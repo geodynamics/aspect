@@ -1,0 +1,84 @@
+/*
+  Copyright (C) 2013 - 2019 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
+
+#ifndef _aspect_boundary_composition_box_h
+#define _aspect_boundary_composition_box_h
+
+#include <aspect/boundary_composition/interface.h>
+#include <aspect/simulator_access.h>
+
+
+namespace aspect
+{
+  namespace BoundaryComposition
+  {
+    /**
+     * A class that implements a composition boundary condition for a box
+     * geometry.
+     *
+     * @ingroup BoundaryCompositions
+     */
+    template <int dim>
+    class Box : public Interface<dim>, public SimulatorAccess<dim>
+    {
+      public:
+        /**
+         * This function returns user-defined constant compositions at the
+         * boundaries.
+         *
+         * @copydoc aspect::BoundaryComposition::Interface::boundary_composition()
+         */
+        double boundary_composition (const types::boundary_id boundary_indicator,
+                                     const Point<dim> &position,
+                                     const unsigned int compositional_field) const override;
+
+        /**
+         * This function performs some basic sanity checks on the parameter
+         * values previously read from the input file.
+         */
+        void initialize () override;
+
+        /**
+         * Declare the parameters this class takes through input files. This
+         * class declares the inner and outer boundary compositions.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm) override;
+
+      private:
+        /**
+         * The values of the various composition variables on each of the
+         * 2*dim boundaries of the box.
+         */
+        std::vector<double> composition_values[2*dim];
+    };
+  }
+}
+
+
+#endif

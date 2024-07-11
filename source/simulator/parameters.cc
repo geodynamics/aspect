@@ -1640,15 +1640,15 @@ namespace aspect
           additional_refinement_time *= year_in_seconds;
 
       skip_solvers_on_initial_refinement = prm.get_bool("Skip solvers on initial refinement");
-      skip_setup_initial_conditions_on_initial_refinement = prm.get_bool("Skip setup initial conditions on initial refinement");
+      skip_setup_initial_temperature_on_initial_refinement = prm.get_bool("Skip setup initial conditions on initial refinement");
 
-      if (skip_setup_initial_conditions_on_initial_refinement == true && skip_solvers_on_initial_refinement == false)
+      if (skip_setup_initial_temperature_on_initial_refinement == true && skip_solvers_on_initial_refinement == false)
         AssertThrow(false, ExcMessage("Cannot execute solvers if no initial conditions are set up. "
                                       "You must set skip_solvers_on_initial_refinement to true."));
 
       run_postprocessors_on_initial_refinement = prm.get_bool("Run postprocessors on initial refinement");
 
-      if (skip_setup_initial_conditions_on_initial_refinement == true && run_postprocessors_on_initial_refinement == true)
+      if (skip_setup_initial_temperature_on_initial_refinement == true && run_postprocessors_on_initial_refinement == true)
         AssertThrow(false, ExcMessage("Cannot run postprocessors if no initial conditions are set up. "
                                       "You must set run_postprocessors_on_initial_refinement to false."));
     }

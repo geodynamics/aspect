@@ -1,0 +1,72 @@
+set Dimension   = 2
+set CFL number  = 0.5
+set End time    = 0
+set Nonlinear solver scheme = no Advection, no Stokes
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1e3
+    set Y extent = 1e3
+    set X repetitions = 1
+    set Y repetitions = 1
+  end
+end
+
+subsection Mesh refinement
+  set Time steps between mesh refinement = 5
+  set Initial global refinement = 5
+  set Initial adaptive refinement = 4
+  set Strategy = viscosity
+  set Skip solvers on initial refinement = true
+end
+
+subsection Material model
+  set Model name = prescribed viscosity
+  set Material averaging = geometric average only viscosity
+
+  subsection Prescribed viscosity
+    set Base model = simple
+
+    subsection Indicator function
+      set Variable names = x,y,t
+
+      # Return where to prescribe u_x; u_y; u_z
+      # (last one only used if dimension = 3)
+      # 1 if velocity should be prescribed, 0 otherwise
+      set Function expression = if(y>425,if(x<500, \
+      if(sqrt((x-250)*(x-250)+(y-750)*(y-750))<100,1,0), \
+      if(sqrt((x-750)*(x-750)+(y-750)*(y-750))<100,1,0)), \
+      if(sqrt((x-500)*(x-500)+(y-500)*(y-500))>200 & sqrt((x-500)*(x-500)+(y-500)*(y-500))<300,1,0))
+    end
+
+    subsection Viscosity function
+      set Variable names = x,y,t
+
+      # Return u_x; u_y; u_z (u_z only used if in 3d)
+      set Function expression = if(y>425,if(x<500, \
+      if(sqrt((x-250)*(x-250)+(y-750)*(y-750))<100,if(y<775,if(sqrt((x-250)*(x-250)+(y-750)*(y-750))>25,7.5e25,1e25),1e26),0), \
+      if(sqrt((x-750)*(x-750)+(y-750)*(y-750))<100,if(y<775,if(sqrt((x-750)*(x-750)+(y-750)*(y-750))>25,7.5e25,1e25),1e26),0)), \
+      if(sqrt((x-500)*(x-500)+(y-500)*(y-500))>200 & sqrt((x-500)*(x-500)+(y-500)*(y-500))<300,1e24*sqrt((x-500)*(x-500)+(y-500)*(y-500))/3,0))
+    end
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set List of output variables = material properties
+    set Output format                 = gnuplot
+    set Number of grouped files       = 0
+  end
+end

@@ -1,0 +1,9 @@
+# initial composition model
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Function expression = 1.0  # change this to one
+  end
+end

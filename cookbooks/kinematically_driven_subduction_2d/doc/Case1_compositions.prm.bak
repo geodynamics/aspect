@@ -1,0 +1,39 @@
+# We fix composition on the right boundary,
+# because we have inflow there.
+subsection Boundary composition model
+  set Fixed composition boundary indicators = right
+  set List of model names                   = initial composition
+end
+
+# The overriding plate (OP) and subducting plate (SP)
+# are each divided into three different layers:
+# a layer of Bulk Oceanic Composition (BOC),
+# a layer of Serpentinized HarzBurgite (SHB),
+# and a "thermal layer".
+
+subsection Compositional fields
+  set Number of fields = 7
+  set Names of fields  = BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function constants  = Ax=1475600.0, Az=670000.0, \
+                              Bx=1500000.0, Bz=670000.0, \
+                              Cx=1358500.0, Cz=588000.0, \
+                              Dx=1382900.0, Dz=588000.0, \
+                              Ex=1530000.0, Ez=560000.0, \
+                              Fz=663000.0, Gz=662000.0, \
+                              Hz=631000.0, Iz=630000.0
+    set Function expression = if(z>=Fz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
+                              if(z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0); \
+                              if(z>=Hz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Fz,1,0); \
+                              if(z>=Iz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz,1,0); \
+                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Hz,1,0); \
+                              if((x>=Ex&z>=Ez&z<Iz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Iz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
+                              if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1.5,0)
+    set Variable names      = x,z
+  end
+end

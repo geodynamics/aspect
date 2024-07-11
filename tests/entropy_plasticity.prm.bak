@@ -1,0 +1,152 @@
+# A 2-D annulus model for convection under early-Earth conditions, with plasticity,
+# reference viscosity profile, and p-T dependent conductivity
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 4e5
+set Output directory                       = output-entropy-plasticity
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+subsection Discretization
+  subsection Stabilization parameters
+    set List of compositional fields with disabled boundary entropy viscosity = entropy
+  end
+end
+
+# This material model reads in the Hefesto table
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
+    set Material file name               = material_table.txt
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor_50000.txt
+    set Thermal conductivity formulation = p-T-dependent
+    set Maximum viscosity                = 1e30
+    set Minimum viscosity                = 1e12
+    set Maximum lateral viscosity variation          = 2000
+    set Cohesion                         = 8e7
+    set Angle of internal friction       = 0.572957795130823 # = 0.01 radians
+  end
+
+  subsection Depth dependent viscosity
+    set Data directory                   = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/data/
+    set Data file name                   = constant_viscosity.txt
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius = 3481000
+    set Outer radius = 6371000
+  end
+end
+
+subsection Heating model
+  set List of model names = shear heating
+end
+
+# Set the reference profiles, using a constant entropy
+subsection Adiabatic conditions model
+  set Model name = compute entropy profile
+
+  subsection Compute entropy profile
+    # This is specific entropy, equivalent to T=1600K according to the used table
+    set Surface entropy = 2535
+  end
+end
+
+subsection Initial temperature model
+  set Model name = prescribed temperature
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names =  initial temperature
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+# The temperature field is computed from the entropy
+subsection Temperature field
+  set Temperature method = prescribed field with diffusion
+end
+
+# Density is computed from entropy
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = entropy, density_field
+  set Compositional field methods = field, prescribed field
+end
+
+# Set the initial temperature profile
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r,phi
+    set Function expression = 2535.08 + 10 * sin(2*phi)*sin(pi*(r-6371000)/2890000) - 1878.618 * erfc((6371000-r)/(2*sqrt(1.152e-6*5e7*31557600))) + \
+    486.368 * max(erfc((r-3481000)/(2*sqrt(1.152e-6*5e8*31557600))), exp(-((phi - 3/4*pi)^2)/(2*(1/35*pi)^2) - ((r-3481000)^2)/(2*400000^2))  );0
+
+    #set Function expression = 2687.748 + 10 * sin(2*phi)*sin(pi*(r-6371000)/2890000) - 2031.286 * erfc((6371000-r)/(2*sqrt(1.152e-6*5e7*31557600))) + 333.7 * erfc((r-3481000)/(2*sqrt(1.152e-6*5e8*31557600)));0
+  end
+end
+
+# Set the boundary entropy to values corresponding to
+# realistic temperature.
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top, bottom
+  set List of model names = spherical constant
+  set Allow fixed composition on outflow boundaries = true
+
+  subsection Spherical constant
+    # Corresponding to T=300 K for p=0 GPa according to used table
+    set Outer composition = 600
+
+    # Corresponding to T=3400 K for p=140 GPa according to used table
+    set Inner composition = 2950
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Minimum refinement level                 = 2
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = composition threshold
+
+  subsection Composition threshold
+    set Compositional field thresholds = 2700, 1e6
+  end
+end
+
+subsection Checkpointing
+  set Time between checkpoint = 600
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+end

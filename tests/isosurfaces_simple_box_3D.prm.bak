@@ -1,0 +1,56 @@
+# This input file tests the isosurface mesh refinement plugin
+include $ASPECT_SOURCE_DIR/tests/isosurfaces_simple_box_2D.prm
+
+set Dimension = 3
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 660000
+    set Y extent = 660000
+    set Z extent = 660000
+    set X repetitions = 1
+    set Y repetitions = 1
+    set Z repetitions = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x, y, z
+    set Function expression = if(z < 500000,if(x < 330000 && y < 330000,100+z/1000,100+z/250),0)
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x, y, z
+    set Function expression = if(z < 500000,if(x < 330000 && y < 330000,1,0),0);if(z < 500000,if(x < 330000 && y < 330000,0,0),1);if(z < 500000,if(x < 330000 && y < 330000,0,1),0)
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
+  set Initial adaptive refinement        = 2
+  set Strategy = isosurfaces
+
+  subsection Isosurfaces
+    # Although the isosurface entry specifies min/max level 4, refinement level will
+    # not be more than 2 because initial global + initial adaptive = 2
+    set Isosurfaces = 3,    3,    Temperature: 0 | 600,   C_2 : 0.0 | 0.5 ;\
+                      0,    0,    Temperature: 1600 | 3000,   C_2 : 0.0 | 0.5
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 5
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0,1,2,3,4,5
+end

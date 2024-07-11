@@ -1,0 +1,88 @@
+# copy of inclusion_4.prm to test the signal modify_pressure_scaling.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Resume computation                     = false
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 1
+set Use years in output instead of seconds = false
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 2
+    set Z extent = 1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+subsection Material model
+  set Model name = InclusionMaterial
+
+  subsection Inclusion
+    set Viscosity jump = 1e3
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Strategy                           = thermal energy density
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0: InclusionBoundary, 1: InclusionBoundary, 2: InclusionBoundary, 3: InclusionBoundary
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, InclusionPostprocessor
+
+  subsection Depth average
+    set Time between graphical output = 1e8
+  end
+
+  subsection Visualization
+    set Interpolate output = false
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end

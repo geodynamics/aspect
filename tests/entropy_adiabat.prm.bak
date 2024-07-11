@@ -1,0 +1,13 @@
+# Adiabatic downwelling that starts on one adiabat, with inflow on another adiabat
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/entropy_adiabat.prm
+
+set End time = 1e7
+
+subsection Geometry model
+  subsection Box
+    set Y repetitions = 10
+  end
+end

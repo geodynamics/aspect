@@ -1,0 +1,249 @@
+#### This is a compressible whole Earth model solved by the
+#### single Advection, iterated Stokes. This represent a coarse
+#### version of a production type setup.
+#### Global parameters
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Start time                             = 0
+set End time                               = 0
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 150
+set Max nonlinear iterations in pre-refinement = 0
+set Pressure normalization                 = surface
+set Maximum time step                      = 1e6
+set Adiabatic surface temperature          = 1600
+set CFL number                             = 0.5
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set GMRES solver restart length = 250
+    set Linear solver tolerance             = 1e-5
+    set Maximum number of expensive Stokes solver steps = 1000
+    set Number of cheap Stokes solver steps    = 200
+  end
+end
+
+#### Model Geometry
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3485e3
+    set Outer radius  = 6371e3 #5961e3
+    set Opening angle = 360
+  end
+end
+
+#### Mesh refinement
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Variable names      = depth,t
+    set Coordinate system = depth
+    set Function expression = if(depth<=200e3, 5,if(depth<=620e3, 5,if(depth<=680e3,5,if(depth>=2586e3,5,5))))
+
+    #if(depth<560e3,0,if(depth>760e3,0,6))
+    #        if(depth<560e3,5,if(depth>760e3,5,6))
+  end
+end
+
+##### Set temperature Model
+subsection Boundary temperature model
+  #set Allow fixed temperature on outflow boundaries = true  # default
+  set Fixed temperature boundary indicators         = bottom, top
+
+  #  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3500
+    set Outer temperature = 273 #273 for surface ############
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators       = inner, outer
+
+  # set Zero velocity boundary indicators             = outer
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+# Number and names of compositional fields
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = plastic_strain #add strain field
+end
+
+#### Temperature model
+subsection Initial temperature model
+  #set Model name = adiabatic
+  set List of model names =  adiabatic, function
+  set List of model operators = add
+
+  subsection Adiabatic
+    set Age bottom boundary layer = 100.e6
+    set Age top boundary layer = 100.e6
+    set Radius = 0
+    set Amplitude = 0
+    set Position = center
+    set Subadiabaticity = 0
+  end
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names      = x,y,z
+    set Function constants  = R=6371.e3
+    set Function expression = \
+                               if(sqrt(x*x+y*y)<=R<100e3, rand_seed(1) * 100 -50 , 0)
+  end
+end
+
+subsection Adiabatic conditions model # need to initialize for initial adiabatic temp.
+  #send
+  set Model name = ascii data
+
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+    set Data file name = example_isentrope.txt
+  end
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating, shear heating, radioactive decay
+
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+
+  subsection Radioactive decay
+    set Crust defined by composition = false
+    set Crust depth = 10e3
+    set Half decay times = 4.468e9, 0.704e9, 14e9, 1.248e9
+    set Heating rates = 9.4946e-5, 5.68e-4, 2.6368e-5, 2.8761e-5
+    set Initial concentrations crust = 0.0, 0.0, 0.0, 0.0
+    set Initial concentrations mantle = 0.0082, 0.000059, 0.024, 0.013
+    set Number of elements = 4
+  end
+
+  #set List of model names = compositional heating
+end
+
+############################ MATERIAL MODEL ######################################################################
+
+subsection Material model
+  set Model name = compositing #visco plastic #melt simple
+  set Material averaging = harmonic average
+
+  ############################ MATERIAL MODEL ######################################################################
+  subsection Compositing
+    set Viscosity = visco plastic
+    set Density = ascii reference profile
+    set Thermal expansion coefficient = ascii reference profile
+    set Specific heat = ascii reference profile
+    set Thermal conductivity = visco plastic
+    set Compressibility = ascii reference profile
+    set Entropy derivative pressure = ascii reference profile
+    set Entropy derivative temperature = ascii reference profile
+    set Reaction terms = visco plastic
+  end
+
+  subsection Ascii reference profile
+    set Thermal conductivity =  3.0
+
+    subsection Ascii data model
+      set Data file name = example_isentrope.txt
+      set Data directory = $ASPECT_SOURCE_DIR/data/adiabatic-conditions/ascii-data/
+    end
+  end
+
+  subsection Visco Plastic
+    set Define transition by depth instead of pressure  = true
+    set Phase transition Clapeyron slopes = background: 3.0e6|-2.5e6|9.e6
+    set Phase transition depths           = background: 410e3|660e3|2740e3
+    set Phase transition widths           = background: 12e3|23e3|11e3
+    set Phase transition temperatures     = background: 1770|1852|2591
+
+    # Reference temperature and viscosity
+    set Reference temperature = 293
+
+    # The minimum strain-rate helps limit large viscosities values that arise
+    # as the strain-rate approaches zero.
+    # The reference strain-rate is used on the first non-linear iteration
+    # of the first time step when the velocity has not been determined yet.
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-15
+
+    # Limit the viscosity with minimum and maximum values
+    set Minimum viscosity = 1e20
+    set Maximum viscosity = 1e26
+
+    # Harmonic viscosity averaging
+    set Viscosity averaging scheme = harmonic
+
+    # Choose to have the viscosity (pre-yield) follow a dislocation
+    # diffusion or composite flow law.  Here, dislocation is selected
+    # so no need to specify diffusion creep parameters below, which are
+    # only used if "diffusion" or "composite" option is selected.
+    set Viscous flow law = diffusion
+
+    #  from cizkov
+    #     order:                           background    ,        mantle_low        ,        mantle_up
+    #    set Thermal diffusivities =   8.384146341463415e-07,     8.384146341463415e-07   , 7.309941520467837e-07
+
+    set Thermal diffusivities = 1.e-6
+    set Thermal expansivities = background: 3.e-5|2.e-5|2.e-5|2.e-5, plastic_strain: 3.e-5
+    set Heat capacities       =        1250     # specific heat
+    set Densities             = background: 3416|3800|4750|4750, plastic_strain: 3416
+    set Prefactors for dislocation creep          = background: 1e-22|1e-22|1e-30|1e-30, plastic_strain:1e-22
+    set Stress exponents for dislocation creep    = 3.5
+    set Activation energies for dislocation creep = background: 4.8e5|4.8e5|4.8e5|4.8e5, plastic_strain:4.8e5
+    set Activation volumes for dislocation creep  = background: 11.e-6|11.e-6|11.e-6|11.e-6, plastic_strain: 11.e-6
+    set Prefactors for diffusion creep            = background: 1.e-9|1.e-9|1.0e-16|1.0e-16, plastic_strain: 1.e-9
+    set Stress exponents for diffusion creep      = 1.0                                                  #### doesnt exist anymore??? ####
+    set Activation energies for diffusion creep   = background: 3.35e5|3.35e5|2.e5|2.e5, plastic_strain: 3.35e5
+    set Activation volumes for diffusion creep    = background: 4.8e-6|4.8e-6|1.1e-6|1.1e-6, plastic_strain: 4.8e-6
+    set Grain size                                = 1 #1e-3
+    set Grain size exponents for diffusion creep  = 0   #default
+
+    ###    # Plasticity parameters
+    set Angles of internal friction = background: 0|0|0|0, plastic_strain:0            # Angle Mohr
+    set Cohesions                   = background: 40e6|1e20|1e20|1e20, plastic_strain:40e6
+    set Strain weakening mechanism = plastic weakening with plastic strain only
+    set Start plasticity strain weakening intervals = 1.e30
+    set Cohesion strain weakening factors = 1
+    set Friction strain weakening factors = 1
+    set End plasticity strain weakening intervals = 2.e30
+  end
+end
+
+#######################
+# Gravity model
+subsection Gravity model
+  set Model name = ascii data
+end
+
+subsection Formulation
+  set Formulation = anelastic liquid approximation
+end
+
+#######################
+# Postprocessing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, temperature statistics, \
+                               composition statistics, depth average, heat flux statistics
+
+  subsection Depth average
+    set Number of zones = 3
+    set Output format = txt
+    set Time between graphical output = 1e7
+    set Depth boundaries of zones = 0, 10000,150000,2900000
+  end
+end

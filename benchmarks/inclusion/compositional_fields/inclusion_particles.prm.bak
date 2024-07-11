@@ -1,0 +1,119 @@
+# A description of the SolVI or Inclusion benchmark using
+# active particles for which a known solution is available.
+# See the manual for more information.
+
+############### Global parameters
+
+set Additional shared libraries            = ./libinclusion_compositional_fields.so
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Pressure normalization                 = volume
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 2
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left  : InclusionBoundary, \
+                                                right : InclusionBoundary, \
+                                                bottom: InclusionBoundary, \
+                                                top   : InclusionBoundary
+end
+
+subsection Material model
+  set Model name = InclusionCompositionalMaterial
+
+  subsection Inclusion
+    set Viscosity jump = 1e3
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+############### Parameters describing the temperature field
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+############### Parameters describing the discretization
+
+subsection Discretization
+  set Composition polynomial degree                = 2
+  set Stokes velocity polynomial degree            = 2
+  set Use discontinuous composition discretization = true
+  set Use locally conservative discretization      = false
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = viscosity_comp
+  set Compositional field methods = particles
+  set Mapped particle properties = viscosity_comp:function
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = eta_b=1e3, rmax=0.2
+    set Function expression = if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
+  end
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = particles, visualization, InclusionPostprocessor
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Number of grouped files       = 1
+    set Time between graphical output = 0
+    set List of output variables = density, viscosity
+  end
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = vtu
+  end
+end
+
+subsection Particles
+  set List of particle properties = function
+  set Integration scheme = rk2
+  set Interpolation scheme = cell average
+  set Maximum particles per cell = 16384
+  set Update ghost particles = true
+  set Particle generator name = reference cell
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = eta_b=1e3, rmax=0.2
+    set Function expression = if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
+  end
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
+    end
+  end
+end

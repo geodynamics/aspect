@@ -1,0 +1,143 @@
+# A model of spreading at a mid-ocean ridge.
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 5e6
+set Use years in output instead of seconds = true
+set Output directory                       = output-heat-flow
+
+############### Parameters describing the model
+# Let us choose a box domain (400 km wide and 100 km in depth)
+# where we fix the temperature at the bottom and top,
+# allow inflow from the bottom and outflow on the left and right,
+# and prescribe the velocity along the top using the
+# `function' description.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 400000
+    set Y extent = 100000
+    set X repetitions = 4
+    set Box origin X coordinate = -200000
+  end
+end
+
+# We fix the temperature at the top, representing the Earth's
+# surface, and at the bottom, where material flows in and we
+# need to prescribe what temperature this material should
+# have (in this case, 1600 K).
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature    = 293
+  end
+end
+
+# The velocity along the top boundary models a spreading
+# center of a mid-ocean ridge. The horizontal component of
+# the velocity is presribed on both side boundaries to
+# cause flow away from the spreading center, while the
+# vertical component of the velocity is allowed to evolve
+# freely based on the pressure in the model. The bottom
+# boundary is left open so that material can flow in.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x:function, right x:function, top: function
+
+  subsection Function
+    set Variable names      = x,z
+
+    # We can choose a (half-)spreading rate by changing the value of v (in cm/year)
+    # This value should be somewhere between 1 and 10 (cm/yr).
+    set Function constants  = v=5, cm_per_year=0.01
+    set Function expression = if(x>0, v * cm_per_year, -v * cm_per_year); 0
+  end
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = left y:initial lithostatic pressure, right y:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Representative point = 0,0
+    set Number of integration points = 1000
+  end
+end
+
+# We then choose a vertical gravity model and describe the
+# initial temperature as a constant (being equivalent to a
+# plate age of 0).
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+# The initial temperature is set to a constant value that
+# corresponds to the temperature of the sublithospheric
+# mantle throughout the model, but subsequently cools
+# over time.
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 1600
+  end
+end
+
+# This model uses the composition reaction material model,
+# where most material properties are constant. Here, only
+# the density depends on temperature as expressed by the
+# Thermal expansion coefficient.
+subsection Material model
+  set Model name = composition reaction
+
+  subsection Composition reaction model
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1e23
+  end
+end
+
+# This part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed.
+# Here, the mesh is designed to be finer at the surface than at
+# the bottom of the model to better capture the conductive cooling
+# of the plates. It initially undergoes two global refinements and
+# four adaptive refinements in the first time step, but is not
+# refined further (i.e., it remains static) throughout the model
+# run. The adaptive refinements use the minimum refinement function
+# to increase the resolution towards the model surface in a
+# piece-wise fashion at depths of 7, 30, and 45 kilometers.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 4
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Variable names = depth, w
+    set Function expression = if(depth<7000,6,if(depth<30000,5,if(depth<45000,4,3)))
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set List of output variables = material properties, heat flux map, vertical heat flux
+
+    subsection Material properties
+      set List of material properties = density, specific heat, thermal conductivity
+    end
+  end
+end

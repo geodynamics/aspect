@@ -1,0 +1,177 @@
+# This cookbook is used as a test to ensure that FastScape is properly working with ASPECT.
+# It consists of a 2.5 km high central mountain block that is eroded through the use of
+# hillslope diffusion and the Stream Power Law. Within ASPECT, the model is based off
+# convection-box-3d. However, it is set up in a way that nothing happens in the geodynamic model.
+
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 2.5e5
+set Maximum time step                      = 50000
+set Output directory                       = eroding_box
+set Pressure normalization                 = no
+set Surface pressure                       = 0
+
+# A box that has an initial 60x60 km mountain block that is 2.5 km above the initial model surface.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 125e3
+    set Y extent = 100e3
+    set Z extent = 25e3
+    set X repetitions = 5
+    set Y repetitions = 4
+  end
+
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+      set Function expression = if(y>20e3 && y<80e3 && x>32.5e3 && x<92.5e3, 2500, 0)
+    end
+  end
+end
+
+# We do not consider temperature in this setup
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+# X Set all boundaries except the top to freeslip.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, front, back, left, right
+end
+
+# Here we setup the top boundary with fastscape.
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top : fastscape
+  set Additional tangential mesh velocity boundary indicators = left, right, front, back
+
+  subsection Fastscape
+    # As the highest resolution at the surface is 4 in the mesh refinement function, we set this the same.
+    set Maximum surface refinement level = 4
+
+    # Because we only have the same level across the entire surface we set this to zero.
+    # If we had multiple resolutions, e.g. 3 different cell sizes at the surface,
+    # this would be set to 2 (number of cell sizes at surface - 1).
+    set Surface refinement difference = 0
+
+    # We set FastScape as 1 level more resolved than ASPECT's initial global surface resolution.
+    set Additional fastscape refinement = 1
+
+    # Number of FastScape timesteps we want per ASPECT timestep.
+    set Number of fastscape timesteps per aspect timestep = 5
+
+    # Set the maximum allowable FastScape time step length. If the (ASPECT time step length)/(Number of FastScape steps per ASPECT step)
+    # is greater than this value, then the number of FastScape steps per ASPECT step is automatically doubled.
+    # This is continued until the FastScape timestep length is less than this value.
+    #
+    # The units of this parameter are either years or seconds, dependent on the global parameter that
+    # determines whether an input file uses one or the other.
+    set Maximum timestep length = 10000
+
+    # Seed number for initial topography noise
+    set Fastscape seed = 1000
+
+    # Because no boundaries are periodic, no flux is prescribed, and no advection occurs in FastScape,
+    # we do not need ghost nodes.
+    set Use ghost nodes = false
+    set Vertical exaggeration = 1
+
+    # Fix all boundaries in FastScape.
+    subsection Boundary conditions
+      set Front = 1
+      set Right  = 1
+      set Back    = 1
+      set Left   = 1
+    end
+
+    # We use both the Stream Power Law (SPL) and hillslope diffusion. The bedrock deposition
+    # variable allows deposition of sediment; however, because
+    # the sediment variables are not set, they are equal to
+    # bedrock values.
+    subsection Erosional parameters
+      set Drainage area exponent = 0.4
+      set Bedrock diffusivity = 1e-2
+      set Bedrock river incision rate = 1e-4
+      set Slope exponent = 1
+      set Bedrock deposition coefficient = 1
+
+      # A negative value indicates varied flow. 10 is steepest descent, and 1 is uniform distribution.
+      set Multi-direction slope exponent = -1
+    end
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+# Dimensionless
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+# We set a maximum surface refinement level of 4 using the max/minimum refinement level.
+# This will make it so that the ASPECT surface refinement is the same as what we set
+# for our maximum surface refinement level for FastScape.
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 1
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = minimum refinement function, maximum refinement function
+
+  subsection Maximum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if(z>=21000, 4, 2)
+  end
+
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y,z
+    set Function expression = if(z>=21000, 4, 2)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables      = strain rate
+    set Interpolate output = true
+    set Write higher order output = true
+  end
+end

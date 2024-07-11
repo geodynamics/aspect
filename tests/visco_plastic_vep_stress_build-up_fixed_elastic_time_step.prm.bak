@@ -1,0 +1,57 @@
+# This test checks viscoelastic stress buildup with a
+# constant strain rate and an elastic time step equal
+# to a user-specified constant elastic time step. This
+# fixed elastic time step is double the numerical time step.
+# Viscoelastic stresses (sigma_xx, sigma_yy, sigma_xy)
+# are tracked with compositional fields. The parameter
+# file is derived from the 2D viscoelastic_stress_build-up
+# benchmark with modifications to the resolution, end time,
+# material properties and postprocessors.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
+
+
+#  Global parameters
+set End time                               = 1e3
+
+# Model geometry (100x100 km, 5 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 20
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5e-22
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = true
+    set Fixed elastic time step     = 2e3
+    set Viscosity averaging scheme  = harmonic
+    set Densities                   = 2800.
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, depth average
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 5
+    set List of output variables = composition
+    set Output format = txt
+  end
+end

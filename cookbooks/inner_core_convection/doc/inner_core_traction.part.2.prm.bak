@@ -1,0 +1,13 @@
+# The gravity has its maximum value at the boundary of inner and
+# outer core, and decreases approximately linearly to zero towards
+# the center of the core.
+# The Rayleigh number used in the model is given by the magnitude
+# of the gravity at the inner core/outer core boundary.
+subsection Gravity model
+  set Model name = radial linear
+
+  subsection Radial linear
+    set Magnitude at bottom = 0.0
+    set Magnitude at surface = 2     # <-- Ra
+  end
+end

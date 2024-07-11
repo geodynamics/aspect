@@ -1,0 +1,94 @@
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set Pressure normalization                 = volume
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
+subsection Discretization
+  set Use locally conservative discretization = true
+end
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1
+    set Y extent  = 1
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  set Material averaging = harmonic average
+
+  subsection Simple model
+    set Reference density = 1
+    set Viscosity         = 1
+    set Density differential for compositional field 1 = 1
+    set Composition viscosity prefactor = 0.001
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+############### Parameters describing the temperature field
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the compositional field
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = a=0.2, b=0.1, phi=0.52359877559
+    set Function expression = if( ( (x-.5)*cos(phi)+(y-.5)*sin(phi))^2/a^2 + \
+                                  ( (x-.5)*sin(phi)-(y-.5)*cos(phi))^2/b^2 < 1, 1, 0)
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 7
+  set Refinement fraction                = 0.75
+  set Strategy                           = velocity, composition
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate
+  end
+end

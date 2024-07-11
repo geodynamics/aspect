@@ -1,0 +1,184 @@
+# Adiabatic downwelling along a pipe. Initially all material starts on one
+# adiabat (at constant entropy), with material inflow on another adiabat (a
+# different constant entropy). The adiabatic reference profile is computed for
+# this different inflow adiabat so that the difference between adiabatic
+# profile and actual profile in the model is expected to go to 0 with time. The
+# material data contains a discontinuous phase transition (in
+# pressure-temperature space), which would make convergence of this model hard.
+# Accurate results in particular for the latent heat effects would be nearly
+# impossible if not for the new feature in this benchmark, which is to solve
+# the advection-diffusion equation in terms of entropy instead of temperature.
+# In pressure-entropy space there is no jump in entropy across the phase
+# transition, and the equation can be accurately solved (in fact it is trivial
+# for this example as the steady-state solution is at constant entropy
+# everywhere in the model once the warmer inflowing material has replaced the
+# initial material in the model). The resulting temperature for any given
+# pressure-entropy is looked up in the used material data table.
+
+# As a benchmark this model can only test that ASPECT's results are consistent
+# with the results of the thermodynamic modeling package that produced the
+# entropy-pressure tables for material properties (in this case HeFESTo). This
+# test is done by replacing the 'compute entropy profile' adiabatic conditions
+# plugin with the 'ascii data' plugin, which will load a precomputed adiabat
+# from HeFESTo instead of computing an adiabat inside ASPECT. The disadvantage
+# of this approach is of course that it is only possible for those adiabats
+# that have been precomputed (in this case one for 1600 K), while the 'compute
+# entropy profile' plugin can compute adiabats at arbitrary entropy.
+
+set Additional shared libraries            = ./plugins/libentropy_plugins.so
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 2.5e8
+set Output directory                       = output-entropy-adiabat
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600.1243896484375
+
+subsection Formulation
+  set Mass conservation = projected density field
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 13000
+    set Y extent = 1300000
+    set Y repetitions = 200
+  end
+end
+
+subsection Initial temperature model
+  # The actual initial temperature is irrelevant, because it
+  # is recalculated from the entropy during the first timestep.
+  # The value below corresponds to the entropy of 2534 J/kg/K
+  # used as the top boundary condition.
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1600.1243896484375
+  end
+end
+
+subsection Adiabatic conditions model
+  # The 'ascii data' option does not need the additional
+  # plugin, but is limited to the available adiabat data files.
+  # 'compute entropy profile' computes arbitrary adiabats
+  # internally, based on the data table.
+  # Use 'ascii data' to compare against HeFESTo adiabat.
+  set Model name = compute entropy profile
+
+  subsection Compute entropy profile
+    # Entropy equivalent to T=1600 K according to the used table
+    set Surface entropy = 2534
+  end
+
+  subsection Ascii data model
+    set Data directory  = $ASPECT_SOURCE_DIR/data/material-model/
+    set Data file name  = entropy-table/opxtable/1600K_adiabat.txt
+  end
+end
+
+# We prescribe temperatures according to the data table.
+# This output is computed in the material model.
+subsection Temperature field
+  set Temperature method = prescribed field with diffusion
+end
+
+# We solve the entropy equation for the compositional field with name
+# 'entropy'. Temperature and density are then computed based on entropy and
+# pressure.
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = entropy, density_field
+  set Types of fields = entropy, density
+  set Compositional field methods = field, prescribed field
+end
+
+subsection Boundary temperature model
+  # No temperature boundary conditions,
+  # as the temperature equation is not solved
+  set Fixed temperature boundary indicators = top
+  set List of model names = initial temperature
+end
+
+# We prescribe the entropy of the inflowing material to
+# be different from the initial entropy in the model.
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top
+  set List of model names = function
+
+  subsection Function
+    # Only the first component (entropy) matters, the other equations
+    # are not solved but computed from entropy.
+    set Function expression = 2534; 3300
+  end
+end
+
+# Prescribing downward flow through a vertical pipe with
+# tangential side boundaries.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function
+  set Tangential velocity boundary indicators = left, right
+
+  subsection Function
+    set Function expression = 0; -0.01
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# We start at a lower entropy than the one used for the
+# adiabatic profile.
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    # Entropy equivalent to T=1405 K according to table
+    set Function expression = 2360; 0.0
+  end
+end
+
+# We use a data table for orthopyroxene computed using the thermodynamic
+# modeling software HeFESTo.
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/opxtable/
+    set Material file name               = material_table.txt
+    set Lateral viscosity file name      = constant_lateral_vis_prefactor.txt
+    set Thermal conductivity formulation = constant
+    set Thermal conductivity             = 0.1
+  end
+
+  subsection Depth dependent viscosity
+    set Data directory                   = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/data/
+    set Data file name                   = constant_viscosity.txt
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e7
+    set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
+
+    subsection Material properties
+      set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
+    end
+  end
+end

@@ -1,0 +1,9 @@
+# This is a test for the viscoelastic sheared torsion benchmark defined
+# in benchmarks/viscoelastic_sheared_torsion.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_sheared_torsion/viscoelastic_sheared_torsion.prm
+
+
+# Global parameters
+set Dimension                                  = 3
+set End time                                   = 0.02

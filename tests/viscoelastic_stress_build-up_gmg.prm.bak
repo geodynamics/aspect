@@ -1,0 +1,98 @@
+# This test is a prestressed and smaller version of the
+# viscoelastic_stress_build-up benchmark. The only differences
+# between this test case and tests/viscoelastic_stress_build-up.prm
+# are the use of the GMG solver and material averaging (required for
+# GMG) in this test.  Otherwise, all of the parameters are identical
+# between the two tests.
+#
+# The benchmark has a 2D analytical solution for the build-up
+# of stress in an initially unstressed viscoelastic medium subject to a
+# constant strain-rate. This benchmark is described in "Robust
+# characteristics method for modelling multiphase visco-elasto-plastic
+# thermo-mechanical problems" by Gerya and Yuen, 2007, Phys. Earth. Planet.
+# Inter., v. 163, p. 83-105. Full details of the benchmark are located in
+# section 3.1 and figure 3 of this manuscript.
+#
+# The analytical solution for viscoelastic stress build-up in
+# an incompressible medium with a constant strain-rate is:
+#   simga_ij = 2 * edot_ii * eta * (1 - e^(-mu*t/eta)),
+# where sigma_ij is the elastic deviatoric stress tensor, edot_ij is
+# the deviatoric strain-rate, eta is the background viscosity, mu is the
+# shear modulus and t is time.
+#
+# Following the conditions described in section 3.1 and figure 3 from
+# Gerya and Yuen (2007), a 100x100 km body is subject to a constant
+# strain-rate of 1.e-14 s^-1 in both the horizontal and vertical directions.
+# Constant deformation is driven by inflow and outflow, respectively,
+# on the right and bottom walls. The top and left walls are free-slip.
+# The material has a viscosity of 1e22 Pa s and a shear modulus of 1e10 Pa.
+# With these values, the analytical solution predicts a horizontal
+# or vertical viscoelastic stress magnitude of ~ 200 MPa after 250 Kyr
+# of deformation. Significantly, the effective "viscoelastic" viscosity
+# is enforced to be constant through time by using a constant time step.
+# This is achieved by setting a maximum time step (1000 years) much lower
+# than the time step size given by the CFL number of 0.5.
+#
+# This result can be observed by viewing the compositional field values
+# representing the horizontal (ve_stress_xx) or vertical (ve_stress_yy) components
+# of the viscoselastic stress tensor. Significantly, the composition is not
+# fixed on any boundary in order to prevent the formation of boundary artifacts
+# in the compositional fields tracking viscoelastic stresses.
+#
+# For the current test, we prescribe initial values to the compositional fields
+# that track the viscoelastic stresses that are equal to the eventual
+# analytical solution for the viscoelastic stress.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
+
+
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1000
+set Use years in output instead of seconds = true
+set Output directory                       = viscoelastic_stress_build-up_gmg
+
+# Use GMG Stokes solver
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, left
+  set Prescribed velocity boundary indicators = bottom y:function, right x:function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = Lx = 100000, yinsec = 31557600, eps_ii = 1e-14
+    set Function expression = if (x>50e3, Lx*eps_ii*yinsec, 0.); if (y<50e3, Lx*eps_ii*yinsec, 0.);
+  end
+end
+
+# Spatial domain of different compositional fields:
+# ve_stress_xx, ve_stress_yy, ve_stress_xy
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = eta = 1e22, mu = 1e10, eps = 1e-14, t = 250000, yinsec = 31557600
+    set Function expression = 2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
+                              -2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
+                              0
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
+
+subsection Postprocess
+  subsection Visualization
+    set Time between graphical output = 1e3
+    set Output format = gnuplot
+  end
+end

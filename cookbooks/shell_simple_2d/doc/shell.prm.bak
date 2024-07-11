@@ -1,0 +1,72 @@
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 1.5e9
+set Output directory                       = output-shell_simple_2d
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+    set Opening angle = 90
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = outer, left, right
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = inner, outer
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 4273
+    set Outer temperature = 973
+  end
+end
+
+subsection Heating model
+  set List of model names =  shear heating
+end
+
+subsection Initial temperature model
+  set Model name = spherical hexagonal perturbation
+end
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 5
+  set Initial adaptive refinement        = 4
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 15
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, \
+                               heat flux statistics, depth average
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 0
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1e6
+  end
+end

@@ -1,0 +1,16 @@
+set Dimension                     = 2
+set End time                      = 1.5e9
+set Output directory              = output
+
+subsection Geometry model
+  set Model name                  = spherical shell
+end
+
+subsection Mesh refinement
+  set Initial global refinement   = 4
+  set Initial adaptive refinement = 1
+end
+
+subsection Postprocess
+  set List of postprocessors      = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+end

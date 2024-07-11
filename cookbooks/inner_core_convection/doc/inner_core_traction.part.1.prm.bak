@@ -1,0 +1,15 @@
+subsection Material model
+  set Model name = inner core material
+
+  # The 'inner core material' model also contains a function that
+  # represents the resistance to melting/freezing at the inner core
+  # boundary.
+  # For P-->infinity, the boundary is a free slip boundary, and for
+  # P-->0, the boundary is an open boundary (with zero normal stress).
+  subsection Inner core
+    subsection Phase change resistance function
+      set Variable names      = x,y,z
+      set Function expression = 1e-2     # <-- P
+    end
+  end
+end

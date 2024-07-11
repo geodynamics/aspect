@@ -1,0 +1,11 @@
+subsection Material model
+  # Parameters controlling the rheology.
+  subsection Steinberger model
+    set Lateral viscosity file name                   = temp-viscosity-prefactor.txt
+    set Radial viscosity file name                    = radial-visc-simple.txt
+    set Use lateral average temperature for viscosity = false
+    set Maximum lateral viscosity variation           = 1e3
+    set Maximum viscosity                             = 5e23
+    set Minimum viscosity                             = 1e20
+  end
+end

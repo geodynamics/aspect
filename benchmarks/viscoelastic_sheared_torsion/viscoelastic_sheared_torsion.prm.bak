@@ -1,0 +1,172 @@
+# This parameter file constructs a 3D cube which is rotated around its vertical axis and sheared in the
+# xz-plane. It is adapted from Farrington et al. 2014 (Geophysics, Geochemistry, Geosystems), section "3.4.
+# Torsion Test in 3-D". According to the authors this is essentially an extension of the simple shear test
+# (see the viscoelastic_plastic_simple_shear benchmark prm file) into the third dimension.
+# While the model always rotates with a constant rate of 42/360 per unit time, shearing is only applied until
+# t = 0.5. At this point the shearing velocity is reduced to zero, and elastic stresses relax.
+# For t < 0.5 the analytical expression of the stress is given by:
+#   tau = exp(-mu/eta*t)*(C2*cos(V*t/h)-C1*sin(V*t/h))-C2
+# and for t >= 0.5:
+#   tau = exp(-mu/eta*tmax)*(C2*cos(V*tmax/h)-C1*sin(V*tmax/h))-C2)*exp(-mu/eta*(t-tmax))
+# with:
+#   tmax = 0.5 [s]     # time at which shearing stops
+#   eta = 100  [Pa s]  # the shear viscosity
+#   mu  = 100  [Pa]    # the shear modulus
+#   V = 0.3    [m/s]   # the shearing velocity
+#   h = 1      [m]     # the height of the box
+#   omega = 42 [deg/s] # the rotation rate
+#   C1 = -(V^2*eta^2*mu)/(mu^2*h^2+V^2*eta^2)
+#   C2 = -(V*h*eta*mu^2)/(mu^2*h^2+V^2*eta^2)
+#
+# These analytical stresses can be directly compared to the xz-component of the stress output (in the composition
+# statistics) from this parameter file.
+# Farrington et al., however, look at the stresses in an unrotated frame (their Fig. 1b), in which case both
+# the analytical stress and the ASPECT stress component need to be multiplied with cos(omega*t). Note that in the
+# Farrington paper the vertical axis is the y-axis, such that their stress component xy is ASPECT's stress
+# component xz.
+# With the time step size given in this parameter file, stresses are underestimated compared to the analytical
+# solution by about 0.9% for t < 0.5 and about 2% for t > 0.5. The fit of the numerical stress to the analytical
+# solution can be enhanced by choosing a smaller time step size.
+
+
+# Global parameters
+set Dimension                                  = 3
+set Start time                                 = 0
+set End time                                   = 2
+set Use years in output instead of seconds     = false
+
+# This will limit all time steps sizes to equal the "maximum time step" size
+set Maximum time step                          = 0.01
+set Output directory                           = output-viscoelastic_sheared_torsion
+set Pressure normalization                     = surface
+set Surface pressure                           = 0.
+set Nonlinear solver scheme                    = single Advection, iterated Stokes
+set Max nonlinear iterations                   = 30
+set Nonlinear solver tolerance                 = 1e-5
+set Max nonlinear iterations in pre-refinement = 0
+
+# Solver settings
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance                = 1e-6
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+    set Z extent  = 1.0
+    set X repetitions = 5
+    set Y repetitions = 5
+    set Z repetitions = 5
+
+    # The axes' origins are offset such that the vertical axis runs through the middle of
+    # the box. This facilitates the velocity boundary condition of the rotational movement.
+    set Box origin X coordinate = -0.5
+    set Box origin Y coordinate = -0.5
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = 0:function, 1:function, 2:function, 3:function, 4:function, 5:function
+
+  subsection Function
+    # circular rotation plus shearing until t=0.5
+    set Function expression = if(t<0.5, -sin(atan2(y,x))*sqrt(y*y+x*x)*42/360 + 0.3*z, -sin(atan2(y,x))*sqrt(y*y+x*x)*42/360) ;\
+                            cos(atan2(y,x))*sqrt(y*y+x*x)*42/360 ;\
+                            0
+  end
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name  = vertical
+
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Spatial domain of different compositional fields.
+# The elastic stress tensor components are set to 0 initially.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0;0.0;0.0;0.0;0.0;0.0
+  end
+end
+
+# Material model
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    # We use the dislocation creep law to prescribe a constant viscous viscosity.
+    # Because we set the stress exponent n=1, the strain rate term of the dislocation creep
+    # equation becomes 1 as it is set to the power of 0. Furthermore E=0 and P=0 so the exponential
+    # term equals 1 as well. This leads to a simplification of the dislocation creep equation to:
+    # eta = 1/2*prefactor^(-1/stress_exponent)
+    # So this parameter file gives a viscosity eta = 1/2*0.005(-1/1) = 100
+    set Prefactors for dislocation creep          = 0.005
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+    set Viscous flow law = dislocation
+    set Densities                   =  1
+    set Elastic shear moduli        = 1.e2
+
+    # Even though we do not use a fixed elastic time step,
+    # this parameters needs to be set equal to the "maximum time step"
+    # as it is used to compute the elastic time step during time step 0.
+    set Fixed elastic time step     = 0.01
+    set Use fixed elastic time step = false
+    set Viscosity averaging scheme  = maximum composition
+
+    # Cohesion is set higher than the maximum stress expected in this benchmark,
+    # such that yielding does not occur
+    set Cohesions                   = 15
+    set Angles of internal friction = 0.
+    set Minimum viscosity           = 1e-3
+    set Maximum viscosity           = 1e3
+  end
+end
+
+# The temperature plays no role in this model
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Postprocessing
+subsection Postprocess
+  set List of postprocessors = composition statistics
+end

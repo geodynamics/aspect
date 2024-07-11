@@ -1,0 +1,20 @@
+# This test is based on 'rotation_statistics_3d', with the modification
+# that the sphere rotates with a radially varying angular velocity of
+# w=r instead of w=1. Since our sphere has a radius of 1 this means the
+# volume net rotation is different from 'rotation_statistics_3d', but
+# the surface net rotation should still be 1, which the postprocessor
+# 'rotation statistics' reports correctly.
+
+set Dimension                              = 3
+
+include $ASPECT_SOURCE_DIR/tests/rotation_statistics_3d.prm
+
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,z,t
+    set Function expression = -y*sqrt(x*x+y*y+z*z); x*sqrt(x*x+y*y+z*z); 0
+  end
+end

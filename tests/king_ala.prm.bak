@@ -1,0 +1,11 @@
+# King2010 ALA benchmark as described in benchmarks/kingd2dcompressible
+
+include $ASPECT_SOURCE_DIR/benchmarks/king2dcompressible/ala.prm
+
+set Dimension                              = 2
+set CFL number = 10.0
+set End time                               = 0.5
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, depth average, heating statistics
+end

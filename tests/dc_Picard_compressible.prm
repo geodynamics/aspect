@@ -12,8 +12,6 @@ set Max nonlinear iterations               = 150
 set Max nonlinear iterations in pre-refinement = 0
 set Pressure normalization                 = surface
 set Maximum time step                      = 1e6
-
-#set Number of cheap Stokes solver steps    = 200  # aspect 2.2
 set Adiabatic surface temperature          = 1600
 set CFL number                             = 0.5
 
@@ -23,6 +21,8 @@ subsection Solver parameters
     set Linear solver tolerance             = 1e-2
     set Maximum number of expensive Stokes solver steps = 1000
     set Number of cheap Stokes solver steps    = 200
+
+    #    set Number of cheap Stokes solver steps = 200  # aspect 2.2
   end
 end
 

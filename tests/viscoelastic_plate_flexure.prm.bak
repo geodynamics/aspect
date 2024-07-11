@@ -1,0 +1,32 @@
+# This test checks whether the viscoelastic finite-length elastic plate
+# flexure benchmark runs successfully.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plate_flexure/viscoelastic_plate_flexure.prm
+
+set End time                               = 5
+set Output directory                       = viscoelastic_plate_flexure
+
+# Significantly reduce resolution
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 20
+    set Y repetitions = 7
+  end
+end
+
+# No global refinement
+subsection Mesh refinement
+  set Initial global refinement          = 0
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, material statistics, velocity statistics, topography
+
+  subsection Topography
+    set Output to file           = false
+    set Time between text output = 0
+  end
+end

@@ -1,0 +1,26 @@
+# This test is like particle_integrator_euler.prm, but
+# tests the behavior of the particles when integrated using the RK2
+# integrator, and only using one velocity field.
+
+set Dimension                              = 2
+set End time                               = 70
+set Use years in output instead of seconds = false
+
+include $ASPECT_SOURCE_DIR/tests/particle_integrator_euler.prm
+
+
+subsection Postprocess
+  subsection Particles
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+  set Integration scheme = rk2
+
+  subsection Integrator
+    subsection RK2
+      set Higher order accurate in time = false
+    end
+  end
+end

@@ -1,0 +1,21 @@
+# We include a shared library with a customized initial temperature plugin and the required isotherm depth, composition RMS temperature, and trench location postprocessors.
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
+
+# We fix temperature on the top and bottom,
+# as well as on the right boundary because
+# we have inflow through the latter.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, right
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 0
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Initial temperature model
+  set List of model names = subduction plate cooling
+end
