@@ -1227,7 +1227,7 @@ namespace aspect
         prm.declare_entry ("WENO linear weight of neighbor cells", "0.001",
                            Patterns::Double(0.0, 1.0),
                            "The linear weight of neighbor cells in WENO scheme. The larger this value is, "
-                           "the more information of neighbor cells will be involved in the polynomial "
+                           "the more weight is given to information from neighbor cells when reconstructing the polynomial "
                            "reconstruction. See \\cite{zhong:etal:2013} for detail.");
       }
       prm.leave_subsection ();
