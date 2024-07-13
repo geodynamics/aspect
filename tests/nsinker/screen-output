@@ -2,11 +2,11 @@
 Loading shared library <./libnsinker.debug.so>
 
 Number of active cells: 8 (on 2 levels)
-Number of degrees of freedom: 532 (375+32+125)
+Number of degrees of freedom: 527 (375+27+125)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+19 iterations.
+   Solving Stokes system... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-nsinker/solution/solution-00000

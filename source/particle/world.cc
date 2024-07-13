@@ -79,6 +79,9 @@ namespace aspect
                                          property_manager->get_n_property_components());
 
       connect_to_signals(this->get_signals());
+
+      AssertThrow(this->introspection().get_composition_base_element_indices().size()<=1,
+                  ExcNotImplemented("Particles are not supported in computations with compositional fields with different finite element types."));
     }
 
 
@@ -444,17 +447,16 @@ namespace aspect
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+      typename ParticleHandler<dim>::particle_iterator_range particles = particle_handler->particles_in_cell(cell);
 
       std::vector<Point<dim>> positions;
       positions.reserve(n_particles_in_cell);
 
-      for (auto particle = begin_particle; particle!=end_particle; ++particle)
-        positions.push_back(particle->get_reference_location());
+      for (const auto &particle : particles)
+        positions.push_back(particle.get_reference_location());
 
       const UpdateFlags update_flags = property_manager->get_needed_update_flags();
 
@@ -467,29 +469,28 @@ namespace aspect
       if (update_flags & (update_values | update_gradients))
         evaluators.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags);
 
-      Vector<double> solution;
+      std::vector<Vector<double>> solution;
       if (update_flags & update_values)
-        solution.reinit(this->introspection().n_components);
+        solution.resize(n_particles_in_cell,Vector<double>(this->introspection().n_components));
 
-      std::vector<Tensor<1,dim>> gradients;
+      std::vector<std::vector<Tensor<1,dim>>> gradients;
       if (update_flags & update_gradients)
-        gradients.resize(this->introspection().n_components);
+        gradients.resize(n_particles_in_cell,std::vector<Tensor<1,dim>>(this->introspection().n_components));
 
-      auto particle = begin_particle;
-      for (unsigned int i = 0; particle!=end_particle; ++particle,++i)
+      for (unsigned int i = 0; i<n_particles_in_cell; ++i)
         {
           // Evaluate the solution, but only if it is requested in the update_flags
           if (update_flags & update_values)
-            evaluators.get_solution(i, solution);
+            evaluators.get_solution(i, solution[i]);
 
           // Evaluate the gradients, but only if they are requested in the update_flags
           if (update_flags & update_gradients)
-            evaluators.get_gradients(i, gradients);
-
-          property_manager->update_one_particle(particle,
-                                                solution,
-                                                gradients);
+            evaluators.get_gradients(i, gradients[i]);
         }
+
+      property_manager->update_particles(particles,
+                                         solution,
+                                         gradients);
     }
 
 
@@ -1067,15 +1068,10 @@ namespace aspect
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
               {
-                typename ParticleHandler<dim>::particle_iterator_range
-                particles_in_cell = particle_handler->particles_in_cell(cell);
-
-                // Only update particles, if there are any in this cell
-                if (particles_in_cell.begin() != particles_in_cell.end())
+                // Only update particles if there are any in this cell
+                if (particle_handler->n_particles_in_cell(cell) > 0)
                   {
                     local_update_particles(cell,
-                                           particles_in_cell.begin(),
-                                           particles_in_cell.end(),
                                            *evaluators);
                   }
 
@@ -1184,75 +1180,84 @@ namespace aspect
     void
     World<dim>::declare_parameters (ParameterHandler &prm)
     {
-      prm.enter_subsection("Postprocess");
-      {
-        prm.enter_subsection("Particles");
+      constexpr unsigned int number_of_particle_worlds = 1;
+      for (unsigned int world_index = 0; world_index < number_of_particle_worlds; ++world_index)
         {
-          prm.declare_entry ("Load balancing strategy", "repartition",
-                             Patterns::MultipleSelection ("none|remove particles|add particles|"
-                                                          "remove and add particles|repartition"),
-                             "Strategy that is used to balance the computational "
-                             "load across processors for adaptive meshes.");
-          prm.declare_entry ("Minimum particles per cell", "0",
-                             Patterns::Integer (0),
-                             "Lower limit for particle number per cell. This limit is "
-                             "useful for adaptive meshes to prevent fine cells from being empty "
-                             "of particles. It will be checked and enforced after mesh "
-                             "refinement and after particle movement. "
-                             "If there are "
-                             "\\texttt{n\\_number\\_of\\_particles} $<$ \\texttt{min\\_particles\\_per\\_cell} "
-                             "particles in one cell then "
-                             "\\texttt{min\\_particles\\_per\\_cell} - \\texttt{n\\_number\\_of\\_particles} "
-                             "particles are generated and randomly placed in "
-                             "this cell. If the particles carry properties the "
-                             "individual property plugins control how the "
-                             "properties of the new particles are initialized.");
-          prm.declare_entry ("Maximum particles per cell", "100",
-                             Patterns::Integer (0),
-                             "Upper limit for particle number per cell. This limit is "
-                             "useful for adaptive meshes to prevent coarse cells from slowing down "
-                             "the whole model. It will be checked and enforced after mesh "
-                             "refinement, after MPI transfer of particles and after particle "
-                             "movement. If there are "
-                             "\\texttt{n\\_number\\_of\\_particles} $>$ \\texttt{max\\_particles\\_per\\_cell} "
-                             "particles in one cell then "
-                             "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
-                             "particles in this cell are randomly chosen and destroyed.");
-          prm.declare_entry ("Particle weight", "10",
-                             Patterns::Integer (0),
-                             "Weight that is associated with the computational load of "
-                             "a single particle. The sum of particle weights will be added "
-                             "to the sum of cell weights to determine the partitioning of "
-                             "the mesh if the `repartition' particle load balancing strategy "
-                             "is selected. The optimal weight depends on the used "
-                             "integrator and particle properties. In general for a more "
-                             "expensive integrator and more expensive properties a larger "
-                             "particle weight is recommended. Before adding the weights "
-                             "of particles, each cell already carries a weight of 1000 to "
-                             "account for the cost of field-based computations.");
-          prm.declare_entry ("Update ghost particles", "false",
-                             Patterns::Bool (),
-                             "Some particle interpolation algorithms require knowledge "
-                             "about particles in neighboring cells. To allow this, "
-                             "particles in ghost cells need to be exchanged between the "
-                             "processes neighboring this cell. This parameter determines "
-                             "whether this transport is happening.");
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
+          if (world_index == 0)
+            {
+              prm.enter_subsection("Particles");
+            }
+          else
+            {
+              prm.enter_subsection("Particles " + std::to_string(world_index+1));
+            }
+          {
+            prm.declare_entry ("Load balancing strategy", "repartition",
+                               Patterns::MultipleSelection ("none|remove particles|add particles|"
+                                                            "remove and add particles|repartition"),
+                               "Strategy that is used to balance the computational "
+                               "load across processors for adaptive meshes.");
+            prm.declare_entry ("Minimum particles per cell", "0",
+                               Patterns::Integer (0),
+                               "Lower limit for particle number per cell. This limit is "
+                               "useful for adaptive meshes to prevent fine cells from being empty "
+                               "of particles. It will be checked and enforced after mesh "
+                               "refinement and after particle movement. "
+                               "If there are "
+                               "\\texttt{n\\_number\\_of\\_particles} $<$ \\texttt{min\\_particles\\_per\\_cell} "
+                               "particles in one cell then "
+                               "\\texttt{min\\_particles\\_per\\_cell} - \\texttt{n\\_number\\_of\\_particles} "
+                               "particles are generated and randomly placed in "
+                               "this cell. If the particles carry properties the "
+                               "individual property plugins control how the "
+                               "properties of the new particles are initialized.");
+            prm.declare_entry ("Maximum particles per cell", "100",
+                               Patterns::Integer (0),
+                               "Upper limit for particle number per cell. This limit is "
+                               "useful for adaptive meshes to prevent coarse cells from slowing down "
+                               "the whole model. It will be checked and enforced after mesh "
+                               "refinement, after MPI transfer of particles and after particle "
+                               "movement. If there are "
+                               "\\texttt{n\\_number\\_of\\_particles} $>$ \\texttt{max\\_particles\\_per\\_cell} "
+                               "particles in one cell then "
+                               "\\texttt{n\\_number\\_of\\_particles} - \\texttt{max\\_particles\\_per\\_cell} "
+                               "particles in this cell are randomly chosen and destroyed.");
+            prm.declare_entry ("Particle weight", "10",
+                               Patterns::Integer (0),
+                               "Weight that is associated with the computational load of "
+                               "a single particle. The sum of particle weights will be added "
+                               "to the sum of cell weights to determine the partitioning of "
+                               "the mesh if the `repartition' particle load balancing strategy "
+                               "is selected. The optimal weight depends on the used "
+                               "integrator and particle properties. In general for a more "
+                               "expensive integrator and more expensive properties a larger "
+                               "particle weight is recommended. Before adding the weights "
+                               "of particles, each cell already carries a weight of 1000 to "
+                               "account for the cost of field-based computations.");
+            prm.declare_entry ("Update ghost particles", "false",
+                               Patterns::Bool (),
+                               "Some particle interpolation algorithms require knowledge "
+                               "about particles in neighboring cells. To allow this, "
+                               "particles in ghost cells need to be exchanged between the "
+                               "processes neighboring this cell. This parameter determines "
+                               "whether this transport is happening.");
 
-      Generator::declare_parameters<dim>(prm);
-      Integrator::declare_parameters<dim>(prm);
-      Interpolator::declare_parameters<dim>(prm);
-      Property::Manager<dim>::declare_parameters(prm);
+            Generator::declare_parameters<dim>(prm);
+            Integrator::declare_parameters<dim>(prm);
+            Interpolator::declare_parameters<dim>(prm);
+
+            Property::Manager<dim>::declare_parameters(prm);
+          }
+          prm.leave_subsection ();
+        }
+
     }
 
 
 
     template <int dim>
     void
-    World<dim>::parse_parameters (ParameterHandler &prm)
+    World<dim>::parse_parameters (ParameterHandler &prm, const unsigned int world_index)
     {
       // First do some error checking. The current algorithm does not find
       // the cells around particles, if the particles moved more than one
@@ -1269,88 +1274,96 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      prm.enter_subsection("Postprocess");
-      {
-        prm.enter_subsection("Particles");
+      if (world_index == 0)
         {
-          min_particles_per_cell = prm.get_integer("Minimum particles per cell");
-          max_particles_per_cell = prm.get_integer("Maximum particles per cell");
-
-          AssertThrow(min_particles_per_cell <= max_particles_per_cell,
-                      ExcMessage("Please select a 'Minimum particles per cell' parameter "
-                                 "that is smaller than or equal to the 'Maximum particles per cell' parameter."));
-
-          particle_weight = prm.get_integer("Particle weight");
-
-          update_ghost_particles = prm.get_bool("Update ghost particles");
-
-          const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
-          AssertThrow(Utilities::has_unique_entries(strategies),
-                      ExcMessage("The list of strings for the parameter "
-                                 "'Postprocess/Particles/Load balancing strategy' contains entries more than once. "
-                                 "This is not allowed. Please check your parameter file."));
-
-          particle_load_balancing = ParticleLoadBalancing::no_balancing;
-
-          for (std::vector<std::string>::const_iterator strategy = strategies.begin(); strategy != strategies.end(); ++strategy)
-            {
-              if (*strategy == "remove particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_particles);
-              else if (*strategy == "add particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::add_particles);
-              else if (*strategy == "remove and add particles")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_and_add_particles);
-              else if (*strategy == "repartition")
-                particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::repartition);
-              else if (*strategy == "none")
-                {
-                  particle_load_balancing = ParticleLoadBalancing::no_balancing;
-                  AssertThrow(strategies.size() == 1,
-                              ExcMessage("The particle load balancing strategy `none' is not compatible "
-                                         "with any other strategy, yet it seems another is selected as well. "
-                                         "Please check the parameter file."));
-                }
-              else
-                AssertThrow(false,
-                            ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + *strategy
-                                       + ">. This value does not correspond to any known load balancing strategy. Possible values "
-                                       "are listed in the corresponding manual subsection."));
-            }
-
+          prm.enter_subsection("Particles");
         }
-        prm.leave_subsection ();
+      else
+        {
+          prm.enter_subsection("Particles " + std::to_string(world_index+1));
+        }
+      {
+        min_particles_per_cell = prm.get_integer("Minimum particles per cell");
+        max_particles_per_cell = prm.get_integer("Maximum particles per cell");
+
+        AssertThrow(min_particles_per_cell <= max_particles_per_cell,
+                    ExcMessage("Please select a 'Minimum particles per cell' parameter "
+                               "that is smaller than or equal to the 'Maximum particles per cell' parameter."));
+
+        particle_weight = prm.get_integer("Particle weight");
+
+        update_ghost_particles = prm.get_bool("Update ghost particles");
+
+        const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
+        AssertThrow(Utilities::has_unique_entries(strategies),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Particles/Load balancing strategy' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
+
+        particle_load_balancing = ParticleLoadBalancing::no_balancing;
+
+        for (std::vector<std::string>::const_iterator strategy = strategies.begin(); strategy != strategies.end(); ++strategy)
+          {
+            if (*strategy == "remove particles")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_particles);
+            else if (*strategy == "add particles")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::add_particles);
+            else if (*strategy == "remove and add particles")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::remove_and_add_particles);
+            else if (*strategy == "repartition")
+              particle_load_balancing = typename ParticleLoadBalancing::Kind(particle_load_balancing | ParticleLoadBalancing::repartition);
+            else if (*strategy == "none")
+              {
+                particle_load_balancing = ParticleLoadBalancing::no_balancing;
+                AssertThrow(strategies.size() == 1,
+                            ExcMessage("The particle load balancing strategy `none' is not compatible "
+                                       "with any other strategy, yet it seems another is selected as well. "
+                                       "Please check the parameter file."));
+              }
+            else
+              AssertThrow(false,
+                          ExcMessage("The 'Load balancing strategy' parameter contains an unknown value: <" + *strategy
+                                     + ">. This value does not correspond to any known load balancing strategy. Possible values "
+                                     "are listed in the corresponding manual subsection."));
+          }
+
+
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
+
+        // Create a generator object depending on what the parameters specify
+        generator = Generator::create_particle_generator<dim> (prm);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
+          sim->initialize_simulator (this->get_simulator());
+        generator->set_particle_world_index(world_index);
+        generator->parse_parameters(prm);
+        generator->initialize();
+
+        // Create a property_manager object and initialize its properties
+        property_manager = std::make_unique<Property::Manager<dim>> ();
+        SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
+        sim->initialize_simulator (this->get_simulator());
+        property_manager->set_particle_world_index(world_index);
+        property_manager->parse_parameters(prm);
+        property_manager->initialize();
+
+        // Create an integrator object depending on the specified parameter
+        integrator = Integrator::create_particle_integrator<dim> (prm);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
+          sim->initialize_simulator (this->get_simulator());
+        integrator->set_particle_world_index(world_index);
+        integrator->parse_parameters(prm);
+        integrator->initialize();
+
+        // Create an interpolator object depending on the specified parameter
+        interpolator = Interpolator::create_particle_interpolator<dim> (prm);
+        if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
+          sim->initialize_simulator (this->get_simulator());
+        interpolator->set_particle_world_index(world_index);
+        interpolator->parse_parameters(prm);
+        interpolator->initialize();
+
       }
       prm.leave_subsection ();
-
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
-
-      // Create a generator object depending on what the parameters specify
-      generator = Generator::create_particle_generator<dim> (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      generator->parse_parameters(prm);
-      generator->initialize();
-
-      // Create a property_manager object and initialize its properties
-      property_manager = std::make_unique<Property::Manager<dim>> ();
-      SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
-      sim->initialize_simulator (this->get_simulator());
-      property_manager->parse_parameters(prm);
-      property_manager->initialize();
-
-      // Create an integrator object depending on the specified parameter
-      integrator = Integrator::create_particle_integrator<dim> (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      integrator->parse_parameters(prm);
-      integrator->initialize();
-
-      // Create an interpolator object depending on the specified parameter
-      interpolator = Interpolator::create_particle_interpolator<dim> (prm);
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      interpolator->parse_parameters(prm);
-      interpolator->initialize();
     }
   }
 }

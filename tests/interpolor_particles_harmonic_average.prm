@@ -1,0 +1,20 @@
+# Test whether the interpolator reads the input correctly.
+include $ASPECT_SOURCE_DIR/tests/time_stepping_repeat_particles.prm
+
+set End time                               = 0.0
+
+subsection Particles
+  set Interpolation scheme = harmonic average
+  set List of particle properties = initial position
+end
+
+subsection Compositional fields
+  set Number of fields = 0
+  set Names of fields =
+  set Compositional field methods =
+  set Mapped particle properties  =
+end
+
+subsection Initial composition model
+  set Model name = unspecified
+end

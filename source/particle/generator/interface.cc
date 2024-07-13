@@ -190,8 +190,8 @@ namespace aspect
       namespace
       {
         std::tuple
-        <void *,
-        void *,
+        <aspect::internal::Plugins::UnusablePluginList,
+        aspect::internal::Plugins::UnusablePluginList,
         aspect::internal::Plugins::PluginList<Interface<2>>,
         aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
       }
@@ -218,15 +218,7 @@ namespace aspect
       create_particle_generator (ParameterHandler &prm)
       {
         std::string name;
-        prm.enter_subsection ("Postprocess");
-        {
-          prm.enter_subsection ("Particles");
-          {
-            name = prm.get ("Particle generator name");
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
+        name = prm.get ("Particle generator name");
 
         return std::get<dim>(registered_plugins).create_plugin (name,
                                                                 "Particle::Generator name");
@@ -239,22 +231,14 @@ namespace aspect
       declare_parameters (ParameterHandler &prm)
       {
         // declare the entry in the parameter file
-        prm.enter_subsection ("Postprocess");
-        {
-          prm.enter_subsection ("Particles");
-          {
-            const std::string pattern_of_names
-              = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
-            prm.declare_entry ("Particle generator name", "random uniform",
-                               Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
-                               +
-                               std::get<dim>(registered_plugins).get_description_string());
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
+        prm.declare_entry ("Particle generator name", "random uniform",
+                           Patterns::Selection (pattern_of_names),
+                           "Select one of the following models:\n\n"
+                           +
+                           std::get<dim>(registered_plugins).get_description_string());
 
         std::get<dim>(registered_plugins).declare_parameters (prm);
       }

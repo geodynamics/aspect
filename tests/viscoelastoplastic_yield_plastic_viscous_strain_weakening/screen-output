@@ -9,13 +9,11 @@ Number of degrees of freedom: 3,649 (882+121+441+441+441+441+441+441)
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving plastic_strain system ... 0 iterations.
    Solving viscous_strain system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0177072
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.57259e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.3668e-10
 
 
    Postprocessing:
@@ -30,16 +28,11 @@ Number of degrees of freedom: 3,649 (882+121+441+441+441+441+441+441)
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 11 iterations.
    Solving ve_stress_yy system ... 11 iterations.
-   Solving ve_stress_xy system ... 12 iterations.
+   Solving ve_stress_xy system ... 11 iterations.
    Solving plastic_strain system ... 10 iterations.
    Solving viscous_strain system ... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+5 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000613163
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.71047e-09
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.01491e-06
 
 
    Postprocessing:

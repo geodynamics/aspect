@@ -65,19 +65,22 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 1
     set Time between data output = 1
     set Data output format = ascii
-    set Particle generator name = uniform box
-    set Integration scheme = rk2
+  end
+end
 
-    subsection Generator
-      subsection Uniform box
-        set Minimum x = 0.0
-        set Maximum x = 0.1
-        set Minimum y = 0.5
-        set Maximum y = 0.55
-      end
+subsection Particles
+  set Particle generator name = uniform box
+  set Integration scheme = rk2
+
+  subsection Generator
+    subsection Uniform box
+      set Minimum x = 0.0
+      set Maximum x = 0.1
+      set Minimum y = 0.5
+      set Maximum y = 0.55
+      set Number of particles = 1
     end
   end
 end

@@ -101,6 +101,12 @@ subsection Postprocess
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end
+
 subsection Termination criteria
   set Termination criteria = end step
   set End step = 0

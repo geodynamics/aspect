@@ -30,18 +30,12 @@ namespace aspect
     namespace Property
     {
       template <int dim>
-      CpoBinghamAverage<dim>::CpoBinghamAverage ()
-      {}
-
-
-
-      template <int dim>
       void
       CpoBinghamAverage<dim>::initialize ()
       {
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
         this->random_number_generator.seed(random_number_seed+my_rank);
-        const auto &manager = this->get_particle_world().get_property_manager();
+        const auto &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No crystal preferred orientation property plugin found."));
 
@@ -75,10 +69,10 @@ namespace aspect
                                                                         rotation_matrices_grains,
                                                                         n_samples,
                                                                         this->random_number_generator);
-            const std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
+            const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
             for (unsigned int i = 0; i < 3; ++i)
-              for (unsigned int j = 0; j < 3; ++j)
+              for (unsigned int j = 0; j < 6; ++j)
                 data.emplace_back(bingham_average[i][j]);
           }
       }
@@ -105,12 +99,12 @@ namespace aspect
               }
 
             const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
-            std::array<std::array<double,3>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
+            std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
             for (unsigned int i = 0; i < 3; ++i)
-              for (unsigned int j = 0; j < 3; ++j)
+              for (unsigned int j = 0; j < 6; ++j)
                 {
-                  data[data_position + mineral_i*9 + i*3 + j] = bingham_average[i][j];
+                  data[data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
                 }
           }
       }
@@ -118,7 +112,7 @@ namespace aspect
 
 
       template <int dim>
-      std::array<std::array<double,3>,3>
+      std::array<std::array<double,6>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices) const
       {
         SymmetricTensor<2,3> sum_matrix_a;
@@ -158,19 +152,31 @@ namespace aspect
         const std::array<std::pair<double,Tensor<1,3,double>>, 3> eigenvectors_b = eigenvectors(sum_matrix_b, SymmetricTensorEigenvectorMethod::jacobi);
         const std::array<std::pair<double,Tensor<1,3,double>>, 3> eigenvectors_c = eigenvectors(sum_matrix_c, SymmetricTensorEigenvectorMethod::jacobi);
 
-
+        // average axis = eigenvector * largest eigenvalue
         const Tensor<1,3,double> averaged_a = eigenvectors_a[0].second * eigenvectors_a[0].first;
         const Tensor<1,3,double> averaged_b = eigenvectors_b[0].second * eigenvectors_b[0].first;
         const Tensor<1,3,double> averaged_c = eigenvectors_c[0].second * eigenvectors_a[0].first;
 
+        // eigenvalues of all axes, used in the anisotropic viscosity material model to compute Hill's coefficients
+        const double eigenvalue_a1 = eigenvectors_a[0].first/matrices.size();
+        const double eigenvalue_a2 = eigenvectors_a[1].first/matrices.size();
+        const double eigenvalue_a3 = eigenvectors_a[2].first/matrices.size();
+        const double eigenvalue_b1 = eigenvectors_b[0].first/matrices.size();
+        const double eigenvalue_b2 = eigenvectors_b[1].first/matrices.size();
+        const double eigenvalue_b3 = eigenvectors_b[2].first/matrices.size();
+        const double eigenvalue_c1 = eigenvectors_c[0].first/matrices.size();
+        const double eigenvalue_c2 = eigenvectors_c[1].first/matrices.size();
+        const double eigenvalue_c3 = eigenvectors_c[2].first/matrices.size();
+
         return
         {
           {
-            {{averaged_a[0],averaged_a[1],averaged_a[2]}},
-            {{averaged_b[0],averaged_b[1],averaged_b[2]}},
-            {{averaged_c[0],averaged_c[1],averaged_c[2]}}
+            {{averaged_a[0],averaged_a[1],averaged_a[2], eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}},
+            {{averaged_b[0],averaged_b[1],averaged_b[2], eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}},
+            {{averaged_c[0],averaged_c[1],averaged_c[2], eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}}
           }
         };
+
       }
 
 
@@ -198,11 +204,15 @@ namespace aspect
       CpoBinghamAverage<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
+        property_information.reserve(6*n_minerals);
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3));
-            property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3));
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3);
+            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
           }
 
         return property_information;
@@ -214,28 +224,20 @@ namespace aspect
       void
       CpoBinghamAverage<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("CPO Bingham Average");
         {
-          prm.enter_subsection("Particles");
-          {
-            prm.enter_subsection("CPO Bingham Average");
-            {
-              prm.declare_entry ("Random number seed", "1",
-                                 Patterns::Integer (0),
-                                 "The seed used to generate random numbers. This will make sure that "
-                                 "results are reproducible as long as the problem is run with the "
-                                 "same amount of MPI processes. It is implemented as final seed = "
-                                 "Random number seed + MPI Rank. ");
+          prm.declare_entry ("Random number seed", "1",
+                             Patterns::Integer (0),
+                             "The seed used to generate random numbers. This will make sure that "
+                             "results are reproducible as long as the problem is run with the "
+                             "same amount of MPI processes. It is implemented as final seed = "
+                             "Random number seed + MPI Rank. ");
 
-              prm.declare_entry ("Number of samples", "0",
-                                 Patterns::Double(0),
-                                 "This determines how many samples are taken when using the random "
-                                 "draw volume averaging. Setting it to zero means that the number of "
-                                 "samples is set to be equal to the number of grains.");
-            }
-            prm.leave_subsection ();
-          }
-          prm.leave_subsection ();
+          prm.declare_entry ("Number of samples", "0",
+                             Patterns::Double(0),
+                             "This determines how many samples are taken when using the random "
+                             "draw volume averaging. Setting it to zero means that the number of "
+                             "samples is set to be equal to the number of grains.");
         }
         prm.leave_subsection ();
       }
@@ -246,27 +248,18 @@ namespace aspect
       void
       CpoBinghamAverage<dim>::parse_parameters (ParameterHandler &prm)
       {
-
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("CPO Bingham Average");
         {
-          prm.enter_subsection("Particles");
-          {
-            prm.enter_subsection("CPO Bingham Average");
-            {
-              // Get a pointer to the CPO particle property.
-              cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
-                                        this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>());
+          // Get a pointer to the CPO particle property.
+          cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
+                                    this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>());
 
-              random_number_seed = prm.get_integer ("Random number seed");
-              n_grains = cpo_particle_property->get_number_of_grains();
-              n_minerals = cpo_particle_property->get_number_of_minerals();
-              n_samples = prm.get_integer("Number of samples");
-              if (n_samples == 0)
-                n_samples = n_grains;
-            }
-            prm.leave_subsection ();
-          }
-          prm.leave_subsection ();
+          random_number_seed = prm.get_integer ("Random number seed");
+          n_grains = cpo_particle_property->get_number_of_grains();
+          n_minerals = cpo_particle_property->get_number_of_minerals();
+          n_samples = prm.get_integer("Number of samples");
+          if (n_samples == 0)
+            n_samples = n_grains;
         }
         prm.leave_subsection ();
       }

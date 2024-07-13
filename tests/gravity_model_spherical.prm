@@ -61,6 +61,7 @@ end
 
 subsection Gravity model
   set Model name = function
+
   subsection Function
     set Coordinate system = spherical
     set Variable names = r,phi

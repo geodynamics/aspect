@@ -585,7 +585,7 @@ namespace aspect
                     output_history.background_thread.join();
                   // ...then continue with writing our own data.
                   output_history.background_thread
-                    = std::thread([ my_filename = std::move(filename),
+                    = std::thread([ my_filename = filename, // filename is const, so we can not move from it
                                     my_temporary_output_location = temporary_output_location,
                                     my_file_contents = std::move(file_contents)]()
                   {
@@ -1110,8 +1110,8 @@ namespace aspect
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2>>,
       aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<3>>> registered_visualization_plugins;
     }

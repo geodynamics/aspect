@@ -1,28 +1,18 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 2,048 (on 6 levels)
 Number of degrees of freedom: 35,685 (16,770+2,145+8,385+8,385)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+2 iterations.
+   Solving Stokes system... 59+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        0.00375 m/year, 0.01 m/year
-     Pressure min/avg/max:     -1.724e+06 Pa, 9.771e+09 Pa, 1.961e+10 Pa
+     RMS, max velocity:        0.00374 m/year, 0.01 m/year
+     Pressure min/avg/max:     -1.725e+06 Pa, 9.771e+09 Pa, 1.961e+10 Pa
      Writing graphical output: output-lithosphere_boundary_indicator_origin/solution/solution-00000
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

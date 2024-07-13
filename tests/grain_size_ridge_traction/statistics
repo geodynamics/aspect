@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition grain_size
+# 14: Maximal value for composition grain_size
+# 15: Global mass for composition grain_size
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 19: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 20: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 21: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 22: Number of advected particles
+# 23: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 2048 18915 8385 18432 9 0 325 343 343 5.00000000e-03 5.00000000e-03 4.10000000e+08 3.84905308e-02 5.54720664e-02 0.00000000e+00 2.09403607e+07 -2.09563916e+07 0.00000000e+00 22811 output-grain_size_ridge_traction/particles/particles-00000 
+1 5.000000000000e+01 5.000000000000e+01 2048 18915 8385 18432 1 7  35  37  37 2.46188517e-03 5.00000264e-03 4.08756394e+08 3.87982637e-02 5.58428430e-02 0.00000000e+00 2.10982725e+07 -2.11143063e+07 0.00000000e+00 22812 output-grain_size_ridge_traction/particles/particles-00001 
+2 1.000000000000e+02 5.000000000000e+01 2048 18915 8385 18432 1 5  35  37  37 1.74655861e-03 5.00000528e-03 4.07659506e+08 3.93420228e-02 5.65017069e-02 0.00000000e+00 2.13797599e+07 -2.13958305e+07 0.00000000e+00 22813 output-grain_size_ridge_traction/particles/particles-00002 

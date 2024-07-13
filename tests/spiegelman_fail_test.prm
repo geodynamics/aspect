@@ -22,6 +22,7 @@ subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
     set Linear solver tolerance = 9e-1
+    set Stokes solver type = block AMG
   end
 
   subsection Newton solver parameters
@@ -89,6 +90,7 @@ end
 
 subsection Material model
   set Model name = spiegelman 2016
+  set Material averaging = none
 
   subsection Spiegelman 2016
     set Maximum viscosity = 1e24

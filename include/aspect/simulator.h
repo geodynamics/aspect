@@ -680,10 +680,14 @@ namespace aspect
        * number of iterations is reached. This can greatly improve the
        * convergence rate for particularly nonlinear viscosities.
        *
+       * @param use_newton_iterations Sets whether this function should only use defect
+       * correction iterations (use_newton_iterations = false) or also use Newton iterations
+       * (use_newton_iterations = true).
+       *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_iterated_advection_and_newton_stokes ();
+      void solve_iterated_advection_and_newton_stokes (bool use_newton_iterations);
 
       /**
        * This function implements one scheme for the various
@@ -697,10 +701,14 @@ namespace aspect
        * number of iterations is reached. This can greatly improve the
        * convergence rate for particularly nonlinear viscosities.
        *
+       * @param use_newton_iterations Sets whether this function should only use defect
+       * correction iterations (use_newton_iterations = false) or also use Newton iterations
+       * (use_newton_iterations = true).
+       *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_single_advection_and_iterated_newton_stokes ();
+      void solve_single_advection_and_iterated_newton_stokes (bool use_newton_iterations);
 
       /**
        * This function implements one scheme for the various
@@ -1741,6 +1749,14 @@ namespace aspect
       check_consistency_of_formulation ();
 
       /**
+      * This function checks if the default solver and/or material
+      * averaging were selected and if so, determines the appropriate
+      * solver and/or averaging option.
+      */
+      void
+      select_default_solver_and_averaging ();
+
+      /**
        * This function checks that the user-selected boundary conditions do not
        * contain contradictions. If an incorrect selection is detected it
        * throws an exception. This for example assures that not both velocity
@@ -1964,13 +1980,7 @@ namespace aspect
       /**
        * The world holding the particles
        */
-      std::unique_ptr<Particle::World<dim>> particle_world;
-
-      /**
-       * A copy of the particle handler to reset the particles
-       * when repeating a time step.
-       */
-      dealii::Particles::ParticleHandler<dim> particle_handler_copy;
+      std::vector<std::unique_ptr<Particle::World<dim>>> particle_worlds;
 
       /**
        * @}
@@ -2088,6 +2098,12 @@ namespace aspect
        * solving.
        */
       LinearAlgebra::BlockSparseMatrix                          system_matrix;
+
+      /**
+       * This vector is used for the weighted BFBT preconditioner. It
+       * stores the inverted lumped velocity mass matrix.
+      */
+      LinearAlgebra::BlockVector                                inverse_lumped_mass_matrix;
 
       /**
        * An object that contains the entries of preconditioner

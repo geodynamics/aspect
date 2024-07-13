@@ -284,14 +284,11 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
 
-    const Postprocess::Particles<dim> &particle_postprocessor =
-      postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim>>();
-
-    const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor.get_particle_world().get_interpolator();
-    const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor.get_particle_world().get_property_manager();
+    const Particle::Interpolator::Interface<dim> &particle_interpolator = particle_worlds[0]->get_interpolator();
+    const Particle::Property::Manager<dim> &particle_property_manager = particle_worlds[0]->get_property_manager();
 
     std::vector<unsigned int> particle_property_indices;
-    ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
+    ComponentMask property_mask  (particle_property_manager.get_data_info().n_components(),false);
 
     for (const auto &advection_field: advection_fields)
       {
@@ -299,7 +296,7 @@ namespace aspect
           {
             const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_field.compositional_variable)->second;
 
-            const unsigned int particle_property_index = particle_property_manager->get_data_info().get_position_by_field_name(particle_property_and_component.first)
+            const unsigned int particle_property_index = particle_property_manager.get_data_info().get_position_by_field_name(particle_property_and_component.first)
                                                          + particle_property_and_component.second;
 
             particle_property_indices.push_back(particle_property_index);
@@ -311,7 +308,7 @@ namespace aspect
             const unsigned int particle_property_index = std::count(introspection.compositional_field_methods.begin(),
                                                                     introspection.compositional_field_methods.begin() + advection_field.compositional_variable,
                                                                     Parameters<dim>::AdvectionFieldMethod::particles);
-            AssertThrow(particle_property_index <= particle_property_manager->get_data_info().n_components(),
+            AssertThrow(particle_property_index <= particle_property_manager.get_data_info().n_components(),
                         ExcMessage("Can not automatically match particle properties to fields, because there are"
                                    "more fields that are marked as particle advected than particle properties"));
 
@@ -359,10 +356,10 @@ namespace aspect
           try
             {
               particle_properties =
-                particle_interpolator->properties_at_points(particle_postprocessor.get_particle_world().get_particle_handler(),
-                                                            quadrature_points,
-                                                            property_mask,
-                                                            cell);
+                particle_interpolator.properties_at_points(particle_worlds[0]->get_particle_handler(),
+                                                           quadrature_points,
+                                                           property_mask,
+                                                           cell);
             }
           // interpolators that throw exceptions usually do not result in
           // anything good, because they result in an unwinding of the stack

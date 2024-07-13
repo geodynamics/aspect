@@ -7,6 +7,8 @@ set Dimension = 3
 ## file because apparently we cannot recursively include .prm files.
 include $ASPECT_SOURCE_DIR/tests/chunk_initial_topography_ascii_data_3d.prm
 
+set Nonlinear solver scheme = no Advection, no Stokes
+
 subsection Geometry model
   set Model name = chunk
 
@@ -19,9 +21,6 @@ subsection Geometry model
     end
   end
 end
-
-
-set Nonlinear solver scheme = no Advection, no Stokes
 
 subsection Postprocess
   set List of postprocessors = visualization

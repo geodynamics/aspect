@@ -1,0 +1,53 @@
+name: clang
+
+on:
+  push:
+   branches:
+     - 'main'
+     - 'aspect-*'
+  # pull_request: disable testing of PRs because it is too slow
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  OMPI_MCA_btl_base_warn_component_unused: 0
+  OMPI_MCA_mpi_yield_when_idle: 1
+  OMPI_MCA_rmaps_base_oversubscribe: 1
+  OMPI_ALLOW_RUN_AS_ROOT: 1
+  OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+  OMPI_MCA_btl_vader_single_copy_mechanism: none
+
+jobs:
+  tidy:
+    # run clang-tidy
+    name: tidy
+    runs-on: [ubuntu-latest]
+
+    container:
+      image: "geodynamics/aspect-tester:noble-dealii-master-clang"
+      options: '--user 0 --name container'
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: clang-tidy
+      run: |
+        mkdir build
+        cd build
+        ../contrib/utilities/run_clang_tidy.sh $PWD/..
+        mv output.txt clang-tidy-results.txt
+    - name: compile
+      run: |
+        cd build
+        cmake -D CMAKE_CXX_FLAGS='-Werror' .
+        make -j 4
+    - name: test
+      run: |
+        cd build
+        ./aspect --test
+    - name: archive test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: clang-tidy-results.txt
+        path: build/clang-tidy-results.txt

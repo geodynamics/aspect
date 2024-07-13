@@ -7,20 +7,18 @@ Number of mesh deformation degrees of freedom: 1,071
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+20 iterations.
+   Solving Stokes system... 0+19 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+57 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.14736
+   Solving Stokes system... 0+180 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.146052
 
 
    Postprocessing:
      Writing graphical output: output-crustal_model_3D/solution/solution-00000
-     RMS, max velocity:        0.00945 m/year, 0.016 m/year
+     RMS, max velocity:        0.0098 m/year, 0.0264 m/year
      Topography min/max:       0 m, 0 m
-     Pressure min/avg/max:     -7.758e+07 Pa, 2.117e+08 Pa, 6.156e+08 Pa
+     Pressure min/avg/max:     -4.725e+09 Pa, 1.682e+08 Pa, 2.528e+09 Pa
 
 Termination requested by criterion: end time
 

@@ -1,0 +1,5 @@
+New: We implement an option to use the Weighted BFBT preconditioner 
+introduced by Rudi et al (2017). This preconditioner was designed 
+for problems involving highly heterogeneous viscosities.
+<br>
+(Quang Hoang, Timo Heister, 2024/06/06)

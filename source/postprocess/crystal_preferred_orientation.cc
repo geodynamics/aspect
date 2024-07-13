@@ -26,7 +26,7 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 namespace aspect
@@ -173,14 +173,14 @@ namespace aspect
     CrystalPreferredOrientation<dim>::execute (TableHandler &statistics)
     {
 
-      const Particle::Property::Manager<dim> &manager = this->get_particle_world().get_property_manager();
-      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world().get_particle_handler();
+      const Particle::Property::Manager<dim> &manager = this->get_particle_world(0).get_property_manager();
+      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world(0).get_particle_handler();
 
       const bool cpo_elastic_decomposition_plugin_exists = manager.plugin_name_exists("elastic tensor decomposition");
 
       // Get a reference to the CPO particle property.
       const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-        manager.template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
+        manager.template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
       const unsigned int n_grains = cpo_particle_property.get_number_of_grains();
       const unsigned int n_minerals = cpo_particle_property.get_number_of_minerals();
@@ -220,7 +220,7 @@ namespace aspect
                                                                         + "isotropic_norm_square") : "") << std::endl;
 
       // get particle data
-      const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world().get_property_manager().get_data_info();
+      const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world(0).get_property_manager().get_data_info();
 
       AssertThrow(property_information.fieldname_exists("cpo mineral 0 type") ,
                   ExcMessage("No CPO particle properties found. Make sure that the CPO particle property plugin is selected."));
@@ -554,11 +554,10 @@ namespace aspect
       // up the next time we need output
       set_last_output_time (this->get_time());
 
-      const std::string particles_cpo_output = particle_file_prefix_content_raw;
+      const std::string &particles_cpo_output = particle_file_prefix_content_raw;
 
       // record the file base file name in the output file
-      statistics.add_value ("Particle CPO file name",
-                            particles_cpo_output);
+      statistics.add_value ("Particle CPO file name", particles_cpo_output);
       return std::make_pair("Writing particle cpo output:", particles_cpo_output);
     }
 
@@ -695,22 +694,24 @@ namespace aspect
         end_time *= year_in_seconds;
 
       unsigned int n_minerals;
-      prm.enter_subsection("Postprocess");
+
+      prm.enter_subsection("Particles");
       {
-        prm.enter_subsection("Particles");
+        prm.enter_subsection("Crystal Preferred Orientation");
         {
-          prm.enter_subsection("Crystal Preferred Orientation");
+          prm.enter_subsection("Initial grains");
           {
-            prm.enter_subsection("Initial grains");
-            {
-              // Static variable of CPO has not been initialize yet, so we need to get it directly.
-              n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
-            }
-            prm.leave_subsection();
+            // Static variable of CPO has not been initialize yet, so we need to get it directly.
+            n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
         }
         prm.leave_subsection ();
+      }
+      prm.leave_subsection ();
+
+      prm.enter_subsection("Postprocess");
+      {
         prm.enter_subsection("Crystal Preferred Orientation");
         {
           output_interval = prm.get_double ("Time between data output");

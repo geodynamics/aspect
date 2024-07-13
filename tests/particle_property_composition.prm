@@ -135,19 +135,6 @@ end
 subsection Postprocess
   set List of postprocessors = particles,visualization,composition statistics,velocity statistics,solitary wave statistics
 
-  subsection Particles
-    set Particle generator name       = ascii file
-    set List of particle properties   = composition
-    set Time between data output      = 0
-    set Number of particles           = 10
-
-    subsection Generator
-      subsection Ascii file
-        set Data file name            = particle_property_composition.txt
-      end
-    end
-  end
-
   subsection Visualization
     set Interpolate output = false
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties
@@ -172,6 +159,10 @@ subsection Postprocess
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
     end
   end
+
+  subsection Particles
+    set Time between data output      = 0
+  end
 end
 
 subsection Solver parameters
@@ -182,5 +173,16 @@ subsection Solver parameters
     set Linear solver tolerance = 1e-10
     set Use direct solver for Stokes system = false
     set Number of cheap Stokes solver steps = 0
+  end
+end
+
+subsection Particles
+  set Particle generator name       = ascii file
+  set List of particle properties   = composition
+
+  subsection Generator
+    subsection Ascii file
+      set Data file name            = particle_property_composition.txt
+    end
   end
 end

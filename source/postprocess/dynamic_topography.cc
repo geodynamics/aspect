@@ -35,7 +35,7 @@ namespace aspect
     DynamicTopography<dim>::execute (TableHandler &)
     {
       const Postprocess::BoundaryPressures<dim> &boundary_pressures =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryPressures<dim>>();
+        this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::BoundaryPressures<dim>>();
 
       // Get the average pressure at the top and bottom boundaries.
       // This will be used to compute the dynamic pressure at the boundaries.

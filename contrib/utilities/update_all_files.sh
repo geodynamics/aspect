@@ -14,7 +14,7 @@ SOURCE_FILES=`find $BASE_DIR -type f \( -name *.cc -or -name *.h \) -and -not -n
 bash ${UTIL_DIR}/update_source_files.sh $SOURCE_FILES
 
 # Update prm files
-PRM_FILES=`find $BASE_DIR -type f -name *.prm* -not -name *update_script* -not -name *.bak`
+PRM_FILES=`find $BASE_DIR -type f -name *.prm* -not -name *update_script* -not -name *prmbackslash_2.prm -not -name *.bak`
 bash ${UTIL_DIR}/update_prm_files.sh $PRM_FILES
 
 # To remove the backup files that are created you will likely want to use the

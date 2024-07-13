@@ -6,11 +6,10 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system... 3+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         5.82e-12 m/s, 1.25e-11 m/s
+     RMS, max velocity:         4.34e-12 m/s, 9.5e-12 m/s
      Compositions min/max/mass: 0/1/0.1524
      Writing particle output:   output-particle_generator_random_uniform_empty_rank/particles/particles-00000
 

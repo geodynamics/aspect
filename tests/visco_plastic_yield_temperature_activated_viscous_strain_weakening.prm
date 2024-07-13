@@ -6,6 +6,7 @@ set Output directory = visco_plastic_yield_temperature_activated_viscous_strain_
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if(x>=25.e3&x<=75.e3&y>=25.e3&y<=75.e3,0.5,0);
@@ -14,6 +15,7 @@ end
 
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Use temperature activated strain softening  = true
     set Lower temperature for onset of strain weakening = 800
@@ -25,6 +27,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Variable names = x,y
     set Function constants = h=100e3,ts1=800,ts2=1200
@@ -35,6 +38,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
+
   subsection Box
     set Bottom temperature = 1200
     set Top temperature    =  800

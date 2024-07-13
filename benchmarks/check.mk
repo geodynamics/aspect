@@ -42,9 +42,11 @@ rm -f $$prm.tmp; \
 run_all_prms() { \
 cd $$1; \
 echo "  running all prms in `pwd` ..."; \
-for prm in *.prm; \
+for file in *.prm; \
   do \
-    run_prm . $$prm || return 4; \
+    if [[ "$${file}" != *.part.prm ]]; then \
+      run_prm . $${file} || return 4; \
+    fi \
   done; \
 echo "  running all prms in `pwd` done"; \
 }

@@ -6,8 +6,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving grain_size system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 8e-05/8e-05/8e+05
@@ -19,7 +18,6 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving grain_size system ... 16 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -32,7 +30,6 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving grain_size system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -45,7 +42,6 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving grain_size system ... 16 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -54,11 +50,10 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      RMS, max velocity:         0.1 m/year, 0.1 m/year
      Writing particle output:   output-grain_size_growth_particles/particles/particles-00003
 
-*** Timestep 4:  t=50000 years, dt=3125.02 years
+*** Timestep 4:  t=50000 years, dt=3125 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving grain_size system ... 6 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:

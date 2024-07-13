@@ -92,26 +92,28 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 16384
     set Time between data output = 0
     set Data output format = vtu
-    set List of particle properties = function
-    set Integration scheme = rk2
-    set Interpolation scheme = cell average
-    set Maximum particles per cell = 16384
-    set Update ghost particles = true
-    set Particle generator name = reference cell
+  end
+end
 
-    subsection Function
-      set Variable names      = x,z
-      set Function constants  = eta_b=1e3, rmax=0.2
-      set Function expression = if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
-    end
+subsection Particles
+  set List of particle properties = function
+  set Integration scheme = rk2
+  set Interpolation scheme = cell average
+  set Maximum particles per cell = 16384
+  set Update ghost particles = true
+  set Particle generator name = reference cell
 
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 4
-      end
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = eta_b=1e3, rmax=0.2
+    set Function expression = if((x-1.0)*(x-1.0)+(z-1.0)*(z-1.0)<=0.04,eta_b,1.0)
+  end
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
     end
   end
 end

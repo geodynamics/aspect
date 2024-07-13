@@ -5,14 +5,13 @@ Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 9+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
      Writing graphical output:            output-inclusion_2/solution/solution-00000
-     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 187; 4.145862e-02, 5.044059e-01, 2.432440e-02, 3.912138e-01
+     DoFs; Errors u_L1, p_L1, u_L2, p_L2: 187; 1.013775e+00, 1.350377e+01, 4.460692e-01, 8.286918e+00
 
 Termination requested by criterion: end time
 

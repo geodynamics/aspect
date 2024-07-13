@@ -158,6 +158,7 @@ end
 
 subsection Material model
   set Model name = Tan Gurnis
+  set Material averaging = none
 
   subsection Tan Gurnis model
     set Di                            = 0.5
@@ -259,5 +260,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = false
+    set Stokes solver type = block AMG
   end
 end

@@ -21,6 +21,7 @@
 
 set Adiabatic surface temperature              = 1600
 set Nonlinear solver scheme                    = iterated Advection and Stokes
+
 # We choose a low number of iterations and less restrictive nonlinear solver tolerance
 # for model efficiency. During the initial pulse of dehydration (for 3 time steps),
 # solvers do not quite converge to 1e-4, but achieve the convergence criteria for the
@@ -32,6 +33,7 @@ set Max nonlinear iterations                   = 25
 set Nonlinear solver tolerance                 = 1e-4
 set Dimension                                  = 2
 set End time                                   = 2e6
+
 # Set the 'Surface pressure' to 1 GPa to simulate a slab that is at depth.
 set Surface pressure                           = 1e9
 set Maximum time step                          = 1000
@@ -53,13 +55,8 @@ subsection Discretization
   end
 end
 
-# Do 10 reaction time steps per advection time step.
 subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 100
-    set Reaction time steps per advection step = 10
-  end
-# Set a stricter linear solver tolerance to ensure convergence
+  # Set a stricter linear solver tolerance to ensure convergence
   subsection Stokes solver parameters
     set Linear solver tolerance             = 1e-10
     set Number of cheap Stokes solver steps = 1000
@@ -88,6 +85,7 @@ end
 # evolves through the composition boundary conditions specified below.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0; 0; 1; 0; 0; 0
   end
@@ -100,13 +98,14 @@ end
 subsection Boundary composition model
   set Fixed composition boundary indicators         = left
   set List of model names                           = function
+
   subsection Function
     set Function constants  = initial_porosity=0, initial_bound_sediment=0.03, initial_bound_MORB=0.02, initial_bound_gabbro=0.01, \
                               sediment_min=0, sediment_max=5e3, MORB_min=5e3, MORB_max=12e3, gabbro_min=12e3, gabbro_max=20e3, \
                               onset_time=100e3, slab_thickness=20e3
     set Function expression = initial_porosity; \
                               if( t<=onset_time, 0, \
-                                  if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sed, \
+                                  if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sediment, \
                                       if( (y<=slab_thickness - MORB_min) & (y>slab_thickness - MORB_max), initial_bound_MORB, \
                                           if( (y<=slab_thickness - gabbro_min) & (y>slab_thickness - gabbro_max), initial_bound_gabbro, 0.0) \
                                         ) \
@@ -121,6 +120,7 @@ end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X extent      = 100e3
     set Y extent      = 100e3
@@ -158,6 +158,7 @@ end
 # slab surface.
 subsection Gravity model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = angle=0.7071067811865476
@@ -170,6 +171,7 @@ end
 # outlined below.
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Coordinate system   = cartesian
     set Variable names      = x,y
@@ -184,6 +186,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = left
   set List of model names                     = function
+
   subsection Function
     set Coordinate system                     = cartesian
     set Variable names                        = x,y
@@ -191,7 +194,6 @@ subsection Boundary temperature model
     set Function expression                   = if(y<=slab_thickness, Tslab - 200*y/slab_thickness, Tmantle)
   end
 end
-
 
 subsection Material model
   set Model name                                        = reactive fluid transport
@@ -222,6 +224,7 @@ subsection Material model
     set Fluid compressibility                            = 0
     set Fluid reaction time scale for operator splitting = 5e4
     set Fluid-solid reaction scheme                      = tian approximation
+
     # We limit the bound water in the gabbro, MORB, and sediment to their initial
     # values to encourage water to hydrate the overlying mantle. The polynomials defined
     # in Tian et al., 2019 also reach very large values at low P-T conditions, and so limiting
@@ -240,19 +243,17 @@ subsection Material model
     # state and the rheology.
     set Viscosity averaging scheme                      = harmonic
     set Viscous flow law                                = composite
-
     set Prefactors for diffusion creep                  = 4.5e-15
     set Stress exponents for diffusion creep            = 1.0
     set Activation energies for diffusion creep         = 375e3
     set Activation volumes for diffusion creep          = 8.2e-6
-
     set Prefactors for dislocation creep                = 7.4e-15
     set Stress exponents for dislocation creep          = 3.5
     set Activation energies for dislocation creep       = 530e3
     set Activation volumes for dislocation creep        = 14e-6
-
     set Angles of internal friction                     = 0
     set Cohesions                                       = 1e50
+
     # Limit the minimum and maximum viscosity to four orders of
     # magnitude to improve solver convergence behavior.
     set Minimum viscosity                               = 1e19
@@ -266,6 +267,7 @@ end
 # viscous coupling of the mantle wedge with distance from the slab surface.
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, bottom: function, top: function, right: function
+
   subsection Function
     set Coordinate system   = cartesian
     set Function constants  = basal_v = 0.05, top_v = 0.02, slab_depth = 20e3, ymax = 100e3
@@ -286,14 +288,16 @@ end
 # compaction viscosities and compaction pressures.
 subsection Postprocess
   set List of postprocessors = visualization, composition statistics, velocity statistics
+
   subsection Visualization
     set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
-    subsection Melt material properties
-      set List of properties          = fluid density, permeability, fluid viscosity, compaction viscosity
-    end
     set Output format                 = vtu
     set Time between graphical output = 5e4
     set Interpolate output            = true
     set Number of grouped files       = 0
+
+    subsection Melt material properties
+      set List of properties          = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
   end
 end

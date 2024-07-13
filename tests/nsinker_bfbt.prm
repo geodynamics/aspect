@@ -1,0 +1,9 @@
+set Dimension = 3
+
+include $ASPECT_SOURCE_DIR/benchmarks/nsinker/nsinker.prm
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 1
+end

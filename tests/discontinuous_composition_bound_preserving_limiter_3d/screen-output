@@ -5,8 +5,7 @@ Number of degrees of freedom: 4,769 (2,187+125+729+1,728)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
 Number of active cells: 120 (on 4 levels)
 Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
@@ -14,43 +13,53 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 12+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0258 m/year, 0.0897 m/year
+     RMS, max velocity:         0.0348 m/year, 0.127 m/year
      Compositions min/max/mass: 0/1/1.204e+16
 
-*** Timestep 1:  t=173561 years, dt=173561 years
+*** Timestep 1:  t=123162 years, dt=123162 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 3 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0234 m/year, 0.0846 m/year
+     Compositions min/max/mass: -0.01491/1.003/1.055e+16
+
+*** Timestep 2:  t=307638 years, dt=184476 years
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 4 iterations.
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0245 m/year, 0.086 m/year
+     Compositions min/max/mass: -0.02562/1/1.162e+16
+
+Number of active cells: 232 (on 4 levels)
+Number of degrees of freedom: 16,911 (7,695+387+2,565+6,264)
+
+*** Timestep 3:  t=489391 years, dt=181753 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
    Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0256 m/year, 0.0888 m/year
-     Compositions min/max/mass: -0.0007594/1/1.203e+16
+     RMS, max velocity:         0.0244 m/year, 0.0854 m/year
+     Compositions min/max/mass: -0.0216/1/1.18e+16
 
-*** Timestep 2:  t=349383 years, dt=175821 years
+*** Timestep 4:  t=500000 years, dt=10608.9 years
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 4 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving C_1 system ... 2 iterations.
+   Solving Stokes system... 22+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0252 m/year, 0.0875 m/year
-     Compositions min/max/mass: -0.01993/1/1.202e+16
+     RMS, max velocity:         0.0243 m/year, 0.0853 m/year
+     Compositions min/max/mass: -0.0216/0.9999/1.18e+16
 
-Number of active cells: 176 (on 4 levels)
-Number of degrees of freedom: 13,331 (6,195+319+2,065+4,752)
-
-*** Timestep 3:  t=500000 years, dt=150617 years
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 4 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:         0.0249 m/year, 0.0863 m/year
-     Compositions min/max/mass: -0.02028/0.9997/1.202e+16
+Number of active cells: 260 (on 4 levels)
+Number of degrees of freedom: 18,868 (8,565+428+2,855+7,020)
 
 Termination requested by criterion: end time
 

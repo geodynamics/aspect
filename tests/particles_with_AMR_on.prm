@@ -97,26 +97,28 @@ subsection Postprocess
   set List of postprocessors = particles, velocity statistics, composition statistics
 
   subsection Particles
-    set Number of particles = 120000
-    set Load balancing strategy = remove and add particles
-    set Minimum particles per cell = 9
-    set Maximum particles per cell = 36
     set Data output format = none
-    set List of particle properties = function
-    set Integration scheme = rk2
-    set Interpolation scheme = cell average
-    set Update ghost particles = true
-    set Particle generator name = reference cell
+  end
+end
 
-    subsection Function
-      set Variable names      = x,z
-      set Function expression = if(((x>187.5e3)&&(x<312.5e3)&&(z>312.5e3)&&(z<437.5e3)), 1, 0)
-    end
+subsection Particles
+  set Load balancing strategy = remove and add particles
+  set Minimum particles per cell = 9
+  set Maximum particles per cell = 36
+  set List of particle properties = function
+  set Integration scheme = rk2
+  set Interpolation scheme = cell average
+  set Update ghost particles = true
+  set Particle generator name = reference cell
 
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 8
-      end
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if(((x>187.5e3)&&(x<312.5e3)&&(z>312.5e3)&&(z<437.5e3)), 1, 0)
+  end
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 8
     end
   end
 end

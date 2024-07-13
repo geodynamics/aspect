@@ -121,9 +121,9 @@ namespace aspect
       void
       UniformRadial<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Uniform radial");
           {
             prm.declare_entry ("Number of particles", "1000",
                                Patterns::Double (0.),
@@ -132,56 +132,48 @@ namespace aspect
                                "specify, for example, '1e4' particles) but it is interpreted as "
                                "an integer, of course.");
 
-            prm.enter_subsection("Generator");
-            {
-              prm.enter_subsection("Uniform radial");
-              {
-                prm.declare_entry ("Center x", "0.",
-                                   Patterns::Double (),
-                                   "x coordinate for the center of the spherical region, "
-                                   "where particles are generated.");
-                prm.declare_entry ("Center y", "0.",
-                                   Patterns::Double (),
-                                   "y coordinate for the center of the spherical region, "
-                                   "where particles are generated.");
-                prm.declare_entry ("Center z", "0.",
-                                   Patterns::Double (),
-                                   "z coordinate for the center of the spherical region, "
-                                   "where particles are generated.");
-                prm.declare_entry ("Minimum radius", "0.",
-                                   Patterns::Double (0.),
-                                   "Minimum radial coordinate for the region of particles. "
-                                   "Measured from the center position.");
-                prm.declare_entry ("Maximum radius", "1.",
-                                   Patterns::Double (),
-                                   "Maximum radial coordinate for the region of particles. "
-                                   "Measured from the center position.");
-                prm.declare_entry ("Minimum longitude", "0.",
-                                   Patterns::Double (-180., 360.),
-                                   "Minimum longitude coordinate for the region of particles "
-                                   "in degrees. Measured from the center position.");
-                prm.declare_entry ("Maximum longitude", "360.",
-                                   Patterns::Double (-180., 360.),
-                                   "Maximum longitude coordinate for the region of particles "
-                                   "in degrees. Measured from the center position.");
-                prm.declare_entry ("Minimum latitude", "0.",
-                                   Patterns::Double (0., 180.),
-                                   "Minimum latitude coordinate for the region of particles "
-                                   "in degrees. Measured from the center position, and from "
-                                   "the north pole.");
-                prm.declare_entry ("Maximum latitude", "180.",
-                                   Patterns::Double (0., 180.),
-                                   "Maximum latitude coordinate for the region of particles "
-                                   "in degrees. Measured from the center position, and from "
-                                   "the north pole.");
-                prm.declare_entry ("Radial layers", "1",
-                                   Patterns::Integer(1),
-                                   "The number of radial shells of particles that will be generated "
-                                   "around the central point.");
-              }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+            prm.declare_entry ("Center x", "0.",
+                               Patterns::Double (),
+                               "x coordinate for the center of the spherical region, "
+                               "where particles are generated.");
+            prm.declare_entry ("Center y", "0.",
+                               Patterns::Double (),
+                               "y coordinate for the center of the spherical region, "
+                               "where particles are generated.");
+            prm.declare_entry ("Center z", "0.",
+                               Patterns::Double (),
+                               "z coordinate for the center of the spherical region, "
+                               "where particles are generated.");
+            prm.declare_entry ("Minimum radius", "0.",
+                               Patterns::Double (0.),
+                               "Minimum radial coordinate for the region of particles. "
+                               "Measured from the center position.");
+            prm.declare_entry ("Maximum radius", "1.",
+                               Patterns::Double (),
+                               "Maximum radial coordinate for the region of particles. "
+                               "Measured from the center position.");
+            prm.declare_entry ("Minimum longitude", "0.",
+                               Patterns::Double (-180., 360.),
+                               "Minimum longitude coordinate for the region of particles "
+                               "in degrees. Measured from the center position.");
+            prm.declare_entry ("Maximum longitude", "360.",
+                               Patterns::Double (-180., 360.),
+                               "Maximum longitude coordinate for the region of particles "
+                               "in degrees. Measured from the center position.");
+            prm.declare_entry ("Minimum latitude", "0.",
+                               Patterns::Double (0., 180.),
+                               "Minimum latitude coordinate for the region of particles "
+                               "in degrees. Measured from the center position, and from "
+                               "the north pole.");
+            prm.declare_entry ("Maximum latitude", "180.",
+                               Patterns::Double (0., 180.),
+                               "Maximum latitude coordinate for the region of particles "
+                               "in degrees. Measured from the center position, and from "
+                               "the north pole.");
+            prm.declare_entry ("Radial layers", "1",
+                               Patterns::Integer(1),
+                               "The number of radial shells of particles that will be generated "
+                               "around the central point.");
           }
           prm.leave_subsection();
         }
@@ -193,49 +185,41 @@ namespace aspect
       void
       UniformRadial<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Uniform radial");
           {
             n_particles    = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
 
-            prm.enter_subsection("Generator");
-            {
-              prm.enter_subsection("Uniform radial");
+            P_center[0] = prm.get_double ("Center x");
+            P_center[1] = prm.get_double ("Center y");
+
+            P_min[0] = prm.get_double ("Minimum radius");
+            P_max[0] = prm.get_double ("Maximum radius");
+            P_min[1] = prm.get_double ("Minimum longitude") * constants::degree_to_radians;
+            P_max[1] = prm.get_double ("Maximum longitude") * constants::degree_to_radians;
+
+            AssertThrow(P_max[1] > P_min[1],
+                        ExcMessage("The maximum longitude you prescribed in the uniform radial"
+                                   "particle generator has to be higher than the minimum longitude."));
+            AssertThrow(P_max[1] - P_min[1] <= 2.0 * numbers::PI,
+                        ExcMessage("The difference between the maximum and minimum longitude you "
+                                   "prescribed in the uniform radial particle generator has to be "
+                                   "less than 360 degrees."));
+
+            if (dim ==3)
               {
-                P_center[0] = prm.get_double ("Center x");
-                P_center[1] = prm.get_double ("Center y");
+                P_center[2] = prm.get_double ("Center z");
 
-                P_min[0] = prm.get_double ("Minimum radius");
-                P_max[0] = prm.get_double ("Maximum radius");
-                P_min[1] = prm.get_double ("Minimum longitude") * constants::degree_to_radians;
-                P_max[1] = prm.get_double ("Maximum longitude") * constants::degree_to_radians;
+                P_min[2]    = prm.get_double ("Minimum latitude") * constants::degree_to_radians;
+                P_max[2]    = prm.get_double ("Maximum latitude") * constants::degree_to_radians;
 
-                AssertThrow(P_max[1] > P_min[1],
-                            ExcMessage("The maximum longitude you prescribed in the uniform radial"
-                                       "particle generator has to be higher than the minimum longitude."));
-                AssertThrow(P_max[1] - P_min[1] <= 2.0 * numbers::PI,
-                            ExcMessage("The difference between the maximum and minimum longitude you "
-                                       "prescribed in the uniform radial particle generator has to be "
-                                       "less than 360 degrees."));
-
-                if (dim ==3)
-                  {
-                    P_center[2] = prm.get_double ("Center z");
-
-                    P_min[2]    = prm.get_double ("Minimum latitude") * constants::degree_to_radians;
-                    P_max[2]    = prm.get_double ("Maximum latitude") * constants::degree_to_radians;
-
-                    AssertThrow(P_max[2] > P_min[2],
-                                ExcMessage("The maximum latitude you prescribed in the uniform radial"
-                                           "particle generator has to be higher than the minimum latitude."));
-                  }
-
-                radial_layers   = prm.get_integer("Radial layers");
+                AssertThrow(P_max[2] > P_min[2],
+                            ExcMessage("The maximum latitude you prescribed in the uniform radial"
+                                       "particle generator has to be higher than the minimum latitude."));
               }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+
+            radial_layers   = prm.get_integer("Radial layers");
           }
           prm.leave_subsection();
         }

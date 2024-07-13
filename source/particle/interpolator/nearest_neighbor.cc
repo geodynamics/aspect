@@ -19,8 +19,6 @@
  */
 
 #include <aspect/particle/interpolator/nearest_neighbor.h>
-#include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 
@@ -122,20 +120,12 @@ namespace aspect
       void
       NearestNeighbor<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
-        {
-          prm.enter_subsection("Particles");
-          {
-            prm.declare_entry ("Allow cells without particles", "false",
-                               Patterns::Bool (),
-                               "By default, every cell needs to contain particles to use this interpolator "
-                               "plugin. If this parameter is set to true, cells are allowed to have no particles. "
-                               "In case both the current cell and its neighbors are empty, "
-                               "the interpolator will return 0 for the current cell's properties.");
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
+        prm.declare_entry ("Allow cells without particles", "false",
+                           Patterns::Bool (),
+                           "By default, every cell needs to contain particles to use this interpolator "
+                           "plugin. If this parameter is set to true, cells are allowed to have no particles. "
+                           "In case both the current cell and its neighbors are empty, "
+                           "the interpolator will return 0 for the current cell's properties.");
       }
 
 
@@ -144,15 +134,7 @@ namespace aspect
       void
       NearestNeighbor<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
-        {
-          prm.enter_subsection("Particles");
-          {
-            allow_cells_without_particles = prm.get_bool("Allow cells without particles");
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
+        allow_cells_without_particles = prm.get_bool("Allow cells without particles");
       }
     }
   }

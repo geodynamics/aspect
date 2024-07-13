@@ -114,25 +114,9 @@ namespace aspect
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
-        /**
-         * Update all of the mesh refinement objects that have been requested
-         * in the input file. Individual mesh refinement objects may choose to
-         * implement an update function to modify object variables once per
-         * time step.
-         */
-        virtual
-        void
-        update ();
-
         /**
          * Execute all of the mesh refinement objects that have been requested
          * in the input file. The error indicators are then each individually
@@ -166,7 +150,7 @@ namespace aspect
          * let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Go through the list of all mesh refinement strategies that have been selected
@@ -176,9 +160,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename MeshRefinementType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>
+        DEAL_II_DEPRECATED
         bool
         has_matching_mesh_refinement_strategy () const;
 
@@ -192,9 +182,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename MeshRefinementType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>
+        DEAL_II_DEPRECATED
         const MeshRefinementType &
         get_matching_mesh_refinement_strategy () const;
 
@@ -267,12 +263,6 @@ namespace aspect
          * refinement indicators before merging.
          */
         std::vector<double> scaling_factors;
-
-        /**
-         * A list of mesh refinement objects that have been requested in the
-         * parameter file.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> mesh_refinement_objects;
     };
 
 
@@ -283,11 +273,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_mesh_refinement_strategy () const
     {
-      for (const auto &p : mesh_refinement_objects)
-        if (Plugins::plugin_type_matches<MeshRefinementType>(*p))
-          return true;
-
-      return false;
+      return this->template has_matching_active_plugin<MeshRefinementType>();
     }
 
 
@@ -298,19 +284,7 @@ namespace aspect
     const MeshRefinementType &
     Manager<dim>::get_matching_mesh_refinement_strategy () const
     {
-      AssertThrow(has_matching_mesh_refinement_strategy<MeshRefinementType> (),
-                  ExcMessage("You asked MeshRefinement::Manager::get_matching_mesh_refinement_strategy() for a "
-                             "mesh refinement strategy of type <" + boost::core::demangle(typeid(MeshRefinementType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "mesh refinement strategy in the input file."));
-
-      for (const auto &p : mesh_refinement_objects)
-        if (Plugins::plugin_type_matches<MeshRefinementType>(*p))
-          return Plugins::get_plugin_as_type<MeshRefinementType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator mesh_refinement_strategy;
-      return Plugins::get_plugin_as_type<MeshRefinementType>(*(*mesh_refinement_strategy));
+      return this->template get_matching_active_plugin<MeshRefinementType>();
     }
 
 

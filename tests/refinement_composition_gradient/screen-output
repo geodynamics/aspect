@@ -48,8 +48,8 @@ Number of degrees of freedom: 10,979 (4,178+534+2,089+2,089+2,089)
      Temperature min/avg/max:   0.07297 K, 0.1773 K, 0.5382 K
      Compositions min/max/mass: 0.03042/1.06/0.1694 // 1/1.985/1.156
 
-Number of active cells: 898 (on 7 levels)
-Number of degrees of freedom: 20,589 (7,838+994+3,919+3,919+3,919)
+Number of active cells: 895 (on 7 levels)
+Number of degrees of freedom: 20,526 (7,814+991+3,907+3,907+3,907)
 
 *** Timestep 4:  t=0.0726343 seconds, dt=0.0153574 seconds
    Solving temperature system... 30 iterations.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 20,589 (7,838+994+3,919+3,919+3,919)
    Postprocessing:
      Writing graphical output:  output-refinement_composition_gradient/solution/solution-00004
      Temperature min/avg/max:   0.07521 K, 0.1772 K, 0.5356 K
-     Compositions min/max/mass: 0.01983/1.058/0.1695 // 1/1.987/1.156
+     Compositions min/max/mass: 0.01988/1.058/0.1695 // 1/1.987/1.156
 
 *** Timestep 5:  t=0.08 seconds, dt=0.00736566 seconds
    Solving temperature system... 15 iterations.
@@ -69,7 +69,7 @@ Number of degrees of freedom: 20,589 (7,838+994+3,919+3,919+3,919)
    Postprocessing:
      Writing graphical output:  output-refinement_composition_gradient/solution/solution-00005
      Temperature min/avg/max:   0.07608 K, 0.1772 K, 0.5337 K
-     Compositions min/max/mass: 0.01586/1.055/0.1695 // 1/1.987/1.156
+     Compositions min/max/mass: 0.01592/1.055/0.1695 // 1/1.987/1.156
 
 Termination requested by criterion: end time
 

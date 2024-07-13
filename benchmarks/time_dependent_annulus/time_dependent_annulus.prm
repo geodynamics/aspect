@@ -137,33 +137,15 @@ end
 subsection Postprocess
   set List of postprocessors = time dependent annulus, particles, visualization
 
-  subsection Particles
-    set Time between data output = 0.0009817477042468104
-    set Integration scheme = rk2 # or rk4
-    set Interpolation scheme = bilinear least squares # or cell average
-    set List of particle properties = function
-    set Update ghost particles = true
-    set Particle generator name = reference cell
-    set Load balancing strategy = none # not necessary for uniform mesh
-
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 4 # or 5, 6, 7, 10, 15, 20, 32, 45, 64, 80
-      end
-    end
-
-    subsection Function
-      set Number of components = 2
-      set Variable names      = x,y
-      set Function expression = 48*sqrt(x^2 + y^2)^5;if(0<y,if(y<1/4,1,0),0)
-    end
-  end
-
   subsection Visualization
     set Output format                 = vtu
     set Number of grouped files       = 1
     set Time between graphical output = 0.0009817477042468104
     set List of output variables      = density, gravity
+  end
+
+  subsection Particles
+    set Time between data output = 0.0009817477042468104
   end
 end
 
@@ -173,4 +155,25 @@ end
 
 subsection Checkpointing
   set Time between checkpoint  = 7200
+end
+
+subsection Particles
+  set Integration scheme = rk2 # or rk4
+  set Interpolation scheme = bilinear least squares # or cell average
+  set List of particle properties = function
+  set Update ghost particles = true
+  set Particle generator name = reference cell
+  set Load balancing strategy = none # not necessary for uniform mesh
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4 # or 5, 6, 7, 10, 15, 20, 32, 45, 64, 80
+    end
+  end
+
+  subsection Function
+    set Number of components = 2
+    set Variable names      = x,y
+    set Function expression = 48*sqrt(x^2 + y^2)^5;if(0<y,if(y<1/4,1,0),0)
+  end
 end

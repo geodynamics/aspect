@@ -594,11 +594,11 @@ namespace aspect
       // It is not available at the time initialize() function of boundary temperature is called.
       if (is_first_call==true)
         {
-          AssertThrow(this->get_postprocess_manager().template has_matching_postprocessor<const Postprocess::CoreStatistics<dim>>(),
+          AssertThrow(this->get_postprocess_manager().template has_matching_active_plugin<const Postprocess::CoreStatistics<dim>>(),
                       ExcMessage ("Dynamic core boundary condition has to work with dynamic core statistics postprocessor."));
 
           const Postprocess::CoreStatistics<dim> &core_statistics
-            = this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::CoreStatistics<dim>>();
+            = this->get_postprocess_manager().template get_matching_active_plugin<const Postprocess::CoreStatistics<dim>>();
           // The restart data is stored in 'core statistics' postprocessor.
           // If restart from checkpoint, extract data from there.
           core_data = core_statistics.get_core_data();

@@ -264,17 +264,13 @@ namespace aspect
         }
       }
 
-      template <int dim>
-      ElasticTensorDecomposition<dim>::ElasticTensorDecomposition ()
-      {}
-
 
 
       template <int dim>
       void
       ElasticTensorDecomposition<dim>::initialize ()
       {
-        const Particle::Property::Manager<dim> &manager = this->get_particle_world().get_property_manager();
+        const Particle::Property::Manager<dim> &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No cpo property plugin found."));
         AssertThrow(manager.plugin_name_exists("cpo elastic tensor"),
@@ -422,29 +418,30 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       ElasticTensorDecomposition<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int>> property_information;
-
-        property_information.push_back(std::make_pair("cpo elastic axis e1",3));
-        property_information.push_back(std::make_pair("cpo elastic axis e2",3));
-        property_information.push_back(std::make_pair("cpo elastic axis e3",3));
-        property_information.push_back(std::make_pair("cpo elastic hexagonal axis",3));
-        property_information.push_back(std::make_pair("cpo elastic vector norm square",1));
-        property_information.push_back(std::make_pair("cpo elastic triclinic vector norm square p1",1));
-        property_information.push_back(std::make_pair("cpo elastic triclinic vector norm square p2",1));
-        property_information.push_back(std::make_pair("cpo elastic triclinic vector norm square p3",1));
-        property_information.push_back(std::make_pair("cpo elastic monoclinic vector norm square p1",1));
-        property_information.push_back(std::make_pair("cpo elastic monoclinic vector norm square p2",1));
-        property_information.push_back(std::make_pair("cpo elastic monoclinic vector norm square p3",1));
-        property_information.push_back(std::make_pair("cpo elastic orthorhombic vector norm square p1",1));
-        property_information.push_back(std::make_pair("cpo elastic orthorhombic vector norm square p2",1));
-        property_information.push_back(std::make_pair("cpo elastic orthorhombic vector norm square p3",1));
-        property_information.push_back(std::make_pair("cpo elastic tetragonal vector norm square p1",1));
-        property_information.push_back(std::make_pair("cpo elastic tetragonal vector norm square p2",1));
-        property_information.push_back(std::make_pair("cpo elastic tetragonal vector norm square p3",1));
-        property_information.push_back(std::make_pair("cpo elastic hexagonal vector norm square p1",1));
-        property_information.push_back(std::make_pair("cpo elastic hexagonal vector norm square p2",1));
-        property_information.push_back(std::make_pair("cpo elastic hexagonal vector norm square p3",1));
-        property_information.push_back(std::make_pair("cpo elastic isotropic vector norm square",1));
+        std::vector<std::pair<std::string,unsigned int>> property_information =
+        {
+          {"cpo elastic axis e1",3},
+          {"cpo elastic axis e2",3},
+          {"cpo elastic axis e3",3},
+          {"cpo elastic hexagonal axis",3},
+          {"cpo elastic vector norm square",1},
+          {"cpo elastic triclinic vector norm square p1",1},
+          {"cpo elastic triclinic vector norm square p2",1},
+          {"cpo elastic triclinic vector norm square p3",1},
+          {"cpo elastic monoclinic vector norm square p1",1},
+          {"cpo elastic monoclinic vector norm square p2",1},
+          {"cpo elastic monoclinic vector norm square p3",1},
+          {"cpo elastic orthorhombic vector norm square p1",1},
+          {"cpo elastic orthorhombic vector norm square p2",1},
+          {"cpo elastic orthorhombic vector norm square p3",1},
+          {"cpo elastic tetragonal vector norm square p1",1},
+          {"cpo elastic tetragonal vector norm square p2",1},
+          {"cpo elastic tetragonal vector norm square p3",1},
+          {"cpo elastic hexagonal vector norm square p1",1},
+          {"cpo elastic hexagonal vector norm square p2",1},
+          {"cpo elastic hexagonal vector norm square p3",1},
+          {"cpo elastic isotropic vector norm square",1}
+        };
 
         return property_information;
       }

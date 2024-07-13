@@ -24,11 +24,6 @@ set Use operator splitting                     = true
 set End time                               = 1e5
 
 subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 1e5
-    set Reaction time steps per advection step = 50
-  end
-
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-8
     set Number of cheap Stokes solver steps = 100

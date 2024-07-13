@@ -19,14 +19,12 @@
  */
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
-#include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
+#include <aspect/particle/world.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/qr.h>
-
-#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -248,33 +246,25 @@ namespace aspect
       void
       BilinearLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Bilinear least squares");
           {
-            prm.enter_subsection("Interpolator");
-            {
-              prm.enter_subsection("Bilinear least squares");
-              {
-                prm.declare_entry("Use linear least squares limiter", "false",
-                                  Patterns::List(Patterns::Bool()),
-                                  "Limit the interpolation of particle properties onto the cell, so that "
-                                  "the value of each property is no smaller than its minimum and no "
-                                  "larger than its maximum on the particles of each cell, and the "
-                                  "average of neighboring cells. If more than one value is given, "
-                                  "it will be treated as a list with one component per particle property.");
-                prm.declare_entry("Use boundary extrapolation", "false",
-                                  Patterns::List(Patterns::Bool()),
-                                  "Extends the range used by 'Use linear least squares limiter' "
-                                  "by linearly interpolating values at cell boundaries from neighboring "
-                                  "cells. If more than one value is given, it will be treated as a list "
-                                  "with one component per particle property. Enabling 'Use boundary "
-                                  "extrapolation' requires enabling 'Use linear least squares "
-                                  "limiter'.");
-              }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+            prm.declare_entry("Use linear least squares limiter", "false",
+                              Patterns::List(Patterns::Bool()),
+                              "Limit the interpolation of particle properties onto the cell, so that "
+                              "the value of each property is no smaller than its minimum and no "
+                              "larger than its maximum on the particles of each cell, and the "
+                              "average of neighboring cells. If more than one value is given, "
+                              "it will be treated as a list with one component per particle property.");
+            prm.declare_entry("Use boundary extrapolation", "false",
+                              Patterns::List(Patterns::Bool()),
+                              "Extends the range used by 'Use linear least squares limiter' "
+                              "by linearly interpolating values at cell boundaries from neighboring "
+                              "cells. If more than one value is given, it will be treated as a list "
+                              "with one component per particle property. Enabling 'Use boundary "
+                              "extrapolation' requires enabling 'Use linear least squares "
+                              "limiter'.");
           }
           prm.leave_subsection();
         }
@@ -287,75 +277,65 @@ namespace aspect
       BilinearLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
       {
         fallback_interpolator.parse_parameters(prm);
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Bilinear least squares");
           {
-            prm.enter_subsection("Interpolator");
-            {
-              prm.enter_subsection("Bilinear least squares");
+            const auto &particle_property_information = this->get_particle_world(this->get_particle_world_index()).get_property_manager().get_data_info();
+            const unsigned int n_property_components = particle_property_information.n_components();
+            const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
+
+            std::vector<std::string> linear_least_squares_limiter_split = Utilities::split_string_list(prm.get("Use linear least squares limiter"));
+            std::vector<bool> linear_least_squares_limiter_parsed;
+            if (linear_least_squares_limiter_split.size() == 1)
               {
-                const Postprocess::Particles<dim> &particle_postprocessor =
-                  this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim>>();
-                const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
-                const unsigned int n_property_components = particle_property_information.n_components();
-                const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
-
-                std::vector<std::string> linear_least_squares_limiter_split = Utilities::split_string_list(prm.get("Use linear least squares limiter"));
-                std::vector<bool> linear_least_squares_limiter_parsed;
-                if (linear_least_squares_limiter_split.size() == 1)
-                  {
-                    linear_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(linear_least_squares_limiter_split[0]));
-                  }
-                else if (linear_least_squares_limiter_split.size() == n_property_components - n_internal_components)
-                  {
-                    for (const auto &component: linear_least_squares_limiter_split)
-                      linear_least_squares_limiter_parsed.push_back(Utilities::string_to_bool(component));
-                  }
-                else
-                  {
-                    AssertThrow(false, ExcMessage("The size of 'Use linear least squares limiter' should either be 1 or the number of particle properties"));
-                  }
-                for (unsigned int i = 0; i < n_internal_components; ++i)
-                  linear_least_squares_limiter_parsed.push_back(false);
-                use_linear_least_squares_limiter = ComponentMask(linear_least_squares_limiter_parsed);
-
-
-
-                const std::vector<std::string> boundary_extrapolation_split = Utilities::split_string_list(prm.get("Use boundary extrapolation"));
-                std::vector<bool> boundary_extrapolation_parsed;
-                if (boundary_extrapolation_split.size() == 1)
-                  {
-                    boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(boundary_extrapolation_split[0]));
-                  }
-                else if (boundary_extrapolation_split.size() == n_property_components - n_internal_components)
-                  {
-                    for (const auto &component: boundary_extrapolation_split)
-                      boundary_extrapolation_parsed.push_back(Utilities::string_to_bool(component));
-                  }
-                else
-                  {
-                    AssertThrow(false, ExcMessage("The size of 'Use boundary extrapolation' should either be 1 or the number of particle properties"));
-                  }
-                for (unsigned int i = 0; i < n_internal_components; ++i)
-                  boundary_extrapolation_parsed.push_back(false);
-                use_boundary_extrapolation = ComponentMask(boundary_extrapolation_parsed);
-                for (unsigned int property_index = 0; property_index < n_property_components - n_internal_components; ++property_index)
-                  {
-                    AssertThrow(use_linear_least_squares_limiter[property_index] || !use_boundary_extrapolation[property_index],
-                                ExcMessage("'Use boundary extrapolation' must be set with 'Use linear least squares limiter' to be valid."));
-                  }
+                linear_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(linear_least_squares_limiter_split[0]));
               }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
-            const bool limiter_enabled_for_at_least_one_property = (use_linear_least_squares_limiter.n_selected_components() != 0);
-            AssertThrow(limiter_enabled_for_at_least_one_property == false || prm.get_bool("Update ghost particles") == true,
-                        ExcMessage("If 'Use linear least squares limiter' is enabled for any particle property, then 'Update ghost particles' must be set to true"));
+            else if (linear_least_squares_limiter_split.size() == n_property_components - n_internal_components)
+              {
+                for (const auto &component: linear_least_squares_limiter_split)
+                  linear_least_squares_limiter_parsed.push_back(Utilities::string_to_bool(component));
+              }
+            else
+              {
+                AssertThrow(false, ExcMessage("The size of 'Use linear least squares limiter' should either be 1 or the number of particle properties"));
+              }
+            for (unsigned int i = 0; i < n_internal_components; ++i)
+              linear_least_squares_limiter_parsed.push_back(false);
+            use_linear_least_squares_limiter = ComponentMask(linear_least_squares_limiter_parsed);
+
+
+
+            const std::vector<std::string> boundary_extrapolation_split = Utilities::split_string_list(prm.get("Use boundary extrapolation"));
+            std::vector<bool> boundary_extrapolation_parsed;
+            if (boundary_extrapolation_split.size() == 1)
+              {
+                boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(boundary_extrapolation_split[0]));
+              }
+            else if (boundary_extrapolation_split.size() == n_property_components - n_internal_components)
+              {
+                for (const auto &component: boundary_extrapolation_split)
+                  boundary_extrapolation_parsed.push_back(Utilities::string_to_bool(component));
+              }
+            else
+              {
+                AssertThrow(false, ExcMessage("The size of 'Use boundary extrapolation' should either be 1 or the number of particle properties"));
+              }
+            for (unsigned int i = 0; i < n_internal_components; ++i)
+              boundary_extrapolation_parsed.push_back(false);
+            use_boundary_extrapolation = ComponentMask(boundary_extrapolation_parsed);
+            for (unsigned int property_index = 0; property_index < n_property_components - n_internal_components; ++property_index)
+              {
+                AssertThrow(use_linear_least_squares_limiter[property_index] || !use_boundary_extrapolation[property_index],
+                            ExcMessage("'Use boundary extrapolation' must be set with 'Use linear least squares limiter' to be valid."));
+              }
           }
           prm.leave_subsection();
         }
         prm.leave_subsection();
+        const bool limiter_enabled_for_at_least_one_property = (use_linear_least_squares_limiter.n_selected_components() != 0);
+        AssertThrow(limiter_enabled_for_at_least_one_property == false || prm.get_bool("Update ghost particles") == true,
+                    ExcMessage("If 'Use linear least squares limiter' is enabled for any particle property, then 'Update ghost particles' must be set to true"));
       }
     }
   }

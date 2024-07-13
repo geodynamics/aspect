@@ -89,10 +89,18 @@ subsection Postprocess
   set List of postprocessors = particles, particle count statistics, load balance statistics
 
   subsection Particles
-    set Number of particles = 1000
     set Time between data output = 100
-    set Load balancing strategy = none
     set Data output format = none
-    set Integration scheme = euler
+  end
+end
+
+subsection Particles
+  set Load balancing strategy = none
+  set Integration scheme = euler
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 1000
+    end
   end
 end

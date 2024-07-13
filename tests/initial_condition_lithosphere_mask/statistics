@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 93 96 568 output-initial_condition_lithosphere_mask/solution/solution-00000 1.60000000e+03 2.37907573e+03 2.50000000e+03 
+0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 42 44 44 output-initial_condition_lithosphere_mask/solution/solution-00000 1.60000000e+03 2.37907573e+03 2.50000000e+03 

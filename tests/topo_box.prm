@@ -72,7 +72,6 @@ subsection Initial temperature model
 end
 
 subsection Material model
-  set Material averaging = none
   set Model name         = simple
 end
 

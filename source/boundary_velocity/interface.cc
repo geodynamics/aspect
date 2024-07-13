@@ -57,8 +57,8 @@ namespace aspect
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<Interface<2>>,
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
@@ -277,7 +277,7 @@ namespace aspect
                                      + ">."));
 
             // the easy part: get the value
-            const std::string value = split_parts[1];
+            const std::string &value = split_parts[1];
 
             // now for the rest. since we don't know whether there is a
             // component selector, start reading at the end and subtracting

@@ -1,5 +1,6 @@
 subsection Material model
   set Model name = grain size
+
   subsection Grain size model
     # Diffusion creep has a prefactor, a temperature dependence defined by the
     # activation energy, a pressure dependence defined by the activation volume

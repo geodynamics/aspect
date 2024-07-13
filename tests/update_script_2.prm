@@ -16,9 +16,9 @@ set Adiabatic surface temperature          = 1600.0
 set Use years in output instead of seconds = true
 
 subsection Adiabatic conditions model
-  set Model name = initial profile
+  set Model name = compute profile
 
-  subsection Initial profile
+  subsection Compute profile
     set Use surface condition function = true
     subsection Surface condition function
       set Function expression = 1e-2*t; 1613.0+1e-13*t
@@ -31,15 +31,15 @@ subsection Compositional fields
 end
 
 subsection Boundary composition model
-  set Model name = function
+  set List of model names = function
 end
 
-subsection Compositional initial conditions
+subsection Initial composition model
   set Model name = function
 end
 
 subsection Boundary temperature model
-  set Model name = spherical constant
+  set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 4250
     set Outer temperature = 273
@@ -66,7 +66,7 @@ subsection Gravity model
 end
 
 
-subsection Initial conditions
+subsection Initial temperature model
   set Model name = harmonic perturbation
   subsection Harmonic perturbation
     set Magnitude = 200.0
@@ -111,20 +111,19 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average, dynamic topography, tracers, viscous dissipation statistics
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average, dynamic topography, particles, heating statistics
 
-  subsection Tracers
-    set Number of tracers = 50
+  subsection Particles
+    set Number of particles = 50
   end
 
-  subsection Dynamic Topography
-    set Subtract mean of dynamic topography = true
+  subsection Dynamic topography
   end
 
   subsection Visualization
     set Interpolate output = false
     set Output format                 = vtu
-    set List of output variables      = density, friction heating
+    set List of output variables      = density, heating
     set Time between graphical output = 0
   end
 

@@ -6,4 +6,5 @@ subsection Material model
     set Material file names              = pyr_MS95_with_volume_fractions_lo_res.dat, \
                                            morb_G13_with_volume_fractions_lo_res.dat\
   end
+  end
 end

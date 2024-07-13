@@ -248,7 +248,7 @@ namespace aspect
   bool
   SimulatorAccess<dim>::include_latent_heat () const
   {
-    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_heating_model_names();
+    const std::vector<std::string> &heating_models = simulator->heating_model_manager.get_active_plugin_names();
     return (std::find(heating_models.begin(), heating_models.end(), "latent heat") != heating_models.end());
   }
 
@@ -816,22 +816,32 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  unsigned int
+  SimulatorAccess<dim>::n_particle_worlds() const
+  {
+    return simulator->particle_worlds.size();
+  }
+
+
+
   template <int dim>
   const Particle::World<dim> &
-  SimulatorAccess<dim>::get_particle_world() const
+  SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index) const
   {
-    Assert (simulator->particle_world.get() != nullptr,
-            ExcMessage("You can not call this function if there is no particle world."));
-    return *simulator->particle_world.get();
+    AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
+    return *simulator->particle_worlds[particle_world_index].get();
   }
+
+
 
   template <int dim>
   Particle::World<dim> &
-  SimulatorAccess<dim>::get_particle_world()
+  SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index)
   {
-    Assert (simulator->particle_world.get() != nullptr,
-            ExcMessage("You can not call this function if there is no particle world."));
-    return *simulator->particle_world.get();
+    AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
+    return *simulator->particle_worlds[particle_world_index].get();
   }
 
 

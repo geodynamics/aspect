@@ -12,6 +12,7 @@
 
 ############### Global parameters
 set Dimension                              = 2
+
 include $ASPECT_SOURCE_DIR/benchmarks/rayleigh_taylor_instability_free_surface/kaus_rayleigh_taylor_instability.prm
 
 set Start time                             = 0
@@ -24,6 +25,7 @@ set Output directory                       = output_Rose_stab_CFL02
 subsection Mesh deformation
   set Mesh deformation boundary indicators                    = top: free surface
   set Additional tangential mesh velocity boundary indicators = left, right
+
   subsection Free surface
     set Free surface stabilization theta = 0.5
     set Surface velocity projection      = vertical
@@ -40,6 +42,7 @@ subsection Mesh refinement
   set Coarsening fraction                = 0.05
   set Strategy                           = composition, boundary
   set Time steps between mesh refinement = 5
+
   subsection Boundary
     set Boundary refinement indicators = top
   end

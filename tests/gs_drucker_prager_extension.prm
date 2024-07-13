@@ -10,7 +10,6 @@ set Use years in output instead of seconds = false
 set Nonlinear solver tolerance             = 1e-7
 set Adiabatic surface temperature          = 1600
 
-
 subsection Compositional fields
   set Number of fields = 1
   set Names of fields   = grain_size
@@ -27,7 +26,6 @@ subsection Initial composition model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = function
 
@@ -35,7 +33,6 @@ subsection Initial temperature model
     set Function expression = 1600
   end
 end
-
 
 subsection Material model
   set Model name = grain size
@@ -66,25 +63,31 @@ subsection Material model
     set Dislocation creep exponent           = 1
     set Dislocation activation energy        = 0
     set Dislocation activation volume        = 0
-
     set Use Drucker-Prager rheology          = true
     set Cohesions                            = 4e7
     set Angles of internal friction          = 15
   end
 end
 
-
-
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization, particles, material statistics
-    subsection Visualization
+
+  subsection Visualization
     set List of output variables  = material properties, named additional outputs, strain rate
     set Time between graphical output = 0
   end
 
   subsection Particles
-    set List of particle properties = grain size
-    set Number of particles = 10000
     set Time between data output = 0
+  end
+end
+
+subsection Particles
+  set List of particle properties = grain size
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10000
+    end
   end
 end

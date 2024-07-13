@@ -12,16 +12,17 @@ set Additional shared libraries            = ./libparticle_interpolator_quadrati
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  subsection Particles
-    set Update ghost particles = true
-    set Load balancing strategy = none
-    set Minimum particles per cell = 7
+end
 
-    subsection Interpolator
-      subsection Quadratic least squares
-        set Use quadratic least squares limiter = true
-        set Use boundary extrapolation = true
-      end
+subsection Particles
+  set Update ghost particles = true
+  set Load balancing strategy = none
+  set Minimum particles per cell = 7
+
+  subsection Interpolator
+    subsection Quadratic least squares
+      set Use quadratic least squares limiter = true
+      set Use boundary extrapolation = true
     end
   end
 end

@@ -45,6 +45,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.01
   end
@@ -79,6 +80,7 @@ end
 # Initial temperature conditions
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1173
   end
@@ -95,7 +97,6 @@ subsection Material model
     # where n is the stress exponent and thus we input 1.2/3.5 = 0.34285714285714286
     set Reference strain rate                          = 1e-13
     set Minimum strain rate                            = 1e-13
-
     set Viscous flow law                               = dislocation
     set Prefactors for dislocation creep               = 1.0095317511683098e-25
     set Stress exponents for dislocation creep         = 3.5
@@ -118,6 +119,7 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = material statistics, visualization
+
   subsection Visualization
     set Interpolate output       = false
     set List of output variables = material properties

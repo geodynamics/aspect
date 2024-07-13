@@ -71,21 +71,9 @@ namespace aspect
      * @ingroup InitialCompositions
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
-        /**
-         * Update function. Called once at the beginning of a timestep to
-         * update all plugin objects.
-        */
-        void update();
-
         /**
          * Declare the parameters of all known initial composition plugins, as
          * well as of ones this class has itself.
@@ -100,7 +88,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the initial_composition functions of all
@@ -140,14 +128,22 @@ namespace aspect
         /**
          * Return a list of names of all initial composition models currently
          * used in the computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugin_names()
+         *   instead.
          */
+        DEAL_II_DEPRECATED
         const std::vector<std::string> &
         get_active_initial_composition_names () const;
 
         /**
          * Return a list of pointers to all initial composition models
          * currently used in the computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugins()
+         *   instead.
          */
+        DEAL_II_DEPRECATED
         const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_initial_composition_conditions () const;
 
@@ -159,9 +155,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename InitialCompositionType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,InitialCompositionType>::value>>
+        DEAL_II_DEPRECATED
         bool
         has_matching_initial_composition_model () const;
 
@@ -175,9 +177,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename InitialCompositionType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,InitialCompositionType>::value>>
+        DEAL_II_DEPRECATED
         const InitialCompositionType &
         get_matching_initial_composition_model () const;
 
@@ -204,18 +212,6 @@ namespace aspect
                         << "> among the names of registered initial composition objects.");
       private:
         /**
-         * A list of initial composition objects that have been requested in the
-         * parameter file.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> initial_composition_objects;
-
-        /**
-         * A list of names of initial composition objects that have been requested
-         * in the parameter file.
-         */
-        std::vector<std::string> model_names;
-
-        /**
          * A list of enums of initial composition operators that have been
          * requested in the parameter file. Each entry is used to modify the
          * initial compositional field with the values from the associated plugin
@@ -232,10 +228,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_initial_composition_model () const
     {
-      for (const auto &p : initial_composition_objects)
-        if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
-          return true;
-      return false;
+      return this->template has_matching_active_plugin<InitialCompositionType>();
     }
 
 
@@ -245,18 +238,7 @@ namespace aspect
     const InitialCompositionType &
     Manager<dim>::get_matching_initial_composition_model () const
     {
-      AssertThrow(has_matching_initial_composition_model<InitialCompositionType> (),
-                  ExcMessage("You asked InitialComposition::Manager::get_initial_composition_model() for a "
-                             "initial composition model of type <" + boost::core::demangle(typeid(InitialCompositionType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "initial composition model in the input file."));
-
-      for (const auto &p : initial_composition_objects)
-        if (Plugins::plugin_type_matches<InitialCompositionType>(*p))
-          return Plugins::get_plugin_as_type<InitialCompositionType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<InitialCompositionType>(**(initial_composition_objects.begin()));
+      return this->template get_matching_active_plugin<InitialCompositionType>();
     }
 
 

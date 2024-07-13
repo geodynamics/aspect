@@ -6,133 +6,124 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.00014
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0000
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0000
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1 m/s, 1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: -1.982e-19 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: 3.06e-20 Pa, 9.531 Pa
      Computing dynamic topography      
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0245986
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.024602
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0001
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0001
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0001
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.09 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 1.013e-15 Pa, 9.652 Pa
+     Pressure at top/bottom of domain: -3.469e-17 Pa, 9.652 Pa
      Computing dynamic topography      
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00133812
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0013383
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0002
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0002
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0002
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 1.367e-15 Pa, 9.544 Pa
+     Pressure at top/bottom of domain: 5.482e-16 Pa, 9.544 Pa
      Computing dynamic topography      
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 4.59661e-05
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 4.59603e-05
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0003
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0003
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0003
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 9.645e-16 Pa, 9.532 Pa
+     Pressure at top/bottom of domain: -3.816e-16 Pa, 9.532 Pa
      Computing dynamic topography      
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.11124e-06
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.13266e-06
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0004
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0004
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0004
      Temperature min/avg/max:          0 K, 0 K, 0 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 8.812e-16 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: -6.245e-17 Pa, 9.531 Pa
      Computing dynamic topography      
 
 
 *** Timestep 1:  t=0.0284091 seconds, dt=0.0284091 seconds
    Solving temperature system... 17 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.14941e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.11372e-07
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00001.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00001.0000
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00001.0000
      Temperature min/avg/max:          0 K, 0.003199 K, 0.003461 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 1.18e-15 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: 1.874e-16 Pa, 9.531 Pa
      Computing dynamic topography      
 
 
 *** Timestep 2:  t=0.0568181 seconds, dt=0.0284091 seconds
    Solving temperature system... 16 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.01605e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.85443e-07
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00002.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00002.0000
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00002.0000
      Temperature min/avg/max:          0 K, 0.006334 K, 0.006918 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 9.298e-16 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: -1.249e-16 Pa, 9.531 Pa
      Computing dynamic topography      
 
 
 *** Timestep 3:  t=0.0852272 seconds, dt=0.0284091 seconds
    Solving temperature system... 16 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.27322e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.02009e-08
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00003.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00003.0000
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00003.0000
      Temperature min/avg/max:          0 K, 0.009388 K, 0.01037 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 1.367e-15 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: -4.094e-16 Pa, 9.531 Pa
      Computing dynamic topography      
 
 
 *** Timestep 4:  t=0.1 seconds, dt=0.0147728 seconds
    Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 8.39909e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.44719e-08
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00004.0000
-     Writing heat flux map:            output-postprocess_iterations_iterated_Stokes/heat_flux.00004.0000
+     Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00004.0000
      Temperature min/avg/max:          0 K, 0.01094 K, 0.01215 K
      RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
-     Pressure at top/bottom of domain: 1.193e-15 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: 1.318e-16 Pa, 9.531 Pa
      Computing dynamic topography      
 
 

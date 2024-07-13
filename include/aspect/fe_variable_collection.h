@@ -194,9 +194,16 @@ namespace aspect
 
       /**
        * Return the variable with name @p name. Throws an exception if this
-       * variable does not exist.
+       * variable does not exist. If more than one variable with the same name
+       * exists, return the first one. Use variables_with_name() if you want
+       * to access all of them.
        */
       const FEVariable<dim> &variable(const std::string &name) const;
+
+      /**
+       * Return a vector of pointers of all variables with name @p name.
+       */
+      std::vector<const FEVariable<dim>*> variables_with_name(const std::string &name) const;
 
       /**
        * Returns true if the variable with @p name exists in the list of

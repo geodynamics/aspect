@@ -5,7 +5,7 @@ set Dimension                              = 3
 set Start time                             = 0
 set End time                               = 5e6
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = iterated Stokes
+set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 25
 set Output directory                       = output-allken_etal_2012
@@ -16,11 +16,13 @@ set CFL number                             = .5
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
+    set Stokes solver type = block AMG
   end
 end
 
 subsection Geometry model
   set Model name = box
+
   subsection Box
     set X repetitions = 7
     set Y repetitions = 7
@@ -44,6 +46,7 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: free surface
   set Additional tangential mesh velocity boundary indicators = left,right
+
   subsection Free surface
     set Surface velocity projection = normal
   end
@@ -54,6 +57,7 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = front,back,bottom
   set Prescribed velocity boundary indicators = left x: function, right x:function
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  = cm=0.01, year=1, vel=0.5
@@ -70,6 +74,7 @@ end
 # Spatial domain of different compositional fields
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Variable names      = x,y,z
     set Function constants  = xL=85e3 , xR=135e3
@@ -89,6 +94,7 @@ end
 # Temperature initial conditions (isothermal)
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 293
   end
@@ -97,6 +103,7 @@ end
 # Gravity model
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
@@ -105,6 +112,7 @@ end
 # Material model
 subsection Material model
   set Model name = visco plastic
+
   subsection Visco Plastic
     set Densities                   = 2800
     set Reference strain rate       = 1.51e-15
@@ -118,6 +126,7 @@ subsection Material model
     set Viscosity averaging scheme  = maximum composition
     set Angles of internal friction = 15.
     set Cohesions                   = 20.e6
+
     # The parameters below weaken the friction and cohesion by a
     # a factor of 4 between plastic strain values of 0.25 and 1.25.
     set Strain weakening mechanism                   = plastic weakening with plastic strain only
@@ -133,12 +142,14 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, velocity statistics, visualization, topography
+
   subsection Visualization
     set List of output variables = material properties, strain rate, named additional outputs
+    set Time between graphical output = 10e3
+    set Interpolate output = true
+
     subsection Material properties
       set List of material properties = density, viscosity
     end
-    set Time between graphical output = 10e3
-    set Interpolate output = true
   end
 end

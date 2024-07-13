@@ -57,6 +57,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.01
   end
@@ -91,6 +92,7 @@ end
 # Initial temperature conditions
 subsection Initial temperature model
   set Model name = function
+
   subsection Function
     set Function expression = 1173
   end
@@ -105,21 +107,18 @@ subsection Material model
     # the stress exponent, so we input r/n=0.34285714285714286.
     set Reference strain rate                          = 1e-17
     set Minimum strain rate                            = 1e-17
-
     set Viscous flow law                               = composite
     set Prefactors for dislocation creep               = 1.0095317511683098e-25
     set Stress exponents for dislocation creep         = 3.5
     set Activation energies for dislocation creep      = 520e3
     set Activation volumes for dislocation creep       = 22e-6
     set Water fugacity exponents for dislocation creep = 0.34285714285714286
-
     set Prefactors for diffusion creep                 = 1.5773933612004842e-21
     set Stress exponents for diffusion creep           = 1.0
     set Activation energies for diffusion creep        = 375e3
     set Activation volumes for diffusion creep         = 10e-6
     set Grain size                                     = 1e-3
     set Water fugacity exponents for diffusion creep   = 0.7
-
     set Viscosity prefactor scheme                     = HK04 olivine hydration
   end
 end
@@ -136,6 +135,7 @@ end
 # Post processing
 subsection Postprocess
   set List of postprocessors = material statistics, visualization
+
   subsection Visualization
     set Interpolate output       = false
     set List of output variables = material properties

@@ -12,11 +12,13 @@ Number of mesh deformation degrees of freedom: 252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 1.09752e+12
+      Newton system information: Norm of the rhs: 1.09752e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 2.42185e-15, norm of the rhs: 0.00265803, newton_derivative_scaling_factor: 0
+      Newton system information: Norm of the rhs: 0.00265803, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.42185e-15
 
 
    Postprocessing:
@@ -34,11 +36,13 @@ Number of mesh deformation degrees of freedom: 252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0426595, norm of the rhs: 4.68235e+10
+      Newton system information: Norm of the rhs: 4.68235e+10
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0426595
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 3.96267e-09, norm of the rhs: 4349.46, newton_derivative_scaling_factor: 0
+      Newton system information: Norm of the rhs: 4349.46, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.96267e-09
 
 
    Postprocessing:
@@ -56,12 +60,14 @@ Number of mesh deformation degrees of freedom: 252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.00445133, norm of the rhs: 4.89317e+09
+      Newton system information: Norm of the rhs: 4.89317e+09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00445133
 
    Switching from defect correction form of Picard to the Newton solver scheme.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 4.47139e-09, norm of the rhs: 4915.22, newton_derivative_scaling_factor: 1
+      Newton system information: Norm of the rhs: 4915.22, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.47139e-09
 
 
    Postprocessing:
@@ -79,12 +85,14 @@ Number of mesh deformation degrees of freedom: 252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.00271194, norm of the rhs: 2.98346e+09
+      Newton system information: Norm of the rhs: 2.98346e+09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00271194
 
    Switching from defect correction form of Picard to the Newton solver scheme.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 4.82809e-09, norm of the rhs: 5311.48, newton_derivative_scaling_factor: 1
+      Newton system information: Norm of the rhs: 5311.48, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.82809e-09
 
 
    Postprocessing:
@@ -102,22 +110,26 @@ Number of mesh deformation degrees of freedom: 252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.00195672, norm of the rhs: 2.15473e+09
+      Newton system information: Norm of the rhs: 2.15473e+09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00195672
 
    Switching from defect correction form of Picard to the Newton solver scheme.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 1.46543e-06, norm of the rhs: 1.61372e+06, newton_derivative_scaling_factor: 1
+      Newton system information: Norm of the rhs: 1.61372e+06, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.46543e-06
 
    The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.20186e-07, norm of the rhs: 132349, newton_derivative_scaling_factor: 1
+      Newton system information: Norm of the rhs: 132349, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 1.20186e-07
 
    The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 2.42598e-08, norm of the rhs: 26714.8, newton_derivative_scaling_factor: 1
+      Newton system information: Norm of the rhs: 26714.8, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.42598e-08
 
 
    Postprocessing:
@@ -135,22 +147,26 @@ Number of mesh deformation degrees of freedom: 252
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0261004, norm of the rhs: 2.85334e+10
+      Newton system information: Norm of the rhs: 2.85334e+10
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0261004
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00351397, norm of the rhs: 3.84152e+09, newton_derivative_scaling_factor: 0
+      Newton system information: Norm of the rhs: 3.84152e+09, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00351397
 
    Switching from defect correction form of Picard to the Newton solver scheme.
    The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00122331, norm of the rhs: 1.33734e+09, newton_derivative_scaling_factor: 1
+      Newton system information: Norm of the rhs: 1.33734e+09, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00122331
 
    The linear solver tolerance is set to 1e-07. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.000137637, norm of the rhs: 1.50467e+08, newton_derivative_scaling_factor: 1
+      Newton system information: Norm of the rhs: 1.50467e+08, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.000137637
 
 
    Postprocessing:

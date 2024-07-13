@@ -16,7 +16,6 @@ set Pressure normalization                 = surface
 set Use years in output instead of seconds = true
 set Output directory                       = output-vp-melt-fraction
 
-
 subsection Boundary temperature model
   set List of model names = initial temperature
   set Fixed temperature boundary indicators   = top, bottom
@@ -27,8 +26,10 @@ subsection Boundary temperature model
   end
 end
 
+# The composition is not fixed on any boundary
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators =
 end
 
 subsection Geometry model
@@ -55,12 +56,6 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-# The composition is not fixed on any boundary
-subsection Boundary composition model
-  set Fixed composition boundary indicators =
-  set List of model names = initial composition
-end
-
 subsection Initial temperature model
   set Model name = function
 
@@ -71,6 +66,7 @@ end
 
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0;0
   end
@@ -83,6 +79,7 @@ end
 subsection Material model
   set Model name =  reactive fluid transport
   set Material averaging =  harmonic average
+
   subsection Reactive Fluid Transport Model
     set Base model = visco plastic
     set Fluid-solid reaction scheme = katz2003
@@ -110,11 +107,12 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, melt statistics, pressure statistics, composition statistics
-    subsection Visualization
-      set Interpolate output = false
-      set Number of grouped files       = 0
-      set Output format                 = gnuplot
-      set List of output variables      = melt fraction, named additional outputs
-      set Time between graphical output = 0
-    end
+
+  subsection Visualization
+    set Interpolate output = false
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set List of output variables      = melt fraction, named additional outputs
+    set Time between graphical output = 0
+  end
 end

@@ -169,15 +169,9 @@ namespace aspect
      * @ingroup HeatingModels
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
         /**
          * Returns true if the adiabatic heating plugin is found in the
          * list of active heating models.
@@ -207,15 +201,7 @@ namespace aspect
          * let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
-
-        /**
-         * A function that is called at the beginning of each time step,
-         * calling the update function of the individual heating models.
-         */
-        void
-        update ();
-
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the evaluate function of all the individual
@@ -268,14 +254,22 @@ namespace aspect
         /**
          * Return a list of names of all heating models currently used in the
          * computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugin_names()
+         *   instead.
          */
+        DEAL_II_DEPRECATED
         const std::vector<std::string> &
         get_active_heating_model_names () const;
 
         /**
          * Return a list of pointers to all heating models currently used in the
          * computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugin_names()
+         *   instead.
          */
+        DEAL_II_DEPRECATED
         const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_heating_models () const;
 
@@ -287,9 +281,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename HeatingModelType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,HeatingModelType>::value>>
+        DEAL_II_DEPRECATED
         bool
         has_matching_heating_model () const;
 
@@ -303,9 +303,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename HeatingModelType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,HeatingModelType>::value>>
+        DEAL_II_DEPRECATED
         const HeatingModelType &
         get_matching_heating_model () const;
 
@@ -331,18 +337,6 @@ namespace aspect
                         << "Could not find entry <"
                         << arg1
                         << "> among the names of registered heating model objects.");
-      private:
-        /**
-         * A list of heating model objects that have been requested in the
-         * parameter file.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> heating_model_objects;
-
-        /**
-         * A list of names of heating model objects that have been requested
-         * in the parameter file.
-         */
-        std::vector<std::string> model_names;
     };
 
 
@@ -353,10 +347,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_heating_model () const
     {
-      for (const auto &p : heating_model_objects)
-        if (Plugins::plugin_type_matches<HeatingModelType>(*p))
-          return true;
-      return false;
+      return this->template has_matching_active_plugin<HeatingModelType>();
     }
 
 
@@ -366,18 +357,7 @@ namespace aspect
     const HeatingModelType &
     Manager<dim>::get_matching_heating_model () const
     {
-      AssertThrow(has_matching_heating_model<HeatingModelType> (),
-                  ExcMessage("You asked HeatingModel::Manager::get_heating_model() for a "
-                             "heating model of type <" + boost::core::demangle(typeid(HeatingModelType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "heating model in the input file."));
-
-      for (const auto &p : heating_model_objects)
-        if (Plugins::plugin_type_matches<HeatingModelType>(*p))
-          return Plugins::get_plugin_as_type<HeatingModelType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<HeatingModelType>(**(heating_model_objects.begin()));
+      return this->template get_matching_active_plugin<HeatingModelType>();
     }
 
 

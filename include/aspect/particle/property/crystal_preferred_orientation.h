@@ -121,7 +121,7 @@ namespace aspect
        *
        * We store the same number of grains for all minerals (e.g. olivine and enstatite
        * grains), although their volume fractions may not be the same. This is because we need a minimum number
-       * of grains per tracer to perform reliable statistics on it. This minimum should be the same for all
+       * of grains per particle to perform reliable statistics on it. This minimum should be the same for all
        * minerals.
        *
        * @ingroup ParticleProperties
@@ -133,7 +133,7 @@ namespace aspect
           /**
            * Constructor
            */
-          CrystalPreferredOrientation();
+          CrystalPreferredOrientation() = default;
 
           /**
            * Initialization function. This function is called once at the

@@ -26,7 +26,7 @@ namespace WorldBuilder
   namespace Types
   {
 
-    template <int dim>
+    template <unsigned int dim>
     Point<dim>::Point()
       :
       value(WorldBuilder::Point<dim>(CoordinateSystem::cartesian)),
@@ -36,7 +36,7 @@ namespace WorldBuilder
       this->type_name = dim == 2 ? Types::type::Point2D : Types::type::Point3D;
     }
 
-    template <int dim>
+    template <unsigned int dim>
     Point<dim>::Point(const WorldBuilder::Point<dim> &default_value_,
                       std::string description_)
       :
@@ -47,7 +47,7 @@ namespace WorldBuilder
       this->type_name = dim == 2 ? Types::type::Point2D : Types::type::Point3D;
     }
 
-    template <int dim>
+    template <unsigned int dim>
     Point<dim>::Point(const WorldBuilder::Point<dim> &value_,
                       const WorldBuilder::Point<dim> &default_value_,
                       std::string description_)
@@ -59,7 +59,7 @@ namespace WorldBuilder
       this->type_name = dim == 2 ? Types::type::Point2D : Types::type::Point3D;
     }
 
-    template <int dim>
+    template <unsigned int dim>
     Point<dim>::Point(Point const &other)
       :
       value(other.value),
@@ -69,11 +69,11 @@ namespace WorldBuilder
       this->type_name = dim == 2 ? Types::type::Point2D : Types::type::Point3D;
     }
 
-    template <int dim>
+    template <unsigned int dim>
     Point<dim>::~Point ()
       = default;
 
-    template<int dim>
+    template<unsigned int dim>
     void
     Point<dim>::write_schema(Parameters &prm,
                              const std::string &name,
@@ -92,7 +92,7 @@ namespace WorldBuilder
     }
 
 
-    template<int dim>
+    template<unsigned int dim>
     double Point<dim>::operator*(const Point<dim> &point_) const
     {
       const std::array<double,dim> array = point_.value.get_array();
@@ -103,7 +103,7 @@ namespace WorldBuilder
     }
 
 
-    template<int dim>
+    template<unsigned int dim>
     WorldBuilder::Point<dim>
     Point<dim>::operator*(const double scalar) const
     {
@@ -114,7 +114,7 @@ namespace WorldBuilder
       return WorldBuilder::Point<dim>(array,value.get_coordinate_system());
     }
 
-    template<int dim>
+    template<unsigned int dim>
     WorldBuilder::Point<dim>
     Point<dim>::operator+(const Point<dim> &point_) const
     {
@@ -124,7 +124,7 @@ namespace WorldBuilder
       return point_tmp;
     }
 
-    template<int dim>
+    template<unsigned int dim>
     WorldBuilder::Point<dim>
     Point<dim>::operator-(const Point<dim> &point_) const
     {
@@ -137,7 +137,7 @@ namespace WorldBuilder
     /**
      * access index
      */
-    template<int dim>
+    template<unsigned int dim>
     double &
     Point<dim>::operator[](const unsigned int index)
     {
@@ -147,7 +147,7 @@ namespace WorldBuilder
     /**
      * access index
      */
-    template<int dim>
+    template<unsigned int dim>
     const double &
     Point<dim>::operator[](const unsigned int index) const
     {
@@ -158,7 +158,7 @@ namespace WorldBuilder
      * Multiplies a Types::Point<dim> with a scalr and returns a
      * WorldBuilder::Point<dim>.
      */
-    template<int dim>
+    template<unsigned int dim>
     WorldBuilder::Point<dim>
     operator*(const double scalar, const Point<dim> &point)
     {

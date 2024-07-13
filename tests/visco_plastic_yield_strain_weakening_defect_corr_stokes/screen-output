@@ -7,9 +7,9 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving total_strain system ... 0 iterations.
    Initial Newton Stokes residual = 4.4124e+12, v = 2.00464e+12, p = 3.93073e+12
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 4.4124e+12
+      Newton system information: Norm of the rhs: 4.4124e+12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -25,9 +25,9 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving total_strain system ... 10 iterations.
    Initial Newton Stokes residual = 1.8223e+13, v = 1.81808e+13, p = 1.24042e+12
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.000110237, norm of the rhs: 2.00885e+09
+      Newton system information: Norm of the rhs: 1.80069e+09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.8814e-05
 
 
    Postprocessing:

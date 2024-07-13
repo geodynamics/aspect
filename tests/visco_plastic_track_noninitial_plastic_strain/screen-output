@@ -6,9 +6,8 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 0 iterations.
    Skipping noninitial_plastic_strain composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.236841
 
 
    Postprocessing:
@@ -23,9 +22,8 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 10 iterations.
    Solving noninitial_plastic_strain system ... 11 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00186576
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000132201
 
 
    Postprocessing:

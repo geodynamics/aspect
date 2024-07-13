@@ -68,7 +68,7 @@ namespace aspect
           this->convert_output_to_years() ? year_in_seconds : 1.0;
 
         const Postprocess::BoundaryVelocityResidualStatistics<dim> &boundary_velocity_residual_statistics =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryVelocityResidualStatistics<dim>>();
+          this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::BoundaryVelocityResidualStatistics<dim>>();
 
         // We only want the output at the top boundary, so only compute it if the current cell
         // has a face at the top boundary.

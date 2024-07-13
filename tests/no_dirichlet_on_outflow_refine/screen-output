@@ -4,28 +4,25 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 23+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00000
      Temperature min/avg/max:            1500 K, 1641 K, 1760 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.417e+07 W, 1.369e+07 W
 
-*** Timestep 1:  t=243425 years, dt=243425 years
+*** Timestep 1:  t=242158 years, dt=242158 years
    Solving temperature system... 15 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00001
      Temperature min/avg/max:            1500 K, 1641 K, 1760 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.419e+07 W, 1.369e+07 W
 
-*** Timestep 2:  t=486144 years, dt=242719 years
+*** Timestep 2:  t=483449 years, dt=241292 years
    Solving temperature system... 15 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00002
@@ -34,20 +31,18 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 3:  t=728583 years, dt=242439 years
+*** Timestep 3:  t=724395 years, dt=240945 years
    Solving temperature system... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00003
      Temperature min/avg/max:            1500 K, 1641 K, 1760 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.42e+07 W, 1.369e+07 W
 
-*** Timestep 4:  t=970875 years, dt=242292 years
+*** Timestep 4:  t=965159 years, dt=240764 years
    Solving temperature system... 14 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00004
@@ -56,20 +51,18 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 5:  t=1.21306e+06 years, dt=242184 years
+*** Timestep 5:  t=1.20579e+06 years, dt=240632 years
    Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00005
-     Temperature min/avg/max:            1500 K, 1642 K, 1761 K
+     Temperature min/avg/max:            1500 K, 1641 K, 1761 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.42e+07 W, 1.369e+07 W
 
-*** Timestep 6:  t=1.45514e+06 years, dt=242084 years
+*** Timestep 6:  t=1.4463e+06 years, dt=240510 years
    Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00006
@@ -78,20 +71,18 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 7:  t=1.69712e+06 years, dt=241979 years
+*** Timestep 7:  t=1.68668e+06 years, dt=240382 years
    Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00007
      Temperature min/avg/max:            1500 K, 1642 K, 1761 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.42e+07 W, 1.369e+07 W
 
-*** Timestep 8:  t=1.93899e+06 years, dt=241864 years
+*** Timestep 8:  t=1.92693e+06 years, dt=240242 years
    Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00008
@@ -100,10 +91,9 @@ Skipping mesh refinement, because the mesh did not change.
 
 Skipping mesh refinement, because the mesh did not change.
 
-*** Timestep 9:  t=2e+06 years, dt=61013.4 years
+*** Timestep 9:  t=2e+06 years, dt=73074.7 years
    Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00009

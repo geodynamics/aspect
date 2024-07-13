@@ -123,7 +123,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
           switch (fluid_solid_reaction_scheme)
@@ -509,12 +509,13 @@ namespace aspect
 
           if (this->get_parameters().use_operator_splitting)
             {
-              AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step,
-                          ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
-                                     + " in the operator splitting scheme is too large to compute fluid release rates! "
-                                     "You have to choose it in such a way that it is smaller than the 'Fluid reaction time scale for "
-                                     "operator splitting' chosen in the material model, which is currently "
-                                     + Utilities::to_string(fluid_reaction_time_scale) + "."));
+              if (this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step)
+                AssertThrow(fluid_reaction_time_scale >= this->get_parameters().reaction_time_step,
+                            ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)
+                                       + " in the operator splitting scheme is too large to compute fluid release rates! "
+                                       "You have to choose it in such a way that it is smaller than the 'Fluid reaction time scale for "
+                                       "operator splitting' chosen in the material model, which is currently "
+                                       + Utilities::to_string(fluid_reaction_time_scale) + "."));
               AssertThrow(fluid_reaction_time_scale > 0,
                           ExcMessage("The Fluid reaction time scale for operator splitting must be larger than 0!"));
             }

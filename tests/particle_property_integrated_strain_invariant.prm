@@ -89,16 +89,24 @@ subsection Postprocess
   set List of postprocessors = particles
 
   subsection Particles
-    set Number of particles = 100
     set Time between data output = 1
     set Data output format = ascii
-    set List of particle properties = integrated strain invariant
-    set Particle generator name = random uniform
   end
 end
 
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
+  end
+end
+
+subsection Particles
+  set List of particle properties = integrated strain invariant
+  set Particle generator name = random uniform
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 100
+    end
   end
 end

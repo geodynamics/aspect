@@ -66,15 +66,8 @@ subsection Postprocess
   set List of postprocessors = composition statistics, temperature statistics, velocity statistics, particles
 
   subsection Particles
-    set Number of particles = 1000
-    set List of particle properties = function, initial position, position, velocity
-    set Data output format = ascii
     set Time between data output = 0
-
-    subsection Function
-      set Variable names      = x,z
-      set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
-    end
+    set Data output format = ascii
   end
 end
 
@@ -85,5 +78,20 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = true
+  end
+end
+
+subsection Particles
+  set List of particle properties = function, initial position, position, velocity
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
+  end
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 1000
+    end
   end
 end

@@ -280,8 +280,8 @@ namespace aspect
              */
             void
             initialize(const MPI_Comm comm,
-                       const std::string data_directory,
-                       const std::string material_file_name);
+                       const std::string &data_directory,
+                       const std::string &material_file_name);
 
             /**
              * Returns the specific heat for a given entropy and pressure.

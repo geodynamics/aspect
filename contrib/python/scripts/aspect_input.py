@@ -10,6 +10,44 @@ __copyright__ = 'Copyright 2023, ASPECT'
 __license__ = 'GNU GPL 2 or later'
 
 
+def get_parameter_value(parameters, name):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), return the value
+    of the parameter with the given name. Returns None if the
+    parameter is not found.
+    """
+
+    if name in parameters:
+        return parameters[name]["value"]
+    else:
+        for entry in parameters:
+            if parameters[entry]["type"] == "subsection":
+                value = get_parameter_value(parameters[entry]["value"], name)
+                if value != None:
+                    return value
+
+    return None
+
+
+
+def set_parameter_value(parameters, name, value):
+    """ Given a dictionary of parameters with a structure as
+    the one created by read_parameter_file(), set the value
+    of the parameter with the given name to the given value.
+    Returns 0 if the parameter was found and set, 1 otherwise.
+    """
+
+    if name in parameters:
+        parameters[name]["value"] = value
+        return 0
+    else:
+        for entry in parameters:
+            if parameters[entry]["type"] == "subsection":
+                if set_parameter_value(parameters[entry]["value"], name, value) == 0:
+                    return 0
+
+    return 1
+
 
 def split_parameter_line(line):
     """ Read a 'set parameter' line and extract the name, value, and format. """

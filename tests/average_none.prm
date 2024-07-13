@@ -91,5 +91,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-7
+    set Stokes solver type = block AMG
   end
 end

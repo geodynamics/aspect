@@ -188,6 +188,229 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
     };
+
+
+
+    /**
+     * A base class for "plugin manager" classes. Plugin manager classes are
+     * used in places where one can legitimately use more than one plugin of
+     * a certain kind. For example, while there can only ever be one geometry
+     * (and consequently, the Simulator class only stores a single object of
+     * type derived from GeometryModels::Interface), one can have many different
+     * postprocessor objects at the same time. In these circumstances, the
+     * Simulator class stores a Postprocess::Manager object that internally
+     * stores zero or more objects of type derived from Postprocess::Interface.
+     * Since there are many places inside ASPECT where we need these "plugin
+     * manager" classes, the current class provides some common functionality
+     * to all of these classes.
+     *
+     * The class takes as template argument the type of the derived
+     * class's interface type. Since a manager is always also a plugin
+     * (to the Simulator class) itself, the current class is derived from
+     * the `InterfaceBase` class as well.
+     */
+    template <typename InterfaceType>
+    class ManagerBase : public InterfaceBase
+    {
+      public:
+        /**
+         * Destructor.
+         */
+        ~ManagerBase () override;
+
+        /**
+         * A function that is called at the beginning of each time step,
+         * calling the update function of the individual heating models.
+         */
+        void
+        update () override;
+
+        /**
+         * Go through the list of all plugins that have been selected
+         * in the input file (and are consequently currently active) and return
+         * true if one of them has the desired type specified by the template
+         * argument.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
+         */
+        template <typename PluginType,
+                  typename = typename std::enable_if_t<std::is_base_of<InterfaceType,PluginType>::value>>
+        bool
+        has_matching_active_plugin () const;
+
+        /**
+         * Go through the list of all plugins that have been selected
+         * in the input file (and are consequently currently active) and see
+         * if one of them has the type specified by the template
+         * argument or can be cast to that type. If so, return a reference
+         * to it. If no postprocessor is active that matches the given type,
+         * throw an exception.
+         *
+         * The returned object is necessarily an element in the list returned by
+         * `get_active_plugins()`, but cast to a derived type.
+         *
+         * This function can only be called if the given template type (the first template
+         * argument) is a class derived from the Interface class in this namespace.
+         */
+        template <typename PluginType,
+                  typename = typename std::enable_if_t<std::is_base_of<InterfaceType,PluginType>::value>>
+        const PluginType &
+        get_matching_active_plugin () const;
+
+        /**
+         * Return a list of plugin objects that have been requested in the
+         * parameter file and that are, consequently, active in the current
+         * manager object.
+         */
+        const std::list<std::unique_ptr<InterfaceType>> &
+        get_active_plugins () const;
+
+        /**
+         * Return a list of names used in the input file to select plugins,
+         * and that are, consequently, active in the current manager object.
+         * The names in the returned list correspond to the objects returned
+         * by `get_active_plugins()`.
+         */
+        const std::vector<std::string> &
+        get_active_plugin_names () const;
+
+      protected:
+        /**
+         * A list of plugin objects that have been requested in the
+         * parameter file.
+         */
+        std::list<std::unique_ptr<InterfaceType>> plugin_objects;
+
+        /**
+         * A list of names used in the input file to identify plugins,
+         * corresponding to the plugin objects stored in the previous variable.
+         */
+        std::vector<std::string> plugin_names;
+    };
+
+
+
+    template <typename InterfaceType>
+    ManagerBase<InterfaceType>::~ManagerBase()
+    {
+      // Not all derived manager classes currently set the 'plugin_names'
+      // variable, but for those that do, they better have as many names
+      // as there are plugins.
+      if (plugin_names.size() > 0)
+        Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+    }
+
+
+    template <typename InterfaceType>
+    void ManagerBase<InterfaceType>::update()
+    {
+      // call the update() functions of all plugins:
+      for (const auto &p : plugin_objects)
+        {
+          try
+            {
+              p->update ();
+            }
+
+          // plugins that throw exceptions usually do not result in
+          // anything good because they result in an unwinding of the stack
+          // and, if only one processor triggers an exception, the
+          // destruction of objects often causes a deadlock. thus, if
+          // an exception is generated, catch it, print an error message,
+          // and abort the program
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running plugin <"
+                        << typeid(*p).name()
+                        << ">: " << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+          catch (...)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << dealii::Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while running plugin <"
+                        << typeid(*p).name()
+                        << ">: " << std::endl;
+              std::cerr << "Unknown exception!" << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
+        }
+    }
+
+
+    template <typename InterfaceType>
+    template <typename PluginType, typename>
+    inline
+    bool
+    ManagerBase<InterfaceType>::has_matching_active_plugin () const
+    {
+      for (const auto &p : plugin_objects)
+        if (Plugins::plugin_type_matches<PluginType>(*p))
+          return true;
+      return false;
+    }
+
+
+    template <typename InterfaceType>
+    template <typename PluginType, typename>
+    inline
+    const PluginType &
+    ManagerBase<InterfaceType>::get_matching_active_plugin () const
+    {
+      AssertThrow(has_matching_active_plugin<PluginType> (),
+                  ExcMessage("You asked the object managing a collection of plugins for a "
+                             "plugin object of type <" + boost::core::demangle(typeid(PluginType).name()) + "> "
+                             "that could not be found in the current model. You need to "
+                             "activate this plugin in the input file for it to be "
+                             "available."));
+
+      for (const auto &p : plugin_objects)
+        if (Plugins::plugin_type_matches<PluginType>(*p))
+          return Plugins::get_plugin_as_type<PluginType>(*p);
+
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<PluginType>(**(plugin_objects.begin()));
+    }
+
+
+
+    template <typename InterfaceType>
+    const std::list<std::unique_ptr<InterfaceType>> &
+    ManagerBase<InterfaceType>::get_active_plugins () const
+    {
+      return plugin_objects;
+    }
+
+
+
+    template <typename InterfaceType>
+    const std::vector<std::string> &
+    ManagerBase<InterfaceType>::get_active_plugin_names () const
+    {
+      return plugin_names;
+    }
+
   }
 
   namespace internal
@@ -686,6 +909,14 @@ namespace aspect
         // read when looking over stuff visually
         output_stream << std::endl;
       }
+
+
+      /**
+       * A placeholder class that is used wherever we need a PluginList object
+       * for `dim==0` and `dim==1`, which of course are not dimensions we
+       * support in ASPECT.
+       */
+      class UnusablePluginList {};
     }
   }
 }

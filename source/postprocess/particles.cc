@@ -323,7 +323,7 @@ namespace aspect
       if (std::isnan(last_output_time))
         last_output_time = this->get_time() - output_interval;
 
-      const Particle::World<dim> &world = this->get_particle_world();
+      const Particle::World<dim> &world = this->get_particle_world(0);
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
@@ -453,7 +453,7 @@ namespace aspect
 
                       // ...then continue with writing our own data.
                       background_thread
-                        = std::thread([ my_filename = std::move(filename),
+                        = std::thread([ my_filename = filename, // filename is const, so we can not move from it
                                         my_temporary_output_location = temporary_output_location,
                                         my_file_contents = std::move(file_contents)]()
                       {
@@ -562,7 +562,7 @@ namespace aspect
       std::ostringstream os;
       aspect::oarchive oa (os);
 
-      this->get_particle_world().save(os);
+      this->get_particle_world(0).save(os);
       oa << (*this);
 
       status_strings["Particles"] = os.str();
@@ -580,7 +580,7 @@ namespace aspect
           aspect::iarchive ia (is);
 
           // Load the particle world
-          this->get_particle_world().load(is);
+          this->get_particle_world(0).load(is);
 
           ia >> (*this);
         }
@@ -674,7 +674,7 @@ namespace aspect
           output_formats   = Utilities::split_string_list(prm.get ("Data output format"));
           AssertThrow(Utilities::has_unique_entries(output_formats),
                       ExcMessage("The list of strings for the parameter "
-                                 "'Particles/Data output format' contains entries more than once. "
+                                 "'Postprocess/Particles/Data output format' contains entries more than once. "
                                  "This is not allowed. Please check your parameter file."));
 
           AssertThrow ((std::find (output_formats.begin(),

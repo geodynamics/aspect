@@ -91,7 +91,7 @@ namespace aspect
       oa << parameters.use_discontinuous_temperature_discretization;
       oa << parameters.use_discontinuous_composition_discretization;
       oa << parameters.temperature_degree;
-      oa << parameters.composition_degree;
+      oa << parameters.composition_degrees;
       oa << parameters.pressure_normalization;
       oa << parameters.n_compositional_fields;
       oa << parameters.names_of_compositional_fields;
@@ -178,7 +178,7 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
-      bool use_discontinuous_composition_discretization;
+      std::vector<bool> use_discontinuous_composition_discretization;
       ia >> use_discontinuous_composition_discretization;
       AssertThrow (use_discontinuous_composition_discretization == parameters.use_discontinuous_composition_discretization,
                    ExcMessage ("The value provided for `Use discontinuous composition discretization' that was stored "
@@ -196,9 +196,9 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
-      unsigned int composition_degree;
-      ia >> composition_degree;
-      AssertThrow (composition_degree == parameters.composition_degree,
+      std::vector<unsigned int> composition_degrees;
+      ia >> composition_degrees;
+      AssertThrow (composition_degrees == parameters.composition_degrees,
                    ExcMessage ("The composition polynomial degree that was stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "

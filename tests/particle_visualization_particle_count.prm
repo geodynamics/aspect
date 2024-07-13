@@ -92,16 +92,19 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 30
     set Time between data output = 70
     set Data output format = none
-    set Particle generator name = probability density function
+  end
+end
 
-    subsection Generator
-      subsection Probability density function
-        set Variable names      = x,z
-        set Function expression = x*x*z
-      end
+subsection Particles
+  set Particle generator name = probability density function
+
+  subsection Generator
+    subsection Probability density function
+      set Variable names      = x,z
+      set Function expression = x*x*z
+      set Number of particles = 30
     end
   end
 end

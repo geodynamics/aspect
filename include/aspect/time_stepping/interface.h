@@ -127,7 +127,7 @@ namespace aspect
      * checking if the simulation is finished.
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -144,7 +144,8 @@ namespace aspect
          * (convection time step, conduction time step), settings from parameters,
          * and termination criteria (to hit the end time exactly).
          */
-        void update();
+        void
+        update() override;
 
         /**
          * Return the next step size as computed from update().
@@ -187,7 +188,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -256,11 +257,6 @@ namespace aspect
          * it to determine the time_step size in the final time step.
          */
         TerminationCriteria::Manager<dim> termination_manager;
-
-        /**
-         * A list of active plugins to determine time step sizes.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> active_plugins;
     };
 
     /**

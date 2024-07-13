@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_LOGIN }}
 
       - name: Build and push Docker image for main
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./contrib/docker/tester-clang
           cache-from: type=registry,ref=ubuntu:24.04

@@ -77,11 +77,11 @@ TEST_CASE("AdditionalOutputs works")
   in.requested_properties = MaterialProperties::additional_outputs;
 
 
-  REQUIRE(out.get_additional_output<AdditionalOutputs1<dim>>() == NULL);
+  REQUIRE(out.get_additional_output<AdditionalOutputs1<dim>>() == nullptr);
 
   out.additional_outputs.push_back(std::make_unique<AdditionalOutputs1<dim>> (1, 1));
 
-  REQUIRE(out.get_additional_output<AdditionalOutputs1<dim>>() != NULL);
+  REQUIRE(out.get_additional_output<AdditionalOutputs1<dim>>() != nullptr);
 
   Material1<dim> mat;
   mat.evaluate(in, out);
@@ -91,7 +91,7 @@ TEST_CASE("AdditionalOutputs works")
   // test const version of get_additional_output:
   {
     const MaterialModelOutputs<dim> &const_out = out;
-    REQUIRE(const_out.get_additional_output<AdditionalOutputs1<dim>>() != NULL);
+    REQUIRE(const_out.get_additional_output<AdditionalOutputs1<dim>>() != nullptr);
     const AdditionalOutputs1<dim> *a = const_out.get_additional_output<AdditionalOutputs1<dim>>();
     REQUIRE(a != nullptr);
   }

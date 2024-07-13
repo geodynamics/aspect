@@ -17,5 +17,4 @@ subsection Postprocess
   subsection Composition RMS temperature statistics
     set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
   end
-
 end

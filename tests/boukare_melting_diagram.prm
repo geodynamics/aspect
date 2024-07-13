@@ -44,6 +44,7 @@ subsection Solver parameters
 
   subsection Operator splitting parameters
     set Reaction time step                     = 100000.0
+    set Reaction solver type                   = fixed step
   end
 end
 

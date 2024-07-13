@@ -12,9 +12,11 @@
 
 include $ASPECT_SOURCE_DIR/tests/hk04_olivine_composite_hydration_prefactor.prm
 
+
 # Set the bound water everywhere in the model to be 0.
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = 0.0
   end

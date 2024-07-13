@@ -112,7 +112,7 @@ namespace aspect
      * @ingroup TerminationCriteria
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -161,7 +161,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that is used to register termination criteria objects in
@@ -208,19 +208,6 @@ namespace aspect
                         << "Could not find entry <"
                         << arg1
                         << "> among the names of registered termination criteria objects.");
-      private:
-        /**
-         * A list of termination criterion objects that have been requested in
-         * the parameter file.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> termination_objects;
-
-        /**
-         * A list of names corresponding to the termination criteria in the
-         * termination_objects.
-         */
-        std::list<std::string>                       termination_obj_names;
-
     };
 
 

@@ -17,3 +17,7 @@ subsection Mesh refinement
   set Initial adaptive refinement = 0
   set Minimum refinement level = 4
 end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, velocity statistics, mass flux statistics, particles, ODE statistics
+end

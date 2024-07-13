@@ -103,28 +103,9 @@ namespace aspect
      * @ingroup BoundaryTemperatures
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
-        /**
-         * A function that is called at the beginning of each time step and
-         * calls the corresponding functions of all created plugins.
-         *
-         * The point of this function is to allow complex boundary temperature
-         * models to do an initialization step once at the beginning of each
-         * time step. An example would be a model that needs to call an
-         * external program to compute the temperature change at a boundary.
-         */
-        virtual
-        void
-        update ();
-
         /**
          * Declare the parameters of all known boundary temperature plugins, as
          * well as the ones this class has itself.
@@ -139,7 +120,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * A function that calls the boundary_temperature functions of all the
@@ -192,15 +173,23 @@ namespace aspect
         /**
          * Return a list of names of all boundary temperature models currently
          * used in the computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugin_names()
+         *   instead.
          */
+        DEAL_II_DEPRECATED
         const std::vector<std::string> &
         get_active_boundary_temperature_names () const;
 
         /**
          * Return a list of pointers to all boundary temperature models
          * currently used in the computation, as specified in the input file.
+         *
+         * @deprecated Use Plugins::ManagerBase::get_active_plugins()
+         *   instead.
          */
-        const std::vector<std::unique_ptr<Interface<dim>>> &
+        DEAL_II_DEPRECATED
+        const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_boundary_temperature_conditions () const;
 
         /**
@@ -211,9 +200,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename BoundaryTemperatureType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryTemperatureType>::value>>
+        DEAL_II_DEPRECATED
         bool
         has_matching_boundary_temperature_model () const;
 
@@ -227,9 +222,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename BoundaryTemperatureType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryTemperatureType>::value>>
+        DEAL_II_DEPRECATED
         const BoundaryTemperatureType &
         get_matching_boundary_temperature_model () const;
 
@@ -271,18 +272,6 @@ namespace aspect
                         << "> among the names of registered boundary temperature objects.");
       private:
         /**
-         * A list of boundary temperature objects that have been requested in the
-         * parameter file.
-         */
-        std::vector<std::unique_ptr<Interface<dim>>> boundary_temperature_objects;
-
-        /**
-         * A list of names of boundary temperature objects that have been requested
-         * in the parameter file.
-         */
-        std::vector<std::string> model_names;
-
-        /**
          * A list of enums of boundary temperature operators that have been
          * requested in the parameter file. Each name is associated
          * with a model_name, and is used to modify the temperature
@@ -311,10 +300,7 @@ namespace aspect
     bool
     Manager<dim>::has_matching_boundary_temperature_model () const
     {
-      for (const auto &p : boundary_temperature_objects)
-        if (Plugins::plugin_type_matches<BoundaryTemperatureType>(*p))
-          return true;
-      return false;
+      return this->template has_matching_active_plugin<BoundaryTemperatureType>();
     }
 
 
@@ -324,18 +310,7 @@ namespace aspect
     const BoundaryTemperatureType &
     Manager<dim>::get_matching_boundary_temperature_model () const
     {
-      AssertThrow(has_matching_boundary_temperature_model<BoundaryTemperatureType> (),
-                  ExcMessage("You asked BoundaryTemperature::Manager::get_boundary_temperature_model() for a "
-                             "boundary temperature model of type <" + boost::core::demangle(typeid(BoundaryTemperatureType).name()) + "> "
-                             "that could not be found in the current model. Activate this "
-                             "boundary temperature model in the input file."));
-
-      for (const auto &p : boundary_temperature_objects)
-        if (Plugins::plugin_type_matches<BoundaryTemperatureType>(*p))
-          return Plugins::get_plugin_as_type<BoundaryTemperatureType>(*p);
-
-      // We will never get here, because we had the Assert above. Just to avoid warnings.
-      return Plugins::get_plugin_as_type<BoundaryTemperatureType>(**(boundary_temperature_objects.begin()));
+      return this->template get_matching_active_plugin<BoundaryTemperatureType>();
     }
 
 

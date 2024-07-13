@@ -22,7 +22,7 @@ RUN cd /opt && \
     git clone https://github.com/dealii/candi && \
     cd candi && \
     mv /opt/local.cfg . && \
-    ./candi.sh -p /opt -j2 && \
+    ./candi.sh -p /opt -j4 && \
     rm -rf /opt/tmp
 
 # Set environment variables for this image to be used

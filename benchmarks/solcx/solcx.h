@@ -2852,22 +2852,22 @@ namespace aspect
         /*printf("%0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f %0.7f\n",x,z,sum1,sum2,sum3,sum4,sum5,sum6);*/
 
         /* Output */
-        if (vel != NULL)
+        if (vel != nullptr)
           {
             vel[0] = sum1;
             vel[1] = sum2;
           }
-        if (presssure != NULL)
+        if (presssure != nullptr)
           {
             (*presssure) = sum5;
           }
-        if (total_stress != NULL)
+        if (total_stress != nullptr)
           {
             total_stress[0] = sum3;
             total_stress[1] = sum6;
             total_stress[2] = sum4;
           }
-        if (strain_rate != NULL)
+        if (strain_rate != nullptr)
           {
             if (x > xc)
               {

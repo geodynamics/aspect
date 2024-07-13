@@ -24,6 +24,7 @@ set Use years in output instead of seconds = true
 subsection Discretization
   set Stokes velocity polynomial degree = 2
   set Use discontinuous composition discretization = true
+
   subsection Stabilization parameters
     set Use limiter for discontinuous composition solution = false
     set beta  = 0.5

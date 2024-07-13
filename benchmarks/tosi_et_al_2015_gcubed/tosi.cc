@@ -116,7 +116,7 @@ namespace aspect
 
               // If requested compute viscosity derivatives. This is only important
               // if using the Newton solver.
-              if (derivatives != NULL && in.requests_property(MaterialModel::MaterialProperties::viscosity))
+              if (derivatives != nullptr && in.requests_property(MaterialModel::MaterialProperties::viscosity))
                 {
                   if (use_analytical_derivative)
                     {

@@ -66,7 +66,7 @@ namespace aspect
       void
       CpoElasticTensor<dim>::initialize ()
       {
-        const auto &manager = this->get_particle_world().get_property_manager();
+        const auto &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No crystal preferred orientation property plugin found."));
 
@@ -147,7 +147,7 @@ namespace aspect
       {
         // Get a reference to the CPO particle property.
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
+          this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
 
         const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
@@ -211,8 +211,7 @@ namespace aspect
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
 
-        property_information.push_back(std::make_pair("cpo_elastic_tensor",SymmetricTensor<2,6>::n_independent_components));
-
+        property_information.emplace_back("cpo_elastic_tensor", SymmetricTensor<2,6>::n_independent_components);
         return property_information;
       }
 
@@ -229,24 +228,16 @@ namespace aspect
       void
       CpoElasticTensor<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Crystal Preferred Orientation");
         {
-          prm.enter_subsection("Particles");
+          n_grains = prm.get_integer("Number of grains per particle");
+          prm.enter_subsection("Initial grains");
           {
-            prm.enter_subsection("Crystal Preferred Orientation");
-            {
-              n_grains = prm.get_integer("Number of grains per particle");
-              prm.enter_subsection("Initial grains");
-              {
-                n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
-              }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+            n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
     }
   }

@@ -21,16 +21,21 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, particles, composition statistics
+end
 
-  subsection Particles
-    set Number of particles = 10000
-    set Interpolation scheme = quadratic least squares
-    set Update ghost particles = true
+subsection Particles
+  set Interpolation scheme = quadratic least squares
+  set Update ghost particles = true
 
-    subsection Interpolator
-      subsection Quadratic least squares
-        set Use quadratic least squares limiter = true
-      end
+  subsection Interpolator
+    subsection Quadratic least squares
+      set Use quadratic least squares limiter = true
+    end
+  end
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10000
     end
   end
 end

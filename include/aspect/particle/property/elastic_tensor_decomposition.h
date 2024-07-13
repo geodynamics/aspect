@@ -191,7 +191,7 @@ namespace aspect
           /**
            * Constructor
            */
-          ElasticTensorDecomposition();
+          ElasticTensorDecomposition() = default;
 
           /**
            * Initialization function. This function is called once at the

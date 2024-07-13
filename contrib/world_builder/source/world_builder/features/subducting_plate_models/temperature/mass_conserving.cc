@@ -31,6 +31,7 @@
 #include "world_builder/types/one_of.h"
 #include "world_builder/types/object.h"
 #include "world_builder/types/point.h"
+#include "world_builder/types/unsigned_int.h"
 #include "world_builder/types/value_at_points.h"
 #include "world_builder/utilities.h"
 #include "world_builder/world.h"
@@ -178,7 +179,7 @@ namespace WorldBuilder
           prm.declare_entry("apply spline",  Types::Bool(false),
                             "Whether a spline should be applied on the mass conserving model.");
 
-          prm.declare_entry("number of points in spline", Types::Int(5),
+          prm.declare_entry("number of points in spline", Types::UnsignedInt(5),
                             "The number of points in the spline");
 
         }
@@ -257,7 +258,7 @@ namespace WorldBuilder
             reference_model_name = half_space_model;
 
           apply_spline = prm.get<bool>("apply spline");
-          spline_n_points = prm.get<int>("number of points in spline");
+          spline_n_points = prm.get<unsigned int>("number of points in spline");
 
           if (subducting_velocities[0].size() > 1)
             {
@@ -530,9 +531,9 @@ namespace WorldBuilder
                       const double interval_spline_distance = 1.0 / spline_n_points;
                       std::vector<double> i_temperatures (2*(spline_n_points + 1), 0.0);
 
-                      for (int i = 0; i < 2 * spline_n_points + 1; ++i)
+                      for (size_t i = 0; i < 2 * spline_n_points + 1; ++i)
                         {
-                          const double i_adjusted_distance = (i * interval_spline_distance - 1.0) * max_depth;
+                          const double i_adjusted_distance = (static_cast<double>(i) * interval_spline_distance - 1.0) * max_depth;
                           const double i_temperature = get_temperature_analytic(top_heat_content, min_temperature, background_temperature, temperature_, spreading_velocity, effective_plate_age, i_adjusted_distance);
                           i_temperatures[i] = i_temperature;
                         }

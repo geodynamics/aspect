@@ -56,6 +56,7 @@ end
 
 subsection Material model
   set Model name = simple
+  set Material averaging = harmonic average only viscosity
 
   subsection Simple model
     set Thermal conductivity          = 1e-6

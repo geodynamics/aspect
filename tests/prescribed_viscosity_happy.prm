@@ -22,13 +22,13 @@ subsection Mesh refinement
   set Skip solvers on initial refinement = true
 end
 
-
 subsection Material model
   set Model name = prescribed viscosity
   set Material averaging = geometric average only viscosity
 
   subsection Prescribed viscosity
     set Base model = simple
+
     subsection Indicator function
       set Variable names = x,y,t
 
@@ -53,15 +53,13 @@ subsection Material model
   end
 end
 
-
 subsection Gravity model
   set Model name = vertical
+
   subsection Vertical
     set Magnitude = 9.81
   end
 end
-
-
 
 subsection Postprocess
   set List of postprocessors = visualization

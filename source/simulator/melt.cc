@@ -72,6 +72,19 @@ namespace aspect
 
 
     template <int dim>
+    MeltOutputs<dim>::MeltOutputs  (const unsigned int n_points,
+                                    const unsigned int /*n_comp*/)
+      :
+      compaction_viscosities(n_points, numbers::signaling_nan<double>()),
+      fluid_viscosities(n_points, numbers::signaling_nan<double>()),
+      permeabilities(n_points, numbers::signaling_nan<double>()),
+      fluid_densities(n_points, numbers::signaling_nan<double>()),
+      fluid_density_gradients(n_points, numbers::signaling_nan<Tensor<1,dim>>())
+    {}
+
+
+
+    template <int dim>
     void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
                                     const FullMatrix<double>  &projection_matrix,
                                     const FullMatrix<double>  &expansion_matrix)
@@ -1798,7 +1811,7 @@ namespace aspect
     // The additional terms in the temperature systems have not been ported
     // to the DG formulation:
     AssertThrow(!this->get_parameters().use_discontinuous_temperature_discretization &&
-                !this->get_parameters().use_discontinuous_composition_discretization,
+                !this->get_parameters().have_discontinuous_composition_discretization,
                 ExcMessage("Using discontinuous elements for temperature "
                            "or composition in models with melt transport is currently not implemented.") );
     if (melt_parameters.use_discontinuous_p_c)

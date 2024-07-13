@@ -125,8 +125,7 @@ which there is an extensive amount of documentation:
     <https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions> that
     also have extensive sections on developing code with
     deal.II as well as on debugging. It also answers
-    a number of questions we frequently get about the use of C++ in <span
-    deal.II.
+    a number of questions we frequently get about the use of C++ in deal.II.
 
 -   Several other parts of the deal.II website
     at <https://www.dealii.org/> also have information that may be relevant if
@@ -163,6 +162,7 @@ compatibility.md
 signals.md
 extending-solver.md
 testing/index.md
+benchmarking-run-time.md
 contributing.md
 future-plans.md
 release-tasklist-link.md

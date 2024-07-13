@@ -1,4 +1,4 @@
-# This is a test or the latent heat of melt heating model
+# This is a test for the latent heat of melt heating model
 # and its interaction with other heating plugins.
 # A constant heating rate is described using the function
 # heating model, and this heating should lead to melting
@@ -58,10 +58,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-7
-  end
-
-  subsection Operator splitting parameters
-    set Reaction time step                     = 0.00001
   end
 end
 

@@ -931,20 +931,26 @@ namespace aspect
       get_postprocess_manager () const;
 
       /**
-       * Returns a const reference to the particle world, in case anyone
+       * Returns whether there is at least one particle world.
+       */
+      unsigned int
+      n_particle_worlds() const;
+
+      /**
+       * Returns a const reference to a single particle world, in case anyone
        * wants to query something about particles.
        */
       const Particle::World<dim> &
-      get_particle_world() const;
+      get_particle_world(const unsigned int particle_world_index) const;
 
       /**
-       * Returns a reference to the particle world, in case anyone wants to
+       * Returns a reference to a single particle world, in case anyone wants to
        * change something within the particle world. Use with care, usually
        * you want to only let the functions within the particle subsystem
        * change member variables of the particle world.
        */
       Particle::World<dim> &
-      get_particle_world();
+      get_particle_world(const unsigned int particle_world_index);
 
       /**
        * Return true if using the block GMG Stokes solver.

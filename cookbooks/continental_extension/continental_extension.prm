@@ -116,7 +116,7 @@ end
 
 # Number and names of compositional fields
 # The five compositional fields represent:
-# 1. The plastic strain that accumualates over time, with the initial plastic strain removed
+# 1. The plastic strain that accumulates over time, with the initial plastic strain removed
 # 2. The plastic strain that accumulated over time, including the initial plastic strain values
 # 3. The upper crust
 # 4. The lower crust

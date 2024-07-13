@@ -344,10 +344,12 @@ namespace aspect
 
         /**
          * Read the parameters this class declares from the parameter file.
+         *
+         * @param world_index Parse the parameters for the Particle world with this index.
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm, const unsigned int world_index);
 
       private:
         struct ParticleLoadBalancing
@@ -484,8 +486,6 @@ namespace aspect
          */
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                internal::SolutionEvaluators<dim> &evaluators);
 
         /**
