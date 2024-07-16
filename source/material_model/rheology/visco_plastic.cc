@@ -318,8 +318,12 @@ namespace aspect
             // than the lithostatic pressure.
 
             double pressure_for_plasticity = in.pressure[i];
+
+            if (use_adiabatic_pressure_in_plasticity)
+              pressure_for_plasticity = this->get_adiabatic_conditions().pressure(in.position[i]);
+
             if (allow_negative_pressures_in_plasticity == false)
-              pressure_for_plasticity = std::max(in.pressure[i],0.0);
+              pressure_for_plasticity = std::max(pressure_for_plasticity,0.0);
 
             // Step 5a: calculate the Drucker-Prager yield stress
             const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
@@ -582,6 +586,14 @@ namespace aspect
                            "full pressure has an unusually large negative value arising from "
                            "large negative dynamic pressure, resulting in solver convergence "
                            "issue and in some cases a viscosity of zero.");
+        prm.declare_entry ("Use adiabatic pressure in plasticity", "false",
+                           Patterns::Bool (),
+                           "Whether to use the adiabatic pressure instead of the full "
+                           "pressure when calculating plastic yield stress. "
+                           "This may be helpful in models where the "
+                           "full pressure has unusually large variations, resulting "
+                           "in solver convergence issues. Be aware that this setting "
+                           "will change the plastic shear band angle.");
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
@@ -714,6 +726,7 @@ namespace aspect
                                "'drucker prager' plasticity option."));
 
         allow_negative_pressures_in_plasticity = prm.get_bool ("Allow negative pressures in plasticity");
+        use_adiabatic_pressure_in_plasticity = prm.get_bool("Use adiabatic pressure in plasticity");
         use_adiabatic_pressure_in_creep = prm.get_bool("Use adiabatic pressure in creep viscosity");
 
         // Diffusion creep parameters
@@ -813,8 +826,12 @@ namespace aspect
             const double max_yield_stress = drucker_prager_plasticity.compute_drucker_prager_parameters(0).max_yield_stress;
 
             double pressure_for_plasticity = in.pressure[i];
+
+            if (use_adiabatic_pressure_in_plasticity)
+              pressure_for_plasticity = this->get_adiabatic_conditions().pressure(in.position[i]);
+
             if (allow_negative_pressures_in_plasticity == false)
-              pressure_for_plasticity = std::max(in.pressure[i], 0.0);
+              pressure_for_plasticity = std::max(pressure_for_plasticity, 0.0);
 
             // average over the volume volume fractions
             for (unsigned int j = 0; j < volume_fractions.size(); ++j)
