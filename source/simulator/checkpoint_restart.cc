@@ -43,7 +43,7 @@ namespace aspect
     void move_file (const std::string &old_name,
                     const std::string &new_name)
     {
-      int error = system (("mv " + old_name + " " + new_name).c_str());
+      int error = std::system (("mv " + old_name + " " + new_name).c_str());
 
       // If the above call failed, e.g. because there is no command-line
       // available, try with internal functions.
