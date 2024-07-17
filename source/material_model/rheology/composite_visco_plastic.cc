@@ -72,6 +72,7 @@ namespace aspect
       double
       CompositeViscoPlastic<dim>::compute_viscosity (const double pressure,
                                                      const double temperature,
+                                                     const double grain_size,
                                                      const std::vector<double> &volume_fractions,
                                                      const SymmetricTensor<2,dim> &strain_rate,
                                                      std::vector<double> &partial_strain_rates,
@@ -94,6 +95,7 @@ namespace aspect
                 viscosity += (volume_fractions[composition]
                               * compute_composition_viscosity (pressure,
                                                                temperature,
+                                                               grain_size,
                                                                composition,
                                                                strain_rate,
                                                                partial_strain_rates_composition,
@@ -120,6 +122,7 @@ namespace aspect
       double
       CompositeViscoPlastic<dim>::compute_composition_viscosity (const double pressure,
                                                                  const double temperature,
+                                                                 const double grain_size,
                                                                  const unsigned int composition,
                                                                  const SymmetricTensor<2,dim> &strain_rate,
                                                                  std::vector<double> &partial_strain_rates,
@@ -145,7 +148,7 @@ namespace aspect
         if (use_diffusion_creep)
           {
             diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition);
+            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition, phase_function_values, n_phase_transitions_per_composition);
           }
 
         if (use_dislocation_creep)
@@ -194,6 +197,7 @@ namespace aspect
             const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative (creep_stress,
                                                                    pressure,
                                                                    temperature,
+                                                                   grain_size,
                                                                    diffusion_creep_parameters,
                                                                    dislocation_creep_parameters,
                                                                    peierls_creep_parameters,
@@ -242,7 +246,7 @@ namespace aspect
         // dictated by make_strain_rate_additional_outputs_names
         if (use_diffusion_creep)
           {
-            const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, diffusion_creep_parameters);
+            const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, grain_size, diffusion_creep_parameters);
             partial_strain_rates[0] = diff_edot_and_deriv.first;
           }
 
@@ -285,6 +289,7 @@ namespace aspect
       CompositeViscoPlastic<dim>::compute_strain_rate_and_derivative (const double creep_stress,
                                                                       const double pressure,
                                                                       const double temperature,
+                                                                      const double grain_size,
                                                                       const DiffusionCreepParameters diffusion_creep_parameters,
                                                                       const DislocationCreepParameters dislocation_creep_parameters,
                                                                       const PeierlsCreepParameters peierls_creep_parameters,
@@ -293,7 +298,7 @@ namespace aspect
         std::pair<double, double> creep_edot_and_deriv = std::make_pair(0., 0.);
 
         if (use_diffusion_creep)
-          creep_edot_and_deriv = creep_edot_and_deriv + diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, diffusion_creep_parameters);
+          creep_edot_and_deriv = creep_edot_and_deriv + diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, grain_size, diffusion_creep_parameters);
 
         if (use_dislocation_creep)
           creep_edot_and_deriv = creep_edot_and_deriv + dislocation_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, dislocation_creep_parameters);

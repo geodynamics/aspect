@@ -94,6 +94,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   // The test involves pure shear calculations at 1 GPa and variable temperature
   double temperature;
   const double pressure = 1.e9;
+  const double grain_size = 1.e-3;
   SymmetricTensor<2,dim> strain_rate;
   strain_rate[0][0] = -1e-11;
   strain_rate[0][1] = 0.;
@@ -122,7 +123,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       temperature = 1000. + i*100.;
 
       // Compute the viscosity
-      viscosity = composite_creep->compute_composition_viscosity(pressure, temperature, composition, strain_rate, partial_strain_rates);
+      viscosity = composite_creep->compute_composition_viscosity(pressure, temperature, grain_size, composition, strain_rate, partial_strain_rates);
       total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
 
       // The creep strain rate is calculated by subtracting the strain rate
@@ -144,7 +145,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       // experiences the same creep stress
 
       // Each creep mechanism should experience the same stress
-      diff_stress = 2.*partial_strain_rates[0]*diffusion_creep->compute_viscosity(pressure, temperature, composition);
+      diff_stress = 2.*partial_strain_rates[0]*diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition);
       disl_stress = 2.*partial_strain_rates[1]*dislocation_creep->compute_viscosity(partial_strain_rates[1], pressure, temperature, composition);
       prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
       if (partial_strain_rates[3] > 0.)
