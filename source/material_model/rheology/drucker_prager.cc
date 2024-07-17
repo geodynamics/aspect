@@ -141,7 +141,7 @@ namespace aspect
       std::pair<double, double>
       DruckerPrager<dim>::compute_strain_rate_and_derivative (const double stress,
                                                               const double pressure,
-                                                              const DruckerPragerParameters p) const
+                                                              const DruckerPragerParameters &p) const
       {
 
         const double yield_stress = compute_yield_stress(p.cohesion, p.angle_internal_friction, pressure, p.max_yield_stress);
