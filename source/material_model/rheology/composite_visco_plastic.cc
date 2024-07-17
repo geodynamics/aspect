@@ -417,6 +417,9 @@ namespace aspect
             peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
             peierls_creep->initialize_simulator (this->get_simulator());
             peierls_creep->parse_parameters(prm, expected_n_phases_per_composition);
+
+            AssertThrow((prm.get ("Peierls creep flow law") == "viscosity approximation"),
+                        ExcMessage("The Peierls creep flow law parameter needs to be set to viscosity approximation."));
           }
 
         // Drucker Prager parameters

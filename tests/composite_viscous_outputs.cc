@@ -47,6 +47,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
+  prm.set("Peierls creep flow law", "viscosity approximation");
   prm.set("Maximum yield stress", "5e8");
   composite_creep->parse_parameters(prm, n_phases);
 
