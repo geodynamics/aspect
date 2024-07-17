@@ -102,18 +102,14 @@ namespace aspect
                                          const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
-           * Compute the strain rate and first stress derivative
-           * as a function of stress based on the composite viscous creep law.
+           * Compute the total strain rate and the first derivative of log strain rate
+           * with respect to log viscoplastic stress from individual log strain rate components.
+           * Also updates the partial_strain_rates vector
            */
           std::pair<double, double>
-          compute_strain_rate_and_derivative (const double creep_stress,
-                                              const double pressure,
-                                              const double temperature,
-                                              const double grain_size,
-                                              const DiffusionCreepParameters diffusion_creep_parameters,
-                                              const DislocationCreepParameters dislocation_creep_parameters,
-                                              const PeierlsCreepParameters peierls_creep_parameters,
-                                              const DruckerPragerParameters drucker_prager_parameters) const;
+          calculate_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
+                                                   const double viscoplastic_stress,
+                                                   std::vector<double> &partial_strain_rates) const;
 
         private:
 
@@ -126,6 +122,11 @@ namespace aspect
           bool use_drucker_prager;
 
           /**
+           * Vector storing which flow mechanisms are active
+           */
+          std::vector<unsigned int> active_flow_mechanisms;
+
+          /**
            * Pointers to objects for computing deformation mechanism
            * strain rates and effective viscosities.
            */
@@ -134,15 +135,59 @@ namespace aspect
           std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
           std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager;
 
-          DruckerPragerParameters drucker_prager_parameters;
+          /**
+           * The expected number of chemical compositional fields.
+           */
+          unsigned int number_of_chemical_compositions;
 
-          unsigned int number_of_compositions;
-          double minimum_viscosity;
+          /**
+           * The maximum viscosity, imposed via an isoviscous damper
+           * in series with the composite viscoplastic element
+           */
           double maximum_viscosity;
 
-          double min_strain_rate;
-          double strain_rate_residual_threshold;
+
+          /**
+           * The viscosity of an isoviscous damper placed in parallel
+           * with the flow law components.
+           * The viscosity is equal to the product of the
+           * minimum and maximum viscosities
+           * divided by the difference between the maximum and
+           * minimum viscosities.
+           */
+          double damper_viscosity;
+
+          /**
+           * A factor used to scale the viscoplastic strain rate
+           * up to the total strain rate.
+           * The scaling factor is equal to the maximum viscosity
+           * divided by the difference between the maximum and
+           * minimum viscosities.
+           */
+          double strain_rate_scaling_factor;
+
+          /**
+           * The minimum strain rate allowed by the rheology.
+           */
+          double minimum_strain_rate;
+
+          /**
+           * The log strain rate threshold which must be passed
+           * before successful termination of the Newton iteration
+           * to determine the creep stress.
+           */
+          double log_strain_rate_residual_threshold;
+
+          /**
+           * The maximum number of iterations allowed to determine
+           * the creep stress.
+           */
           unsigned int stress_max_iteration_number;
+
+          /**
+           * Useful number to aid in adding together exponentials
+           */
+          const double logmin = std::log(std::numeric_limits<double>::min());
       };
     }
   }
