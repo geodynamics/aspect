@@ -294,11 +294,7 @@ namespace aspect
     template <typename InterfaceType>
     ManagerBase<InterfaceType>::~ManagerBase()
     {
-      // Not all derived manager classes currently set the 'plugin_names'
-      // variable, but for those that do, they better have as many names
-      // as there are plugins.
-      if (plugin_names.size() > 0)
-        Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+      Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
     }
 
 
