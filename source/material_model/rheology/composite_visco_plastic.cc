@@ -141,44 +141,38 @@ namespace aspect
         Rheology::PeierlsCreepParameters peierls_creep_parameters;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
 
-        double eta_diff = maximum_viscosity;
-        double eta_disl = maximum_viscosity;
-        double eta_prls = maximum_viscosity;
+        // 1) Estimate the stress running through the creep elements and the maximum viscosity element.
+        // These are all arranged in series. Taking the minimum viscosity assuming that all the strain
+        // runs through a single element provides an excellent first approximation to the true viscosity.
+        // The stress can then be calculated as 2 * eta * edot_ii
+        double eta_creep_guess = 1.e22;
 
         if (use_diffusion_creep)
           {
             diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition, phase_function_values, n_phase_transitions_per_composition);
+            eta_creep_guess = std::min(diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition, phase_function_values, n_phase_transitions_per_composition), eta_creep_guess);
           }
 
         if (use_dislocation_creep)
           {
             dislocation_creep_parameters = dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            eta_disl = dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition);
+            eta_creep_guess = std::min(dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition), eta_creep_guess);
           }
 
         if (use_peierls_creep)
           {
             peierls_creep_parameters = peierls_creep->compute_creep_parameters(composition);
-            eta_prls = peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition);
+            eta_creep_guess = std::min(peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition), eta_creep_guess);
           }
-        // First guess at a stress using diffusion, dislocation, and Peierls creep viscosities calculated with the total second strain rate invariant.
-        const double eta_guess = std::min(std::max(minimum_viscosity, eta_diff*eta_disl*eta_prls/(eta_diff*eta_disl + eta_diff*eta_prls + eta_disl*eta_prls)), maximum_viscosity);
 
-        double creep_stress = 2.*eta_guess*edot_ii;
-
-        // Crude modification of the creep stress to be no higher than the
-        // Drucker-Prager yield stress. Probably fine for a first guess.
         if (use_drucker_prager)
           {
             drucker_prager_parameters = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            const double yield_stress = drucker_prager->compute_yield_stress(drucker_prager_parameters.cohesion,
-                                                                             drucker_prager_parameters.angle_internal_friction,
-                                                                             pressure,
-                                                                             drucker_prager_parameters.max_yield_stress);
-
-            creep_stress = std::min(creep_stress, yield_stress);
+            eta_creep_guess = std::min(drucker_prager->compute_viscosity(drucker_prager_parameters.cohesion,
+                                                                         drucker_prager_parameters.angle_internal_friction, pressure, edot_ii, drucker_prager_parameters.max_yield_stress), eta_creep_guess);
           }
+
+        double creep_stress = 2.*eta_creep_guess*edot_ii;
 
         // In this rheology model, the total strain rate is partitioned between
         // different flow laws. We do not know how the strain is partitioned
@@ -344,7 +338,7 @@ namespace aspect
         Rheology::PeierlsCreep<dim>::declare_parameters(prm);
 
         // Drucker Prager parameters
-        Rheology::DruckerPrager<dim>::declare_parameters(prm);
+        Rheology::DruckerPragerPower<dim>::declare_parameters(prm);
 
         // Some of the parameters below are shared with the subordinate
         // rheology models (diffusion, dislocation, ...),
@@ -429,12 +423,9 @@ namespace aspect
         use_drucker_prager = prm.get_bool ("Include Drucker Prager plasticity in composite rheology");
         if (use_drucker_prager)
           {
-            drucker_prager = std::make_unique<Rheology::DruckerPrager<dim>>();
+            drucker_prager = std::make_unique<Rheology::DruckerPragerPower<dim>>();
             drucker_prager->initialize_simulator (this->get_simulator());
             drucker_prager->parse_parameters(prm, expected_n_phases_per_composition);
-
-            AssertThrow(prm.get_bool("Use plastic damper") && prm.get_double("Plastic damper viscosity") > 0.,
-                        ExcMessage("If Drucker-Prager plasticity is included in the rheological formulation, you must use a viscous damper with a positive viscosity."));
           }
 
         AssertThrow(use_diffusion_creep == true || use_dislocation_creep == true || use_peierls_creep == true || use_drucker_prager == true,

@@ -27,7 +27,7 @@
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/peierls_creep.h>
-#include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/material_model/rheology/drucker_prager_power.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -132,7 +132,7 @@ namespace aspect
           std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
           std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
           std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
-          std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
+          std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager;
 
           DruckerPragerParameters drucker_prager_parameters;
 
