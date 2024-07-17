@@ -129,7 +129,7 @@ namespace aspect
           std::pair<double, double>
           compute_strain_rate_and_derivative (const double stress,
                                               const double pressure,
-                                              const DruckerPragerParameters p) const;
+                                              const DruckerPragerParameters &p) const;
 
           /**
            * Compute the derivative of the plastic viscosity with respect to pressure.
@@ -140,8 +140,25 @@ namespace aspect
 
         private:
 
+          /**
+           * The Drucker-Prager rheology is a simple plastic model
+           * that yields at a stress of
+           * (6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) / (sqrt(3.0) * (3.0 + sin_phi))
+           * in 3D or
+           * cohesion * cos_phi + pressure * sin_phi in 2D.
+           * Phi is an angle of internal friction, that is
+           * input by the user in degrees, but stored as radians.
+           */
           std::vector<double> angles_internal_friction;
+
+          /**
+           * The cohesion is provided and stored in Pa.
+           */
           std::vector<double> cohesions;
+
+          /**
+           * The yield stress is limited to a constant value, stored in Pa.
+           */
           double max_yield_stress;
 
           /**
