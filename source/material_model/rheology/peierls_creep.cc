@@ -336,6 +336,39 @@ namespace aspect
 
       template <int dim>
       std::pair<double, double>
+      PeierlsCreep<dim>::compute_approximate_log_strain_rate_and_derivative (const double log_stress,
+                                                                             const double pressure,
+                                                                             const double temperature,
+                                                                             const PeierlsCreepParameters creep_parameters) const
+      {
+        /**
+        * b = (E+P*V)/(R*T)
+        * c = std::pow(gamma, p)
+        * d = std::pow(1. - c, q)
+        * s = b*p*q*c*d/(1. - c)
+        * log_arrhenius = -b*d
+        *
+        * log_strain_rate = log_A + (s + n) * std::log(stress) - s * std::log(gamma*peierls_stress) + log_arrhenius
+        * total_stress_exponent = (s + n)
+        */
+        const PeierlsCreepParameters p = creep_parameters;
+
+        const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
+        const double c = std::pow(p.fitting_parameter, p.glide_parameter_p);
+        const double d = std::pow(1. - c, p.glide_parameter_q);
+        const double s = b*p.glide_parameter_p*p.glide_parameter_q*c*d/(1. - c);
+        const double log_arrhenius = -b*d;
+
+        const double total_stress_exponent = s + p.stress_exponent;
+        const double log_strain_rate = std::log(p.prefactor) + total_stress_exponent * log_stress - s * std::log(p.fitting_parameter*p.peierls_stress) + log_arrhenius;
+
+        return std::make_pair(log_strain_rate, total_stress_exponent);
+      }
+
+
+
+      template <int dim>
+      std::pair<double, double>
       PeierlsCreep<dim>::compute_exact_strain_rate_and_derivative (const double stress,
                                                                    const double pressure,
                                                                    const double temperature,
