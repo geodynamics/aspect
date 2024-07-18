@@ -1,0 +1,4 @@
+Added: The functions in the CompositeViscoPlastic
+rheology model now have grain_size as an argument.
+<br>
+(Bob Myhill, 2024/07/17)
