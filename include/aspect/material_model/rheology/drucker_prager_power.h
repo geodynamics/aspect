@@ -40,6 +40,19 @@ namespace aspect
       template <int dim>
       class DruckerPragerPower : public ::aspect::SimulatorAccess<dim>
       {
+          /**
+           * The Drucker-Prager power-law rheology approximates the
+           * standard Drucker-Prager plastic model. The standard model
+           * involves a simple plastic element that yields at a stress of
+           * (6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) / (sqrt(3.0) * (3.0 + sin_phi))
+           * in 3D or cohesion * cos_phi + pressure * sin_phi in 2D.
+           * The "Power-Law" modification introduced in this class
+           * replaces the yield criterion with a power law dependence of stress
+           * on the strain rate:
+           * stress = yield_stress * (edot/edot_ref)^(1/n).
+           * In the limit that n -> infinity, the model
+           * approaches the classic Drucker-Prager model.
+           */
         public:
           DruckerPragerPower();
 
@@ -115,20 +128,8 @@ namespace aspect
 
         private:
           /**
-           * The Drucker-Prager power-law rheology approximates the
-           * standard Drucker-Prager plastic model. The standard model
-           * involves a simple plastic element that yields at a stress of
-           * (6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) / (sqrt(3.0) * (3.0 + sin_phi))
-           * in 3D or
-           * cohesion * cos_phi + pressure * sin_phi in 2D.
-           * The "Power-Law" modification replaces the yield criterion
-           * with a power law dependence of stress on the strain rate:
-           * stress = yield_stress * (edot/edot_ref)^(1/n).
-           * In the limit that n -> infinity, the model
-           * approaches the classic Drucker-Prager model.
-           *
-           * Phi is an angle of internal friction, that is
-           * input by the user in degrees, but stored as radians.
+           * The angles of internal friction (phi) are input
+           * by the user in degrees, but stored as radians.
            */
           std::vector<double> angles_internal_friction;
 

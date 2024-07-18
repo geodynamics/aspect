@@ -38,6 +38,7 @@ namespace aspect
         = default;
 
 
+
       template <int dim>
       const DruckerPragerParameters
       DruckerPragerPower<dim>::compute_drucker_prager_parameters (const unsigned int composition,
@@ -66,6 +67,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       double
       DruckerPragerPower<dim>::compute_yield_stress (const double cohesion,
@@ -88,12 +90,13 @@ namespace aspect
         // Initial yield stress (no stabilization terms)
         const double yield_stress = ( (dim==3)
                                       ?
-                                      ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part
+                                      (( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part)
                                       :
-                                      cohesion * cos_phi + pressure * sin_phi);
+                                      (cohesion * cos_phi + pressure * sin_phi));
 
         return std::min(yield_stress, max_yield_stress);
       }
+
 
 
       template <int dim>
