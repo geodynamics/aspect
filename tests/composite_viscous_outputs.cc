@@ -47,8 +47,6 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
-  prm.set("Use plastic damper", "true");
-  prm.set("Plastic damper viscosity", "1.e17");
   prm.set("Maximum yield stress", "5e8");
   composite_creep->parse_parameters(prm, n_phases);
 
@@ -70,15 +68,13 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   peierls_creep->declare_parameters(prm);
   peierls_creep->parse_parameters(prm, n_phases);
 
-  std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
-  drucker_prager = std::make_unique<Rheology::DruckerPrager<dim>>();
-  drucker_prager->initialize_simulator (simulator_access.get_simulator());
-  drucker_prager->declare_parameters(prm);
-  prm.set("Use plastic damper", "true");
-  prm.set("Plastic damper viscosity", "1.e17");
+  std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager_power;
+  drucker_prager_power = std::make_unique<Rheology::DruckerPragerPower<dim>>();
+  drucker_prager_power->initialize_simulator (simulator_access.get_simulator());
+  drucker_prager_power->declare_parameters(prm);
   prm.set("Maximum yield stress", "5e8");
-  drucker_prager->parse_parameters(prm, n_phases);
-  Rheology::DruckerPragerParameters p = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
+  drucker_prager_power->parse_parameters(prm, n_phases);
+  Rheology::DruckerPragerParameters p = drucker_prager_power->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
   // The creep components are arranged in series with each other.
   // This package of components is then arranged in parallel with
@@ -150,12 +146,11 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
       if (partial_strain_rates[3] > 0.)
         {
-          drpr_stress = 2.*partial_strain_rates[3]*drucker_prager->compute_viscosity(p.cohesion,
-                                                                                     p.angle_internal_friction,
-                                                                                     pressure,
-                                                                                     partial_strain_rates[3],
-                                                                                     p.max_yield_stress,
-                                                                                     std::numeric_limits<double>::infinity());
+          drpr_stress = 2.*partial_strain_rates[3]*drucker_prager_power->compute_viscosity(p.cohesion,
+                        p.angle_internal_friction,
+                        pressure,
+                        partial_strain_rates[3],
+                        p.max_yield_stress);
         }
       else
         {

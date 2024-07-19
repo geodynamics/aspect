@@ -1,0 +1,4 @@
+Changed: The CompositeViscoPlastic rheology in ASPECT now uses
+the DruckerPragerPower rheology.
+<br>
+(Bob Myhill, 2024/07/17)

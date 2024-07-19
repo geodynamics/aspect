@@ -141,52 +141,46 @@ namespace aspect
         Rheology::PeierlsCreepParameters peierls_creep_parameters;
         Rheology::DruckerPragerParameters drucker_prager_parameters;
 
-        double eta_diff = maximum_viscosity;
-        double eta_disl = maximum_viscosity;
-        double eta_prls = maximum_viscosity;
+        // 1) Estimate the stress running through the viscoplastic elements and the maximum viscosity element.
+        // These are all arranged in series. Taking the minimum viscosity assuming that all the strain
+        // runs through a single element provides an excellent first approximation to the true viscosity.
+        // The stress can then be calculated as 2 * eta * edot_ii
+        double viscoplastic_viscosity_guess = maximum_viscosity;
 
         if (use_diffusion_creep)
           {
             diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition, phase_function_values, n_phase_transitions_per_composition);
+            viscoplastic_viscosity_guess = std::min(diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition, phase_function_values, n_phase_transitions_per_composition), viscoplastic_viscosity_guess);
           }
 
         if (use_dislocation_creep)
           {
             dislocation_creep_parameters = dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            eta_disl = dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition);
+            viscoplastic_viscosity_guess = std::min(dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition), viscoplastic_viscosity_guess);
           }
 
         if (use_peierls_creep)
           {
             peierls_creep_parameters = peierls_creep->compute_creep_parameters(composition);
-            eta_prls = peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition);
+            viscoplastic_viscosity_guess = std::min(peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition), viscoplastic_viscosity_guess);
           }
-        // First guess at a stress using diffusion, dislocation, and Peierls creep viscosities calculated with the total second strain rate invariant.
-        const double eta_guess = std::min(std::max(minimum_viscosity, eta_diff*eta_disl*eta_prls/(eta_diff*eta_disl + eta_diff*eta_prls + eta_disl*eta_prls)), maximum_viscosity);
 
-        double creep_stress = 2.*eta_guess*edot_ii;
-
-        // Crude modification of the creep stress to be no higher than the
-        // Drucker-Prager yield stress. Probably fine for a first guess.
         if (use_drucker_prager)
           {
             drucker_prager_parameters = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
-            const double yield_stress = drucker_prager->compute_yield_stress(drucker_prager_parameters.cohesion,
-                                                                             drucker_prager_parameters.angle_internal_friction,
-                                                                             pressure,
-                                                                             drucker_prager_parameters.max_yield_stress);
-
-            creep_stress = std::min(creep_stress, yield_stress);
+            viscoplastic_viscosity_guess = std::min(drucker_prager->compute_viscosity(drucker_prager_parameters.cohesion,
+                                                                                      drucker_prager_parameters.angle_internal_friction, pressure, edot_ii, drucker_prager_parameters.max_yield_stress), viscoplastic_viscosity_guess);
           }
+
+        double viscoplastic_stress = 2.*viscoplastic_viscosity_guess*edot_ii;
 
         // In this rheology model, the total strain rate is partitioned between
         // different flow laws. We do not know how the strain is partitioned
-        // between these flow laws, nor do we know the creep stress, which is
+        // between these flow laws, nor do we know the viscoplastic stress, which is
         // required to calculate the partitioning.
 
         // The following while loop conducts a Newton iteration to obtain the
-        // creep stress, which we need in order to calculate the viscosity.
+        // viscoplastic stress, which we need in order to calculate the viscosity.
         double strain_rate_residual = 2*strain_rate_residual_threshold;
         double strain_rate_deriv = 0;
         unsigned int stress_iteration = 0;
@@ -194,23 +188,23 @@ namespace aspect
                && stress_iteration < stress_max_iteration_number)
           {
 
-            const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative (creep_stress,
-                                                                   pressure,
-                                                                   temperature,
-                                                                   grain_size,
-                                                                   diffusion_creep_parameters,
-                                                                   dislocation_creep_parameters,
-                                                                   peierls_creep_parameters,
-                                                                   drucker_prager_parameters);
+            const std::pair<double, double> viscoplastic_edot_and_deriv = compute_strain_rate_and_derivative (viscoplastic_stress,
+                                                                          pressure,
+                                                                          temperature,
+                                                                          grain_size,
+                                                                          diffusion_creep_parameters,
+                                                                          dislocation_creep_parameters,
+                                                                          peierls_creep_parameters,
+                                                                          drucker_prager_parameters);
 
-            const double strain_rate = creep_stress/(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.first;
-            strain_rate_deriv = 1./(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*creep_edot_and_deriv.second;
+            const double strain_rate = viscoplastic_stress/(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*viscoplastic_edot_and_deriv.first;
+            strain_rate_deriv = 1./(2.*maximum_viscosity) + (maximum_viscosity/(maximum_viscosity - minimum_viscosity))*viscoplastic_edot_and_deriv.second;
 
             strain_rate_residual = strain_rate - edot_ii;
 
             // If the strain rate derivative is zero, we catch it below.
             if (strain_rate_deriv>std::numeric_limits<double>::min())
-              creep_stress -= strain_rate_residual/strain_rate_deriv;
+              viscoplastic_stress -= strain_rate_residual/strain_rate_deriv;
             stress_iteration += 1;
 
             // If anything that would be used in the next iteration is not finite, the
@@ -219,25 +213,25 @@ namespace aspect
             // Currently, we still throw an exception, but if this exception is thrown,
             // another more robust iterative scheme should be implemented
             // (similar to that seen in the diffusion-dislocation material model).
-            const bool abort_newton_iteration = !numbers::is_finite(creep_stress)
+            const bool abort_newton_iteration = !numbers::is_finite(viscoplastic_stress)
                                                 || !numbers::is_finite(strain_rate_residual)
                                                 || !numbers::is_finite(strain_rate_deriv)
                                                 || strain_rate_deriv < std::numeric_limits<double>::min()
                                                 || stress_iteration == stress_max_iteration_number;
             AssertThrow(!abort_newton_iteration,
                         ExcMessage("No convergence has been reached in the loop that determines "
-                                   "the composite viscous creep stress. Aborting! "
+                                   "the composite viscoplastic stress. Aborting! "
                                    "Residual is " + Utilities::to_string(strain_rate_residual) +
                                    " after " + Utilities::to_string(stress_iteration) + " iterations. "
                                    "You can increase the number of iterations by adapting the "
                                    "parameter 'Maximum creep strain rate iterations'."));
           }
 
-        // The creep stress is not the total stress, so we still need to do a little work to obtain the effective viscosity.
-        // First, we compute the stress running through the strain rate limiter, and then add that to the creep stress
+        // The viscoplastic stress is not the total stress, so we still need to do a little work to obtain the effective viscosity.
+        // First, we compute the stress running through the strain rate limiter, and then add that to the viscoplastic stress
         // NOTE: The viscosity of the strain rate limiter is equal to (minimum_viscosity*maximum_viscosity)/(maximum_viscosity - minimum_viscosity)
-        const double lim_stress = 2.*minimum_viscosity*(edot_ii - creep_stress/(2.*maximum_viscosity));
-        const double total_stress = creep_stress + lim_stress;
+        const double lim_stress = 2.*minimum_viscosity*(edot_ii - viscoplastic_stress/(2.*maximum_viscosity));
+        const double total_stress = viscoplastic_stress + lim_stress;
 
         // Compute the strain rate experienced by the different mechanisms
         // These should sum to the total strain rate
@@ -246,25 +240,25 @@ namespace aspect
         // dictated by make_strain_rate_additional_outputs_names
         if (use_diffusion_creep)
           {
-            const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, grain_size, diffusion_creep_parameters);
+            const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, temperature, grain_size, diffusion_creep_parameters);
             partial_strain_rates[0] = diff_edot_and_deriv.first;
           }
 
         if (use_dislocation_creep)
           {
-            const std::pair<double, double> disl_edot_and_deriv = dislocation_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, dislocation_creep_parameters);
+            const std::pair<double, double> disl_edot_and_deriv = dislocation_creep->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, temperature, dislocation_creep_parameters);
             partial_strain_rates[1] = disl_edot_and_deriv.first;
           }
 
         if (use_peierls_creep)
           {
-            const std::pair<double, double> prls_edot_and_deriv = peierls_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, peierls_creep_parameters);
+            const std::pair<double, double> prls_edot_and_deriv = peierls_creep->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, temperature, peierls_creep_parameters);
             partial_strain_rates[2] = prls_edot_and_deriv.first;
           }
 
         if (use_drucker_prager)
           {
-            const std::pair<double, double> drpr_edot_and_deriv = drucker_prager->compute_strain_rate_and_derivative(creep_stress, pressure, drucker_prager_parameters);
+            const std::pair<double, double> drpr_edot_and_deriv = drucker_prager->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, drucker_prager_parameters);
             partial_strain_rates[3] = drpr_edot_and_deriv.first;
           }
 
@@ -286,7 +280,7 @@ namespace aspect
 
       template <int dim>
       std::pair<double, double>
-      CompositeViscoPlastic<dim>::compute_strain_rate_and_derivative (const double creep_stress,
+      CompositeViscoPlastic<dim>::compute_strain_rate_and_derivative (const double viscoplastic_stress,
                                                                       const double pressure,
                                                                       const double temperature,
                                                                       const double grain_size,
@@ -295,21 +289,21 @@ namespace aspect
                                                                       const PeierlsCreepParameters peierls_creep_parameters,
                                                                       const DruckerPragerParameters drucker_prager_parameters) const
       {
-        std::pair<double, double> creep_edot_and_deriv = std::make_pair(0., 0.);
+        std::pair<double, double> viscoplastic_edot_and_deriv = std::make_pair(0., 0.);
 
         if (use_diffusion_creep)
-          creep_edot_and_deriv = creep_edot_and_deriv + diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, grain_size, diffusion_creep_parameters);
+          viscoplastic_edot_and_deriv = viscoplastic_edot_and_deriv + diffusion_creep->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, temperature, grain_size, diffusion_creep_parameters);
 
         if (use_dislocation_creep)
-          creep_edot_and_deriv = creep_edot_and_deriv + dislocation_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, dislocation_creep_parameters);
+          viscoplastic_edot_and_deriv = viscoplastic_edot_and_deriv + dislocation_creep->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, temperature, dislocation_creep_parameters);
 
         if (use_peierls_creep)
-          creep_edot_and_deriv = creep_edot_and_deriv + peierls_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, peierls_creep_parameters);
+          viscoplastic_edot_and_deriv = viscoplastic_edot_and_deriv + peierls_creep->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, temperature, peierls_creep_parameters);
 
         if (use_drucker_prager)
-          creep_edot_and_deriv = creep_edot_and_deriv + drucker_prager->compute_strain_rate_and_derivative(creep_stress, pressure, drucker_prager_parameters);
+          viscoplastic_edot_and_deriv = viscoplastic_edot_and_deriv + drucker_prager->compute_strain_rate_and_derivative(viscoplastic_stress, pressure, drucker_prager_parameters);
 
-        return creep_edot_and_deriv;
+        return viscoplastic_edot_and_deriv;
       }
 
 
@@ -344,7 +338,7 @@ namespace aspect
         Rheology::PeierlsCreep<dim>::declare_parameters(prm);
 
         // Drucker Prager parameters
-        Rheology::DruckerPrager<dim>::declare_parameters(prm);
+        Rheology::DruckerPragerPower<dim>::declare_parameters(prm);
 
         // Some of the parameters below are shared with the subordinate
         // rheology models (diffusion, dislocation, ...),
@@ -361,7 +355,7 @@ namespace aspect
                            "Tolerance for correct diffusion/dislocation strain rate ratio.");
         prm.declare_entry ("Maximum creep strain rate iterations", "40", Patterns::Integer(0),
                            "Maximum number of iterations to find the correct "
-                           "creep strain rate.");
+                           "viscoplastic strain rate.");
 
         // Strain rate and stress limiting parameters
         prm.declare_entry ("Minimum viscosity", "1.e17",
@@ -429,12 +423,9 @@ namespace aspect
         use_drucker_prager = prm.get_bool ("Include Drucker Prager plasticity in composite rheology");
         if (use_drucker_prager)
           {
-            drucker_prager = std::make_unique<Rheology::DruckerPrager<dim>>();
+            drucker_prager = std::make_unique<Rheology::DruckerPragerPower<dim>>();
             drucker_prager->initialize_simulator (this->get_simulator());
             drucker_prager->parse_parameters(prm, expected_n_phases_per_composition);
-
-            AssertThrow(prm.get_bool("Use plastic damper") && prm.get_double("Plastic damper viscosity") > 0.,
-                        ExcMessage("If Drucker-Prager plasticity is included in the rheological formulation, you must use a viscous damper with a positive viscosity."));
           }
 
         AssertThrow(use_diffusion_creep == true || use_dislocation_creep == true || use_peierls_creep == true || use_drucker_prager == true,
