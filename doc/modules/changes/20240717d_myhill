@@ -1,0 +1,5 @@
+Changed: The CompositeViscoPlastic rheology in ASPECT is now
+required to use the approximate Peierls flow rheology if
+Peierls flow is switched on.
+<br>
+(Bob Myhill, 2024/07/17)
