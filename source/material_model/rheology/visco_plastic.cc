@@ -118,14 +118,14 @@ namespace aspect
               stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
           }
 
-        // Use a specified "reference" strain rate if the strain rate is not yet available,
-        // or close to zero. This is to avoid division by zero.
+        // Use a specified "reference" strain rate if the strain rate is not yet available
+        // during the very first nonlinear iteration or before. This is to avoid division by zero and
+        // to have a better estimate of the resulting viscosity during this time.
+        // During later iterations and timesteps the strain rate is capped by a minimum value min_strain_rate.
         const bool use_reference_strainrate = this->simulator_is_past_initialization() == false
                                               ||
                                               (this->get_timestep_number() == 0 &&
-                                               this->get_nonlinear_iteration() == 0)
-                                              ||
-                                              (in.strain_rate[i].norm() <= std::numeric_limits<double>::min());
+                                               this->get_nonlinear_iteration() == 0);
 
         double edot_ii;
         if (use_reference_strainrate)
@@ -262,9 +262,7 @@ namespace aspect
               {
                 const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
 
-                if (use_reference_strainrate == true)
-                  effective_edot_ii = ref_strain_rate;
-                else
+                if (use_reference_strainrate == false)
                   {
                     // Overwrite effective_edot_ii with a value that includes a term that accounts for
                     // elastic stress arising from a previous time step.
