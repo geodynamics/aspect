@@ -648,6 +648,8 @@ namespace aspect
         // Reference and minimum/maximum values
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
+        AssertThrow(ref_strain_rate >= min_strain_rate,
+                    ExcMessage("The reference strain rate for the viscoplastic material model should be larger than the minimum strain rate."));
 
         // Retrieve the list of composition names
         std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
