@@ -335,7 +335,7 @@ namespace aspect
                 {
                   //Step 5b-1: always rescale the viscosity back to the yield surface
                   const double viscosity_limiter = yield_stress / (2.0 * ref_strain_rate)
-                                                   * std::pow((edot_ii/ref_strain_rate),
+                                                   * std::pow((effective_edot_ii/ref_strain_rate),
                                                               1./exponents_stress_limiter[j] - 1.0);
                   effective_viscosity = 1. / ( 1./viscosity_limiter + 1./non_yielding_viscosity);
                   break;
