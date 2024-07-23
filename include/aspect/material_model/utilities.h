@@ -471,6 +471,10 @@ namespace aspect
                             const std::vector<double> &parameter_values,
                             const CompositionalAveragingOperation &average_type);
 
+      /**
+       * Overloaded average_value function to account for the case when there
+       * may be phase transitions for each composition.
+       */
       double average_value(const std::vector<double> &volume_fractions,
                            const std::vector<double> &phase_function_values,
                            const std::vector<unsigned int> &n_phase_transitions_per_composition,
@@ -522,6 +526,10 @@ namespace aspect
                                   const unsigned int composition_index,
                                   const PhaseUtilities::PhaseAveragingOperation operation = PhaseUtilities::PhaseAveragingOperation::arithmetic);
 
+      /**
+       * Overloaded phase_average_value function where @p start_phase_index
+       * is passed as an argument.
+       */
       double phase_average_value(const std::vector<double> &phase_function_values,
                                  const std::vector<double> &parameter_values,
                                  const unsigned int composition_index,
