@@ -189,7 +189,7 @@ namespace aspect
             {
               double thermal_diffusivity = 0.0;
 
-              thermal_diffusivity = MaterialUtilities::phase_average_value(phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_diffusivities, MaterialUtilities::arithmetic);
+              thermal_diffusivity = MaterialUtilities::average_value(volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_diffusivities, MaterialUtilities::arithmetic);
 
               // Thermal conductivity at the given positions. If the temperature equation uses
               // the reference density profile formulation, use the reference density to
@@ -207,8 +207,7 @@ namespace aspect
             {
               // Use thermal conductivity values specified in the parameter file, if this
               // option was selected.
-
-              out.thermal_conductivities[i] = MaterialUtilities::phase_average_value(phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_conductivities, MaterialUtilities::arithmetic);
+              out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition(), thermal_conductivities, MaterialUtilities::arithmetic);
             }
 
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
