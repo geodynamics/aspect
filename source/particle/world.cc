@@ -460,7 +460,7 @@ namespace aspect
 
       const UpdateFlags update_flags = property_manager->get_needed_update_flags();
 
-      boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
+      small_vector<double> solution_values(this->get_fe().dofs_per_cell);
 
       cell->get_dof_values(this->get_solution(),
                            solution_values.begin(),
@@ -504,7 +504,7 @@ namespace aspect
     {
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
-      boost::container::small_vector<Point<dim>, 100>   positions;
+      small_vector<Point<dim>> positions;
       positions.reserve(n_particles_in_cell);
       for (auto particle = begin_particle; particle!=end_particle; ++particle)
         positions.push_back(particle->get_reference_location());
@@ -527,7 +527,7 @@ namespace aspect
 
       if (required_solution_vectors[1] == true)
         {
-          boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+          small_vector<double> old_solution_values(this->get_fe().dofs_per_cell);
           cell->get_dof_values(this->get_old_solution(),
                                old_solution_values.begin(),
                                old_solution_values.end());
@@ -542,7 +542,7 @@ namespace aspect
 
       if (required_solution_vectors[2] == true)
         {
-          boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
+          small_vector<double> solution_values(this->get_fe().dofs_per_cell);
           cell->get_dof_values(this->get_current_linearization_point(),
                                solution_values.begin(),
                                solution_values.end());
