@@ -169,6 +169,14 @@ namespace aspect
   };
 
   /**
+   * Exception to be thrown when the nonlinear solver needs too many iterations to converge.
+   */
+  DeclExceptionMsg(ExcNonlinearSolverNoConvergence,
+                   "Nonlinear solver failed to converge in the prescribed number of steps. "
+                   "Consider changing `Max nonlinear iterations` or `Nonlinear solver failure "
+                   "strategy`.");
+
+  /**
    * This is the main class of ASPECT. It implements the overall simulation
    * algorithm using the numerical methods discussed in the papers and manuals
    * that accompany ASPECT.
@@ -1995,6 +2003,7 @@ namespace aspect
       unsigned int                                              timestep_number;
       unsigned int                                              pre_refinement_step;
       unsigned int                                              nonlinear_iteration;
+      unsigned int                                              nonlinear_solver_failures;
       /**
        * @}
        */

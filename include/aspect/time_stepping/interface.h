@@ -203,7 +203,6 @@ namespace aspect
         void
         write_plugin_graph (std::ostream &output_stream);
 
-
         /**
          * A function that is used to register time stepping model objects in such
          * a way that the Manager can deal with all of them without having to
@@ -258,6 +257,8 @@ namespace aspect
          */
         TerminationCriteria::Manager<dim> termination_manager;
     };
+
+
 
     /**
      * Given a class name, a name, and a description for the parameter file, register it with the
