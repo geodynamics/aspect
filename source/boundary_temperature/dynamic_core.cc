@@ -403,7 +403,7 @@ namespace aspect
     bool
     DynamicCore<dim>::solve_time_step(double &X, double &T, double &R)
     {
-      // Well solving the change in core-mantle boundary temperature T, inner core radius R, and
+      // When solving the change in core-mantle boundary temperature T, inner core radius R, and
       //    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
       // 1. At the inner core boundary the adiabatic temperature should be equal to solidus temperature
       // 2. The following energy production rate should be balanced in core:
@@ -415,8 +415,8 @@ namespace aspect
       //    So that         Q+Qs*dT/dt+Qr+Qg*dR/dt*Ql*dR/dt=0
       // 3. The light component composition X depends on inner core radius (See function get_X() ),
       //    and core solidus may dependent on X as well
-      // This becomes a small nonlinear problem. Directly iterate through the above three system doesn't
-      // converge well. Alternatively we solve the inner core radius by bisection method.
+      // This becomes a small nonlinear problem. Directly iterating through the above three system doesn't
+      // converge well. Instead, we solve the inner core radius by bisection method.
 
       int steps=1;
       double R_0,R_1,R_2;
@@ -438,11 +438,12 @@ namespace aspect
         }
       else if (dT2 <= 0. && dT0 <= 0. )
         {
-          //Completely solid core
+          // Completely solid core
           R_1 = R_2;
           dT1 = 0;
         }
-      else while (!(dT1==0 || steps>max_steps))
+      else
+        while (!(dT1==0 || steps>max_steps))
           {
             // If solution is out of the interval, then something is wrong.
             if (dT0*dT2>0)
@@ -487,10 +488,10 @@ namespace aspect
       else
         {
           // No solution found.
-          this->get_pcout()<<"[Dynamic core] Step: "<<steps<<std::endl
-                           <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
-                           <<" dT0="<<dT0<<", dT2="<<dT2<<std::endl
-                           <<"Q_CMB="<<core_data.Q<<std::endl;
+          this->get_pcout() << "[Dynamic core] Step: " << steps << std::endl
+                            << " R=[" << R_0/1e3 << "," << R_2/1e3 << "]" << "(km)"
+                            << " dT0=" << dT0 << ", dT2=" << dT2 << std::endl
+                            << "Q_CMB=" << core_data.Q << std::endl;
           AssertThrow(false, ExcMessage("[Dynamic core] No inner core radius solution found!"));
         }
 
