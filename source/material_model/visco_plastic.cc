@@ -348,7 +348,7 @@ namespace aspect
         {
           MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
 
-          EquationOfState::MulticomponentCompressible<dim>::declare_parameters (prm);
+          EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
 
           Rheology::ViscoPlastic<dim>::declare_parameters(prm);
 
