@@ -482,7 +482,8 @@ namespace aspect
             for (unsigned int d=0; d<dim; ++d)
               velocity_terms[d][d] -= cell_data->pressure_scaling * val_p_q;
 
-            if (cell_data->is_compressible)
+            if (cell_data->is_compressible || 
+                cell_data->enable_prescribed_dilation)
               for (unsigned int d=0; d<dim; ++d)
                 velocity_terms[d][d] -= viscosity_x_2 / 3. * div_u_q;
 
@@ -851,7 +852,8 @@ namespace aspect
           velocity.get_symmetric_gradient (q);
         sym_grad_u *= viscosity_x_2;
 
-        if (cell_data->is_compressible)
+        if (cell_data->is_compressible ||
+            cell_data->enable_prescribed_dilation)
           {
             const VectorizedArray<number> div = trace(sym_grad_u);
             for (unsigned int d=0; d<dim; ++d)
@@ -1636,7 +1638,8 @@ namespace aspect
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
     // Therefore, we don't need to include Newton terms here.
 
-    const bool is_compressible = sim.material_model->is_compressible();
+    const bool is_compressible = sim.material_model->is_compressible() ||
+                                 sim.parameters.enable_prescribed_dilation;
 
     dealii::LinearAlgebra::distributed::BlockVector<double> rhs_correction(2);
     dealii::LinearAlgebra::distributed::BlockVector<double> u0(2);

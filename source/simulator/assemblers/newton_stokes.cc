@@ -451,16 +451,6 @@ namespace aspect
                                        * prescribed_dilation->dilation[q]
                                        * scratch.phi_p[i]
                                      ) * JxW;
-
-              // Only assemble this term if we are running incompressible, otherwise this term
-              // is already included on the LHS of the equation.
-              if (enable_prescribed_dilation && !material_model_is_compressible)
-                data.local_rhs(i) += (
-                                       // RHS of momentum eqn: - \int 2/3 eta R, div v
-                                       - 2.0 / 3.0 * eta
-                                       * prescribed_dilation->dilation[q]
-                                       * scratch.div_phi_u[i]
-                                     ) * JxW;
             }
 
           // and then the matrix, if necessary
