@@ -84,6 +84,25 @@ namespace aspect
                              const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
           /**
+           * Compute the isostress viscosity over all compositional fields
+           * based on the composite viscous creep law.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
+          double
+          compute_isostress_viscosity (const double pressure,
+                                       const double temperature,
+                                       const double grain_size,
+                                       const std::vector<double> &volume_fractions,
+                                       const SymmetricTensor<2,dim> &strain_rate,
+                                       std::vector<double> &partial_strain_rates,
+                                       const std::vector<double> &phase_function_values = std::vector<double>(),
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+
+
+          /**
            * Compute the compositional field viscosity
            * based on the composite viscous creep law.
            * If @p n_phase_transitions_per_composition points to a vector of
@@ -111,7 +130,25 @@ namespace aspect
                                                    const double viscoplastic_stress,
                                                    std::vector<double> &partial_strain_rates) const;
 
+          /**
+           * Compute the total strain rate and the first derivative of log strain rate
+           * with respect to log viscoplastic stress from individual log strain rate components.
+           * Also updates the partial_strain_rates vector
+           */
+          std::pair<double, double>
+          calculate_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
+                                                   const double viscoplastic_stress,
+                                                   std::vector<double> &partial_strain_rates) const;
+
         private:
+          /**
+           * Enumeration for selecting which type of viscosity averaging to use.
+           */
+          enum ViscosityAveragingScheme
+          {
+            isostrain,
+            isostress
+          } viscosity_averaging_scheme;
 
           /**
            * Whether to use different deformation mechanisms
