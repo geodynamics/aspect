@@ -465,11 +465,14 @@ namespace aspect
             if (cell_data->enable_newton_derivatives &&
                 cell_data->enable_prescribed_dilation)
               {
-                pressure_terms += ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
-                                    * sym_grad_u_q )
-                                  +
-                                  ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
-                                    * cell_data->pressure_scaling * val_p_q );
+                pressure_terms += (
+                                    ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
+                                      * sym_grad_u_q )
+                                    +
+                                    ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
+                                      * cell_data->pressure_scaling * val_p_q )
+                                  ) 
+                                  * cell_data->pressure_scaling;
               }
 
             // Terms to be tested by the symmetric gradients of phi_u:
@@ -504,7 +507,7 @@ namespace aspect
                       cell_data->viscosity_derivative_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
                     2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u )
                   +
-                  2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
+                  2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p * cell_data->pressure_scaling;
               }
 
             u_eval.submit_symmetric_gradient(velocity_terms, q);
