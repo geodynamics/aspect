@@ -47,6 +47,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
+  prm.set("Viscosity averaging scheme", "isostrain");
   prm.set("Include diffusion creep in composite rheology", "true");
   prm.set("Include dislocation creep in composite rheology", "true");
   prm.set("Include Peierls creep in composite rheology", "true");
