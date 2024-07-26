@@ -169,7 +169,7 @@ namespace aspect
         // up all the strain.
 
         // The stress can then be calculated as 2 * viscoplastic_viscosity_guess * edot_ii
-        double viscoplastic_viscosity_guess = maximum_viscosity;
+        double inverse_viscoplastic_viscosity_guess = 1./maximum_viscosity;
 
         double total_volume_fraction = 1.;
         std::vector<unsigned int> active_compositions;
@@ -178,6 +178,7 @@ namespace aspect
             // Only include the contribution to the viscosity
             // from a given composition if the volume fraction exceeds
             // a certain (small) fraction.
+            double viscoplastic_viscosity_guess_c = maximum_viscosity;
             const double volume_fraction = volume_fractions[composition];
             if (volume_fraction > 2. * std::numeric_limits<double>::epsilon())
               {
@@ -186,29 +187,30 @@ namespace aspect
                 if (use_diffusion_creep)
                   {
                     diffusion_creep_parameters.push_back(diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition));
-                    viscoplastic_viscosity_guess = std::min(diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition, phase_function_values, n_phase_transitions_per_composition)/volume_fraction, viscoplastic_viscosity_guess);
+                    viscoplastic_viscosity_guess_c = std::min(diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition, phase_function_values, n_phase_transitions_per_composition), viscoplastic_viscosity_guess_c);
                   }
 
                 if (use_dislocation_creep)
                   {
                     dislocation_creep_parameters.push_back(dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phase_transitions_per_composition));
-                    viscoplastic_viscosity_guess = std::min(dislocation_creep->compute_viscosity(edot_ii/volume_fraction, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition)/volume_fraction, viscoplastic_viscosity_guess);
+                    viscoplastic_viscosity_guess_c = std::min(dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phase_transitions_per_composition), viscoplastic_viscosity_guess_c);
                   }
 
                 if (use_peierls_creep)
                   {
                     peierls_creep_parameters.push_back(peierls_creep->compute_creep_parameters(composition));
-                    viscoplastic_viscosity_guess = std::min(peierls_creep->compute_approximate_viscosity(edot_ii/volume_fraction, pressure, temperature, composition)/volume_fraction, viscoplastic_viscosity_guess);
+                    viscoplastic_viscosity_guess_c = std::min(peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition), viscoplastic_viscosity_guess_c);
                   }
 
                 if (use_drucker_prager)
                   {
                     Rheology::DruckerPragerParameters drucker_prager_parameters_c = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
                     drucker_prager_parameters.push_back(drucker_prager_parameters_c);
-                    viscoplastic_viscosity_guess = std::min(drucker_prager->compute_viscosity(drucker_prager_parameters_c.cohesion,
-                                                                                              drucker_prager_parameters_c.angle_internal_friction, pressure, edot_ii/volume_fraction, drucker_prager_parameters_c.max_yield_stress)/volume_fraction,
-                                                            viscoplastic_viscosity_guess);
+                    viscoplastic_viscosity_guess_c = std::min(drucker_prager->compute_viscosity(drucker_prager_parameters_c.cohesion,
+                                                                                                drucker_prager_parameters_c.angle_internal_friction, pressure, edot_ii, drucker_prager_parameters_c.max_yield_stress),
+                                                              viscoplastic_viscosity_guess_c);
                   }
+                inverse_viscoplastic_viscosity_guess += volume_fraction / viscoplastic_viscosity_guess_c;
               }
             else
               {
@@ -216,6 +218,7 @@ namespace aspect
               }
           }
 
+        const double viscoplastic_viscosity_guess = 1. / inverse_viscoplastic_viscosity_guess;
         double viscoplastic_stress = 2. * viscoplastic_viscosity_guess * edot_ii / total_volume_fraction;
         double log_viscoplastic_stress = std::log(viscoplastic_stress);
 
