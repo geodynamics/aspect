@@ -101,6 +101,15 @@ namespace aspect
                                        const std::vector<double> &phase_function_values = std::vector<double>(),
                                        const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
+          /**
+           * Compute the total strain rate and the first derivative of log strain rate
+           * with respect to log viscoplastic stress from individual log strain rate components
+           * over all compositional fields. Also updates the partial_strain_rates vector
+           */
+          std::pair<double, double>
+          calculate_isostress_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
+                                                             const double viscoplastic_stress,
+                                                             std::vector<double> &partial_strain_rates) const;
 
           /**
            * Compute the compositional field viscosity
@@ -126,19 +135,9 @@ namespace aspect
            * Also updates the partial_strain_rates vector
            */
           std::pair<double, double>
-          calculate_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
-                                                   const double viscoplastic_stress,
-                                                   std::vector<double> &partial_strain_rates) const;
-
-          /**
-           * Compute the total strain rate and the first derivative of log strain rate
-           * with respect to log viscoplastic stress from individual log strain rate components.
-           * Also updates the partial_strain_rates vector
-           */
-          std::pair<double, double>
-          calculate_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
-                                                   const double viscoplastic_stress,
-                                                   std::vector<double> &partial_strain_rates) const;
+          calculate_composition_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
+                                                               const double viscoplastic_stress,
+                                                               std::vector<double> &partial_strain_rates) const;
 
         private:
           /**

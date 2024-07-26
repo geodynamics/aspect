@@ -256,7 +256,7 @@ namespace aspect
         // only one mechanism was active, whereas the strain rate
         // calculated in Step 2 allowed all the mechanisms to
         // accommodate strain at that creep stress.
-        std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_log_strain_rate_and_derivative(log_edot_and_deriv,
+        std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_isostress_log_strain_rate_and_derivative(log_edot_and_deriv,
                                                                   viscoplastic_stress,
                                                                   partial_strain_rates);
         double log_strain_rate_residual = log_edot_ii_and_deriv_iterate.first - log_edot_ii;
@@ -284,9 +284,9 @@ namespace aspect
               }
 
             // Compute the new log strain rate residual and log stress derivative
-            log_edot_ii_and_deriv_iterate = calculate_log_strain_rate_and_derivative(log_edot_and_deriv,
-                                                                                     viscoplastic_stress,
-                                                                                     partial_strain_rates);
+            log_edot_ii_and_deriv_iterate = calculate_isostress_log_strain_rate_and_derivative(log_edot_and_deriv,
+                                            viscoplastic_stress,
+                                            partial_strain_rates);
             log_strain_rate_residual = log_edot_ii - log_edot_ii_and_deriv_iterate.first;
 
             ++stress_iteration;
@@ -319,6 +319,62 @@ namespace aspect
 
         // 6) Return the effective creep viscosity using the total stress
         return total_stress / (2. * edot_ii);
+      }
+
+
+
+      template <int dim>
+      std::pair<double, double>
+      CompositeViscoPlastic<dim>::calculate_isostress_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
+                                                                                     const double viscoplastic_stress,
+                                                                                     std::vector<double> &partial_strain_rates) const
+      {
+        // The total strain rate
+        double viscoplastic_strain_rate_sum = 0.0;
+
+        // The sum of the stress derivatives multiplied by the mechanism strain rates
+        double weighted_stress_derivative_sum = 0.0;
+
+        // The first derivative of log(strain rate) with respect to log(stress)
+        // is computed as sum_i(stress_exponent_i * edot_i) / sum_i(edot_i)
+        // i.e., the stress exponents weighted by strain rate fraction
+        // summed over the individual flow mechanisms (i).
+        // Loop over active flow laws and add their contributions
+        // to the strain rate and stress derivative
+
+        // First, make sure that the active partial_strain_rates are reset to zero.
+        for (auto &i : active_flow_mechanisms)
+          partial_strain_rates[i] = 0;
+
+        for (auto &logarithmic_strain_rates_and_stress_derivatives_c : logarithmic_strain_rates_and_stress_derivatives)
+          {
+            for (auto &i : active_flow_mechanisms)
+              {
+                double mechanism_log_strain_rate = logarithmic_strain_rates_and_stress_derivatives_c[i].first;
+
+                // Check if the mechanism strain rate is within bounds to prevent underflow
+                if (mechanism_log_strain_rate >= logmin)
+                  {
+                    const double mechanism_strain_rate = std::exp(mechanism_log_strain_rate);
+                    partial_strain_rates[i] += mechanism_strain_rate;
+                    const double log_stress_derivative = logarithmic_strain_rates_and_stress_derivatives_c[i].second;
+                    viscoplastic_strain_rate_sum += mechanism_strain_rate;
+                    weighted_stress_derivative_sum += log_stress_derivative * mechanism_strain_rate;
+                  }
+              }
+          }
+
+        const double log_viscoplastic_strain_rate_derivative = weighted_stress_derivative_sum / viscoplastic_strain_rate_sum;
+
+        // Some opaque mathematics converts the viscoplastic strain rate to the total strain rate.
+        const double f = viscoplastic_stress / (2. * maximum_viscosity);
+        const double strain_rate = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum) + f;
+        partial_strain_rates[4] = strain_rate - viscoplastic_strain_rate_sum;
+        // And the partial derivative of the log *total* strain rate
+        // with respect to log *viscoplastic* stress follows as
+        const double log_strain_rate_derivative = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum * log_viscoplastic_strain_rate_derivative + f) / strain_rate;
+
+        return std::make_pair(std::log(strain_rate), log_strain_rate_derivative);
       }
 
 
@@ -406,7 +462,7 @@ namespace aspect
         // only one mechanism was active, whereas the strain rate
         // calculated in Step 2 allowed all the mechanisms to
         // accommodate strain at that creep stress.
-        std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_log_strain_rate_and_derivative(log_edot_and_deriv,
+        std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_composition_log_strain_rate_and_derivative(log_edot_and_deriv,
                                                                   viscoplastic_stress,
                                                                   partial_strain_rates);
         double log_strain_rate_residual = log_edot_ii_and_deriv_iterate.first - log_edot_ii;
@@ -432,9 +488,9 @@ namespace aspect
               log_edot_and_deriv[i].first += log_edot_and_deriv[i].second * delta_log_viscoplastic_stress;
 
             // Compute the new log strain rate residual and log stress derivative
-            log_edot_ii_and_deriv_iterate = calculate_log_strain_rate_and_derivative(log_edot_and_deriv,
-                                                                                     viscoplastic_stress,
-                                                                                     partial_strain_rates);
+            log_edot_ii_and_deriv_iterate = calculate_composition_log_strain_rate_and_derivative(log_edot_and_deriv,
+                                            viscoplastic_stress,
+                                            partial_strain_rates);
             log_strain_rate_residual = log_edot_ii - log_edot_ii_and_deriv_iterate.first;
 
             ++stress_iteration;
@@ -472,19 +528,11 @@ namespace aspect
 
 
 
-      // Overload the + operator to act on two pairs of doubles.
-      std::pair<double,double> operator+(const std::pair<double,double> &x, const std::pair<double,double> &y)
-      {
-        return std::make_pair(x.first+y.first, x.second+y.second);
-      }
-
-
-
       template <int dim>
       std::pair<double, double>
-      CompositeViscoPlastic<dim>::calculate_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
-                                                                           const double viscoplastic_stress,
-                                                                           std::vector<double> &partial_strain_rates) const
+      CompositeViscoPlastic<dim>::calculate_composition_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
+          const double viscoplastic_stress,
+          std::vector<double> &partial_strain_rates) const
       {
         // The total strain rate
         double viscoplastic_strain_rate_sum = 0.0;
@@ -529,58 +577,10 @@ namespace aspect
 
 
 
-      template <int dim>
-      std::pair<double, double>
-      CompositeViscoPlastic<dim>::calculate_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
-                                                                           const double viscoplastic_stress,
-                                                                           std::vector<double> &partial_strain_rates) const
+      // Overload the + operator to act on two pairs of doubles.
+      std::pair<double,double> operator+(const std::pair<double,double> &x, const std::pair<double,double> &y)
       {
-        // The total strain rate
-        double viscoplastic_strain_rate_sum = 0.0;
-
-        // The sum of the stress derivatives multiplied by the mechanism strain rates
-        double weighted_stress_derivative_sum = 0.0;
-
-        // The first derivative of log(strain rate) with respect to log(stress)
-        // is computed as sum_i(stress_exponent_i * edot_i) / sum_i(edot_i)
-        // i.e., the stress exponents weighted by strain rate fraction
-        // summed over the individual flow mechanisms (i).
-        // Loop over active flow laws and add their contributions
-        // to the strain rate and stress derivative
-
-        // First, make sure that the active partial_strain_rates are reset to zero.
-        for (auto &i : active_flow_mechanisms)
-          partial_strain_rates[i] = 0;
-
-        for (auto &logarithmic_strain_rates_and_stress_derivatives_c : logarithmic_strain_rates_and_stress_derivatives)
-          {
-            for (auto &i : active_flow_mechanisms)
-              {
-                double mechanism_log_strain_rate = logarithmic_strain_rates_and_stress_derivatives_c[i].first;
-
-                // Check if the mechanism strain rate is within bounds to prevent underflow
-                if (mechanism_log_strain_rate >= logmin)
-                  {
-                    const double mechanism_strain_rate = std::exp(mechanism_log_strain_rate);
-                    partial_strain_rates[i] += mechanism_strain_rate;
-                    const double log_stress_derivative = logarithmic_strain_rates_and_stress_derivatives_c[i].second;
-                    viscoplastic_strain_rate_sum += mechanism_strain_rate;
-                    weighted_stress_derivative_sum += log_stress_derivative * mechanism_strain_rate;
-                  }
-              }
-          }
-
-        const double log_viscoplastic_strain_rate_derivative = weighted_stress_derivative_sum / viscoplastic_strain_rate_sum;
-
-        // Some opaque mathematics converts the viscoplastic strain rate to the total strain rate.
-        const double f = viscoplastic_stress / (2. * maximum_viscosity);
-        const double strain_rate = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum) + f;
-        partial_strain_rates[4] = strain_rate - viscoplastic_strain_rate_sum;
-        // And the partial derivative of the log *total* strain rate
-        // with respect to log *viscoplastic* stress follows as
-        const double log_strain_rate_derivative = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum * log_viscoplastic_strain_rate_derivative + f) / strain_rate;
-
-        return std::make_pair(std::log(strain_rate), log_strain_rate_derivative);
+        return std::make_pair(x.first+y.first, x.second+y.second);
       }
 
 
