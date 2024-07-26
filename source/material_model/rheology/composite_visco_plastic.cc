@@ -165,8 +165,8 @@ namespace aspect
         // Taking the minimum viscosity from
         // all of these elements provides an excellent first approximation
         // to the true viscosity of that composition.
-        // For a starting guess, we further assume that one composition takes
-        // up all the strain.
+        // For a starting guess, we further assume that each composition
+        // experiences the same strain rate.
 
         // The stress can then be calculated as 2 * viscoplastic_viscosity_guess * edot_ii
         double inverse_viscoplastic_viscosity_guess = 1./maximum_viscosity;
