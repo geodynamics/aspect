@@ -34,11 +34,11 @@ Continuing to the next timestep even though solution is not fully converged.
    Solving upper_crust system ... 9 iterations.
    Solving lower_crust system ... 9 iterations.
    Solving lithospheric_mantle system ... 9 iterations.
-   Initial Newton Stokes residual = 1.57637e+14, v = 1.57164e+14, p = 1.21967e+13
+   Initial Newton Stokes residual = 7.74397e+16, v = 7.74397e+16, p = 1.21967e+13
 
    Solving Stokes system... 0+21 iterations.
       Newton system information: Norm of the rhs: 2.35285e+13
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.149257
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00030383
 
 
 WARNING: The nonlinear solver in the current timestep failed to converge.
