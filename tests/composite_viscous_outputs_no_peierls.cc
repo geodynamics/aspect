@@ -92,7 +92,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double temperature;
   const double pressure = 1.e9;
   const double grain_size = 1.e-3;
-  SymmetricTensor<2,dim> strain_rate;
+  const double inverse_kelvin_viscosity = 0.;
+  SymmetricTensor<2, dim> strain_rate;
   strain_rate[0][0] = -1e-11;
   strain_rate[0][1] = 0.;
   strain_rate[1][1] = 1e-11;
@@ -119,7 +120,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       temperature = 1000. + i*100.;
 
       // Compute the viscosity
-      viscosity = composite_creep->compute_viscosity(pressure, temperature, grain_size, volume_fractions, strain_rate, partial_strain_rates);
+      viscosity = composite_creep->compute_viscosity(pressure, temperature, grain_size, volume_fractions, strain_rate, inverse_kelvin_viscosity, partial_strain_rates);
       total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
 
       // The creep strain rate is calculated by subtracting the strain rate
