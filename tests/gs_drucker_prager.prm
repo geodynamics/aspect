@@ -90,6 +90,7 @@ subsection Material model
     set Reference temperature                = 1600
     set Grain growth rate constant           = 0
     set Work fraction for boundary area change = 0
+    set Work fraction for boundary area change when yielding = 0
 
     # Faul and Jackson 2007
     # Diffusion creep

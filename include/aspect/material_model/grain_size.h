@@ -198,6 +198,7 @@ namespace aspect
          */
         std::vector<double> grain_boundary_energy;
         std::vector<double> boundary_area_change_work_fraction;
+        std::vector<double> yielding_work_fraction;
         std::vector<double> geometric_constant;
 
         /**
@@ -351,6 +352,19 @@ namespace aspect
                                       const unsigned int phase_index,
                                       const double diffusion_viscosity,
                                       const double viscosity_guess = 0) const;
+
+        Rheology::DruckerPragerParameters compute_drucker_prager_inputs (MaterialUtilities::PhaseFunctionInputs<dim> &phase_inputs) const;
+
+        double get_pressure_for_yielding (const double pressure,
+                                          const double adiabatic_pressure) const;
+
+        double compute_yield_stress (const double pressure_for_yielding,
+                                     const Rheology::DruckerPragerParameters &drucker_prager_parameters) const;
+
+        double plastic_viscosity (const double pressure_for_yielding,
+                                  const double second_strain_rate_invariant,
+                                  const double viscous_viscosity,
+                                  const Rheology::DruckerPragerParameters &drucker_prager_parameters) const;
 
         double density (const double temperature,
                         const double pressure,
