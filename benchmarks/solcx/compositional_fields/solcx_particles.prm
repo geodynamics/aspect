@@ -55,6 +55,7 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
+    set Limiter for discontinuous temperature solution = none # apply the limiter to the DG solutions
   end
 end
 

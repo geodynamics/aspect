@@ -82,5 +82,8 @@ subsection Discretization
   subsection Stabilization parameters
     set Global composition maximum = 1.0, 1.0
     set Global composition minimum = 0.0, 0.0
+
+    # apply the limiter to the DG solution of field 1, but not field 2
+    set Limiter for discontinuous composition solution = bound preserving, none
   end
 end

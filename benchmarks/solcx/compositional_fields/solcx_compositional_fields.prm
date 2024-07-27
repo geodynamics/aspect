@@ -72,6 +72,7 @@ subsection Discretization
   subsection Stabilization parameters
     set Global composition maximum = 1, 1e6
     set Global composition minimum = -1, 1
+    set Limiter for discontinuous temperature solution = bound preserving # apply the limiter to the DG solutions
   end
 end
 

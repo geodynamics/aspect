@@ -27,6 +27,7 @@ subsection Discretization
 
   subsection Stabilization parameters
     set beta  = 0.5
+    set Limiter for discontinuous temperature solution = none
   end
 end
 
