@@ -33,7 +33,7 @@ def reformat_limiter_settings(parameters):
     new_entries = ["Limiter for discontinuous temperature solution",
                    "Limiter for discontinuous composition solution"]
 
-    # go to the subsection
+    # Go to the subsection
     if "Discretization" in parameters:
         if "Stabilization parameters" in parameters["Discretization"]["value"]:
             subsection = parameters["Discretization"]["value"]["Stabilization parameters"]["value"]
@@ -41,16 +41,40 @@ def reformat_limiter_settings(parameters):
             for i in range(0,2):
                 if old_entries[i] in subsection:
 
+                    # Get the parameter value. Notice that the value may be followed by some
+                    # extra comments, in which case we need to split them.
+                    comments = subsection[old_entries[i]]["comment"]
+                    values_and_extra_comments = subsection[old_entries[i]]["value"].split('#', 1)
+                    values = values_and_extra_comments[0].rstrip()
+                    extra_comments = '' if len(values_and_extra_comments) == 1 else " #" + values_and_extra_comments[1]
+
                     # Delete the old entry
-                    use_limiter = subsection[old_entries[i]]["value"]
                     del subsection[old_entries[i]]
 
-                    # If limiter is used, then set the value of the new entry to "bound preserving"
-                    if use_limiter == "true":
-                        subsection[new_entries[i]] = {"comment"         : "", 
-                                                      "value"           : "bound preserving",  
-                                                      "type"            : "parameter", 
-                                                      "alignment spaces": 1}
+                    new_values = ''
+                    if i == 0:
+                        # For temperature field, the parameter value is a boolean
+                        new_values = "bound preserving" if values == "true" else "none"
+
+                    else:
+                        # For compositional fields, the parameter value may be a boolean or 
+                        # a list of booleans.
+                        split_values = values.split(',')
+                        for i in range(0, len(split_values)):
+                            if split_values[i] == "true":
+                                new_values += "bound preserving"
+                            else:
+                                new_values += "none"
+
+                            if i < len(split_values)-1:
+                                new_values += ", "
+                        
+                    # append the new values with the extra comments
+                    new_values += extra_comments
+                    subsection[new_entries[i]] = {"comment"         : comments,
+                                                  "value"           : new_values,
+                                                  "type"            : "parameter",
+                                                  "alignment spaces": 1}
 
     return parameters
 
