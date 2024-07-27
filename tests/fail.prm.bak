@@ -1,5 +1,0 @@
-# test that we can have tests where we expect failure triggered by the following line:
-#
-# EXPECT FAILURE
-
-set Dimension = 5

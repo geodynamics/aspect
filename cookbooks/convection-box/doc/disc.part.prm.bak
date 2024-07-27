@@ -1,4 +1,0 @@
-subsection Discretization
-  set Stokes velocity polynomial degree       = 2
-  set Temperature polynomial degree           = 3
-end

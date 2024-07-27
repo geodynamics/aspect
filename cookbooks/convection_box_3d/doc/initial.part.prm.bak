@@ -1,9 +1,0 @@
-subsection Initial temperature model
-  set Model name = function
-
-  subsection Function
-    set Variable names      = x,y,z
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)*y^3
-  end
-end

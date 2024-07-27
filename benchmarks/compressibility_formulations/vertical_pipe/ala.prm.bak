@@ -1,4 +1,0 @@
-subsection Formulation
-  set Mass conservation = reference density profile
-  set Temperature equation = reference density profile
-end

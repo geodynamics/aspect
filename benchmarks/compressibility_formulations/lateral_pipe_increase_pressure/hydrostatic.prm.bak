@@ -1,4 +1,0 @@
-subsection Formulation
-  set Mass conservation = hydrostatic compression
-  set Temperature equation = real density
-end

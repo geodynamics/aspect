@@ -1,9 +1,0 @@
-subsection Postprocess
-  set List of postprocessors = velocity statistics, dynamic topography, visualization, basic statistics, geoid
-
-  subsection Visualization
-    set Output format                 = vtu
-    set List of output variables      = geoid, dynamic topography, density, viscosity, gravity
-    set Number of grouped files       = 1
-  end
-end

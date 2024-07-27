@@ -1,3 +1,0 @@
-subsection Discretization
-  set Use locally conservative discretization = true
-end

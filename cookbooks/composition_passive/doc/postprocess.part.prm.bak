@@ -1,3 +1,0 @@
-subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, composition statistics
-end
