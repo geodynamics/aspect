@@ -956,10 +956,10 @@ namespace aspect
     void
     GrainSize<dim>::parse_parameters (ParameterHandler &prm)
     {
-      AssertThrow (this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size).size() == 1,
+      AssertThrow (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size) == 1,
                    ExcMessage("The 'grain size' material model only works if exactly one compositional "
                               "field with type 'grain size' is present. It looks like there are " +
-                              std::to_string(this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size).size())
+                              std::to_string(this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size))
                               + " fields of this type."));
 
       prm.enter_subsection("Material model");

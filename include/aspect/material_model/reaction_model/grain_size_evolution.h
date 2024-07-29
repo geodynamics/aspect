@@ -62,9 +62,9 @@ namespace aspect
           /**
            * Rate of grain size growth (Ostwald ripening) or reduction
            * (due to dynamic recrystallization and phase transformations)
-           * in dependence on temperature, pressure, strain rate, mineral
+           * depends on temperature, pressure, strain rate, mineral
            * phase and creep regime.
-           * We use the grain size growth laws as for example described
+           * We use the grain size growth laws as described
            * in Behn, M. D., Hirth, G., & Elsenbeck, J. R. (2009). Implications
            * of grain size evolution on the seismic structure of the oceanic
            * upper mantle. Earth and Planetary Science Letters, 282(1), 178-189.
@@ -228,15 +228,19 @@ namespace aspect
            * proportion of the two mineral phases.
            *
            * A detailed description of this approach can be found in Appendix H.1, in Equation (8) in
-           * the main manuscript, and in equation (F.28) of Bercovici, David, and Yanick Ricard (2012).
+           * the main manuscript, and in equation (F.28) of Bercovici and Ricard (2012).
            * Mechanisms for the generation of plate tectonics by two-phase grain-damage
            * and pinning. Physics of the Earth and Planetary Interiors 202 (2012): 27-55.
            */
           double phase_distribution;
 
           /**
-           * The factor used to convert roughness into the equivalent mean grain
+           * The factor used to convert interface roughness into the equivalent mean grain
            * size for a given volume fraction of a mineral in the two-phase damage model.
+           * "Interface roughness" (or radius of curvature) is a measure for how much
+           * interface area is present in a collection of mineral grains and therefore
+           * dependent on the average grain size. For a discussion see
+           * Bercovici and Ricard (2012), Appendix H.1.
           */
           double roughness_to_grain_size;
 

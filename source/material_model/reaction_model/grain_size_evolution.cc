@@ -39,35 +39,34 @@ namespace aspect
       // namespace for helper functions
       namespace
       {
-        double moment_of_grain_size_distribution (const unsigned int n)
+        // Compute the nth moment of the log-normal distribution as used in
+        // Bercovici and Ricard (2012; F6) using mean = 0 and variance = 0.8.
+        double nth_moment_of_lognormal_distribution (const unsigned int n)
         {
-          // This function normalizes the grain size distribution using the nth moment.
-          // Description can be found in eq 8 of Bercovici and Richard (2012)
-          // This is the variance of the log-normal distribution
           const double sigma = 0.8;
-
           return std::exp(n * n * sigma * sigma / 2.);
         }
 
 
 
+        // Computes the product of two phase fractions (assuming exactly two phases)
+        // as used in Bercovici and Ricard (2012).
         double phase_distribution_function (const double volume_fraction_phase_one)
         {
-          // This factor is used in pinned state grain damage formulation.
           const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
-
           return (volume_fraction_phase_one * volume_fraction_phase_two);
         }
 
 
 
+        // Compute the factor to convert from an interface roughness equation
+        // to a mean grain size. See Appendix H.1, Eqs. 8 and F.28 in
+        // Bercovici and Ricard (2012) for more details.
         double
         roughness_to_grain_size_factor (const double volume_fraction_phase_one)
         {
-          // This factor is used to convert from an interface roughness equation to a mean grain size
-          // Refer to Appendix H.1, eqs 8, F.28 in Bercovici and Richard (2012) for more details.
           const double b1 = 1./20 ;
-          const double c1 = 3.0 * b1 * moment_of_grain_size_distribution(4) / (8.0 * moment_of_grain_size_distribution (2));
+          const double c1 = 3.0 * b1 * nth_moment_of_lognormal_distribution(4) / (8.0 * nth_moment_of_lognormal_distribution (2));
 
           const double volume_fraction_phase_two = 1. - volume_fraction_phase_one;
 
@@ -132,7 +131,7 @@ namespace aspect
                                 typename Interface<dim>::MaterialModelOutputs       &out) const
       {
         // We want to iterate over the grain size evolution here, as we solve in fact an ordinary differential equation
-        // and it is not correct to use the starting grain size (and it introduces instabilities).
+        // and it is not correct to use the starting grain size (which also introduces instabilities).
         // We assume that the strain rate is constant across all substeps for the ODE (within one advection step).
         // Even though this assumption may not always be the most accurate (compared to assuming a constant stress),
         // it leads to a more stable behavior because it implies that a reduction in grain size leads to less work
@@ -281,30 +280,25 @@ namespace aspect
                               "and likely an effect of a too large sub-timestep, or unrealistic "
                               "input parameters."));
 
-            // reduce grain size to recrystallized_grain_size when crossing phase transitions
-            // if the distance in radial direction a grain moved compared to the last time step
-            // is crossing a phase transition, reduce grain size
+
+            // Reduce grain size to recrystallized_grain_size if the grain crossed a phase transition.
+            // To do so, check if a grain has moved further than its distance to a phase transition in
+            // vertical direction and the movement is away from the phase transition.
+            // 'crossed_transition' will be -1 if we crossed no transition, or the index of a
+            // phase transition, if we crossed one.
+            int crossed_transition = -1;
 
             const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
             Tensor<1,dim> vertical_direction = this->get_gravity_model().gravity_vector(in.position[i]);
             if (gravity_norm > 0.0)
               vertical_direction /= gravity_norm;
 
-            int crossed_transition = -1;
-
-            // Figure out if the material in the current cell underwent a phase change.
-            // To do so, check if a grain has moved further than the distance from the phase transition and
-            // if the velocity is in the direction of the phase change. After the check 'crossed_transition' will
-            // be -1 if we crossed no transition, or the index of the phase transition, if we crossed it.
             for (unsigned int phase=0; phase<n_phase_transitions; ++phase)
               {
                 // Both distances are positive when they are downward from the transition (since gravity points down)
                 const double distance_from_transition = this->get_geometry_model().depth(in.position[i]) - phase_function->get_transition_depth(phase);
                 const double distance_moved = in.velocity[i] * vertical_direction * timestep;
 
-                // If we are close to the phase boundary (closer than the distance a grain has moved
-                // within one time step) and the velocity points away from the phase transition,
-                // then the material has crossed the transition.
                 // To make sure we actually reset the grain size of all the material passing through
                 // the transition, we take 110% of the distance a grain has moved for the check.
                 if (std::abs(distance_moved) * 1.1 > std::abs(distance_from_transition)
@@ -313,8 +307,7 @@ namespace aspect
                   crossed_transition = phase;
               }
 
-            // TODO: recrystallize first, and then do grain size growth/reduction for grains that crossed the transition
-            // in dependence of the distance they have moved
+            // TODO: recrystallize at correct time while doing grain size evolution instead of afterwards
             double phase_grain_size_reduction = 0.0;
             if (this->get_timestep_number() > 0)
               {
@@ -327,8 +320,8 @@ namespace aspect
             grain_sizes[i] = std::max(grain_sizes[i], minimum_grain_size);
             const double grain_size_change = grain_sizes[i] - in.composition[i][grain_size_index] - phase_grain_size_reduction;
 
+            // this reaction model is only responsible for the grain size field
             reaction_terms[i][grain_size_index] = grain_size_change;
-            // We do not have to fill the other fields because we have initialized them with zero.
           }
 
         return;
@@ -460,10 +453,10 @@ namespace aspect
       void
       GrainSizeEvolution<dim>::parse_parameters (ParameterHandler &prm)
       {
-        AssertThrow (this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size).size() == 1,
+        AssertThrow (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size) == 1,
                      ExcMessage("The 'grain size' material model only works if exactly one compositional "
                                 "field with type 'grain size' is present. It looks like there are " +
-                                std::to_string(this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::grain_size).size())
+                                std::to_string(this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::grain_size))
                                 + " fields of this type."));
 
         recrystallized_grain_size = Utilities::string_to_double
@@ -492,8 +485,8 @@ namespace aspect
 
         grain_size_evolution_formulation      = Formulation::parse(prm.get("Grain size evolution formulation"));
 
-        AssertThrow( (grain_size_evolution_formulation != Formulation::paleopiezometer || !this->get_heating_model_manager().shear_heating_enabled()),
-                     ExcMessage("Shear heating output should not be used with the Paleopiezometer grain damage formulation."));
+        AssertThrow((grain_size_evolution_formulation != Formulation::paleopiezometer || !this->get_heating_model_manager().shear_heating_enabled()),
+                    ExcMessage("Shear heating output should not be used with the Paleopiezometer grain damage formulation."));
 
         // TODO: Remove deprecated parameter in next release.
         const std::string use_paleowattmeter  = prm.get ("Use paleowattmeter");
@@ -554,6 +547,7 @@ namespace aspect
                                "with large spatial variations in grain size, please advect your "
                                "grain size on particles."));
 
+        // TODO: Remove deprecated parameters in next release.
         const bool advect_log_grainsize            = prm.get_bool ("Advect logarithm of grain size");
         AssertThrow(advect_log_grainsize == false,
                     ExcMessage("Error: The 'Advect logarithm of grain size' parameter "

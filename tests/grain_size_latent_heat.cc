@@ -37,10 +37,8 @@ namespace aspect
     /**
      * A material model that behaves in the same way as the grain size model, but is modified to
      * resemble the latent heat benchmark. Due to the nature of the benchmark the model needs to be
-     * incompressible despite a material table and use a constant density for the calculation of
+     * incompressible despite using a material table. It assumes a constant density for the calculation of
      * the latent heat.
-     *
-     * The model is considered incompressible.
      *
      * @ingroup MaterialModels
      */
@@ -121,27 +119,30 @@ namespace aspect
 
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
+              const double approximate_density = 3515.6;
+
               if (this->get_adiabatic_conditions().is_initialized())
                 {
                   if ((in.current_cell.state() == IteratorState::valid)
                       && (std::fabs(dHdp) > std::numeric_limits<double>::epsilon())
                       && (std::fabs(dHdT) > std::numeric_limits<double>::epsilon()))
                     {
-                      out.thermal_expansion_coefficients[i] = (1 - 3515.6 * dHdp) / in.temperature[i];
+                      out.thermal_expansion_coefficients[i] = (1 - approximate_density * dHdp) / in.temperature[i];
                     }
                 }
               else
                 {
-                  // Approximate dHdp from the enthalpy in the table
-                  // this is the pressure increment in the data table of the test
-                  const double delta_press = 8e8;
+                  // Estimate the thermal expansivity by approximating dHdp at constant
+                  // temperature from the enthalpy lookup.
+                  // The data table has a pressure increment of 8e8 Pa.
+                  const double delta_pressure = 8e8;
 
                   // compositional fields and position are not used for this test in the base model
                   const double h = base_model->enthalpy(in.temperature[i],in.pressure[i],compositional_fields,Point<dim>());
-                  const double dh = base_model->enthalpy(in.temperature[i],in.pressure[i] + delta_press,compositional_fields,Point<dim>());
-                  dHdp = (dh - h) / delta_press;
+                  const double dh = base_model->enthalpy(in.temperature[i],in.pressure[i] + delta_pressure,compositional_fields,Point<dim>());
+                  dHdp = (dh - h) / delta_pressure;
 
-                  out.thermal_expansion_coefficients[i] = (1 - 3515.6 * dHdp) / in.temperature[i];
+                  out.thermal_expansion_coefficients[i] = (1 - approximate_density * dHdp) / in.temperature[i];
                 }
             }
         }
