@@ -38,6 +38,31 @@ namespace aspect
 
     namespace Rheology
     {
+      /**
+       * A namespace for selecting how to average the viscosity
+       * over multiple chemical compositions.
+       *
+       * Current options are:
+       *  'isostress': Reuss (harmonic) averaging of viscosities.
+       *  'isostrain': Voigt (arithmetic) averaging of viscosities.
+       */
+      namespace ViscosityAveraging
+      {
+        enum Kind
+        {
+          isostress,
+          isostrain
+        };
+
+        /**
+         * Read the viscosity averaging scheme from the parameter file
+         * using the parameter name given in @p parameter_name and return
+         * the enum that corresponds to this operation.
+         */
+        ViscosityAveraging::Kind
+        parse (const std::string &parameter_name,
+               const ParameterHandler &prm);
+      }
 
       template <int dim>
       class CompositeViscoPlastic : public ::aspect::SimulatorAccess<dim>
@@ -83,6 +108,7 @@ namespace aspect
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
+        private:
           /**
            * Compute the isostress viscosity over all compositional fields
            * based on the composite viscous creep law.
@@ -104,7 +130,7 @@ namespace aspect
           /**
            * Compute the total strain rate and the first derivative of log strain rate
            * with respect to log viscoplastic stress from individual log strain rate components
-           * over all compositional fields. Also updates the partial_strain_rates vector
+           * over all compositional fields. Also updates the partial_strain_rates vector.
            */
           std::pair<double, double>
           calculate_isostress_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
@@ -112,7 +138,26 @@ namespace aspect
                                                              std::vector<double> &partial_strain_rates) const;
 
           /**
-           * Compute the compositional field viscosity
+           * Compute the isostrain viscosity over all compositional fields
+           * based on the composite viscous creep law.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
+          double
+          compute_isostrain_viscosity (const double pressure,
+                                       const double temperature,
+                                       const double grain_size,
+                                       const std::vector<double> &volume_fractions,
+                                       const SymmetricTensor<2,dim> &strain_rate,
+                                       std::vector<double> &partial_strain_rates,
+                                       const std::vector<double> &phase_function_values = std::vector<double>(),
+                                       const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+
+
+          /**
+           * Compute the viscosity for a single compositional field
            * based on the composite viscous creep law.
            * If @p n_phase_transitions_per_composition points to a vector of
            * unsigned integers this is considered the number of phase transitions
@@ -131,26 +176,22 @@ namespace aspect
 
           /**
            * Compute the total strain rate and the first derivative of log strain rate
-           * with respect to log viscoplastic stress from individual log strain rate components.
-           * Also updates the partial_strain_rates vector
+           * with respect to log viscoplastic stress from individual log strain rate components
+           * for a single compositional field.
+           * Also updates the partial_strain_rates vector.
            */
           std::pair<double, double>
           calculate_composition_log_strain_rate_and_derivative(const std::array<std::pair<double, double>, 4> &logarithmic_strain_rates_and_stress_derivatives,
                                                                const double viscoplastic_stress,
                                                                std::vector<double> &partial_strain_rates) const;
 
-        private:
           /**
            * Enumeration for selecting which type of viscosity averaging to use.
            */
-          enum ViscosityAveragingScheme
-          {
-            isostrain,
-            isostress
-          } viscosity_averaging_scheme;
+          ViscosityAveraging::Kind viscosity_averaging_scheme;
 
           /**
-           * Whether to use different deformation mechanisms
+           * Whether to use different deformation mechanisms.
            */
           bool use_diffusion_creep;
           bool use_dislocation_creep;
@@ -158,9 +199,17 @@ namespace aspect
           bool use_drucker_prager;
 
           /**
-           * Vector storing which flow mechanisms are active
+           * Vector storing which flow mechanisms are active.
            */
           std::vector<unsigned int> active_flow_mechanisms;
+
+          /**
+           * Total number of decomposed strain rates. This includes the maximum
+           * viscosity limiter but not the minimum viscosity limiter,
+           * which is arranged in parallel with the viscoplastic elements and
+           * therefore does not contribute to the total strain rate.
+           */
+          static constexpr unsigned int n_decomposed_strain_rates = 5;
 
           /**
            * Pointers to objects for computing deformation mechanism
@@ -178,7 +227,7 @@ namespace aspect
 
           /**
            * The maximum viscosity, imposed via an isoviscous damper
-           * in series with the composite viscoplastic element
+           * in series with the composite viscoplastic element.
            */
           double maximum_viscosity;
 
@@ -221,7 +270,7 @@ namespace aspect
           unsigned int stress_max_iteration_number;
 
           /**
-           * Useful number to aid in adding together exponentials
+           * Useful number to aid in adding together exponentials.
            */
           const double logmin = std::log(std::numeric_limits<double>::min());
       };

@@ -34,6 +34,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   // First, we set up a few objects which are used by the rheology model.
   aspect::ParameterHandler prm;
+
   const std::vector<std::string> list_of_composition_names = simulator_access.introspection().get_composition_names();
   auto n_phases = std::make_unique<std::vector<unsigned int>>(1); // 1 phase per composition
   const unsigned int composition = 0;
@@ -54,26 +55,26 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   prm.set("Include Drucker Prager plasticity in composite rheology", "true");
   prm.set("Peierls creep flow law", "viscosity approximation");
   prm.set("Maximum yield stress", "5e8");
-  composite_creep->parse_parameters(prm, n_phases);
+  composite_creep->parse_parameters(prm);
 
   std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
   diffusion_creep = std::make_unique<Rheology::DiffusionCreep<dim>>();
   diffusion_creep->initialize_simulator (simulator_access.get_simulator());
   diffusion_creep->declare_parameters(prm);
-  diffusion_creep->parse_parameters(prm, n_phases);
+  diffusion_creep->parse_parameters(prm);
 
   std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
   dislocation_creep = std::make_unique<Rheology::DislocationCreep<dim>>();
   dislocation_creep->initialize_simulator (simulator_access.get_simulator());
   dislocation_creep->declare_parameters(prm);
-  dislocation_creep->parse_parameters(prm, n_phases);
+  dislocation_creep->parse_parameters(prm);
 
   std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager_power;
   drucker_prager_power = std::make_unique<Rheology::DruckerPragerPower<dim>>();
   drucker_prager_power->initialize_simulator (simulator_access.get_simulator());
   drucker_prager_power->declare_parameters(prm);
   prm.set("Maximum yield stress", "5e8");
-  drucker_prager_power->parse_parameters(prm, n_phases);
+  drucker_prager_power->parse_parameters(prm);
   Rheology::DruckerPragerParameters p = drucker_prager_power->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
   // The creep components are arranged in series with each other.
@@ -118,7 +119,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       temperature = 1000. + i*100.;
 
       // Compute the viscosity
-      viscosity = composite_creep->compute_composition_viscosity(pressure, temperature, grain_size, composition, strain_rate, partial_strain_rates);
+      viscosity = composite_creep->compute_viscosity(pressure, temperature, grain_size, volume_fractions, strain_rate, partial_strain_rates);
       total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
 
       // The creep strain rate is calculated by subtracting the strain rate

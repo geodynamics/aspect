@@ -62,6 +62,29 @@ namespace aspect
       //}
 
 
+
+      namespace ViscosityAveraging
+      {
+        ViscosityAveraging::Kind
+        parse (const std::string &parameter_name,
+               const ParameterHandler &prm)
+        {
+          ViscosityAveraging::Kind scheme;
+          if (prm.get (parameter_name) == "isostress")
+            scheme = isostress;
+          else if (prm.get (parameter_name) == "isostrain")
+            scheme = isostrain;
+          else
+            {
+              AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme. Choose either isostress or isostrain."));
+            }
+
+          return scheme;
+        }
+      }
+
+
+
       template <int dim>
       CompositeViscoPlastic<dim>::CompositeViscoPlastic ()
         = default;
@@ -80,58 +103,46 @@ namespace aspect
                                                      const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
         double viscosity = 0.;
-        partial_strain_rates.resize(5, 0.);
 
-        // Isostress averaging
-        if (viscosity_averaging_scheme == isostress)
+        // Make sure partial_strain_rates is filled with zeros and is the right length
+        std::fill(partial_strain_rates.begin(), partial_strain_rates.end(), 0);
+        partial_strain_rates.resize(n_decomposed_strain_rates, 0.);
+
+        // Compute the viscosity and the partial strain rates
+        // according to the isostress or isostrain viscosity averaging scheme.
+        switch (viscosity_averaging_scheme)
           {
-            viscosity += compute_isostress_viscosity (pressure,
-                                                      temperature,
-                                                      grain_size,
-                                                      volume_fractions,
-                                                      strain_rate,
-                                                      partial_strain_rates,
-                                                      phase_function_values,
-                                                      n_phase_transitions_per_composition);
-          }
-
-        // Isostrain averaging
-        if (viscosity_averaging_scheme == isostrain)
-          {
-            double total_volume_fraction = 1.;
-            for (unsigned int composition=0; composition < number_of_chemical_compositions; ++composition)
-              {
-                // Only include the contribution to the viscosity
-                // from a given composition if the volume fraction exceeds
-                // a certain (small) fraction.
-                if (volume_fractions[composition] > 2.*std::numeric_limits<double>::epsilon())
-                  {
-                    std::vector<double> partial_strain_rates_composition(5, 0.);
-                    viscosity += (volume_fractions[composition]
-                                  * compute_composition_viscosity (pressure,
-                                                                   temperature,
-                                                                   grain_size,
-                                                                   composition,
-                                                                   strain_rate,
-                                                                   partial_strain_rates_composition,
-                                                                   phase_function_values,
-                                                                   n_phase_transitions_per_composition));
-                    for (unsigned int j=0; j < 5; ++j)
-                      partial_strain_rates[j] += volume_fractions[composition] * partial_strain_rates_composition[j];
-                  }
-                else
-                  {
-                    total_volume_fraction -= volume_fractions[composition];
-                  }
-
-                viscosity /= total_volume_fraction;
-                for (unsigned int j=0; j < 5; ++j)
-                  partial_strain_rates[j] /= total_volume_fraction;
-              }
+            case ViscosityAveraging::Kind::isostress:
+            {
+              viscosity = compute_isostress_viscosity (pressure,
+                                                       temperature,
+                                                       grain_size,
+                                                       volume_fractions,
+                                                       strain_rate,
+                                                       partial_strain_rates,
+                                                       phase_function_values,
+                                                       n_phase_transitions_per_composition);
+              break;
+            }
+            case ViscosityAveraging::Kind::isostrain:
+            {
+              viscosity = compute_isostrain_viscosity (pressure,
+                                                       temperature,
+                                                       grain_size,
+                                                       volume_fractions,
+                                                       strain_rate,
+                                                       partial_strain_rates,
+                                                       phase_function_values,
+                                                       n_phase_transitions_per_composition);
+              break;
+            }
+            default:
+            {
+              Assert (false, ExcNotImplemented());
+            }
           }
         return viscosity;
       }
-
 
 
 
@@ -228,6 +239,19 @@ namespace aspect
 
         for (unsigned int i = 0; i < active_compositions.size(); ++i)
           {
+            // In the isostress viscosity averaging formalism,
+            // the total strain rate is the sum of the strain rates for each
+            // composition i multiplied by the volume fraction of that
+            // composition. The strain rate for each composition is the sum
+            // of strain rates for each deformation mechanism j:
+            // edot_total = sum_i (volume_fraction_i * (sum_j (edot_ij)))
+            // This can be refactored:
+            // edot_total = sum_i (sum_j (volume_fraction_i * (edot_ij)))
+            // Therefore the logarithm of the contribution of each
+            // component-deformation mechanism to the total strain rate
+            // is:
+            // ln(edot_total_contrib_ij) = ln(volume_fraction_i) + ln(edot_ij)
+
             const double log_volume_fraction = std::log(volume_fractions[active_compositions[i]]);
 
             if (use_diffusion_creep)
@@ -269,7 +293,9 @@ namespace aspect
         // between these components.
 
         // The following while loop contains a Newton iteration to obtain the
-        // viscoplastic stress that is consistent with the total strain rate.
+        // viscoplastic stress that is consistent with the total strain rate
+        // and results in the correct partitioning of strain rate amongst
+        // the different flow components.
         unsigned int stress_iteration = 0;
         while (std::abs(log_strain_rate_residual) > log_strain_rate_residual_threshold && stress_iteration < stress_max_iteration_number)
           {
@@ -384,6 +410,57 @@ namespace aspect
 
       template <int dim>
       double
+      CompositeViscoPlastic<dim>::compute_isostrain_viscosity (const double pressure,
+                                                               const double temperature,
+                                                               const double grain_size,
+                                                               const std::vector<double> &volume_fractions,
+                                                               const SymmetricTensor<2,dim> &strain_rate,
+                                                               std::vector<double> &partial_strain_rates,
+                                                               const std::vector<double> &phase_function_values,
+                                                               const std::vector<unsigned int> &n_phase_transitions_per_composition) const
+      {
+        // The isostrain viscosity is calculated by summing the viscosities
+        //of each composition weighted by their volume fractions.
+        double viscosity = 0.;
+        double total_volume_fraction = 1.;
+        for (unsigned int composition=0; composition < number_of_chemical_compositions; ++composition)
+          {
+            // Only include the contribution to the viscosity
+            // from a given composition if the volume fraction exceeds
+            // a certain (small) fraction.
+            if (volume_fractions[composition] > 2. * std::numeric_limits<double>::epsilon())
+              {
+                std::vector<double> partial_strain_rates_composition(n_decomposed_strain_rates, 0.);
+                viscosity += (volume_fractions[composition]
+                              * compute_composition_viscosity (pressure,
+                                                               temperature,
+                                                               grain_size,
+                                                               composition,
+                                                               strain_rate,
+                                                               partial_strain_rates_composition,
+                                                               phase_function_values,
+                                                               n_phase_transitions_per_composition));
+                for (unsigned int j=0; j < n_decomposed_strain_rates; ++j)
+                  partial_strain_rates[j] += volume_fractions[composition] * partial_strain_rates_composition[j];
+              }
+            else
+              {
+                total_volume_fraction -= volume_fractions[composition];
+              }
+          }
+
+        viscosity /= total_volume_fraction;
+
+        for (unsigned int j=0; j < n_decomposed_strain_rates; ++j)
+          partial_strain_rates[j] /= total_volume_fraction;
+
+        return viscosity;
+      }
+
+
+
+      template <int dim>
+      double
       CompositeViscoPlastic<dim>::compute_composition_viscosity (const double pressure,
                                                                  const double temperature,
                                                                  const double grain_size,
@@ -393,6 +470,7 @@ namespace aspect
                                                                  const std::vector<double> &phase_function_values,
                                                                  const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
+        // Calculate the viscosity for a single compositional field based on the local state.
         // If strain rate is zero (like during the first time step) set it to some very small number
         // to prevent a division-by-zero, and a floating point exception.
         // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
@@ -537,7 +615,8 @@ namespace aspect
           const double viscoplastic_stress,
           std::vector<double> &partial_strain_rates) const
       {
-        // The total strain rate
+        // Initialize the double containing the total strain rate
+        // for the single compositional field of interest.
         double viscoplastic_strain_rate_sum = 0.0;
 
         // The sum of the stress derivatives multiplied by the mechanism strain rates
@@ -593,7 +672,7 @@ namespace aspect
       CompositeViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Viscosity averaging scheme", "isostress",
-                           Patterns::Selection("isostress|isostrain|unspecified"),
+                           Patterns::Selection("isostress|isostrain"),
                            "Determines the relationship between the conditions experienced by "
                            "each chemical compositional field in a composite material. "
                            "Select either isostress (the default option, Reuss averaging) "
@@ -661,14 +740,8 @@ namespace aspect
       CompositeViscoPlastic<dim>::parse_parameters (ParameterHandler &prm,
                                                     const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
-        if (prm.get ("Viscosity averaging scheme") == "isostress")
-          viscosity_averaging_scheme = isostress;
-        else if (prm.get ("Viscosity averaging scheme") == "isostrain")
-          viscosity_averaging_scheme = isostrain;
-        else
-          {
-            AssertThrow(false, ExcMessage("Not a valid viscosity averaging scheme. Choose either isostress or isostrain."));
-          }
+        viscosity_averaging_scheme = ViscosityAveraging::parse("Viscosity averaging scheme",
+                                                               prm);
 
         // A background field is required by the subordinate material models
         number_of_chemical_compositions = this->introspection().n_chemical_composition_fields() + 1;
