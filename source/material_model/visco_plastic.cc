@@ -384,21 +384,9 @@ namespace aspect
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);
 
-          std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
-
-          // Currently, phase_function.n_phases_for_each_composition() returns a list of length
-          // equal to the total number of compositions, whether or not they are chemical compositions.
-          // The equation_of_state (multicomponent incompressible) requires a list only for
-          // chemical compositions.
-          std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
-          n_phase_transitions_for_each_chemical_composition = {n_phases_for_each_composition[0] - 1};
-          n_phases = n_phases_for_each_composition[0];
-          for (auto i : this->introspection().chemical_composition_field_indices())
-            {
-              n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1]);
-              n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
-              n_phases += n_phases_for_each_composition[i+1];
-            }
+          const std::vector<unsigned int> n_phases_for_each_chemical_composition = phase_function.n_phases_for_each_chemical_composition();
+          n_phase_transitions_for_each_chemical_composition = phase_function.n_phase_transitions_for_each_chemical_composition();
+          n_phases = phase_function.n_phases_over_all_chemical_compositions();
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
