@@ -1,0 +1,5 @@
+New: A simplified hydrothermal cooling function is added into the 
+visco_plastic material model by only changing the thermal conductivity.
+We use the same forumula as in Gregg et al. (2009), adapted from Phipps Morgan et al. (1987).
+<br>
+(Sibiao Liu, 2022/08/31)

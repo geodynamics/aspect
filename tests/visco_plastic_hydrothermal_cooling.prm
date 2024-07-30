@@ -1,0 +1,132 @@
+# This is a test for enhanceing the thermal conductivity (k)
+# due to the effect of hydrothermal circulation.
+# k_eff = k0 * (1+ (Nu-1)*exp(2-T/T_cutoff-Depth/D_cutoff))
+# k_eff is the effective thermal conductivity, k0 is the reference
+# thermal conductivity, Nu is the Nusselt number, T_cutoff and
+# D_cutoff are the reference cutoff temperature and refence cutoff
+# depth, respectively. Here, the returned k_eff should rise
+# exponentially from 2 at the bottom (depth = 100e3) to 3.71828
+# at the surface (depth = 0) for the composition 1 and from 4 at
+#the bottom to 7.43656 at the surface for the composition 2.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Output directory                       = visco_plastic_hydrothermal_cooling
+set Timing output frequency                = 1
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Boundary classifications (fixed T boundaries, prescribed velocity)
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+    set Top temperature    = 293
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+subsection Compositional fields
+  set Number of fields      = 2
+  set Names of fields       = c1, c2
+end
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      =x,y
+    set Function expression = if(x<=50e3, 1, 0); if(x>50e3, 1, 0)
+  end
+end
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 5.e-23
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+    
+    # Hydrothermal circulation parameters.
+    set Define thermal conductivities = true
+    set Thermal conductivities = 1.0, 1.0, 2.0
+    set Define hydrothermal circulation = true
+    set Nusselt numbers = 2
+    set Hydrothermal circulation reference temperatures = 293
+    set Hydrothermal circulation reference depths = 100e3
+    set Hydrothermal circulation smoothing factors = 1.0
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set List of output variables = thermal conductivity
+    set Output format =  gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end

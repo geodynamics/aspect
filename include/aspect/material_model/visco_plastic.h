@@ -266,6 +266,43 @@ namespace aspect
         unsigned int n_phases;
 
         /**
+         * Parameters for simplified hydrothermal cooling function
+         * References: Phipps Morgan et al., 1987; Gregg et al., 2009
+         */
+
+        /**
+         * Whether to activate the hydrothermal cooling.
+         */
+        bool define_hydrothermal_cooling;
+
+        /**
+         * Nusselt numbers are used for increasing the thermal conductivity in the
+         * hydrothermal cooling process. It represents the ratio of the total heat
+         * transport within a permeable layer to heat transfer by conduction alone.
+         */
+        std::vector<double> Nusselt_number;
+
+        /**
+         * Reference cutoff temperatures for hydrothermal cooling.
+         * Hydrothermal activity occurs when the temperature is lower than them.
+         * from Gregg et al., 2009.
+         */
+        std::vector<double> T_cooling;
+
+        /**
+         * Reference cutoff depths for hydrothermal cooling.
+         * Hydrothermal activity occurs when the depth is shallower than them.
+         * from Gregg et al., 2009.
+         */
+        std::vector<double> D_cooling;
+
+        /**
+         * Smoothing factors
+         * from Gregg et al., 2009.
+         */
+        std::vector<double> A_smoothing;
+
+        /**
          * Object for computing the equation of state.
          */
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
