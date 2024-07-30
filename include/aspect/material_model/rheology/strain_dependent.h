@@ -67,7 +67,8 @@ namespace aspect
       enum HealingMechanism
       {
         no_healing,
-        temperature_dependent
+        temperature_dependent,
+        fracture_healing
       };
 
       template <int dim>
@@ -258,6 +259,11 @@ namespace aspect
            * A prefactor of viscosity used in the strain healing calculation.
            */
           double strain_healing_temperature_dependent_prefactor;
+
+          /**
+           * The fracture recovery rate used in the strain healing model for faulting.
+           */
+          double strain_healing_fracture_recovery_rate;
 
           /**
            * We cache the evaluators that are necessary to evaluate the velocity

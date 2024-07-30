@@ -197,7 +197,7 @@ namespace aspect
                            "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
 
         prm.declare_entry ("Strain healing mechanism", "no healing",
-                           Patterns::Selection("no healing|temperature dependent"),
+                           Patterns::Selection("no healing|temperature dependent|fracture healing"),
                            "Whether to apply strain healing to plastic yielding and viscosity terms, "
                            "and if yes, which method to use. The following methods are available:"
                            "\n\n"
@@ -208,7 +208,14 @@ namespace aspect
                            "to the temperature-dependent Frank Kamenetskii formulation, computes "
                            "strain healing as removing strain as a function of temperature, time, "
                            "and a user-defined healing rate and prefactor "
-                           "as done in Fuchs and Becker, 2019, for mantle convection");
+                           "as done in Fuchs and Becker, 2019, for mantle convection. "
+                           "\n\n"
+                           "\\item ``fracture healing'': Fracture-related healing applied to "
+                           "plastic yielding term, reducing the accumulated plastic strain with "
+                           "time on deactivated, slowly creeping fractures (e.g., faults). "
+                           "This mechanism is refered to Poliakov & Buck, 1998. "
+                           "Note that this mechanism is currently only tested with the option -  "
+                           "plastic weakening with plastic strain only ");
 
         prm.declare_entry ("Strain healing temperature dependent recovery rate", "1.e-15", Patterns::Double(0),
                            "Recovery rate prefactor for temperature dependent "
@@ -217,6 +224,10 @@ namespace aspect
         prm.declare_entry ("Strain healing temperature dependent prefactor", "15.", Patterns::Double(0),
                            "Prefactor for temperature dependent "
                            "strain healing. Units: None");
+
+        prm.declare_entry ("Strain healing fracture recovery rate", "1.e-13", Patterns::Double(0),
+                           "Constant fracture recovery rate for deactivating fractures, "
+                           "which is equal to 1/fracture healing time. Units: $1/s$");
       }
 
       template <int dim>
@@ -406,6 +417,8 @@ namespace aspect
           healing_mechanism = no_healing;
         else if (prm.get ("Strain healing mechanism") == "temperature dependent")
           healing_mechanism = temperature_dependent;
+        else if (prm.get ("Strain healing mechanism") == "fracture healing")
+          healing_mechanism = fracture_healing;
         else
           AssertThrow(false, ExcMessage("Not a valid Strain healing mechanism!"));
 
@@ -428,6 +441,8 @@ namespace aspect
         strain_healing_temperature_dependent_recovery_rate = prm.get_double ("Strain healing temperature dependent recovery rate");
 
         strain_healing_temperature_dependent_prefactor = prm.get_double ("Strain healing temperature dependent prefactor");
+
+        strain_healing_fracture_recovery_rate = prm.get_double ("Strain healing fracture recovery rate");
       }
 
 
@@ -569,6 +584,15 @@ namespace aspect
                               * this->get_timestep();
               break;
             }
+            case fracture_healing:
+            {
+              // Formula: APS_new = APS_current + delta_APS, where
+              // delta_APS = edot_ii*dt - recovery_rate*dt is the strain
+              // increment due to fracture strain healing. The recovery_rate
+              // is 1/fracture healing time. See Eq. 12 in Gerya (2013).
+              healed_strain = strain_healing_fracture_recovery_rate * this->get_timestep();
+              break;
+            }
           }
         return healed_strain;
       }
@@ -650,6 +674,7 @@ namespace aspect
             if (healing_mechanism != no_healing)
               {
                 // Temperature-dependent healing occurs independent of deformation state
+                // or fracture healing mechanism
                 const double healed_strain = calculate_strain_healing(in,i);
 
                 delta_e_ii_plastic -= healed_strain;
