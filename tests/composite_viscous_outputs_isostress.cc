@@ -136,7 +136,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       // of the max viscosity dashpot from the total strain rate
       // The creep stress is then calculated by subtracting the stress running
       // through the strain rate limiter from the total stress
-      creep_strain_rate = total_strain_rate - partial_strain_rates[5];
+      creep_strain_rate = total_strain_rate - partial_strain_rates[4] - partial_strain_rates[5];
       creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
 
       // Print the output

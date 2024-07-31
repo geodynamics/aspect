@@ -101,7 +101,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   strain_rate[2][1] = 0.;
   strain_rate[2][2] = 0.;
 
-  std::cout << "temperature (K)   eta (Pas)   creep stress (Pa)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, drpr, max)" << std::endl;
+  std::cout << "temperature (K)   eta (Pas)   creep stress (Pa)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, drpr, kel, max)" << std::endl;
 
   // Loop through strain rates, tracking whether there is a discrepancy in
   // the decomposed strain rates.
@@ -113,7 +113,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double diff_stress;
   double disl_stress;
   double drpr_stress;
-  std::vector<double> partial_strain_rates(5, 0.);
+  std::vector<double> partial_strain_rates(6, 0.);
 
   for (unsigned int i=0; i <= 10; i++)
     {
@@ -127,7 +127,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       // of the max viscosity dashpot from the total strain rate
       // The creep stress is then calculated by subtracting the stress running
       // through the strain rate limiter from the total stress
-      creep_strain_rate = total_strain_rate - partial_strain_rates[4];
+      creep_strain_rate = total_strain_rate - partial_strain_rates[4] - partial_strain_rates[5];
       creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
 
       // Print the output
