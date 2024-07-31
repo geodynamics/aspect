@@ -20,6 +20,8 @@
 
 #include <aspect/simulator.h>
 #include <aspect/material_model/rheology/composite_visco_plastic.h>
+#include <aspect/simulator_signals.h>
+#include <iostream>
 
 template <int dim>
 void f(const aspect::SimulatorAccess<dim> &simulator_access,
@@ -38,7 +40,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   const std::vector<std::string> list_of_composition_names = simulator_access.introspection().get_composition_names();
   auto n_phases = std::make_unique<std::vector<unsigned int>>(1); // 1 phase per composition
   const unsigned int composition = 0;
-  const std::vector<double> volume_fractions = {1.};
+  const std::vector<double> volume_fractions = {0.6, 0.4};
   const std::vector<double> phase_function_values = std::vector<double>();
   const std::vector<unsigned int> n_phase_transitions_per_composition = std::vector<unsigned int>(1);
 
@@ -48,10 +50,10 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
-  prm.set("Viscosity averaging scheme", "isostrain");
+  prm.set("Viscosity averaging scheme", "isostress");
   prm.set("Include diffusion creep in composite rheology", "true");
   prm.set("Include dislocation creep in composite rheology", "true");
-  prm.set("Include Peierls creep in composite rheology", "false");
+  prm.set("Include Peierls creep in composite rheology", "true");
   prm.set("Include Drucker Prager plasticity in composite rheology", "true");
   prm.set("Peierls creep flow law", "viscosity approximation");
   prm.set("Maximum yield stress", "5e8");
@@ -68,6 +70,12 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   dislocation_creep->initialize_simulator (simulator_access.get_simulator());
   dislocation_creep->declare_parameters(prm);
   dislocation_creep->parse_parameters(prm);
+
+  std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
+  peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
+  peierls_creep->initialize_simulator (simulator_access.get_simulator());
+  peierls_creep->declare_parameters(prm);
+  peierls_creep->parse_parameters(prm);
 
   std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager_power;
   drucker_prager_power = std::make_unique<Rheology::DruckerPragerPower<dim>>();
@@ -111,6 +119,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double creep_stress;
   double diff_stress;
   double disl_stress;
+  double prls_stress;
   double drpr_stress;
   std::vector<double> partial_strain_rates(5, 0.);
 
@@ -143,6 +152,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       // Each creep mechanism should experience the same stress
       diff_stress = 2.*partial_strain_rates[0]*diffusion_creep->compute_viscosity(pressure, temperature, grain_size, composition);
       disl_stress = 2.*partial_strain_rates[1]*dislocation_creep->compute_viscosity(partial_strain_rates[1], pressure, temperature, composition);
+      prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
       if (partial_strain_rates[3] > 0.)
         {
           drpr_stress = 2.*partial_strain_rates[3]*drucker_prager_power->compute_viscosity(p.cohesion,
@@ -158,12 +168,14 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
       if ((std::fabs((diff_stress - creep_stress)/creep_stress) > 1e-6)
           || (std::fabs((disl_stress - creep_stress)/creep_stress) > 1e-6)
+          || (std::fabs((prls_stress - creep_stress)/creep_stress) > 1e-6)
           || (std::fabs((drpr_stress - creep_stress)/creep_stress) > 1e-6))
         {
           error = true;
           std::cout << "   creep stress: " << creep_stress;
           std::cout << " diffusion stress: " << diff_stress;
           std::cout << " dislocation stress: " << disl_stress;
+          std::cout << " peierls stress: " << prls_stress;
           std::cout << " drucker prager stress: " << drpr_stress << std::endl;
         }
     }
@@ -197,5 +209,30 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
                                             std::placeholders::_2));
 }
 
+
+using namespace aspect;
+
+
+void declare_parameters(const unsigned int dim,
+                        ParameterHandler &prm)
+{
+  prm.enter_subsection("Compositional fields");
+  {
+    prm.declare_entry("Number of fields","1", Patterns::Integer());
+  }
+  prm.leave_subsection();
+}
+
+
+
+void parameter_connector ()
+{
+  SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
+  SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);
+}
+
+
+
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
                                   signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(parameter_connector)
