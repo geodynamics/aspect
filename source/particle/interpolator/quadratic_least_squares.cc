@@ -610,13 +610,6 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
-
-        // In general n_selected_components() requests an argument of the ComponentMask's size since it could be initialized to be entirely true without a size.
-        // Here it is given a size equal to n_property_components, so that argument is not necessary.
-        const bool limiter_enabled_for_at_least_one_property = (use_quadratic_least_squares_limiter.n_selected_components() != 0);
-        AssertThrow(limiter_enabled_for_at_least_one_property == false || prm.get_bool("Update ghost particles") == true,
-                    ExcMessage("If 'Use quadratic least squares limiter' is enabled for any particle property, then 'Update ghost particles' must be set to true"));
-
       }
     }
   }

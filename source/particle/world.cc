@@ -238,8 +238,7 @@ namespace aspect
           });
         }
 
-      if (update_ghost_particles &&
-          dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+      if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
           auto do_ghost_exchange = [&] (typename parallel::distributed::Triangulation<dim> &)
           {
@@ -604,8 +603,7 @@ namespace aspect
             local_initialize_particles(particle_handler->begin(),
                                        particle_handler->end());
 
-          if (update_ghost_particles &&
-              dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+          if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
             {
               TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
               particle_handler->exchange_ghost_particles();
@@ -1145,8 +1143,7 @@ namespace aspect
 
       // Now that all particle information was updated, exchange the new
       // ghost particles.
-      if (update_ghost_particles &&
-          dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+      if (dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
           particle_handler->exchange_ghost_particles();
@@ -1234,13 +1231,15 @@ namespace aspect
                                "particle weight is recommended. Before adding the weights "
                                "of particles, each cell already carries a weight of 1000 to "
                                "account for the cost of field-based computations.");
-            prm.declare_entry ("Update ghost particles", "false",
+            prm.declare_entry ("Update ghost particles", "true",
                                Patterns::Bool (),
                                "Some particle interpolation algorithms require knowledge "
                                "about particles in neighboring cells. To allow this, "
                                "particles in ghost cells need to be exchanged between the "
                                "processes neighboring this cell. This parameter determines "
-                               "whether this transport is happening.");
+                               "whether this transport is happening. This parameter is "
+                               "deprecated and will be removed in the future. Ghost particle "
+                               "updates are always performed. Please set the parameter to `true'.");
 
             Generator::declare_parameters<dim>(prm);
             Integrator::declare_parameters<dim>(prm);
@@ -1292,7 +1291,10 @@ namespace aspect
 
         particle_weight = prm.get_integer("Particle weight");
 
-        update_ghost_particles = prm.get_bool("Update ghost particles");
+        const bool update_ghost_particles = prm.get_bool("Update ghost particles");
+        AssertThrow(update_ghost_particles == true,
+                    ExcMessage("The 'Update ghost particles' parameter is deprecated and will be removed in the future. "
+                               "Ghost particle updates are always performed. Please set the parameter to `true'."));
 
         const std::vector<std::string> strategies = Utilities::split_string_list(prm.get ("Load balancing strategy"));
         AssertThrow(Utilities::has_unique_entries(strategies),

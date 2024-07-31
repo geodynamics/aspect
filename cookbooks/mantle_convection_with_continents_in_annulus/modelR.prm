@@ -197,7 +197,6 @@ end
 
 subsection Particles
   set List of particle properties   = position, velocity, initial composition, pT path, initial position
-  set Update ghost particles        = true
   set Particle generator name       = reference cell
   set Load balancing strategy       = remove and add particles
   set Minimum particles per cell    = 80

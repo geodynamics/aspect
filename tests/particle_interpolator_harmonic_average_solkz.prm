@@ -99,7 +99,6 @@ subsection Particles
   set Integration scheme = rk2
   set Interpolation scheme = harmonic average
   set Maximum particles per cell = 4096
-  set Update ghost particles = true
   set Particle generator name = reference cell
 
   # The initial condition is adapted from the original solkz benchmark by adding a constant
