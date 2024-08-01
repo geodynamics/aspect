@@ -1,0 +1,6 @@
+New: There is now a benchmark with the addition of a new material 
+model called "prescribed dike injection", which represents the 
+process of magma injection through a narrow dike within the shallow 
+crust by prescribing a dilation term to all governing equations.
+<br>
+(Sibiao Liu, 2024/07/30)

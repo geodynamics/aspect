@@ -111,6 +111,14 @@ namespace aspect
             }
         }
 
+      const MaterialModel::PrescribedPlasticDilation<dim>
+      *prescribed_dilation =
+        (this->get_parameters().enable_prescribed_dilation)
+        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
+        : nullptr;
+
+      bool material_model_is_compressible = (this->get_material_model().is_compressible());
+
       // Loop over all quadrature points and assemble their contributions to
       // the preconditioner matrix
       for (unsigned int q = 0; q < n_q_points; ++q)
@@ -119,11 +127,9 @@ namespace aspect
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
-                  scratch.grads_phi_u[i_stokes] =
-                    scratch.finite_element_values[introspection.extractors
-                                                  .velocities].symmetric_gradient(i, q);
-                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection
-                                                                          .extractors.pressure].value(i, q);
+                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q);
+                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence(i, q);
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value(i, q);
 
 #if DEBUG
                   // This is needed to test the velocity part of the matrix for
@@ -136,6 +142,7 @@ namespace aspect
             }
 
           const double eta = scratch.material_model_outputs.viscosities[q];
+          const double eta_two_thirds = eta * 2.0 / 3.0;
           const double one_over_eta = 1. / eta;
           const double JxW = scratch.finite_element_values.JxW(q);
 
@@ -147,7 +154,8 @@ namespace aspect
                 for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
                   if (scratch.dof_component_indices[i] ==
                       scratch.dof_component_indices[j])
-                    data.local_matrix(i, j) += (
+                    {
+                      data.local_matrix(i, j) += (
                                                  // top left block: for the current case with
                                                  // derivative_scaling_factor==0 the top left block
                                                  // of the system matrix only contains the usual
@@ -171,6 +179,15 @@ namespace aspect
                                                  * pressure_scaling
                                                  * (scratch.phi_p[i] * scratch.phi_p[j]))
                                                * JxW;
+                      
+                      // Only in the prescribed dike injection case, we wanna the deviatoric
+                      // strain rate on the left-hand matrix if incompressible.
+                      if (prescribed_dilation != nullptr
+                          && !material_model_is_compressible
+                          && this->get_parameters().enable_dike_injection
+                          && prescribed_dilation->dilation[q] != 0)
+                        data.local_matrix(i, j) += (- eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])) * JxW;
+                    }
             }
           else
             {
@@ -228,6 +245,14 @@ namespace aspect
                            * (scratch.phi_p[i] * scratch.phi_p[j])
                          )
                          * JxW;
+                      
+                      // Only in the prescribed dike injection case, we wanna the deviatoric
+                      // strain rate on the left-hand matrix if incompressible.
+                      if (prescribed_dilation != nullptr
+                          && !material_model_is_compressible
+                          && this->get_parameters().enable_dike_injection
+                          && prescribed_dilation->dilation[q] != 0)
+                        data.local_matrix(i, j) += (- eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])) * JxW;
                     }
             }
         }
@@ -326,7 +351,7 @@ namespace aspect
                              scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
                              : nullptr;
 
-      const bool material_model_is_compressible = (this->get_material_model().is_compressible());
+      bool material_model_is_compressible = (this->get_material_model().is_compressible());
 
       const MaterialModel::MaterialModelDerivatives<dim> *derivatives
         = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
@@ -448,6 +473,37 @@ namespace aspect
                                        * prescribed_dilation->dilation[q]
                                        * scratch.div_phi_u[i]
                                      ) * JxW;
+            }
+
+          // This is customized for the dike injection process that the dike only opens in the direction of horizontal extension.
+          if (this->get_parameters().enable_dike_injection && prescribed_dilation->dilation[q] != 0)
+            {
+              // If the dike injection is activated in the incompressible model,
+              // we wanna the deviatoric strain rate on the left-hand matrix.
+              if (!material_model_is_compressible)
+                {
+                  for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+                    for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
+                      {
+                        data.local_matrix(i, j) += (-2.0 / 3.0 * eta * (scratch.div_phi_u[i] * scratch.div_phi_u[j])) * JxW;
+                      }
+                }
+              // If we expect the effect of the prescribed dilation term to
+              // occur only in the horizontal x-direction (dike opening), the 
+              // horizontal (x) momentum equation is then additionally augmented
+              // by the RHS：- \int 2 eta R, div v
+              for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+                {
+                  const unsigned int index_horizon=fe.system_to_component_index(i).first;
+                  if (introspection.is_stokes_component(index_horizon))
+                    {
+                      if (index_horizon==0) //horizontal x direction
+                        data.local_rhs(i_stokes) += 2.0 * eta * prescribed_dilation->dilation[q] * scratch.div_phi_u[i_stokes] * JxW;
+
+                      ++i_stokes;
+                    }
+                  ++i;
+                }
             }
 
           // and then the matrix, if necessary
