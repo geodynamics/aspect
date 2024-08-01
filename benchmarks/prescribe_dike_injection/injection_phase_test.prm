@@ -1,0 +1,122 @@
+# This is a 2D test model of dike injection bfunction to determine that the
+# prescribed compositional field in the injection area is working prepoerly.
+# This can be used for tracking the motion of injected material. Within the
+# dike, the value of compositional field 'injection_phase' is increased by
+# 0.2 per timestep, while the value of another compositional field is 
+# decreased by 0.2 correspondingly.
+
+set Additional shared libraries            = ./libprescribed_dike_injection.debug.so
+set Dimension                              = 2
+set Adiabatic surface temperature          = 0
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Output directory                       = output_injection_phase_test
+set End time                               = 4e3
+set Maximum time step                      = 2e3
+set Use years in output instead of seconds = true
+
+##################### Prescribed dike injection ########################
+# We need to enable the assembler that allows us to add terms
+# to the Stokes equation. 
+subsection Formulation
+  set Enable prescribed dilation    = true
+  set Enable dike injection         = true
+end
+
+# Here we use the Stokes discretization that is locally conservative for dike
+# injection function, otherwise the solutions within the dike might be wrong.
+subsection Discretization
+  set Use locally conservative discretization      = true
+  set Use discontinuous temperature discretization = true  
+  set Use discontinuous composition discretization = true
+end
+
+subsection Material model
+  set Model name = prescribed dike injection
+  subsection Prescribed dike injection
+    set Base model = simple
+
+    set Dike material injection fraction = 0.2
+    subsection Dike injection function
+      set Function expression  = if(x>=400 && x<=600, 1e-5, 0)
+    end
+  end
+  subsection Simple model
+    set Reference density             = 1000.
+    set Reference specific heat       = 1000.
+    set Thermal expansion coefficient = 0.
+    set Thermal conductivity          = 0.
+  end
+end
+
+##################### Model geometry ########################
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 1000
+    set Y extent      = 1000
+    set X repetitions = 10
+    set Y repetitions = 10
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+##################### Initial & Boundary Conditions ########################
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+# We prescribe the lithostatic pressure as a boundary traction on 
+# the right side of the model, so that material can flow out according 
+# to the inflow induced by the dike injection.   
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:initial lithostatic pressure, \
+                                                left:initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point         = 1000, 1000
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression       = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields      = 2
+  set Names of fields       = injection_phase, another_phase
+  set Types of fields       = chemical composition, chemical composition
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      =x,y,t
+    set Function expression = if(x>=400 && x<=600, 0.2, 0); \
+                              if(x>=400 && x<=600, 0.8, 1)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics
+  subsection Visualization
+    set List of output variables      = heating, named additional outputs,  strain rate tensor
+    set Time between graphical output = 0
+    set Interpolate output = false
+  end
+end

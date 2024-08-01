@@ -1,0 +1,122 @@
+# This is a 2D test model of dike injection function to determine if it is
+# working properly. Material is injected from the left half of the model
+# domain with a rate that corresponds to a velocity divergence of 1e-15 1/s
+# and can flow out through the right-side boundary. This corresponds to a 
+# linear velocity increase from 0 to 500 m * 1e-15 1/yr = 5e-13 m/s in the
+# right half of the domain.
+
+set Additional shared libraries            = ./libprescribed_dike_injection.debug.so
+set Dimension                              = 2
+set Adiabatic surface temperature          = 0
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Output directory                       = output_injection_rate_test
+set End time                               = 1e10
+set Use years in output instead of seconds = false
+
+##################### Prescribed dike injection ########################
+# We need to enable the assembler that allows us to add terms
+# to the Stokes equations.
+subsection Formulation
+  set Enable prescribed dilation    = true
+  set Enable dike injection         = true
+end
+
+# Here we use the Stokes discretization that is locally conservative for dike
+# injection function, otherwise the solutions within the dike might be wrong.
+subsection Discretization
+  set Use locally conservative discretization      = true
+  set Use discontinuous temperature discretization = true
+  set Use discontinuous composition discretization = true 
+end
+
+subsection Material model
+  set Model name = prescribed dike injection
+  subsection Prescribed dike injection
+    set Base model = simple
+    
+    set Dike material injection fraction = 1.0
+    subsection Dike injection function
+      set Variable names       = x,y,t
+      set Function expression  = if(x<=500, 1e-15, 0)
+    end
+  end
+
+  subsection Simple model
+    set Reference density             = 1000.
+    set Reference specific heat       = 1000.
+    set Thermal expansion coefficient = 0.
+    set Thermal conductivity          = 0.
+  end
+end
+
+##################### Model geometry ########################
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 1000
+    set Y extent      = 1000
+    set X repetitions = 10
+    set Y repetitions = 10
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+##################### Initial & Boundary Conditions ########################
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left
+end
+
+# We prescribe the lithostatic pressure as a boundary traction on 
+# the right side of the model, so that material can flow out according 
+# to the inflow induced by the dike injection.   
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point         = 1000, 1000
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+   set Variable names = x,y
+    set Function expression = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields      = 1
+  set Names of fields       = injection_phase
+  set Types of fields       = chemical composition
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      =x,y
+    set Function expression = 0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics
+  subsection Visualization
+    set List of output variables      = heating, named additional outputs, strain rate tensor
+    set Time between graphical output = 0
+    set Interpolate output = false
+  end
+end
