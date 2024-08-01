@@ -772,6 +772,20 @@ namespace aspect
         // eta_max / (eta_max - eta_min) becomes a useful value,
         // which we here call the "strain_rate_scaling_factor".
         const double minimum_viscosity = prm.get_double("Minimum viscosity");
+
+        AssertThrow(maximum_viscosity >= minimum_viscosity,
+        ExcMessage("Maximum viscosity needs to be larger or equal to minimum viscosity."));
+
+        // Even though we allow maximum_viscosity == minimum_viscosity in the input file,
+        // it creates a singularity in the equations, where the viscosity of the maximum
+        // viscosity dampener becomes infinite. Ensure there is always a small difference
+        // between maximum and minimum viscosity. Note, that this situation is not physical,
+        // because all the deformation will be accomodated by the limiter elements, and none
+        // of the other active mechanisms will accomodate any creep.
+        if (std::abs(maximum_viscosity - minimum_viscosity) < 100 * std::numeric_limits<double>::epsilon() * maximum_viscosity)
+          maximum_viscosity = (1. + 100 * std::numeric_limits<double>::epsilon()) * minimum_viscosity;
+
+
         strain_rate_scaling_factor = maximum_viscosity / (maximum_viscosity - minimum_viscosity);
         damper_viscosity = maximum_viscosity * minimum_viscosity / (maximum_viscosity - minimum_viscosity);
 
