@@ -1,0 +1,63 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
+
+Number of mesh deformation degrees of freedom: 578
+   Solving mesh displacement system... 0 iterations.
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh displacement system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving layer_1 system ... 0 iterations.
+   Skipping layer_2 composition solve because RHS is zero.
+   Skipping layer_3 composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0 m/s, 0 m/s
+     Topography min/max:       0 m, 0.15 m
+     Writing graphical output: output-hill_diffusion_field_boundary_conditions/solution/solution-00000
+
+*** Timestep 1:  t=0.0005 seconds, dt=0.0005 seconds
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 4 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving layer_1 system ... 11 iterations.
+   Skipping layer_2 composition solve because RHS is zero.
+   Solving layer_3 system ... 12 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0 m/s, 0 m/s
+     Topography min/max:       -0.0002308 m, 0.1498 m
+     Writing graphical output: output-hill_diffusion_field_boundary_conditions/solution/solution-00001
+
+*** Timestep 2:  t=0.001 seconds, dt=0.0005 seconds
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 4 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving layer_1 system ... 12 iterations.
+   Skipping layer_2 composition solve because RHS is zero.
+   Solving layer_3 system ... 12 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        0 m/s, 0 m/s
+     Topography min/max:       -0.0003541 m, 0.1496 m
+     Writing graphical output: output-hill_diffusion_field_boundary_conditions/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
