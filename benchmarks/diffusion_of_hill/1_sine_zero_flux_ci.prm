@@ -1,9 +1,9 @@
 set Additional shared libraries            = libanalytical_topography.so
 set Dimension                              = 2
 set Use years in output instead of seconds = false
-set End time                               = 0.001
-set Maximum time step                      = 0.0001
-set Output directory                       = output-1_sine_zero_flux_ci_topfreeslip/
+set End time                               = 0.005
+set Maximum time step                      = 0.0005
+set Output directory                       = output-1_sine_zero_flux_ci_toppresvel_subtractmeshvel/
 set Nonlinear solver scheme = single Advection, single Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
@@ -21,9 +21,9 @@ subsection Geometry model
     set Model name = function
 
     subsection Function
-      set Function constants = A=0.075, L=1.
+      set Function constants = A=0.150, L=1.
       set Function expression = \
-                                A * sin(x*pi)
+                                if(x<0.5,A * sin((x+0.5)*pi),0)
     end
   end
 end
@@ -52,8 +52,9 @@ subsection Initial composition model
 
   subsection Function
     set Variable names = x,z
-    set Coordinate system = depth
-    set Function expression = if(x<.05, 1, 0); if(x>=0.05 && x<0.1, 1, 0); 0
+    set Coordinate system = cartesian #depth
+    #set Function expression = if(x<.05, 1, 0); if(x>=0.05 && x<0.1, 1, 0); 0
+    set Function expression = if(z>1.07, 1, 0); 0; 0
   end
 end
 
@@ -69,7 +70,12 @@ end
 
 # Free slip on all boundaries
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right, bottom, top
+  set Tangential velocity boundary indicators = left, right, bottom
+  set Prescribed velocity boundary indicators = top: function
+  subsection Function
+    set Variable names = x,z,t
+    set Function expression = 0;0
+  end
 end
 
 # The mesh will be deformed according to the displacement
@@ -119,8 +125,8 @@ end
 # We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 3
-  set Initial adaptive refinement              = 4
+  set Initial global refinement                = 6
+  set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Strategy = minimum refinement function
   subsection Minimum refinement function
@@ -133,7 +139,7 @@ end
 # We output the computed topography and the analytical topography
 # value to file.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, analytical topography
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization #, analytical topography
 
   subsection Topography
     set Output to file = true
@@ -143,7 +149,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set Time between graphical output = 0.0001
+    set Time between graphical output = 0.001
     set Output mesh velocity = true
     set Interpolate output = false
   end
