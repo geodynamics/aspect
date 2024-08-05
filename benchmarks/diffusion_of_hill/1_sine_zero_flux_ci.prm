@@ -149,7 +149,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set Time between graphical output = 0.001
+    set Time between graphical output = 0.0001
     set Output mesh velocity = true
     set Interpolate output = false
   end
