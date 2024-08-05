@@ -27,7 +27,7 @@ The way this is achieved is through the following two steps:
     with material models, geometry descriptions, etc., through a simple and
     very basic interface. These interfaces are declared in the
     [include/aspect/material_model/interface.h](https://github.com/geodynamics/aspect/blob/main/include/aspect/material_model/interface.h),
-    [include/aspect/geometry_model/interface.h](https://github.com/geodynamics/aspect/blob/main/include/aspect/geometry_model/interface.h
+    [include/aspect/geometry_model/interface.h](https://github.com/geodynamics/aspect/blob/main/include/aspect/geometry_model/interface.h)
     etc., header files. These classes are always called `Interface`, are located in namespaces that
     identify their purpose, and their documentation can be found from the
     general class overview in

@@ -163,7 +163,7 @@ information, so the trick is to get this information into the function. C++
 provides a nice mechanism for this that is best explained using an example:
 
 ```{code-block} c++
-#include <deal.II/base/std_cxx1x/bind.h>
+#include <functional>
 
     template <int dim>
     void set_boundary_indicators (parallel::distributed::Triangulation<dim> &triangulation)
@@ -179,13 +179,13 @@ provides a nice mechanism for this that is best explained using an example:
       ... create the coarse mesh ...
 
       coarse_grid.signals.post_refinement.connect
-        (std_cxx1x::bind (&set_boundary_indicators<dim>,
-                          std_cxx1x::ref(coarse_grid)));
+        (std::bind (&set_boundary_indicators<dim>,
+                     std::ref(coarse_grid)));
 
     }
 ```
 
-What the call to `std_cxx1x::bind` does is to produce an object that can be
+What the call to `std::bind` does is to produce an object that can be
 called like a function with no arguments. It does so by taking the address of
 a function that does, in fact, take an argument but permanently fix this one
 argument to a reference to the coarse grid triangulation. After each
@@ -202,7 +202,7 @@ been declared as a (non-static, but possibly private) member function of the
 `MyGeometry` class, then the following will work:
 
 ```{code-block} c++
-#include <deal.II/base/std_cxx1x/bind.h>
+#include <functional>
 
     template <int dim>
     void
@@ -220,9 +220,9 @@ been declared as a (non-static, but possibly private) member function of the
       ... create the coarse mesh ...
 
       coarse_grid.signals.post_refinement.connect
-        (std_cxx1x::bind (&MyGeometry<dim>::set_boundary_indicators,
-                          std_cxx1x::cref(*this),
-                          std_cxx1x::ref(coarse_grid)));
+        (std::bind (&MyGeometry<dim>::set_boundary_indicators,
+                     std::cref(*this),
+                     std::ref(coarse_grid)));
     }
 ```
 
