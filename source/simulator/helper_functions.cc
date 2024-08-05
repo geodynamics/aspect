@@ -2328,9 +2328,11 @@ namespace aspect
                   }
 
                 // ... and change the boundary id of any outflow boundary faces.
-                if (timestep_number==0 || simulator_is_past_initialization == false ||  integrated_flow > 0)
+                if (timestep_number<=1 || simulator_is_past_initialization == false ||  integrated_flow > 0)
+                {
+		  std::cout << "Changing B id with integrated_flow: " << integrated_flow << " for id " << face->boundary_id() <<  std::endl; 
                   face->set_boundary_id(face->boundary_id() + offset);
-                std::cout << "integrated_flow: " << integrated_flow << std::endl; 
+                } 
               }
           }
   }
@@ -2350,7 +2352,10 @@ namespace aspect
               {
                 // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.
                 if (face->boundary_id() >= offset)
+                {
                   face->set_boundary_id(face->boundary_id() - offset);
+                  std::cout << "Resetting boundary id" << std::endl;
+                }
               }
           }
   }
