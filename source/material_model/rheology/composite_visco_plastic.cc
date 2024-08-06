@@ -773,18 +773,14 @@ namespace aspect
         // which we here call the "strain_rate_scaling_factor".
         const double minimum_viscosity = prm.get_double("Minimum viscosity");
 
-        AssertThrow(maximum_viscosity >= minimum_viscosity,
-        ExcMessage("Maximum viscosity needs to be larger or equal to minimum viscosity."));
+        AssertThrow(minimum_viscosity > 0,
+                    ExcMessage("Minimum viscosity needs to be larger than zero."));
 
-        // Even though we allow maximum_viscosity == minimum_viscosity in the input file,
-        // it creates a singularity in the equations, where the viscosity of the maximum
-        // viscosity dampener becomes infinite. Ensure there is always a small difference
-        // between maximum and minimum viscosity. Note, that this situation is not physical,
-        // because all the deformation will be accomodated by the limiter elements, and none
-        // of the other active mechanisms will accomodate any creep.
-        if (std::abs(maximum_viscosity - minimum_viscosity) < 100 * std::numeric_limits<double>::epsilon() * maximum_viscosity)
-          maximum_viscosity = (1. + 100 * std::numeric_limits<double>::epsilon()) * minimum_viscosity;
-
+        AssertThrow(maximum_viscosity > 1.1 * minimum_viscosity,
+                    ExcMessage("Maximum viscosity needs to be at least ten percent larger than the minimum viscosity. Note that because of the "
+                               "design of this rheology, the minimum and maximum viscosity limit the viscosity increasingly inaccurately as "
+                               "they approach each other. If you require an isoviscous model consider a different rheology, or set the "
+                               "parameters of the active flow laws to be independent of temperature, pressure, grain size, and stress."));
 
         strain_rate_scaling_factor = maximum_viscosity / (maximum_viscosity - minimum_viscosity);
         damper_viscosity = maximum_viscosity * minimum_viscosity / (maximum_viscosity - minimum_viscosity);
