@@ -657,7 +657,7 @@ namespace aspect
         // arranged in parallel with the viscoplastic elements.
         // The total stress is equal to the sum of the viscoplastic stress and
         // damper stress.
-        const double damper_stress = 2. * damper_viscosity * (edot_ii - partial_strain_rates[4]);
+        const double damper_stress = 2. * damper_viscosity * (edot_ii - partial_strain_rates[isostrain_damper_strain_rate_index]);
         const double total_stress = viscoplastic_stress + damper_stress;
 
         // 6) Return the effective creep viscosity using the total stress
