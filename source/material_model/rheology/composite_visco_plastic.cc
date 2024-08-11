@@ -343,7 +343,7 @@ namespace aspect
         // arranged in parallel with the viscoplastic elements.
         // The total stress is equal to the sum of the viscoplastic stress and
         // minimum stress.
-        const double damper_stress = 2. * damper_viscosity * edot_ii;
+        const double damper_stress = 2. * damper_viscosity * (edot_ii - partial_strain_rates[4]);
         const double total_stress = viscoplastic_stress + damper_stress;
 
         // 6) Return the effective creep viscosity using the total stress
@@ -600,7 +600,7 @@ namespace aspect
         // arranged in parallel with the viscoplastic elements.
         // The total stress is equal to the sum of the viscoplastic stress and
         // minimum stress.
-        const double damper_stress = 2. * damper_viscosity * edot_ii;
+        const double damper_stress = 2. * damper_viscosity * (edot_ii - partial_strain_rates[4]);
         const double total_stress = viscoplastic_stress + damper_stress;
 
         // 6) Return the effective creep viscosity using the total stress
@@ -772,6 +772,15 @@ namespace aspect
         // eta_max / (eta_max - eta_min) becomes a useful value,
         // which we here call the "strain_rate_scaling_factor".
         const double minimum_viscosity = prm.get_double("Minimum viscosity");
+
+        AssertThrow(minimum_viscosity > 0,
+                    ExcMessage("Minimum viscosity needs to be larger than zero."));
+
+        AssertThrow(maximum_viscosity > 1.1 * minimum_viscosity,
+                    ExcMessage("The maximum viscosity needs to be at least ten percent larger than the minimum viscosity. "
+                               "If you require an isoviscous model consider a different rheology, or set the "
+                               "parameters of the active flow laws to be independent of temperature, pressure, grain size, and stress."));
+
         strain_rate_scaling_factor = maximum_viscosity / (maximum_viscosity - minimum_viscosity);
         damper_viscosity = maximum_viscosity * minimum_viscosity / (maximum_viscosity - minimum_viscosity);
 
