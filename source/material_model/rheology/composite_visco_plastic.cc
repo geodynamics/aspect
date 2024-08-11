@@ -105,8 +105,8 @@ namespace aspect
         double viscosity = 0.;
 
         // Make sure partial_strain_rates is filled with zeros and is the right length
+        partial_strain_rates.resize(n_decomposed_strain_rates);
         std::fill(partial_strain_rates.begin(), partial_strain_rates.end(), 0);
-        partial_strain_rates.resize(n_decomposed_strain_rates, 0.);
 
         // Compute the viscosity and the partial strain rates
         // according to the isostress or isostrain viscosity averaging scheme.
