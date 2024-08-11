@@ -777,9 +777,8 @@ namespace aspect
                     ExcMessage("Minimum viscosity needs to be larger than zero."));
 
         AssertThrow(maximum_viscosity > 1.1 * minimum_viscosity,
-                    ExcMessage("Maximum viscosity needs to be at least ten percent larger than the minimum viscosity. Note that because of the "
-                               "design of this rheology, the minimum and maximum viscosity limit the viscosity increasingly inaccurately as "
-                               "they approach each other. If you require an isoviscous model consider a different rheology, or set the "
+                    ExcMessage("The maximum viscosity needs to be at least ten percent larger than the minimum viscosity. "
+                               "If you require an isoviscous model consider a different rheology, or set the "
                                "parameters of the active flow laws to be independent of temperature, pressure, grain size, and stress."));
 
         strain_rate_scaling_factor = maximum_viscosity / (maximum_viscosity - minimum_viscosity);

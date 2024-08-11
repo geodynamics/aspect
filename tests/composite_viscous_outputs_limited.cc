@@ -94,13 +94,13 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double minimum_viscosity = prm.get_double("Minimum viscosity");
   double maximum_viscosity = prm.get_double("Maximum viscosity");
 
-  AssertThrow(maximum_viscosity >= minimum_viscosity,
-              ExcMessage("Maximum viscosity needs to be larger or equal to minimum viscosity."));
+  AssertThrow(minimum_viscosity > 0,
+              ExcMessage("Minimum viscosity needs to be larger than zero."));
 
-  // This is the same modification of the maximum viscosity that happens inside
-  // CompositeViscoPlastic
-  if (std::abs(maximum_viscosity - minimum_viscosity) < 100 * std::numeric_limits<double>::epsilon() * maximum_viscosity)
-    maximum_viscosity = (1. + 100 * std::numeric_limits<double>::epsilon()) * minimum_viscosity;
+  AssertThrow(maximum_viscosity > 1.1 * minimum_viscosity,
+              ExcMessage("The maximum viscosity needs to be at least ten percent larger than the minimum viscosity. "
+                         "If you require an isoviscous model consider a different rheology, or set the "
+                         "parameters of the active flow laws to be independent of temperature, pressure, grain size, and stress."));
 
   double lim_visc = (minimum_viscosity*maximum_viscosity)/(maximum_viscosity - minimum_viscosity);
 
