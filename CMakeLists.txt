@@ -827,6 +827,11 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   endif()
 endif()
 
+# turn on debug checks like invalid element access in c++ standard library:
+if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
+  target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
+endif()
+
 
 # ##############################################################################
 # Make sure we correctly link with external libraries
