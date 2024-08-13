@@ -916,6 +916,33 @@ namespace aspect
         for (unsigned int i=0; i<values_out.additional_outputs.size(); ++i)
           values_out.additional_outputs[i]->average (operation, projection_matrix, expansion_matrix);
       }
+
+
+
+      AveragingOperation
+      get_averaging_operation_for_viscosity(const AveragingOperation operation)
+      {
+        AveragingOperation operation_for_viscosity = operation;
+        switch (operation)
+          {
+            case harmonic_average:
+              operation_for_viscosity = harmonic_average_only_viscosity;
+              break;
+
+            case geometric_average:
+              operation_for_viscosity = geometric_average_only_viscosity;
+              break;
+
+            case project_to_Q1:
+              operation_for_viscosity = project_to_Q1_only_viscosity;
+              break;
+
+            default:
+              operation_for_viscosity = operation;
+          }
+
+        return operation_for_viscosity;
+      }
     }
 
 

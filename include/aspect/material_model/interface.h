@@ -754,8 +754,13 @@ namespace aspect
                              const FullMatrix<double>      &projection_matrix,
                              const FullMatrix<double>      &expansion_matrix,
                              std::vector<double>           &values_out);
-    }
 
+      /**
+       * Parse an AveragingOperation and alias to an AveragingOperation
+       * that is appropriate for viscosity averaging.
+       */
+      AveragingOperation get_averaging_operation_for_viscosity(const AveragingOperation operation);
+    }
 
     /**
      * Some material and heating models need more than just the basic material
