@@ -128,6 +128,68 @@ namespace aspect
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
 
+          /**
+           * Create the two additional material model output objects that contain the
+           * elastic shear moduli, elastic viscosity, ratio of computational to elastic timestep,
+           * and deviatoric stress of the current timestep and the reaction rates.
+           */
+          /*
+          void
+          create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+          */
+
+          /**
+           * Given the stress of the previous time step in the material model inputs @p in,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+           * and the (viscous) viscosities given in the material model outputs object @p out,
+           * fill a material model outputs objects with the elastic force terms, viscoelastic
+           * strain rate and viscous dissipation.
+           */
+          /*
+          void
+          fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                const std::vector<double> &average_elastic_shear_moduli,
+                                MaterialModel::MaterialModelOutputs<dim> &out) const;
+          */
+
+          /**
+          * Given the stress of the previous time step in the material model inputs @p in,
+          * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+          * and the (viscous) viscosities given in the material model outputs object @p out,
+          * fill a material model outputs (ElasticAdditionalOutputs) object with the
+          * average shear modulus, elastic viscosity, and the deviatoric stress of the current timestep.
+          */
+          /*
+          void
+          fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                           const std::vector<double> &average_elastic_shear_moduli,
+                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
+          */
+
+          /**
+           * Given the stress of the previous time step in the material model inputs @p in,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+           * and the (viscous) viscosities given in the material model outputs object @p out,
+           * compute an update to the elastic stresses and use it to fill the reaction terms
+           * material model output property.
+           */
+          void
+          fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                 const std::vector<double> &average_elastic_shear_moduli,
+                                 MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * Given the stress of the previous time step in the material model inputs @p in,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+           * and the (viscous) viscosities given in the material model outputs object @p out,
+           * compute the update to the elastic stresses of the previous timestep and use it
+           * to fill the reaction rates material model output property.
+           */
+          void
+          fill_reaction_rates (const MaterialModel::MaterialModelInputs<dim> &in,
+                               const std::vector<double> &average_elastic_shear_moduli,
+                               MaterialModel::MaterialModelOutputs<dim> &out) const;
+
         private:
           /**
            * Compute the isostress viscosity over all compositional fields
@@ -207,69 +269,6 @@ namespace aspect
                                                                const double viscoplastic_stress,
                                                                std::vector<double> &partial_strain_rates) const;
 
-          /**
-           * Create the two additional material model output objects that contain the
-           * elastic shear moduli, elastic viscosity, ratio of computational to elastic timestep,
-           * and deviatoric stress of the current timestep and the reaction rates.
-           */
-          /*
-          void
-          create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
-          */
-
-          /**
-           * Given the stress of the previous time step in the material model inputs @p in,
-           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
-           * and the (viscous) viscosities given in the material model outputs object @p out,
-           * fill a material model outputs objects with the elastic force terms, viscoelastic
-           * strain rate and viscous dissipation.
-           */
-          /*
-          void
-          fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                const std::vector<double> &average_elastic_shear_moduli,
-                                MaterialModel::MaterialModelOutputs<dim> &out) const;
-          */
-
-          /**
-          * Given the stress of the previous time step in the material model inputs @p in,
-          * the elastic shear moduli @p average_elastic_shear_moduli at each point,
-          * and the (viscous) viscosities given in the material model outputs object @p out,
-          * fill a material model outputs (ElasticAdditionalOutputs) object with the
-          * average shear modulus, elastic viscosity, and the deviatoric stress of the current timestep.
-          */
-          /*
-          void
-          fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                           const std::vector<double> &average_elastic_shear_moduli,
-                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
-          */
-
-          /**
-           * Given the stress of the previous time step in the material model inputs @p in,
-           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
-           * and the (viscous) viscosities given in the material model outputs object @p out,
-           * compute an update to the elastic stresses and use it to fill the reaction terms
-           * material model output property.
-           */
-          void
-          fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                 const std::vector<double> &average_elastic_shear_moduli,
-                                 MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-          /**
-           * Given the stress of the previous time step in the material model inputs @p in,
-           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
-           * and the (viscous) viscosities given in the material model outputs object @p out,
-           * compute the update to the elastic stresses of the previous timestep and use it
-           * to fill the reaction rates material model output property.
-           */
-          void
-          fill_reaction_rates (const MaterialModel::MaterialModelInputs<dim> &in,
-                               const std::vector<double> &average_elastic_shear_moduli,
-                               MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-        private:
           /**
            * Enumeration for selecting which type of viscosity averaging to use.
            */

@@ -831,7 +831,7 @@ namespace aspect
                 // In case the computational timestep differs from the elastic timestep,
                 // linearly interpolate between the two.
                 // The elastic viscosity has also already been scaled with the timestep ratio.
-                const double viscosity_ratio = effective_creep_viscosity / inverse_kelvin_viscosities[i];
+                const double viscosity_ratio = effective_creep_viscosity * inverse_kelvin_viscosities[i];
 
                 if (elastic_out != nullptr)
                   {
