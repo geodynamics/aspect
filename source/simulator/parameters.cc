@@ -126,7 +126,11 @@ namespace aspect
                        "several of the boundary velocity models described in Section~"
                        "\\ref{parameters:Boundary_20velocity_20model} interpret both "
                        "specific times in years instead of seconds, and velocities in "
-                       "meters per year instead of meters per second.");
+                       "meters per year instead of meters per second."
+                       "\n\n"
+                       "For the purposes of this parameter, a year consists of "
+                       "60*60*24*365.2425 seconds. In other words, a year is taken "
+                       "to have 365.2425 days.");
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0.),
