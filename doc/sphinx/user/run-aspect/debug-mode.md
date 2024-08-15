@@ -72,6 +72,6 @@ computation shows you which mode was selected.
 More details about optimized versus debug mode are also discussed in
 {ref}`sec:gmg`.
 
--[^footnote1]: The make targets described here modify the CMake variable
+[^footnote1]: The make targets described here modify the CMake variable
 `CMAKE_BUILD_TYPE` to either `Debug` or `Release`. You can of course also
 modify these directly when configuring your project with CMake.
