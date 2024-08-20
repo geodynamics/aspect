@@ -214,14 +214,19 @@ namespace aspect
                                                   const std::vector<std::vector<Tensor<1,dim>>> &gradients,
                                                   typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
+        const Vector<double> invalid_solution;
+        const std::vector<Tensor<1,dim>> invalid_gradient;
+
         unsigned int i = 0;
         for (typename ParticleHandler<dim>::particle_iterator particle = particles.begin();
              particle != particles.end(); ++particle, ++i)
           {
             // call the deprecated version of this function
             update_particle_property(data_position,
-                                     solution[i],
-                                     gradients[i],
+                                     (solution.size()>0) ?
+                                     solution[i] : invalid_solution,
+                                     (gradients.size()>0) ?
+                                     gradients[i] : invalid_gradient,
                                      particle);
           }
       }
