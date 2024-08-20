@@ -72,6 +72,7 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
+    set Stokes solver type = block AMG
   end
 
   subsection Newton solver parameters
