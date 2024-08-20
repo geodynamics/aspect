@@ -757,7 +757,12 @@ namespace aspect
 
       /**
        * Parse an AveragingOperation and alias to an AveragingOperation
-       * that is appropriate for viscosity averaging.
+       * that only averages viscosity. If the input to this function is an
+       * AveragingOperation that averages all properties
+       * (e.g. 'harmonic_average'), the function returns the corresponding
+       * AveragingOperation that only operates on the viscosity
+       * (e.g. 'harmonic_average_only_viscosity'). This is useful in places
+       * where averaging is performed on only the viscosity property.
        */
       AveragingOperation get_averaging_operation_for_viscosity(const AveragingOperation operation);
     }
