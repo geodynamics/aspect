@@ -24,6 +24,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+#include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
 
 #include<deal.II/fe/component_mask.h>
@@ -181,6 +182,13 @@ namespace aspect
     class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+        * Initialization function. Loads the material data.
+        **/
+        void
+        initialize () override;
+
+
 
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
@@ -232,6 +240,14 @@ namespace aspect
         is_yielding (const MaterialModelInputs<dim> &in) const;
 
       private:
+        /**
+         * Pointer to a composition mask, which is meant to be filled with
+         * one entry per compositional field that determines if this
+         * field is considered to represent a mass fractions (if the entry
+         * is set to true) or not (if set to false). This is needed for
+         * averaging of material properties.
+         */
+        std::unique_ptr<ComponentMask> composition_mask;
 
         /**
          * Pointer to the object used to compute the rheological properties.
@@ -247,6 +263,13 @@ namespace aspect
         std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
 
         std::vector<double> thermal_diffusivities;
+
+        /**
+         * boolean describing whether to use the lookup tables
+         * for computing the viscosity, rather than the temperature
+         * or pressure.
+         */
+        bool enable_material_lookup;
 
         /**
          * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
@@ -266,15 +289,29 @@ namespace aspect
         unsigned int n_phases;
 
         /**
+         * Map to associate lookup index with phase names.
+         */
+        std::unordered_map<std::string, int> lookup_index_map;
+
+        /**
          * Object for computing the equation of state.
          */
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
+
+        /**
+         * Object for computing the equation of state.
+         */
+        EquationOfState::ThermodynamicTableLookup<dim> equation_of_state_lookup;
 
         /**
          * Object that handles phase transitions.
          */
         MaterialUtilities::PhaseFunction<dim> phase_function;
 
+        /**
+         * Object that handles phase transitions.
+         */
+        MaterialUtilities::PhaseFunctionLookup<dim> phase_function_lookup;
     };
 
   }
