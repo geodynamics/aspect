@@ -170,7 +170,7 @@ namespace WorldBuilder
                                        distance_along_plane/thickness_local);
 
               // the paper uses `(x_scaled * sin(average_angle) - z_scaled * cos(average_angle))` to compute the
-              // depth (execpt that you do not use average angles since they only have on angle). On recomputing
+              // depth (except that you do not use average angles since they only have on angle). On recomputing
               // their result it seems to me (Menno) that it should have been `(1-z_scaled)` instead of `z_scaled`.
               // To avoid this whole problem we just use the depth directly since we have that.
               // todo: get the local thickniss out of H, that prevents an other division.

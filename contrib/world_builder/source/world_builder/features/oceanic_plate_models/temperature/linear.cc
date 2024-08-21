@@ -126,8 +126,8 @@ namespace WorldBuilder
                     }
 
                   const double new_temperature =  top_temperature_local + (max_depth_local_local - min_depth_local_local < 10.0*std::numeric_limits<double>::epsilon() ? 0.0 :
-                                                         (depth - min_depth_local_local) *
-                                                         ((bottom_temperature_local - top_temperature_local) / (max_depth_local_local - min_depth_local_local)));
+                                                                           (depth - min_depth_local_local) *
+                                                                           ((bottom_temperature_local - top_temperature_local) / (max_depth_local_local - min_depth_local_local)));
 
                   return apply_operation(operation,temperature_,new_temperature);
                 }

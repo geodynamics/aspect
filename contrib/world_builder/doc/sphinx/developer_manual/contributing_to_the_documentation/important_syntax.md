@@ -2,10 +2,10 @@
 Important syntax
 ===============
 
-The world builder is using [sphinx](https://www.sphinx-doc.org) to generate the documentation. Sphinx accepts multiple variants of extended markdown, but in this project we are using [myst](https://myst-parser.readthedocs.io). Below we list some common commands to use.
+The World Builder is using [sphinx](https://www.sphinx-doc.org) to generate the documentation. Sphinx accepts multiple variants of extended markdown, but in this project we are using [myst](https://myst-parser.readthedocs.io). Below we list some common commands to use.
 
 :::{note}
-Everything in this file will look like garbage in a regular markdown viewer, like if you’re viewing this on github. Viewing it on readthedocs will render everything properly.
+Everything in this file will look like garbage in a regular markdown viewer, like if you’re viewing this on GitHub. Viewing it on readthedocs will render everything properly.
 :::
 
 (title)=
@@ -75,7 +75,7 @@ Links are written in the following way:
 
 # Admonitions
 
-Adding notes, warnings or and todos which stand out can be done with the following syntax:
+Adding notes, warnings or todos boxes can be done with the following syntax:
 
 ::::{code-block} md
 :::{todo}
@@ -164,7 +164,7 @@ Adding figures looks similar to notes and todo's:
 
 ::::{code-block} md
 :::{figure} ../../../../doc/sphinx/_static/images/user_manual/basic_starter_tutorial/BST_19.png
-:name: BST_19_synatx
+:name: BST_19_syntax
 :alt: Basic Starter Tutorial section 19 highres result. 
 :align: center
 
@@ -173,7 +173,7 @@ Basic Starter Tutorial section 19 high resolution result. This has 8 times the r
 ::::
 
 :::{figure} ../../../../doc/sphinx/_static/images/user_manual/basic_starter_tutorial/BST_19.png
-:name: BST_19_synatx
+:name: BST_19_syntax
 :alt: Basic Starter Tutorial section 19 highres result. 
 :align: center
 
@@ -189,7 +189,7 @@ Creating code blocks is similar to making notes or todos. Instead of `{note}` yo
 :lineno-start: 1
 :emphasize-lines: 3,4
  {
-    "version":0.6.0,
+    "version":1.0,
     "coordinate system": {"model":"cartesian"}, 
  }
 :::
@@ -201,7 +201,7 @@ The lines starting with a colon (:) specify certain parameters which can be set,
 :lineno-start: 1
 :emphasize-lines: 3,4
  {
-    "version":0.6.0,
+    "version":1.0,
     "coordinate system": {"model":"cartesian"}, 
     "Features":[]
  }
@@ -215,7 +215,7 @@ If you need to wrap a code block in a code block, you just use more : on the out
 :lineno-start: 1
 :emphasize-lines: 3,4
  {
-    "version":0.6.0,
+    "version":1.0,
     "coordinate system": {"model":"cartesian"}, 
  }
 :::

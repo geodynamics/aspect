@@ -1,0 +1,29 @@
+# This is a comment in the data
+# file. 
+# Now define parameters:
+# dim = 2
+# compositions = 1
+# x y d T C0
+50e3 0e3 1e3
+50e3 0e3 4e3
+50e3 0e3 8e3
+50e3 0e3 11e3
+210e3 0e3 55e3
+210e3 0e3 57.5e3
+210e3 0e3 60e3
+210e3 0e3 62.5e3
+210e3 0e3 65e3
+210e3 0e3 67.5e3
+210e3 0e3 70e3
+210e3 0e3 72.5e3
+210e3 0e3 75e3
+210e3 0e3 77.5e3
+210e3 0e3 80e3
+210e3 0e3 82.5e3
+210e3 0e3 85e3
+210e3 0e3 87.5e3
+210e3 0e3 90e3
+210e3 0e3 92.5e3
+210e3 0e3 95e3
+210e3 0e3 97.5e3
+210e3 0e3 100e3

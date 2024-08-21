@@ -1,5 +1,5 @@
 {
-  "version": "0.6",
+  "version": "1.0",
   "coordinate system":{"model":"spherical", "depth method":"starting point"},
   "maximum distance between coordinates":0.01,
   "thermal expansion coefficient":0.0,

@@ -1,5 +1,5 @@
 {
-    "version": "0.6", 
+    "version": "1.0", 
     "interpolation": "continuous monotone spline", 
     "coordinate system": {"model": "spherical", "depth method": "starting point"}, 
     "features": [{ "model": "fault", 

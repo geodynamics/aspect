@@ -890,7 +890,7 @@ TEST_CASE("WorldBuilder World random")
   approval_tests.emplace_back(dist(world1.get_random_number_engine()));
   approval_tests.emplace_back(dist(world1.get_random_number_engine()));
 
-  // test whether the seed indeed changes the resuls
+  // test whether the seed indeed changes the results
   WorldBuilder::World world2(file_name, false, "", 2);
   approval_tests.emplace_back(world2.get_random_number_engine()());
   approval_tests.emplace_back(world2.get_random_number_engine()());
