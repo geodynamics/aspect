@@ -244,35 +244,6 @@ namespace aspect
       }
 
 
-      namespace
-      {
-        MaterialAveraging::AveragingOperation
-        get_averaging_operation_for_viscosity(const MaterialAveraging::AveragingOperation operation)
-        {
-          MaterialAveraging::AveragingOperation operation_for_viscosity = operation;
-          switch (operation)
-            {
-              case MaterialAveraging::harmonic_average:
-                operation_for_viscosity = MaterialAveraging::harmonic_average_only_viscosity;
-                break;
-
-              case MaterialAveraging::geometric_average:
-                operation_for_viscosity = MaterialAveraging::geometric_average_only_viscosity;
-                break;
-
-              case MaterialAveraging::project_to_Q1:
-                operation_for_viscosity = MaterialAveraging::project_to_Q1_only_viscosity;
-                break;
-
-              default:
-                operation_for_viscosity = operation;
-            }
-
-          return operation_for_viscosity;
-        }
-      }
-
-
 
       template <int dim>
       void
