@@ -133,7 +133,7 @@
 
 **Pattern:** [Double 0...1 (inclusive)]
 
-**Documentation:** When stabilizing the Newton matrix, we can encounter situations where the coefficient inside the elliptic (top-left) block becomes negative or zero. This coefficient has the form $1+x$ where $x$ can sometimes be smaller than $-1$. In this case, the top-left block of the matrix is no longer positive definite, and both preconditioners and iterative solvers may fail. To prevent this, the stabilization computes an $\alpha$ so that $1+\alpha x$ is never negative. This $\alpha$ is chosen as $1$ if $x\ge -1$, and $\alpha=-\frac 1x$ otherwise. (Note that this always leads to $0\le \alpha \le 1$.)  On the other hand, we also want to stay away from $1+\alpha x=0$, and so modify the choice of $\alpha$ to be $1$ if $x\ge -c$, and $\alpha=-\frac cx$ with a $c$ between zero and one. This way, if $c<1$, we are assured that $1-\alpha x>c$, i.e., bounded away from zero.
+**Documentation:** When stabilizing the Newton matrix, we can encounter situations where the coefficient inside the elliptic (top-left) block becomes negative or zero. This coefficient has the form $1+x$ where $x$ can sometimes be smaller than $-1$. In this case, the top-left block of the matrix is no longer positive definite, and both preconditioners and iterative solvers may fail. To prevent this, the stabilization computes an $\alpha$ so that $1+\alpha x$ is never negative and so that always $0\le \alpha \le 1$.  On the other hand, we also want to stay away from $1+\alpha x=0$, and so modify the choice of $\alpha$ by a factor $c$ between zero and one so that if $c<1$, we are assured that $1+\alpha x>0$, i.e., bounded away from zero. If $c=1$, we allow $1+\alpha x=0$, i.e., an unsafe situation. If $c=0$, then $\alpha$ is always set to zero which guarantees the desired property that $1+\alpha x=1>0$, but at the cost of a diminished convergence rate of the Newton method.
 
 (parameters:Solver_20parameters/Newton_20solver_20parameters/Stabilization_20preconditioner)=
 ### __Parameter name:__ Stabilization preconditioner
@@ -179,13 +179,29 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 (parameters:Solver_20parameters/Operator_20splitting_20parameters)=
 ## **Subsection:** Solver parameters / Operator splitting parameters
+(parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solver_20relative_20tolerance)=
+### __Parameter name:__ Reaction solver relative tolerance
+**Default value:** 1e-6
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The relative solver tolerance used in the ARKode reaction solver. This tolerance is used to adaptively determine the reaction step size. For more details, see the ARKode documentation. This parameter is only used if the &lsquo;ARKode&rsquo; reaction solver type is used. Units: none.
+
+(parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20solver_20type)=
+### __Parameter name:__ Reaction solver type
+**Default value:** ARKode
+
+**Pattern:** [Selection ARKode|fixed step ]
+
+**Documentation:** This parameter determines what solver will be used when the reactions are computed within the operator splitting scheme. For reactions where the reaction rate is a known, finite quantity, the appropriate choice is &lsquo;ARKode&rsquo;, which uses an ODE solver from SUNDIALs ARKode (adaptive-step additive Runge Kutta ODE solver methods) to compute the solution. ARKode will pick a reasonable step size based on the reaction rate and the given &lsquo;Reaction solver relative tolerance&rsquo;. However, in some cases we have instantaneous reactions, where we know the new value of a compositional field (and the reaction rate would be infinite), or reaction where we need to know or be able to control the step size we use to compute the reactions. In theses cases, it is appropriate to use the &lsquo;fixed step&rsquo; scheme, a method that a forward Euler scheme and a fixed number of steps given by the &lsquo;Reaction time step&rsquo; and &lsquo;Reaction time steps per advection step&rsquo; parameters.
+
 (parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20step)=
 ### __Parameter name:__ Reaction time step
 **Default value:** 1000.0
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter &ldquo;Use operator splitting&rdquo; is set to true. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &ldquo;Reaction time steps per advection step&rdquo; and set this parameter to the same (or larger) value as the &ldquo;Maximum time step&rdquo; (which is 5.69e+300 by default). Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+**Documentation:** Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter &ldquo;Reaction time steps per advection step&rdquo; and set this parameter to the same (or larger) value as the &ldquo;Maximum time step&rdquo; (which is 5.69e+300 by default). Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
 
 (parameters:Solver_20parameters/Operator_20splitting_20parameters/Reaction_20time_20steps_20per_20advection_20step)=
 ### __Parameter name:__ Reaction time steps per advection step
@@ -193,13 +209,21 @@ Once derivatives are used in a Newton method, ASPECT always uses the Eisenstat W
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the parameter &ldquo;Use operator splitting&rdquo; is set to true. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the &ldquo;Reaction time step&rdquo;, whichever yields the smaller time step. Units: none.
+**Documentation:** The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the parameter &ldquo;Use operator splitting&rdquo; is set to true and when the &lsquo;fixed step&rsquo; reaction solver type is used. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the &ldquo;Reaction time step&rdquo;, whichever yields the smaller time step. Units: none.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters)=
 ## **Subsection:** Solver parameters / Stokes solver parameters
+(parameters:Solver_20parameters/Stokes_20solver_20parameters/Force_20nonsymmetric_20A_20block_20solver)=
+### __Parameter name:__ Force nonsymmetric A block solver
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** This parameter determines whether to enforce a solver that supports nonsymmetric matrices when solving the inner $A$ block of the Stokes system. By default ASPECT recognizes cases where the A block is nonsymmetric automatically, and chooses an appropriate solver. However, if the inner A block solver does not converge, this parameter can be set to &rsquo;true&rsquo; to force the use of a solver that can handle nonsymmetric matrices.
+
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/GMRES_20solver_20restart_20length)=
 ### __Parameter name:__ GMRES solver restart length
-**Default value:** 50
+**Default value:** 100
 
 **Pattern:** [Integer range 1...2147483647 (inclusive)]
 
@@ -257,7 +281,7 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Number_20of_20cheap_20Stokes_20solver_20steps)=
 ### __Parameter name:__ Number of cheap Stokes solver steps
-**Default value:** 200
+**Default value:** 1000
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
@@ -265,11 +289,11 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Stokes_20solver_20type)=
 ### __Parameter name:__ Stokes solver type
-**Default value:** block AMG
+**Default value:** default solver
 
-**Pattern:** [Selection block AMG|direct solver|block GMG ]
+**Pattern:** [Selection default solver|block AMG|direct solver|block GMG ]
 
-**Documentation:** This is the type of solver used on the Stokes system. The block geometric multigrid solver currently has a limited implementation and therefore may trigger Asserts in the code when used. If this is the case, please switch to &rsquo;block AMG&rsquo;. Additionally, the block GMG solver requires using material model averaging.
+**Documentation:** This is the type of solver used on the Stokes system. The block geometric multigrid solver currently has a limited implementation and therefore may trigger Asserts in the code when used. If this is the case, please switch to &rsquo;block AMG&rsquo;. Additionally, the block GMG solver requires using material model averaging. The &rsquo;default solver&rsquo; chooses the geometric multigrid solver if supported, otherwise the AMG solver.
 
 (parameters:Solver_20parameters/Stokes_20solver_20parameters/Use_20direct_20solver_20for_20Stokes_20system)=
 ### __Parameter name:__ Use direct solver for Stokes system
@@ -289,4 +313,12 @@ In practice, you should choose the value of this parameter to be so that if you 
 
 There is no clear way to determine which preconditioner performs better. The default value (simplified approximation) requires more outer GMRES iterations, but is faster to apply in each iteration. The full block needs less assembly time (because the block is available anyway), converges in less GMRES iterations, but requires more time per iteration. There are also differences in the amount of memory consumption between the two approaches.
 
-The default value should be good for relatively simple models, but in particular for very strong viscosity contrasts the full $A$ block can be advantageous.
+The default value should be good for relatively simple models, but in particular for very strong viscosity contrasts the full $A$ block can be advantageous. This parameter is always set to true when using the GMG solver.
+
+(parameters:Solver_20parameters/Stokes_20solver_20parameters/Use_20weighted_20BFBT_20for_20Schur_20complement)=
+### __Parameter name:__ Use weighted BFBT for Schur complement
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** If set to true, the Schur complement approximation in the Block preconditioner uses the weighted BFBT preconditioner, otherwise a weighted mass matrix will be used. The BFBT preconditioner is more expensive, but works better for large viscosity variations.
