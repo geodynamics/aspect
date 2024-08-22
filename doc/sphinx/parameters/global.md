@@ -95,6 +95,17 @@ Units: \%.
 
 **Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
 
+(parameters:Nonlinear_20solver_20failure_20strategy)=
+### __Parameter name:__ Nonlinear solver failure strategy
+**Default value:** continue with next timestep
+
+**Pattern:** [Selection continue with next timestep|cut timestep size|abort program ]
+
+**Documentation:** Select the strategy on what to do if the nonlinear solver scheme fails to converge. The options are:
+&lsquo;continue with next timestep&lsquo;: ignore error and continue to the next timestep
+&lsquo;cut timestep size&lsquo;: reduce the current timestep size by a specified factor and redo the timestep
+&lsquo;abort program&lsquo;: abort the program with an error message.
+
 (parameters:Nonlinear_20solver_20scheme)=
 ### __Parameter name:__ Nonlinear solver scheme
 **Default value:** single Advection, single Stokes
@@ -190,6 +201,8 @@ For more information, see the section in the manual that discusses the general m
 **Documentation:** When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to &lsquo;true&rsquo; conversion to years happens; if it is &lsquo;false&rsquo;, no such conversion happens.
 
 Contrary to the word &ldquo;output&rdquo; in the name of this parameter, a number of plugins also use this parameter to determine how to interpret their *inputs*. For example, when &lsquo;true&rsquo;, several of the boundary velocity models described in {ref}`parameters:Boundary_20velocity_20model` interpret both specific times in years instead of seconds, and velocities in meters per year instead of meters per second.
+
+For the purposes of this parameter, a year consists of 60*60*24*365.2425 seconds. In other words, a year is taken to have 365.2425 days.
 
 (parameters:World_20builder_20file)=
 ### __Parameter name:__ World builder file

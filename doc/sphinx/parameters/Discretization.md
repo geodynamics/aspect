@@ -9,7 +9,7 @@
 ### __Parameter name:__ Composition polynomial degree
 **Default value:** 2
 
-**Pattern:** [Integer range 0...2147483647 (inclusive)]
+**Pattern:** [List of <[Integer range 0...2147483647 (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** The polynomial degree to use for the composition variable(s). As an example, a value of 2 for this parameter will yield either the element $Q_2$ or $DGQ_2$ for the compositional field(s), depending on whether we use continuous or discontinuous field(s).
 
@@ -37,7 +37,7 @@ Be careful if you choose 1 as the degree. The resulting element is not stable an
 ### __Parameter name:__ Use discontinuous composition discretization
 **Default value:** false
 
-**Pattern:** [Bool]
+**Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** Whether to use a composition discretization that is discontinuous as opposed to continuous. This then requires the assembly of face terms between cells, and weak imposition of boundary terms for the composition field via the discontinuous Galerkin method.
 
@@ -151,9 +151,9 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 ### __Parameter name:__ Use limiter for discontinuous composition solution
 **Default value:** false
 
-**Pattern:** [Bool]
+**Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** Whether to apply the bound preserving limiter as a correction after having the discontinuous composition solution. Currently we apply this only to the compositional solution if the &rsquo;Global composition maximum&rsquo; and &rsquo;Global composition minimum&rsquo; are already defined in the .prm file. This limiter keeps the discontinuous solution in the range given by Global composition maximum&rsquo; and &rsquo;Global composition minimum&rsquo;.
+**Documentation:** Whether to apply the bound preserving limiter as a correction after having the discontinuous composition solution. The limiter will only have an effect if the &rsquo;Global composition maximum&rsquo; and &rsquo;Global composition minimum&rsquo; parameters are defined in the .prm file. This limiter keeps the discontinuous solution in the range given by Global composition maximum&rsquo; and &rsquo;Global composition minimum&rsquo;. The number of input values in this parameter separated by &rsquo;,&rsquo; has to be one or the number of the compositional fields. When only one value is supplied, this same value is assumed for all compositional fields, otherwise each value represents if the limiter should be applied to the respective compositional field. Because this limiter modifies the solution it no longer satisfies the assembled equation. Therefore, the nonlinear residual for this field is meaningless, and in nonlinear solvers we will ignore the residual for this field to evaluate if the nonlinear solver has converged.
 
 (parameters:Discretization/Stabilization_20parameters/Use_20limiter_20for_20discontinuous_20temperature_20solution)=
 ### __Parameter name:__ Use limiter for discontinuous temperature solution
@@ -161,7 +161,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 
 **Pattern:** [Bool]
 
-**Documentation:** Whether to apply the bound preserving limiter as a correction after computing the discontinuous temperature solution. Currently we apply this only to the temperature solution if the &rsquo;Global temperature maximum&rsquo; and &rsquo;Global temperature minimum&rsquo; are already defined in the .prm file. This limiter keeps the discontinuous solution in the range given by &rsquo;Global temperature maximum&rsquo; and &rsquo;Global temperature minimum&rsquo;.
+**Documentation:** Whether to apply the bound preserving limiter as a correction after computing the discontinuous temperature solution. The limiter will only have an effect if the &rsquo;Global temperature maximum&rsquo; and &rsquo;Global temperature minimum&rsquo; parameters are defined in the .prm file. This limiter keeps the discontinuous solution in the range given by &rsquo;Global temperature maximum&rsquo; and &rsquo;Global temperature minimum&rsquo;. Because this limiter modifies the solution it no longer satisfies the assembled equation. Therefore, the nonlinear residual for this field is meaningless, and in nonlinear solvers we will ignore the residual for this field to evaluate if the nonlinear solver has converged.
 
 (parameters:Discretization/Stabilization_20parameters/alpha)=
 ### __Parameter name:__ alpha
