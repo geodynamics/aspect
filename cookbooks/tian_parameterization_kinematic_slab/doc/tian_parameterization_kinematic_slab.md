@@ -15,8 +15,8 @@ For the composition on the left boundary, for y > 20 km the composition is perid
 is imposed with a layered composition consisting of 5 km of sediment, 7 km of mid-ocean ridge basalt (MORB), and 8 km
 of gabbro. For numerical stability, the slab is dry for t <= 100 kyr. For t > 100 kyr, the incoming lithologies on
 the left boundary become hydrated, carrying 3 wt% water in sediment, 2 wt% water in MORB, and 1 wt% water in gabbro.
-The boundary velocities are all kinematically prescribed, for 0 <= y <= 20km, the velocity is set to 5 cm/yr, and
-for y > 20km the velocity linearly decreases from 5 cm/yr at the slab surface to 2 cm/yr at the top boundary. A
+The boundary velocities are all kinematically prescribed, for 0 <= y <= 20 km, the velocity is set to 5 cm/yr, and
+for y > 20 km the velocity linearly decreases from 5 cm/yr at the slab surface to 2 cm/yr at the top boundary. A
 schematic diagram showing where the model is in the context of a generic subduction zone is shown in {numref}`fig:schematic-diagram-overview`, and a schematic diagram of the model setup is shown in {numref}`fig:schematic-diagram-model`
 
 :::{note}
