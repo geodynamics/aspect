@@ -822,7 +822,7 @@ namespace aspect
         output_stream << std::string(typeid(InterfaceClass).name())
                       << " [label=\""
                       << plugin_system_name
-                      << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"green\"]"
+                      << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"lightgreen\"]"
                       << std::endl;
 
         // then output the graph nodes for each plugin, with links to the
