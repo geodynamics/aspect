@@ -634,11 +634,11 @@ namespace aspect
                                 const EvaluationFlags::EvaluationFlags flags) = 0;
 
           virtual
-          std::vector<Tensor<1,dim>>
+          small_vector<Tensor<1,dim>>
           get_gradient(const unsigned int evaluation_point) const = 0;
 
           virtual
-          std::vector<double>
+          small_vector<double>
           get_value(const unsigned int evaluation_point) const = 0;
 
       };
@@ -710,21 +710,21 @@ namespace aspect
             evaluation.evaluate(solution_values, flags);
           }
 
-          std::vector<double>
+          small_vector<double>
           get_value(const unsigned int evaluation_point) const override
           {
             const Tensor<1,n_components> x = convert::to_tensor<n_components>(evaluation.get_value(evaluation_point));
-            std::vector<double> result (n_components);
+            small_vector<double> result (n_components);
             for (int c=0; c<n_components; ++c)
               result[c] = x[c];
             return result;
           }
 
-          std::vector<Tensor<1,dim>>
+          small_vector<Tensor<1,dim>>
           get_gradient(const unsigned int evaluation_point) const override
           {
             const Tensor<1,n_components,Tensor<1,dim>> x = convert::to_tensor2<dim,n_components>(evaluation.get_gradient(evaluation_point));
-            std::vector<Tensor<1,dim>> result (n_components);
+            small_vector<Tensor<1,dim>> result (n_components);
             for (int c=0; c<n_components; ++c)
               result[c] = x[c];
             return result;
@@ -1095,7 +1095,7 @@ namespace aspect
 
         for (const auto &eval : compositions)
           {
-            const std::vector<double> values = eval->get_value(evaluation_point);
+            const small_vector<double> values = eval->get_value(evaluation_point);
             const unsigned int start_index = eval->first_component;
 
             for (unsigned int j=0; j<eval->n_components; ++j)
@@ -1134,7 +1134,7 @@ namespace aspect
 
         for (const auto &eval : compositions)
           {
-            const std::vector<Tensor<1,dim>> values = eval->get_gradient(evaluation_point);
+            const small_vector<Tensor<1,dim>> values = eval->get_gradient(evaluation_point);
             const unsigned int start_index = eval->first_component;
 
             for (unsigned int j=0; j<eval->n_components; ++j)
