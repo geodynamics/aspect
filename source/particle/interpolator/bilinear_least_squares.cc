@@ -250,7 +250,7 @@ namespace aspect
         {
           prm.enter_subsection("Bilinear least squares");
           {
-            prm.declare_entry("Use linear least squares limiter", "false",
+            prm.declare_entry("Use linear least squares limiter", "true",
                               Patterns::List(Patterns::Bool()),
                               "Limit the interpolation of particle properties onto the cell, so that "
                               "the value of each property is no smaller than its minimum and no "
