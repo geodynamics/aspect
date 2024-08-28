@@ -638,9 +638,18 @@ namespace aspect
           get_gradient(const unsigned int evaluation_point) const = 0;
 
           virtual
+          void
+          get_gradient(const unsigned int evaluation_point,
+                       const ArrayView<Tensor<1,dim>> &gradients) const = 0;
+
+          virtual
           small_vector<double>
           get_value(const unsigned int evaluation_point) const = 0;
 
+          virtual
+          void
+          get_value(const unsigned int evaluation_point,
+                    const ArrayView<double> &solution) const = 0;
       };
 
 
@@ -720,6 +729,17 @@ namespace aspect
             return result;
           }
 
+          void
+          get_value(const unsigned int evaluation_point,
+                    const ArrayView<double> &solution) const override
+          {
+            Assert(solution.size() == n_components, ExcMessage("The size of the solution vector does not match the number of components."));
+
+            const Tensor<1,n_components> x = convert::to_tensor<n_components>(evaluation.get_value(evaluation_point));
+            for (int c=0; c<n_components; ++c)
+              solution[c] = x[c];
+          }
+
           small_vector<Tensor<1,dim>>
           get_gradient(const unsigned int evaluation_point) const override
           {
@@ -728,6 +748,17 @@ namespace aspect
             for (int c=0; c<n_components; ++c)
               result[c] = x[c];
             return result;
+          }
+
+          void
+          get_gradient(const unsigned int evaluation_point,
+                       const ArrayView<Tensor<1,dim>> &gradients) const override
+          {
+            Assert(gradients.size() == n_components, ExcMessage("The size of the gradient vector does not match the number of components."));
+
+            const Tensor<1,n_components,Tensor<1,dim>> x = convert::to_tensor2<dim,n_components>(evaluation.get_gradient(evaluation_point));
+            for (int c=0; c<n_components; ++c)
+              gradients[c] = x[c];
           }
 
           FEPointEvaluation<n_components, dim, dim, double> evaluation;
@@ -1095,11 +1126,10 @@ namespace aspect
 
         for (const auto &eval : compositions)
           {
-            const small_vector<double> values = eval->get_value(evaluation_point);
             const unsigned int start_index = eval->first_component;
-
-            for (unsigned int j=0; j<eval->n_components; ++j)
-              solution[j+start_index] = values[j];
+            const unsigned int n_components = eval->n_components;
+            eval->get_value(evaluation_point,
+            {&solution[start_index],n_components});
           }
 
         if (simulator_access.include_melt_transport())
@@ -1134,11 +1164,11 @@ namespace aspect
 
         for (const auto &eval : compositions)
           {
-            const small_vector<Tensor<1,dim>> values = eval->get_gradient(evaluation_point);
             const unsigned int start_index = eval->first_component;
+            const unsigned int n_components = eval->n_components;
 
-            for (unsigned int j=0; j<eval->n_components; ++j)
-              gradients[j+start_index] = values[j];
+            eval->get_gradient(evaluation_point,
+            {&gradients[start_index],n_components});
           }
 
         if (simulator_access.include_melt_transport())
