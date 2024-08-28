@@ -540,7 +540,7 @@ namespace aspect
         AssertThrow (prm_out,
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.prm>."));
-        prm.print_parameters(prm_out, ParameterHandler::Text);
+        prm.print_parameters(prm_out, ParameterHandler::PRM);
 
         std::ofstream json_out ((parameters.output_directory + "parameters.json"));
         AssertThrow (json_out,
