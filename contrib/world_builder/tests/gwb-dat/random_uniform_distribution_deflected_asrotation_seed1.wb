@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+  "coordinate system":{"model":"cartesian"},
+  "random number seed":1,
+  "features":
+  [
+    {
+      "model":"mantle layer", "name":"Mantle", "min depth":10,  "max depth": 20,
+      "coordinates":[[0,0],[0,10],[10,10],[10,0]],
+      "temperature models":[{"model":"uniform", "temperature":293}],
+      "composition models":[{"model":"uniform", "compositions":[0]}],
+      "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis Euler angles z-x-z": [[0,0,0]]},
+                        {"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis rotation matrices": [[[-0.5,0,0],[0,1,0],[0,0,-1]]]}]
+    },
+
+    {
+      "model":"continental plate", "name":"CP", "min depth":0, "max depth": 10,
+      "coordinates":[[0,0],[0,10],[5,10],[5,0]],
+      "temperature models":[{"model":"uniform", "temperature":293}],
+      "composition models":[{"model":"uniform", "compositions":[1]}],
+      "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis Euler angles z-x-z": [[0,30,0]]},
+                        {"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis rotation matrices": [[[-0.5,0,0],[0,1,0],[0,0,-1]]]}]
+    },
+
+    {
+      "model":"oceanic plate", "name":"OP", "min depth":0, "max depth": 10,
+      "coordinates":[[5,0],[5,10],[10,10],[10,0]],
+      "temperature models":[{"model":"uniform", "temperature":293}],
+      "composition models":[{"model":"uniform", "compositions":[2]}],
+      "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis Euler angles z-x-z": [[0,0,45]]},
+                        {"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis rotation matrices": [[[-0.5,0,0],[0,1,0],[0,0,-1]]]}]
+    },
+
+    {
+      "model":"fault", "name":"Fault", "min depth":0, "max depth": 10,
+      "coordinates":[[0,3],[10,3]], "dip point":[0,0],
+      "segments":[{"length":10, "thickness":[1], "angle":[45]}],
+      "temperature models":[{"model":"uniform", "temperature":293}],
+      "composition models":[{"model":"uniform", "compositions":[3]}],
+      "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis Euler angles z-x-z": [[60,60,60]]},
+                        {"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis rotation matrices": [[[-0.5,0,0],[0,1,0],[0,0,-1]]]}]
+    },
+
+    {
+      "model":"plume",
+      "name":"Plume",
+      "coordinates":[[3, 0],[3.7, 0],[5.5, 0],[4.5, 0],[4, 0]],
+      "cross section depths":[0, 1, 2.5, 5, 7.5],
+      "semi-major axis":[0.5, 0.7, 0.3, 0.8, 1],
+      "eccentricity":[0, 0, 0, 0, 0],
+      "rotation angles":[0, 0, 0, 0, 0],
+      "temperature models":[{"model":"uniform", "min depth": 10, "max depth":20, "temperature":1800}],
+      "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.5], "normalize grain sizes": [true], "basis Euler angles z-x-z": [[0,90,90]]},
+                        {"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis rotation matrices": [[[-0.5,0,0],[0,1,0],[0,0,-1]]]}]
+    },
+
+    {
+      "model":"subducting plate", "name":"SP", "min depth":0, "max depth": 10,
+      "coordinates":[[0,6],[10,6]], "dip point":[0,0],
+      "segments":[{"length":10, "thickness":[1], "angle":[45]}],
+      "temperature models":[{"model":"uniform", "temperature":150}],
+      "composition models":[{"model":"uniform", "compositions":[5]}],
+      "grains models": [{"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis Euler angles z-x-z": [[30,30,60]]},
+                        {"model":"random uniform distribution deflected", "compositions":[0], "grain sizes":[-1], 
+                         "deflections": [0.001], "normalize grain sizes": [true], "basis rotation matrices": [[[-0.5,0,0],[0,1,0],[0,0,-1]]]}]
+    }
+
+  ]
+}

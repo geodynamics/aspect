@@ -6,11 +6,10 @@ This section contains self-contained cookbooks on how to design different geodyn
 
 
 ```{toctree}
-: hidden:
+:hidden:
 
 3d_cartesian_rift/doc/README
 3d_cartesian_transform_fault/doc/README
 simple_subduction_2d_cartesian/doc/README
 simple_subduction_2d_chunk/doc/README
-
 ```

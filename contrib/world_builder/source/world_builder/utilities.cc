@@ -621,9 +621,9 @@ namespace WorldBuilder
 
               if (!bool_cartesian)
                 {
-                  const double normal = std::fabs(point_list[i_section_min_distance+static_cast<size_t>((std::round(fraction_CPL_P1P2)))][0]-check_point_surface_2d[0]);
-                  const double plus   = std::fabs(point_list[i_section_min_distance+static_cast<size_t>((std::round(fraction_CPL_P1P2)))][0]-(check_point_surface_2d[0]+2*Consts::PI));
-                  const double min    = std::fabs(point_list[i_section_min_distance+static_cast<size_t>((std::round(fraction_CPL_P1P2)))][0]-(check_point_surface_2d[0]-2*Consts::PI));
+                  const double normal = std::fabs(point_list[i_section_min_distance+static_cast<size_t>(std::round(fraction_CPL_P1P2))][0]-check_point_surface_2d[0]);
+                  const double plus   = std::fabs(point_list[i_section_min_distance+static_cast<size_t>(std::round(fraction_CPL_P1P2))][0]-(check_point_surface_2d[0]+2*Consts::PI));
+                  const double min    = std::fabs(point_list[i_section_min_distance+static_cast<size_t>(std::round(fraction_CPL_P1P2))][0]-(check_point_surface_2d[0]-2*Consts::PI));
 
                   // find out whether the check point, checkpoint + 2pi or check point -2 pi is closest to the point list.
                   if (plus < normal)
@@ -1485,23 +1485,44 @@ namespace WorldBuilder
       WBAssert(ridge_parameters.size() == 4, "Internal error: ridge_parameters have the wrong size: " << ridge_parameters.size() << " instead of 4.");
       const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
       const double spreading_velocity = ridge_parameters[0] * seconds_in_year; // m/yr
-      double subducting_velocity = ridge_parameters[2] * seconds_in_year; // m/yr
+      const double distance_ridge = ridge_parameters[1];
+      const double subducting_velocity = ridge_parameters[2] * seconds_in_year; // m/yr
 
-      if (subducting_velocity <= 0)
-        subducting_velocity = spreading_velocity;
-
-      const double age_at_trench = ridge_parameters[1] / spreading_velocity; // m/(m/y) = yr
-      const double plate_age_sec = age_at_trench * seconds_in_year; // y --> seconds
+      WBAssertThrow(subducting_velocity >= 0, "The subducting velocity is less than 0. "
+                    "Subducting velocity: " << subducting_velocity);
 
       // Plate age increases with distance along the slab in the mantle
-      double effective_plate_age = plate_age_sec + (distance_along_plane / subducting_velocity) * seconds_in_year; // m/(m/y) = y(seconds_in_year)
-      WBAssertThrow(effective_plate_age >= 0, "The age of the subducting plate is less than or equal to 0. "
-                    "Effective plate age: " << effective_plate_age);
+      double effective_plate_age = (distance_ridge + distance_along_plane) / spreading_velocity; // m/(m/y) = yr
+
+      // Age of trench when the query point was at the trench
+      const double age_at_trench = effective_plate_age - distance_along_plane / subducting_velocity; // m/(m/y) = yr
+      WBAssertThrow(age_at_trench >= 0, "The age of trench at subducting initiation is less than 0. "
+                    "Age at trench: " << age_at_trench);
+
       std::vector<double> result;
       result.push_back(age_at_trench);
       result.push_back(effective_plate_age);
       return result;
 
+    }
+
+    std::array<std::array<double,3>,3>
+    multiply_3x3_matrices(const std::array<std::array<double,3>,3> mat1, const std::array<std::array<double,3>,3> mat2)
+    {
+      std::array<std::array<double,3>,3> result;
+      for (size_t i = 0; i < 3; i++)
+        {
+          for (size_t j = 0; j < 3; j++)
+            {
+              result[i][j] = 0;
+              for (size_t k = 0; k < 3; k++)
+                {
+                  result[i][j] += mat1[i][k] * mat2[k][j];
+                }
+            }
+        }
+
+      return result;
     }
   } // namespace Utilities
 } // namespace WorldBuilder
