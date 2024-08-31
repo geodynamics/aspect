@@ -173,7 +173,7 @@ end
 #   Geological Society of London Special Publications, v.24, p.63-70.
 # The initial constraints are:
 #   Surface Temperature  - upper crust (ts1) = 273 K
-#   Surface Heat Flow    - upper crust (qs1) = 0.055 mW/m^2
+#   Surface Heat Flow    - upper crust (qs1) = 0.055 W/m^2
 #   Heat Production      - upper crust (A1)  = 1.00e-6 W/m^3;
 #   Heat Production      - lower crust (A2)  = 0.25e-6 W/m^3;
 #   Heat Production      - mantle (A3)       = 0.00e-6 W/m^3;
