@@ -913,50 +913,36 @@ namespace aspect
         simulator_access(simulator)
       {
         // Create the evaluators for all compositional fields
-        const unsigned int n_total_compositional_fields = simulator_access.n_compositional_fields();
+        {
+          const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
 
-        const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
+          // We consider each group of consecutive compositions of the same type together. This is because it is more efficient
+          // than evaluating each one individually.
+          for (const unsigned int base_element_index : simulator.introspection().get_composition_base_element_indices())
+            {
+              std::vector<unsigned int> indices = simulator.introspection().get_compositional_field_indices_with_base_element(base_element_index);
 
-        if (false)
-          {
-            // No grouping of compositional fields of same type:
-            for (unsigned int composition = 0; composition < n_total_compositional_fields; ++composition)
+              // We can evaluate at most N at a time, if we have more than that of the same type, we tackle
+              // them in groups of N:
+              const unsigned int N = 10;
+              while (indices.size()>N)
+                {
+                  compositions.emplace_back(make<dim>(mapping_info,
+                                                      simulator_access.get_fe(),
+                                                      component_indices[indices[0]],
+                                                      N
+                                                     ));
+
+                  indices.erase(indices.begin(), indices.begin() + N);
+                }
+
               compositions.emplace_back(make<dim>(mapping_info,
                                                   simulator_access.get_fe(),
-                                                  component_indices[composition],
-                                                  1
+                                                  component_indices[indices[0]],
+                                                  indices.size()
                                                  ));
-          }
-        else
-          {
-            // We consider each group of consecutive compositions of the same type together. This is because it is more efficient
-            // than evaluating each one individually.
-            for (const unsigned int base_element_index : simulator.introspection().get_composition_base_element_indices())
-              {
-                std::vector<unsigned int> indices = simulator.introspection().get_compositional_field_indices_with_base_element(base_element_index);
-
-                // We can evaluate at most N at a time, if we have more than that of the same type, we tackle
-                // them in groups of N:
-                const unsigned int N = 10;
-                while (indices.size()>N)
-                  {
-                    compositions.emplace_back(make<dim>(mapping_info,
-                                                        simulator_access.get_fe(),
-                                                        component_indices[indices[0]],
-                                                        N
-                                                       ));
-
-                    indices.erase(indices.begin(), indices.begin() + N);
-                  }
-
-                compositions.emplace_back(make<dim>(mapping_info,
-                                                    simulator_access.get_fe(),
-                                                    component_indices[indices[0]],
-                                                    indices.size()
-                                                   ));
-              }
-
-          }
+            }
+        }
 
         // The FE_DGP pressure element used in locally conservative discretization is not
         // supported by the fast path of FEPointEvaluation. Replace with slow path.
