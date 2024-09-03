@@ -803,14 +803,28 @@ if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   add_executable(${TARGET_EXE_DEBUG} ${TARGET_SRC})
   set_property(TARGET ${TARGET_EXE_DEBUG}
                PROPERTY OUTPUT_NAME aspect-debug)
-  deal_ii_setup_target(${TARGET_EXE_DEBUG} DEBUG)
+
+  target_compile_flags(${TARGET_EXE_DEBUG} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
+    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_DEBUG}"
+    )
+  target_link_flags(${TARGET_EXE_DEBUG} PRIVATE
+    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_DEBUG}"
+    )
+  target_link_libraries(${TARGET_EXE_DEBUG} dealii::dealii_debug)
 endif()
 
 if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   add_executable(${TARGET_EXE_RELEASE} ${TARGET_SRC})
   set_property(TARGET ${TARGET_EXE_RELEASE}
                PROPERTY OUTPUT_NAME aspect-release)
-  deal_ii_setup_target(${TARGET_EXE_RELEASE} RELEASE)
+
+  target_compile_flags(${TARGET_EXE_RELEASE} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
+    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_RELEASE}"
+    )
+  target_link_flags(${TARGET_EXE_RELEASE} PRIVATE
+    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_RELEASE}"
+    )
+  target_link_libraries(${TARGET_EXE_RELEASE} dealii::dealii_release)
 endif()
 
 # Make sure that we have an executable 'aspect' that
