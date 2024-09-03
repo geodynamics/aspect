@@ -804,6 +804,7 @@ if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   set_property(TARGET ${TARGET_EXE_DEBUG}
                PROPERTY OUTPUT_NAME aspect-debug)
   deal_ii_setup_target(${TARGET_EXE_DEBUG} DEBUG)
+  target_link_libraries(${TARGET_EXE_DEBUG} dealii::dealii_debug)
 endif()
 
 if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
@@ -811,6 +812,7 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   set_property(TARGET ${TARGET_EXE_RELEASE}
                PROPERTY OUTPUT_NAME aspect-release)
   deal_ii_setup_target(${TARGET_EXE_RELEASE} RELEASE)
+  target_link_libraries(${TARGET_EXE_RELEASE} dealii::dealii_release)
 endif()
 
 # Make sure that we have an executable 'aspect' that
