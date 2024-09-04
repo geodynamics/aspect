@@ -1,0 +1,47 @@
+# This tests the benchmark finite_strain with particles and
+# compositional fields that are mixed between continuous and discontinuous
+# finite elements. See benchmarks/finite_strain/simple_shear for more details.
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/finite_strain/simple_shear.prm
+
+set End time                               = 0.01
+
+subsection Discretization
+  set Use discontinuous composition discretization = false, false, true, true
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = strain rate
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = particles, visualization
+
+  subsection Visualization
+    set List of output variables = strain rate
+    set Time between graphical output = 0.01
+    set Output format = gnuplot
+  end
+
+  subsection Particles
+    set Time between data output = 0.01
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+  set List of particle properties = integrated strain
+  set Particle generator name = ascii file
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = $ASPECT_SOURCE_DIR/benchmarks/finite_strain/
+      set Data file name = simple_shear_particle.dat
+    end
+  end
+end
