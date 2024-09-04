@@ -405,9 +405,9 @@ namespace aspect
                              "This will set the heterogeneity prescribed by S20RTS or S40RTS to zero "
                              "down to the specified depth (in meters). Note that your resolution has "
                              "to be adequate to capture this cutoff. For example if you specify a depth "
-                             "of 660km, but your closest spherical depth layers are only at 500km and "
-                             "750km (due to a coarse resolution) it will only zero out heterogeneities "
-                             "down to 500km. Similar caution has to be taken when using adaptive meshing.");
+                             "of 660 km, but your closest spherical depth layers are only at 500 km and "
+                             "750 km (due to a coarse resolution) it will only zero out heterogeneities "
+                             "down to 500 km. Similar caution has to be taken when using adaptive meshing.");
           prm.declare_entry ("Specify a lower maximum degree","false",
                              Patterns::Bool (),
                              "Option to use a lower maximum degree when reading the data file of spherical "
