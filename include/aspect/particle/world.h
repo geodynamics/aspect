@@ -38,6 +38,7 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/simulator_signals.h>
+#include <aspect/solution_evaluator.h>
 
 #include <deal.II/base/timer.h>
 #include <deal.II/base/array_view.h>
@@ -65,75 +66,6 @@ namespace aspect
     {
       template <int dim>
       class Manager;
-    }
-
-    namespace internal
-    {
-      /**
-       * This class evaluates the solution vector at arbitrary positions inside a cell.
-       * This base class only provides the interface for SolutionEvaluatorsImplementation.
-       * See there for more details.
-       */
-      template <int dim>
-      class SolutionEvaluators
-      {
-        public:
-          /**
-           * virtual Destructor.
-           */
-          virtual ~SolutionEvaluators() = default;
-
-          /**
-           * Reinitialize all variables to evaluate the given solution for the given cell
-           * and the given positions. The update flags control if only the solution or
-           * also the gradients should be evaluated.
-           * If other flags are set an assertion is triggered.
-           */
-          virtual void
-          reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                 const ArrayView<Point<dim>> &positions,
-                 const ArrayView<double> &solution_values,
-                 const UpdateFlags update_flags) = 0;
-
-          /**
-           * Fill @p solution with all solution components at the given @p evaluation_point. Note
-           * that this function only works after a successful call to reinit(),
-           * because this function only returns the results of the computation that
-           * happened in reinit().
-           */
-          virtual void get_solution(const unsigned int evaluation_point,
-                                    Vector<double> &solution) = 0;
-
-          /**
-           * Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
-           * that this function only works after a successful call to reinit(),
-           * because this function only returns the results of the computation that
-           * happened in reinit().
-           */
-          virtual void get_gradients(const unsigned int evaluation_point,
-                                     std::vector<Tensor<1, dim>> &gradients) = 0;
-
-          /**
-           * Return the evaluator for velocity or fluid velocity. This is the only
-           * information necessary for advecting particles.
-           */
-          virtual FEPointEvaluation<dim, dim> &
-          get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
-
-          /**
-           * Return the cached mapping information.
-           */
-          virtual NonMatching::MappingInfo<dim> &
-          get_mapping_info() = 0;
-      };
-
-      /**
-       * A function to create a pointer to a SolutionEvaluators object.
-       */
-      template <int dim>
-      std::unique_ptr<internal::SolutionEvaluators<dim>>
-      construct_solution_evaluators(const SimulatorAccess<dim> &simulator_access,
-                                    const UpdateFlags update_flags);
     }
 
     /**
@@ -477,7 +409,7 @@ namespace aspect
          */
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               internal::SolutionEvaluators<dim> &evaluators);
+                               SolutionEvaluator<dim> &evaluators);
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -491,7 +423,7 @@ namespace aspect
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               internal::SolutionEvaluators<dim> &evaluators);
+                               SolutionEvaluator<dim> &evaluators);
 
         /**
          * This function registers the necessary functions to the
