@@ -1397,7 +1397,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void replace_outflow_boundary_ids(const unsigned int boundary_id_offset);
+      void replace_outflow_boundary_ids(const unsigned int boundary_id_offset,
+                                        const bool is_composition,
+                                        const unsigned int composition_index);
 
       /**
        * Undo the offset of the boundary ids done in replace_outflow_boundary_ids
