@@ -2275,6 +2275,15 @@ namespace aspect
   {
     const Quadrature<dim-1> &quadrature_formula = introspection.face_quadratures.temperature;
 
+    bool consider_darcy_velocity = false;
+    unsigned int porosity_idx = numbers::invalid_unsigned_int;
+    if (introspection.composition_type_exists(CompositionalFieldDescription::porosity))
+      {
+        porosity_idx = introspection.find_composition_type(CompositionalFieldDescription::porosity);
+        if (introspection.compositional_field_methods[porosity_idx] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
+          consider_darcy_velocity = true;
+      }
+
     FEFaceValues<dim> fe_face_values (*mapping,
                                       finite_element,
                                       quadrature_formula,
@@ -2282,6 +2291,12 @@ namespace aspect
                                       update_quadrature_points | update_JxW_values);
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_current_fluid_velocity_values(fe_face_values.n_quadrature_points);
+
+    MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
+    MeltHandler<dim>::create_material_model_outputs(out);
+    MaterialModel::MeltOutputs<dim> *fluid_out = nullptr;
 
     const auto &tangential_velocity_boundaries =
       boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
@@ -2315,6 +2330,7 @@ namespace aspect
                 // ... check if the face is an outflow boundary by integrating the normal velocities
                 // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
                 double integrated_flow = 0;
+                double integrated_darcy_flow = 0;
 
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
@@ -2325,12 +2341,27 @@ namespace aspect
                       boundary_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(),
                                                                                       fe_face_values.quadrature_point(q));
 
+                    if (consider_darcy_velocity)
+                      {
+                        const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
+                        const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
+                        const double solid_density = out.densities[q];
+                        const double fluid_viscosity = fluid_out->fluid_viscosities[q];
+                        const double fluid_density = fluid_out->fluid_densities[q];
+                        const double permeability = fluid_out->permeabilities[q];
+                        const Tensor<1,dim> boundary_darcy_velocity = boundary_velocity -
+                                                                      permeability / fluid_viscosity / porosity * gravity *
+                                                                      (solid_density - fluid_density);
+                        integrated_darcy_flow += (boundary_darcy_velocity * fe_face_values.normal_vector(q)) *
+                                                 fe_face_values.JxW(q);
+                      }
+
                     integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
                                        fe_face_values.JxW(q);
                   }
 
                 // ... and change the boundary id of any outflow boundary faces.
-                if (integrated_flow > 0)
+                if (integrated_flow > 0 || integrated_darcy_flow > 0)
                   face->set_boundary_id(face->boundary_id() + offset);
               }
           }
