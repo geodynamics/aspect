@@ -451,6 +451,13 @@ namespace aspect
     if (postprocess_manager.template has_matching_active_plugin<Postprocess::Particles<dim>>())
       {
         particle_worlds.emplace_back(std::move(std::make_unique<Particle::World<dim>>()));
+
+        AssertThrow(particle_worlds.size() <= ASPECT_MAX_NUM_PARTICLE_WORLDS,
+                    ExcMessage("You have selected " + std::to_string(particle_worlds.size()) + " particle worlds, but ASPECT "
+                               "has been compiled with a maximum of " + std::to_string(ASPECT_MAX_NUM_PARTICLE_WORLDS) + ". "
+                               "Please recompile ASPECT with a higher value for ASPECT_MAX_NUM_PARTICLE_WORLDS. You can set a higher number "
+                               "specifying the CMake variable -DASPECT_MAX_NUM_PARTICLE_WORLDS=<number>"));
+
         for (unsigned int particle_world_index = 0 ; particle_world_index < particle_worlds.size(); ++particle_world_index)
           {
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_worlds[particle_world_index].get()))
