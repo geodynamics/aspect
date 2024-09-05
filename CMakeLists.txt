@@ -91,6 +91,8 @@ else()
   set(ASPECT_BUILD_RELEASE "OFF")
 endif()
 
+# Some other ASPECT configuration options:
+set(ASPECT_MAX_NUM_PARTICLE_WORLDS 2 CACHE STRING "The maximum number of particle worlds supported at runtime.")
 
 
 
