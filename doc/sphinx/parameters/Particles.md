@@ -603,7 +603,7 @@ If the function you are describing represents a vector-valued function with mult
 
 (parameters:Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
 ### __Parameter name:__ Use linear least squares limiter
-**Default value:** false
+**Default value:** true
 
 **Pattern:** [List of <[Bool]> of length 0...4294967295 (inclusive)]
 

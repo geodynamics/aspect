@@ -83,7 +83,7 @@ The number of space dimensions you want to run this program in. ASPECT can run i
 The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-362
+363
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -7647,7 +7647,7 @@ The maximum depth of the Vs ascii grid. The model will read in  Vs from S40RTS b
 -1.7976931348623157e+308
 </default_value>
 <documentation>
-This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 </documentation>
 <pattern>
 1121
@@ -7874,7 +7874,7 @@ Option to remove the degree zero component from the perturbation, which will ens
 -1.7976931348623157e+308
 </default_value>
 <documentation>
-This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 </documentation>
 <pattern>
 1137
@@ -8133,7 +8133,7 @@ Option to remove the degree zero component from the perturbation, which will ens
 -1.7976931348623157e+308
 </default_value>
 <documentation>
-This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 </documentation>
 <pattern>
 1152
@@ -20569,10 +20569,10 @@ Extends the range used by &apos;Use linear least squares limiter&apos; by linear
 </Use_20boundary_20extrapolation>
 <Use_20linear_20least_20squares_20limiter>
 <value>
-false
+true
 </value>
 <default_value>
-false
+true
 </default_value>
 <documentation>
 Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
@@ -22462,13 +22462,19 @@ Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, d
 
 `strain rate&apos;: A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
 
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
+
 Physical units: \si{\per\second}.
 
 `strain rate tensor&apos;: A visualization output object that generates output for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.
 
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
+
 Physical units: \si{\per\second}.
 
 `stress&apos;: A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. Note that the convention of positive compressive stress is followed.
+
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
 
 Physical units: \si{\pascal}.
 
@@ -22497,6 +22503,8 @@ Physical units: \si{\meter}.
 Physical units: \si{\per\second}.
 
 `surface stress&apos;: A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed.The stress outputted on the surface of the domain will equal the stress on the surface of the volume output if the parameter &apos;Point-wise stress and strain&apos; in the Visualization subsection is set to true. 
+
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
 
 Physical units: \si{\pascal}.
 
@@ -24420,7 +24428,7 @@ Whether to checkpoint the simulation right before termination.
 Terminate the simulation once the specified timestep has been reached.
 </documentation>
 <pattern>
-361
+362
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -24470,7 +24478,7 @@ The criterion considers the total heat flux over all boundaries listed by their 
 The wall time of the simulation. Unit: hours.
 </documentation>
 <pattern>
-363
+364
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24486,7 +24494,7 @@ A comma separated list of names denoting those boundaries that should be taken i
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 </documentation>
 <pattern>
-366
+367
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -24503,7 +24511,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 The maximum relative deviation of the heat flux in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-364
+365
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24520,7 +24528,7 @@ The maximum relative deviation of the heat flux in recent simulation time for th
 The minimum length of simulation time that the system should be in steady state before termination. Note that if the time step size is similar to or larger than this value, the termination criterion will only have very few (in the most extreme case, just two) heat flux values to check. To ensure that a larger number of time steps are included in the check for steady state, this value should be much larger than the time step size. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-365
+366
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24539,7 +24547,7 @@ The minimum length of simulation time that the system should be in steady state 
 The maximum relative deviation of the temperature in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-369
+370
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24556,7 +24564,7 @@ The maximum relative deviation of the temperature in recent simulation time for 
 The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-370
+371
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24575,7 +24583,7 @@ The minimum length of simulation time that the system should be in steady state 
 The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-367
+368
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24592,7 +24600,7 @@ The maximum relative deviation of the RMS in recent simulation time for the syst
 The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-368
+369
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24611,7 +24619,7 @@ terminate-aspect
 The name of a file that, if it exists in the output directory (whose name is also specified in the input file) will lead to termination of the simulation. The file&apos;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 </documentation>
 <pattern>
-371
+361
 </pattern>
 <pattern_description>
 [FileName (Type: input)]
