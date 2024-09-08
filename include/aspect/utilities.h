@@ -1062,7 +1062,7 @@ namespace aspect
      * @p output_filename An optional file name into which (if present) the solver history will
      *   be written.
      *
-     * @return This function never returns normally. It always exits via an exception, either
+     * @note This function never returns normally. It always exits via an exception, either
      *   of type ExcMessage (on rank 0 of the parallel computation) or QuietException (on all
      *   other ranks).
      */
