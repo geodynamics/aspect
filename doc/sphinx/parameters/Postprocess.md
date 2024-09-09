@@ -1078,13 +1078,19 @@ Physical units: $\frac{\text{m}}{\text{s}}$ or $\frac{\text{m}}{\text{year}}$, d
 
 &lsquo;strain rate&rsquo;: A visualization output object that generates output for the norm of the strain rate, i.e., for the quantity $\sqrt{\varepsilon(\mathbf u):\varepsilon(\mathbf u)}$ in the incompressible case and $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ in the compressible case.
 
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
+
 Physical units: \si{\per\second}.
 
 &lsquo;strain rate tensor&rsquo;: A visualization output object that generates output for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.
 
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
+
 Physical units: \si{\per\second}.
 
 &lsquo;stress&rsquo;: A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. Note that the convention of positive compressive stress is followed.
+
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
 
 Physical units: \si{\pascal}.
 
@@ -1113,6 +1119,8 @@ Physical units: \si{\meter}.
 Physical units: \si{\per\second}.
 
 &lsquo;surface stress&rsquo;: A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed.The stress outputted on the surface of the domain will equal the stress on the surface of the volume output if the parameter &rsquo;Point-wise stress and strain&rsquo; in the Visualization subsection is set to true.
+
+This postprocessor outputs the quantity computed herein as a tensor, i.e., programs such as VisIt or Pararview can visualize it as tensors represented by ellipses, not just as individual fields. That said, you can also visualize individual tensor components, by noting that the components that are written to the output file correspond to the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. Even though the tensor we output is symmetric, the output contains all components of the tensor because that is what the file format requires.
 
 Physical units: \si{\pascal}.
 

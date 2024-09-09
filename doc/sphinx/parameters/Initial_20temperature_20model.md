@@ -671,7 +671,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+**Documentation:** This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Smoothing_20length_20scale)=
 ### __Parameter name:__ Smoothing length scale
@@ -781,7 +781,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+**Documentation:** This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation/Specify_20a_20lower_20maximum_20degree)=
 ### __Parameter name:__ Specify a lower maximum degree
@@ -905,7 +905,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+**Documentation:** This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation/Specify_20a_20lower_20maximum_20degree)=
 ### __Parameter name:__ Specify a lower maximum degree
