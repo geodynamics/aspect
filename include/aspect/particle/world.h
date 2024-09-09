@@ -277,6 +277,7 @@ namespace aspect
         /**
          * Read the parameters this class declares from the parameter file.
          *
+         * @param prm The ParameterHandler.
          * @param world_index Parse the parameters for the Particle world with this index.
          */
         virtual
