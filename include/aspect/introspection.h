@@ -178,10 +178,10 @@ namespace aspect
        */
       struct ComponentIndices
       {
-        unsigned int       velocities[dim];
-        unsigned int       pressure;
-        unsigned int       temperature;
-        std::vector<unsigned int> compositional_fields;
+        std::array<unsigned int, dim> velocities;
+        unsigned int                  pressure;
+        unsigned int                  temperature;
+        std::vector<unsigned int>     compositional_fields;
       };
       /**
        * A variable that enumerates the vector components of the finite
