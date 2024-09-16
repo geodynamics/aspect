@@ -323,201 +323,229 @@ namespace aspect
       if (std::isnan(last_output_time))
         last_output_time = this->get_time() - output_interval;
 
-      const Particle::World<dim> &world = this->get_particle_world(0);
-
-      statistics.add_value("Number of advected particles",world.n_global_particles());
-
-      // If it's not time to generate an output file
-      // return early with the number of particles that were advected
-      if (this->get_time() < last_output_time + output_interval)
-        return std::make_pair("Number of advected particles:",
-                              Utilities::int_to_string(world.n_global_particles()));
-
-      // If we do not write output
-      // return early with the number of particles that were advected
-      if (output_formats.size() == 0 || output_formats[0] == "none")
+      bool write_output = true;
+      std::string number_of_advected_particles = "";
+      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
         {
-          // Up the next time we need output. This is relevant to correctly
-          // write output after a restart if the format is changed.
-          set_last_output_time (this->get_time());
 
-          return std::make_pair("Number of advected particles:",
-                                Utilities::int_to_string(world.n_global_particles()));
-        }
+          const Particle::World<dim> &world = this->get_particle_world(particle_world);
+          statistics.add_value("Number of advected particles",world.n_global_particles());
 
-      if (output_file_number == numbers::invalid_unsigned_int)
-        output_file_number = 0;
-      else
-        ++output_file_number;
-
-      // Create the particle output
-      const bool output_hdf5 = std::find(output_formats.begin(), output_formats.end(),"hdf5") != output_formats.end();
-      internal::ParticleOutput<dim> data_out;
-      data_out.build_patches(world.get_particle_handler(),
-                             world.get_property_manager().get_data_info(),
-                             exclude_output_properties,
-                             output_hdf5);
-
-      // Now prepare everything for writing the output and choose output format
-      std::string particle_file_prefix = "particles-" + Utilities::int_to_string (output_file_number, 5);
-
-      const double time_in_years_or_seconds = (this->convert_output_to_years() ?
-                                               this->get_time() / year_in_seconds :
-                                               this->get_time());
-
-      for (const auto &output_format : output_formats)
-        {
-          // this case was handled above
-          Assert(output_format != "none", ExcInternalError());
-
-          if (output_format == "hdf5")
+          // If it's not time to generate an output file
+          // return early with the number of particles that were advected
+          if (this->get_time() < last_output_time + output_interval)
             {
-              const std::string particle_file_name = "particles/" + particle_file_prefix + ".h5";
-              const std::string xdmf_filename = "particles.xdmf";
-
-              // Do not filter redundant values, there are no duplicate particles
-              DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(false, true));
-
-              data_out.write_filtered_data(data_filter);
-              data_out.write_hdf5_parallel(data_filter,
-                                           this->get_output_directory()+particle_file_name,
-                                           this->get_mpi_communicator());
-
-              const XDMFEntry new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
-                                                                          particle_file_name,
-                                                                          time_in_years_or_seconds,
-                                                                          this->get_mpi_communicator());
-              xdmf_entries.push_back(new_xdmf_entry);
-              data_out.write_xdmf_file(xdmf_entries, this->get_output_directory() + xdmf_filename,
-                                       this->get_mpi_communicator());
+              write_output = false;
+              if (particle_world > 0)
+                {
+                  number_of_advected_particles += ", ";
+                }
+              number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
             }
-          else if (output_format == "vtu")
+
+          // If we do not write output
+          // return early with the number of particles that were advected
+          if (output_formats.size() == 0 || output_formats[0] == "none")
             {
-              // Write descriptive files (.pvtu,.pvd,.visit) on the root process
-              const int my_id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+              // Up the next time we need output. This is relevant to correctly
+              // write output after a restart if the format is changed.
+              set_last_output_time (this->get_time());
 
-              if (my_id == 0)
+              write_output = false;
+              if (particle_world > 0)
                 {
-                  std::vector<std::string> filenames;
-                  const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-                  const unsigned int n_files = (group_files == 0) ? n_processes : std::min(group_files,n_processes);
-                  for (unsigned int i=0; i<n_files; ++i)
-                    filenames.push_back (particle_file_prefix
-                                         + "." + Utilities::int_to_string(i, 4)
-                                         + ".vtu");
-                  write_description_files (data_out, particle_file_prefix, filenames);
+                  number_of_advected_particles += ", ";
                 }
+              number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
+            }
+          Assert(write_output, ExcMessage("Trying to write output while it was set to not do so."));
 
-              const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+          if (output_file_number == numbers::invalid_unsigned_int)
+            output_file_number = 0;
+          else
+            ++output_file_number;
 
-              const unsigned int my_file_id = (group_files == 0
-                                               ?
-                                               my_id
-                                               :
-                                               my_id % group_files);
-              const std::string filename = this->get_output_directory()
-                                           + "particles/"
-                                           + particle_file_prefix
-                                           + "."
-                                           + Utilities::int_to_string (my_file_id, 4)
-                                           + ".vtu";
+          std::string particles_output_base_name = "particles";
+          if (particle_world > 0)
+            {
+              particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
+            }
 
-              // pass time step number and time as metadata into the output file
-              DataOutBase::VtkFlags vtk_flags;
-              vtk_flags.cycle = this->get_timestep_number();
-              vtk_flags.time = time_in_years_or_seconds;
 
-              data_out.set_flags (vtk_flags);
+          // Create the particle output
+          const bool output_hdf5 = std::find(output_formats.begin(), output_formats.end(),"hdf5") != output_formats.end();
+          internal::ParticleOutput<dim> data_out;
+          data_out.build_patches(world.get_particle_handler(),
+                                 world.get_property_manager().get_data_info(),
+                                 exclude_output_properties,
+                                 output_hdf5);
 
-              // Write as many files as processes. For this case we support writing in a
-              // background thread and to a temporary location, so we first write everything
-              // into a string that is written to disk in a writer function
-              if ((group_files == 0) || (group_files >= n_processes))
+          // Now prepare everything for writing the output and choose output format
+          std::string particle_file_prefix = particles_output_base_name + "-" + Utilities::int_to_string (output_file_number, 5);
+
+          const double time_in_years_or_seconds = (this->convert_output_to_years() ?
+                                                   this->get_time() / year_in_seconds :
+                                                   this->get_time());
+
+          for (const auto &output_format : output_formats)
+            {
+              // this case was handled above
+              Assert(output_format != "none", ExcInternalError());
+
+              if (output_format == "hdf5")
                 {
-                  // Put the content we want to write into a string object that
-                  // we can then write in the background
-                  std::unique_ptr<std::string> file_contents;
-                  {
-                    std::ostringstream tmp;
+                  const std::string particle_file_name = particles_output_base_name + "/" + particle_file_prefix + ".h5";
+                  const std::string xdmf_filename = particles_output_base_name + ".xdmf";
 
-                    data_out.write (tmp, DataOutBase::parse_output_format(output_format));
-                    file_contents = std::make_unique<std::string>(tmp.str());
-                  }
+                  // Do not filter redundant values, there are no duplicate particles
+                  DataOutBase::DataOutFilter data_filter(DataOutBase::DataOutFilterFlags(false, true));
 
-                  if (write_in_background_thread)
+                  data_out.write_filtered_data(data_filter);
+                  data_out.write_hdf5_parallel(data_filter,
+                                               this->get_output_directory()+particle_file_name,
+                                               this->get_mpi_communicator());
+
+                  const XDMFEntry new_xdmf_entry = data_out.create_xdmf_entry(data_filter,
+                                                                              particle_file_name,
+                                                                              time_in_years_or_seconds,
+                                                                              this->get_mpi_communicator());
+                  xdmf_entries.push_back(new_xdmf_entry);
+                  data_out.write_xdmf_file(xdmf_entries, this->get_output_directory() + xdmf_filename,
+                                           this->get_mpi_communicator());
+                }
+              else if (output_format == "vtu")
+                {
+                  // Write descriptive files (.pvtu,.pvd,.visit) on the root process
+                  const int my_id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+
+                  if (my_id == 0)
                     {
-                      // Wait for all previous write operations to finish, should
-                      // any be still active, ...
-                      if (background_thread.joinable())
-                        background_thread.join ();
-
-                      // ...then continue with writing our own data.
-                      background_thread
-                        = std::thread([ my_filename = filename, // filename is const, so we can not move from it
-                                        my_temporary_output_location = temporary_output_location,
-                                        my_file_contents = std::move(file_contents)]()
-                      {
-                        writer (my_filename, my_temporary_output_location, *my_file_contents);
-                      });
+                      std::vector<std::string> filenames;
+                      const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+                      const unsigned int n_files = (group_files == 0) ? n_processes : std::min(group_files,n_processes);
+                      for (unsigned int i=0; i<n_files; ++i)
+                        filenames.push_back (particle_file_prefix
+                                             + "." + Utilities::int_to_string(i, 4)
+                                             + ".vtu");
+                      write_description_files (data_out, particle_file_prefix, filenames);
                     }
+
+                  const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+
+                  const unsigned int my_file_id = (group_files == 0
+                                                   ?
+                                                   my_id
+                                                   :
+                                                   my_id % group_files);
+                  const std::string filename = this->get_output_directory()
+                                               + particles_output_base_name
+                                               + "/"
+                                               + particle_file_prefix
+                                               + "."
+                                               + Utilities::int_to_string (my_file_id, 4)
+                                               + ".vtu";
+
+                  // pass time step number and time as metadata into the output file
+                  DataOutBase::VtkFlags vtk_flags;
+                  vtk_flags.cycle = this->get_timestep_number();
+                  vtk_flags.time = time_in_years_or_seconds;
+
+                  data_out.set_flags (vtk_flags);
+
+                  // Write as many files as processes. For this case we support writing in a
+                  // background thread and to a temporary location, so we first write everything
+                  // into a string that is written to disk in a writer function
+                  if ((group_files == 0) || (group_files >= n_processes))
+                    {
+                      // Put the content we want to write into a string object that
+                      // we can then write in the background
+                      std::unique_ptr<std::string> file_contents;
+                      {
+                        std::ostringstream tmp;
+
+                        data_out.write (tmp, DataOutBase::parse_output_format(output_format));
+                        file_contents = std::make_unique<std::string>(tmp.str());
+                      }
+
+                      if (write_in_background_thread)
+                        {
+                          // Wait for all previous write operations to finish, should
+                          // any be still active, ...
+                          if (background_thread.joinable())
+                            background_thread.join ();
+
+                          // ...then continue with writing our own data.
+                          background_thread
+                            = std::thread([ my_filename = filename, // filename is const, so we can not move from it
+                                            my_temporary_output_location = temporary_output_location,
+                                            my_file_contents = std::move(file_contents)]()
+                          {
+                            writer (my_filename, my_temporary_output_location, *my_file_contents);
+                          });
+                        }
+                      else
+                        writer(filename,temporary_output_location,*file_contents);
+                    }
+                  // Just write one data file in parallel
+                  else if (group_files == 1)
+                    {
+                      data_out.write_vtu_in_parallel(filename,
+                                                     this->get_mpi_communicator());
+                    }
+                  // Write as many output files as 'group_files' groups
                   else
-                    writer(filename,temporary_output_location,*file_contents);
+                    {
+                      int color = my_id % group_files;
+
+                      MPI_Comm comm;
+                      int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
+                      AssertThrowMPI(ierr);
+
+                      data_out.write_vtu_in_parallel(filename, comm);
+                      ierr = MPI_Comm_free(&comm);
+                      AssertThrowMPI(ierr);
+                    }
                 }
-              // Just write one data file in parallel
-              else if (group_files == 1)
-                {
-                  data_out.write_vtu_in_parallel(filename,
-                                                 this->get_mpi_communicator());
-                }
-              // Write as many output files as 'group_files' groups
+              // Write in a different format than hdf5 or vtu. This case is supported, but is not
+              // optimized for parallel output in that every process will write one file directly
+              // into the output directory. This may or may not affect performance depending on
+              // the model setup and the network file system type.
               else
                 {
-                  int color = my_id % group_files;
+                  const unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-                  MPI_Comm comm;
-                  int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
-                  AssertThrowMPI(ierr);
+                  const std::string filename = this->get_output_directory()
+                                               + particles_output_base_name
+                                               + "/"
+                                               + particle_file_prefix
+                                               + "."
+                                               +  Utilities::int_to_string (myid, 4)
+                                               + DataOutBase::default_suffix
+                                               (DataOutBase::parse_output_format(output_format));
 
-                  data_out.write_vtu_in_parallel(filename, comm);
-                  ierr = MPI_Comm_free(&comm);
-                  AssertThrowMPI(ierr);
+                  std::ofstream out (filename);
+
+                  AssertThrow(out,
+                              ExcMessage("Unable to open file for writing: " + filename +"."));
+
+                  data_out.write (out, DataOutBase::parse_output_format(output_format));
                 }
             }
-          // Write in a different format than hdf5 or vtu. This case is supported, but is not
-          // optimized for parallel output in that every process will write one file directly
-          // into the output directory. This may or may not affect performance depending on
-          // the model setup and the network file system type.
-          else
-            {
-              const unsigned int myid = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-              const std::string filename = this->get_output_directory()
-                                           + "particles/"
-                                           + particle_file_prefix
-                                           + "."
-                                           +  Utilities::int_to_string (myid, 4)
-                                           + DataOutBase::default_suffix
-                                           (DataOutBase::parse_output_format(output_format));
 
-              std::ofstream out (filename);
+          // up the next time we need output
+          set_last_output_time (this->get_time());
 
-              AssertThrow(out,
-                          ExcMessage("Unable to open file for writing: " + filename +"."));
+          const std::string particle_output = this->get_output_directory() + particles_output_base_name + "/" + particle_file_prefix;
 
-              data_out.write (out, DataOutBase::parse_output_format(output_format));
-            }
+          // record the file base file name in the output file
+          statistics.add_value ("Particle file name",
+                                particle_output);
         }
-
-
-      // up the next time we need output
-      set_last_output_time (this->get_time());
-
-      const std::string particle_output = this->get_output_directory() + "particles/" + particle_file_prefix;
-
-      // record the file base file name in the output file
-      statistics.add_value ("Particle file name",
-                            particle_output);
-      return std::make_pair("Writing particle output:", particle_output);
+      if (write_output)
+        return std::make_pair("Writing particle output:", this->get_output_directory() + "particles/");
+      else
+        return std::make_pair("Number of advected particles:",number_of_advected_particles);
     }
 
 
@@ -559,13 +587,21 @@ namespace aspect
     void
     Particles<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
-      std::ostringstream os;
-      aspect::oarchive oa (os);
+      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
+        {
+          std::string particles_output_base_name = "Particles";
+          if (particle_world > 0)
+            {
+              particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
+            }
+          std::ostringstream os;
+          aspect::oarchive oa (os);
 
-      this->get_particle_world(0).save(os);
-      oa << (*this);
+          this->get_particle_world(particle_world).save(os);
+          oa << (*this);
 
-      status_strings["Particles"] = os.str();
+          status_strings[particles_output_base_name] = os.str();
+        }
     }
 
 
@@ -573,16 +609,24 @@ namespace aspect
     void
     Particles<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
-      // see if something was saved
-      if (status_strings.find("Particles") != status_strings.end())
+      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
         {
-          std::istringstream is (status_strings.find("Particles")->second);
-          aspect::iarchive ia (is);
+          std::string particles_output_base_name = "Particles";
+          if (particle_world > 0)
+            {
+              particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
+            }
+          // see if something was saved
+          if (status_strings.find(particles_output_base_name) != status_strings.end())
+            {
+              std::istringstream is (status_strings.find(particles_output_base_name)->second);
+              aspect::iarchive ia (is);
 
-          // Load the particle world
-          this->get_particle_world(0).load(is);
+              // Load the particle world
+              this->get_particle_world(particle_world).load(is);
 
-          ia >> (*this);
+              ia >> (*this);
+            }
         }
     }
 
@@ -688,9 +732,18 @@ namespace aspect
           if (std::find (output_formats.begin(),
                          output_formats.end(),
                          "none") == output_formats.end())
-            aspect::Utilities::create_directory (this->get_output_directory() + "particles/",
-                                                 this->get_mpi_communicator(),
-                                                 true);
+
+            for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
+              {
+                std::string particles_output_base_name = "Particles";
+                if (particle_world > 0)
+                  {
+                    particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
+                  }
+                aspect::Utilities::create_directory (this->get_output_directory() + particles_output_base_name + "/",
+                                                     this->get_mpi_communicator(),
+                                                     true);
+              }
 
           // Note: "ascii" is a legacy format used by ASPECT before particle output
           // in deal.II was implemented. It is nearly identical to the gnuplot format, thus

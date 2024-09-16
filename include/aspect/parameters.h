@@ -538,6 +538,7 @@ namespace aspect
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
     bool                           use_operator_splitting;
     std::string                    world_builder_file;
+    unsigned int                   n_particle_worlds;
 
     /**
      * @}
