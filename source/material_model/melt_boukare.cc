@@ -508,7 +508,7 @@ namespace aspect
       const unsigned int n_endmembers = endmember_names.size();
       EndmemberProperties endmembers(n_endmembers);
 
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
 
@@ -627,7 +627,7 @@ namespace aspect
       const unsigned int n_endmembers = endmember_names.size();
       EndmemberProperties endmembers(n_endmembers);
 
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
           std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
           std::vector<double> endmember_mole_fractions_in_composite(n_endmembers);
@@ -1130,8 +1130,10 @@ namespace aspect
           if (this->convert_output_to_years() == true)
             melting_time_scale *= year_in_seconds;
 
-          AssertThrow(this->get_parameters().use_operator_splitting,
-                      ExcMessage("The melt boukare material model has to be used with oprator splitting."));
+          AssertThrow(this->get_parameters().use_operator_splitting &&
+                      this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step,
+                      ExcMessage("The melt boukare material model has to be used with operator splitting, "
+                                 "and the reaction solver needs to be `fixed step'."));
 
           AssertThrow(melting_time_scale >= this->get_parameters().reaction_time_step,
                       ExcMessage("The reaction time step " + Utilities::to_string(this->get_parameters().reaction_time_step)

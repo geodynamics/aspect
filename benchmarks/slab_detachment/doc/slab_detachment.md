@@ -27,7 +27,7 @@ placed at the top of the domain. The already subducted lithosphere extends
 vertically into the mantle for $250 \text{ km}$. This slab has a density
 $\rho_s=3300\text{ kg/m}^3$ and is characterized by a power-law flow law so
 that its effective viscosity depends on the square root of the second
-invariant of the strainrate $\dot\varepsilon$:
+invariant of the strain rate $\dot\varepsilon$:
 ```{math}
 \eta_{eff} = \eta_0 \, \dot\varepsilon^{1/n-1}
 ```

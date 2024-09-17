@@ -31,6 +31,7 @@
 #include "world_builder/types/one_of.h"
 #include "world_builder/types/object.h"
 #include "world_builder/types/point.h"
+#include "world_builder/types/unsigned_int.h"
 #include "world_builder/types/value_at_points.h"
 #include "world_builder/utilities.h"
 #include "world_builder/world.h"
@@ -73,8 +74,8 @@ namespace WorldBuilder
         MassConserving::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
           // Document plugin and require entries if needed.
-          // Add `plate velocity` to the required parameters.
-          prm.declare_entry("", Types::Object({"plate velocity"}),
+          // Add `spreading velocity` to the required parameters.
+          prm.declare_entry("", Types::Object({"spreading velocity", "subducting velocity"}),
                             "Mass conserving temperature model. The temperature "
                             "model uses the heat content (proportional to to thermal mass anomaly) to "
                             "define a smooth temperature profile that conserves mass along the slab length. "
@@ -118,12 +119,11 @@ namespace WorldBuilder
           prm.declare_entry("density", Types::Double(3300),
                             "The reference density of the subducting plate in $kg/m^3$");
 
-          prm.declare_entry("plate velocity", Types::OneOf(Types::Double(0.05),Types::Array(Types::ValueAtPoints(0.05, std::numeric_limits<uint64_t>::max()))),
-                            "The velocity with which the plate subducts in meters per year. Default is 5 cm/yr");
+          prm.declare_entry("spreading velocity", Types::OneOf(Types::Double(0.05),Types::Array(Types::ValueAtPoints(0.05, std::numeric_limits<uint64_t>::max()))),
+                            "The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr");
 
-          prm.declare_entry("subducting velocity", Types::OneOf(Types::Double(-1), Types::Array(Types::Array(Types::Double(-1), 1), 1)),
-                            "The velocity with which the ridge is moving through time, and how long the ridge "
-                            "has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]");
+          prm.declare_entry("subducting velocity", Types::OneOf(Types::Double(0.05), Types::Array(Types::Array(Types::Double(0.05), 1), 1)),
+                            "The velocity with which the slab is subducting through time. Default is 5 cm/yr");
 
           prm.declare_entry("coupling depth", Types::Double(100e3),
                             "The depth at which the slab surface first comes in contact with the hot mantle wedge "
@@ -178,7 +178,7 @@ namespace WorldBuilder
           prm.declare_entry("apply spline",  Types::Bool(false),
                             "Whether a spline should be applied on the mass conserving model.");
 
-          prm.declare_entry("number of points in spline", Types::Int(5),
+          prm.declare_entry("number of points in spline", Types::UnsignedInt(5),
                             "The number of points in the spline");
 
         }
@@ -193,7 +193,7 @@ namespace WorldBuilder
 
           density = prm.get<double>("density");
           thermal_conductivity = prm.get<double>("thermal conductivity");
-          ridge_spreading_velocities = prm.get_value_at_array("plate velocity");
+          ridge_spreading_velocities = prm.get_value_at_array("spreading velocity");
           subducting_velocities = prm.get_vector_or_double("subducting velocity");
 
           mantle_coupling_depth = prm.get<double>("coupling depth");
@@ -257,7 +257,7 @@ namespace WorldBuilder
             reference_model_name = half_space_model;
 
           apply_spline = prm.get<bool>("apply spline");
-          spline_n_points = prm.get<int>("number of points in spline");
+          spline_n_points = prm.get<unsigned int>("number of points in spline");
 
           if (subducting_velocities[0].size() > 1)
             {
@@ -289,6 +289,8 @@ namespace WorldBuilder
                                         const AdditionalParameters &additional_parameters) const
         {
 
+          const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
+
           const double distance_from_plane = distance_from_planes.distance_from_plane;
 
           if (distance_from_plane <= max_depth && distance_from_plane >= min_depth)
@@ -317,12 +319,8 @@ namespace WorldBuilder
 
               std::vector<double> slab_ages = calculate_effective_trench_and_plate_ages(ridge_parameters, distance_along_plane);
 
-              const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
               const double spreading_velocity = ridge_parameters[0] * seconds_in_year; // m/yr
               double subducting_velocity = ridge_parameters[2] * seconds_in_year; // m/yr
-
-              if (subducting_velocity <= 0)
-                subducting_velocity = spreading_velocity;
 
               const double age_at_trench = slab_ages[0];
               const double plate_age_sec = age_at_trench * seconds_in_year; // y --> seconds
@@ -358,7 +356,7 @@ namespace WorldBuilder
                 }
 
               // Plate age increases with distance along the slab in the mantle
-              double effective_plate_age = slab_ages[1];
+              double effective_plate_age_sec = slab_ages[1] * seconds_in_year;
 
               // Need adiabatic temperature at position of grid point
               const double background_temperature = adiabatic_heating ? potential_mantle_temperature *
@@ -372,13 +370,13 @@ namespace WorldBuilder
 
               const double adiabatic_gradient = adiabatic_heating ? background_temperature - potential_mantle_temperature : 0;
 
-              //  2. Get Tmin and offset as a function of depth: these depend on plate velocity and plate age_at_trench.
+              //  2. Get Tmin and offset as a function of depth: these depend on spreading velocity and plate age_at_trench.
               //     shallow-dipping slabs will take longer to reach the same depth - this leads to larger effective age at a given depth
               //     causing these slabs to be broader than steeper dipping slabs
               //     These equations are empirical based on fitting the temperature profiles from dynamic subduction models.
               //     and published kinematic models for specific subduction zones.
 
-              // increases Tmin slope for slower relative to slope for maximum plate velocity
+              // increases Tmin slope for slower relative to slope for maximum spreading velocity
               // will be between 0.1 (fast) and 0.35 (slow)
               const double max_plate_vel = 20/cm2m;  // e.g., 20 cm/yr -> 0.2 m/yr
               const double vsubfact = std::min( std::max( 0.35 + ((0.1-0.35) / max_plate_vel) * subducting_velocity, 0.1), 0.35);
@@ -452,7 +450,7 @@ namespace WorldBuilder
 
                   // Also taper the initial heat content and effective plate age
                   initial_heat_content = initial_heat_content * std::erfc(1.5*taper_con*theta);
-                  effective_plate_age = effective_plate_age * std::erfc(1.5*taper_con*theta);
+                  effective_plate_age_sec = effective_plate_age_sec * std::erfc(1.5*taper_con*theta);
                 }
 
               else
@@ -495,14 +493,14 @@ namespace WorldBuilder
                                                            exp((subducting_velocity_UI * max_depth / 2.0 / thermal_diffusivity -
                                                                 std::sqrt(subducting_velocity_UI * subducting_velocity_UI * max_depth * max_depth / 4.0 / thermal_diffusivity / thermal_diffusivity +
                                                                           double(2*i + 1) * double(2*i + 1) * Consts::PI * Consts::PI)) *
-                                                               subducting_velocity_UI * effective_plate_age / max_depth);
+                                                               subducting_velocity_UI * effective_plate_age_sec / max_depth);
                           bottom_heat_content -= temp_heat_content;
                         }
                     }
                   else
                     {
                       bottom_heat_content = 2 * thermal_conductivity * (min_temperature - potential_mantle_temperature) *
-                                            std::sqrt(effective_plate_age /(thermal_diffusivity * Consts::PI));
+                                            std::sqrt(effective_plate_age_sec /(thermal_diffusivity * Consts::PI));
                     }
 
                   // 4. The difference in heat content goes into the temperature above where Tmin occurs.
@@ -530,10 +528,10 @@ namespace WorldBuilder
                       const double interval_spline_distance = 1.0 / spline_n_points;
                       std::vector<double> i_temperatures (2*(spline_n_points + 1), 0.0);
 
-                      for (int i = 0; i < 2 * spline_n_points + 1; ++i)
+                      for (size_t i = 0; i < 2 * spline_n_points + 1; ++i)
                         {
-                          const double i_adjusted_distance = (i * interval_spline_distance - 1.0) * max_depth;
-                          const double i_temperature = get_temperature_analytic(top_heat_content, min_temperature, background_temperature, temperature_, spreading_velocity, effective_plate_age, i_adjusted_distance);
+                          const double i_adjusted_distance = (static_cast<double>(i) * interval_spline_distance - 1.0) * max_depth;
+                          const double i_temperature = get_temperature_analytic(top_heat_content, min_temperature, background_temperature, temperature_, spreading_velocity, effective_plate_age_sec, i_adjusted_distance);
                           i_temperatures[i] = i_temperature;
                         }
 
@@ -545,7 +543,7 @@ namespace WorldBuilder
                   else
                     {
                       // Call the analytic solution to compute the temperature
-                      temperature = get_temperature_analytic(top_heat_content, min_temperature, background_temperature, temperature_, spreading_velocity, effective_plate_age, adjusted_distance);
+                      temperature = get_temperature_analytic(top_heat_content, min_temperature, background_temperature, temperature_, spreading_velocity, effective_plate_age_sec, adjusted_distance);
                     }
                 }
               else
@@ -569,7 +567,7 @@ namespace WorldBuilder
                                                  const double background_temperature,
                                                  const double temperature_,
                                                  const double subducting_velocity,
-                                                 const double effective_plate_age,
+                                                 const double effective_plate_age_sec,
                                                  const double adjusted_distance) const
         {
           const double seconds_in_year = 60.0 * 60.0 * 24.0 * 365.25;  // sec/y
@@ -613,7 +611,7 @@ namespace WorldBuilder
                                          std::exp((((subducting_velocity_UI * max_depth)/(2 * thermal_diffusivity)) -
                                                    std::sqrt(((subducting_velocity_UI*subducting_velocity_UI*max_depth*max_depth) /
                                                               (4*thermal_diffusivity*thermal_diffusivity)) + double(i) * double(i) * Consts::PI * Consts::PI)) *
-                                                  ((subducting_velocity_UI * effective_plate_age) / max_depth)));
+                                                  ((subducting_velocity_UI * effective_plate_age_sec) / max_depth)));
                         }
                     }
                   else
@@ -624,7 +622,7 @@ namespace WorldBuilder
               else
                 {
                   temperature = background_temperature + (min_temperature - background_temperature) *
-                                std::erfc(adjusted_distance / (2 * std::sqrt(thermal_diffusivity * effective_plate_age)));
+                                std::erfc(adjusted_distance / (2 * std::sqrt(thermal_diffusivity * effective_plate_age_sec)));
 
                 }
             }

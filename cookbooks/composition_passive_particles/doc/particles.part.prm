@@ -6,8 +6,15 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles        = 1000
     set Time between data output = 0.1
     set Data output format       = vtu
+  end
+end
+
+subsection Particles
+  subsection Generator
+    subsection Probability density function
+      set Number of particles        = 1000
+    end
   end
 end

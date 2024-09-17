@@ -59,12 +59,17 @@ void print_aspect_header(Stream &stream)
 #else
          << "32"
 #endif
-         << " bit indices and vectorization level ";
-  const unsigned int n_vect_bits =
-    dealii::VectorizedArray<double>::size() * 8 * sizeof(double);
+         << " bit indices\n";
 
+  const unsigned int n_vectorization_doubles = dealii::VectorizedArray<double>::size();
+  const unsigned int n_vectorization_bits = 8 * sizeof(double) * n_vectorization_doubles;
+  const std::string vectorization_level = dealii::Utilities::System::get_current_vectorization_level();
+
+  stream << "--     .       with vectorization level ";
   stream << DEAL_II_COMPILER_VECTORIZATION_LEVEL
-         << " (" << n_vect_bits << " bits)\n";
+         << " (" << vectorization_level << ", "
+         << n_vectorization_doubles << " doubles, "
+         << n_vectorization_bits << " bits)\n";
 
   stream << "--     . using Trilinos "
          << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'

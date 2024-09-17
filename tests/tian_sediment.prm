@@ -6,8 +6,10 @@
 # and a lateral temperature gradient is imposed to reproduce the temperature axis.
 include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
 
+
 subsection Initial composition model
   set Model name = function
+
   subsection Function
     set Function expression = initial_porosity; \
                               initial_bound_water; \

@@ -24,7 +24,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Adiabatic conditions model
   # 'compute entropy profile' computes arbitrary adiabats
   # internally, based on the data table.
@@ -52,7 +51,6 @@ subsection Compositional fields
   set Compositional field methods = field, field, field, prescribed field
 end
 
-
 # Prescribing closed boundaries.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, left, right, bottom
@@ -77,8 +75,7 @@ subsection Initial composition model
   subsection Function
     # Entropy equivalent to T=1560.29 K according to table
     set Function expression = 0.2; 2500; 2500; 0.0
-
-    end
+  end
 end
 
 # We use a data table for orthopyroxene computed using the thermodynamic
@@ -110,11 +107,10 @@ subsection Postprocess
   subsection Visualization
     set Time between graphical output = 1e8
     set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
+    set Output format = gnuplot
 
     subsection Material properties
       set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
     end
-
-    set Output format = gnuplot
   end
 end

@@ -1,0 +1,7 @@
+Fixed: There was a bug in spherical harmonic data reading of S40RTS 
+and SAVANI initial temperature models when a maximum degree lower 
+than the maximum degree of the spherical harmonic coefficients of 
+the data file is specified by users to set up temperature field 
+from spherical harmonic summation. This bug is now fixed.
+<br>
+(Shangxin Liu, 2024/06/04)

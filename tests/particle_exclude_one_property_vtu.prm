@@ -81,10 +81,8 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles        = 100
     set Time between data output = 0.1
     set Data output format       = vtu
-    set List of particle properties = initial position, initial composition, velocity # lpo, integrated strain invariant #function, initial composition, initial position, pT path
     set Exclude output properties = initial C_9
   end
 end
@@ -105,5 +103,15 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function expression = 0.1; 0.2; 0.3 ; 0.4; 0.5;0.6;0.7;0.8;0.9;0.95
+  end
+end
+
+subsection Particles
+  set List of particle properties = initial position, initial composition, velocity # lpo, integrated strain invariant #function, initial composition, initial position, pT path
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles        = 100
+    end
   end
 end

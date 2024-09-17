@@ -4,8 +4,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 12 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            -6.377e-17 K, 0.005208 K, 1 K
@@ -14,7 +13,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 1:  t=2.38851e+06 seconds, dt=2.38851e+06 seconds
    Solving temperature system... 45 iterations.
-   Solving Stokes system... 32+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.04382 K, 1 K
@@ -23,7 +22,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 2:  t=6.95057e+06 seconds, dt=4.56206e+06 seconds
    Solving temperature system... 48 iterations.
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.08393 K, 1 K
@@ -32,7 +31,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 3:  t=1.56641e+07 seconds, dt=8.71353e+06 seconds
    Solving temperature system... 61 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1287 K, 1 K
@@ -41,16 +40,16 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 4:  t=3.23069e+07 seconds, dt=1.66428e+07 seconds
    Solving temperature system... 78 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.185 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, 2.636e-09 W, -2.794e-06 W
      Writing depth average:              output-diffusion/depth_average
 
-*** Timestep 5:  t=4e+07 seconds, dt=7.69307e+06 seconds
+*** Timestep 5:  t=4e+07 seconds, dt=7.69305e+06 seconds
    Solving temperature system... 59 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.2043 K, 1 K

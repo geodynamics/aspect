@@ -8,39 +8,36 @@ Number of mesh deformation degrees of freedom: 5,346
    Solving mesh displacement system... 0 iterations.
    Added initial topography to grid
 
-*** Timestep 2:  t=9133.17 years, dt=5362.65 years
-   Solving mesh displacement system... 7 iterations.
+*** Timestep 2:  t=9251.13 years, dt=5480.62 years
+   Solving mesh displacement system... 4 iterations.
    Solving temperature system... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system... 50+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -206.4 m, 126.7 m
+     Topography min/max:       -203.3 m, 122.2 m
      RMS, max velocity:        0.036 m/year, 0.144 m/year
      Writing graphical output: output1.tmp/solution/solution-00002
 
-*** Timestep 3:  t=19375.8 years, dt=10242.7 years
-   Solving mesh displacement system... 7 iterations.
+*** Timestep 3:  t=19719.1 years, dt=10468 years
+   Solving mesh displacement system... 4 iterations.
    Solving temperature system... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system... 62+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -95.91 m, 85.84 m
-     RMS, max velocity:        0.0383 m/year, 0.156 m/year
+     Topography min/max:       -101.6 m, 84.24 m
+     RMS, max velocity:        0.0381 m/year, 0.156 m/year
      Writing graphical output: output1.tmp/solution/solution-00003
 
 *** Snapshot created!
 
-*** Timestep 4:  t=29391.2 years, dt=10015.3 years
-   Solving mesh displacement system... 7 iterations.
+*** Timestep 4:  t=29766.4 years, dt=10047.2 years
+   Solving mesh displacement system... 4 iterations.
    Solving temperature system... 10 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system... 61+0 iterations.
 
    Postprocessing:
-     Topography min/max:       -135.3 m, 78.24 m
-     RMS, max velocity:        0.0384 m/year, 0.156 m/year
+     Topography min/max:       -136.8 m, 77.66 m
+     RMS, max velocity:        0.0383 m/year, 0.156 m/year
      Writing graphical output: output1.tmp/solution/solution-00004
 
 Termination requested by criterion: end step

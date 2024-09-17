@@ -1391,6 +1391,51 @@
                                                         "type": "number",
                                                         "description": ""
                                                     }
+                                                },
+                                                "basis rotation matrices": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "minItems": 3,
+                                                            "maxItems": 3,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": ""
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "basis Euler angles z-x-z": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "default value": 0.0,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        }
+                                                    }
                                                 }
                                             }
                                         },
@@ -2160,6 +2205,51 @@
                                                                     "type": "number",
                                                                     "description": ""
                                                                 }
+                                                            },
+                                                            "basis rotation matrices": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "type": "array",
+                                                                        "minItems": 3,
+                                                                        "maxItems": 3,
+                                                                        "uniqueItems": false,
+                                                                        "description": "",
+                                                                        "items": {
+                                                                            "default value": 0.0,
+                                                                            "type": "number",
+                                                                            "description": ""
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "basis Euler angles z-x-z": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "default value": 0.0,
+                                                                        "type": "number",
+                                                                        "description": ""
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     },
@@ -2739,6 +2829,51 @@
                                                         "default value": 1.0,
                                                         "type": "number",
                                                         "description": ""
+                                                    }
+                                                },
+                                                "basis rotation matrices": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "minItems": 3,
+                                                            "maxItems": 3,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": ""
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "basis Euler angles z-x-z": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "default value": 0.0,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        }
                                                     }
                                                 }
                                             }
@@ -3390,6 +3525,51 @@
                                                                                 "type": "number",
                                                                                 "description": ""
                                                                             }
+                                                                        },
+                                                                        "basis rotation matrices": {
+                                                                            "type": "array",
+                                                                            "minItems": 0,
+                                                                            "maxItems": 4294967295,
+                                                                            "uniqueItems": false,
+                                                                            "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                                            "items": {
+                                                                                "type": "array",
+                                                                                "minItems": 3,
+                                                                                "maxItems": 3,
+                                                                                "uniqueItems": false,
+                                                                                "description": "",
+                                                                                "items": {
+                                                                                    "type": "array",
+                                                                                    "minItems": 3,
+                                                                                    "maxItems": 3,
+                                                                                    "uniqueItems": false,
+                                                                                    "description": "",
+                                                                                    "items": {
+                                                                                        "default value": 0.0,
+                                                                                        "type": "number",
+                                                                                        "description": ""
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "basis Euler angles z-x-z": {
+                                                                            "type": "array",
+                                                                            "minItems": 0,
+                                                                            "maxItems": 4294967295,
+                                                                            "uniqueItems": false,
+                                                                            "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                                            "items": {
+                                                                                "type": "array",
+                                                                                "minItems": 3,
+                                                                                "maxItems": 3,
+                                                                                "uniqueItems": false,
+                                                                                "description": "",
+                                                                                "items": {
+                                                                                    "default value": 0.0,
+                                                                                    "type": "number",
+                                                                                    "description": ""
+                                                                                }
+                                                                            }
                                                                         }
                                                                     }
                                                                 },
@@ -3969,6 +4149,51 @@
                                                                     "default value": 1.0,
                                                                     "type": "number",
                                                                     "description": ""
+                                                                }
+                                                            },
+                                                            "basis rotation matrices": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "type": "array",
+                                                                        "minItems": 3,
+                                                                        "maxItems": 3,
+                                                                        "uniqueItems": false,
+                                                                        "description": "",
+                                                                        "items": {
+                                                                            "default value": 0.0,
+                                                                            "type": "number",
+                                                                            "description": ""
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "basis Euler angles z-x-z": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "default value": 0.0,
+                                                                        "type": "number",
+                                                                        "description": ""
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -5097,6 +5322,51 @@
                                                         "default value": 1.0,
                                                         "type": "number",
                                                         "description": ""
+                                                    }
+                                                },
+                                                "basis rotation matrices": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "minItems": 3,
+                                                            "maxItems": 3,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": ""
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "basis Euler angles z-x-z": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "default value": 0.0,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        }
                                                     }
                                                 }
                                             }
@@ -6362,6 +6632,158 @@
                                     "oneOf": [
                                         {
                                             "type": "object",
+                                            "description": "TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.",
+                                            "additionalProperties": false,
+                                            "required": [
+                                                "model",
+                                                "compositions"
+                                            ],
+                                            "properties": {
+                                                "model": {
+                                                    "default value": "",
+                                                    "type": "string",
+                                                    "description": "The name of the composition model.",
+                                                    "enum": [
+                                                        "tian water content"
+                                                    ]
+                                                },
+                                                "min depth": {
+                                                    "description": "The depth in meters from which the composition of this feature is present.",
+                                                    "oneOf": [
+                                                        {
+                                                            "default value": 0.0,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "minItems": 0,
+                                                            "maxItems": 4294967295,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "type": "array",
+                                                                "additionalProperties": false,
+                                                                "minItems": 1,
+                                                                "maxItems": 2,
+                                                                "description": "",
+                                                                "items": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "number",
+                                                                            "default value": 0.0
+                                                                        },
+                                                                        {
+                                                                            "type": "array",
+                                                                            "minItems": 1,
+                                                                            "maxItems": 4294967295,
+                                                                            "items": {
+                                                                                "type": "array",
+                                                                                "minItems": 1,
+                                                                                "maxItems": 2,
+                                                                                "items": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                "max depth": {
+                                                    "description": "The depth in meters to which the composition of this feature is present.",
+                                                    "oneOf": [
+                                                        {
+                                                            "default value": 1.7976931348623157e308,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "minItems": 0,
+                                                            "maxItems": 4294967295,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "type": "array",
+                                                                "additionalProperties": false,
+                                                                "minItems": 1,
+                                                                "maxItems": 2,
+                                                                "description": "",
+                                                                "items": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "number",
+                                                                            "default value": 1.7976931348623157e308
+                                                                        },
+                                                                        {
+                                                                            "type": "array",
+                                                                            "minItems": 1,
+                                                                            "maxItems": 4294967295,
+                                                                            "items": {
+                                                                                "type": "array",
+                                                                                "minItems": 1,
+                                                                                "maxItems": 2,
+                                                                                "items": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                "compositions": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the labels of the composition which are present there.",
+                                                    "items": {
+                                                        "default value": 0,
+                                                        "type": "integer",
+                                                        "description": ""
+                                                    }
+                                                },
+                                                "density": {
+                                                    "default value": 3000.0,
+                                                    "type": "number",
+                                                    "description": "The reference density used for determining the lithostatic pressure for calculating the bound water content."
+                                                },
+                                                "lithology": {
+                                                    "default value": "peridotite",
+                                                    "type": "string",
+                                                    "description": "The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'."
+                                                },
+                                                "initial water content": {
+                                                    "default value": 5.0,
+                                                    "type": "number",
+                                                    "description": "The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology."
+                                                },
+                                                "cutoff pressure": {
+                                                    "default value": 10.0,
+                                                    "type": "number",
+                                                    "description": "The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'."
+                                                },
+                                                "operation": {
+                                                    "default value": "replace",
+                                                    "type": "string",
+                                                    "description": "Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.",
+                                                    "enum": [
+                                                        "replace",
+                                                        "replace defined only",
+                                                        "add",
+                                                        "subtract"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
                                             "description": "Uniform compositional model. Sets constant compositional field.",
                                             "additionalProperties": false,
                                             "required": [
@@ -6827,6 +7249,51 @@
                                                         "default value": 1.0,
                                                         "type": "number",
                                                         "description": ""
+                                                    }
+                                                },
+                                                "basis rotation matrices": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "minItems": 3,
+                                                            "maxItems": 3,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": ""
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "basis Euler angles z-x-z": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "default value": 0.0,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        }
                                                     }
                                                 }
                                             }
@@ -7326,6 +7793,137 @@
                                     "oneOf": [
                                         {
                                             "type": "object",
+                                            "description": "Random uniform distribution grains model. The size of the grains can be independently set to a single value or to a random distribution.",
+                                            "additionalProperties": false,
+                                            "required": [
+                                                "model",
+                                                "compositions"
+                                            ],
+                                            "properties": {
+                                                "model": {
+                                                    "default value": "",
+                                                    "type": "string",
+                                                    "description": "The name of the grains model.",
+                                                    "enum": [
+                                                        "random uniform distribution deflected"
+                                                    ]
+                                                },
+                                                "min depth": {
+                                                    "default value": 0.0,
+                                                    "type": "number",
+                                                    "description": "The depth in meters from which the grains of this feature are present."
+                                                },
+                                                "max depth": {
+                                                    "default value": 1.7976931348623157e308,
+                                                    "type": "number",
+                                                    "description": "The depth in meters to which the grains of this feature are present."
+                                                },
+                                                "compositions": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the integer labels of the composition which are present there.",
+                                                    "items": {
+                                                        "default value": 0,
+                                                        "type": "integer",
+                                                        "description": ""
+                                                    }
+                                                },
+                                                "orientation operation": {
+                                                    "default value": "replace",
+                                                    "type": "string",
+                                                    "description": "Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.",
+                                                    "enum": [
+                                                        "replace",
+                                                        "multiply"
+                                                    ]
+                                                },
+                                                "grain sizes": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.",
+                                                    "items": {
+                                                        "default value": 1.0,
+                                                        "type": "number",
+                                                        "description": ""
+                                                    }
+                                                },
+                                                "normalize grain sizes": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.",
+                                                    "items": {
+                                                        "default value": true,
+                                                        "type": "boolean",
+                                                        "description": ""
+                                                    }
+                                                },
+                                                "deflections": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list of the deflections of all of the grains in each composition between 0 and 1.",
+                                                    "items": {
+                                                        "default value": 1.0,
+                                                        "type": "number",
+                                                        "description": ""
+                                                    }
+                                                },
+                                                "basis rotation matrices": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "minItems": 3,
+                                                            "maxItems": 3,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": ""
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "basis Euler angles z-x-z": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "default value": 0.0,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
                                             "description": "Uniform grains model. All grains start exactly the same.",
                                             "additionalProperties": false,
                                             "required": [
@@ -7659,7 +8257,8 @@
                                                         "additionalProperties": false,
                                                         "required": [
                                                             "model",
-                                                            "plate velocity"
+                                                            "spreading velocity",
+                                                            "subducting velocity"
                                                         ],
                                                         "properties": {
                                                             "model": {
@@ -7695,8 +8294,8 @@
                                                                 "type": "number",
                                                                 "description": "The reference density of the subducting plate in $kg/m^3$"
                                                             },
-                                                            "plate velocity": {
-                                                                "description": "The velocity with which the plate subducts in meters per year. Default is 5 cm/yr",
+                                                            "spreading velocity": {
+                                                                "description": "The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr",
                                                                 "oneOf": [
                                                                     {
                                                                         "default value": 0.05,
@@ -7741,10 +8340,10 @@
                                                                 ]
                                                             },
                                                             "subducting velocity": {
-                                                                "description": "The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]",
+                                                                "description": "The velocity with which the slab is subducting through time. Default is 5 cm/yr",
                                                                 "oneOf": [
                                                                     {
-                                                                        "default value": -1.0,
+                                                                        "default value": 0.05,
                                                                         "type": "number",
                                                                         "description": ""
                                                                     },
@@ -7761,7 +8360,7 @@
                                                                             "uniqueItems": false,
                                                                             "description": "",
                                                                             "items": {
-                                                                                "default value": -1.0,
+                                                                                "default value": 0.05,
                                                                                 "type": "number",
                                                                                 "description": ""
                                                                             }
@@ -8059,6 +8658,78 @@
                                                     },
                                                     {
                                                         "type": "object",
+                                                        "description": "TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.",
+                                                        "additionalProperties": false,
+                                                        "required": [
+                                                            "model",
+                                                            "compositions"
+                                                        ],
+                                                        "properties": {
+                                                            "model": {
+                                                                "default value": "",
+                                                                "type": "string",
+                                                                "description": "The name of the composition model.",
+                                                                "enum": [
+                                                                    "tian water content"
+                                                                ]
+                                                            },
+                                                            "min distance slab top": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": "todo The depth in meters from which the composition of this feature is present."
+                                                            },
+                                                            "max distance slab top": {
+                                                                "default value": 1.7976931348623157e308,
+                                                                "type": "number",
+                                                                "description": "todo The depth in meters to which the composition of this feature is present."
+                                                            },
+                                                            "density": {
+                                                                "default value": 3000.0,
+                                                                "type": "number",
+                                                                "description": "The reference density used for determining the lithostatic pressure for calculating the bound water content."
+                                                            },
+                                                            "compositions": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the labels of the composition which are present there.",
+                                                                "items": {
+                                                                    "default value": 0,
+                                                                    "type": "integer",
+                                                                    "description": ""
+                                                                }
+                                                            },
+                                                            "lithology": {
+                                                                "default value": "peridotite",
+                                                                "type": "string",
+                                                                "description": "The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'."
+                                                            },
+                                                            "initial water content": {
+                                                                "default value": 5.0,
+                                                                "type": "number",
+                                                                "description": "The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology."
+                                                            },
+                                                            "cutoff pressure": {
+                                                                "default value": 10.0,
+                                                                "type": "number",
+                                                                "description": "The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'."
+                                                            },
+                                                            "operation": {
+                                                                "default value": "replace",
+                                                                "type": "string",
+                                                                "description": "Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.",
+                                                                "enum": [
+                                                                    "replace",
+                                                                    "replace defined only",
+                                                                    "add",
+                                                                    "subtract"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "object",
                                                         "description": "Uniform compositional model. Sets constant compositional field.",
                                                         "additionalProperties": false,
                                                         "required": [
@@ -8284,6 +8955,51 @@
                                                                     "default value": 1.0,
                                                                     "type": "number",
                                                                     "description": ""
+                                                                }
+                                                            },
+                                                            "basis rotation matrices": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "type": "array",
+                                                                        "minItems": 3,
+                                                                        "maxItems": 3,
+                                                                        "uniqueItems": false,
+                                                                        "description": "",
+                                                                        "items": {
+                                                                            "default value": 0.0,
+                                                                            "type": "number",
+                                                                            "description": ""
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "basis Euler angles z-x-z": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "default value": 0.0,
+                                                                        "type": "number",
+                                                                        "description": ""
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -8514,7 +9230,8 @@
                                             "additionalProperties": false,
                                             "required": [
                                                 "model",
-                                                "plate velocity"
+                                                "spreading velocity",
+                                                "subducting velocity"
                                             ],
                                             "properties": {
                                                 "model": {
@@ -8550,8 +9267,8 @@
                                                     "type": "number",
                                                     "description": "The reference density of the subducting plate in $kg/m^3$"
                                                 },
-                                                "plate velocity": {
-                                                    "description": "The velocity with which the plate subducts in meters per year. Default is 5 cm/yr",
+                                                "spreading velocity": {
+                                                    "description": "The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr",
                                                     "oneOf": [
                                                         {
                                                             "default value": 0.05,
@@ -8596,10 +9313,10 @@
                                                     ]
                                                 },
                                                 "subducting velocity": {
-                                                    "description": "The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]",
+                                                    "description": "The velocity with which the slab is subducting through time. Default is 5 cm/yr",
                                                     "oneOf": [
                                                         {
-                                                            "default value": -1.0,
+                                                            "default value": 0.05,
                                                             "type": "number",
                                                             "description": ""
                                                         },
@@ -8616,7 +9333,7 @@
                                                                 "uniqueItems": false,
                                                                 "description": "",
                                                                 "items": {
-                                                                    "default value": -1.0,
+                                                                    "default value": 0.05,
                                                                     "type": "number",
                                                                     "description": ""
                                                                 }
@@ -8914,6 +9631,78 @@
                                         },
                                         {
                                             "type": "object",
+                                            "description": "TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.",
+                                            "additionalProperties": false,
+                                            "required": [
+                                                "model",
+                                                "compositions"
+                                            ],
+                                            "properties": {
+                                                "model": {
+                                                    "default value": "",
+                                                    "type": "string",
+                                                    "description": "The name of the composition model.",
+                                                    "enum": [
+                                                        "tian water content"
+                                                    ]
+                                                },
+                                                "min distance slab top": {
+                                                    "default value": 0.0,
+                                                    "type": "number",
+                                                    "description": "todo The depth in meters from which the composition of this feature is present."
+                                                },
+                                                "max distance slab top": {
+                                                    "default value": 1.7976931348623157e308,
+                                                    "type": "number",
+                                                    "description": "todo The depth in meters to which the composition of this feature is present."
+                                                },
+                                                "density": {
+                                                    "default value": 3000.0,
+                                                    "type": "number",
+                                                    "description": "The reference density used for determining the lithostatic pressure for calculating the bound water content."
+                                                },
+                                                "compositions": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the labels of the composition which are present there.",
+                                                    "items": {
+                                                        "default value": 0,
+                                                        "type": "integer",
+                                                        "description": ""
+                                                    }
+                                                },
+                                                "lithology": {
+                                                    "default value": "peridotite",
+                                                    "type": "string",
+                                                    "description": "The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'."
+                                                },
+                                                "initial water content": {
+                                                    "default value": 5.0,
+                                                    "type": "number",
+                                                    "description": "The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology."
+                                                },
+                                                "cutoff pressure": {
+                                                    "default value": 10.0,
+                                                    "type": "number",
+                                                    "description": "The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'."
+                                                },
+                                                "operation": {
+                                                    "default value": "replace",
+                                                    "type": "string",
+                                                    "description": "Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.",
+                                                    "enum": [
+                                                        "replace",
+                                                        "replace defined only",
+                                                        "add",
+                                                        "subtract"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
                                             "description": "Uniform compositional model. Sets constant compositional field.",
                                             "additionalProperties": false,
                                             "required": [
@@ -9139,6 +9928,51 @@
                                                         "default value": 1.0,
                                                         "type": "number",
                                                         "description": ""
+                                                    }
+                                                },
+                                                "basis rotation matrices": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "minItems": 3,
+                                                            "maxItems": 3,
+                                                            "uniqueItems": false,
+                                                            "description": "",
+                                                            "items": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": ""
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "basis Euler angles z-x-z": {
+                                                    "type": "array",
+                                                    "minItems": 0,
+                                                    "maxItems": 4294967295,
+                                                    "uniqueItems": false,
+                                                    "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "minItems": 3,
+                                                        "maxItems": 3,
+                                                        "uniqueItems": false,
+                                                        "description": "",
+                                                        "items": {
+                                                            "default value": 0.0,
+                                                            "type": "number",
+                                                            "description": ""
+                                                        }
                                                     }
                                                 }
                                             }
@@ -9439,7 +10273,8 @@
                                                                     "additionalProperties": false,
                                                                     "required": [
                                                                         "model",
-                                                                        "plate velocity"
+                                                                        "spreading velocity",
+                                                                        "subducting velocity"
                                                                     ],
                                                                     "properties": {
                                                                         "model": {
@@ -9475,8 +10310,8 @@
                                                                             "type": "number",
                                                                             "description": "The reference density of the subducting plate in $kg/m^3$"
                                                                         },
-                                                                        "plate velocity": {
-                                                                            "description": "The velocity with which the plate subducts in meters per year. Default is 5 cm/yr",
+                                                                        "spreading velocity": {
+                                                                            "description": "The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr",
                                                                             "oneOf": [
                                                                                 {
                                                                                     "default value": 0.05,
@@ -9521,10 +10356,10 @@
                                                                             ]
                                                                         },
                                                                         "subducting velocity": {
-                                                                            "description": "The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]",
+                                                                            "description": "The velocity with which the slab is subducting through time. Default is 5 cm/yr",
                                                                             "oneOf": [
                                                                                 {
-                                                                                    "default value": -1.0,
+                                                                                    "default value": 0.05,
                                                                                     "type": "number",
                                                                                     "description": ""
                                                                                 },
@@ -9541,7 +10376,7 @@
                                                                                         "uniqueItems": false,
                                                                                         "description": "",
                                                                                         "items": {
-                                                                                            "default value": -1.0,
+                                                                                            "default value": 0.05,
                                                                                             "type": "number",
                                                                                             "description": ""
                                                                                         }
@@ -9839,6 +10674,78 @@
                                                                 },
                                                                 {
                                                                     "type": "object",
+                                                                    "description": "TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.",
+                                                                    "additionalProperties": false,
+                                                                    "required": [
+                                                                        "model",
+                                                                        "compositions"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "model": {
+                                                                            "default value": "",
+                                                                            "type": "string",
+                                                                            "description": "The name of the composition model.",
+                                                                            "enum": [
+                                                                                "tian water content"
+                                                                            ]
+                                                                        },
+                                                                        "min distance slab top": {
+                                                                            "default value": 0.0,
+                                                                            "type": "number",
+                                                                            "description": "todo The depth in meters from which the composition of this feature is present."
+                                                                        },
+                                                                        "max distance slab top": {
+                                                                            "default value": 1.7976931348623157e308,
+                                                                            "type": "number",
+                                                                            "description": "todo The depth in meters to which the composition of this feature is present."
+                                                                        },
+                                                                        "density": {
+                                                                            "default value": 3000.0,
+                                                                            "type": "number",
+                                                                            "description": "The reference density used for determining the lithostatic pressure for calculating the bound water content."
+                                                                        },
+                                                                        "compositions": {
+                                                                            "type": "array",
+                                                                            "minItems": 0,
+                                                                            "maxItems": 4294967295,
+                                                                            "uniqueItems": false,
+                                                                            "description": "A list with the labels of the composition which are present there.",
+                                                                            "items": {
+                                                                                "default value": 0,
+                                                                                "type": "integer",
+                                                                                "description": ""
+                                                                            }
+                                                                        },
+                                                                        "lithology": {
+                                                                            "default value": "peridotite",
+                                                                            "type": "string",
+                                                                            "description": "The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'."
+                                                                        },
+                                                                        "initial water content": {
+                                                                            "default value": 5.0,
+                                                                            "type": "number",
+                                                                            "description": "The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology."
+                                                                        },
+                                                                        "cutoff pressure": {
+                                                                            "default value": 10.0,
+                                                                            "type": "number",
+                                                                            "description": "The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'."
+                                                                        },
+                                                                        "operation": {
+                                                                            "default value": "replace",
+                                                                            "type": "string",
+                                                                            "description": "Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.",
+                                                                            "enum": [
+                                                                                "replace",
+                                                                                "replace defined only",
+                                                                                "add",
+                                                                                "subtract"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "type": "object",
                                                                     "description": "Uniform compositional model. Sets constant compositional field.",
                                                                     "additionalProperties": false,
                                                                     "required": [
@@ -10064,6 +10971,51 @@
                                                                                 "default value": 1.0,
                                                                                 "type": "number",
                                                                                 "description": ""
+                                                                            }
+                                                                        },
+                                                                        "basis rotation matrices": {
+                                                                            "type": "array",
+                                                                            "minItems": 0,
+                                                                            "maxItems": 4294967295,
+                                                                            "uniqueItems": false,
+                                                                            "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                                            "items": {
+                                                                                "type": "array",
+                                                                                "minItems": 3,
+                                                                                "maxItems": 3,
+                                                                                "uniqueItems": false,
+                                                                                "description": "",
+                                                                                "items": {
+                                                                                    "type": "array",
+                                                                                    "minItems": 3,
+                                                                                    "maxItems": 3,
+                                                                                    "uniqueItems": false,
+                                                                                    "description": "",
+                                                                                    "items": {
+                                                                                        "default value": 0.0,
+                                                                                        "type": "number",
+                                                                                        "description": ""
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "basis Euler angles z-x-z": {
+                                                                            "type": "array",
+                                                                            "minItems": 0,
+                                                                            "maxItems": 4294967295,
+                                                                            "uniqueItems": false,
+                                                                            "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                                            "items": {
+                                                                                "type": "array",
+                                                                                "minItems": 3,
+                                                                                "maxItems": 3,
+                                                                                "uniqueItems": false,
+                                                                                "description": "",
+                                                                                "items": {
+                                                                                    "default value": 0.0,
+                                                                                    "type": "number",
+                                                                                    "description": ""
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -10294,7 +11246,8 @@
                                                         "additionalProperties": false,
                                                         "required": [
                                                             "model",
-                                                            "plate velocity"
+                                                            "spreading velocity",
+                                                            "subducting velocity"
                                                         ],
                                                         "properties": {
                                                             "model": {
@@ -10330,8 +11283,8 @@
                                                                 "type": "number",
                                                                 "description": "The reference density of the subducting plate in $kg/m^3$"
                                                             },
-                                                            "plate velocity": {
-                                                                "description": "The velocity with which the plate subducts in meters per year. Default is 5 cm/yr",
+                                                            "spreading velocity": {
+                                                                "description": "The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr",
                                                                 "oneOf": [
                                                                     {
                                                                         "default value": 0.05,
@@ -10376,10 +11329,10 @@
                                                                 ]
                                                             },
                                                             "subducting velocity": {
-                                                                "description": "The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]",
+                                                                "description": "The velocity with which the slab is subducting through time. Default is 5 cm/yr",
                                                                 "oneOf": [
                                                                     {
-                                                                        "default value": -1.0,
+                                                                        "default value": 0.05,
                                                                         "type": "number",
                                                                         "description": ""
                                                                     },
@@ -10396,7 +11349,7 @@
                                                                             "uniqueItems": false,
                                                                             "description": "",
                                                                             "items": {
-                                                                                "default value": -1.0,
+                                                                                "default value": 0.05,
                                                                                 "type": "number",
                                                                                 "description": ""
                                                                             }
@@ -10694,6 +11647,78 @@
                                                     },
                                                     {
                                                         "type": "object",
+                                                        "description": "TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.",
+                                                        "additionalProperties": false,
+                                                        "required": [
+                                                            "model",
+                                                            "compositions"
+                                                        ],
+                                                        "properties": {
+                                                            "model": {
+                                                                "default value": "",
+                                                                "type": "string",
+                                                                "description": "The name of the composition model.",
+                                                                "enum": [
+                                                                    "tian water content"
+                                                                ]
+                                                            },
+                                                            "min distance slab top": {
+                                                                "default value": 0.0,
+                                                                "type": "number",
+                                                                "description": "todo The depth in meters from which the composition of this feature is present."
+                                                            },
+                                                            "max distance slab top": {
+                                                                "default value": 1.7976931348623157e308,
+                                                                "type": "number",
+                                                                "description": "todo The depth in meters to which the composition of this feature is present."
+                                                            },
+                                                            "density": {
+                                                                "default value": 3000.0,
+                                                                "type": "number",
+                                                                "description": "The reference density used for determining the lithostatic pressure for calculating the bound water content."
+                                                            },
+                                                            "compositions": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the labels of the composition which are present there.",
+                                                                "items": {
+                                                                    "default value": 0,
+                                                                    "type": "integer",
+                                                                    "description": ""
+                                                                }
+                                                            },
+                                                            "lithology": {
+                                                                "default value": "peridotite",
+                                                                "type": "string",
+                                                                "description": "The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'."
+                                                            },
+                                                            "initial water content": {
+                                                                "default value": 5.0,
+                                                                "type": "number",
+                                                                "description": "The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology."
+                                                            },
+                                                            "cutoff pressure": {
+                                                                "default value": 10.0,
+                                                                "type": "number",
+                                                                "description": "The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'."
+                                                            },
+                                                            "operation": {
+                                                                "default value": "replace",
+                                                                "type": "string",
+                                                                "description": "Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.",
+                                                                "enum": [
+                                                                    "replace",
+                                                                    "replace defined only",
+                                                                    "add",
+                                                                    "subtract"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "object",
                                                         "description": "Uniform compositional model. Sets constant compositional field.",
                                                         "additionalProperties": false,
                                                         "required": [
@@ -10920,6 +11945,51 @@
                                                                     "type": "number",
                                                                     "description": ""
                                                                 }
+                                                            },
+                                                            "basis rotation matrices": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the rotation matrices of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "type": "array",
+                                                                        "minItems": 3,
+                                                                        "maxItems": 3,
+                                                                        "uniqueItems": false,
+                                                                        "description": "",
+                                                                        "items": {
+                                                                            "default value": 0.0,
+                                                                            "type": "number",
+                                                                            "description": ""
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "basis Euler angles z-x-z": {
+                                                                "type": "array",
+                                                                "minItems": 0,
+                                                                "maxItems": 4294967295,
+                                                                "uniqueItems": false,
+                                                                "description": "A list with the z-x-z Euler angles of the grains which are present there for each compositions.",
+                                                                "items": {
+                                                                    "type": "array",
+                                                                    "minItems": 3,
+                                                                    "maxItems": 3,
+                                                                    "uniqueItems": false,
+                                                                    "description": "",
+                                                                    "items": {
+                                                                        "default value": 0.0,
+                                                                        "type": "number",
+                                                                        "description": ""
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     },
@@ -11046,7 +12116,7 @@
             }
         },
         "random number seed": {
-            "default value": 4294967295,
+            "default value": -1,
             "type": "integer",
             "description": "This allows the input of a preferred random number seed to generate random numbers. If no input is given, this value is -1 and triggers the use of default seed = 1."
         }

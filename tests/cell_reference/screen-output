@@ -18,12 +18,11 @@ Level: 1 Index: 0
 Level: 1 Index: 1
 Level: 1 Index: 2
 Level: 1 Index: 3
-   Rebuilding Stokes preconditioner...Level: 1 Index: 0
+Level: 1 Index: 0
 Level: 1 Index: 1
 Level: 1 Index: 2
 Level: 1 Index: 3
-
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 8+0 iterations.
 
    Postprocessing:
 Level: 1 Index: 0

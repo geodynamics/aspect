@@ -2,15 +2,15 @@
 Different segments in sections
 ===============================
 
-Slabs and faults may not only vary in depth, but may also vary a lot laterally. To accomplish this in the world builder, we will need to introduce the term "sections". Sections are a way to overwrite the segments at a specified coordinate. 
+Slabs and faults may vary in depth as well as laterally. To accomplish this in the World Builder, we will need to introduce the term "sections". Sections are a way to overwrite the segments at a specified coordinate. 
 
 ```{note}
 One way of thinking about segments and sections is that together they form a 2D grid. The segments form one axis (down dip) and the sections form the other axis (along strike). 
 ```
 
-**Sections replace all the segments at that coordinate, and it is required that all sections have the same number of segments**.
+**Sections replace all the segments at that coordinate. It is required that all sections have the same number of segments**.
 
-In this case we are going to change the values for the first coordinate, which is coordinate 0. We keep the length the same as the default first segment (compare lines 48 and 75), but we make the second segment a bit shorter (compare lines 52 and 58). We also do not change the feature composition model in the first segment, but we do change it in the second segment, where we set it equal to composition of the lower part of the oceanic plate for the whole thickness of the segment (line 59).
+In this case we are going to change the values for the first coordinate, which is coordinate 0. We keep the length the same as the default first segment (compare lines 48 and 75), but we make the second segment a bit shorter (compare lines 52 and 58). We also do not change the feature composition model in the first segment, but we do change it in the second segment where we set it equal to composition of the lower part of the oceanic plate for the whole thickness of the segment (line 59).
 
 ::::::{tab-set}
 

@@ -119,7 +119,7 @@ namespace aspect
        * @param points Quadrature points to use for update
        * @param weights JxW values to use for quadrature
        */
-      template<int dim>
+      template <int dim>
       double compute_interface_location_newton(const unsigned int degree,
                                                const Tensor<1, dim, double> normal,
                                                const double volume_fraction,
@@ -140,7 +140,7 @@ namespace aspect
        * @param points Quadrature points to use for update
        * @param weights JxW values to use for quadrature
        */
-      template<int dim>
+      template <int dim>
       double compute_fluid_volume(const unsigned int degree,
                                   const Tensor<1, dim, double> normal,
                                   const double d,
@@ -159,7 +159,7 @@ namespace aspect
        * @param interface_normal_in_cell The normal vector for the current interface reconstruction in the computing cell.
        * @param d_at_face_center The correct d value to for the interface description on the face we are computing for.
        */
-      template<int dim>
+      template <int dim>
       double calculate_volume_flux (const unsigned int compute_direction,
                                     const double time_direction_derivative,
                                     const Tensor<1, dim, double> interface_normal_in_cell,

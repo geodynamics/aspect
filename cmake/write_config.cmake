@@ -17,12 +17,12 @@
 # <http://www.gnu.org/licenses/>.
 
 
-SET(_log_detailed "${CMAKE_BINARY_DIR}/detailed.log")
-FILE(REMOVE ${_log_detailed})
+set(_log_detailed "${CMAKE_BINARY_DIR}/detailed.log")
+file(REMOVE ${_log_detailed})
 
-MACRO(_detailed)
-  FILE(APPEND ${_log_detailed} "${ARGN}")
-ENDMACRO()
+macro(_detailed)
+  file(APPEND ${_log_detailed} "${ARGN}")
+endmacro()
 
 _detailed(
 "###
@@ -52,31 +52,31 @@ _detailed(
 #        PARAMETER_GUI_EXECUTABLE:  ${PARAMETER_GUI_EXECUTABLE}
 ")
 
-IF(CMAKE_C_COMPILER_WORKS)
+if(CMAKE_C_COMPILER_WORKS)
   _detailed(
 "#        CMAKE_C_COMPILER:          ${CMAKE_C_COMPILER}\n")
-ENDIF()
+endif()
 
 
-IF(DEAL_II_STATIC_EXECUTABLE)
+if(DEAL_II_STATIC_EXECUTABLE)
   _detailed(
 "#
 #        LINKAGE:                   STATIC
 ")
-ELSE()
+else()
 _detailed(
 "#
 #        LINKAGE:                   DYNAMIC
 ")
-ENDIF()
+endif()
 
-FOREACH(_T ${TARGETS})
+foreach(_T ${TARGETS_EXECUTABLES})
 
-  GET_PROPERTY(ASPECT_COMPILE_OPTIONS TARGET ${_T} PROPERTY COMPILE_OPTIONS)
-  GET_PROPERTY(ASPECT_COMPILE_DEFINITIONS TARGET ${_T} PROPERTY COMPILE_DEFINITIONS)
-  GET_PROPERTY(ASPECT_INCLUDE_DIRECTORIES TARGET ${_T} PROPERTY INCLUDE_DIRECTORIES)
-  GET_PROPERTY(ASPECT_LINK_LIBRARIES TARGET ${_T} PROPERTY LINK_LIBRARIES)
-  GET_PROPERTY(ASPECT_COMPILE_FLAGS TARGET ${_T} PROPERTY COMPILE_FLAGS)
+  get_property(ASPECT_COMPILE_OPTIONS TARGET ${_T} PROPERTY COMPILE_OPTIONS)
+  get_property(ASPECT_COMPILE_DEFINITIONS TARGET ${_T} PROPERTY COMPILE_DEFINITIONS)
+  get_property(ASPECT_INCLUDE_DIRECTORIES TARGET ${_T} PROPERTY INCLUDE_DIRECTORIES)
+  get_property(ASPECT_LINK_LIBRARIES TARGET ${_T} PROPERTY LINK_LIBRARIES)
+  get_property(ASPECT_COMPILE_FLAGS TARGET ${_T} PROPERTY COMPILE_FLAGS)
 
   _detailed("#
 #        ${_T} target properties:
@@ -87,7 +87,7 @@ FOREACH(_T ${TARGETS})
 #          LINK_LIBRARIES:          ${ASPECT_LINK_LIBRARIES}
 #          INCLUDE_DIRECTORIES:     ${ASPECT_INCLUDE_DIRECTORIES}
 ")
-ENDFOREACH()
+endforeach()
 
 _detailed("#
 #        DEAL_II options:

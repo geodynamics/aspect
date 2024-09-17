@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: Minimum topography (m)
+# 15: Maximum topography (m)
+# 16: Minimal value for composition C_1
+# 17: Maximal value for composition C_1
+# 18: Global mass for composition C_1
+# 19: Max depth [m] for composition C_1
+# 20: RMS velocity (m/year)
+# 21: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 576 0 0 12 14 14 output-kaus_rayleigh_taylor_instability/solution/solution-00000  0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 5.72916667e+10 9.37500000e+04 4.81049617e-04 1.47898624e-03 
+1 2.500000000000e+03 2.500000000000e+03 64 659 289 576 0 1  6  8  8 output-kaus_rayleigh_taylor_instability/solution/solution-00001 -1.12527050e-06 1.10809924e-06 0.00000000e+00 1.00000000e+00 5.72900765e+10 9.37500000e+04 4.81340152e-04 1.47988236e-03 

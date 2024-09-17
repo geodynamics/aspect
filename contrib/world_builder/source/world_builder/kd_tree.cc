@@ -36,7 +36,7 @@ namespace WorldBuilder
                         const bool y_axis)
     {
       const size_t mid=(left+right)>>1;
-      std::nth_element(nodes.begin()+left,nodes.begin()+mid,nodes.begin()+right+1,
+      std::nth_element(nodes.begin()+static_cast<long int>(left),nodes.begin()+static_cast<long int>(mid),nodes.begin()+static_cast<long int>(right)+1,
                        [y_axis](Node& i, Node& j) -> bool
       {
         return i[y_axis] < j[y_axis];

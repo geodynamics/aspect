@@ -793,8 +793,8 @@ namespace aspect
 
         void
         EntropyReader::initialize(const MPI_Comm comm,
-                                  const std::string data_directory,
-                                  const std::string material_file_name)
+                                  const std::string &data_directory,
+                                  const std::string &material_file_name)
         {
           material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
           material_lookup->load_file(data_directory+material_file_name,
@@ -1296,6 +1296,8 @@ namespace aspect
           return transition_pressures.size();
       }
 
+
+
       template <int dim>
       unsigned int
       PhaseFunction<dim>::
@@ -1304,6 +1306,18 @@ namespace aspect
         return n_phases_total;
       }
 
+
+
+      template <int dim>
+      unsigned int
+      PhaseFunction<dim>::
+      n_phases_over_all_chemical_compositions () const
+      {
+        return n_phases_total_chemical_compositions;
+      }
+
+
+
       template <int dim>
       const std::vector<unsigned int> &
       PhaseFunction<dim>::n_phase_transitions_for_each_composition () const
@@ -1311,11 +1325,31 @@ namespace aspect
         return *n_phase_transitions_per_composition;
       }
 
+
+
       template <int dim>
       const std::vector<unsigned int> &
       PhaseFunction<dim>::n_phases_for_each_composition () const
       {
         return n_phases_per_composition;
+      }
+
+
+
+      template <int dim>
+      const std::vector<unsigned int> &
+      PhaseFunction<dim>::n_phase_transitions_for_each_chemical_composition () const
+      {
+        return n_phase_transitions_per_chemical_composition;
+      }
+
+
+
+      template <int dim>
+      const std::vector<unsigned int> &
+      PhaseFunction<dim>::n_phases_for_each_chemical_composition () const
+      {
+        return n_phases_per_chemical_composition;
       }
 
 
@@ -1515,6 +1549,18 @@ namespace aspect
           {
             n_phases_per_composition.push_back(n+1);
             n_phases_total += n+1;
+          }
+
+        Assert(has_background_field == true, ExcInternalError());
+        // The background field is always the first composition
+        n_phases_per_chemical_composition = {n_phases_per_composition[0]};
+        n_phase_transitions_per_chemical_composition = {n_phases_per_composition[0] - 1};
+        n_phases_total_chemical_compositions = n_phases_per_composition[0];
+        for (auto i : this->introspection().chemical_composition_field_indices())
+          {
+            n_phases_per_chemical_composition.push_back(n_phases_per_composition[i+1]);
+            n_phase_transitions_per_chemical_composition.push_back(n_phases_per_composition[i+1] - 1);
+            n_phases_total_chemical_compositions += n_phases_per_composition[i+1];
           }
       }
     }

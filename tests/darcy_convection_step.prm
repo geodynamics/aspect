@@ -1,0 +1,165 @@
+#########################################################
+# This is a test for limiting the time step when advecting
+# a field with the 'darcy field' method without setting
+# Include melt transport = true. With the 'darcy field'
+# advection method, the field is advected using the Darcy
+# velocity, which is expressed as:
+#
+# u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)
+# u_f = fluid velocity # m/yr
+# u_s = solid velocity # m/yr
+# K_D = Darcy Coefficient = k / eta_f
+# k = permeability # m2 / s
+# eta_f = fluid viscosity # Pa s
+# phi = porosity
+# rho_f = fluid density # kg/m3
+# rhos_s = solid density # kg/m3
+# g = gravity # m/s2
+#
+# Additionally, K_D and k can be expanded into:
+# K_D = k / eta_f
+# k = k_0 * phi**3 * (1 - phi)**2
+#
+# Where k_0 is the reference permeability. The test is a 10 km x 10 km 2D
+# box with a uniform porosity of 0.02 (2%) everywhere. The fluid has a
+# density of 1000 kg/m3, and a viscosity of 10 Pa s, and the solid has a
+# density of 3000 kg/m3 and a uniform velocity of 0 m/yr. The reference
+# pemeability is 1e-6, and gravity is set to -10. This results in a fluid
+# velocity of 24.25 m/yr. The mesh is 2.5 km x 2.5 km, and with CFL = 1,
+# this means that the time step should be 2500 m / 24.25 m/yr = 103.11
+# This also serves as a test for the 'darcy velocity' postprocessor, by
+# confirming that the darcy velocity is 24.25 m/yr.
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 200
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 1
+set CFL number                             = 1.0
+set Output directory                       = darcy_convection_step
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Maximum time step                      = 200
+set Use operator splitting                 = true
+
+# 10 km x 10 km box
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 10e3
+    set Y extent = 10e3
+  end
+end
+
+# Uniform temperature of 293 K
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = top, bottom, left, right
+
+  subsection Box
+    set Bottom temperature = 293
+    set Top temperature    = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+  end
+end
+
+# Free slip boundary on all sides
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+# porosity and bound_fluid are required compositional fields when
+# using the reactive fluid transport. Set the porosity field method
+# to 'darcy field' so that the fluid is adveted with the Darcy
+# velocity.
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, bound_fluid
+  set Compositional field methods = darcy field, field
+end
+
+# Initialize a porosity of 2% (0.02) everywhere.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0.02; 0.0
+  end
+end
+
+# 10 m/s2 vertical gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# The reactive fluid transport model allows us to set the parameters which
+# influence fluid velocity, such as the fluid viscosity, fluid density, and
+# the reference permeability. We set the fluid weakening factors (shear to
+# bulk viscosity ratio, exponential fluid weakening factor) to 0 for
+# simplicity. We use the zero solubility fluid-solid reaction scheme to prevent
+# the fluid from partitioning into the solid.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = visco plastic
+    set Reference fluid density                          = 1000
+    set Shear to bulk viscosity ratio                    = 0.
+    set Reference fluid viscosity                        = 10
+    set Reference permeability                           = 1e-6
+    set Exponential fluid weakening factor               = 0
+    set Fluid-solid reaction scheme                      = zero solubility
+  end
+
+  # Set the solid density to 3000 kg/m3, and set the minimum/maximum viscosity
+  # to 1e21 Pa s for an isoviscous model.
+  subsection Visco Plastic
+    set Reference temperature                   = 1600
+    set Prefactors for diffusion creep          = 5e-21
+    set Viscous flow law                        = diffusion
+    set Densities                               = 3000
+    set Viscosity averaging scheme              = harmonic
+    set Minimum viscosity                       = 1e21
+    set Maximum viscosity                       = 1e21
+    set Thermal expansivities                   = 0
+  end
+end
+
+# Set the global refinement to 1, bringing the global mesh to 2.5 km x 2.5 km.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+  set Time steps between mesh refinement = 0
+end
+
+# Melt transport = false
+subsection Melt settings
+  set Include melt transport             = false
+end
+
+# Output the darcy velocity
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set List of output variables = darcy velocity
+    set Output format            = gnuplot
+  end
+end

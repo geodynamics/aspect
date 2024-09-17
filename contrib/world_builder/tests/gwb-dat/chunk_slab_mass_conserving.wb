@@ -1,5 +1,5 @@
 {
-  "version": "0.6",
+  "version": "1.0",
   "coordinate system":{"model":"spherical", "depth method":"begin at end segment", "radius":6371000.0},
   "cross section":[[0,0],[45,0]],"surface temperature":273, "force surface temperature":true,
   "potential mantle temperature":1673, "thermal expansion coefficient":3.1e-5, 
@@ -17,7 +17,7 @@
 	 "temperature models":[
 	 	{"model":"mass conserving", 
 	 	"density":3300, "thermal conductivity":3.3,"adiabatic heating":true,
-	 	"plate velocity":0.05,
+	 	"spreading velocity":0.05, "subducting velocity":0.05,
 	 	"ridge coordinates": [[[45,-5],[45,5]]],
 	 	"coupling depth":80e3, 
 	 	"forearc cooling factor":10.0, 

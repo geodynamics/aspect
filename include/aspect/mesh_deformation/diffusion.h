@@ -39,7 +39,7 @@ namespace aspect
      * vertices according to the solution of a dim-1 diffusion
      * problem.
      */
-    template<int dim>
+    template <int dim>
     class Diffusion : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

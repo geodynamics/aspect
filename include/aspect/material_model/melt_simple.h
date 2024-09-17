@@ -118,29 +118,18 @@ namespace aspect
 
 
       private:
-        double reference_rho_s;
-        double reference_rho_f;
-        double reference_T;
-        double eta_0;
-        double xi_0;
-        double eta_f;
-        double thermal_viscosity_exponent;
-        double thermal_bulk_viscosity_exponent;
+        bool model_is_compressible;
         double thermal_expansivity;
+        double eta_0;
         double reference_specific_heat;
         double thermal_conductivity;
-        double reference_permeability;
-        double alpha_phi;
-        double extraction_depth;
         double compressibility;
-        double melt_compressibility;
-        double melt_bulk_modulus_derivative;
+        double thermal_viscosity_exponent;
+        double reference_T;
         double depletion_density_change;
-        double depletion_solidus_change;
-        bool model_is_compressible;
-        bool fractional_melting;
-        double freezing_rate;
-        double melting_time_scale;
+        double reference_rho_solid;
+
+
 
         /*
         * Object for computing the melt parameters

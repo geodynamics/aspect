@@ -128,9 +128,9 @@ namespace WorldBuilder
                                                             this->world->specific_heat) * max_depth_local_local);
                     }
 
-                  const double new_temperature = top_temperature_local +
-                                                 (depth - min_depth_local) *
-                                                 ((bottom_temperature_local - top_temperature_local) / (max_depth_local_local - min_depth_local_local));
+                  const double new_temperature = top_temperature_local + (max_depth_local_local - min_depth_local_local < 10.0*std::numeric_limits<double>::epsilon() ? 0.0 :
+                                                                          (depth - min_depth_local) *
+                                                                          ((bottom_temperature_local - top_temperature_local) / (max_depth_local_local - min_depth_local_local)));
 
                   WBAssert(!std::isnan(new_temperature), "Temperature is not a number: " << new_temperature
                            << ", based on a temperature model with the name " << this->name);

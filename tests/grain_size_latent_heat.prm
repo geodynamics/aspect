@@ -96,6 +96,7 @@ subsection Material model
     set Minimum viscosity                = 8.44e21
     set Maximum viscosity                = 8.44e21
     set Reference temperature            = 1000
+    set Grain growth rate constant       = 0
     set Recrystallized grain size        =
     set Data directory = $ASPECT_SOURCE_DIR/data/material-model/latent-heat-enthalpy-test/
     set Material file names = testdata.txt

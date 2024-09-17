@@ -1,5 +1,5 @@
 {
-  "version": "0.6",
+  "version": "1.0",
   "specific heat": 1250,
   "thermal diffusivity": 1e-06,
   "thermal expansion coefficient": 3.1e-05,
@@ -160,7 +160,8 @@
           "density": 3300,
           "thermal conductivity": 3.3,
           "adiabatic heating": true,
-          "plate velocity": 0.05,
+          "spreading velocity":0.05,
+          "subducting velocity":0.05,
           "ridge coordinates": [
             [
               [

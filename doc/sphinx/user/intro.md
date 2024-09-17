@@ -41,7 +41,7 @@ We hope to have achieved our goal of providing a useful tool to the geodynamics 
 :::{note}
 ASPECT is a community project. As such, we encourage contributions from the community to improve this code over time.
 Natural candidates for such contributions are implementations of new plugins as discussed in {ref}`sec:extending:plugin-types` since they are typically self-contained and do not require much knowledge of the details of the remaining code.
-Obviously, however, we also encourage contirbutions to the core functionality in any form! If you have something that might be of general interest, please contact us.
+Obviously, however, we also encourage contributions to the core functionality in any form! If you have something that might be of general interest, please contact us.
 :::
 
 :::{note}

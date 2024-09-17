@@ -12,12 +12,15 @@ include $ASPECT_SOURCE_DIR/tests/particle_integrator_euler.prm
 subsection Postprocess
   subsection Particles
     set Data output format = gnuplot
-    set Integration scheme = rk2
+  end
+end
 
-    subsection Integrator
-      subsection RK2
-        set Higher order accurate in time = false
-      end
+subsection Particles
+  set Integration scheme = rk2
+
+  subsection Integrator
+    subsection RK2
+      set Higher order accurate in time = false
     end
   end
 end

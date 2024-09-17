@@ -50,22 +50,9 @@ namespace aspect
      * @ingroup InitialTopographyModels
      */
     template <int dim>
-    class Interface
+    class Interface : public Plugins::InterfaceBase
     {
       public:
-        /**
-         * Destructor. Made virtual to enforce that derived classes also have
-         * virtual destructors.
-         */
-        virtual ~Interface() = default;
-
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
-         * the SimulatorAccess (if applicable) is initialized.
-         */
-        virtual void initialize ();
-
         /**
          * Return the value of the elevation at the given surface point.
          *
@@ -84,26 +71,6 @@ namespace aspect
          */
         virtual
         double max_topography () const = 0;
-
-        /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
     };
 
 

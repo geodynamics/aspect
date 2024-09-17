@@ -84,7 +84,7 @@ namespace aspect
       const int dim = 3;
 
       const Postprocess::Geoid<dim> &geoid =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim>>();
+        this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::Geoid<dim>>();
 
       const double geoid_displacement = geoid.evaluate(position); // TODO: check sign of geoid_displacement
       const double topography = this->get_geometry_model().height_above_reference_surface(position);
@@ -125,7 +125,7 @@ namespace aspect
       const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       const Postprocess::Geoid<dim> &geoid =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim>>();
+        this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::Geoid<dim>>();
 
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       const QGauss<dim-1> quadrature_formula_face(quadrature_degree);
@@ -266,7 +266,7 @@ namespace aspect
       const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
       const Postprocess::Geoid<dim> &geoid =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim>>();
+        this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::Geoid<dim>>();
 
       // Get the sea level offset (constant for every location).
       sea_level_offset = compute_sea_level_offset();

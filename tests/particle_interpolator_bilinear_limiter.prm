@@ -75,22 +75,6 @@ subsection Postprocess
   subsection Particles
     set Time between data output = 0
     set Data output format = none
-    set List of particle properties = velocity, initial composition, initial position #, integrated strain
-    set Interpolation scheme = bilinear least squares
-    set Update ghost particles = true
-    set Particle generator name = reference cell
-
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 3
-      end
-    end
-
-    subsection Interpolator
-      subsection Bilinear least squares
-        set Use linear least squares limiter = true
-      end
-    end
   end
 end
 
@@ -113,5 +97,23 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function constants  = r=0.123456789, xc=0.5, yc=0.6
     set Function expression = if(sqrt((x-xc)*(x-xc)+(y-yc)*(y-yc)) < r, 1, 0) ; if (y>0.75,1,0)
+  end
+end
+
+subsection Particles
+  set List of particle properties = velocity, initial composition, initial position #, integrated strain
+  set Interpolation scheme = bilinear least squares
+  set Particle generator name = reference cell
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 3
+    end
+  end
+
+  subsection Interpolator
+    subsection Bilinear least squares
+      set Use linear least squares limiter = true
+    end
   end
 end

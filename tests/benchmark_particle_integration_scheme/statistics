@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Visualization file name
+# 9: Number of advected particles
+# 10: Particle file name
+ 0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 0 output-benchmark_particle_integration_scheme/solution/solution-00000 100 output-benchmark_particle_integration_scheme/particles/particles-00000 
+ 1 7.033721219977e-03 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 2 1.406744243995e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 3 2.110116365993e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 4 2.813488487991e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 5 3.516860609989e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 6 4.220232731986e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 7 4.923604853984e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 8 5.626976975982e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+ 9 6.330349097980e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+10 7.033721219977e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+11 7.737093341975e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+12 8.440465463973e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+13 9.143837585971e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+14 9.847209707968e-02 7.033721219977e-03 256 2467 1089 0                                                                   "" 100                                                                     "" 
+15 1.000000000000e-01 1.527902920317e-03 256 2467 1089 0                                                                   "" 100 output-benchmark_particle_integration_scheme/particles/particles-00001 

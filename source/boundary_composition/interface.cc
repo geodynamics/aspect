@@ -36,63 +36,15 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
-    {}
-
-
-
-
     // ------------------------------ Manager -----------------------------
     // -------------------------------- Deal with registering boundary_composition models and automating
     // -------------------------------- their setup and selection at run time
 
-    template <int dim>
-    Manager<dim>::~Manager()
-      = default;
-
-
-
-    template <int dim>
-    void
-    Manager<dim>::update ()
-    {
-      for (unsigned int i=0; i<boundary_composition_objects.size(); ++i)
-        {
-          boundary_composition_objects[i]->update();
-        }
-    }
-
-
-
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<Interface<2>>,
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
@@ -120,29 +72,29 @@ namespace aspect
       // parameters we declare here
       prm.enter_subsection ("Boundary composition model");
       {
-        model_names
+        this->plugin_names
           = Utilities::split_string_list(prm.get("List of model names"));
 
-        AssertThrow(Utilities::has_unique_entries(model_names),
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Boundary composition model/List of model names' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
 
         const std::string model_name = prm.get ("Model name");
 
-        AssertThrow (model_name == "unspecified" || model_names.size() == 0,
+        AssertThrow (model_name == "unspecified" || this->plugin_names.size() == 0,
                      ExcMessage ("The parameter 'Model name' is only used for reasons"
                                  "of backwards compatibility and can not be used together with "
                                  "the new functionality 'List of model names'. Please add your "
                                  "boundary composition model to the list instead."));
 
         if (!(model_name == "unspecified"))
-          model_names.push_back(model_name);
+          this->plugin_names.push_back(model_name);
 
         // create operator list
         std::vector<std::string> model_operator_names =
           Utilities::possibly_extend_from_1_to_N (Utilities::split_string_list(prm.get("List of model operators")),
-                                                  model_names.size(),
+                                                  this->plugin_names.size(),
                                                   "List of model operators");
         model_operators = Utilities::create_model_operator_list(model_operator_names);
 
@@ -159,7 +111,7 @@ namespace aspect
             // ignore the set values, do not create objects that are never used.
             if (fixed_composition_boundary_indicators.size() == 0)
               {
-                model_names.clear();
+                this->plugin_names.clear();
                 model_operators.clear();
               }
           }
@@ -185,19 +137,18 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (auto &model_name : model_names)
+      for (auto &model_name : this->plugin_names)
         {
           // create boundary composition objects
-          boundary_composition_objects.push_back (std::unique_ptr<Interface<dim>>
-                                                  (std::get<dim>(registered_plugins)
-                                                   .create_plugin (model_name,
-                                                                   "Boundary composition::Model names")));
+          this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
+                                             .create_plugin (model_name,
+                                                             "Boundary composition::Model names"));
 
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_composition_objects.back().get()))
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
             sim->initialize_simulator (this->get_simulator());
 
-          boundary_composition_objects.back()->parse_parameters (prm);
-          boundary_composition_objects.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
         }
     }
 
@@ -211,11 +162,12 @@ namespace aspect
     {
       double composition = 0.0;
 
-      for (unsigned int i=0; i<boundary_composition_objects.size(); ++i)
+      auto p = this->plugin_objects.begin();
+      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
         composition = model_operators[i](composition,
-                                         boundary_composition_objects[i]->boundary_composition(boundary_indicator,
-                                             position,
-                                             compositional_field));
+                                         (*p)->boundary_composition(boundary_indicator,
+                                                                    position,
+                                                                    compositional_field));
 
       return composition;
     }
@@ -226,15 +178,15 @@ namespace aspect
     const std::vector<std::string> &
     Manager<dim>::get_active_boundary_composition_names () const
     {
-      return model_names;
+      return this->plugin_names;
     }
 
 
     template <int dim>
-    const std::vector<std::unique_ptr<Interface<dim>>> &
+    const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_boundary_composition_conditions () const
     {
-      return boundary_composition_objects;
+      return this->plugin_objects;
     }
 
 

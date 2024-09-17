@@ -49,7 +49,7 @@ namespace aspect
       Heating<dim>::
       get_names () const
       {
-        std::vector<std::string> names = this->get_heating_model_manager().get_active_heating_model_names();
+        std::vector<std::string> names = this->get_heating_model_manager().get_active_plugin_names();
 
         // make the names valid names for output variables via DataOut
         for (auto &name : names)
@@ -66,7 +66,7 @@ namespace aspect
       get_data_component_interpretation () const
       {
         return std::vector<DataComponentInterpretation::DataComponentInterpretation>
-               (this->get_heating_model_manager().get_active_heating_model_names().size(),
+               (this->get_heating_model_manager().get_active_plugin_names().size(),
                 DataComponentInterpretation::component_is_scalar);
       }
 
@@ -89,7 +89,7 @@ namespace aspect
                             std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        const auto &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+        const auto &heating_model_objects = this->get_heating_model_manager().get_active_plugins();
 
         // we do not want to write any output if there are no heating models
         // used in the computation

@@ -5,8 +5,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 8e-05/8e-05/8e+05
@@ -16,44 +15,40 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 1:  t=15625 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 19 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 8e-05/8.913e-05/8.897e+05
+     Compositions min/max/mass: 8e-05/8.907e-05/8.89e+05
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 
 *** Timestep 2:  t=31250 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 8e-05/9.364e-05/9.332e+05
+     Compositions min/max/mass: 8e-05/9.356e-05/9.324e+05
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 
 *** Timestep 3:  t=46875 years, dt=15625 years
    Solving temperature system... 0 iterations.
-   Solving grain_size system ... 17 iterations.
-   Rebuilding Stokes preconditioner...
+   Solving grain_size system ... 18 iterations.
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 8e-05/9.662e-05/9.615e+05
+     Compositions min/max/mass: 8e-05/9.653e-05/9.607e+05
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 
-*** Timestep 4:  t=50000 years, dt=3125.02 years
+*** Timestep 4:  t=50000 years, dt=3125 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 8 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 8e-05/9.715e-05/9.666e+05
+     Compositions min/max/mass: 8e-05/9.707e-05/9.658e+05
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 

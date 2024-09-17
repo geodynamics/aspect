@@ -117,19 +117,6 @@ end
 subsection Postprocess
   set List of postprocessors = visualization,composition statistics,velocity statistics, temperature statistics, depth average, particles
 
-  subsection Particles
-    set Particle generator name       = reference cell
-    set List of particle properties   = melt particle
-    set Time between data output      = 0
-    set Data output format            = ascii
-
-    subsection Generator
-      subsection Reference cell
-        set Number of particles per cell per direction = 1
-      end
-    end
-  end
-
   subsection Visualization
     set List of output variables      = material properties, nonadiabatic temperature, melt fraction, strain rate, melt material properties
     set Number of grouped files       = 0
@@ -150,6 +137,11 @@ subsection Postprocess
     set Number of zones = 12
     set Time between graphical output = 6e5
   end
+
+  subsection Particles
+    set Time between data output      = 0
+    set Data output format            = ascii
+  end
 end
 
 subsection Checkpointing
@@ -159,5 +151,16 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Use direct solver for Stokes system = false
+  end
+end
+
+subsection Particles
+  set Particle generator name       = reference cell
+  set List of particle properties   = melt particle
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 1
+    end
   end
 end

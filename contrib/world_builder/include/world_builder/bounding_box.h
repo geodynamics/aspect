@@ -93,7 +93,7 @@ namespace WorldBuilder
    *
    * @note The majority of this class is copied from the deal.II library.
    */
-  template <int spacedim>
+  template <unsigned int spacedim>
   class BoundingBox
   {
     public:
@@ -270,7 +270,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline BoundingBox<spacedim>::BoundingBox(
     const std::pair<Point<spacedim>, Point<spacedim>>
     &boundary_points_)
@@ -286,7 +286,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   template <class Container>
   inline BoundingBox<spacedim>::BoundingBox(const Container &points)
   {
@@ -314,7 +314,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline std::pair<Point<spacedim>, Point<spacedim>> &BoundingBox<spacedim>::get_boundary_points()
   {
     return this->boundary_points;
@@ -322,7 +322,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline const std::pair<Point<spacedim>, Point<spacedim>> &BoundingBox<spacedim>::get_boundary_points() const
   {
     return this->boundary_points;
@@ -330,7 +330,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline bool
   BoundingBox<spacedim>::
   operator==(const BoundingBox<spacedim> &box) const
@@ -340,7 +340,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline bool
   BoundingBox<spacedim>::
   operator!=(const BoundingBox<spacedim> &box) const
@@ -350,7 +350,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline void
   BoundingBox<spacedim>::extend(const double amount)
   {
@@ -365,7 +365,7 @@ namespace WorldBuilder
   }
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline
   bool
   BoundingBox<spacedim>::point_inside(const Point<spacedim> &point,
@@ -397,7 +397,7 @@ namespace WorldBuilder
 
   }
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline
   bool
   BoundingBox<spacedim>::point_inside_implementation(const Point<spacedim> &p,
@@ -426,7 +426,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline
   void
   BoundingBox<spacedim>::merge_with(
@@ -445,7 +445,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   double
   BoundingBox<spacedim>::volume() const
   {
@@ -457,7 +457,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline
   double
   BoundingBox<spacedim>::lower_bound(const unsigned int direction) const
@@ -469,7 +469,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline
   double
   BoundingBox<spacedim>::upper_bound(const unsigned int direction) const
@@ -481,7 +481,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   Point<spacedim>
   BoundingBox<spacedim>::center() const
   {
@@ -494,7 +494,7 @@ namespace WorldBuilder
 
 
 
-  template <int spacedim>
+  template <unsigned int spacedim>
   inline
   double
   BoundingBox<spacedim>::side_length(const unsigned int direction) const

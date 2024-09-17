@@ -18,8 +18,6 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
 
-MESSAGE(STATUS "===== Configuring ASPECT documentation =============")
-
 FIND_PACKAGE(Perl)
 
 
@@ -29,6 +27,8 @@ FIND_PACKAGE(Perl)
 
 # Step 1: Find all of the .prm files that will be used in
 #         the manual.
+message(STATUS "Finding .prm files")
+
 FILE(GLOB _doc_directories_cookbooks
      ${CMAKE_SOURCE_DIR}/cookbooks/*/doc)
 FILE(GLOB _doc_directories_benchmarks
@@ -43,6 +43,7 @@ LIST(APPEND _doc_directories
 
 
 # Step 2: Deal with images
+message(STATUS "Finding image files")
 ADD_CUSTOM_TARGET(build_images)
 
 #         We have one image file that we need to create -- the plugin
@@ -87,6 +88,7 @@ ENDIF()
 # The final target: Build it all
 #
 ################################################################
+message(STATUS "Setting up build information")
 ADD_CUSTOM_TARGET(documentation
   DEPENDS
     build_images

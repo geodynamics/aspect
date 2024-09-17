@@ -14,7 +14,6 @@ subsection Mesh refinement
   set Skip solvers on initial refinement = true
 end
 
-
 subsection Material model
   set Model name                    = tomography based plate motions
 
@@ -23,6 +22,7 @@ subsection Material model
       set Data directory                            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
       set Data file name                            = rho_vs_scaling.txt
     end
+
     subsection Temperature velocity scaling
       set Data directory                            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
       set Data file name                            = dT_vs_scaling.txt

@@ -24,16 +24,6 @@ set End time                               = 8e6
 set Use operator splitting                     = true
 
 subsection Solver parameters
-  subsection Operator splitting parameters
-    # We choose the size of the reaction time step as 200 years, small enough
-    # so that it can accurately model melting and freezing.
-    set Reaction time step                     = 2e2
-
-    # Additionally, we always want to do at least 10 operator splitting time
-    # steps in each model time step, to accurately compute the reactions.
-    set Reaction time steps per advection step = 10
-  end
-
   # Because this model includes strong localized viscosity contrasts we
   # increase the robustness of the solver at the cost of memory consumption.
   subsection Stokes solver parameters

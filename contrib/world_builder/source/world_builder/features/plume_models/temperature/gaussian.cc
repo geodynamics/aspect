@@ -135,7 +135,7 @@ namespace WorldBuilder
                 }
               else
                 {
-                  const unsigned int index = std::distance(depths.begin(), upper);
+                  const unsigned int index = static_cast<unsigned int>(std::distance(depths.begin(), upper));
                   const double fraction = (depth - depths[index-1]) / (depths[index] - depths[index-1]);
 
                   center_temperature_local = (1-fraction) * center_temperatures[index-1] + fraction * center_temperatures[index];

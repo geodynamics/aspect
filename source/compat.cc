@@ -323,12 +323,6 @@ namespace aspect
 
   namespace internal
   {
-    // The pull_back function fails regularly in the compute_chart_points
-    // method, and, instead of throwing an exception, returns a point outside
-    // the unit cell. The individual coordinates of that point are given by the
-    // value below.
-    static constexpr double invalid_pull_back_coordinate = 20.0;
-
     // Rotate a given unit vector u around the axis dir
     // where the angle is given by the length of dir.
     // This is the exponential map for a sphere.
@@ -571,11 +565,11 @@ namespace aspect
         return;
       }
 
-    boost::container::small_vector<std::pair<double, Tensor<1, spacedim>>, 100>
+    small_vector<std::pair<double, Tensor<1, spacedim>>>
     new_candidates(new_points.size());
-    boost::container::small_vector<Tensor<1, spacedim>, 100> directions(
+    small_vector<Tensor<1, spacedim>> directions(
       surrounding_points.size(), Point<spacedim>());
-    boost::container::small_vector<double, 100> distances(
+    small_vector<double> distances(
       surrounding_points.size(), 0.0);
     double max_distance = 0.;
     for (unsigned int i = 0; i < surrounding_points.size(); ++i)
@@ -603,7 +597,7 @@ namespace aspect
     // Step 1: Check for some special cases, create simple linear guesses
     // otherwise.
     const double                              tolerance = 1e-10;
-    boost::container::small_vector<bool, 100> accurate_point_was_found(
+    small_vector<bool> accurate_point_was_found(
       new_points.size(), false);
     const ArrayView<const Tensor<1, spacedim>> array_directions =
       make_array_view(directions.begin(), directions.end());
@@ -659,11 +653,11 @@ namespace aspect
 
         // Search for duplicate directions and merge them to minimize the cost of
         // the get_new_point function call below.
-        boost::container::small_vector<double, 1000> merged_weights(
+        small_vector<double, 1000> merged_weights(
           weights.size());
-        boost::container::small_vector<Tensor<1, spacedim>, 100>
+        small_vector<Tensor<1, spacedim>>
         merged_directions(surrounding_points.size(), Point<spacedim>());
-        boost::container::small_vector<double, 100> merged_distances(
+        small_vector<double> merged_distances(
           surrounding_points.size(), 0.0);
 
         unsigned int n_unique_directions = 0;
@@ -700,7 +694,7 @@ namespace aspect
 
         // Search for duplicate weight rows and merge them to minimize the cost of
         // the get_new_point function call below.
-        boost::container::small_vector<unsigned int, 100> merged_weights_index(
+        small_vector<unsigned int> merged_weights_index(
           new_points.size(), numbers::invalid_unsigned_int);
         for (unsigned int row = 0; row < weight_rows; ++row)
           {

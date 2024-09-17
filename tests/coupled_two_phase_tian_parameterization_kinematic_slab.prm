@@ -1,0 +1,59 @@
+# This test is for the fully coupled Simplified Subduction Model with Parameterized
+# Solid-Fluid Reactions cookbook. It also doubles as a test for the min/max
+# compaction viscosity.
+
+include $ASPECT_SOURCE_DIR/cookbooks/tian_parameterization_kinematic_slab/coupled-two-phase-tian-parameterization-kinematic-slab.prm
+
+set Adiabatic surface temperature              = 1600
+set Nonlinear solver scheme                    = single Advection, single Stokes
+set End time                                   = 2000
+
+subsection Mesh refinement
+  set Initial global refinement = 1
+
+  subsection Minimum refinement function
+    set Function expression = 1
+  end
+end
+
+# Slightly change composition model to ensure that there is bound_fluid
+# and porosity at the end of the test.
+subsection Boundary composition model
+  set Fixed composition boundary indicators         = left
+  set List of model names                           = function
+
+  subsection Function
+    set Function constants  = initial_porosity=0, initial_bound_sed=0.03, initial_bound_MORB=0.02, initial_bound_gabbro=0.01, \
+                              sediment_min=0, sediment_max=5e3, MORB_min=5e3, MORB_max=12e3, gabbro_min=12e3, gabbro_max=20e3, \
+                              onset_time=0, slab_thickness=20e3
+    set Function expression = initial_porosity; \
+                              if( t<=onset_time, 0, \
+                              if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sed, \
+                              if( (y<=slab_thickness - MORB_min) & (y>slab_thickness - MORB_max), initial_bound_MORB, \
+                              if( (y<=slab_thickness - gabbro_min) & (y>slab_thickness - gabbro_max), initial_bound_gabbro, 0.0)))); \
+                              if(y>slab_thickness, 1, 0); \
+                              if(y<=8e3, 1, 0); \
+                              if(y>8e3 & y<=15e3, 1, 0); \
+                              if(y>15e3 & y<=slab_thickness, 1, 0)
+  end
+end
+
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Minimum compaction viscosity = 1e18
+    set Maximum compaction viscosity = 1e21
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors          = composition statistics, visualization
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set Time between graphical output = 2000
+
+    subsection Melt material properties
+      set List of properties          = compaction viscosity
+    end
+  end
+end

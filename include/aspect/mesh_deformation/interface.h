@@ -86,36 +86,10 @@ namespace aspect
      * for all non-constrained vertices will be computed by solving a Laplace
      * problem with the given constraints.
      */
-    template<int dim>
-    class Interface
+    template <int dim>
+    class Interface : public Plugins::InterfaceBase
     {
       public:
-        /**
-         * Destructor. Made virtual to enforce that derived classes also have
-         * virtual destructors.
-         */
-        virtual ~Interface() = default;
-
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
-         * the SimulatorAccess (if applicable) is initialized.
-         *
-         * The default implementation of this function does nothing.
-         */
-        virtual void initialize ();
-
-        /**
-         * A function that is called at the beginning of each time step and
-         * that allows the implementation to update internal data structures.
-         * This is useful, for example, if you have mesh deformation that
-         * depends on time, or on the solution of the previous step.
-         *
-         * The default implementation of this function does nothing.
-         */
-        virtual void update();
-
-
         /**
          * A function that will be called to check whether stabilization is needed.
          */
@@ -146,26 +120,6 @@ namespace aspect
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const;
-
-        /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
     };
 
 
@@ -175,7 +129,7 @@ namespace aspect
      * of the surface, the internal nodes and computes the
      * Arbitrary-Lagrangian-Eulerian correction terms.
      */
-    template<int dim>
+    template <int dim>
     class MeshDeformationHandler: public SimulatorAccess<dim>
     {
       public:

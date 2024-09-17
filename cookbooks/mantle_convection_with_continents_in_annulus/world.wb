@@ -1,0 +1,69 @@
+{
+  "version":"1.0",
+  "coordinate system":{"model":"spherical", "depth method":"begin segment"},
+  "cross section":[[0,0],[360,0]],
+  "features":
+  [
+
+     /*0-10km*/
+     {"model":"mantle layer", "name":"mantle", "min depth":0e3, "max depth":10e3, "coordinates":[[0,-1],[360,-1],[360,1],[0,1]],
+     "temperature models":[{"model":"linear", "min depth":0e3, "max depth":10e3, "top temperature":300, "bottom temperature":300}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]}, 
+
+     /*10-120km*/
+     {"model":"mantle layer", "name":"mantle", "min depth":10e3, "max depth":120e3, "coordinates":[[0,-1],[360,-1],[360,1],[0,1]],
+     "temperature models":[{"model":"linear", "min depth":10e3, "max depth":120e3, "top temperature":300, "bottom temperature":1700}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]}, 
+
+     /*120-2700km*/
+     {"model":"mantle layer", "name":"mantle", "min depth":120e3, "max depth":2700e3, "coordinates":[[0,-1],[360,-1],[360,1],[0,1]],
+     "temperature models":[{"model":"linear", "min depth":120e3, "max depth":2700e3, "top temperature":1700, "bottom temperature":2700}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]},
+
+     /*2700-3000km*/
+     {"model":"mantle layer", "name":"mantle", "min depth":2700e3, "max depth":3000e3, "coordinates":[[0,-1],[360,-1],[360,1],[0,1]],
+     "temperature models":[{"model":"linear", "min depth":2700e3, "max depth":3000e3, "top temperature":2700, "bottom temperature":3700}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]},
+
+     /*****************/
+
+     /*raft 1 between 0 and 27 - 3000km long continent*/ 
+     {"model":"continental plate", "name":"raft1", "min depth":0e3, "max depth":[[0e3],[150e3,[[3,-1],[3,1],[3,0],[24,-1],[24,0],[24,1]]]], "coordinates":[[0,-1],[27,-1],[27,1],[0,1]],
+     "temperature models":[{"model":"linear", "max depth":[[0e3],[150e3,[[3,-1],[3,1],[3,0],[24,-1],[24,0],[24,1]]]]}],
+     "composition models":[{"model":"uniform", "compositions":[1]}]},
+
+     /*raft 2 between 100 and 145 - 5000km long continent*/ 
+     {"model":"continental plate", "name":"raft2", "min depth":0e3, "max depth":[[0e3],[150e3,[[103,-1],[103,1],[103,0],[142,-1],[142,0],[142,1]]]], "coordinates":[[100,-1],[145,-1],[145,1],[100,1]],
+     "temperature models":[{"model":"linear", "max depth":[[0e3],[150e3,[[103,-1],[103,1],[103,0],[142,-1],[142,0],[142,1]]]]}],
+     "composition models":[{"model":"uniform", "compositions":[1]}]},
+
+     /*raft 3 between 200 and 245 - 5000km long continent*/ 
+     {"model":"continental plate", "name":"raft3", "min depth":0e3, "max depth":[[0e3],[150e3,[[203,-1],[203,1],[203,0],[242,-1],[242,0],[242,1]]]], "coordinates":[[200,-1],[245,-1],[245,1],[200,1]],
+     "temperature models":[{"model":"linear", "max depth":[[0e3],[150e3,[[203,-1],[203,1],[203,0],[242,-1],[242,0],[242,1]]]]}],
+     "composition models":[{"model":"uniform", "compositions":[1]}]},
+
+     /*****************/
+
+     /* slab of raft 1*/
+     {"model":"subducting plate", "name":"oceanic", "coordinates":[[-6,-1],[-6,1]], "dip point":[10,0],
+     "segments":[{"length":400e3, "thickness":[150e3], "angle":[0]},
+                 {"length":1200e3, "thickness":[150e3], "angle":[0,30]}],
+     "temperature models":[{"model":"linear", "max distance slab top":120e3, "top temperature":300, "bottom temperature":1700}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]},
+
+     /* slab of raft 2*/
+     {"model":"subducting plate", "name":"oceanic", "coordinates":[[94,-1],[94,1]], "dip point":[110,0],
+     "segments":[{"length":400e3, "thickness":[150e3], "angle":[0]},
+                 {"length":1200e3, "thickness":[150e3], "angle":[0,30]}],
+     "temperature models":[{"model":"linear", "max distance slab top":120e3, "top temperature":300, "bottom temperature":1700}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]},
+
+     /* slab of raft 3*/
+     {"model":"subducting plate", "name":"oceanic", "coordinates":[[194,-1],[194,1]], "dip point":[210,0],
+     "segments":[{"length":400e3, "thickness":[150e3], "angle":[0]},
+                 {"length":1200e3, "thickness":[150e3], "angle":[0,30]}],
+     "temperature models":[{"model":"linear", "max distance slab top":120e3, "top temperature":300, "bottom temperature":1700}],
+     "composition models":[{"model":"uniform", "compositions":[0]}]}
+
+]
+}

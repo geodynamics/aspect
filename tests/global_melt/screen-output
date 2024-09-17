@@ -18,7 +18,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.07819e-16, 0, 0, 0.799766
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.14521e-16, 0, 0, 0.799766
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.799766
 
    Solving temperature system... 0 iterations.
@@ -27,7 +27,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.31341e-16, 0, 0, 0.173272
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26566e-16, 0, 0, 0.173272
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.173272
 
    Solving temperature system... 0 iterations.
@@ -36,10 +36,13 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23376e-16, 0, 0, 0.0272016
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.16457e-16, 0, 0, 0.0272016
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0272016
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Writing graphical output:  output-global_melt/solution/solution-00000
      Compositions min/max/mass: 0/0/0 // 0/0/0
@@ -85,6 +88,9 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000257626
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Writing graphical output:  output-global_melt/solution/solution-00001
      Compositions min/max/mass: 0/0/0 // 0/0/0
@@ -95,3 +101,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 2 nonlinear solver failures occurred!

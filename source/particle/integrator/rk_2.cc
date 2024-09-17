@@ -41,7 +41,7 @@ namespace aspect
       void
       RK2<dim>::initialize ()
       {
-        const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
+        const auto &property_information = this->get_particle_world(this->get_particle_world_index()).get_property_manager().get_data_info();
         property_index_old_location = property_information.get_position_by_field_name("internal: integrator properties");
       }
 
@@ -188,25 +188,17 @@ namespace aspect
       void
       RK2<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Integrator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("RK2");
           {
-            prm.enter_subsection("Integrator");
-            {
-              prm.enter_subsection("RK2");
-              {
-                prm.declare_entry ("Higher order accurate in time", "true",
-                                   Patterns::Bool(),
-                                   "Whether to correctly evaluate old and current velocity "
-                                   "solution to reach higher-order accuracy in time. If set to "
-                                   "'false' only the old velocity solution is evaluated to "
-                                   "simulate a first order method in time. This is only "
-                                   "recommended for benchmark purposes.");
-              }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+            prm.declare_entry ("Higher order accurate in time", "true",
+                               Patterns::Bool(),
+                               "Whether to correctly evaluate old and current velocity "
+                               "solution to reach higher-order accuracy in time. If set to "
+                               "'false' only the old velocity solution is evaluated to "
+                               "simulate a first order method in time. This is only "
+                               "recommended for benchmark purposes.");
           }
           prm.leave_subsection();
         }
@@ -218,19 +210,11 @@ namespace aspect
       void
       RK2<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Integrator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("RK2");
           {
-            prm.enter_subsection("Integrator");
-            {
-              prm.enter_subsection("RK2");
-              {
-                higher_order_in_time = prm.get_bool("Higher order accurate in time");
-              }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+            higher_order_in_time = prm.get_bool("Higher order accurate in time");
           }
           prm.leave_subsection();
         }

@@ -1,0 +1,56 @@
+{
+  "version":"1.0",
+  "cross section":[[0,0],[100,0]],
+  "features":
+  [
+    {"model":"oceanic plate", "name":"oceanic plate", "coordinates":[[-100e3,-100e3],[1150e3,-100e3],[1150e3,100e3],[-100e3,100e3]],
+     "temperature models":[{"model":"plate model", "max depth":95e3, "bottom temperature":1600, "spreading velocity":0.005, "ridge coordinates":[[[100e3,-1e3],[100e3,1e3]]]}],
+     "composition models":[{"model":"uniform", "compositions":[0], "max depth":10e3},
+                           {"model":"uniform", "compositions":[1], "min depth":10e3, "max depth":95e3}],
+     "grains models":
+     [
+        {
+        "model":"uniform", "compositions":[0,1], 
+         "rotation matrices":[[[0.1,0.2,0.3],[0.4,0.5,0.6],[0.7,0.8,0.9]],[[0.10,0.11,0.12],[0.13,0.14,0.15],[0.16,0.17,0.18]]],
+         "grain sizes":[-1,0.2]
+         }
+     ]},
+
+    {"model":"continental plate", "name":"continental plate", "coordinates":[[1150e3,-100e3],[2001e3,-100e3],[2001e3,100e3],[1150e3,100e3]],
+     "temperature models":[{"model":"linear", "max depth":95e3, "bottom temperature":1600}],
+     "composition models":[{"model":"uniform", "compositions":[2], "max depth":30e3},
+                           {"model":"uniform", "compositions":[3], "min depth":30e3, "max depth":65e3}],
+     "grains models":
+     [
+        {
+        "model":"uniform", "compositions":[0,1], 
+         "rotation matrices":[[[0.14,0.24,0.34],[0.44,0.54,0.64],[0.74,0.84,0.94]],[[0.104,0.114,0.124],[0.134,0.144,0.154],[0.164,0.174,0.184]]],
+         "grain sizes":[-1,0.2]
+         }
+     ]},
+
+    {"model":"mantle layer", "name":"upper mantle", "min depth":95e3, "max depth":660e3, "coordinates":[[-100e3,-100e3],[2001e3,-100e3],[2001e3,100e3],[-100e3,100e3]],
+     "temperature models":[{"model":"linear", "min depth":95e3, "max depth":660e3, "top temperature":1600, "bottom temperature":1820}],
+     "composition models":[{"model":"uniform", "compositions":[4]}],
+     "grains models":
+     [
+        {
+        "model":"uniform", "compositions":[0,1], 
+         "rotation matrices":[[[0.11,0.21,0.31],[0.41,0.51,0.61],[0.71,0.81,0.91]],[[0.101,0.111,0.121],[0.131,0.141,0.151],[0.161,0.171,0.181]]],
+         "grain sizes":[0.8,0.2]
+         }
+     ]},
+
+    {"model":"mantle layer", "name":"lower mantle", "min depth":660e3, "max depth":1160e3, "coordinates":[[-100e3,-100e3],[2001e3,-100e3],[2001e3,100e3],[-100e3,100e3]],
+     "temperature models":[{"model":"linear", "min depth":660e3, "max depth":1160e3, "top temperature":1820, "bottom temperature":2000}],
+     "composition models":[{"model":"uniform", "compositions":[5]}],
+     "grains models":
+     [
+        {
+        "model":"uniform", "compositions":[0,1], 
+         "rotation matrices":[[[0.12,0.22,0.32],[0.42,0.52,0.62],[0.72,0.82,0.92]],[[0.102,0.112,0.122],[0.132,0.142,0.152],[0.162,0.172,0.182]]],
+         "grain sizes":[-1,0.2]
+         }
+     ]}
+  ]
+}

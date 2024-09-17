@@ -685,7 +685,7 @@ namespace WorldBuilder
                                 grains.sizes[i] = grains_current_section.sizes[i] + section_fraction * (grains_next_section.sizes[i] - grains_current_section.sizes[i]);
                               }
 
-                            // average two rotations matrices throu quaternions.
+                            // average two rotations matrices through quaternions.
                             for (size_t i = 0; i < grains_current_section.rotation_matrices.size(); i++)
                               {
                                 const glm::quaternion::quat quat_current = glm::quaternion::quat_cast(grains_current_section.rotation_matrices[i]);
@@ -701,7 +701,7 @@ namespace WorldBuilder
                           }
                           case 4:
                           {
-                            output[entry_in_output[i_property]] = tag_index;
+                            output[entry_in_output[i_property]] = static_cast<double>(tag_index);
                             break;
                           }
                           default:

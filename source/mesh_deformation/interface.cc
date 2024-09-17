@@ -155,20 +155,6 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
     bool
     Interface<dim>::needs_surface_stabilization () const
     {
@@ -194,21 +180,6 @@ namespace aspect
     compute_velocity_constraints_on_boundary(const DoFHandler<dim> &/*mesh_deformation_dof_handler*/,
                                              AffineConstraints<double> &/*mesh_velocity_constraints*/,
                                              const std::set<types::boundary_id> &/*boundary_id*/) const
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (ParameterHandler &)
     {}
 
 
@@ -242,8 +213,8 @@ namespace aspect
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<Interface<2>>,
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
@@ -868,9 +839,7 @@ namespace aspect
       rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
       solution.reinit(mesh_locally_owned, sim.mpi_communicator);
 
-      typename DoFHandler<dim>::active_cell_iterator cell = mesh_deformation_dof_handler.begin_active(),
-                                                     endc= mesh_deformation_dof_handler.end();
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
         if (cell->is_locally_owned())
           {
             cell->get_dof_indices (cell_dof_indices);
@@ -1303,27 +1272,28 @@ namespace aspect
       std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
-      cell = sim.dof_handler.begin_active(), endc= sim.dof_handler.end();
-      typename DoFHandler<dim>::active_cell_iterator
       fscell = mesh_deformation_dof_handler.begin_active();
 
-      for (; cell!=endc; ++cell, ++fscell)
-        if (cell->is_locally_owned())
-          {
-            cell->get_dof_indices (cell_dof_indices);
+      for (const auto &cell : sim.dof_handler.active_cell_iterators())
+        {
+          if (cell->is_locally_owned())
+            {
+              cell->get_dof_indices (cell_dof_indices);
 
-            fe_values.reinit (cell);
-            fs_fe_values.reinit (fscell);
-            fs_fe_values[extract_vel].get_function_values(fs_mesh_velocity, velocity_values);
-            for (unsigned int j=0; j<n_q_points; ++j)
-              for (unsigned int dir=0; dir<dim; ++dir)
-                {
-                  const unsigned int support_point_index
-                    = sim.finite_element.component_to_system_index(/*velocity component=*/ sim.introspection.component_indices.velocities[dir],
-                                                                                           /*dof index within component=*/ j);
-                  distributed_mesh_velocity[cell_dof_indices[support_point_index]] = velocity_values[j][dir];
-                }
-          }
+              fe_values.reinit (cell);
+              fs_fe_values.reinit (fscell);
+              fs_fe_values[extract_vel].get_function_values(fs_mesh_velocity, velocity_values);
+              for (unsigned int j=0; j<n_q_points; ++j)
+                for (unsigned int dir=0; dir<dim; ++dir)
+                  {
+                    const unsigned int support_point_index
+                      = sim.finite_element.component_to_system_index(/*velocity component=*/ sim.introspection.component_indices.velocities[dir],
+                                                                                             /*dof index within component=*/ j);
+                    distributed_mesh_velocity[cell_dof_indices[support_point_index]] = velocity_values[j][dir];
+                  }
+            }
+          ++fscell;
+        }
 
       distributed_mesh_velocity.compress(VectorOperation::insert);
       mesh_velocity = distributed_mesh_velocity;

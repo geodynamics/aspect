@@ -1,0 +1,41 @@
+name: build-dealii-master-clang
+
+on:
+  workflow_dispatch:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # trigger at 1:30 am every day
+    - cron:  '30 1 * * *'
+
+concurrency:
+  group: build-dealii-master-clang
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-clang-master:
+    runs-on: ubuntu-latest
+    if: github.repository == 'geodynamics/aspect'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_LOGIN }}
+
+      - name: Build and push Docker image for main
+        uses: docker/build-push-action@v6
+        with:
+          context: ./contrib/docker/tester-clang
+          cache-from: type=registry,ref=ubuntu:24.04
+          cache-to: type=inline
+          push: true
+          tags: geodynamics/aspect-tester:noble-dealii-master-clang

@@ -6,8 +6,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving field2 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1000 K, 1000 K, 1000 K
@@ -16,7 +15,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -26,7 +24,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 11 iterations.
    Solving porosity system ... 16 iterations.
    Solving field2 system ... 16 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -36,7 +33,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 14 iterations.
    Solving porosity system ... 15 iterations.
    Solving field2 system ... 16 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -46,7 +42,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 14 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -56,7 +51,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 16 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -66,7 +60,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 14 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 16 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -76,7 +69,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -86,7 +78,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -96,7 +87,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -106,7 +96,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 13 iterations.
    Solving field2 system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -116,7 +105,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 13 iterations.
    Solving field2 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -126,7 +114,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 13 iterations.
    Solving field2 system ... 15 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -136,7 +123,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -146,7 +132,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -156,7 +141,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 14 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -166,7 +150,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 11 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -176,17 +159,15 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 11 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1161 K, 1379 K
 
-*** Timestep 18:  t=2.6258e+16 seconds, dt=1.45878e+15 seconds
+*** Timestep 18:  t=2.62581e+16 seconds, dt=1.45878e+15 seconds
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -196,7 +177,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -206,7 +186,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -216,7 +195,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -226,17 +204,15 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.8 K, 1170 K, 1380 K
 
-*** Timestep 23:  t=3.35519e+16 seconds, dt=1.45878e+15 seconds
+*** Timestep 23:  t=3.3552e+16 seconds, dt=1.45878e+15 seconds
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 12 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -246,7 +222,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 12 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -256,7 +231,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 10 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -266,7 +240,6 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 10 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
@@ -276,17 +249,15 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 9 iterations.
    Solving field2 system ... 13 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.7 K, 1168 K, 1362 K
 
-*** Timestep 28:  t=4e+16 seconds, dt=6.12932e+14 seconds
+*** Timestep 28:  t=4e+16 seconds, dt=6.12921e+14 seconds
    Solving temperature system... 11 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 11 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:

@@ -21,7 +21,7 @@
 #ifndef _aspect_particle_generator_interface_h
 #define _aspect_particle_generator_interface_h
 
-#include <aspect/plugins.h>
+#include <aspect/particle/interface.h>
 #include <aspect/simulator_access.h>
 
 #include <deal.II/particles/particle.h>
@@ -65,28 +65,12 @@ namespace aspect
        * @ingroup ParticleGenerators
        */
       template <int dim>
-      class Interface : public SimulatorAccess<dim>
+      class Interface : public SimulatorAccess<dim>, public ParticleInterfaceBase
       {
         public:
-          /**
-           * Constructor. Initializes the random number generator.
-           */
-          Interface ();
-
-          /**
-           * Destructor. Made virtual so that derived classes can be created
-           * and destroyed through pointers to the base class.
-           */
-          ~Interface () override = default;
-
-          /**
-           * Initialization function. This function is called once at the
-           * beginning of the program after parse_parameters is run and after
-           * the SimulatorAccess (if applicable) is initialized.
-           */
           virtual
           void
-          initialize ();
+          initialize () override;
 
           /**
            * Generate particles. Every derived class
@@ -131,27 +115,6 @@ namespace aspect
           std::pair<Particles::internal::LevelInd,Particle<dim>>
           generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
                              const types::particle_index id);
-
-
-          /**
-           * Declare the parameters this class takes through input files. The
-           * default implementation of this function does not describe any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           * The default implementation of this function does not read any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
 
         protected:
           /**

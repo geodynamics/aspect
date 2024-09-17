@@ -22,6 +22,7 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
+#include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -443,7 +444,7 @@ namespace aspect
           // fill melt outputs if they exist
           aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim>>();
 
-          if (melt_out != NULL)
+          if (melt_out != nullptr)
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
                 double porosity = in.composition[i][porosity_idx];
@@ -744,17 +745,13 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
 
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
-
       // do the same stuff we do in depth average
       std::vector<double> volume(max_points,0.0);
       std::vector<double> pressure(max_points,0.0);
       std::vector<double> p_c(n_q_points);
       double local_max_pressure = 0.0;
 
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
@@ -832,13 +829,13 @@ namespace aspect
       AssertThrow(this->introspection().compositional_name_exists("porosity"),
                   ExcMessage("Postprocessor Solitary Wave only works if there is a compositional field called porosity."));
       const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
+      const typename Simulator<dim>::AdvectionField porosity = Simulator<dim>::AdvectionField::composition(porosity_index);
 
       // create a quadrature formula based on the compositional element alone.
-      // be defensive about determining that a compositional field actually exists
-      AssertThrow (this->introspection().base_elements.compositional_fields
-                   != numbers::invalid_unsigned_int,
+      AssertThrow (this->introspection().n_compositional_fields > 0,
                    ExcMessage("This postprocessor cannot be used without compositional fields."));
-      const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree+1);
+
+      const QGauss<dim> quadrature_formula (this->get_fe().base_element(porosity.base_element(this->introspection())).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -849,10 +846,6 @@ namespace aspect
                                update_JxW_values);
 
       std::vector<double> compositional_values(n_q_points);
-
-      typename DoFHandler<dim>::active_cell_iterator
-      cell = this->get_dof_handler().begin_active(),
-      endc = this->get_dof_handler().end();
 
       // The idea here is to first find the maximum, and then use the analytical solution of the
       // solitary wave to calculate a phase shift for every point.
@@ -866,7 +859,7 @@ namespace aspect
         double local_max_porosity = -std::numeric_limits<double>::max();
         double local_max_z_location = std::numeric_limits<double>::quiet_NaN();
 
-        for (; cell!=endc; ++cell)
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             {
               fe_values.reinit (cell);
@@ -890,11 +883,10 @@ namespace aspect
 
 
       // iterate over all points and calculate the phase shift
-      cell = this->get_dof_handler().begin_active();
       double phase_shift_integral = 0.0;
       unsigned int number_of_points = 0;
 
-      for (; cell!=endc; ++cell)
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);

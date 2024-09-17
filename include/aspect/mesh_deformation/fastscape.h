@@ -40,7 +40,7 @@ namespace aspect
      * and the stream power law, which describes river incision.
      *
      */
-    template<int dim>
+    template <int dim>
     class FastScape : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:

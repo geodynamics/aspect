@@ -1,0 +1,144 @@
+# This is a very simple test case that checks
+# that the implementation of the grain growth
+# laws are correct. All parameters, including
+# temperature and pressure, are set to constant
+# values and no dynamic recrystallization is
+# included (the reciprocal required strain is
+# set to zero). The grain size should only
+# depend on time following the relation
+#
+# d(x) = (d_0^p + A * t)^(1/p)
+#
+# with
+# d_0 = 8e-5 m              (initial grain size)
+# p   = 10                  (grain size exponent)
+# A   = 2.0294e-45 m^(p-1)  (grain growth rate constant * exp(-E/(RT)))
+#
+# leading to a grain size of d=8.8957E-5 m at the
+# right boundary of the model at the end time of
+# 1 Myr.
+
+# This test is similar to grain size growth, but
+# computes the grain growth in just one mesh cell
+# rather than advecting the growing grains from
+# left to right.
+
+############### Global parameters
+
+set Dimension                              = 2
+set End time                               = 1e6
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 100000
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top,bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 1400
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   =
+  set List of model names = initial composition
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer      = 0
+
+    subsection Function
+      set Function expression       = 0
+    end
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  =
+    set Function expression = 8e-5
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields   = grain_size
+end
+
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Reference density                = 3400
+    set Thermal conductivity             = 0
+    set Thermal expansion coefficient    = 0
+    set Reference compressibility        = 0
+    set Viscosity                        = 1e18
+    set Reference temperature            = 1600
+    set Recrystallized grain size        =
+    set Grain growth activation energy       = 3e5
+    set Grain growth activation volume       = 0.0
+    set Grain growth rate constant           = 4E-045
+    set Grain growth exponent                = 10
+    set Grain size evolution formulation     = paleowattmeter
+    set Reciprocal required strain           = 0
+
+    # Faul and Jackson 2007
+    # Diffusion creep
+    # new scaled prefactors to match vertical viscosity profile
+    set Diffusion creep prefactor            = 1.5e-024 # s^-1 Pa^-1 m^p
+    set Diffusion creep exponent             = 1.0 # 1 for diffusion creep
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 3e5 #J/mol
+    set Diffusion activation volume          = 2e-6 # m^3/mol (from Karato 2010)
+
+    # Kawazoe et al. (2009)
+    # Dislocation creep
+    set Dislocation creep prefactor          = 1.1E-016 # s^-1 Pa^-n
+    set Dislocation creep exponent           = 3.5
+    set Dislocation activation energy        = 530000 # J/mol
+    set Dislocation activation volume        = 1.40E-005 # m^3/mol
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, temperature statistics, velocity statistics, ODE statistics
+end

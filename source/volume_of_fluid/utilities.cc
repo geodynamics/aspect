@@ -555,7 +555,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       double compute_interface_location_newton(const unsigned int degree,
                                                const Tensor<1, dim> normal,
                                                const double volume_fraction,
@@ -623,7 +623,7 @@ namespace aspect
         return d_guess;
       }
 
-      template<int dim>
+      template <int dim>
       double compute_fluid_volume(const unsigned int degree,
                                   const Tensor<1, dim> normal,
                                   const double d,
@@ -641,7 +641,7 @@ namespace aspect
         return fluid_volume;
       }
 
-      template<int dim>
+      template <int dim>
       double calculate_volume_flux(const unsigned int dir,
                                    const double time_direction_derivative,
                                    const Tensor<1, dim> normal,

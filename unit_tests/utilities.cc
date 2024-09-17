@@ -186,7 +186,7 @@ TEST_CASE("Random draw volume weighted average rotation matrix")
   const std::vector<dealii::Tensor<2,3>> sorted_rotation_matrices = aspect::Utilities::apply_permutation<dealii::Tensor<2,3>>(unsorted_rotation_matrices,permutation);
   for (unsigned int i = 0; i < sorted_rotation_matrices.size(); i++)
     {
-      REQUIRE(sorted_rotation_matrices[i][0][0] == Approx(sorted_rotation_matrices[i][0][0]));
+      REQUIRE(sorted_rotation_matrices[i][0][0] == Approx(sorted_rotation_matrices_ref[i][0][0]));
     }
 
   std::mt19937 random_number_generator;
@@ -611,4 +611,18 @@ TEST_CASE("CPO elastic tensor transform functions")
     REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][1] == Approx(0.0));
     REQUIRE(aspect::Utilities::Tensors::levi_civita<3>()[2][2][2] == Approx(0.0));
   }
+}
+
+TEST_CASE("Utilities::string_to_unsigned_int")
+{
+  CHECK(aspect::Utilities::string_to_unsigned_int("1234") == 1234);
+
+  CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({"234","0","1"}))
+        == std::vector<unsigned int>({234,0,1}));
+
+  CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({"42"}))
+        == std::vector<unsigned int>({42}));
+
+  CHECK(aspect::Utilities::string_to_unsigned_int(std::vector<std::string>({}))
+        == std::vector<unsigned int>());
 }

@@ -127,7 +127,7 @@ end
 # Material model
 subsection Material model
   set Model name = viscoelastic
-  set Material averaging = project to Q1 only viscosity
+  set Material averaging = harmonic average only viscosity
 
   subsection Viscoelastic
     set Densities                   = 4978, 4978, 4978, 4978, 4978, 3871, 3438, 3037

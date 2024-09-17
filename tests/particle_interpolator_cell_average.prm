@@ -99,24 +99,26 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 100000
     set Time between data output = 70
     set Data output format = none
-    set List of particle properties = velocity, function, initial composition
-    set Interpolation scheme = cell average
-    set Update ghost particles = true
-    set Particle generator name = random uniform
+  end
+end
 
-    subsection Function
+subsection Particles
+  set List of particle properties = velocity, function, initial composition
+  set Interpolation scheme = cell average
+  set Particle generator name = random uniform
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+
+  subsection Generator
+    subsection Probability density function
       set Variable names      = x,z
-      set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
-    end
-
-    subsection Generator
-      subsection Probability density function
-        set Variable names      = x,z
-        set Function expression = x*x*z
-      end
+      set Function expression = x*x*z
+      set Number of particles = 100000
     end
   end
 end

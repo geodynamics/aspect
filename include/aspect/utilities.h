@@ -758,6 +758,18 @@ namespace aspect
     string_to_bool(const std::vector<std::string> &s);
 
     /**
+     * Given a string @p s, convert it to an unsigned int.
+     */
+    unsigned int
+    string_to_unsigned_int(const std::string &s);
+
+    /**
+     * Given a vector of strings @p s, convert it to a vector of unsigned int values.
+     */
+    std::vector<unsigned int>
+    string_to_unsigned_int(const std::vector<std::string> &s);
+
+    /**
      * Returns if a vector of strings @p strings only contains unique
      * entries.
      */
@@ -1050,7 +1062,7 @@ namespace aspect
      * @p output_filename An optional file name into which (if present) the solver history will
      *   be written.
      *
-     * @return This function never returns normally. It always exits via an exception, either
+     * @note This function never returns normally. It always exits via an exception, either
      *   of type ExcMessage (on rank 0 of the parallel computation) or QuietException (on all
      *   other ranks).
      */
@@ -1152,8 +1164,8 @@ namespace aspect
      * @param random_number_generator a reference to a mt19937 random number generator.
      */
     std::vector<Tensor<2,3>>
-    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fractions,
-                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> &volume_fractions,
+                                                   const std::vector<Tensor<2,3>> &rotation_matrices,
                                                    const unsigned int n_output_matrices,
                                                    std::mt19937 &random_number_generator);
 

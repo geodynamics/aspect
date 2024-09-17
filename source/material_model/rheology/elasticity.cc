@@ -95,13 +95,17 @@ namespace aspect
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),
                            "A stabilization factor for the elastic stresses that influences how fast "
-                           "elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization "
-                           "and may lead to oscillatory motion. Setting the factor to 2 "
-                           "avoids oscillations, but still enables an immediate elastic response. "
-                           "However, in complex models this can lead to problems of convergence, in which "
-                           "case the factor needs to be increased slightly. Setting the factor to "
-                           "infinity is equivalent to not applying elastic stresses at all. The "
-                           "factor is multiplied with the computational time step to create a time scale. ");
+                           "elastic stresses adjust to deformation. This value is equal to the "
+                           "elastic time step divided by the computational time step. "
+                           "The default value of 1.0 may lead to oscillatory motion. "
+                           "Increasing this factor to 2.0 can reduce oscillations while "
+                           "preserving an immediate elastic response. In complex models the factor "
+                           "can be increased further to improve convergence behaviour. "
+                           "As the stabilization factor increases, the effective viscosity "
+                           "gets smaller, and is balanced by an increasing body force term. "
+                           "For composite rheologies that use this formulation of elasticity, "
+                           "setting an infinite shear modulus only recovers the nonelastic part of "
+                           "the rheology if this stabilization factor is equal to 1.0.");
         prm.declare_entry ("Elastic damper viscosity", "0.0",
                            Patterns::Double (0.),
                            "Viscosity of a viscous damper that acts in parallel with the elastic "
@@ -207,21 +211,22 @@ namespace aspect
                                "'single Advection, iterated defect correction Stokes' "));
 
         // Functionality to average the additional RHS terms over the cell is not implemented.
+        // Also, there is no option implemented in this rheology module to project to Q1 the viscosity
+        // in the elastic force term for the RHS.
         // Consequently, it is only possible to use elasticity with the Material averaging schemes
-        // 'none', 'harmonic average only viscosity', 'geometric average only viscosity', and
-        // 'project to Q1 only viscosity'.
+        // 'none', 'harmonic average only viscosity', and 'geometric average only viscosity'.
+        // TODO: Find a way to include 'project to Q1 only viscosity'.
         AssertThrow((this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::none
                      ||
                      this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::harmonic_average_only_viscosity
                      ||
                      this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::geometric_average_only_viscosity
                      ||
-                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::project_to_Q1_only_viscosity),
+                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::default_averaging),
                     ExcMessage("Material models with elasticity can only be used with the material "
-                               "averaging schemes 'none', 'harmonic average only viscosity', "
-                               "'geometric average only viscosity', and 'project to Q1 only viscosity'. "
-                               "This parameter ('Material averaging') is located within the 'Material "
-                               "model' subsection."));
+                               "averaging schemes 'none', 'harmonic average only viscosity' and "
+                               "'geometric average only viscosity'. This parameter ('Material averaging') "
+                               "is located within the 'Material model' subsection."));
       }
 
 
@@ -236,35 +241,6 @@ namespace aspect
             out.additional_outputs.push_back(
               std::make_unique<ElasticAdditionalOutputs<dim>> (n_points));
           }
-      }
-
-
-      namespace
-      {
-        MaterialAveraging::AveragingOperation
-        get_averaging_operation_for_viscosity(const MaterialAveraging::AveragingOperation operation)
-        {
-          MaterialAveraging::AveragingOperation operation_for_viscosity = operation;
-          switch (operation)
-            {
-              case MaterialAveraging::harmonic_average:
-                operation_for_viscosity = MaterialAveraging::harmonic_average_only_viscosity;
-                break;
-
-              case MaterialAveraging::geometric_average:
-                operation_for_viscosity = MaterialAveraging::geometric_average_only_viscosity;
-                break;
-
-              case MaterialAveraging::project_to_Q1:
-                operation_for_viscosity = MaterialAveraging::project_to_Q1_only_viscosity;
-                break;
-
-              default:
-                operation_for_viscosity = operation;
-            }
-
-          return operation_for_viscosity;
-        }
       }
 
 
@@ -285,14 +261,8 @@ namespace aspect
         if (in.requests_property(MaterialProperties::additional_outputs))
           {
             // The viscosity should be averaged if material averaging is applied.
-            // Here the averaging scheme "project to Q1 (only viscosity)"  is
-            // excluded, because there is no way to know the quadrature formula
-            // used for evaluation.
-            // TODO: find a way to include "project to Q1 (only viscosity)" as well.
             std::vector<double> effective_creep_viscosities;
-            if (this->get_parameters().material_averaging != MaterialAveraging::none &&
-                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1 &&
-                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1_only_viscosity)
+            if (this->get_parameters().material_averaging != MaterialAveraging::none)
               {
                 MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
                                                    this->introspection().n_compositional_fields);
@@ -381,7 +351,7 @@ namespace aspect
                   get_averaging_operation_for_viscosity(this->get_parameters().material_averaging);
                 MaterialAveraging::average(averaging_operation_for_viscosity,
                                            in.current_cell,
-                                           this->introspection().quadratures.compositional_fields,
+                                           Quadrature<dim>(quadrature_positions),
                                            this->get_mapping(),
                                            in.requested_properties,
                                            out_copy);

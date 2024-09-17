@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
@@ -10,20 +6,23 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.58886e-16, 1
+      Relative nonlinear residuals (temperature, Stokes system): 1.58886e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving Stokes system... 31+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.55733e-16, 0.0690827
+      Relative nonlinear residuals (temperature, Stokes system): 1.55733e-16, 0.0690827
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0690827
 
    Solving temperature system... 0 iterations.
    Solving Stokes system... 28+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.58304e-16, 0.0147308
+      Relative nonlinear residuals (temperature, Stokes system): 1.58353e-16, 0.0147308
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0147308
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Writing graphical output:           output-periodic_compressible/solution/solution-00000
      RMS, max velocity:                  0.00413 m/year, 0.00624 m/year
@@ -33,9 +32,6 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

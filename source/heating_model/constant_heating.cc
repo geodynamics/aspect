@@ -57,7 +57,7 @@ namespace aspect
                              "The specific rate of heating due to radioactive decay (or other bulk sources "
                              "you may want to describe). This parameter corresponds to the variable "
                              "$H$ in the temperature equation stated in the manual, and the heating "
-                             "term is $\rho H$. Units: W/kg.");
+                             "term is $\\rho H$. Units: W/kg.");
         }
         prm.leave_subsection();
       }

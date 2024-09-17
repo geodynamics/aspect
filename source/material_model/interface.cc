@@ -73,42 +73,14 @@ namespace aspect
 
 
 
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
-    {}
-
-
 // -------------------------------- Deal with registering material models and automating
 // -------------------------------- their setup and selection at run time
 
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<Interface<2>>,
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
@@ -458,7 +430,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|geometric average only viscosity|project to Q1 only viscosity";
+        return "none|default averaging|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|geometric average only viscosity|project to Q1 only viscosity";
       }
 
 
@@ -484,6 +456,8 @@ namespace aspect
           return geometric_average_only_viscosity;
         else if (s == "project to Q1 only viscosity")
           return project_to_Q1_only_viscosity;
+        else if (s == "default averaging")
+          return default_averaging;
         else
           AssertThrow (false,
                        ExcMessage ("The value <" + s + "> for a material "
@@ -942,6 +916,33 @@ namespace aspect
         for (unsigned int i=0; i<values_out.additional_outputs.size(); ++i)
           values_out.additional_outputs[i]->average (operation, projection_matrix, expansion_matrix);
       }
+
+
+
+      AveragingOperation
+      get_averaging_operation_for_viscosity(const AveragingOperation operation)
+      {
+        AveragingOperation operation_for_viscosity = operation;
+        switch (operation)
+          {
+            case harmonic_average:
+              operation_for_viscosity = harmonic_average_only_viscosity;
+              break;
+
+            case geometric_average:
+              operation_for_viscosity = geometric_average_only_viscosity;
+              break;
+
+            case project_to_Q1:
+              operation_for_viscosity = project_to_Q1_only_viscosity;
+              break;
+
+            default:
+              operation_for_viscosity = operation;
+          }
+
+        return operation_for_viscosity;
+      }
     }
 
 
@@ -982,7 +983,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     NamedAdditionalMaterialOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1084,7 +1085,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     ReactionRateOutputs<dim>::ReactionRateOutputs (const unsigned int n_points,
                                                    const unsigned int n_comp)
       :
@@ -1094,7 +1095,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     ReactionRateOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1131,7 +1132,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     PrescribedFieldOutputs<dim>::PrescribedFieldOutputs (const unsigned int n_points,
                                                          const unsigned int n_comp)
       :
@@ -1141,7 +1142,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     PrescribedFieldOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1157,7 +1158,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     PrescribedTemperatureOutputs<dim>::PrescribedTemperatureOutputs (const unsigned int n_points)
       :
       NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1,"prescribed_temperature")),
@@ -1166,7 +1167,7 @@ namespace aspect
 
 
 
-    template<int dim>
+    template <int dim>
     std::vector<double>
     PrescribedTemperatureOutputs<dim>::get_nth_output(const unsigned int idx) const
     {
@@ -1226,7 +1227,7 @@ namespace aspect
   std::unique_ptr<Interface<dim>> \
   create_material_model<dim> (ParameterHandler &prm); \
   \
-  template struct MaterialModelInputs<dim>; \
+  template class MaterialModelInputs<dim>; \
   \
   template class MaterialModelOutputs<dim>; \
   \

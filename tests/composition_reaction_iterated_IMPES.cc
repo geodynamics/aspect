@@ -85,7 +85,7 @@ namespace aspect
                                    "iterated reaction",
                                    "A simple material model that is like the "
                                    "'composition reaction' model, but requires an "
-                                   "iterated IMPES scheme to converge to the correct "
+                                   "iterated Advection and Stokes scheme to converge to the correct "
                                    "solution.")
   }
 }

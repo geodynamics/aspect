@@ -27,39 +27,14 @@ namespace aspect
   {
     namespace Interpolator
     {
-      template <int dim>
-      std::vector<std::vector<double>>
-      Interface<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                           const std::vector<Point<dim>> &positions,
-                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
-      {
-        return properties_at_points(particle_handler,positions,ComponentMask(), cell);
-      }
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::declare_parameters (ParameterHandler &)
-      {}
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::parse_parameters (ParameterHandler &)
-      {}
-
-
-
 // -------------------------------- Deal with registering models and automating
 // -------------------------------- their setup and selection at run time
 
       namespace
       {
         std::tuple
-        <void *,
-        void *,
+        <aspect::internal::Plugins::UnusablePluginList,
+        aspect::internal::Plugins::UnusablePluginList,
         aspect::internal::Plugins::PluginList<Interface<2>>,
         aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
       }
@@ -86,15 +61,7 @@ namespace aspect
       create_particle_interpolator (ParameterHandler &prm)
       {
         std::string name;
-        prm.enter_subsection ("Postprocess");
-        {
-          prm.enter_subsection ("Particles");
-          {
-            name = prm.get ("Interpolation scheme");
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
+        name = prm.get ("Interpolation scheme");
 
         return std::get<dim>(registered_plugins).create_plugin (name,
                                                                 "Particle::Interpolator name");
@@ -107,22 +74,14 @@ namespace aspect
       declare_parameters (ParameterHandler &prm)
       {
         // declare the entry in the parameter file
-        prm.enter_subsection ("Postprocess");
-        {
-          prm.enter_subsection ("Particles");
-          {
-            const std::string pattern_of_names
-              = std::get<dim>(registered_plugins).get_pattern_of_names ();
+        const std::string pattern_of_names
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
-            prm.declare_entry ("Interpolation scheme", "cell average",
-                               Patterns::Selection (pattern_of_names),
-                               "Select one of the following models:\n\n"
-                               +
-                               std::get<dim>(registered_plugins).get_description_string());
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
+        prm.declare_entry ("Interpolation scheme", "cell average",
+                           Patterns::Selection (pattern_of_names),
+                           "Select one of the following models:\n\n"
+                           +
+                           std::get<dim>(registered_plugins).get_description_string());
 
         std::get<dim>(registered_plugins).declare_parameters (prm);
       }

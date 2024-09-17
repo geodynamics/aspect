@@ -1,0 +1,112 @@
+# This is a test for the grain size evolutionn in a realistic
+# model setup, in this case, the grain_size_ridge cookbook.
+# However, we prescribe the traction rather than the velocity
+# at the boundaries. This way, we can make sure our boundary
+# conditions do not introduce any artificially high grain size
+# reduction.
+
+include $ASPECT_SOURCE_DIR/cookbooks/grain_size_ridge/grain_size_ridge.prm
+
+set End time                    = 100
+set Maximum time step           = 50
+
+# Refine the mesh within the lithosphere.
+subsection Mesh refinement
+  set Initial global refinement = 5
+  set Initial adaptive refinement = 0
+  set Minimum refinement level = 5
+  set Time steps between mesh refinement = 0
+end
+
+# Make the model domain smaller so we can resolve the
+# lithosphere well even in a small test case.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 410000
+    set Y extent  = 200000
+    set X repetitions = 2
+    set Y repetitions = 1
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, top
+  set Prescribed velocity boundary indicators = bottom x: function, right y:function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0
+  end
+end
+
+# Prescribe traction instead of velocity to avoid sigularity
+# in the top left corner.
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right x:initial lithostatic pressure, bottom y:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Representative point         = 60000, 0
+    set Number of integration points = 10000
+  end
+end
+
+# Larger conductivity to make up for the smaller model domain.
+# Fast grain size change.
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+
+  subsection Grain size model
+    set Thermal conductivity  = 20
+    set Maximum viscosity     = 1e23
+    set Work fraction for boundary area change = 0.5
+  end
+end
+
+# Leave a gap of low viscosity in the corner to make the problem
+# more well-posed.
+subsection Initial temperature model
+  set List of model names = adiabatic
+
+  subsection Adiabatic
+    set Age bottom boundary layer   = 0.0
+    set Top boundary layer age model = function
+
+    subsection Age function
+      set Function expression = max((x-10000) / 0.05, 0)
+    end
+  end
+end
+
+# Make the initial grain size constant everywhere.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 5e-3
+    set Variable names      = x,y
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, velocity statistics, mass flux statistics, particles
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell = 5
+  set Maximum particles per cell = 80
+  set Particle generator name = probability density function
+
+  subsection Generator
+    subsection Probability density function
+      set Function expression = 20000*20000+y*y
+      set Number of particles = 20000
+    end
+  end
+end

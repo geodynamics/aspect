@@ -121,7 +121,7 @@ namespace aspect
        * @ingroup Visualization
        */
       template <int dim>
-      class Interface
+      class Interface : public Plugins::InterfaceBase
       {
         public:
           /**
@@ -146,22 +146,6 @@ namespace aspect
           explicit Interface (const std::string &physical_units = "");
 
           /**
-           * Destructor. Does nothing but is virtual so that derived classes
-           * destructors are also virtual.
-           */
-          virtual ~Interface () = default;
-
-          /**
-           * Initialize function.
-           */
-          virtual void initialize ();
-
-          /**
-           * Update any temporary information needed by the visualization postprocessor.
-           */
-          virtual void update();
-
-          /**
            * Return the string representation of the physical units that a
            * derived class has provided to the constructor of this class.
            *
@@ -175,33 +159,6 @@ namespace aspect
           virtual
           std::string
           get_physical_units () const;
-
-          /**
-           * Declare the parameters this class takes through input files.
-           * Derived classes should overload this function if they actually do
-           * take parameters; this class declares a fall-back function that
-           * does nothing, so that postprocessor classes that do not take any
-           * parameters do not have to do anything at all.
-           *
-           * This function is static (and needs to be static in derived
-           * classes) so that it can be called without creating actual objects
-           * (because declaring parameters happens before we read the input
-           * file and thus at a time when we don't even know yet which
-           * postprocessor objects we need).
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           * The default implementation in this class does nothing, so that
-           * derived classes that do not need any parameters do not need to
-           * implement it.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
 
           /**
            * A function that is used to indicate to the postprocessor manager which
@@ -683,7 +640,7 @@ namespace aspect
           /**
            * A list of pairs (time, pvtu_filename) that have so far been written
            * and that we will pass to DataOutInterface::write_pvd_record to
-           * create a master file that can make the association between
+           * create a description file that can make the association between
            * simulation time and corresponding file name (this is done because
            * there is no way to store the simulation time inside the .pvtu or
            * .vtu files).
@@ -692,7 +649,7 @@ namespace aspect
 
           /**
            * A list of list of filenames, sorted by timestep, that correspond to
-           * what has been created as output. This is used to create a master
+           * what has been created as output. This is used to create a descriptive
            * .visit file for the entire simulation.
            */
           std::vector<std::vector<std::string>> output_file_names_by_timestep;
@@ -726,7 +683,7 @@ namespace aspect
         OutputHistory face_output_history;
 
         /**
-         * Write the various master record files. The master files are used by
+         * Write the various descriptive record files. These files are used by
          * visualization programs to identify which of the output files in a
          * directory, possibly one file written by each processor, belong to a
          * single time step and/or form the different time steps of a
@@ -743,10 +700,10 @@ namespace aspect
          * @param output_history The OutputHistory object to fill.
          */
         template <typename DataOutType>
-        void write_master_files (const DataOutType &data_out,
-                                 const std::string &solution_file_prefix,
-                                 const std::vector<std::string> &filenames,
-                                 OutputHistory                  &output_history) const;
+        void write_description_files (const DataOutType &data_out,
+                                      const std::string &solution_file_prefix,
+                                      const std::vector<std::string> &filenames,
+                                      OutputHistory                  &output_history) const;
 
 
         /**

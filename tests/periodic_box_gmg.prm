@@ -77,6 +77,7 @@ subsection Solver parameters
     set Linear solver tolerance = 1e-8
     set Number of cheap Stokes solver steps = 100
   end
+
   subsection Matrix Free
     set Output details = true
   end
@@ -99,20 +100,17 @@ end
 subsection Mesh refinement
   set Additional refinement times        =
   set Initial adaptive refinement        = 2
-  set Initial global refinement          = 5                       # default: 2
- set Minimum refinement level                            = 5
-
+  set Initial global refinement          = 5
+  set Minimum refinement level                            = 5
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.03
   set Strategy                           = thermal energy density#, equal periodic refinement
   set Time steps between mesh refinement = 5
 end
 
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization

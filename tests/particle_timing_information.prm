@@ -89,18 +89,21 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics,particles
 
   subsection Particles
-    set Number of particles = 10
     set Time between data output = 70
     set Data output format = ascii
-    set Particle generator name = uniform box
+  end
+end
 
-    subsection Generator
-      subsection Uniform box
-        set Minimum x = 0.3
-        set Maximum x = 0.5
-        set Minimum y = 0.1
-        set Maximum y = 0.3
-      end
+subsection Particles
+  set Particle generator name = uniform box
+
+  subsection Generator
+    subsection Uniform box
+      set Minimum x = 0.3
+      set Maximum x = 0.5
+      set Minimum y = 0.1
+      set Maximum y = 0.3
+      set Number of particles = 10
     end
   end
 end

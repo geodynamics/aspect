@@ -18,6 +18,7 @@ set Nonlinear solver tolerance = 5e-12
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-5
+    set Stokes solver type = block AMG
   end
 
   subsection Newton solver parameters
@@ -69,6 +70,7 @@ end
 
 subsection Material model
   set Model name = visco plastic
+  set Material averaging = none
 
   subsection Visco Plastic
     set Viscous flow law = dislocation

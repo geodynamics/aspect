@@ -63,13 +63,8 @@ namespace aspect
                 const dealii::LinearAlgebra::distributed::Vector<double> &in)
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv(out.locally_owned_elements());
-#if DEAL_II_VERSION_GTE(9,5,0)
         rwv.import_elements(in, VectorOperation::insert);
         out.import_elements(rwv,VectorOperation::insert);
-#else
-        rwv.import(in, VectorOperation::insert);
-        out.import(rwv,VectorOperation::insert);
-#endif
       }
 
       void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
@@ -1072,18 +1067,6 @@ namespace aspect
       AssertThrow(sim.parameters.formulation_mass_conservation !=
                   Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile,
                   ExcNotImplemented());
-
-    {
-      const unsigned int n_vect_doubles =
-        VectorizedArray<double>::size();
-      const unsigned int n_vect_bits = 8 * sizeof(double) * n_vect_doubles;
-
-      sim.pcout << "Vectorization over " << n_vect_doubles
-                << " doubles = " << n_vect_bits << " bits ("
-                << dealii::Utilities::System::get_current_vectorization_level()
-                << "), VECTORIZATION_LEVEL=" << DEAL_II_COMPILER_VECTORIZATION_LEVEL
-                << std::endl;
-    }
   }
 
 

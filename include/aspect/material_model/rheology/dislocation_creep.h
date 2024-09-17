@@ -45,6 +45,11 @@ namespace aspect
         double activation_energy;
         double activation_volume;
         double stress_exponent;
+
+        /**
+         * Constructor. Initializes all values to NaN.
+         */
+        DislocationCreepParameters();
       };
 
       template <int dim>

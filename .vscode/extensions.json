@@ -6,8 +6,8 @@
 	"recommendations": [
 		"ms-vscode.cpptools",
 		"eamodio.gitlens",
-		"davydden.dealii-prm",
-		"ms-vscode.cmake-tools"
+		"ms-vscode.cmake-tools",
+		"zhikui.vscode-aspect"
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [

@@ -1,17 +1,16 @@
 
-Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 1,280 (on 3 levels)
 Number of degrees of freedom: 49,097 (35,547+1,701+11,849)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving Stokes system... 19+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.42842e-16, 0.000543298
+      Relative nonlinear residuals (temperature, Stokes system): 4.42842e-16, 0.000543298
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000543298
 
    Solving temperature system... 0 iterations.
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.42842e-16, 2.21486e-11
+      Relative nonlinear residuals (temperature, Stokes system): 4.42842e-16, 2.21486e-11
       Relative nonlinear residual (total system) after nonlinear iteration 2: 2.21486e-11
 
 

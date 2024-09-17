@@ -1,15 +1,10 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 792 (480+72+240)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
 
@@ -25,7 +20,7 @@ Number of degrees of freedom: 792 (480+72+240)
 
 *** Timestep 1:  t=100 years, dt=100 years
    Solving temperature system... 4 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.000302 m/year, 0.000728 m/year
@@ -35,9 +30,4 @@ Number of degrees of freedom: 792 (480+72+240)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

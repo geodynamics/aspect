@@ -51,6 +51,11 @@ namespace aspect
         double glide_parameter_q;
         double fitting_parameter;
         double stress_cutoff;
+
+        /**
+         * Constructor. Initializes all values to NaN.
+         */
+        PeierlsCreepParameters();
       };
 
       /**
@@ -173,6 +178,17 @@ namespace aspect
                                                         const double pressure,
                                                         const double temperature,
                                                         const PeierlsCreepParameters creep_parameters) const;
+
+          /**
+           * Compute the natural logarithm of the strain rate norm and its first
+           * derivative with respect to the natural logarithm of the stress norm
+           * based on the approximate Peierls creep law.
+           */
+          std::pair<double, double>
+          compute_approximate_log_strain_rate_and_derivative (const double log_stress,
+                                                              const double pressure,
+                                                              const double temperature,
+                                                              const PeierlsCreepParameters creep_parameters) const;
 
           /**
            * Compute the strain rate and first stress derivative

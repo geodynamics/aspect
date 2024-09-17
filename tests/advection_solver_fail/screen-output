@@ -23,7 +23,7 @@ Additional information:
     
     The initial residual was: 6.012476e+05
     The final residual is: 9.049629e-11
-    The required residual for convergence is: 5.533280e-14
+    The required residual for convergence is: 1.000000e-50
     See output-advection_solver_fail/solver_history.txt for the full
     convergence history.
     

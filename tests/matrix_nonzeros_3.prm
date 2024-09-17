@@ -88,11 +88,18 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 100
     set Time between data output = 70
     set Data output format = none
-    set List of particle properties = initial composition
-    set Interpolation scheme = cell average
-    set Update ghost particles = true
+  end
+end
+
+subsection Particles
+  set List of particle properties = initial composition
+  set Interpolation scheme = cell average
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 100
+    end
   end
 end

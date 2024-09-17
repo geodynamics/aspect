@@ -1,0 +1,44 @@
+
+Number of active cells: 48 (on 2 levels)
+Number of degrees of freedom: 1,272 (480+72+240+240+240)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0570421
+
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0124028
+
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00146411
+
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00017388
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.75785e-05
+
+
+   Postprocessing:
+
+**** Warning: When computing depth averages, there is at least one depth band
+     that does not have any quadrature points in it.
+     Consider reducing the number of depth layers for averaging.
+
+     RMS, max velocity:                  0.0139 m/year, 0.023 m/year
+     Temperature min/avg/max:            300 K, 2067 K, 3700 K
+     Writing graphical output:           output-cookbook_mantle_convection_annulus/solution/solution-00000
+     Heat fluxes through boundary parts: 1.168e+07 W, 2.059e+07 W
+     Writing depth average:              output-cookbook_mantle_convection_annulus/depth_average
+     Writing particle output:            output-cookbook_mantle_convection_annulus/particles/particles-00000
+     Writing stokes residuals            output-cookbook_mantle_convection_annulus/stokes_residuals.txt
+     Mobility:                           3.04e-06
+
+Skipping mesh refinement, because the mesh did not change.
+
+Termination requested by criterion: end time
+
+
+

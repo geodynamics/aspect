@@ -13,7 +13,7 @@ set Nonlinear solver tolerance  = 1e-5
 subsection Boundary composition model
   set Allow fixed composition on outflow boundaries = true
   set Fixed composition boundary indicators = top, bottom
-  set Model name = box
+  set List of model names = box
 
   # The test is to make sure these values are ignored
   subsection Box

@@ -17,15 +17,21 @@ set Use years in output instead of seconds = false
 subsection Solver parameters
   subsection Stokes solver parameters
     set Use full A block as preconditioner              = true
-    set Number of cheap Stokes solver steps             = 0
+    set Number of cheap Stokes solver steps             = 500
     set Maximum number of expensive Stokes solver steps = 1000
     set Linear solver tolerance                         = 1e-6
     set GMRES solver restart length                     = 100
+    set Use weighted BFBT for Schur complement          = false
+    set Krylov method for cheap solver steps            = GMRES
+  end
+
+  subsection AMG parameters
+    set AMG aggregation threshold = 0.02
   end
 end
 
 subsection Discretization
-  set Use locally conservative discretization = true
+  set Use locally conservative discretization = false
 end
 
 subsection Geometry model
@@ -39,7 +45,7 @@ subsection Geometry model
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left,right,bottom,front,back
+  set Zero velocity boundary indicators = left,right,bottom,top,front,back
 end
 
 subsection Material model
@@ -47,7 +53,7 @@ subsection Material model
   set Material averaging = none
 
   subsection NSinker
-    set Number of sinkers = 1
+    set Number of sinkers = 8
     set Dynamic viscosity ratio = 1e4
   end
 end

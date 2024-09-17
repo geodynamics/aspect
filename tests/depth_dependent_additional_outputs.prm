@@ -13,10 +13,10 @@ set End time = 0
 subsection Material model
   set Model name = depth dependent
 
-   subsection Depth dependent model
-     set Base model = grain size
-     set Reference viscosity = 1e22
-   end
+  subsection Depth dependent model
+    set Base model = grain size
+    set Reference viscosity = 1e22
+  end
 end
 
 subsection Mesh refinement

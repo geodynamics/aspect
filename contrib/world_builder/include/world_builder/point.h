@@ -107,7 +107,7 @@ namespace WorldBuilder
    * implements several operations such as the computation of the l2 norm and the
    * dot product.
    */
-  template<int dim>
+  template<unsigned int dim>
   class Point
   {
     public:
@@ -463,7 +463,7 @@ namespace WorldBuilder
     return (point[0] * point[0]) + (point[1] * point[1]) + (point[2] * point[2]);
   }
 
-  template<int dim>
+  template<unsigned int dim>
   inline
   Point<dim> operator*(const double scalar, const Point<dim> &point)
   {

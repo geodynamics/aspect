@@ -5,25 +5,20 @@ Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0245986
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0013297
-
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 4.77178e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.00129
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.17398e-06
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0246304
+
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00133142
+
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 4.7774e-05
+
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.18876e-06
 
 
    Postprocessing:
@@ -46,9 +41,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 1:  t=0.0284091 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -56,9 +50,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 2:  t=0.0568182 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -66,9 +59,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 3:  t=0.0852272 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -76,9 +68,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 4:  t=0.113636 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -86,9 +77,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 5:  t=0.142045 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -96,9 +86,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 6:  t=0.170454 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -106,9 +95,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 7:  t=0.198864 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -116,9 +104,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 8:  t=0.227273 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -126,9 +113,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 9:  t=0.255682 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -136,9 +122,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 10:  t=0.284091 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.83713e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.83944e-08
 
 
    Postprocessing:
@@ -149,9 +134,8 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 11:  t=0.3125 seconds, dt=0.0284091 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.06825e-06
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.08371e-06
 
 
    Postprocessing:
@@ -159,9 +143,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 12:  t=0.366761 seconds, dt=0.0542613 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.20687e-06
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.24216e-06
 
 
    Postprocessing:
@@ -169,9 +152,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 13:  t=0.423579 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.49593e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.39978e-07
 
 
    Postprocessing:
@@ -179,9 +161,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 14:  t=0.480397 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.04524e-08
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.36808e-07
 
 
    Postprocessing:
@@ -189,9 +170,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 15:  t=0.537216 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.50575e-07
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.37237e-08
 
 
    Postprocessing:
@@ -199,9 +179,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 16:  t=0.594034 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 8.88638e-08
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.66353e-07
 
 
    Postprocessing:
@@ -209,9 +188,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 17:  t=0.650852 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.74767e-07
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.71088e-07
 
 
    Postprocessing:
@@ -219,9 +197,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 18:  t=0.70767 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.26209e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.16484e-08
 
 
    Postprocessing:
@@ -229,9 +206,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 19:  t=0.764488 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.80848e-07
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.60912e-07
 
 
    Postprocessing:
@@ -239,9 +215,8 @@ Number of degrees of freedom: 948 (578+81+289)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 20:  t=0.821306 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.08156e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.41339e-07
 
 
    Postprocessing:
@@ -252,13 +227,11 @@ Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 21:  t=0.878124 seconds, dt=0.0568181 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.98544e-05
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.99e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.24542e-07
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.28172e-07
 
 
    Postprocessing:
@@ -266,9 +239,8 @@ Number of degrees of freedom: 268 (162+25+81)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 22:  t=0.986647 seconds, dt=0.108523 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.78756e-06
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.79674e-06
 
 
    Postprocessing:
@@ -276,9 +248,8 @@ Number of degrees of freedom: 268 (162+25+81)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
 *** Timestep 23:  t=1 seconds, dt=0.0133531 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.22114e-07
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.16819e-07
 
 
    Postprocessing:

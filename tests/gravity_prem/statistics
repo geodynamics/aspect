@@ -11,4 +11,4 @@
 # 11: Visualization file name
 # 12: RMS velocity (m/s)
 # 13: Max. velocity (m/s)
-0 0.000000000000e+00 0.000000000000e+00 160 1663 729 0 31 33 32 output-gravity_prem/solution/solution-00000 4.93186844e-15 3.63703252e-14 
+0 0.000000000000e+00 0.000000000000e+00 160 1663 729 0 23 25 25 output-gravity_prem/solution/solution-00000 4.93186762e-15 3.63703509e-14 

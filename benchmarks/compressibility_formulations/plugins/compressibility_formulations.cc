@@ -174,7 +174,7 @@ namespace aspect
     void
     CompressibilityFormulations<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

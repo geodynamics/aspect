@@ -1,0 +1,17 @@
+# Like particle_interpolator_distance_weighted_average.prm but
+# using adaptive refinement.
+
+# MPI: 2
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/particle_interpolator_distance_weighted_average.prm
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 2
+  set Strategy                           = composition
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+  set Coarsening fraction                = 0.05
+  set Refinement fraction                = 0.3
+end

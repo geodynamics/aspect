@@ -1,0 +1,7 @@
+# Test data for the mesh deformation ascii data plugin
+# Only the next line is parsed in the format: [nlongitude] because of keyword "POINTS:"
+# POINTS: 3
+# Columns: longitude[radians]  InitialTopography[m]
+0.000   3000
+1.5707  400000
+3.142   3000

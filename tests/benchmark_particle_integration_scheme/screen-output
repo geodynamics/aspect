@@ -1,0 +1,121 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Writing graphical output: output-benchmark_particle_integration_scheme/solution/solution-00000
+     Writing particle output:  output-benchmark_particle_integration_scheme/particles/particles-00000
+
+*** Timestep 1:  t=0.00703372 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 2:  t=0.0140674 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 3:  t=0.0211012 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 4:  t=0.0281349 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 5:  t=0.0351686 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 6:  t=0.0422023 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 7:  t=0.049236 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 8:  t=0.0562698 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 9:  t=0.0633035 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 10:  t=0.0703372 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 11:  t=0.0773709 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 12:  t=0.0844047 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 13:  t=0.0914384 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 14:  t=0.0984721 seconds, dt=0.00703372 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 100
+
+*** Timestep 15:  t=0.1 seconds, dt=0.0015279 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Writing particle output: output-benchmark_particle_integration_scheme/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
+

@@ -1,0 +1,37 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+
+   Postprocessing:
+     Compositions min/max/mass: 2.778e-12/0.2/1.257e+08 // 0/0/0
+     Writing graphical output:  output-viscoplastic_melt_blob_freezing/solution/solution-00000
+
+*** Timestep 1:  t=1 years, dt=1 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 1.389e-12/0.1/6.283e+07 // -0.125/-1.389e-12/-7.01e+07
+     Writing graphical output:  output-viscoplastic_melt_blob_freezing/solution/solution-00001
+
+*** Timestep 2:  t=2 years, dt=1 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 6.944e-13/0.05/3.142e+07 // -0.1875/-2.083e-12/-1.052e+08
+     Writing graphical output:  output-viscoplastic_melt_blob_freezing/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
+

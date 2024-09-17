@@ -52,15 +52,22 @@ subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, particles, temperature statistics, velocity statistics, visualization
 
   subsection Particles
-    set Number of particles = 1e5
-    set Minimum particles per cell  = 25
-    set Maximum particles per cell  = 35
-    set Load balancing strategy     = remove and add particles
-    set List of particle properties = initial composition, elastic stress
-    set Interpolation scheme        = bilinear least squares
-    set Update ghost particles      = true
-    set Particle generator name     = random uniform
     set Time between data output    = 0
     set Data output format          = vtu
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell  = 25
+  set Maximum particles per cell  = 35
+  set Load balancing strategy     = remove and add particles
+  set List of particle properties = initial composition, elastic stress
+  set Interpolation scheme        = bilinear least squares
+  set Particle generator name     = random uniform
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 1e5
+    end
   end
 end

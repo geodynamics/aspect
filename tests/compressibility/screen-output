@@ -5,11 +5,13 @@ Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.00023
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Top/bottom flux:          1/2.718
      Writing graphical output: output-compressibility/solution/solution-00000
@@ -18,3 +20,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

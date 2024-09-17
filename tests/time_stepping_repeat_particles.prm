@@ -85,25 +85,8 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles = 64
     set Time between data output = 1e-1
-    set Minimum particles per cell  = 0
-    set Maximum particles per cell  = 100
-    set Load balancing strategy     = remove and add particles
-    set List of particle properties = initial composition, composition
-    set Update ghost particles      = true
     set Data output format          = gnuplot
-    set Allow cells without particles = true
-    set Particle generator name = uniform box
-
-    subsection Generator
-      subsection Uniform box
-        set Minimum x = 0.
-        set Maximum x = 2.
-        set Minimum y = 0.
-        set Maximum y = 0.3
-      end
-    end
   end
 end
 
@@ -120,5 +103,24 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function expression = if(y<0.2, 1, 0) ; if(y<0.2, 1, 0)
+  end
+end
+
+subsection Particles
+  set Minimum particles per cell  = 0
+  set Maximum particles per cell  = 100
+  set Load balancing strategy     = remove and add particles
+  set List of particle properties = initial composition, composition
+  set Allow cells without particles = true
+  set Particle generator name = uniform box
+
+  subsection Generator
+    subsection Uniform box
+      set Minimum x = 0.
+      set Maximum x = 2.
+      set Minimum y = 0.
+      set Maximum y = 0.3
+      set Number of particles = 64
+    end
   end
 end

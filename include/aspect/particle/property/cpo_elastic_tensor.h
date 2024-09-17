@@ -91,7 +91,12 @@ namespace aspect
 
           /**
            * Update function. This function is called every time an update is
-           * requested by need_update() for every particle for every property.
+           * request by need_update() for every particle for every property.
+           * It is obvious that
+           * this function is called a lot, so its code should be efficient.
+           * The interface provides a default implementation that does nothing,
+           * therefore derived plugins that do not require an update do not
+           * need to implement this function.
            *
            * @param [in] data_position An unsigned integer that denotes which
            * component of the particle property vector is associated with the
@@ -99,23 +104,22 @@ namespace aspect
            * denotes the first component of this property, all other components
            * fill consecutive entries in the @p particle_properties vector.
            *
-           * @param [in] position The current particle position.
-           *
            * @param [in] solution The values of the solution variables at the
            * current particle position.
            *
            * @param [in] gradients The gradients of the solution variables at
            * the current particle position.
            *
-           * @param [in,out] particle_properties The properties of the particle
-           * that is updated within the call of this function.
+           * @param [in,out] particle The particle that is updated within
+           * the call of this function. The particle location can be accessed
+           * using particle->get_location() and its properties using
+           * particle->get_properties().
            */
           void
-          update_one_particle_property (const unsigned int data_position,
-                                        const Point<dim> &position,
-                                        const Vector<double> &solution,
-                                        const std::vector<Tensor<1,dim>> &gradients,
-                                        const ArrayView<double> &particle_properties) const override;
+          update_particle_property (const unsigned int data_position,
+                                    const Vector<double> &solution,
+                                    const std::vector<Tensor<1,dim>> &gradients,
+                                    typename ParticleHandler<dim>::particle_iterator &particle) const override;
 
           /**
            * This function tells the particle manager that

@@ -42,6 +42,7 @@ benchmarks/onset-of-convection/doc/onset-of-convection.md
 benchmarks/blankenbach/README.md
 benchmarks/king2dcompressible/README.md
 benchmarks/rayleigh_taylor_instability/doc/rayleigh_taylor_instability.md
+benchmarks/rayleigh_taylor_instability_free_surface/doc/rayleigh_taylor_instability_free_surface.md
 benchmarks/polydiapirs/doc/polydiapirs.md
 benchmarks/sinking_block/doc/sinking_block.md
 benchmarks/solcx/doc/solcx.md
@@ -50,6 +51,7 @@ benchmarks/inclusion/doc/inclusion.md
 benchmarks/burstedde/doc/burstedde.md
 benchmarks/slab_detachment/doc/slab_detachment.md
 benchmarks/hollow_sphere/doc/hollow_sphere.md
+benchmarks/particle_integration_scheme/doc/particle_integration_scheme.md
 benchmarks/annulus/doc/annulus.md
 benchmarks/rigid_shear/doc/rigid_shear.md
 ../cookbooks/cookbooks/stokes/doc/stokes.md

@@ -1,5 +1,6 @@
 include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield.prm
 
+
 # Global parameters
 set Dimension                              = 2
 set Adiabatic surface temperature          = 273
@@ -33,7 +34,6 @@ subsection Material model
     set Dislocation creep exponent           = 1
     set Dislocation activation energy        = 0
     set Dislocation activation volume        = 0
-
     set Use Drucker-Prager rheology          = true
     set Cohesions                            = 1e6
     set Angles of internal friction          = 0

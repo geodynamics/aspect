@@ -121,7 +121,7 @@ namespace aspect
       // fill melt reaction rates if they exist
       ReactionRateOutputs<dim> *reaction_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
-      if (reaction_out != NULL)
+      if (reaction_out != nullptr)
         {
           for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
             {
@@ -198,7 +198,7 @@ namespace aspect
     void
     ExponentialDecay<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<ReactionRateOutputs<dim>>() == NULL)
+      if (out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -401,7 +401,7 @@ namespace aspect
       double max_error_T;
   };
 
-  template<int dim>
+  template <int dim>
   ExponentialDecayPostprocessor<dim>::ExponentialDecayPostprocessor ()
   {
     max_error = 0.0;

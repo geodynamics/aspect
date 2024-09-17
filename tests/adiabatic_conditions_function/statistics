@@ -9,4 +9,4 @@
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 0 144 148 147 output-adiabatic_conditions_function/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 0 30 32 32 output-adiabatic_conditions_function/solution/solution-00000 

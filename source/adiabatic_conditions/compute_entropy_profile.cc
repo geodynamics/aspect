@@ -58,7 +58,7 @@ namespace aspect
         = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
       // check if the material model computes prescribed temperature outputs
-      AssertThrow(prescribed_temperature_out != NULL,
+      AssertThrow(prescribed_temperature_out != nullptr,
                   ExcMessage("The material model you use does not provide "
                              "PrescribedTemperatureOutputs, which is required "
                              "for this adiabatic conditions plugin."));
@@ -74,18 +74,12 @@ namespace aspect
       in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
       in.velocity[0] = Tensor <1,dim> ();
       // The entropy along an adiabat is constant (equals the surface entropy)
-      // TODO : need to make it work for more than one entropy field
+      // When there is more than one entropy field, we use the background field to compute the adiabatic profile
       // TODO : provide more ways to specify compositional fields like in compute_profile.cc
       for (unsigned int i=0; i < this->n_compositional_fields(); ++i)
         in.composition[0][i] = 0;
 
       in.composition[0][entropy_indices[0]] = surface_entropy;
-
-      if (this->introspection().composition_type_exists(CompositionalFieldDescription::Type::chemical_composition))
-        {
-          const std::vector<unsigned int> &chemical_indices = this->introspection().chemical_composition_field_indices();
-          in.composition[0][chemical_indices[0]] = 1;
-        }
 
       // Check whether gravity is pointing up / out or down / in. In the normal case it should
       // point down / in and therefore gravity should be positive, leading to increasing
@@ -122,7 +116,7 @@ namespace aspect
               pressures[i] = pressures[i-1] + density * gravity * delta_z;
             }
 
-          const double z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
+          const double z = static_cast<double>(i)/static_cast<double>(n_points-1)*this->get_geometry_model().maximal_depth();
           const Point<dim> representative_point = this->get_geometry_model().representative_point (z);
 
           in.position[0] = representative_point;

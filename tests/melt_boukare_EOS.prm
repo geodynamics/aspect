@@ -27,6 +27,12 @@ subsection Melt settings
   set Include melt transport = true
 end
 
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+  end
+end
+
 subsection Compositional fields
   set Number of fields = 3
   set Names of fields  = molar_Fe_in_solid, molar_Fe_in_melt, porosity
@@ -83,7 +89,7 @@ end
 subsection Boundary composition model
   set Allow fixed composition on outflow boundaries = false
   set Fixed composition boundary indicators   = top
-  set Model name = initial composition
+  set List of model names = initial composition
 end
 
 subsection Heating model

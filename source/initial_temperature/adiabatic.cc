@@ -225,10 +225,11 @@ namespace aspect
           else
             {
               const double exponential = -kappa * std::pow(numbers::PI, 2) * age_top / std::pow(lithosphere_thickness, 2);
-              double sum_terms = 0;
+              double sum_terms = 0.;
               for (unsigned int n=1; n<11; ++n)
                 {
-                  sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exponential) * std::sin((double)n * depth * numbers::PI / lithosphere_thickness);
+                  const auto dn = static_cast<double>(n);
+                  sum_terms += 1./dn * std::exp(dn * dn * exponential) * std::sin(dn * depth * numbers::PI / lithosphere_thickness);
                   surface_cooling_temperature = T_surface - adiabatic_surface_temperature + (adiabatic_surface_temperature - T_surface) * (depth / lithosphere_thickness + 2 / numbers::PI * sum_terms);
                 }
             }

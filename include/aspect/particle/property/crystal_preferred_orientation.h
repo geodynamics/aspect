@@ -87,6 +87,17 @@ namespace aspect
       };
 
       /**
+       * @brief An enum used to determine how the initial grain sizes and orientations are set for all particles
+       *
+       * uniform_grains_and_random_uniform_rotations: all particles are set to a uniform grain-size of 1/n_grains
+       * world_builder: all particle grain-sizes and orientations are set by the world builder.
+       */
+      enum class CPOInitialGrainsModel
+      {
+        uniform_grains_and_random_uniform_rotations, world_builder
+      };
+
+      /**
        * The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO)
        * on particles. Each ASPECT particle represents many grains. Each grain is assigned a size and a orientation
        * matrix. This allows tracking the LPO evolution with kinematic polycrystal CPO evolution models such
@@ -110,7 +121,7 @@ namespace aspect
        *
        * We store the same number of grains for all minerals (e.g. olivine and enstatite
        * grains), although their volume fractions may not be the same. This is because we need a minimum number
-       * of grains per tracer to perform reliable statistics on it. This minimum should be the same for all
+       * of grains per particle to perform reliable statistics on it. This minimum should be the same for all
        * minerals.
        *
        * @ingroup ParticleProperties
@@ -122,7 +133,7 @@ namespace aspect
           /**
            * Constructor
            */
-          CrystalPreferredOrientation();
+          CrystalPreferredOrientation() = default;
 
           /**
            * Initialization function. This function is called once at the
@@ -149,6 +160,11 @@ namespace aspect
           /**
            * Update function. This function is called every time an update is
            * request by need_update() for every particle for every property.
+           * It is obvious that
+           * this function is called a lot, so its code should be efficient.
+           * The interface provides a default implementation that does nothing,
+           * therefore derived plugins that do not require an update do not
+           * need to implement this function.
            *
            * @param [in] data_position An unsigned integer that denotes which
            * component of the particle property vector is associated with the
@@ -156,23 +172,22 @@ namespace aspect
            * denotes the first component of this property, all other components
            * fill consecutive entries in the @p particle_properties vector.
            *
-           * @param [in] position The current particle position.
-           *
            * @param [in] solution The values of the solution variables at the
            * current particle position.
            *
            * @param [in] gradients The gradients of the solution variables at
            * the current particle position.
            *
-           * @param [in,out] particle_properties The properties of the particle
-           * that is updated within the call of this function.
+           * @param [in,out] particle The particle that is updated within
+           * the call of this function. The particle location can be accessed
+           * using particle->get_location() and its properties using
+           * particle->get_properties().
            */
           void
-          update_one_particle_property (const unsigned int data_position,
-                                        const Point<dim> &position,
-                                        const Vector<double> &solution,
-                                        const std::vector<Tensor<1,dim>> &gradients,
-                                        const ArrayView<double> &particle_properties) const override;
+          update_particle_property (const unsigned int data_position,
+                                    const Vector<double> &solution,
+                                    const std::vector<Tensor<1,dim>> &gradients,
+                                    typename ParticleHandler<dim>::particle_iterator &particle) const override;
 
           /**
            * This implementation tells the particle manager that
@@ -335,11 +350,11 @@ namespace aspect
            * @param mineral_i The mineral to get the value of the deformation type for.
            */
           inline
-          double get_deformation_type(const unsigned int cpo_data_position,
-                                      const ArrayView<double> &data,
-                                      const unsigned int mineral_i) const
+          DeformationType get_deformation_type(const unsigned int cpo_data_position,
+                                               const ArrayView<double> &data,
+                                               const unsigned int mineral_i) const
           {
-            return data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)];
+            return static_cast<DeformationType>(data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)]);
           }
 
           /**
@@ -348,15 +363,15 @@ namespace aspect
            * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value deformation type for.
-           * @param deformation_type The value of the of the deformation type to set.
+           * @param deformation_type The value of the deformation type to set.
            */
           inline
           void set_deformation_type(const unsigned int cpo_data_position,
                                     const ArrayView<double> &data,
                                     const unsigned int mineral_i,
-                                    const double deformation_type) const
+                                    const DeformationType deformation_type) const
           {
-            data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = deformation_type;
+            data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = static_cast<double>(deformation_type);
           }
 
           /**
@@ -380,7 +395,7 @@ namespace aspect
            * @param cpo_data_position The starting index/position of the cpo data in the particle data vector.
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value of the volume fraction of a mineral for.
-           * @param volume_fraction_mineral The value of the of the volume fraction of a mineral to set.
+           * @param volume_fraction_mineral The value of the volume fraction of a mineral to set.
            */
           inline
           void set_volume_fraction_mineral(const unsigned int cpo_data_position,
@@ -415,7 +430,7 @@ namespace aspect
            * @param data The particle data vector.
            * @param mineral_i The mineral to set the value of the volume fraction of a grain for.
            * @param grain_i The grain to set the value of the volume fraction of.
-           * @param volume_fractions_grains The value of the of the volume fraction of a grain to set.
+           * @param volume_fractions_grains The value of the volume fraction of a grain to set.
            */
           inline
           void set_volume_fractions_grains(const unsigned int cpo_data_position,
@@ -618,6 +633,11 @@ namespace aspect
            * in Kaminski and Ribe (2001, EPSL).
            */
           double mobility;
+
+          /**
+           * Sets which type of initial grain model is used to create the gain sizes and orientations
+           */
+          CPOInitialGrainsModel initial_grains_model;
 
           /** @} */
 

@@ -1,0 +1,18 @@
+# 2 profiles across a slab, one at 500 km depth
+# and one at 200 km depth
+# Now define parameters:
+# dim = 2
+# compositions = 0
+# x z d T 
+8000e3 0 500e3
+8050e3 0 500e3
+8100e3 0 500e3
+8150e3 0 500e3
+8200e3 0 500e3
+8300e3 0 500e3
+7800e3 0 200e3
+7850e3 0 200e3
+7900e3 0 200e3
+7950e3 0 200e3
+8000e3 0 200e3
+8200e3 0 200e3

@@ -65,6 +65,7 @@ end
 
 subsection Material model
   set Model name = diffusion dislocation
+  set Material averaging =  harmonic average only viscosity
 
   subsection Diffusion dislocation
     set Densities                                 = 3330

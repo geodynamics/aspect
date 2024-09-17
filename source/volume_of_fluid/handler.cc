@@ -154,22 +154,19 @@ namespace aspect
 
 
 
-        template<int dim>
+        template <int dim>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem(const VolumeOfFluidSystem &data)
           :
           local_matrix (data.local_matrix),
           local_rhs (data.local_rhs),
           local_face_rhs (data.local_face_rhs),
           local_face_matrices_ext_ext (data.local_face_matrices_ext_ext),
-          face_contributions_mask(data.face_contributions_mask),
+          // clear the flag that indicates that we have valid data in any
+          // of the matrices:
+          face_contributions_mask(data.face_contributions_mask.size(), false),
           local_dof_indices (data.local_dof_indices),
           neighbor_dof_indices (data.neighbor_dof_indices)
-        {
-          // clear the flag that indicates that we have valid data in any
-          // of the matrices
-          for (unsigned int i=0; i < face_contributions_mask.size(); ++i)
-            face_contributions_mask[i] = false;
-        }
+        {}
       }
     }
   }
@@ -357,7 +354,7 @@ namespace aspect
                                    "entry <" + p + ">."));
 
           // get the name of the compositional field
-          const std::string key = split_parts[0];
+          const std::string &key = split_parts[0];
 
           // check that the names used are actually names of fields,
           // are solved by volume of fluid fields, and are unique in this list
@@ -386,7 +383,7 @@ namespace aspect
                                    "<Initial composition model/Volume of fluid initialization type>."));
 
           // Get specification for how to treat initializing data
-          const std::string value = split_parts[1];
+          const std::string &value = split_parts[1];
 
           if (value == "composition")
             initialization_data_type[volume_of_fluid_composition_map_index[compositional_field_index+1]]
@@ -430,7 +427,7 @@ namespace aspect
     if ( this->get_parameters().initial_adaptive_refinement > 0 ||
          this->get_parameters().adaptive_refinement_interval > 0 )
       {
-        AssertThrow(this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::VolumeOfFluidInterface<dim>>(),
+        AssertThrow(this->get_mesh_refinement_manager().template has_matching_active_plugin<MeshRefinement::VolumeOfFluidInterface<dim>>(),
                     ExcMessage("Volume of Fluid Interface Tracking requires that the 'volume of fluid interface' strategy be used for AMR"));
 
         AssertThrow(this->get_parameters().adaptive_refinement_interval <(1/this->get_parameters().CFL_number),

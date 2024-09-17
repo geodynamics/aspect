@@ -239,17 +239,14 @@ namespace aspect
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator mcell = *mcells;
           for (const unsigned int vertex_index : mcell->vertex_indices())
             {
-              std::set<typename Triangulation<dim>::active_cell_iterator> neighbor_cells = vertex_to_cells[mcell->vertex_index(vertex_index)];
-              typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin(),
-                                                                                                   end_neighbor_cell_index= neighbor_cells.end();
-              for (; neighbor_cell!=end_neighbor_cell_index; ++neighbor_cell)
+              const std::set<typename Triangulation<dim>::active_cell_iterator> &neighbor_cells = vertex_to_cells[mcell->vertex_index(vertex_index)];
+              for (const auto &neighbor_cell : neighbor_cells)
                 {
-                  typename Triangulation<dim>::active_cell_iterator itr_tmp = *neighbor_cell;
-                  if (itr_tmp->is_active() && itr_tmp->is_locally_owned())
+                  if (neighbor_cell->is_active() && neighbor_cell->is_locally_owned())
                     {
-                      itr_tmp->clear_coarsen_flag ();
-                      itr_tmp->set_refine_flag ();
-                      marked_cells_and_neighbors.insert(itr_tmp);
+                      neighbor_cell->clear_coarsen_flag ();
+                      neighbor_cell->set_refine_flag ();
+                      marked_cells_and_neighbors.insert(neighbor_cell);
                     }
                 }
             }

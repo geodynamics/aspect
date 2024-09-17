@@ -401,7 +401,7 @@ namespace aspect
    * Base class for the matrix free GMG solver for the Stokes system. The
    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
    */
-  template<int dim>
+  template <int dim>
   class StokesMatrixFreeHandler
   {
     public:
@@ -510,7 +510,7 @@ namespace aspect
    * degree by using a pointer to the base class and we can pick the desired
    * velocity degree at runtime.
    */
-  template<int dim, int velocity_degree>
+  template <int dim, int velocity_degree>
   class StokesMatrixFreeHandlerImplementation: public StokesMatrixFreeHandler<dim>
   {
     public:

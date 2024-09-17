@@ -25,6 +25,7 @@ subsection Solver parameters
 
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-8
+    set Stokes solver type =  block AMG
   end
 end
 
@@ -65,6 +66,7 @@ end
 
 subsection Material model
   set Model name = simple nonlinear
+  set Material averaging = none
 
   subsection Simple nonlinear
     set Minimum viscosity = 1e19

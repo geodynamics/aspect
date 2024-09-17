@@ -12,4 +12,4 @@
 # 12: Outward heat flux through boundary with indicator 1 ("right") (W)
 # 13: Outward heat flux through boundary with indicator 2 ("bottom") (W)
 # 14: Outward heat flux through boundary with indicator 3 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 21 23 22 1.66659830e-07 1.57222154e-05 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 14 16 16 1.66659830e-07 1.57222154e-05 0.00000000e+00 0.00000000e+00 

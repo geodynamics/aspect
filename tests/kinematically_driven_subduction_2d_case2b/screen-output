@@ -1,0 +1,60 @@
+
+Loading shared library <./libkinematically_driven_subduction_2d_case2b.debug.so>
+
+Number of active cells: 1,024 (on 5 levels)
+Number of degrees of freedom: 43,675 (8,514+1,105+4,257+4,257+4,257+4,257+4,257+4,257+4,257+4,257)
+
+Number of active cells: 1,792 (on 6 levels)
+Number of degrees of freedom: 77,231 (15,058+1,941+7,529+7,529+7,529+7,529+7,529+7,529+7,529+7,529)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving BOC_OP system ... 0 iterations.
+   Solving BOC_SP system ... 0 iterations.
+   Solving SHB_OP system ... 0 iterations.
+   Solving SHB_SP system ... 0 iterations.
+   Solving thermal_OP system ... 0 iterations.
+   Solving thermal_SP system ... 0 iterations.
+   Solving WZ system ... 0 iterations.
+   Solving Stokes system... 46+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                                                    output-kinematically_driven_subduction_2d_case2b/solution/solution-00000
+     RMS, max velocity:                                                           0.0193 m/year, 0.0501 m/year
+     Heating rate (average/total):                                                0 W/kg, 0 W
+     Compositions max depth [m]:                                                  2360 // 2360 // 3.141e+04 // 3.141e+04 // 7.328e+04 // 1.07e+05 // 8.139e+04
+     RMS velocity for compositions and combined selected fields:                  0.01479 m/year // 0.03895 m/year // 0.01458 m/year // 0.03876 m/year // 0.01402 m/year // 0.03844 m/year // 0.02555 m/year // 0.03855
+     Viscous dissipation per field and for whole domain (W/m):                    516.2 // 0.4375 // 2740 // 2240 // 3525 // 7391 // 72.41 // 1.827e+04
+     Temperature min/avg/max:                                                     273.1 K, 1554 K, 1720 K
+     Trench location [m]:                                                         1.465e+06 m
+     Isotherm depth [m]:                                                          0 m 
+     RMS temperature for compositions, combined selected fields and whole domain: 49.58 C // 37.31 C // 449.2 C // 348.9 C // 1010 C // 993.2 C // 857.7 C // 838.9 C // 1308 C
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 13 iterations.
+   Solving BOC_OP system ... 11 iterations.
+   Solving BOC_SP system ... 11 iterations.
+   Solving SHB_OP system ... 11 iterations.
+   Solving SHB_SP system ... 11 iterations.
+   Solving thermal_OP system ... 10 iterations.
+   Solving thermal_SP system ... 11 iterations.
+   Solving WZ system ... 11 iterations.
+   Solving Stokes system... 24+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                                           0.0194 m/year, 0.0501 m/year
+     Heating rate (average/total):                                                0 W/kg, 0 W
+     Compositions max depth [m]:                                                  2360 // 2360 // 3.141e+04 // 3.141e+04 // 7.328e+04 // 1.07e+05 // 8.139e+04
+     RMS velocity for compositions and combined selected fields:                  0.01455 m/year // 0.03911 m/year // 0.01432 m/year // 0.0389 m/year // 0.01378 m/year // 0.0386 m/year // 0.02569 m/year // 0.0387
+     Viscous dissipation per field and for whole domain (W/m):                    499.6 // 0.4271 // 2633 // 2195 // 3418 // 7272 // 48.77 // 1.789e+04
+     Temperature min/avg/max:                                                     273.1 K, 1553 K, 1720 K
+     Trench location [m]:                                                         1.465e+06 m
+     Isotherm depth [m]:                                                          0 m 
+     RMS temperature for compositions, combined selected fields and whole domain: 49.2 C // 35.67 C // 448.8 C // 350.7 C // 1013 C // 993.3 C // 843.7 C // 839.1 C // 1308 C
+
+Termination requested by criterion: end time
+*** Snapshot created!
+
+
+
+

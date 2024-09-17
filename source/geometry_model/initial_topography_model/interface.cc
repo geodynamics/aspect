@@ -31,32 +31,14 @@ namespace aspect
 {
   namespace InitialTopographyModel
   {
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (dealii::ParameterHandler &)
-    {}
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (dealii::ParameterHandler &)
-    {}
-
-
 // -------------------------------- Deal with registering initial topography models and automating
 // -------------------------------- their setup and selection at run time
 
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       internal::Plugins::PluginList<Interface<2>>,
       internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }

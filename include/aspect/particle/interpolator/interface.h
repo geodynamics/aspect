@@ -21,7 +21,7 @@
 #ifndef _aspect_particle_interpolator_interface_h
 #define _aspect_particle_interpolator_interface_h
 
-#include <aspect/plugins.h>
+#include <aspect/particle/interface.h>
 #include <aspect/global.h>
 
 #include <deal.II/particles/particle.h>
@@ -47,40 +47,9 @@ namespace aspect
        * @ingroup ParticleInterpolators
        */
       template <int dim>
-      class Interface
+      class Interface : public ParticleInterfaceBase
       {
         public:
-          /**
-           * Destructor. Made virtual so that derived classes can be created
-           * and destroyed through pointers to the base class.
-           */
-          virtual ~Interface () = default;
-
-          /**
-           * Perform an interpolation of the properties of the particles in
-           * this cell onto a vector of positions in this cell.
-           * Implementations of this function must return a vector of a vector
-           * of doubles which contains a somehow computed
-           * value of all particle properties at all given positions.
-           *
-           * @param [in] particle_handler Reference to the particle handler
-           * that allows accessing the particles in the domain.
-           * @param [in] positions The vector of positions where the properties
-           * should be evaluated.
-           * @param [in] cell An optional iterator to the cell containing the
-           * particles. Not all callers will know the cell of the particles,
-           * but providing the cell when known speeds up the interpolation
-           * significantly.
-           * @return A vector with as many entries as @p positions. Every entry
-           * is a vector of interpolated particle properties at this position.
-           */
-          DEAL_II_DEPRECATED
-          virtual
-          std::vector<std::vector<double>>
-          properties_at_points(const ParticleHandler<dim> &particle_handler,
-                               const std::vector<Point<dim>> &positions,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
-
           /**
            * Perform an interpolation of the properties of the particles in
            * this cell onto a vector of positions in this cell.
@@ -98,39 +67,20 @@ namespace aspect
            * should be evaluated.
            * @param [in] selected_properties A component mask that determines
            * which particle properties are interpolated in this function.
-           * @param [in] cell An optional iterator to the cell containing the
-           * particles. Not all callers will know the cell of the particles,
-           * but providing the cell when known speeds up the interpolation
-           * significantly.
-           * @return A vector with as many entries as @p positions. Every entry
+           * @param [in] cell An iterator to the cell containing the
+           * positions.
+           * @return A vector with as many entries as @p positions. Each entry
            * is a vector of interpolated particle properties at this position.
+           * This property vector has as many entries as there are particle
+           * properties, however entries that have not been selected in
+           * @p selected_properties are filled with signalling NaNs.
            */
           virtual
           std::vector<std::vector<double>>
           properties_at_points(const ParticleHandler<dim> &particle_handler,
                                const std::vector<Point<dim>> &positions,
                                const ComponentMask &selected_properties,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
-
-          /**
-           * Declare the parameters this class takes through input files. The
-           * default implementation of this function does not describe any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           * The default implementation of this function does not read any
-           * parameters. Consequently, derived classes do not have to overload
-           * this function if they do not take any runtime parameters.
-           */
-          virtual
-          void
-          parse_parameters (ParameterHandler &prm);
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const = 0;
       };
 
 

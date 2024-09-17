@@ -1,0 +1,195 @@
+# Test based on the cookbook kinematically_driven_subduction_2d_case2b,
+# with lower resolution and only a few timesteps.
+
+# 2D
+set Dimension                              = 2
+set End time                               = 1.e5
+
+# Copy of the cookbooks instead of includes because we
+# cannot include a prm that includes another prm as
+# $ASPECT_SOURCE_DIR is not expanded the second time.
+set Start time                             = 0
+set CFL number                             = 0.5
+set Use years in output instead of seconds = true
+
+# Linear solver
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Adiabatic surface temperature          = 0
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 1
+  set Initial global refinement                = 4
+  set Minimum refinement level                 = 4
+  set Normalize individual refinement criteria = true
+  set Refinement criteria merge operation      = plus
+  set Coarsening fraction                      = 0.01
+  set Refinement fraction                      = 0.95
+  set Run postprocessors on initial refinement = false
+  set Skip solvers on initial refinement       = true
+  set Skip setup initial conditions on initial refinement = true
+  set Strategy                                 = minimum refinement function, viscosity
+  set Time steps between mesh refinement       = 16
+
+  subsection Minimum refinement function
+    set Coordinate system = depth
+    set Variable names = x,z,t
+    set Function constants = vel=150e3, L=100e3, crust=10e3
+    set Function expression = if(x<crust,8,if(x<L,7,if(x<vel,6,4)))
+  end
+end
+
+# We fix composition on the right boundary,
+# because we have inflow there.
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = right
+  set List of model names = initial composition
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, bottom, top
+  set Prescribed velocity boundary indicators = right x:function
+
+  subsection Function
+    set Function constants  = cm=100.0 #*3600.0*24.0*365.25
+    set Function expression = if(z<540000.0, (600.0/550.0)/cm, \
+                                 if(z>560000.0, -5.0/cm, \
+                                    ((((-600.0/550.0)-5.0)/-20.0)*((z/1000.0)-560.0)+5.0)*(-1.0/cm))); \
+                              0
+    set Variable names      = x,z
+  end
+end
+
+subsection Discretization
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent   = 3000e3
+    set Y extent   = 670e3
+    set X repetitions = 4
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria      = end time
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-6
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, right
+  set List of model names = initial temperature
+end
+
+# The overriding plate (OP) and subducting plate (SP)
+# are each divided into three different layers:
+# a layer of Bulk Oceanic Composition (BOC),
+# a layer of Serpentinized HarzBurgite (SHB),
+# and a "thermal layer".
+subsection Compositional fields
+  set Number of fields = 7
+  set Names of fields  = BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function constants  = Ax=1475600.0, Az=670000.0, \
+                              Bx=1500000.0, Bz=670000.0, \
+                              Cx=1358500.0, Cz=588000.0, \
+                              Dx=1382900.0, Dz=588000.0, \
+                              Ex=1530000.0, Ez=560000.0, \
+                              Fz=663000.0, Gz=662000.0, \
+                              Hz=631000.0, Iz=630000.0
+    set Function expression = if(z>=Fz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
+                              if(z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0); \
+                              if(z>=Hz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Fz,1,0); \
+                              if(z>=Iz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz,1,0); \
+                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Hz,1,0); \
+                              if((x>=Ex&z>=Ez&z<Iz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Iz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
+                              if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1.5,0)
+    set Variable names      = x,z
+  end
+end
+
+# The initial temperature is prescribed through a plugin
+# and uses the plate cooling model for the temperature in both
+# plates (the plates have different ages) and an adiabatic
+# gradient of 0.25 degrees per km in the sublithospheric
+# mantle.
+subsection Initial temperature model
+  set List of model names = subduction plate cooling
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics, temperature statistics, trench location, isotherm depth, composition RMS temperature statistics
+
+  subsection Composition velocity statistics
+    # Sum the velocities of the fields that make up the subducting plate.
+    set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
+  end
+
+  subsection Trench location
+    set Name of trench compositional field = BOC_OP
+  end
+
+  subsection Isotherm depth
+    set Isotherm value = 1073.15
+  end
+
+  subsection Composition RMS temperature statistics
+    set Names of selected compositional fields = BOC_SP, SHB_SP, thermal_SP
+  end
+end
+
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    # The benchmark uses two different reference temperatures for the compositions:
+    # 1573.15 K for the asthenosphere, thermal_OP and thermal_SP, and 473.15 K for
+    # the rest of the compositions.
+    # As ASPECT only allows for one reference temperature, we have instead adapted
+    # the reference density for the mantle compositions. To do this, we took the initial
+    # temperature and the midpoint depth of the layers and equated the density equation
+    # using the benchmark reference density rho_0_1 (3200 kg/m3) and temperature T_0_1 (1573.15 K), and
+    # the density equation using the 473.15 K reference temperature to obtain the new reference density rho_0_2.
+    # For the left thermal layer, the initial temperature at the midpoint is 1355 K, so
+    # new reference density can be derived as follows:
+    # rho_0_1 * (1 - alpha * (T - T_0_1)) = rho_0_2 * (1 - alpha * (T - T_0_2)),
+    # 3200 * (1 - 2.5e-5 * (1355 - 1573.15)) = rho_0_2 * (1 - 2.5e-5 * (1355 - 473.15))
+    # rho_0_2 = 3290.66.
+    set Reference temperature         = 473.15
+
+    # BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
+    set Densities                     = 3290.66,3000.0,3000.0,3250.0,3250.0,3290.66,3290.66,3200.0
+
+    # Compared to Case 2a, thermal expansivity is no longer zero and therefore temperature
+    # feeds into the density and therefore the Stokes equations
+    set Thermal expansivities         = 2.5e-5
+    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
+    set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
+    set Viscosity averaging scheme    = maximum composition
+    set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
+  end
+end

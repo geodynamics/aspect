@@ -1,3 +1,4 @@
+(sec:cookbooks:steinberger)=
 # Convection using a pressure--temperature look-up table and the rheology of Steinberger and Calderwood (2006)
 
 *This section was contributed by Juliane Dannberg and Ren&eacute;

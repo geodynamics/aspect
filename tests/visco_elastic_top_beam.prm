@@ -6,7 +6,6 @@ set Dimension                              = 2
 set End time                               = 2e3
 set Use years in output instead of seconds = true
 set Output directory = output_ve
-
 set CFL number                             = 0.5
 set Maximum time step                      = 1e3
 

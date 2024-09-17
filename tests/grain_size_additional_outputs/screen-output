@@ -5,8 +5,7 @@ Number of degrees of freedom: 109 (50+9+25+25)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system... 5+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 8e-05/8e-05/8e+05

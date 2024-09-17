@@ -128,3 +128,9 @@ subsection Postprocess
     set List of output variables      = strain rate, gravity, density, specific heat, heating
   end
 end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end

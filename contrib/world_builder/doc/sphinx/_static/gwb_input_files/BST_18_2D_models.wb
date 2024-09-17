@@ -1,5 +1,5 @@
 {
-  "version": "0.6",
+  "version": "1.0",
   "coordinate system":{"model":"cartesian"},
   "cross section":[[0,450e3],[10e3,450e3]],
   "features":
@@ -60,7 +60,7 @@
                       {"length":400e3, "thickness":[300e3], "top truncation":[-100e3], "angle":[60]}],
                        "composition models":[{"model":"uniform", "compositions":[1],"max distance slab top":100e3}]}
        ],
-     "temperature models":[{"model":"mass conserving", "density":3300, "plate velocity":0.02,
+     "temperature models":[{"model":"mass conserving", "density":3300, "spreading velocity":0.02, "subducting velocity":0.02,
                             "ridge coordinates":[[[5e6,-1],[5e6,2000e3]]],"coupling depth":50e3,
                             "min distance slab top":-200e3, "max distance slab top":300e3}],
      "composition models":[{"model":"uniform", "compositions":[2], "max distance slab top":100e3}]

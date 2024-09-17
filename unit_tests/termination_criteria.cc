@@ -45,9 +45,9 @@ void trim_time_temperature_list (const double necessary_time_in_steady_state,
 TEST_CASE("trim time_temperature_list test for steady state termination criteria")
 {
   std::list<std::pair<double,double>> time_temperature;
-  time_temperature.emplace_back(std::make_pair(0.0,1.0));
-  time_temperature.emplace_back(std::make_pair(1.0,2.0));
-  time_temperature.emplace_back(std::make_pair(1.4,3.0));
+  time_temperature.emplace_back(0.0,1.0);
+  time_temperature.emplace_back(1.0,2.0);
+  time_temperature.emplace_back(1.4,3.0);
 
   trim_time_temperature_list(1.5,time_temperature);
 

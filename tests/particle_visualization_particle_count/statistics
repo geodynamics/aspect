@@ -12,5 +12,5 @@
 # 12: Schur complement iterations in Stokes preconditioner
 # 13: Number of advected particles
 # 14: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 14 16 15 30 output-particle_visualization_particle_count/solution/solution-00000 
-1 7.000000000000e+01 7.000000000000e+01 16 187 81 81 0 9 13 15 15 30 output-particle_visualization_particle_count/solution/solution-00001 
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 10 12 12 30 output-particle_visualization_particle_count/solution/solution-00000 
+1 7.000000000000e+01 7.000000000000e+01 16 187 81 81 0 9 10 12 12 30 output-particle_visualization_particle_count/solution/solution-00001 

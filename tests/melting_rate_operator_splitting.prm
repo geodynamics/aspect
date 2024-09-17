@@ -25,13 +25,6 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Use operator splitting                     = true
 
-subsection Solver parameters
-  subsection Operator splitting parameters
-    set Reaction time step                     = 1e3
-    set Reaction time steps per advection step = 10
-  end
-end
-
 ############### Parameters describing the model
 # Let us here choose again a box domain
 # where we fix the temperature at the bottom and top,

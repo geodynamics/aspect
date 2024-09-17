@@ -85,6 +85,7 @@ end
 
 subsection Material model
   set Model name = grain size
+  set Material averaging = none
 
   subsection Grain size model
     set Reference density                    = 3400
@@ -103,7 +104,6 @@ subsection Material model
     set Geometric constant                   = 3, 3
     set Grain size evolution formulation     = paleowattmeter
     set Reciprocal required strain           = 10
-
     set Phase transition depths              = 50000
     set Phase transition Clapeyron slopes    = 1e6
     set Phase transition temperatures        = 1600
@@ -142,21 +142,31 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, composition statistics, particles
+
   subsection Visualization
     set List of output variables  = material properties
     set Time between graphical output = 0
   end
 
   subsection Particles
-    set List of particle properties = grain size
-    set Number of particles = 10000
     set Time between data output = 0
-    set Particle generator name = probability density function
+  end
+end
 
-    subsection Generator
-      subsection Probability density function
-        set Function expression = sin(y/100000*pi)
-      end
+subsection Particles
+  set List of particle properties = grain size
+  set Particle generator name = probability density function
+
+  subsection Generator
+    subsection Probability density function
+      set Function expression = sin(y/100000*pi)
+      set Number of particles = 10000
     end
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type =  block AMG
   end
 end

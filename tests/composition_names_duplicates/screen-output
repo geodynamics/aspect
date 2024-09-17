@@ -6,8 +6,7 @@ Number of degrees of freedom: 49 (18+4+9+9+9)
    Solving temperature system... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Skipping density composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
 

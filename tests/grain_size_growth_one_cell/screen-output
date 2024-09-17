@@ -1,0 +1,28 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 40 (18+4+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 0 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 8e-05/8e-05/8e+05
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0 m/year, 0 m/year
+
+*** Timestep 1:  t=1e+06 years, dt=1e+06 years
+   Solving temperature system... 0 iterations.
+   Solving grain_size system ... 1 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 8.898e-05/8.898e-05/8.898e+05
+     Temperature min/avg/max:   1600 K, 1600 K, 1600 K
+     RMS, max velocity:         0 m/year, 0 m/year
+
+Termination requested by criterion: end time
+
+
+

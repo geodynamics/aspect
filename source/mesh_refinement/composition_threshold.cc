@@ -42,35 +42,33 @@ namespace aspect
       if (this->get_dof_handler().n_locally_owned_dofs() == 0)
         return;
 
-      const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.compositional_fields).get_unit_support_points());
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature,
-                               update_quadrature_points | update_values);
-
-      // the values of the compositional fields are stored as block vectors for each field
-      // we have to extract them in this structure
-      std::vector<double> composition_values (quadrature.size());
-
+      const unsigned int dofs_per_cell = this->get_fe().dofs_per_cell;
+      std::vector<types::global_dof_index> local_dof_indices(dofs_per_cell);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
+            cell->get_dof_indices (local_dof_indices);
             bool refine = false;
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               {
-                fe_values.reinit(cell);
-                fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values (this->get_solution(),
-                    composition_values);
-
-                // if the composition exceeds the threshold, cell is marked for refinement
-                for (unsigned int j=0; j<this->get_fe().base_element(this->introspection().base_elements.compositional_fields).dofs_per_cell; ++j)
-                  if (composition_values[j] > composition_thresholds[c])
-                    {
-                      refine = true;
-                      break;
-                    }
+                const unsigned int component_idx = this->introspection().component_indices.compositional_fields[c];
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  {
+                    if (this->get_fe().system_to_component_index(i).first == component_idx)
+                      {
+                        const double composition_value = this->get_solution()[local_dof_indices[i]];
+                        // if the composition exceeds the threshold, cell is marked for refinement
+                        if (composition_value > composition_thresholds[c])
+                          {
+                            refine = true;
+                            break;
+                          }
+                      }
+                  }
+                if (refine)
+                  break;
               }
 
             if (refine)

@@ -33,37 +33,14 @@ namespace aspect
 {
   namespace BoundaryHeatFlux
   {
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-    template <int dim>
-    void
-    Interface<dim>::
-    declare_parameters (ParameterHandler &/*prm*/)
-    {}
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (ParameterHandler &/*prm*/)
-    {}
-
-
 // -------------------------------- Deal with registering models and automating
 // -------------------------------- their setup and selection at run time
 
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<Interface<2>>,
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }

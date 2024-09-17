@@ -91,6 +91,9 @@ namespace aspect
            * List of Frank-Kamenetskii pressure prefactors (F).
            */
           std::vector<double> pressure_prefactors_frank_kamenetskii;
+
+          std::vector<double> reference_temperatures;
+          std::vector<double> reference_pressures;
       };
     }
   }

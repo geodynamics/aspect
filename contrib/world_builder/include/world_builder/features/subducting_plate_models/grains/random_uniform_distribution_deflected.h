@@ -103,6 +103,7 @@ namespace WorldBuilder
             std::vector<double> grain_sizes;
             std::vector<bool> normalize_grain_sizes;
             std::vector<double> deflections;
+            std::vector<std::array<std::array<double, 3>, 3>> basis_rotation_matrices;
 
         };
       } // namespace Grains

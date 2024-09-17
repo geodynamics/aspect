@@ -65,6 +65,7 @@ end
 
 subsection Material model
   set Model name = diffusion dislocation
+  set Material averaging = none
 
   subsection Diffusion dislocation
     set Densities                                 = 3330
@@ -123,4 +124,10 @@ end
 
 subsection Heating model
   set List of model names =  latent heat
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
 end

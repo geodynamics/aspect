@@ -89,34 +89,9 @@ namespace aspect
      * @ingroup TimeStepping
      */
     template <int dim>
-    class Interface
+    class Interface : public Plugins::InterfaceBase
     {
       public:
-        /**
-         * Destructor. Made virtual to enforce that derived classes also have
-         * virtual destructors.
-         */
-        virtual ~Interface() = default;
-
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
-         * the SimulatorAccess (if applicable) is initialized.
-         */
-        virtual
-        void
-        initialize ();
-
-        /**
-         * A function that is called at the beginning of each time step. The
-         * default implementation of the function does nothing, but derived
-         * classes that need more elaborate setups for a given time step may
-         * overload the function.
-         */
-        virtual
-        void
-        update ();
-
         /**
          * Execute the logic of the plugin.
          *
@@ -144,26 +119,6 @@ namespace aspect
         virtual
         std::pair<Reaction, double>
         determine_reaction(const TimeStepInfo &info);
-
-        /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
     };
 
 
@@ -172,7 +127,7 @@ namespace aspect
      * checking if the simulation is finished.
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -189,7 +144,8 @@ namespace aspect
          * (convection time step, conduction time step), settings from parameters,
          * and termination criteria (to hit the end time exactly).
          */
-        void update();
+        void
+        update() override;
 
         /**
          * Return the next step size as computed from update().
@@ -232,7 +188,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -246,7 +202,6 @@ namespace aspect
         static
         void
         write_plugin_graph (std::ostream &output_stream);
-
 
         /**
          * A function that is used to register time stepping model objects in such
@@ -301,12 +256,9 @@ namespace aspect
          * it to determine the time_step size in the final time step.
          */
         TerminationCriteria::Manager<dim> termination_manager;
-
-        /**
-         * A list of active plugins to determine time step sizes.
-         */
-        std::list<std::unique_ptr<Interface<dim>>> active_plugins;
     };
+
+
 
     /**
      * Given a class name, a name, and a description for the parameter file, register it with the

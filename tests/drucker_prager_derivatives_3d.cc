@@ -33,7 +33,7 @@
 
 #include <iostream>
 
-template<int dim>
+template <int dim>
 void f(const aspect::SimulatorAccess<dim> &simulator_access,
        aspect::Assemblers::Manager<dim> &)
 {

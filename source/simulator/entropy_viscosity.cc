@@ -44,10 +44,10 @@ namespace aspect
       return numbers::signaling_nan<double>();
 
     // record maximal entropy on Gauss quadrature points
-    const Quadrature<dim> &quadrature_formula
-      = (advection_field.is_temperature() ?
-         introspection.quadratures.temperature :
-         introspection.quadratures.compositional_fields);
+    const Quadrature<dim> &quadrature_formula =
+      (advection_field.is_temperature() ?
+       introspection.quadratures.temperature :
+       introspection.quadratures.compositional_fields[advection_field.compositional_variable]);
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
@@ -627,13 +627,7 @@ namespace aspect
                 }
             }
 
-            const double fe_order
-              = (advection_field.is_temperature()
-                 ?
-                 parameters.temperature_degree
-                 :
-                 parameters.composition_degree
-                );
+            const double fe_order = advection_field.polynomial_degree(introspection);
             const double h = cell->diameter();
             const double eps = max_conductivity_on_cell;
 

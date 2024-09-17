@@ -16,9 +16,13 @@ Number of mesh deformation degrees of freedom: 462
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+20 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 3.04034e+14
+      Newton system information: Norm of the rhs: 3.04034e+14
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Temperature min/avg/max: 273 K, 1052 K, 1613 K
 
@@ -31,13 +35,17 @@ Number of mesh deformation degrees of freedom: 462
    Solving upper_crust system ... 9 iterations.
    Solving lower_crust system ... 9 iterations.
    Solving lithospheric_mantle system ... 9 iterations.
-   Initial Newton Stokes residual = 1.84302e+14, v = 1.83878e+14, p = 1.24975e+13
+   Initial Newton Stokes residual = 8.15787e+16, v = 8.15787e+16, p = 1.24975e+13
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.114774, norm of the rhs: 2.11532e+13
+      Newton system information: Norm of the rhs: 2.11532e+13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000259297
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Temperature min/avg/max: 273 K, 1052 K, 1613 K
 
@@ -45,3 +53,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 2 nonlinear solver failures occurred!

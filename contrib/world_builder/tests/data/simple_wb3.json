@@ -1,5 +1,5 @@
 {
-"version": "0.6",
+"version": "1.0",
 "gravity model":{"model":"uniform", "magnitude":10},
 "surface rotation point": ["165e3","166e3"],
 "surface rotation angle": "0",

@@ -7,13 +7,11 @@ Number of mesh deformation degrees of freedom: 450
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 1000+7 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.27597
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.03312e-08
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.20582e-08
 
 
    Postprocessing:
@@ -39,25 +37,19 @@ Number of mesh deformation degrees of freedom: 450
      Writing geoid anomaly:            output-geoid_freesurface/geoid_anomaly.00000
 
 *** Timestep 1:  t=4.55088e-14 years, dt=4.55088e-14 years
-   Solving mesh displacement system... 1 iterations.
+   Solving mesh displacement system... 3 iterations.
    Solving temperature system... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 80+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 19.4377
+   Solving Stokes system... 1000+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.82992
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000424553
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.67952e-07
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.4226e-08
 
 
    Postprocessing:
      Topography min/max:               -2.915e+04 m, 5.632e+04 m
      Density at top/bottom of domain:  0.999 kg/m^3, 1.081 kg/m^3
-     Pressure at top/bottom of domain: -4002 Pa, 1.934e+06 Pa
+     Pressure at top/bottom of domain: -6357 Pa, 1.932e+06 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-geoid_freesurface/geoid_anomaly.00001
 

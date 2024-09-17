@@ -7,7 +7,6 @@ Number of mesh deformation degrees of freedom: 110
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
 
 Number of active cells: 52 (on 3 levels)
@@ -18,8 +17,7 @@ Number of mesh deformation degrees of freedom: 142
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system... 0+12 iterations.
 
    Postprocessing:
 
@@ -42,25 +40,23 @@ Number of mesh deformation degrees of freedom: 142
      Writing graphical output: output-mesh_velocity_output/solution/solution-00000
 
 *** Timestep 1:  t=2.84834e+06 years, dt=2.84834e+06 years
-   Solving mesh displacement system... 1 iterations.
+   Solving mesh displacement system... 4 iterations.
    Solving temperature system... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+10 iterations.
+   Solving Stokes system... 0+35 iterations.
 
    Postprocessing:
      Topography min/max:       -1507 m, 3580 m
-     RMS, max velocity:        0.000782 m/year, 0.00234 m/year
+     RMS, max velocity:        0.000745 m/year, 0.00215 m/year
      Writing graphical output: output-mesh_velocity_output/solution/solution-00001
 
-*** Timestep 2:  t=6.8455e+06 years, dt=3.99717e+06 years
-   Solving mesh displacement system... 1 iterations.
+*** Timestep 2:  t=7.21447e+06 years, dt=4.36613e+06 years
+   Solving mesh displacement system... 4 iterations.
    Solving temperature system... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system... 0+36 iterations.
 
    Postprocessing:
-     Topography min/max:       -6011 m, 2609 m
-     RMS, max velocity:        0.000949 m/year, 0.0036 m/year
+     Topography min/max:       -6991 m, 2941 m
+     RMS, max velocity:        0.00112 m/year, 0.00297 m/year
      Writing graphical output: output-mesh_velocity_output/solution/solution-00002
 
 Termination requested by criterion: end step

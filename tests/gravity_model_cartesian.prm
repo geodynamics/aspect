@@ -1,0 +1,99 @@
+# This is a test based on benchmarks/onset-of-convection/convection-box-base.prm.
+# It makes sure that the gravity plugin 'function' works correctly
+# for a Cartesian coordinate system.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Output directory                       = output
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Use conduction timestep                = true
+
+subsection Termination criteria
+  set Termination criteria                 = end step
+  set End step                             = 0
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Outer radius = 6371000
+    set Inner radius = 3481000
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r,phi
+    set Function expression = 2500 + 10*sin(10*phi)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3500
+    set Outer temperature = 0
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+#subsection Gravity model
+#  set Model name = radial constant
+#
+#  subsection Radial constant
+#    set Magnitude = 10.0
+#  end
+#end
+
+subsection Gravity model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y
+    set Function expression = x;y
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 4000
+    set Reference specific heat       = 1250
+    set Reference temperature         = 0
+    set Thermal conductivity          = 4.0
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity                     = 1e23
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization
+
+  subsection Visualization
+    set Time steps between graphical output = 5
+    set List of output variables = gravity
+    set Output format = gnuplot
+  end
+end

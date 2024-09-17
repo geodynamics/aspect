@@ -5,43 +5,42 @@ Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 32+0 iterations.
+   Solving Stokes system... 10+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 26+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.92736
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.92734
 
-   Solving Stokes system... 21+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0924365
-
-   Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00268749
-
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000209103
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0924334
 
    Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.02349e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00268743
 
-   Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 5.46128e-07
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000209095
+
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.02842e-05
+
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 4.14559e-07
 
 
    Postprocessing:
      writing:                       output.csv
      Writing graphical output:      output-tangurnis_tala_c/solution/solution-00000
-     Heating rate (average/total):  -3.664e-05 W/kg, -4.754e-05 W
+     Heating rate (average/total):  -3.666e-05 W/kg, -4.756e-05 W
 
 *** Timestep 1:  t=0.0001 seconds, dt=0.0001 seconds
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.58236e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.09138e-08
 
 
    Postprocessing:
      writing:                       output.csv
      Writing graphical output:      output-tangurnis_tala_c/solution/solution-00001
-     Heating rate (average/total):  -3.664e-05 W/kg, -4.754e-05 W
+     Heating rate (average/total):  -3.666e-05 W/kg, -4.756e-05 W
 
 Termination requested by criterion: end time
 

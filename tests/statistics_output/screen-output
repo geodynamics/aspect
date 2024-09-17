@@ -7,7 +7,7 @@ Number of degrees of freedom: 2,757 (810+363+810+123+405+123+123)
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 58+0 iterations.
+   Solving Stokes system... 108+0 iterations.
    Solving fluid velocity system... 1 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.75314e-16, 2.03336e-16, 0, 0.999465
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.999465
@@ -18,8 +18,8 @@ Number of degrees of freedom: 2,757 (810+363+810+123+405+123+123)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.75314e-16, 2.03336e-16, 0, 5.2171e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.2171e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.75314e-16, 2.03336e-16, 0, 3.84791e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.84791e-13
 
 
    Postprocessing:
@@ -46,6 +46,9 @@ Number of degrees of freedom: 2,757 (810+363+810+123+405+123+123)
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.150507
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  -3.478e-11 W/kg, -193.3 W
@@ -54,3 +57,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

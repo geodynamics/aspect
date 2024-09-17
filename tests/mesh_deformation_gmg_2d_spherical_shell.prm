@@ -1,0 +1,96 @@
+# This input file tests gmg solver with
+# mesh deformation in a spherical shell geometry
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 1
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance                         = 1e-1
+    set Stokes solver type                              = block GMG
+    set Number of cheap Stokes solver steps             = 5000
+    set GMRES solver restart length                     = 1000
+    set Maximum number of expensive Stokes solver steps = 0
+    set Use full A block as preconditioner              = true
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: ascii data
+
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/mesh-deformation/ascii-data/
+    set Data file name = spherical_shell_2d.txt
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 3700
+    set Outer temperature = 273
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  set Material averaging = harmonic average only viscosity
+
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators       = bottom, top
+end
+
+# The minimum and maximum topography in the ascii file is 3km and 400 km, respectively.
+# The topography statistics should be within these bounds.
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, topography
+
+  subsection Topography
+    set Output to file = true
+    set Time between text output = 0
+  end
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = surface elevation
+    set Output format      = gnuplot
+  end
+end

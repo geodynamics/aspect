@@ -1,0 +1,13 @@
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Reference temperature         = 473.15
+    set Densities                     = 3200.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0
+    set Thermal expansivities         = 0
+    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
+    set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
+    set Viscosity averaging scheme    = maximum composition
+    set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
+  end
+end

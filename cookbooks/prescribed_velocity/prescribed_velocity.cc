@@ -182,13 +182,10 @@ namespace aspect
         const std::vector<Point<dim>> points = aspect::Utilities::get_unit_support_points(simulator_access);
         const Quadrature<dim> quadrature (points);
         FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points);
-        typename DoFHandler<dim>::active_cell_iterator cell;
 
         // Loop over all cells
-        for (cell = simulator_access.get_dof_handler().begin_active();
-             cell != simulator_access.get_dof_handler().end();
-             ++cell)
-          if (! cell->is_artificial())
+        for (const auto &cell : simulator_access.get_dof_handler().active_cell_iterators())
+          if (!cell->is_artificial())
             {
               fe_values.reinit (cell);
               std::vector<types::global_dof_index> local_dof_indices(simulator_access.get_fe().dofs_per_cell);

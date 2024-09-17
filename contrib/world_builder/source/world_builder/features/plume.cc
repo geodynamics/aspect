@@ -276,7 +276,7 @@ namespace WorldBuilder
         }
       else
         {
-          const unsigned int index = std::distance(depths.begin(), upper);
+          const unsigned int index = static_cast<unsigned int>(std::distance(depths.begin(), upper));
           const double fraction = (depth - depths[index-1]) / (depths[index] - depths[index-1]);
 
           plume_center[0] = (1-fraction) * coordinates[index-1][0] + fraction * (coordinates[index][0]);
@@ -382,7 +382,7 @@ namespace WorldBuilder
                   }
                   case 4:
                   {
-                    output[entry_in_output[i_property]] = tag_index;
+                    output[entry_in_output[i_property]] = static_cast<double>(tag_index);
                     break;
                   }
                   default:

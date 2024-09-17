@@ -8,11 +8,13 @@ Number of mesh deformation degrees of freedom: 594
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+17 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 0+15 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999994
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity: 0.00687 m/year, 0.01 m/year
 
@@ -25,11 +27,13 @@ Number of mesh deformation degrees of freedom: 2,090
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+26 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999999
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity: 0.00687 m/year, 0.01 m/year
 
@@ -45,3 +49,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 2 nonlinear solver failures occurred!

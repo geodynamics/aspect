@@ -4,8 +4,7 @@ Number of degrees of freedom: 10,436 (6,402+833+3,201)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_latent_heat/solution/solution-00000

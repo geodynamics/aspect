@@ -71,7 +71,7 @@ namespace aspect
                   = deviatoric_strain_rate[d][e];
           }
 
-        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim>>();
+        const auto &viz = this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::Visualization<dim>>();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
 
@@ -98,6 +98,19 @@ namespace aspect
                                                   "$\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I$ "
                                                   "in the compressible case."
+                                                  "\n\n"
+                                                  "This postprocessor outputs the quantity computed herein as "
+                                                  "a tensor, i.e., programs such as VisIt or Pararview can "
+                                                  "visualize it as tensors represented by ellipses, not just "
+                                                  "as individual fields. That said, you can also visualize "
+                                                  "individual tensor components, by noting that the "
+                                                  "components that are written to the output file correspond to "
+                                                  "the tensor components $t_{xx}, t_{xy}, t_{yx}, t_{yy}$ (in 2d) "
+                                                  "or  $t_{xx}, t_{xy}, t_{xz}, t_{yx}, t_{yy}, t_{yz}, t_{zx}, t_{zy}, "
+                                                  "t_{zz}$ (in 3d) of a tensor $t$ in a Cartesian coordinate system. "
+                                                  "Even though the tensor we output is symmetric, the output contains "
+                                                  "all components of the tensor because that is what the file format "
+                                                  "requires."
                                                   "\n\n"
                                                   "Physical units: \\si{\\per\\second}.")
     }

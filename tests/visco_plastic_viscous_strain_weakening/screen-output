@@ -5,47 +5,40 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving viscous_strain system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system... 0+7 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.43863
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+5 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000643959
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000257961
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000138782
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 4.66257e-05
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 6.77853e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.30741e-05
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 4.25923e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.64903e-05
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 3.35901e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.39552e-05
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 2.95492e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.26011e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.72077e-05
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 1.16629e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 2.54297e-05
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 1.08694e-05
 
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+3 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 2.38685e-05
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 1.0141e-05
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -55,3 +48,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

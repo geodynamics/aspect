@@ -19,14 +19,14 @@
 # Try to find the Libdap library
 
 # Use the environment variables if they are provided during cmake
-SET(LIBDAP_LIB "" CACHE PATH "An optional hint to the libdap lib directory")
-SET_IF_EMPTY(LIBDAP_LIB "$ENV{LIBDAP_LIB}")
+set(LIBDAP_LIB "" CACHE PATH "An optional hint to the libdap lib directory")
+set_if_empty(LIBDAP_LIB "$ENV{LIBDAP_LIB}")
 
-SET(LIBDAP_INC "" CACHE PATH "An optional hint to the libdap include directory")
-SET_IF_EMPTY(LIBDAP_DIR "$ENV{LIBDAP_INC}")
+set(LIBDAP_INC "" CACHE PATH "An optional hint to the libdap include directory")
+set_if_empty(LIBDAP_DIR "$ENV{LIBDAP_INC}")
 
-SET(LIBDAP_DIR "" CACHE PATH "An optional hint to the libdap installation directory")
-SET_IF_EMPTY(LIBDAP_DIR "$ENV{LIBDAP_DIR}")
+set(LIBDAP_DIR "" CACHE PATH "An optional hint to the libdap installation directory")
+set_if_empty(LIBDAP_DIR "$ENV{LIBDAP_DIR}")
 
 # Clear the cache of previous values
 UNSET (LIBDAP_INCLUDE_DIR CACHE)
@@ -34,79 +34,79 @@ UNSET (LIBDAP_LIBRARY CACHE)
 UNSET (LIBDAP_CLIENT_LIBRARY CACHE)
 
 
-FIND_PATH(LIBDAP_INCLUDE_DIR
+find_path(LIBDAP_INCLUDE_DIR
         NAMES Connect.h
         HINTS ${LIBDAP_INC} ${LIBDAP_DIR}/include/libdap
         )
 
-FIND_LIBRARY(LIBDAP_LIBRARY
+find_library(LIBDAP_LIBRARY
         NAMES libdap.so libdap.dylib
         HINTS ${LIBDAP_LIB} ${LIBDAP_DIR}/lib
         )
 
-FIND_LIBRARY(LIBDAP_CLIENT_LIBRARY
+find_library(LIBDAP_CLIENT_LIBRARY
         NAMES libdapclient.so libdapclient.dylib
         HINTS ${LIBDAP_LIB} ${LIBDAP_DIR}/lib
         )
 
-FIND_PROGRAM(LIBDAP_CONFIG_EXECUTABLE
+find_program(LIBDAP_CONFIG_EXECUTABLE
         NAMES dap-config
         HINTS ${LIBDAP_DIR}/bin)
 
 #Lookup and add the CURL and libxml2 libraries
-IF(LIBDAP_CONFIG_EXECUTABLE)
-    MESSAGE(STATUS "probing ${LIBDAP_CONFIG_EXECUTABLE} for libdap configuration:")
-    EXECUTE_PROCESS(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --libs
+if(LIBDAP_CONFIG_EXECUTABLE)
+    message(STATUS "probing ${LIBDAP_CONFIG_EXECUTABLE} for libdap configuration:")
+    execute_process(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --libs
             OUTPUT_VARIABLE _libs
             ERROR_QUIET
             OUTPUT_STRIP_TRAILING_WHITESPACE)
-    STRING(REPLACE " " ";" _libs "${_libs}")
-    SET(_path "")
-    FOREACH(_lib ${_libs})
+    string(REPLACE " " ";" _libs "${_libs}")
+    set(_path "")
+    foreach(_lib ${_libs})
         IF (${_lib} MATCHES "^-L")
-            STRING(SUBSTRING ${_lib} 2 -1 _path)
-        ENDIF()
+            string(SUBSTRING ${_lib} 2 -1 _path)
+        endif()
         IF (${_lib} MATCHES "^-lcurl")
-            SET(LIBCURL_PATH "${_path}")
-            SET(LIBCURL_FOUND TRUE)
-        ENDIF()
+            set(LIBCURL_PATH "${_path}")
+            set(LIBCURL_FOUND TRUE)
+        endif()
         IF (${_lib} MATCHES "^-lxml2")
-            SET(LIBXML2_PATH "${_path}")
-            SET(LIBXML2_FOUND TRUE)
-        ENDIF()
-    ENDFOREACH()
+            set(LIBXML2_PATH "${_path}")
+            set(LIBXML2_FOUND TRUE)
+        endif()
+    endforeach()
 
-    EXECUTE_PROCESS(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --cflags
+    execute_process(COMMAND ${LIBDAP_CONFIG_EXECUTABLE} --cflags
             OUTPUT_VARIABLE _flags
             ERROR_QUIET
             OUTPUT_STRIP_TRAILING_WHITESPACE)
-    STRING(REPLACE " " ";" _flags "${_flags}")
-    FOREACH(_flag ${_flags})
+    string(REPLACE " " ";" _flags "${_flags}")
+    foreach(_flag ${_flags})
         IF (${_flag} MATCHES "^-I")
-        STRING(SUBSTRING ${_flag} 2 -1 _path)
-        SET(LIBDAP_INCLUDE_DIR ${LIBDAP_INCLUDE_DIR} ${_path})
-        ENDIF()
-    ENDFOREACH()
-ENDIF()
+        string(SUBSTRING ${_flag} 2 -1 _path)
+        set(LIBDAP_INCLUDE_DIR ${LIBDAP_INCLUDE_DIR} ${_path})
+        endif()
+    endforeach()
+endif()
 
-FIND_LIBRARY(LIBCURL_LIBRARIES
+find_library(LIBCURL_LIBRARIES
         NAMES libcurl.so libcurl.dylib
         HINTS ${LIBCURL_PATH}
         )
-FIND_LIBRARY(LIBXML2_LIBRARIES
+find_library(LIBXML2_LIBRARIES
         NAMES libxml2.so libxml2.dylib
         HINTS ${LIBXML2_PATH}
         )
 
-MESSAGE(STATUS "  LIBXML2_LIBRARIES: ${LIBXML2_LIBRARIES}")
-MESSAGE(STATUS "  LIBCURL_LIBRARIES: ${LIBCURL_LIBRARIES}")
-MESSAGE(STATUS "  LIBDAP_INCLUDE_DIRS: ${LIBDAP_INCLUDE_DIR}")
+message(STATUS "  LIBXML2_LIBRARIES: ${LIBXML2_LIBRARIES}")
+message(STATUS "  LIBCURL_LIBRARIES: ${LIBCURL_LIBRARIES}")
+message(STATUS "  LIBDAP_INCLUDE_DIRS: ${LIBDAP_INCLUDE_DIR}")
 
-IF(LIBDAP_LIBRARY AND LIBDAP_CLIENT_LIBRARY AND LIBDAP_CONFIG_EXECUTABLE AND LIBCURL_LIBRARIES AND LIBXML2_LIBRARIES)
-    SET(LIBDAP_FOUND TRUE)
-    SET(LIBDAP_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIR})
-    SET(LIBDAP_LIBRARY ${LIBDAP_LIBRARY})
-    SET(LIBDAP_LIBRARIES ${LIBDAP_CLIENT_LIBRARY} ${LIBDAP_LIBRARY} ${LIBXML2_LIBRARIES} ${LIBCURL_LIBRARIES})
-ELSE()
-    SET(LIBDAP_FOUND FALSE)
-ENDIF()
+if(LIBDAP_LIBRARY AND LIBDAP_CLIENT_LIBRARY AND LIBDAP_CONFIG_EXECUTABLE AND LIBCURL_LIBRARIES AND LIBXML2_LIBRARIES)
+    set(LIBDAP_FOUND TRUE)
+    set(LIBDAP_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIR})
+    set(LIBDAP_LIBRARY ${LIBDAP_LIBRARY})
+    set(LIBDAP_LIBRARIES ${LIBDAP_CLIENT_LIBRARY} ${LIBDAP_LIBRARY} ${LIBXML2_LIBRARIES} ${LIBCURL_LIBRARIES})
+else()
+    set(LIBDAP_FOUND FALSE)
+endif()

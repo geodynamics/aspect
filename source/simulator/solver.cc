@@ -29,7 +29,6 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/solver_cg.h>
-
 #include <deal.II/fe/fe_values.h>
 
 namespace aspect
@@ -367,6 +366,138 @@ namespace aspect
       return n_iterations_;
     }
 
+    /**
+     * Base class for Schur Complement operators.
+    */
+    class SchurComplementOperator
+    {
+      public:
+        virtual ~SchurComplementOperator() = default;
+
+        virtual void vmult(TrilinosWrappers::MPI::Vector &dst,
+                           const TrilinosWrappers::MPI::Vector &src) const=0;
+        virtual unsigned int n_iterations() const=0;
+
+    };
+
+    /**
+     * This class approximates the Schur Complement inverse operator
+     * by S^{-1} = (BC^{-1}B^T)^{-1}(BC^{-1}AD^{-1}B^T)(BD^{-1}B^T)^{-1},
+     * which is known as the weighted BFBT method. Here,
+     * C^{-1} and D^{-1} are chosen to be the inverse weighted lumped
+     * velocity mass matrix.
+    */
+    template <class PreconditionerMp>
+    class WeightedBFBT: public SchurComplementOperator
+    {
+      public:
+        /**
+         * Constructor.
+         * @param mp_matrix Matrix approximating S to be used in the inner solve
+         * @param mp_preconditioner The preconditioner for @p mp_matrix
+         * @param solver_tolerance The relative solver tolerance for the inner solve
+         * @param inverse_lumped_mass_matrix Lumped mass matrix associated with the velocity block
+         * @param system_matrix Sparse block matrix storing the Stokes system of the form
+         * [A B^T
+         *  B 0].
+         */
+        WeightedBFBT(const TrilinosWrappers::SparseMatrix &mp_matrix,
+                     const PreconditionerMp &mp_preconditioner,
+                     const double solver_tolerance,
+                     const TrilinosWrappers::MPI::Vector &inverse_lumped_mass_matrix,
+                     const TrilinosWrappers::BlockSparseMatrix &system_matrix);
+
+        void vmult(TrilinosWrappers::MPI::Vector &dst,
+                   const TrilinosWrappers::MPI::Vector &src) const override;
+
+        unsigned int n_iterations() const override;
+
+      private:
+        mutable unsigned int n_iterations_;
+        const TrilinosWrappers::SparseMatrix &mp_matrix;
+        const PreconditionerMp &mp_preconditioner;
+        const double solver_tolerance;
+        const TrilinosWrappers::MPI::Vector  &inverse_lumped_mass_matrix;
+        const TrilinosWrappers::BlockSparseMatrix &system_matrix;
+    };
+
+    template <class PreconditionerMp>
+    WeightedBFBT<PreconditionerMp>::WeightedBFBT(
+      const TrilinosWrappers::SparseMatrix &mp_matrix,
+      const PreconditionerMp &mp_preconditioner,
+      const double solver_tolerance,
+      const TrilinosWrappers::MPI::Vector &inverse_lumped_mass_matrix,
+      const TrilinosWrappers::BlockSparseMatrix &system_matrix)
+      : n_iterations_ (0),
+        mp_matrix (mp_matrix),
+        mp_preconditioner (mp_preconditioner),
+        solver_tolerance (solver_tolerance),
+        inverse_lumped_mass_matrix(inverse_lumped_mass_matrix),
+        system_matrix (system_matrix)
+    {}
+
+
+    template <class PreconditionerMp>
+    void WeightedBFBT<PreconditionerMp>::vmult(TrilinosWrappers::MPI::Vector &dst,
+                                               const TrilinosWrappers::MPI::Vector &src) const
+    {
+      SolverControl solver_control(1000, src.l2_norm() * solver_tolerance);
+      PrimitiveVectorMemory<LinearAlgebra::Vector> mem;
+      SolverCG<LinearAlgebra::Vector> solver(solver_control, mem);
+
+      try
+        {
+          TrilinosWrappers::MPI::Vector utmp;
+          utmp.reinit(inverse_lumped_mass_matrix);
+          TrilinosWrappers::MPI::Vector ptmp;
+          ptmp.reinit(src);
+          TrilinosWrappers::MPI::Vector wtmp;
+          wtmp.reinit(inverse_lumped_mass_matrix);
+          {
+            SolverControl solver_control(5000, 1e-6 * src.l2_norm(), false, true);
+            SolverCG<TrilinosWrappers::MPI::Vector> solver(solver_control);
+            //Solve with Schur Complement approximation
+            solver.solve(mp_matrix,
+                         ptmp,
+                         src,
+                         mp_preconditioner);
+            n_iterations_ += solver_control.last_step();
+            system_matrix.block(0,1).vmult(utmp,ptmp);
+
+            utmp.scale(inverse_lumped_mass_matrix);
+            system_matrix.block(0,0).vmult(wtmp,utmp);
+            wtmp.scale(inverse_lumped_mass_matrix);
+            system_matrix.block(1,0).vmult(ptmp,wtmp);
+
+            dst=0;
+            solver.solve(mp_matrix,
+                         dst,
+                         ptmp,
+                         mp_preconditioner);
+            n_iterations_ += solver_control.last_step();
+          }
+        }
+      // if the solver fails, report the error from processor 0 with some additional
+      // information about its location, and throw a quiet exception on all other
+      // processors
+      catch (const std::exception &exc)
+        {
+          Utilities::throw_linear_solver_failure_exception("iterative (bottom right) solver",
+                                                           "BlockSchurPreconditioner::vmult",
+                                                           std::vector<SolverControl> {solver_control},
+                                                           exc,
+                                                           src.get_mpi_communicator());
+        }
+    }
+
+
+
+    template <class PreconditionerMp>
+    unsigned int WeightedBFBT<PreconditionerMp>::n_iterations() const
+    {
+      return n_iterations_;
+    }
+
 
 
     /**
@@ -377,7 +508,7 @@ namespace aspect
       * PreconditionerMp passed to the constructor.
       */
     template <class PreconditionerMp>
-    class InverseWeightedMassMatrix
+    class InverseWeightedMassMatrix: public SchurComplementOperator
     {
       public:
         /**
@@ -391,9 +522,9 @@ namespace aspect
                                   const double solver_tolerance);
 
         void vmult(TrilinosWrappers::MPI::Vector &dst,
-                   const TrilinosWrappers::MPI::Vector &src) const;
+                   const TrilinosWrappers::MPI::Vector &src) const override;
 
-        unsigned int n_iterations() const;
+        unsigned int n_iterations() const override;
 
       private:
         mutable unsigned int n_iterations_;
@@ -607,13 +738,13 @@ namespace aspect
     pcout << solver_control.last_step()
           << " iterations." << std::endl;
 
-    if ((advection_field.is_temperature()
-         && parameters.use_discontinuous_temperature_discretization
-         && parameters.use_limiter_for_discontinuous_temperature_solution)
-        ||
-        (!advection_field.is_temperature()
-         && parameters.use_discontinuous_composition_discretization
-         && parameters.use_limiter_for_discontinuous_composition_solution[advection_field.compositional_variable]))
+    if ((advection_field.is_discontinuous(introspection)
+         &&
+         (
+           (advection_field.is_temperature() && parameters.use_limiter_for_discontinuous_temperature_solution)
+           ||
+           (!advection_field.is_temperature() && parameters.use_limiter_for_discontinuous_composition_solution[advection_field.compositional_variable])
+         )))
       {
         apply_limiter_to_dg_solutions(advection_field);
         // by applying the limiter we have modified the solution to no longer
@@ -928,10 +1059,24 @@ namespace aspect
         solver_control_cheap.enable_history_data();
         solver_control_expensive.enable_history_data();
 
-        internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase> inverse_weighted_mass_matrix(
-          system_preconditioner_matrix.block(1,1),
-          *Mp_preconditioner,
-          parameters.linear_solver_S_block_tolerance);
+        std::unique_ptr<internal::SchurComplementOperator> schur;
+        if (parameters.use_bfbt)
+          {
+            schur = std::make_unique<internal::WeightedBFBT<TrilinosWrappers::PreconditionBase>>(
+                      system_preconditioner_matrix.block(1,1),
+                      *Mp_preconditioner,
+                      parameters.linear_solver_S_block_tolerance,
+                      inverse_lumped_mass_matrix.block(0),
+                      system_matrix);
+          }
+        else
+          {
+            schur = std::make_unique<internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>(
+                      system_preconditioner_matrix.block(1,1),
+                      *Mp_preconditioner,
+                      parameters.linear_solver_S_block_tolerance);
+
+          }
 
         // create a cheap preconditioner that consists of only a single V-cycle
         internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_cheap(
@@ -941,10 +1086,10 @@ namespace aspect
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
         const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
-              internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>
+              internal::SchurComplementOperator>
               preconditioner_cheap (system_matrix,
                                     system_preconditioner_matrix,
-                                    inverse_weighted_mass_matrix,
+                                    *schur,
                                     inverse_velocity_block_cheap);
 
         // create an expensive preconditioner that solves for the A block with CG
@@ -955,12 +1100,11 @@ namespace aspect
           stokes_A_block_is_symmetric(),
           parameters.linear_solver_A_block_tolerance);
         const internal::BlockSchurPreconditioner<internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG>,
-              internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>
+              internal::SchurComplementOperator>
               preconditioner_expensive (system_matrix,
                                         system_preconditioner_matrix,
-                                        inverse_weighted_mass_matrix,
+                                        *schur,
                                         inverse_velocity_block_expensive);
-
         // step 1a: try if the simple and fast solver
         // succeeds in n_cheap_stokes_solver_steps steps or less.
         try
@@ -1026,11 +1170,10 @@ namespace aspect
                        SolverFGMRES<LinearAlgebra::BlockVector>::
                        AdditionalData(number_of_temporary_vectors));
 
-                solver.solve(stokes_block,
-                             distributed_stokes_solution,
-                             distributed_stokes_rhs,
-                             preconditioner_expensive);
-
+                solver.solve (stokes_block,
+                              distributed_stokes_solution,
+                              distributed_stokes_rhs,
+                              preconditioner_expensive);
                 // Success. Print expensive iterations to screen.
                 pcout << solver_control_expensive.last_step()
                       << " iterations." << std::endl;
@@ -1043,7 +1186,7 @@ namespace aspect
             catch (const std::exception &exc)
               {
                 signals.post_stokes_solver(*this,
-                                           inverse_weighted_mass_matrix.n_iterations(),
+                                           schur->n_iterations(),
                                            inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
                                            solver_control_cheap,
                                            solver_control_expensive);
@@ -1051,6 +1194,7 @@ namespace aspect
                 std::vector<SolverControl> solver_controls;
                 if (parameters.n_cheap_stokes_solver_steps > 0)
                   solver_controls.push_back(solver_control_cheap);
+
                 if (parameters.n_expensive_stokes_solver_steps > 0)
                   solver_controls.push_back(solver_control_expensive);
 
@@ -1064,15 +1208,7 @@ namespace aspect
               }
           }
 
-        // signal successful solver
-        signals.post_stokes_solver(*this,
-                                   inverse_weighted_mass_matrix.n_iterations(),
-                                   inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
-                                   solver_control_cheap,
-                                   solver_control_expensive);
-
-        // distribute hanging node and
-        // other constraints
+        // distribute hanging node and other constraints
         current_stokes_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units
@@ -1082,8 +1218,14 @@ namespace aspect
         // into the ghosted one with all solution components
         solution.block(block_vel) = distributed_stokes_solution.block(0);
         solution.block(block_p) = distributed_stokes_solution.block(1);
-      }
 
+        // signal successful solver
+        signals.post_stokes_solver(*this,
+                                   schur->n_iterations(),
+                                   inverse_velocity_block_cheap.n_iterations()+inverse_velocity_block_expensive.n_iterations(),
+                                   solver_control_cheap,
+                                   solver_control_expensive);
+      }
 
     // do some cleanup now that we have the solution
     remove_nullspace(solution, distributed_stokes_solution);
@@ -1099,8 +1241,6 @@ namespace aspect
   }
 
 }
-
-
 
 
 

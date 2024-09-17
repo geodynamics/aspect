@@ -111,6 +111,12 @@ subsection Initial composition model
   end
 end
 
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 400
+  end
+end
+
 subsection Postprocess
   set List of postprocessors = visualization,topography,velocity statistics,
 

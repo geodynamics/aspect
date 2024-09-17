@@ -8,11 +8,10 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving beam system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 652+0 iterations.
+   Solving Stokes system... 2000+32 iterations.
 
    Postprocessing:
-     RMS, max velocity:        7.45e-05 m/year, 0.000303 m/year
+     RMS, max velocity:        5.28e-05 m/year, 0.000247 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-viscous_top_beam/solution/solution-00000
 
@@ -22,11 +21,10 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving beam system ... 1 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 89+0 iterations.
+   Solving Stokes system... 164+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        7.46e-05 m/year, 0.000303 m/year
+     RMS, max velocity:        5.28e-05 m/year, 0.000247 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-viscous_top_beam/solution/solution-00001
 
@@ -36,11 +34,10 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Solving beam system ... 1 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 77+0 iterations.
+   Solving Stokes system... 92+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        7.46e-05 m/year, 0.000303 m/year
+     RMS, max velocity:        5.29e-05 m/year, 0.000248 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-viscous_top_beam/solution/solution-00002
 

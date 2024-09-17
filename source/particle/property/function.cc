@@ -54,21 +54,13 @@ namespace aspect
       void
       Function<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Function");
         {
-          prm.enter_subsection("Particles");
-          {
-            prm.enter_subsection("Function");
-            {
-              prm.declare_entry ("Number of components", "1",
-                                 Patterns::Integer (0),
-                                 "The number of function components where each component is described "
-                                 "by a function expression delimited by a ';'.");
-              Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
-            }
-            prm.leave_subsection();
-          }
-          prm.leave_subsection();
+          prm.declare_entry ("Number of components", "1",
+                             Patterns::Integer (0),
+                             "The number of function components where each component is described "
+                             "by a function expression delimited by a ';'.");
+          Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
         }
         prm.leave_subsection();
       }
@@ -78,29 +70,21 @@ namespace aspect
       void
       Function<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
-        {
-          prm.enter_subsection("Particles");
+        prm.enter_subsection("Function");
+        n_components = prm.get_integer ("Number of components");
+        try
           {
-            prm.enter_subsection("Function");
-            n_components = prm.get_integer ("Number of components");
-            try
-              {
-                function = std::make_unique<Functions::ParsedFunction<dim>>(n_components);
-                function->parse_parameters (prm);
-              }
-            catch (...)
-              {
-                std::cerr << "ERROR: FunctionParser failed to parse\n"
-                          << "\t'Postprocess.Particles.Function'\n"
-                          << "with expression\n"
-                          << "\t'" << prm.get("Function expression") << "'";
-                throw;
-              }
-            prm.leave_subsection();
+            function = std::make_unique<Functions::ParsedFunction<dim>>(n_components);
+            function->parse_parameters (prm);
           }
-          prm.leave_subsection();
-        }
+        catch (...)
+          {
+            std::cerr << "ERROR: FunctionParser failed to parse\n"
+                      << "\t'Particles.Function'\n"
+                      << "with expression\n"
+                      << "\t'" << prm.get("Function expression") << "'";
+            throw;
+          }
         prm.leave_subsection();
       }
     }

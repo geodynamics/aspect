@@ -2154,7 +2154,7 @@ namespace aspect
         // find the closest point m_x[idx] < x, idx=0 even if x<m_x[0]
         std::vector<double>::const_iterator it;
         it = std::lower_bound(m_x.begin(),m_x.end(),x);
-        int idx = std::max( int(it-m_x.begin())-1, 0);
+        const int idx = std::max( static_cast<int>(it-m_x.begin())-1, 0);
 
         double h = x-m_x[idx];
         double interpol;
@@ -2184,7 +2184,7 @@ namespace aspect
     {
       // Check for environment variable override to ASPECT_SOURCE_DIR
       char const *ASPECT_SOURCE_DIR_env = getenv("ASPECT_SOURCE_DIR");
-      if (ASPECT_SOURCE_DIR_env != NULL)
+      if (ASPECT_SOURCE_DIR_env != nullptr)
         {
           return Utilities::replace_in_string(location,
                                               "$ASPECT_SOURCE_DIR",
@@ -2225,6 +2225,30 @@ namespace aspect
 
       for (auto &i : s)
         result.push_back(string_to_bool(i));
+
+      return result;
+    }
+
+
+
+    unsigned int
+    string_to_unsigned_int(const std::string &s)
+    {
+      const int value = dealii::Utilities::string_to_int(s);
+      AssertThrow (value >= 0, ExcMessage("Negative number in string_to_unsigned_int() detected."));
+      return static_cast<unsigned int>(value);
+    }
+
+
+
+    std::vector<unsigned int>
+    string_to_unsigned_int(const std::vector<std::string> &s)
+    {
+      std::vector<unsigned int> result;
+      result.reserve(s.size());
+
+      for (auto &str : s)
+        result.emplace_back(string_to_unsigned_int(str));
 
       return result;
     }
@@ -3018,8 +3042,8 @@ namespace aspect
 
 
     std::vector<Tensor<2,3>>
-    rotation_matrices_random_draw_volume_weighting(const std::vector<double> volume_fraction,
-                                                   const std::vector<Tensor<2,3>> rotation_matrices,
+    rotation_matrices_random_draw_volume_weighting(const std::vector<double> &volume_fraction,
+                                                   const std::vector<Tensor<2,3>> &rotation_matrices,
                                                    const unsigned int n_output_matrices,
                                                    std::mt19937 &random_number_generator)
     {

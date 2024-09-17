@@ -161,7 +161,7 @@ namespace aspect
         /**
          * A list of pairs (time, pvtu_filename) that have so far been written
          * and that we will pass to DataOutInterface::write_pvd_record
-         * to create a master file that can make the association
+         * to create a main file that can make the association
          * between simulation time and corresponding file name (this
          * is done because there is no way to store the simulation
          * time inside the .pvtu or .vtu files).
@@ -177,7 +177,7 @@ namespace aspect
 
         /**
          * A list of list of filenames, sorted by timestep, that correspond to
-         * what has been created as output. This is used to create a master
+         * what has been created as output. This is used to create a main
          * .visit file for the entire simulation.
          */
         std::vector<std::vector<std::string>> output_file_names_by_timestep;
@@ -216,10 +216,10 @@ namespace aspect
         bool write_in_background_thread;
 
         /**
-         * Handle to a thread that is used to write master file data in the
+         * Handle to a thread that is used to write main file data in the
          * background. The writer() function runs on this background thread.
          */
-        std::thread background_thread_master;
+        std::thread background_thread_main;
 
         /**
          * What "raw" CPO data to write out.

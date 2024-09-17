@@ -381,51 +381,49 @@ namespace aspect
     std::vector<HeatingModel::HeatingModelOutputs> heating_model_outputs (heating_model_objects.size(),
                                                                           HeatingModel::HeatingModelOutputs (n_q_points, this->n_compositional_fields()));
 
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = this->get_dof_handler().begin_active(),
-    endc = this->get_dof_handler().end();
-    for (; cell != endc; ++cell)
-      {
-        fe_values.reinit (cell);
-        in.reinit(fe_values,cell,this->introspection(),this->get_solution());
+    for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          in.reinit(fe_values,cell,this->introspection(),this->get_solution());
 
-        this->get_material_model().evaluate(in, out);
+          this->get_material_model().evaluate(in, out);
 
-        if (this->get_parameters().formulation_temperature_equation ==
-            Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-          {
-            for (unsigned int q=0; q<n_q_points; ++q)
-              {
-                out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
-              }
-          }
+          if (this->get_parameters().formulation_temperature_equation ==
+              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+            {
+              for (unsigned int q=0; q<n_q_points; ++q)
+                {
+                  out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
+                }
+            }
 
-        unsigned int index = 0;
-        for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim>>>::const_iterator
-             heating_model = heating_model_objects.begin();
-             heating_model != heating_model_objects.end(); ++heating_model, ++index)
-          {
-            (*heating_model)->evaluate(in, out, heating_model_outputs[index]);
-          }
+          unsigned int index = 0;
+          for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim>>>::const_iterator
+               heating_model = heating_model_objects.begin();
+               heating_model != heating_model_objects.end(); ++heating_model, ++index)
+            {
+              (*heating_model)->evaluate(in, out, heating_model_outputs[index]);
+            }
 
 
-        for (unsigned int q = 0; q < n_q_points; ++q)
-          {
-            output
-                <<  fe_values.quadrature_point (q) (0)
-                << ' ' << fe_values.quadrature_point (q) (1)
-                << ' ' << in.velocity[q][0]
-                << ' ' << in.velocity[q][1]
-                << ' ' << fe_values.JxW (q)
-                << ' ' << in.pressure[q]
-                << ' ' << in.temperature[q];
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              output
+                  <<  fe_values.quadrature_point (q) (0)
+                  << ' ' << fe_values.quadrature_point (q) (1)
+                  << ' ' << in.velocity[q][0]
+                  << ' ' << in.velocity[q][1]
+                  << ' ' << fe_values.JxW (q)
+                  << ' ' << in.pressure[q]
+                  << ' ' << in.temperature[q];
 
-            for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
-              output << ' ' << heating_model_outputs[i].heating_source_terms[q];
+              for (unsigned int i = 0; i < heating_model_objects.size(); ++i)
+                output << ' ' << heating_model_outputs[i].heating_source_terms[q];
 
-            output << std::endl;
-          }
-      }
+              output << std::endl;
+            }
+        }
 
     const std::string filename = this->get_output_directory() + "vel_" +
                                  Utilities::int_to_string(static_cast<unsigned int>(ref)) +

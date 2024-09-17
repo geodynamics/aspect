@@ -66,5 +66,5 @@ If you are familiar with the half space cooling model, you would also think some
 :alt: Basic Starter Tutorial section 6. 
 :align: center
 
-Basic Starter Tutorial section 6. The top part of the figure shows where the composition as been assigned as an object. Currently it only shows composition 0 as green and is now limited to 100km depth. The bottom part shows the temperature as seen slightly from below where only temperatures between 300K and 1600K are shown. This allows to better view the ridge.
+Basic Starter Tutorial section 6. The top part of the figure shows where the composition has been assigned as an object. Currently it only shows composition 0 as green and is now limited to 100km depth. The bottom part shows the temperature as seen slightly from below where only temperatures between 300K and 1600K are shown. This allows a better view of the ridge.
 ```

@@ -38,12 +38,11 @@ averaging!
 averaging!
 * local_assemble_stokes call, have additional? 1
    value = 21 21
-   Rebuilding Stokes preconditioner...* evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
-
-   Solving Stokes system... 9+0 iterations.
+* evaluate called without additional outputs!
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
 * evaluate called without additional outputs!

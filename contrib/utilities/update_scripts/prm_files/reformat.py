@@ -15,7 +15,7 @@ general formatting guidelines. These are:
 - retain as much user formatting in comments and parameter values as possible,
   e.g. spaces for padding values to align between adjacent lines. This is not
   always perfectly possible.
-- retain broken lines (`\`) in values of parameters and comments, remove them
+- retain broken lines (`\\`) in values of parameters and comments, remove them
   from subsection or parameter names.
 """
 

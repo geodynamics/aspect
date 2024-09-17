@@ -42,7 +42,7 @@ namespace aspect
 
 
 
-      template<int dim>
+      template <int dim>
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       GrainLagAngle<dim>::execute() const
       {
@@ -66,7 +66,6 @@ namespace aspect
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned() && this->get_timestep_number() > 0)
             {
-
               // Fill the material model objects for the cell (for strain rate)
               fe_values.reinit(cell);
               in.reinit(fe_values, cell, this->introspection(),

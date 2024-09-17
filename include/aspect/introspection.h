@@ -31,6 +31,7 @@
 #include <aspect/fe_variable_collection.h>
 #include <aspect/parameters.h>
 
+#include <map>
 
 namespace aspect
 {
@@ -169,7 +170,7 @@ namespace aspect
        * A variable that holds whether the composition field(s) should use a
        * discontinuous discretization.
        */
-      const bool use_discontinuous_composition_discretization;
+      const std::vector<bool> use_discontinuous_composition_discretization;
 
       /**
        * A structure that enumerates the vector components of the finite
@@ -177,10 +178,10 @@ namespace aspect
        */
       struct ComponentIndices
       {
-        unsigned int       velocities[dim];
-        unsigned int       pressure;
-        unsigned int       temperature;
-        std::vector<unsigned int> compositional_fields;
+        std::array<unsigned int, dim> velocities;
+        unsigned int                  pressure;
+        unsigned int                  temperature;
+        std::vector<unsigned int>     compositional_fields;
       };
       /**
        * A variable that enumerates the vector components of the finite
@@ -205,7 +206,17 @@ namespace aspect
         unsigned int       pressure;
         unsigned int       temperature;
         std::vector<unsigned int> compositional_fields;
+
+        /**
+         * This variable contains the block for each compositional field
+         * where the matrix/sparsity pattern is copied from when we need to
+         * (temporarily) create a matrix. This way, we only need to store a
+         * single sparsity pattern and reuse it for all compositional fields
+         * (assuming they have an identical FiniteElement).
+         */
+        std::vector<unsigned int> compositional_field_sparsity_pattern;
       };
+
       /**
        * A variable that enumerates the vector blocks of the finite element
        * that correspond to each of the variables in this problem.
@@ -225,6 +236,7 @@ namespace aspect
         const FEValuesExtractors::Scalar              temperature;
         const std::vector<FEValuesExtractors::Scalar> compositional_fields;
       };
+
       /**
        * A variable that contains extractors for every block of the finite
        * element used in the overall description.
@@ -235,19 +247,19 @@ namespace aspect
        * A structure that enumerates the base elements of the finite element
        * that correspond to each of the variables in this problem.
        *
-       * If there are compositional fields, they are all discretized with the
-       * same base element and, consequently, we only need a single index. If
-       * a variable does not exist in the problem (e.g., we do not have
-       * compositional fields), then the corresponding index is set to an
-       * invalid number.
+       * The indices here can be used to access the dealii::FiniteElement
+       * that describes the given variable. We support different finite
+       * elements for compositional fields, but we try to reuse the same
+       * element if possible.
        */
       struct BaseElements
       {
-        unsigned int       velocities;
-        unsigned int       pressure;
-        unsigned int       temperature;
-        unsigned int       compositional_fields;
+        unsigned int              velocities;
+        unsigned int              pressure;
+        unsigned int              temperature;
+        std::vector<unsigned int> compositional_fields;
       };
+
       /**
        * A variable that enumerates the base elements of the finite element
        * that correspond to each of the variables in this problem.
@@ -263,10 +275,13 @@ namespace aspect
        */
       struct PolynomialDegree
       {
-        unsigned int       velocities;
-        unsigned int       temperature;
-        unsigned int       compositional_fields;
+        unsigned int              max_degree;
+        unsigned int              velocities;
+        unsigned int              temperature;
+        std::vector<unsigned int> compositional_fields;
+        unsigned int              max_compositional_field;
       };
+
       /**
        * A variable that enumerates the polynomial degree of the finite element
        * that correspond to each of the variables in this problem.
@@ -297,9 +312,11 @@ namespace aspect
         Quadrature<dim>       velocities;
         Quadrature<dim>       pressure;
         Quadrature<dim>       temperature;
-        Quadrature<dim>       compositional_fields;
+        Quadrature<dim>       compositional_field_max;
+        std::vector<Quadrature<dim>> compositional_fields;
         Quadrature<dim>       system;
       };
+
       /**
        * A variable that enumerates the polynomial degree of the finite element
        * that correspond to each of the variables in this problem.
@@ -322,6 +339,7 @@ namespace aspect
         Quadrature<dim-1>       compositional_fields;
         Quadrature<dim-1>       system;
       };
+
       /**
        * A variable that enumerates the polynomial degree of the finite element
        * that correspond to each of the variables in this problem.
@@ -335,13 +353,14 @@ namespace aspect
        */
       struct ComponentMasks
       {
-        ComponentMasks (FEVariableCollection<dim> &fevs);
+        ComponentMasks (const FEVariableCollection<dim> &fevs, const Introspection<dim>::ComponentIndices &indices);
 
         ComponentMask              velocities;
         ComponentMask              pressure;
         ComponentMask              temperature;
         std::vector<ComponentMask> compositional_fields;
       };
+
       /**
        * A variable that contains component masks for each of the variables in
        * this problem. Component masks are a deal.II concept, see the deal.II
@@ -425,6 +444,7 @@ namespace aspect
          */
         IndexSet locally_owned_fluid_pressure_dofs;
       };
+
       /**
        * A variable that contains index sets describing which of the globally
        * enumerated degrees of freedom are owned by the current processor in a
@@ -448,6 +468,31 @@ namespace aspect
       /**
        * @}
        */
+
+      /**
+       * Return a vector that contains the base element indices of the deal.II FiniteElement
+       * that are used for compositional fields. Note that compositional fields can share the
+       * same base element, so this vector can (and usually will) be smaller than the number
+       * of compositional fields. The function get_compositional_field_indices_with_base_element()
+       * can be used to translate from base element index to all compositional field indices
+       * using the specified base element.
+       * If several fields are the finite element type (same degree and both continuous or both
+       * discontinuous), they share base elements. If you have no compositional fields, the
+       * vector returned has length 0. If all compositional fields have the same finite element
+       * space, the length is 1.
+       */
+      const std::vector<unsigned int> &
+      get_composition_base_element_indices() const;
+
+      /**
+       * Return a vector with all compositional field indices that belong to a given
+       * base element index as returned by get_composition_base_element_indices().
+       * The indices returned are therefore between 0 and n_compositional_fields-1.
+       * If you have a single compositional field, this function returns {0} when passing
+       * in base_element_index=0.
+       */
+      const std::vector<unsigned int> &
+      get_compositional_field_indices_with_base_element(const unsigned int base_element_index) const;
 
       /**
        * A function that gets the name of a compositional field as an input
@@ -577,6 +622,16 @@ namespace aspect
       bool
       is_stokes_component (const unsigned int component_index) const;
 
+      /**
+       * A function that gets a component index as an input
+       * parameter and returns if the component is one of the
+       * compositional fields.
+       *
+       * @param component_index The component index to check.
+       */
+      bool
+      is_composition_component (const unsigned int component_index) const;
+
     private:
       /**
        * A vector that stores the names of the compositional fields that will
@@ -604,6 +659,19 @@ namespace aspect
        * given in CompositionalFieldDescription.
        */
       std::vector<std::vector<unsigned int>> composition_indices_for_type;
+
+      /**
+       * List of base element indices used by compositional fields. Cached
+       * result returned by get_composition_base_element_indices().
+       */
+      std::vector<unsigned int> composition_base_element_indices;
+
+      /**
+       * Map base_element_index to list of compositional field indices that use
+       * that base element. Cached result returned by
+       * get_compositional_field_indices_with_base_element();
+       */
+      std::map<unsigned int, std::vector<unsigned int>> compositional_field_indices_with_base_element;
   };
 }
 

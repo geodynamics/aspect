@@ -7,9 +7,9 @@ subsection Material model
     set Reference temperature         = 0.0
     set Viscosity averaging scheme    = maximum composition
 
-    # background, OP, ML SP, crust SP
-    set Viscosities                   = 1.e20, 1.e23, 1.e23, 1.e20
-    set Densities                     = 3200.0, 3250.0, 3250.0, 3250.0
+    # BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
+    set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
+    set Densities                     = 3200.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0
     set Thermal conductivities        = 1
   end
 end

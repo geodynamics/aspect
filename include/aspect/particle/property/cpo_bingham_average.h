@@ -40,18 +40,30 @@ namespace aspect
        * See https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html for more info.
        *
        * The layout of the data vector per particle is the following (note that for this plugin the following dim's are always 3):
-       * 1 averaged a axis of olivine -> 3 (dim) doubles, starts at:
-       *                                   data_position + 1,
-       * 2 averaged b axis of olivine -> 3 (dim) doubles, starts at:
-       *                                   data_position + 4
-       * 3 averaged c axis of olivine -> 3 (dim) doubles, starts at:
-       *                                   data_position + 7
-       * 4 averaged a axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                    data_position + 10
-       * 5 averaged b axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                    data_position + 13
-       * 6 averaged c axis of enstatite -> 3 (dim) doubles, starts at:
-       *                                    data_position + 16
+       * 1 averaged a axis of olivine       -> 3 (dim) doubles, starts at:
+       *                                         data_position + 1,
+       * 2 eigenvalues of a axis of olivine -> 3 (dim) doubles, starts at:
+       *                                         data_position + 4,
+       * 3 averaged b axis of olivine       -> 3 (dim) doubles, starts at:
+       *                                         data_position + 7,
+       * 4 eigenvalues of b axis of olivine -> 3 (dim) doubles, starts at:
+       *                                         data_position + 10,
+       * 5 averaged c axis of olivine       -> 3 (dim) doubles, starts at:
+       *                                         data_position + 13,
+       * 6 eigenvalues of c axis of olivine -> 3 (dim) doubles, starts at:
+       *                                         data_position + 16,
+       * 7 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
+       *                                          data_position + 19,
+       * 8 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
+       *                                          data_position + 22,
+       * 9 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
+       *                                          data_position + 25,
+       * 10 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
+       *                                          data_position + 28,
+       * 11 averaged a axis of enstatite       -> 3 (dim) doubles, starts at:
+       *                                          data_position + 31,
+       * 12 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
+       *                                          data_position + 34,
        *
        * @ingroup ParticleProperties
        */
@@ -62,7 +74,7 @@ namespace aspect
           /**
            * constructor
            */
-          CpoBinghamAverage();
+          CpoBinghamAverage() = default;
 
           /**
            * Initialization function. This function is called once at the
@@ -89,6 +101,11 @@ namespace aspect
           /**
            * Update function. This function is called every time an update is
            * request by need_update() for every particle for every property.
+           * It is obvious that
+           * this function is called a lot, so its code should be efficient.
+           * The interface provides a default implementation that does nothing,
+           * therefore derived plugins that do not require an update do not
+           * need to implement this function.
            *
            * @param [in] data_position An unsigned integer that denotes which
            * component of the particle property vector is associated with the
@@ -96,23 +113,22 @@ namespace aspect
            * denotes the first component of this property, all other components
            * fill consecutive entries in the @p particle_properties vector.
            *
-           * @param [in] position The current particle position.
-           *
            * @param [in] solution The values of the solution variables at the
            * current particle position.
            *
            * @param [in] gradients The gradients of the solution variables at
            * the current particle position.
            *
-           * @param [in,out] particle_properties The properties of the particle
-           * that is updated within the call of this function.
+           * @param [in,out] particle The particle that is updated within
+           * the call of this function. The particle location can be accessed
+           * using particle->get_location() and its properties using
+           * particle->get_properties().
            */
           void
-          update_one_particle_property (const unsigned int data_position,
-                                        const Point<dim> &position,
-                                        const Vector<double> &solution,
-                                        const std::vector<Tensor<1,dim>> &gradients,
-                                        const ArrayView<double> &particle_properties) const override;
+          update_particle_property (const unsigned int data_position,
+                                    const Vector<double> &solution,
+                                    const std::vector<Tensor<1,dim>> &gradients,
+                                    typename ParticleHandler<dim>::particle_iterator &particle) const override;
 
           /**
            * This implementation tells the particle manager that
@@ -146,7 +162,7 @@ namespace aspect
            * axis associated with the densest clustering of points for each axis. the a to c axis vectors
            * are stored in the first to last array respectively.
            */
-          std::array<std::array<double,3>,3>
+          std::array<std::array<double,6>,3>
           compute_bingham_average(std::vector<Tensor<2,3>> matrices) const;
 
           /**

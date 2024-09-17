@@ -1,0 +1,303 @@
+# This cookbook simulates a kinematically-driven 2D subduction system containing
+# distinct lithologies for the mantle wedge and subducting sediment,
+# mid-ocean ridge basalt (MORB), gabbro, peridotite. Lithologies within the slab
+# are prescribed to an initial hydration state after a period of equilibration, and
+# subsequently dehydrate as they subduct. This cookbook utlizes the existing melt framework
+# within ASPECT which governs the mechanical coupling of a solid and fluid phase (see
+# https://doi.org/10.1093/gji/ggw329) but introduces solid-volatile reactions
+# that are governed by an approximation
+# published by Tian et al., 2019 (https://doi.org/10.1029/2019GC008488).
+# In detail, the model simulates the upper 20 km of a subducting slab with a dip
+# of 45 degrees and a convergence rate of 5 cm/yr. The Cartesian box is rotated
+# such that the x-axis aligns with the slab surface and the y-axis is orthogonal
+# to the slab surface, while gravity is imposed at an angle of 45 degrees. A surface pressure
+# of 1 GPa is imposed to account for the model simulating a portion of the slab
+# that is already subducted. For stability, the slab first subducts for 100 kyr before
+# the hydration is added, and the slab surface temperature diffuses to the mantle over
+# 10 km perpendicular to the slab surface. From the slab surface to the base of the model,
+# the composition is comprised of a 5 km thick layer of sediment with 3 wt% water,
+# below is a 7 km thick layer of MORB with 2 wt% water, and below that is an
+# 8 km thick layer of gabbro with 1 wt% water.
+
+set Adiabatic surface temperature              = 1600
+set Nonlinear solver scheme                    = iterated Advection and Stokes
+
+# We choose a low number of iterations and less restrictive nonlinear solver tolerance
+# for model efficiency. During the initial pulse of dehydration (for 3 time steps),
+# solvers do not quite converge to 1e-4, but achieve the convergence criteria for the
+# rest of the model run time. For a production model, a tolerance of at least 1e-5
+# should be selected. Reaching these tolerances may require on the order of
+# 50-100 nonlinear iterations, and the maximum number of nonlinear iterations
+# will need to be increased accordingly.
+set Max nonlinear iterations                   = 25
+set Nonlinear solver tolerance                 = 1e-4
+set Dimension                                  = 2
+set End time                                   = 2e6
+
+# Set the 'Surface pressure' to 1 GPa to simulate a slab that is at depth.
+set Surface pressure                           = 1e9
+set Maximum time step                          = 1000
+set Use operator splitting                     = true
+set Output directory                           = output_coupled_two_phase_tian_parameterization_kinematic_slab
+
+# Checkpoint the model so that a restart can be done if needed.
+subsection Checkpointing
+  set Steps between checkpoint = 20
+end
+
+subsection Discretization
+  # We choose relatively large values for the stabilization parameters:
+  # However, note that in an application model with a higher resolution,
+  # we would choose much smaller values for the stabilization parameters.
+  subsection Stabilization parameters
+    set beta  = 0.5
+    set cR    = 1
+  end
+end
+
+subsection Solver parameters
+  # Set a stricter linear solver tolerance to ensure convergence
+  subsection Stokes solver parameters
+    set Linear solver tolerance             = 1e-10
+    set Number of cheap Stokes solver steps = 1000
+  end
+end
+
+# Initialize the compositional fields. When using the tian approximation
+# Fluid-solid reaction scheme in the Reactive Fluid Transport material
+# model, the fields 'porosity', 'bound_fluid', 'peridotite', 'gabbro',
+# 'MORB', and 'sediment' are all required compositional fields. This is
+# because they are all treated as special fields by the material model.
+# The 4 lithologies ('sediment', 'MORB', 'gabbro', 'peridotite') are used
+# to determine the equilibrium wt% of water that can be incorporated into
+# the corresponding lithology at the model P-T conditions. Free fluid
+# ('porosity') is then partitioned into/out of the solid depending on the
+# current wt% water within the lithology ('bound_fluid'), and how much 'porosity'
+# is present.
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+  set Compositional field methods = field, field, field, field, field, field
+end
+
+# Initially, the interior of the model is just the periodite mantle.
+# The composition (4 lithologies, porosity, bound_fluid)
+# evolves through the composition boundary conditions specified below.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0; 0; 1; 0; 0; 0
+  end
+end
+
+# The slab begins at the left most boundary, at first consisting solely of dry
+# lithologic layers. After 100 kyr, the incoming sediment is hydrated
+# (initial_bound_) variablesto 3 wt% water, MORB to 2 wt% water, and gabbro
+# to 1 wt% water.
+subsection Boundary composition model
+  set Fixed composition boundary indicators         = left
+  set List of model names                           = function
+
+  subsection Function
+    set Function constants  = initial_porosity=0, initial_bound_sediment=0.03, initial_bound_MORB=0.02, initial_bound_gabbro=0.01, \
+                              sediment_min=0, sediment_max=5e3, MORB_min=5e3, MORB_max=12e3, gabbro_min=12e3, gabbro_max=20e3, \
+                              onset_time=100e3, slab_thickness=20e3
+    set Function expression = initial_porosity; \
+                              if( t<=onset_time, 0, \
+                                  if( (y<=slab_thickness - sediment_min) & (y>slab_thickness - sediment_max), initial_bound_sediment, \
+                                      if( (y<=slab_thickness - MORB_min) & (y>slab_thickness - MORB_max), initial_bound_MORB, \
+                                          if( (y<=slab_thickness - gabbro_min) & (y>slab_thickness - gabbro_max), initial_bound_gabbro, 0.0) \
+                                        ) \
+                                    ) \
+                                ); \
+                              if(y>slab_thickness, 1, 0); \
+                              if(y<=8e3, 1, 0); \
+                              if(y>8e3 & y<=15e3, 1, 0); \
+                              if(y>15e3 & y<=slab_thickness, 1, 0)
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 100e3
+    set Y extent      = 100e3
+    set Y repetitions = 2
+    set X repetitions = 2
+  end
+end
+
+# Refine the mesh globally from 50 km to 3.125 km resolution through four global refinements.
+# Next, adaptively refine the mesh as a function of the porosity.
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.05
+  set Refinement fraction                      = 0.8
+  set Initial adaptive refinement              = 1
+  set Initial global refinement                = 4
+  set Strategy                                 = composition threshold, minimum refinement function
+  set Time steps between mesh refinement       = 2
+
+  # Minimum of 4 global refinements
+  subsection Minimum refinement function
+    set Function expression = 4
+  end
+
+  # Refine where the porosity is bigger than 1e-6. Other compositions
+  # are set to 1e50 to ensure that we do not refine based on these
+  # compositions.
+  subsection Composition threshold
+    set Compositional field thresholds = 1e-6, 1e50, 1e50, 1e50, 1e50, 1e50
+  end
+end
+
+# Impose a gravity vector at an angle of 45 degrees. This
+# accounts for the fact that the slab is subducting with a dip
+# of 45 degrees and the x-axis of our model aligns parallel to the
+# slab surface.
+subsection Gravity model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = angle=0.7071067811865476
+    set Function expression = 9.81*angle; -9.81*angle
+  end
+end
+
+# Initial temperature is a constant value of 1500 K
+# The temperature field evolves through the imposed boundary conditions
+# outlined below.
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function constants  = Tmantle=1500
+    set Function expression = Tmantle
+  end
+end
+
+# Fix the temperature on the left boundary to ensure that
+# the incoming slab is always colder than the mantle. The
+# temperature is unconstrained on other boundaries.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = left
+  set List of model names                     = function
+
+  subsection Function
+    set Coordinate system                     = cartesian
+    set Variable names                        = x,y
+    set Function constants                    = Tmantle=1500, Tslab=600, slab_thickness=20e3
+    set Function expression                   = if(y<=slab_thickness, Tslab - 200*y/slab_thickness, Tmantle)
+  end
+end
+
+subsection Material model
+  set Model name                                        = reactive fluid transport
+  set Material averaging                                = harmonic average only viscosity
+
+  # Use the reactive fluid transport model composited with the visco plastic material model.
+  # We use the tian approximation method for the solid-fluid reactions, and place a maximum
+  # wt% water on the 4 lithologies. We choose fluid properties appropriate for water, and
+  # set the Fluid reaction time scale for operator splitting to be 50 kyr. This parameter
+  # controls the timescales for the dehydration/hydration reactions, and decreasing this value
+  # will tend to make convergence more difficult since fluids will be released from the solid
+  # phase more rapidly, increasing compaction pressure gradients. An important parameter that
+  # can help inform model stability is the compaction length, which is defined as:
+  # sqrt((eta_c + 4/3*eta_s) * k/eta_f)
+  # Where k is the permeability, and eta_c, eta_s, and eta_f are the compaction viscosity,
+  # shear viscosity, and fluid viscosity respectively. Ensuring that the mesh can resolve the
+  # compaction length will aid in convergence. The compaction length for this problem at the
+  # reference permeability (1e-6), the minimum shear viscosity (1e19 Pa s), and a compaction
+  # viscosity of 1e19 Pa s results in a compaction length of ~4.8 km. Our mesh has a maximum
+  # resolution of ~1.6 km^2, meaning that the compaction length scales are adequately resolved.
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = visco plastic
+    set Reference fluid density                          = 1000 # density of water
+    set Shear to bulk viscosity ratio                    = 0.1
+    set Reference fluid viscosity                        = 1
+    set Reference permeability                           = 1e-6
+    set Exponential fluid weakening factor               = 30
+    set Fluid compressibility                            = 0
+    set Fluid reaction time scale for operator splitting = 5e4
+    set Fluid-solid reaction scheme                      = tian approximation
+
+    # We limit the bound water in the gabbro, MORB, and sediment to their initial
+    # values to encourage water to hydrate the overlying mantle. The polynomials defined
+    # in Tian et al., 2019 also reach very large values at low P-T conditions, and so limiting
+    # the weight percent to reasonable values is recommended.
+    set Maximum weight percent water in peridotite       = 2
+    set Maximum weight percent water in gabbro           = 1
+    set Maximum weight percent water in MORB             = 2
+    set Maximum weight percent water in sediment         = 3
+  end
+
+  subsection Visco Plastic
+    # Use the composite flow law to simulate dislocation and diffusion creep
+    # of dry olivine with the parameters from Hirth & Kohlstaedt 2004 (10.1029/138GM06).
+    # This will be inconsistent with the physical state of the model (the solid is hydrated),
+    # but ongoing work will introduce a more self-consistent coupling between the hydration
+    # state and the rheology.
+    set Viscosity averaging scheme                      = harmonic
+    set Viscous flow law                                = composite
+    set Prefactors for diffusion creep                  = 4.5e-15
+    set Stress exponents for diffusion creep            = 1.0
+    set Activation energies for diffusion creep         = 375e3
+    set Activation volumes for diffusion creep          = 8.2e-6
+    set Prefactors for dislocation creep                = 7.4e-15
+    set Stress exponents for dislocation creep          = 3.5
+    set Activation energies for dislocation creep       = 530e3
+    set Activation volumes for dislocation creep        = 14e-6
+    set Angles of internal friction                     = 0
+    set Cohesions                                       = 1e50
+
+    # Limit the minimum and maximum viscosity to four orders of
+    # magnitude to improve solver convergence behavior.
+    set Minimum viscosity                               = 1e19
+    set Maximum viscosity                               = 1e23
+  end
+end
+
+# Define the velocity on all boundaries such that the velocity is 5 cm/yr on the bottom
+# boundary and the left/right boundaries from 0<=y<=20 km (slab). For y>20 km, the velocity
+# linearly decreases from 5 cm/yr to 2 cm/yr, approximating corner flow and the decreasing
+# viscous coupling of the mantle wedge with distance from the slab surface.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left: function, bottom: function, top: function, right: function
+
+  subsection Function
+    set Coordinate system   = cartesian
+    set Function constants  = basal_v = 0.05, top_v = 0.02, slab_depth = 20e3, ymax = 100e3
+    set Variable names      = x, y
+    set Function expression = if(y<=slab_depth, 0.05, 0.05 - (basal_v - top_v) * (y - slab_depth) / (ymax - slab_depth)); 0
+  end
+end
+
+# To fully couple the solid-fluid phases, Include melt transport must be set to true. The reactive
+# fluid transport model and the tian approximation can still be used when Include melt transport is
+# set to false, but this does not fully couple the solid-fluid phases. The uncoupled case is
+# presented in the investigated in the other .prm file in this cookbook.
+subsection Melt settings
+  set Include melt transport                  = true
+end
+
+# Output every 50 kyr, and visualize the melt material properties which allows us to look at the
+# compaction viscosities and compaction pressures.
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, velocity statistics
+
+  subsection Visualization
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties, melt fraction
+    set Output format                 = vtu
+    set Time between graphical output = 5e4
+    set Interpolate output            = true
+    set Number of grouped files       = 0
+
+    subsection Melt material properties
+      set List of properties          = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+  end
+end

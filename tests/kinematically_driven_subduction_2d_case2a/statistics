@@ -1,0 +1,61 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 4
+# 13: Iterations for composition solver 5
+# 14: Iterations for composition solver 6
+# 15: Iterations for composition solver 7
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Visualization file name
+# 20: RMS velocity (m/year)
+# 21: Max. velocity (m/year)
+# 22: Max depth [m] for composition BOC_OP
+# 23: Max depth [m] for composition BOC_SP
+# 24: Max depth [m] for composition SHB_OP
+# 25: Max depth [m] for composition SHB_SP
+# 26: Max depth [m] for composition thermal_OP
+# 27: Max depth [m] for composition thermal_SP
+# 28: Max depth [m] for composition WZ
+# 29: RMS velocity (m/year) for composition BOC_OP
+# 30: RMS velocity (m/year) for composition BOC_SP
+# 31: RMS velocity (m/year) for composition SHB_OP
+# 32: RMS velocity (m/year) for composition SHB_SP
+# 33: RMS velocity (m/year) for composition thermal_OP
+# 34: RMS velocity (m/year) for composition thermal_SP
+# 35: RMS velocity (m/year) for composition WZ
+# 36: RMS velocity (m/year) for the selected field 
+# 37: Viscous dissipation (W/m) for composition BOC_OP
+# 38: Viscous dissipation (W/m) for composition BOC_SP
+# 39: Viscous dissipation (W/m) for composition SHB_OP
+# 40: Viscous dissipation (W/m) for composition SHB_SP
+# 41: Viscous dissipation (W/m) for composition thermal_OP
+# 42: Viscous dissipation (W/m) for composition thermal_SP
+# 43: Viscous dissipation (W/m) for composition WZ
+# 44: Viscous dissipation (W/m)
+# 45: Minimal temperature (K)
+# 46: Average temperature (K)
+# 47: Maximal temperature (K)
+# 48: Average nondimensional temperature (K)
+# 49: Trench location [m]
+# 50: Isotherm depth [m]
+# 51: RMS temperature (C) for composition BOC_OP
+# 52: RMS temperature (C) for composition BOC_SP
+# 53: RMS temperature (C) for composition SHB_OP
+# 54: RMS temperature (C) for composition SHB_SP
+# 55: RMS temperature (C) for composition thermal_OP
+# 56: RMS temperature (C) for composition thermal_SP
+# 57: RMS temperature (C) for composition WZ
+# 58: RMS temperature (C) for the selected fields
+# 59: RMS temperature (C) for the whole domain
+0 0.000000000000e+00 0.000000000000e+00 1792 16999 7529 52703  0  0  0  0  0  0  0  0 38 40 40 output-kinematically_driven_subduction_2d_case2a/solution/solution-00000 1.97281843e-02 5.01286768e-02 2.35969112e+03 2.35969112e+03 3.14062500e+04 3.14062500e+04 7.32812500e+04 1.07047191e+05 8.13903089e+04 1.46634210e-02 3.89445439e-02 1.44575712e-02 3.87534981e-02 1.38929501e-02 3.84306127e-02 2.54623981e-02 3.85439103e-02 5.11178976e+02 4.36617460e-01 2.72982331e+03 2.24061587e+03 3.47155239e+03 7.42339205e+03 8.04912610e+01 1.81860840e+04 2.73150000e+02 1.55360795e+03 1.72015000e+03 3.39373961e-01 1.46484375e+06 0.00000000e+00 4.95813881e+01 3.73093247e+01 4.49240814e+02 3.48909173e+02 1.00966142e+03 9.93150684e+02 8.57657629e+02 8.38942503e+02 1.30814066e+03 
+1 1.000000000000e+05 1.000000000000e+05 1792 16999 7529 52703 14 11 11 11 11 10 11 11 23 25 25                                                                       "" 1.97701505e-02 5.01312243e-02 2.35969112e+03 2.35969112e+03 3.14062500e+04 3.14062500e+04 7.32812500e+04 1.07047191e+05 8.13903089e+04 1.44117525e-02 3.91126335e-02 1.41762900e-02 3.89020937e-02 1.36442999e-02 3.85966801e-02 2.56113284e-02 3.87054695e-02 4.95050411e+02 4.27285378e-01 2.61353295e+03 2.19767571e+03 3.36287423e+03 7.29969348e+03 5.14958348e+01 1.77855069e+04 2.73150000e+02 1.55344423e+03 1.72015000e+03 3.39330568e-01 1.46484375e+06 0.00000000e+00 4.92201247e+01 3.56952764e+01 4.48791961e+02 3.50691143e+02 1.01347825e+03 9.93316002e+02 8.43675495e+02 8.39073474e+02 1.30798947e+03 

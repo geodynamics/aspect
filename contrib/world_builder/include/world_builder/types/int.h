@@ -60,8 +60,8 @@ namespace WorldBuilder
                           const std::string &name,
                           const std::string &documentation) const override final;
 
-        unsigned int value {0};
-        unsigned int default_value;
+        int value {0};
+        int default_value;
 
       protected:
         /**

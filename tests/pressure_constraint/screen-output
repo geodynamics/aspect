@@ -8,53 +8,45 @@ adding constraint idx= 162 to value= 100
 *** Timestep 0:  t=0 seconds, dt=0 seconds
 adding constraint idx= 162 to value= 100
    Solving temperature system... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.183 m/s, 0.249 m/s
-     Pressure min/avg/max:               4996 Pa, 4998 Pa, 5000 Pa
+     Pressure min/avg/max:               76.12 Pa, 155 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          
-Total system matrix memory consumption: 0.06 MB.
-Total system matrix nnz: 4,098
+Total system matrix memory consumption: 0.02 MB.
+Total system matrix nnz: 777
 system matrix nnz by block: 
-       2,180         570           0
-         570           1           0
+           0           0           0
+           0           0           0
            0           0         777
 
-Total system preconditioner matrix memory consumption: 0.03 MB.
-Total system preconditioner matrix nnz: 1,285
+Total system preconditioner matrix memory consumption: 0.00 MB.
+Total system preconditioner matrix nnz: 0
 system preconditioner matrix nnz by block: 
-       1,122           0           0
-           0         163           0
-           0           0           0
 
 
 *** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
 adding constraint idx= 162 to value= 100
    Solving temperature system... 9 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.183 m/s, 0.249 m/s
-     Pressure min/avg/max:               4996 Pa, 4998 Pa, 5000 Pa
+     Pressure min/avg/max:               153 Pa, 230.7 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          
-Total system matrix memory consumption: 0.06 MB.
-Total system matrix nnz: 4,098
+Total system matrix memory consumption: 0.02 MB.
+Total system matrix nnz: 777
 system matrix nnz by block: 
-       2,180         570           0
-         570           1           0
+           0           0           0
+           0           0           0
            0           0         777
 
-Total system preconditioner matrix memory consumption: 0.03 MB.
-Total system preconditioner matrix nnz: 1,285
+Total system preconditioner matrix memory consumption: 0.00 MB.
+Total system preconditioner matrix nnz: 0
 system preconditioner matrix nnz by block: 
-       1,122           0           0
-           0         163           0
-           0           0           0
 
 
 Termination requested by criterion: end time

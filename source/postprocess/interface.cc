@@ -31,35 +31,6 @@ namespace aspect
   {
 // ------------------------------ Interface -----------------------------
 
-
-    template <int dim>
-    void
-    Interface<dim>::initialize ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::update ()
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::declare_parameters (ParameterHandler &)
-    {}
-
-
-
-    template <int dim>
-    void
-    Interface<dim>::parse_parameters (ParameterHandler &)
-    {}
-
-
-
     template <int dim>
     std::list<std::string>
     Interface<dim>::required_other_postprocessors() const
@@ -93,7 +64,7 @@ namespace aspect
       // call the execute() functions of all postprocessor objects we have
       // here in turns
       std::list<std::pair<std::string,std::string>> output_list;
-      for (const auto &p : postprocessors)
+      for (const auto &p : this->plugin_objects)
         {
           try
             {
@@ -162,8 +133,8 @@ namespace aspect
     namespace
     {
       std::tuple
-      <void *,
-      void *,
+      <aspect::internal::Plugins::UnusablePluginList,
+      aspect::internal::Plugins::UnusablePluginList,
       aspect::internal::Plugins::PluginList<Interface<2>>,
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
@@ -212,12 +183,11 @@ namespace aspect
               ExcMessage ("No postprocessors registered!?"));
 
       // first find out which postprocessors are requested
-      std::vector<std::string> postprocessor_names;
       prm.enter_subsection("Postprocess");
       {
-        postprocessor_names
+        this->plugin_names
           = Utilities::split_string_list(prm.get("List of postprocessors"));
-        AssertThrow(Utilities::has_unique_entries(postprocessor_names),
+        AssertThrow(Utilities::has_unique_entries(this->plugin_names),
                     ExcMessage("The list of strings for the parameter "
                                "'Postprocess/List of postprocessors' contains entries more than once. "
                                "This is not allowed. Please check your parameter file."));
@@ -226,15 +196,15 @@ namespace aspect
 
       // see if 'all' was selected (or is part of the list). if so
       // simply replace the list with one that contains all names
-      if (std::find (postprocessor_names.begin(),
-                     postprocessor_names.end(),
-                     "all") != postprocessor_names.end())
+      if (std::find (this->plugin_names.begin(),
+                     this->plugin_names.end(),
+                     "all") != this->plugin_names.end())
         {
-          postprocessor_names.clear();
+          this->plugin_names.clear();
           for (typename std::list<typename aspect::internal::Plugins::PluginList<Interface<dim>>::PluginInfo>::const_iterator
                p = std::get<dim>(registered_plugins).plugins->begin();
                p != std::get<dim>(registered_plugins).plugins->end(); ++p)
-            postprocessor_names.push_back (std::get<0>(*p));
+            this->plugin_names.push_back (std::get<0>(*p));
         }
 
       // see if the user specified "global statistics" somewhere; if so, remove
@@ -242,46 +212,45 @@ namespace aspect
       // whether or not it has been explicitly provided by the user makes no
       // difference.
       std::vector<std::string>::iterator new_end
-        = std::remove (postprocessor_names.begin(),
-                       postprocessor_names.end(),
+        = std::remove (this->plugin_names.begin(),
+                       this->plugin_names.end(),
                        "global statistics");
-      if (new_end != postprocessor_names.end())
-        postprocessor_names.erase (new_end, postprocessor_names.end());
+      if (new_end != this->plugin_names.end())
+        this->plugin_names.erase (new_end, this->plugin_names.end());
 
       // in any case, put the global statistics postprocessor at the front:
-      postprocessor_names.insert(postprocessor_names.begin(), "global statistics");
+      this->plugin_names.insert(this->plugin_names.begin(), "global statistics");
 
       // then go through the list, create objects and let them parse
       // their own parameters
-      for (unsigned int name=0; name<postprocessor_names.size(); ++name)
+      for (unsigned int name=0; name<this->plugin_names.size(); ++name)
         {
-          postprocessors.push_back (std::unique_ptr<Interface<dim>>
-                                    (std::get<dim>(registered_plugins)
-                                     .create_plugin (postprocessor_names[name],
-                                                     "Postprocessor plugins")));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
+          this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
+                                             .create_plugin (this->plugin_names[name],
+                                                             "Postprocessor plugins"));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*this->plugin_objects.back()))
             sim->initialize_simulator (this->get_simulator());
 
-          postprocessors.back()->parse_parameters (prm);
-          postprocessors.back()->initialize ();
+          this->plugin_objects.back()->parse_parameters (prm);
+          this->plugin_objects.back()->initialize ();
 
           // now see if the newly created postprocessor relies on others. if so,
           // go through the list of the ones we already have and if the required
           // ones are new, add them to the end of the list we work through
           const std::list<std::string> additional_postprocessors
-            = postprocessors.back()->required_other_postprocessors ();
+            = this->plugin_objects.back()->required_other_postprocessors ();
 
           for (const auto &p : additional_postprocessors)
             {
               AssertThrow (Patterns::Selection(std::get<dim>(registered_plugins).get_pattern_of_names ())
                            .match (p) == true,
-                           ExcMessage ("Postprocessor <" + postprocessor_names[name] +
+                           ExcMessage ("Postprocessor <" + this->plugin_names[name] +
                                        "> states that it depends on another postprocessor, <"
                                        + p +
                                        ">, but the latter is not a valid name."));
 
               bool already_present = false;
-              for (const auto &postprocessor_name : postprocessor_names)
+              for (const auto &postprocessor_name : this->plugin_names)
                 if (postprocessor_name == p)
                   {
                     already_present = true;
@@ -289,13 +258,13 @@ namespace aspect
                   }
 
               if (already_present == false)
-                postprocessor_names.push_back (p);
+                this->plugin_names.push_back (p);
             }
         }
-      Assert (postprocessor_names.size() == postprocessors.size(),
+      Assert (this->plugin_names.size() == this->plugin_objects.size(),
               ExcInternalError());
 
-      // we now have matching lists 'postprocessors' and 'postprocessor_names'
+      // we now have matching lists 'this->plugin_objects' and 'this->plugin_names'
       // that define which postprocessors we have. we just need to bring them
       // into an order so that dependencies run first, and dependents after
       // them. the algorithm for creating a sorted list for this works as follows:
@@ -310,17 +279,17 @@ namespace aspect
       // if we go through a loop where we do not add a postprocessor to the list
       // but there are still ones that haven't been added to the list, then we
       // have found a cycle in the dependencies and that is clearly a problem
-      std::vector<bool> already_assigned (postprocessors.size(), false);
+      std::vector<bool> already_assigned (this->plugin_objects.size(), false);
       std::vector<std::string> sorted_names;
-      std::vector<std::unique_ptr<Interface<dim>>> sorted_postprocessors;
-      while (sorted_names.size() < postprocessors.size())
+      std::list<std::unique_ptr<Interface<dim>>> sorted_postprocessors;
+      while (sorted_names.size() < this->plugin_objects.size())
         {
           bool at_least_one_element_added = false;
 
           {
-            typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator
-            pp = postprocessors.begin();
-            for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
+            typename std::list<std::unique_ptr<Interface<dim>>>::iterator
+            pp = this->plugin_objects.begin();
+            for (unsigned int i=0; i<this->plugin_names.size(); ++i, ++pp)
               if (already_assigned[i] == false)
                 {
                   // for this postprocessor, check if all of its dependencies
@@ -340,13 +309,13 @@ namespace aspect
                   // right now for this postprocessor (but we will come back for it)
                   //
                   // if there are none, add this postprocessor. using move semantics
-                  // removes the postprocessor from the 'postprocessors' array,
+                  // removes the postprocessor from the 'this->plugin_objects' array,
                   // which is ok since we will swap the two arrays at the end of the
                   // function.
                   if (unmet_dependencies == false)
                     {
-                      sorted_names.push_back (postprocessor_names[i]);
-                      sorted_postprocessors.emplace_back (std::move(postprocessors[i]));
+                      sorted_names.push_back (this->plugin_names[i]);
+                      sorted_postprocessors.emplace_back (std::move(*pp));
                       already_assigned[i] = true;
                       at_least_one_element_added = true;
                     }
@@ -360,12 +329,12 @@ namespace aspect
               out << "While sorting postprocessors by their dependencies, "
                   "ASPECT encountered a cycle in dependencies. The following "
                   "postprocessors are involved:\n";
-              typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator
-              pp = postprocessors.begin();
-              for (unsigned int i=0; i<postprocessor_names.size(); ++i, ++pp)
+              typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
+              pp = this->plugin_objects.begin();
+              for (unsigned int i=0; i<this->plugin_names.size(); ++i, ++pp)
                 if (already_assigned[i] == false)
                   {
-                    out << "  " << postprocessor_names[i] << " -> ";
+                    out << "  " << this->plugin_names[i] << " -> ";
                     const std::list<std::string> deps = (*pp)->required_other_postprocessors();
                     for (const auto &p : deps)
                       out << "'" << p << "' ";
@@ -374,16 +343,17 @@ namespace aspect
               AssertThrow (false, ExcMessage(out.str()));
             }
         }
-      Assert (postprocessor_names.size() == sorted_names.size(),
+      Assert (this->plugin_names.size() == sorted_names.size(),
               ExcInternalError());
       Assert (sorted_postprocessors.size() == sorted_names.size(),
               ExcInternalError());
       Assert (std::find (already_assigned.begin(), already_assigned.end(), false) == already_assigned.end(),
               ExcInternalError());
 
-      // finally swap the unsorted list with the sorted list and only
+      // finally swap the unsorted lists with the sorted lists and only
       // keep the latter
-      postprocessors.swap (sorted_postprocessors);
+      this->plugin_objects.swap (sorted_postprocessors);
+      this->plugin_names.swap (sorted_names);
     }
 
 

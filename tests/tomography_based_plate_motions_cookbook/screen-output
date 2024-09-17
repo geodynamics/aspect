@@ -13,7 +13,6 @@ Loading shared library <./libtomography_based_plate_motions_cookbook.debug.so>
 
    Loading Ascii data initial file ASPECT_DIR/cookbooks/tomography_based_plate_motions/input_data/LLNL_model_cropped_cratons_faults.txt.gz.
 
-Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 2,232 (480+72+240+240+240+240+240+240+240)
 
@@ -27,6 +26,9 @@ Number of degrees of freedom: 8,016 (1,728+240+864+864+864+864+864+864+864)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.012107
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Max, min, and RMS residual velocity along boundary parts: 1.123 m/year, 0.0004104 m/year, 0.4248 m/year
      Max, min, and rms velocity along boundary parts:          0.8438 m/year, 0.000775 m/year, 0.3246 m/year, 1.123 m/year, 0.0004104 m/year, 0.4248 m/year
@@ -38,3 +40,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

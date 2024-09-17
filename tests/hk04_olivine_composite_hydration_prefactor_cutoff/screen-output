@@ -1,0 +1,19 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,885 (882+121+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3198 kg/m^3, 3.172e+22 Pa s, 3.198e+13 kg
+     Writing graphical output:                          output-hk04_olivine_composite_hydration_prefactor_cutoff/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

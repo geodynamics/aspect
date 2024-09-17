@@ -1,8 +1,7 @@
 (sec:run-aspect:debug-mode)=
 # Debug or optimized mode
 
-ASPECT utilizes a <span
-class="smallcaps">deal.II</span> feature called *debug mode*. By default,
+ASPECT utilizes a deal.II feature called *debug mode*. By default,
 ASPECT is configured in debug mode, i.e., it calls a
 version of the deal.II library that contains
 lots of checks for the correctness of function arguments, the consistency of
@@ -11,8 +10,7 @@ many similar consistency checks enabled only in debug mode. Finally,
 you can only expect a good debugging experience (for example using *gdb*)
 because we only enable debug symbols in *debug mode* (at least by default).
 
-If you program with <span
-class="smallcaps">deal.II</span>, for example to extend
+If you program deal.II, for example to extend
 ASPECT, it has been our experience over the years
 that, by number, most programming errors are of the kind where one forgets to
 initialize a vector, one accesses data that has not been updated, one tries to
@@ -74,6 +72,6 @@ computation shows you which mode was selected.
 More details about optimized versus debug mode are also discussed in
 {ref}`sec:gmg`.
 
--[^footnote1]: The make targets described here modify the CMake variable
+[^footnote1]: The make targets described here modify the CMake variable
 `CMAKE_BUILD_TYPE` to either `Debug` or `Release`. You can of course also
 modify these directly when configuring your project with CMake.

@@ -26,7 +26,6 @@
 
 namespace WorldBuilder
 {
-  class Parameters;
 
   namespace Features
   {
@@ -40,7 +39,7 @@ namespace WorldBuilder
          * what the returned temperature or grains of the temperature and grains
          * functions of this class will be.
          */
-        class RandomUniformDistributionDeflected final : public Interface
+        class RandomUniformDistributionDeflected final: public Interface
         {
           public:
             /**
@@ -106,6 +105,7 @@ namespace WorldBuilder
             std::vector<double> grain_sizes;
             std::vector<bool> normalize_grain_sizes;
             std::vector<double> deflections;
+            std::vector<std::array<std::array<double, 3>, 3>> basis_rotation_matrices;
         };
       } // namespace Grains
     }   // namespace ContinentalPlateModels

@@ -1,0 +1,78 @@
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1.0
+set Use years in output instead of seconds = false
+set CFL number                             = 1.0
+set Output directory                       = circle_euler_1.0
+set Timing output frequency                = 100
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 4
+    set Y extent = 4
+    set Box origin X coordinate = -2
+    set Box origin Y coordinate = -2
+  end
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,t
+    set Function expression = 2 * pi * (1+0.0*sin(t))*-y; 2 * pi * (1+0.0*sin(t))*x
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 1
+  end
+
+  subsection Particles
+    set Time between data output = 0.1
+    set Data output format = ascii
+  end
+end
+
+subsection Particles
+  set Particle generator name = ascii file
+  set Integration scheme = rk2
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = $ASPECT_SOURCE_DIR/benchmarks/particle_integration_scheme/
+      set Data file name = particle.dat
+    end
+  end
+end

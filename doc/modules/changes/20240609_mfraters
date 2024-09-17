@@ -1,0 +1,4 @@
+New: The CPO particle property plugin can now use the Geodynamic 
+World Builder to set initial grain-sizes and grain orientations
+<br>
+(Menno Fraters, 2024/06/09)

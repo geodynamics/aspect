@@ -103,24 +103,31 @@ subsection Postprocess
   subsection Particles
     set Time between data output = 0.1
     set Data output format = vtu
-    set List of particle properties = function
-    set Integration scheme = rk2
-    set Interpolation scheme = bilinear least squares
-    set Update ghost particles = true
-    set Minimum particles per cell = 12
-    set Maximum particles per cell = 16384
-    set Particle generator name = random uniform
-    set Number of particles = 8192
-    set Load balancing strategy = add particles
+  end
+end
 
-    subsection Function
-      set Function expression = sin(pi*x)*sin(pi*y) + 2
+subsection Particles
+  set List of particle properties = function
+  set Integration scheme = rk2
+  set Interpolation scheme = bilinear least squares
+  set Minimum particles per cell = 12
+  set Maximum particles per cell = 16384
+  set Particle generator name = random uniform
+  set Load balancing strategy = add particles
+
+  subsection Function
+    set Function expression = sin(pi*x)*sin(pi*y) + 2
+  end
+
+  subsection Interpolator
+    subsection Quadratic least squares
+      set Use boundary extrapolation = true
     end
+  end
 
-    subsection Interpolator
-      subsection Quadratic least squares
-        set Use boundary extrapolation = true
-      end
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 8192
     end
   end
 end

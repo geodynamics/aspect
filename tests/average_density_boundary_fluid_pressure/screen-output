@@ -37,7 +37,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
 
 *** Timestep 1:  t=100000 years, dt=100000 years
-   Solving composition reactions... in 50 substep(s).
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 6 iterations.
    Solving porosity system ... 4 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -60,7 +60,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
    Solving fluid velocity system... 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.98291e-08, 3.80211e-05, 0, 1.04909e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.98292e-08, 3.80211e-05, 0, 1.04901e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.80211e-05
 
    Postprocessing:
@@ -76,8 +76,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.50991e-10, 2.09781e-07, 0, 9.1119e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.09781e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.50682e-10, 2.097e-07, 0, 9.11202e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.097e-07
 
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0002
@@ -92,8 +92,8 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 13 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.41877e-13, 6.30959e-14, 0, 9.1119e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 9.1119e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.41738e-13, 6.30594e-14, 0, 9.11202e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 9.11202e-09
 
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0003

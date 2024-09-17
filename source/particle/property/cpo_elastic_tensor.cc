@@ -66,7 +66,7 @@ namespace aspect
       void
       CpoElasticTensor<dim>::initialize ()
       {
-        const auto &manager = this->get_particle_world().get_property_manager();
+        const auto &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No crystal preferred orientation property plugin found."));
 
@@ -88,23 +88,23 @@ namespace aspect
         const SymmetricTensor<2,6> *stiffness_matrix = &stiffness_matrix_olivine;
         for (size_t mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
-            if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_a_fabric
-                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_b_fabric
-                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_c_fabric
-                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_d_fabric
-                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_e_fabric
-                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::olivine_karato_2008
+            if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::olivine_a_fabric
+                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::olivine_b_fabric
+                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::olivine_d_fabric
+                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::olivine_c_fabric
+                || cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::olivine_e_fabric
                )
               {
                 stiffness_matrix = &stiffness_matrix_olivine;
               }
-            else if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == (unsigned int)DeformationTypeSelector::enstatite)
+            else if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::enstatite)
               {
                 stiffness_matrix = &stiffness_matrix_enstatite;
               }
             else
               {
-                AssertThrow(false, ExcMessage("Stiffness matrix not implemented for deformation type " + std::to_string(cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i))));
+                AssertThrow(false, ExcMessage("Stiffness matrix not implemented for deformation type "
+                                              + std::to_string(static_cast<unsigned int>(cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i)))));
               }
 
             for (size_t grain_i = 0; grain_i < n_grains; grain_i++)
@@ -140,23 +140,22 @@ namespace aspect
 
       template <int dim>
       void
-      CpoElasticTensor<dim>::update_one_particle_property(const unsigned int data_position,
-                                                          const Point<dim> &,
-                                                          const Vector<double> &,
-                                                          const std::vector<Tensor<1,dim>> &,
-                                                          const ArrayView<double> &data) const
+      CpoElasticTensor<dim>::update_particle_property(const unsigned int data_position,
+                                                      const Vector<double> &/*solution*/,
+                                                      const std::vector<Tensor<1,dim>> &/*gradients*/,
+                                                      typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         // Get a reference to the CPO particle property.
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world().get_property_manager().template get_matching_property<Particle::Property::CrystalPreferredOrientation<dim>>();
+          this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
 
         const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
                                                                             cpo_data_position,
-                                                                            data);
+                                                                            particle->get_properties());
 
         Particle::Property::CpoElasticTensor<dim>::set_elastic_tensor(data_position,
-                                                                      data,
+                                                                      particle->get_properties(),
                                                                       C_average);
 
 
@@ -212,8 +211,7 @@ namespace aspect
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
 
-        property_information.push_back(std::make_pair("cpo_elastic_tensor",SymmetricTensor<2,6>::n_independent_components));
-
+        property_information.emplace_back("cpo_elastic_tensor", SymmetricTensor<2,6>::n_independent_components);
         return property_information;
       }
 
@@ -230,24 +228,16 @@ namespace aspect
       void
       CpoElasticTensor<dim>::parse_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Crystal Preferred Orientation");
         {
-          prm.enter_subsection("Particles");
+          n_grains = prm.get_integer("Number of grains per particle");
+          prm.enter_subsection("Initial grains");
           {
-            prm.enter_subsection("Crystal Preferred Orientation");
-            {
-              n_grains = prm.get_integer("Number of grains per particle");
-              prm.enter_subsection("Initial grains");
-              {
-                n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
-              }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+            n_minerals = dealii::Utilities::split_string_list(prm.get("Minerals")).size();
           }
-          prm.leave_subsection ();
+          prm.leave_subsection();
         }
-        prm.leave_subsection ();
+        prm.leave_subsection();
       }
     }
   }

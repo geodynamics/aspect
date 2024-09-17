@@ -34,12 +34,11 @@ Number of degrees of freedom: 84 (50+9+25)
 * evaluate called with additional outputs!
 * local_assemble_stokes call, have additional? 1
    value = 42
-   Rebuilding Stokes preconditioner...* evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
-
-   Solving Stokes system... 11+0 iterations.
+* evaluate called without additional outputs!
+   Solving Stokes system... 7+0 iterations.
 
    Postprocessing:
 * evaluate called without additional outputs!

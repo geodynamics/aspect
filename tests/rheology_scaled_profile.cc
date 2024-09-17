@@ -98,7 +98,7 @@ namespace aspect
      * an unscaled (constant) viscosity profile, which is then scaled by the quotient between reference
      * profile and unscaled viscosity.
      */
-    template<int dim>
+    template <int dim>
     class ScaledViscosityProfileMaterial : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:

@@ -14,7 +14,12 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 1613.0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = no Advection, no Stokes
+
+###################################
+# This is the part that is different: Specifically, do not actually
+# solve anything, and output the elevation so that we can inspect it.
+# Also use a higher mesh resolution
+set Nonlinear solver scheme = no Advection, no Stokes
 
 subsection Gravity model
   set Model name = radial constant
@@ -67,7 +72,9 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 2
+  set Initial global refinement          = 1
+  set Skip solvers on initial refinement = false
+  set Strategy                           = topography
 end
 
 subsection Boundary velocity model
@@ -77,22 +84,6 @@ end
 
 # The ascii data file prescribes a topography between -2000 m and
 # +9000 m. The topography postprocessor output should match with this.
-subsection Postprocess
-  set List of postprocessors = velocity statistics, basic statistics,  temperature statistics, topography
-end
-
-###################################
-# This is the part that is different: Specifically, do not actually
-# solve anything, and output the elevation so that we can inspect it.
-# Also use a higher mesh resolution
-set Nonlinear solver scheme = no Advection, no Stokes
-
-subsection Mesh refinement
-  set Initial adaptive refinement        = 0
-  set Initial global refinement          = 1
-  set Skip solvers on initial refinement = false
-  set Strategy                           = topography
-end
 
 subsection Postprocess
   set List of postprocessors = visualization

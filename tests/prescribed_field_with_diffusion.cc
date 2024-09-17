@@ -59,7 +59,7 @@ namespace aspect
       // set up variable to interpolate prescribed field outputs onto compositional fields
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
-      if (prescribed_field_out != NULL)
+      if (prescribed_field_out != nullptr)
         for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           {
             const double y = in.position[i](1);
@@ -72,7 +72,7 @@ namespace aspect
     void
     PrescribedFieldMaterial<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

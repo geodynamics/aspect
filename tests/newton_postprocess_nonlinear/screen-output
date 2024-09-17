@@ -14,7 +14,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+46 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 4.43603e+13
+      Newton system information: Norm of the rhs: 4.43603e+13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -22,8 +23,9 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0000
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+86 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.0197899, norm of the rhs: 8.77888e+11, newton_derivative_scaling_factor: 0
+   Solving Stokes system... 0+62 iterations.
+      Newton system information: Norm of the rhs: 8.77888e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0197899
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -33,7 +35,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+1 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.0146001, norm of the rhs: 6.47664e+11, newton_derivative_scaling_factor: 0
+      Newton system information: Norm of the rhs: 6.47665e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0146001
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -43,7 +46,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+1 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.0134023, norm of the rhs: 5.9453e+11, newton_derivative_scaling_factor: 0
+      Newton system information: Norm of the rhs: 5.9453e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0134023
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -53,7 +57,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 0.0137113, norm of the rhs: 6.08238e+11, newton_derivative_scaling_factor: 0
+      Newton system information: Norm of the rhs: 6.08238e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0137113
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -61,6 +66,9 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0004
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
 
 
 
@@ -68,3 +76,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

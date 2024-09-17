@@ -315,18 +315,24 @@ FOREACH(_test ${_tests})
     # "prebuild" tests on the CI system, which does not use the ctest
     # mechanism. So without this additional timeout command, tests would hang
     # indefinitely.
+    # We are creating an empty file "/runs" if the test runs successfully without
+    # crashing. This is used later to only diff if necessary.
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/timeout.sh ${TEST_TIME_LIMIT}s ${CMAKE_CURRENT_SOURCE_DIR}/cmake/run_test.sh ${EXPECT} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
         COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        COMMAND touch ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
         DEPENDS ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${_testdepends})
     ELSE()
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/timeout.sh ${TEST_TIME_LIMIT}s mpirun -np ${_mpi_count} ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm
                 > ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp
         COMMAND ${_replacement_script} screen-output <${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output.tmp >${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
+        COMMAND touch ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
         DEPENDS ${ASPECT_BINARY} ${CMAKE_CURRENT_BINARY_DIR}/${_testname}.x.prm ${_testdepends})
     ENDIF()
 
@@ -363,8 +369,10 @@ FOREACH(_test ${_tests})
         # the normalized output file:
         SET(_run_file ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.notime)
 
-        # generate .diff file:
+        # generate .diff file, only run diff if "/runs" exists (test ran successfully),
+        # otherwise GENERATE_REFERENCE_OUTPUT would overwrite reference data with garbage.
         ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/${_name}.diff
+          COMMAND test -f ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/runs
           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/diff_test.sh
                   ${TEST_DIFF}
                   ${_testname}/${_name}

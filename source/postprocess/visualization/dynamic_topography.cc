@@ -50,7 +50,7 @@ namespace aspect
           quantity(0) = 0;
 
         const Postprocess::DynamicTopography<dim> &dynamic_topography =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
+          this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::DynamicTopography<dim>>();
 
         auto cell = input_data.template get_cell<dim>();
 

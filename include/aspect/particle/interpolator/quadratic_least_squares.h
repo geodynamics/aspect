@@ -24,7 +24,6 @@
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/interpolator/cell_average.h>
 #include <aspect/simulator_access.h>
-#include <deal.II/lac/lapack_full_matrix.h>
 
 namespace aspect
 {

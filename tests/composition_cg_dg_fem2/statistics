@@ -1,0 +1,38 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 4
+# 13: Iterations for composition solver 5
+# 14: Iterations for Stokes solver
+# 15: Velocity iterations in Stokes preconditioner
+# 16: Schur complement iterations in Stokes preconditioner
+# 17: Minimal temperature (K)
+# 18: Average temperature (K)
+# 19: Maximal temperature (K)
+# 20: Average nondimensional temperature (K)
+# 21: Minimal value for composition C_1
+# 22: Maximal value for composition C_1
+# 23: Global mass for composition C_1
+# 24: Minimal value for composition C_2
+# 25: Maximal value for composition C_2
+# 26: Global mass for composition C_2
+# 27: Minimal value for composition C_3
+# 28: Maximal value for composition C_3
+# 29: Global mass for composition C_3
+# 30: Minimal value for composition C_4
+# 31: Maximal value for composition C_4
+# 32: Global mass for composition C_4
+# 33: Minimal value for composition C_5
+# 34: Maximal value for composition C_5
+# 35: Global mass for composition C_5
+0 0.000000000000e+00 0.000000000000e+00 40 441 193 200  0 0  0  0 0 0 12 14 14 0.00000000e+00 5.00000000e-01 1.00000000e+00 5.00000000e-01 0.00000000e+00 1.00000000e+00 5.00000000e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01  0.00000000e+00 1.00000000e+00 4.58333333e-01  0.00000000e+00 1.00000000e+00 3.75000000e-01  0.00000000e+00 1.00000000e+00 3.75000000e-01 
+1 6.250000000000e-02 6.250000000000e-02 40 441 193 200 10 3 10 10 6 3  7  9  9 0.00000000e+00 5.00021358e-01 1.00000000e+00 5.00021358e-01 1.10561158e-10 9.99186176e-01 5.00020085e-01 -1.57952550e-02 1.02777854e+00 4.58314382e-01 -1.57952550e-02 1.02777854e+00 4.58314382e-01 -7.23249290e-02 1.06953675e+00 3.75000000e-01 -1.14531625e-01 1.11905441e+00 3.74972012e-01 
+2 1.000000000000e-01 3.750000000000e-02 40 441 193 200 10 3 10 10 6 3 12 14 14 0.00000000e+00 5.00024722e-01 1.00000000e+00 5.00024722e-01 2.28231019e-10 9.98489448e-01 5.00036945e-01 -2.06184196e-02 1.03261208e+00 4.58295584e-01 -2.06184196e-02 1.03261208e+00 4.58295584e-01 -1.05388605e-01 1.09844303e+00 3.75000000e-01 -1.49536172e-01 1.15735921e+00 3.74948780e-01 

@@ -530,7 +530,7 @@ namespace aspect
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -538,7 +538,7 @@ namespace aspect
             (n_points, this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output<PrescribedTemperatureOutputs<dim>>() == NULL)
+      if (out.template get_additional_output<PrescribedTemperatureOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

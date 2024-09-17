@@ -19,16 +19,12 @@
  */
 
 #include <aspect/particle/interpolator/quadratic_least_squares.h>
-#include <aspect/particle/interpolator/bilinear_least_squares.h>
-#include <aspect/postprocess/particles.h>
-#include <aspect/simulator.h>
+#include <aspect/particle/world.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/qr.h>
-#include <deal.II/grid/tria_iterator_base.h>
-
-#include <boost/lexical_cast.hpp>
 
 namespace aspect
 {
@@ -64,7 +60,7 @@ namespace aspect
       }
 
 
-      template<int dim>
+      template <int dim>
       std::pair<double, double> QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficients) const
       {
         double interpolation_min = std::numeric_limits<double>::max();
@@ -309,32 +305,8 @@ namespace aspect
                     ExcMessage("Internal error: the particle property interpolator was "
                                "called without a specified component to interpolate."));
 
-        const Point<dim> approximated_cell_midpoint = std::accumulate (positions.begin(), positions.end(), Point<dim>())
-                                                      / static_cast<double> (positions.size());
-
-        typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
-
-        if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
-          {
-            // We can not simply use one of the points as input for find_active_cell_around_point
-            // because for vertices of mesh cells we might end up getting ghost_cells as return value
-            // instead of the local active cell. So make sure we are well in the inside of a cell.
-            Assert(positions.size() > 0,
-                   ExcMessage("The particle property interpolator was not given any "
-                              "positions to evaluate the particle properties at."));
-
-
-            found_cell =
-              (GridTools::find_active_cell_around_point<> (this->get_mapping(),
-                                                           this->get_triangulation(),
-                                                           approximated_cell_midpoint)).first;
-          }
-        else
-          found_cell = cell;
-
         const typename ParticleHandler<dim>::particle_iterator_range particle_range =
-          particle_handler.particles_in_cell(found_cell);
-
+          particle_handler.particles_in_cell(cell);
 
         std::vector<std::vector<double>> cell_properties(positions.size(),
                                                           std::vector<double>(n_particle_properties,
@@ -347,11 +319,11 @@ namespace aspect
           return fallback_interpolator.properties_at_points(particle_handler,
                                                             positions,
                                                             selected_properties,
-                                                            found_cell);
+                                                            cell);
         const std::vector<double> cell_average_values = fallback_interpolator.properties_at_points(particle_handler,
         {positions[0]},
         selected_properties,
-        found_cell)[0];
+        cell)[0];
 
 
         // Notice that the size of matrix A is n_particles x n_matrix_columns
@@ -421,7 +393,7 @@ namespace aspect
         if (use_quadratic_least_squares_limiter.n_selected_components(n_particle_properties) != 0)
           {
             std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> active_neighbors;
-            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(found_cell, active_neighbors);
+            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(cell, active_neighbors);
             for (const auto &active_neighbor : active_neighbors)
               {
                 if (active_neighbor->is_artificial())
@@ -437,14 +409,14 @@ namespace aspect
                   }
 
               }
-            if (found_cell->at_boundary())
+            if (cell->at_boundary())
               {
-                for (unsigned int face_id = 0; face_id < found_cell->reference_cell().n_faces(); ++face_id)
+                for (unsigned int face_id = 0; face_id < cell->reference_cell().n_faces(); ++face_id)
                   {
-                    if (found_cell->at_boundary(face_id))
+                    if (cell->at_boundary(face_id))
                       {
                         const unsigned int opposing_face_id = GeometryInfo<dim>::opposite_face[face_id];
-                        const auto &opposing_cell = found_cell->neighbor(opposing_face_id);
+                        const auto &opposing_cell = cell->neighbor(opposing_face_id);
                         if (opposing_cell.state() == IteratorState::IteratorStates::valid && opposing_cell->is_active() && !opposing_cell->is_artificial())
                           {
 
@@ -453,7 +425,7 @@ namespace aspect
                               {
                                 if (selected_properties[property_index] == true && use_boundary_extrapolation[property_index] == true)
                                   {
-                                    Assert(found_cell->reference_cell().is_hyper_cube() == true, ExcNotImplemented());
+                                    Assert(cell->reference_cell().is_hyper_cube() == true, ExcNotImplemented());
                                     const double expected_boundary_value = 1.5 * cell_average_values[property_index] - 0.5 * neighbor_cell_average[property_index];
                                     property_minimums[property_index] = std::min(property_minimums[property_index], expected_boundary_value);
                                     property_maximums[property_index] = std::max(property_maximums[property_index], expected_boundary_value);
@@ -475,7 +447,7 @@ namespace aspect
           return fallback_interpolator.properties_at_points(particle_handler,
                                                             positions,
                                                             selected_properties,
-                                                            found_cell);
+                                                            cell);
         std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
         std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
@@ -508,7 +480,7 @@ namespace aspect
         unsigned int index_positions = 0;
         for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
-            Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(found_cell, *itr);
+            Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(cell, *itr);
             for (unsigned int d = 0; d < dim; ++d)
               relative_support_point_location[d] -= unit_offset;
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
@@ -551,33 +523,25 @@ namespace aspect
       void
       QuadraticLeastSquares<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.enter_subsection("Postprocess");
+        prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Quadratic least squares");
           {
-            prm.enter_subsection("Interpolator");
-            {
-              prm.enter_subsection("Quadratic least squares");
-              {
-                prm.declare_entry("Use quadratic least squares limiter", "true",
-                                  Patterns::List(Patterns::Bool()),
-                                  "Limit the interpolation of particle properties onto the cell, so that "
-                                  "the value of each property is no smaller than its minimum and no "
-                                  "larger than its maximum on the particles of each cell, and the "
-                                  "average of neighboring cells. If more than one value is given, "
-                                  "it will be treated as a list with one component per particle property.");
-                prm.declare_entry("Use boundary extrapolation", "false",
-                                  Patterns::List(Patterns::Bool()),
-                                  "Extends the range used by 'Use quadratic least squares limiter' "
-                                  "by linearly interpolating values at cell boundaries from neighboring "
-                                  "cells. If more than one value is given, it will be treated as a list "
-                                  "with one component per particle property. Enabling 'Use boundary "
-                                  "extrapolation' requires enabling 'Use quadratic least squares "
-                                  "limiter'.");
-              }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
+            prm.declare_entry("Use quadratic least squares limiter", "true",
+                              Patterns::List(Patterns::Bool()),
+                              "Limit the interpolation of particle properties onto the cell, so that "
+                              "the value of each property is no smaller than its minimum and no "
+                              "larger than its maximum on the particles of each cell, and the "
+                              "average of neighboring cells. If more than one value is given, "
+                              "it will be treated as a list with one component per particle property.");
+            prm.declare_entry("Use boundary extrapolation", "false",
+                              Patterns::List(Patterns::Bool()),
+                              "Extends the range used by 'Use quadratic least squares limiter' "
+                              "by linearly interpolating values at cell boundaries from neighboring "
+                              "cells. If more than one value is given, it will be treated as a list "
+                              "with one component per particle property. Enabling 'Use boundary "
+                              "extrapolation' requires enabling 'Use quadratic least squares "
+                              "limiter'.");
           }
           prm.leave_subsection();
         }
@@ -589,73 +553,59 @@ namespace aspect
       QuadraticLeastSquares<dim>::parse_parameters (ParameterHandler &prm)
       {
         fallback_interpolator.parse_parameters(prm);
-        prm.enter_subsection("Postprocess");
+
+        prm.enter_subsection("Interpolator");
         {
-          prm.enter_subsection("Particles");
+          prm.enter_subsection("Quadratic least squares");
           {
-            prm.enter_subsection("Interpolator");
-            {
-              prm.enter_subsection("Quadratic least squares");
+            const auto &particle_property_information = this->get_particle_world(this->get_particle_world_index()).get_property_manager().get_data_info();
+            const unsigned int n_property_components = particle_property_information.n_components();
+            const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
+
+            const std::vector<std::string> quadratic_least_squares_limiter_split = Utilities::split_string_list(prm.get("Use quadratic least squares limiter"));
+            std::vector<bool> quadratic_least_squares_limiter_parsed;
+            if (quadratic_least_squares_limiter_split.size() == 1)
               {
-                const Postprocess::Particles<dim> &particle_postprocessor =
-                  this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim>>();
-                const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
-                const unsigned int n_property_components = particle_property_information.n_components();
-                const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
-
-                const std::vector<std::string> quadratic_least_squares_limiter_split = Utilities::split_string_list(prm.get("Use quadratic least squares limiter"));
-                std::vector<bool> quadratic_least_squares_limiter_parsed;
-                if (quadratic_least_squares_limiter_split.size() == 1)
-                  {
-                    quadratic_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(quadratic_least_squares_limiter_split[0]));
-                  }
-                else if (quadratic_least_squares_limiter_split.size() == n_property_components - n_internal_components)
-                  {
-                    for (const auto &component: quadratic_least_squares_limiter_split)
-                      quadratic_least_squares_limiter_parsed.push_back(Utilities::string_to_bool(component));
-                  }
-                else
-                  {
-                    AssertThrow(false, ExcMessage("The size of 'Use quadratic least squares limiter' should either be 1 or the number of particle properties"));
-                  }
-                for (unsigned int i = 0; i < n_internal_components; ++i)
-                  quadratic_least_squares_limiter_parsed.push_back(false);
-                use_quadratic_least_squares_limiter = ComponentMask(quadratic_least_squares_limiter_parsed);
-
-
-                const std::vector<std::string> boundary_extrapolation_split = Utilities::split_string_list(prm.get("Use boundary extrapolation"));
-                std::vector<bool> boundary_extrapolation_parsed;
-                if (boundary_extrapolation_split.size() == 1)
-                  {
-                    boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(boundary_extrapolation_split[0]));
-                  }
-                else if (boundary_extrapolation_split.size() == n_property_components - n_internal_components)
-                  {
-                    for (const auto &component: boundary_extrapolation_split)
-                      boundary_extrapolation_parsed.push_back(Utilities::string_to_bool(component));
-                  }
-                else
-                  {
-                    AssertThrow(false, ExcMessage("The size of 'Use boundary extrapolation' should either be 1 or the number of particle properties"));
-                  }
-                for (unsigned int i = 0; i < n_internal_components; ++i)
-                  boundary_extrapolation_parsed.push_back(false);
-                use_boundary_extrapolation = ComponentMask(boundary_extrapolation_parsed);
-                for (unsigned int property_index = 0; property_index < n_property_components - n_internal_components; ++property_index)
-                  {
-                    AssertThrow(use_quadratic_least_squares_limiter[property_index] || !use_boundary_extrapolation[property_index],
-                                ExcMessage("'Use boundary extrapolation' must be set with 'Use quadratic least squares limiter' to be valid."));
-                  }
-
+                quadratic_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(quadratic_least_squares_limiter_split[0]));
               }
-              prm.leave_subsection();
-            }
-            prm.leave_subsection();
-            // In general n_selected_components() requests an argument of the ComponentMask's size since it could be initialized to be entirely true without a size.
-            // Here it is given a size equal to n_property_components, so that argument is not necessary.
-            const bool limiter_enabled_for_at_least_one_property = (use_quadratic_least_squares_limiter.n_selected_components() != 0);
-            AssertThrow(limiter_enabled_for_at_least_one_property == false || prm.get_bool("Update ghost particles") == true,
-                        ExcMessage("If 'Use quadratic least squares limiter' is enabled for any particle property, then 'Update ghost particles' must be set to true"));
+            else if (quadratic_least_squares_limiter_split.size() == n_property_components - n_internal_components)
+              {
+                for (const auto &component: quadratic_least_squares_limiter_split)
+                  quadratic_least_squares_limiter_parsed.push_back(Utilities::string_to_bool(component));
+              }
+            else
+              {
+                AssertThrow(false, ExcMessage("The size of 'Use quadratic least squares limiter' should either be 1 or the number of particle properties"));
+              }
+            for (unsigned int i = 0; i < n_internal_components; ++i)
+              quadratic_least_squares_limiter_parsed.push_back(false);
+            use_quadratic_least_squares_limiter = ComponentMask(quadratic_least_squares_limiter_parsed);
+
+
+            const std::vector<std::string> boundary_extrapolation_split = Utilities::split_string_list(prm.get("Use boundary extrapolation"));
+            std::vector<bool> boundary_extrapolation_parsed;
+            if (boundary_extrapolation_split.size() == 1)
+              {
+                boundary_extrapolation_parsed = std::vector<bool>(n_property_components - n_internal_components, Utilities::string_to_bool(boundary_extrapolation_split[0]));
+              }
+            else if (boundary_extrapolation_split.size() == n_property_components - n_internal_components)
+              {
+                for (const auto &component: boundary_extrapolation_split)
+                  boundary_extrapolation_parsed.push_back(Utilities::string_to_bool(component));
+              }
+            else
+              {
+                AssertThrow(false, ExcMessage("The size of 'Use boundary extrapolation' should either be 1 or the number of particle properties"));
+              }
+            for (unsigned int i = 0; i < n_internal_components; ++i)
+              boundary_extrapolation_parsed.push_back(false);
+            use_boundary_extrapolation = ComponentMask(boundary_extrapolation_parsed);
+            for (unsigned int property_index = 0; property_index < n_property_components - n_internal_components; ++property_index)
+              {
+                AssertThrow(use_quadratic_least_squares_limiter[property_index] || !use_boundary_extrapolation[property_index],
+                            ExcMessage("'Use boundary extrapolation' must be set with 'Use quadratic least squares limiter' to be valid."));
+              }
+
           }
           prm.leave_subsection();
         }

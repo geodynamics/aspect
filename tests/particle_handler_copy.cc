@@ -33,7 +33,7 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
                                 const unsigned int,
                                 const SolverControl &)
 {
-  const auto &particle_world = simulator_access.get_particle_world();
+  const auto &particle_world = simulator_access.get_particle_world(0);
   dealii::Particles::ParticleHandler<dim> particle_handler;
   std::cout << "duplicating particle handler" << std::endl;
 
