@@ -450,7 +450,7 @@ namespace aspect
 
     if (postprocess_manager.template has_matching_active_plugin<Postprocess::Particles<dim>>())
       {
-        for (unsigned int particle_world_index = 0 ; particle_world_index < particle_worlds.size(); ++particle_world_index)
+        for (unsigned int particle_world_index = 0 ; particle_world_index < parameters.n_particle_worlds; ++particle_world_index)
           {
             particle_worlds.emplace_back(std::move(std::make_unique<Particle::World<dim>>()));
           }

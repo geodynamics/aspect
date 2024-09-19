@@ -325,9 +325,10 @@ namespace aspect
 
       bool write_output = true;
       std::string number_of_advected_particles = "";
+      std::string screen_output = "";
+
       for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
         {
-
           const Particle::World<dim> &world = this->get_particle_world(particle_world);
           statistics.add_value("Number of advected particles",world.n_global_particles());
 
@@ -341,6 +342,8 @@ namespace aspect
                   number_of_advected_particles += ", ";
                 }
               number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
+
+              continue;
             }
 
           // If we do not write output
@@ -357,7 +360,10 @@ namespace aspect
                   number_of_advected_particles += ", ";
                 }
               number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
+
+              continue;
             }
+
           Assert(write_output, ExcMessage("Trying to write output while it was set to not do so."));
 
           if (output_file_number == numbers::invalid_unsigned_int)
@@ -519,7 +525,7 @@ namespace aspect
                                                + "/"
                                                + particle_file_prefix
                                                + "."
-                                               +  Utilities::int_to_string (myid, 4)
+                                               + Utilities::int_to_string (myid, 4)
                                                + DataOutBase::default_suffix
                                                (DataOutBase::parse_output_format(output_format));
 
@@ -538,14 +544,18 @@ namespace aspect
 
           const std::string particle_output = this->get_output_directory() + particles_output_base_name + "/" + particle_file_prefix;
 
+          if (particle_world == 0)
+            screen_output = particle_output;
+
           // record the file base file name in the output file
           statistics.add_value ("Particle file name",
                                 particle_output);
         }
+
       if (write_output)
-        return std::make_pair("Writing particle output:", this->get_output_directory() + "particles/");
+        return std::make_pair("Writing particle output:", screen_output);
       else
-        return std::make_pair("Number of advected particles:",number_of_advected_particles);
+        return std::make_pair("Number of advected particles:", number_of_advected_particles);
     }
 
 
@@ -732,18 +742,22 @@ namespace aspect
           if (std::find (output_formats.begin(),
                          output_formats.end(),
                          "none") == output_formats.end())
+            {
+              // Note that we iterate until the value of parameters.n_particle_worlds and not
+              // this->particle_worlds, because at this point in the program execution the
+              // particle worlds have not been created yet. We want to prepare as many directories
+              // as there will be particle worlds, once they are created.
+              for (unsigned int particle_world = 0; particle_world < this->get_parameters().n_particle_worlds; ++particle_world)
+                {
+                  std::string particles_directory_base_name = "particles";
+                  if (particle_world > 0)
+                    particles_directory_base_name += "-" + Utilities::int_to_string(particle_world+1);
 
-            for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
-              {
-                std::string particles_output_base_name = "Particles";
-                if (particle_world > 0)
-                  {
-                    particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
-                  }
-                aspect::Utilities::create_directory (this->get_output_directory() + particles_output_base_name + "/",
-                                                     this->get_mpi_communicator(),
-                                                     true);
-              }
+                  aspect::Utilities::create_directory (this->get_output_directory() + particles_directory_base_name + "/",
+                                                       this->get_mpi_communicator(),
+                                                       true);
+                }
+            }
 
           // Note: "ascii" is a legacy format used by ASPECT before particle output
           // in deal.II was implemented. It is nearly identical to the gnuplot format, thus

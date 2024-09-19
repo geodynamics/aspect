@@ -288,8 +288,6 @@ namespace aspect
     const Particle::Property::Manager<dim> &particle_property_manager = particle_worlds[0]->get_property_manager();
 
     std::vector<unsigned int> particle_property_indices;
-    // maybe not needed?
-    // std::vector<unsigned int> particle_property_world_indices;
     ComponentMask property_mask  (particle_property_manager.get_data_info().n_components(),false);
 
     for (const auto &advection_field: advection_fields)

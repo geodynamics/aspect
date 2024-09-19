@@ -360,8 +360,8 @@ namespace aspect
 
     prm.declare_entry ("Number of particle worlds", "1",
                        Patterns::Integer(0),
-                       "The number of particle worlds to be created. The maximum number of particle worlds"
-                       "is set by the Cmake variable `ASPECT_MAX_NUM_PARTICLE_WORLDS` and is by default 2.");
+                       "The number of particle worlds to be created. The maximum number of particle worlds "
+                       "is set by the CMake variable `ASPECT_MAX_NUM_PARTICLE_WORLDS` and is by default 2.");
 
     prm.enter_subsection ("Solver parameters");
     {
