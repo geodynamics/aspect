@@ -359,7 +359,7 @@ namespace aspect
                        "Name of the world builder file. If empty, the world builder is not initialized.");
 
     prm.declare_entry ("Number of particle worlds", "1",
-                       Patterns::Integer(0),
+                       Patterns::Integer(0,1),
                        "The number of particle worlds to be created. The maximum number of particle worlds "
                        "is set by the CMake variable `ASPECT_MAX_NUM_PARTICLE_WORLDS` and is by default 2.");
 
