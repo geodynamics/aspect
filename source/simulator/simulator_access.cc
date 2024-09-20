@@ -831,7 +831,7 @@ namespace aspect
   SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index) const
   {
     AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
-    return *simulator->particle_worlds[particle_world_index].get();
+    return simulator->particle_worlds[particle_world_index];
   }
 
 
@@ -841,7 +841,7 @@ namespace aspect
   SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index)
   {
     AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
-    return *simulator->particle_worlds[particle_world_index].get();
+    return const_cast<Particle::World<dim>&>(simulator->particle_worlds[particle_world_index]);
   }
 
 
