@@ -190,7 +190,6 @@ namespace aspect
                    nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
-    particle_worlds(),
     time (numbers::signaling_nan<double>()),
     time_step (numbers::signaling_nan<double>()),
     old_time_step (numbers::signaling_nan<double>()),
