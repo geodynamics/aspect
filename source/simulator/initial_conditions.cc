@@ -352,52 +352,54 @@ namespace aspect
           const std::vector<Point<dim>> quadrature_points = fe_values.get_quadrature_points();
 
           std::vector<std::vector<double>> particle_properties;
-
-          try
+          for (unsigned int world_index = 0; world_index < particle_worlds.size(); ++world_index)
             {
-              particle_properties =
-                particle_interpolator.properties_at_points(particle_worlds[0]->get_particle_handler(),
-                                                           quadrature_points,
-                                                           property_mask,
-                                                           cell);
+              try
+                {
+                  particle_properties =
+                    particle_interpolator.properties_at_points(particle_worlds[world_index]->get_particle_handler(),
+                                                               quadrature_points,
+                                                               property_mask,
+                                                               cell);
+                }
+              // interpolators that throw exceptions usually do not result in
+              // anything good, because they result in an unwinding of the stack
+              // and, if only one processor triggers an exception, the
+              // destruction of objects often causes a deadlock or completely
+              // unrelated MPI error messages. Thus, if an exception is
+              // generated, catch it, print an error message, and abort the program.
+              catch (std::exception &exc)
+                {
+                  std::cerr << std::endl << std::endl
+                            << "----------------------------------------------------"
+                            << std::endl;
+                  std::cerr << "Exception on MPI process <"
+                            << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                            << "> while interpolating particle properties: "
+                            << std::endl
+                            << exc.what() << std::endl
+                            << "Aborting!" << std::endl
+                            << "----------------------------------------------------"
+                            << std::endl;
+
+                  // terminate the program!
+                  MPI_Abort (MPI_COMM_WORLD, 1);
+                }
+
+              // go through the composition dofs and set their global values
+              // to the particle field interpolated at these points
+              cell->get_dof_indices (local_dof_indices);
+              const unsigned int n_dofs_per_cell = finite_element.base_element(base_element_index).dofs_per_cell;
+              for (unsigned int j=0; j<advection_fields.size(); ++j)
+                for (unsigned int i=0; i<n_dofs_per_cell; ++i)
+                  {
+                    const unsigned int system_local_dof
+                      = finite_element.component_to_system_index(advection_fields[j].component_index(introspection),
+                                                                 /*dof index within component=*/i);
+
+                    particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][particle_property_indices[j]];
+                  }
             }
-          // interpolators that throw exceptions usually do not result in
-          // anything good, because they result in an unwinding of the stack
-          // and, if only one processor triggers an exception, the
-          // destruction of objects often causes a deadlock or completely
-          // unrelated MPI error messages. Thus, if an exception is
-          // generated, catch it, print an error message, and abort the program.
-          catch (std::exception &exc)
-            {
-              std::cerr << std::endl << std::endl
-                        << "----------------------------------------------------"
-                        << std::endl;
-              std::cerr << "Exception on MPI process <"
-                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                        << "> while interpolating particle properties: "
-                        << std::endl
-                        << exc.what() << std::endl
-                        << "Aborting!" << std::endl
-                        << "----------------------------------------------------"
-                        << std::endl;
-
-              // terminate the program!
-              MPI_Abort (MPI_COMM_WORLD, 1);
-            }
-
-          // go through the composition dofs and set their global values
-          // to the particle field interpolated at these points
-          cell->get_dof_indices (local_dof_indices);
-          const unsigned int n_dofs_per_cell = finite_element.base_element(base_element_index).dofs_per_cell;
-          for (unsigned int j=0; j<advection_fields.size(); ++j)
-            for (unsigned int i=0; i<n_dofs_per_cell; ++i)
-              {
-                const unsigned int system_local_dof
-                  = finite_element.component_to_system_index(advection_fields[j].component_index(introspection),
-                                                             /*dof index within component=*/i);
-
-                particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][particle_property_indices[j]];
-              }
         }
 
     particle_solution.compress(VectorOperation::insert);
