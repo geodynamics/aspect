@@ -466,9 +466,8 @@ namespace aspect
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_worlds[particle_world_index].get()))
               sim->initialize_simulator (*this);
 
-            particle_worlds.back()->parse_parameters(prm,particle_world_index);
-            particle_worlds.back()->initialize();
-
+            particle_worlds[particle_world_index]->parse_parameters(prm,particle_world_index);
+            particle_worlds[particle_world_index]->initialize();
           }
       }
 
