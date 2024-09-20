@@ -931,14 +931,14 @@ namespace aspect
       get_postprocess_manager () const;
 
       /**
-       * Returns whether there is at least one particle world.
+       * Returns the number of active particle worlds.
        */
       unsigned int
       n_particle_worlds() const;
 
       /**
-       * Returns a const reference to a single particle world, in case anyone
-       * wants to query something about particles.
+       * Returns a const reference to a single particle world given the
+       * index.
        */
       const Particle::World<dim> &
       get_particle_world(const unsigned int particle_world_index) const;
