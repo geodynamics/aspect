@@ -91,7 +91,7 @@ namespace aspect
            *
            * The forward Euler integrator does not need any intermediate storage space.
            */
-          static const unsigned int n_integrator_properties = 0;
+          static constexpr unsigned int n_integrator_properties = 0;
       };
 
     }
