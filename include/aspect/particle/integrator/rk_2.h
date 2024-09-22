@@ -127,7 +127,7 @@ namespace aspect
            *
            * The Runge-Kutta 2 integrator requires a single point with dim components.
            */
-          static const unsigned int n_integrator_properties = dim;
+          static constexpr unsigned int n_integrator_properties = dim;
 
         private:
           /**

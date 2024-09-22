@@ -114,7 +114,7 @@ namespace aspect
            *
            * The Runge-Kutta 4 integrator requires 4 tensors with dim components each.
            */
-          static const unsigned int n_integrator_properties = 4*dim;
+          static constexpr unsigned int n_integrator_properties = 4*dim;
 
         private:
           /**
