@@ -35,6 +35,103 @@ namespace aspect
 {
   using namespace dealii;
 
+  namespace internal
+  {
+    /**
+     * Wrapper around dealii::FEPointEvaluation to choose number of components dynamically.
+     * This class is only an abstract base class that can be used to implement derived classes.
+     */
+    template <int dim>
+    class DynamicFEPointEvaluation
+    {
+      public:
+        /**
+         * Constructor which allows to select at run time the @p first_component and the @p n_components.
+         */
+        DynamicFEPointEvaluation(const unsigned int first_component, const unsigned int n_components)
+          : first_component (first_component),
+            n_components (n_components)
+        {}
+
+        /**
+         * Destructor.
+         */
+        virtual ~DynamicFEPointEvaluation() = default;
+
+        /**
+         * Evaluate the solution at the given positions.
+         *
+         * @p solution_values contains the values of the degrees of freedom.
+         * @p flags controls which values should be computed.
+         */
+        virtual void evaluate(const ArrayView<double> &solution_values,
+                              const EvaluationFlags::EvaluationFlags flags) = 0;
+
+        /**
+         * Return the gradient of the solution at the given @p evaluation_point.
+         */
+        virtual
+        small_vector<Tensor<1,dim>>
+        get_gradient(const unsigned int evaluation_point) const = 0;
+
+        /**
+         * Copy the gradient of the solution at the given @p evaluation_point
+         * into the array @p gradients.
+         */
+        virtual
+        void
+        get_gradient(const unsigned int evaluation_point,
+                     const ArrayView<Tensor<1,dim>> &gradients) const = 0;
+
+        /**
+         * Return the value of the solution at the given @p evaluation_point.
+         */
+        virtual
+        small_vector<double>
+        get_value(const unsigned int evaluation_point) const = 0;
+
+        /**
+         * Copy the value of the solution at the given @p evaluation_point.
+         * into the array @p solution.
+         */
+        virtual
+        void
+        get_value(const unsigned int evaluation_point,
+                  const ArrayView<double> &solution) const = 0;
+
+        /**
+         * Return the first component of the solution vector.
+         */
+        virtual
+        unsigned int
+        get_first_component() const final
+        {
+          return first_component;
+        }
+
+        /**
+         * Return the number of components of the solution vector.
+         */
+        virtual
+        unsigned int
+        get_n_components() const final
+        {
+          return n_components;
+        }
+
+      private:
+        /**
+         * The first component of the solution vector.
+         */
+        unsigned int first_component;
+
+        /**
+         * The number of components of the solution vector.
+         */
+        unsigned int n_components;
+    };
+  }
+
   /**
    * This class evaluates the solution vector at arbitrary positions inside a cell.
    * This base class only provides the interface for SolutionEvaluatorImplementation.
@@ -45,9 +142,12 @@ namespace aspect
   {
     public:
       /**
-       * virtual Destructor.
+       * Constructor. Create the member variables given a simulator access @p simulator and a set of
+       * update flags @p update_flags. The @p update_flags control if only the solution or also the gradients
+       * should be evaluated.
        */
-      virtual ~SolutionEvaluator() = default;
+      SolutionEvaluator(const SimulatorAccess<dim> &simulator,
+                        const UpdateFlags update_flags);
 
       /**
        * Reinitialize all variables to evaluate the given solution for the given cell
@@ -55,11 +155,11 @@ namespace aspect
        * also the gradients should be evaluated.
        * If other flags are set an assertion is triggered.
        */
-      virtual void
+      void
       reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
              const ArrayView<Point<dim>> &positions,
              const ArrayView<double> &solution_values,
-             const UpdateFlags update_flags) = 0;
+             const UpdateFlags update_flags);
 
       /**
        * Fill @p solution with all solution components at the given @p evaluation_point. Note
@@ -67,8 +167,8 @@ namespace aspect
        * because this function only returns the results of the computation that
        * happened in reinit().
        */
-      virtual void get_solution(const unsigned int evaluation_point,
-                                const ArrayView<double> &solution) = 0;
+      void get_solution(const unsigned int evaluation_point,
+                        const ArrayView<double> &solution);
 
       /**
        * Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
@@ -76,21 +176,66 @@ namespace aspect
        * because this function only returns the results of the computation that
        * happened in reinit().
        */
-      virtual void get_gradients(const unsigned int evaluation_point,
-                                 const ArrayView<Tensor<1, dim>> &gradients) = 0;
+      void get_gradients(const unsigned int evaluation_point,
+                         const ArrayView<Tensor<1, dim>> &gradients);
 
       /**
        * Return the evaluator for velocity or fluid velocity. This is the only
        * information necessary for advecting particles.
        */
-      virtual FEPointEvaluation<dim, dim> &
-      get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
+      FEPointEvaluation<dim, dim> &
+      get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity);
 
       /**
        * Return the cached mapping information.
        */
-      virtual NonMatching::MappingInfo<dim> &
-      get_mapping_info() = 0;
+      NonMatching::MappingInfo<dim> &
+      get_mapping_info();
+
+    private:
+      /**
+       * MappingInfo object for the FEPointEvaluation objects
+       */
+      NonMatching::MappingInfo<dim> mapping_info;
+
+      /**
+       * FEPointEvaluation objects for all common
+       * components of ASPECT's finite element solution.
+       * These objects are used inside of the member functions of this class.
+       */
+      FEPointEvaluation<dim, dim> velocity;
+      std::unique_ptr<FEPointEvaluation<1, dim>> pressure;
+      FEPointEvaluation<1, dim> temperature;
+
+      /**
+       * We group compositions by type (FiniteElement) and evaluate
+       * them together.
+       */
+      std::vector<std::unique_ptr<internal::DynamicFEPointEvaluation<dim>>> compositions;
+
+      /**
+       * Pointers to FEPointEvaluation objects for all melt
+       * components of ASPECT's finite element solution, which only
+       * point to valid objects in case we use melt transport. Other
+       * documentation like for the objects directly above.
+       */
+      std::unique_ptr<FEPointEvaluation<dim, dim>> fluid_velocity;
+      std::unique_ptr<FEPointEvaluation<1, dim>> compaction_pressure;
+      std::unique_ptr<FEPointEvaluation<1, dim>> fluid_pressure;
+
+      /**
+       * The component indices for the three melt formulation
+       * variables fluid velocity, compaction pressure, and
+       * fluid pressure (in this order). They are cached
+       * to avoid repeated expensive lookups.
+       */
+      std::array<unsigned int, 3> melt_component_indices;
+
+      /**
+       * Reference to the active simulator access object. Provides
+       * access to the general simulation variables.
+       */
+      const SimulatorAccess<dim> &simulator_access;
   };
 
   /**
