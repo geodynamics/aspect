@@ -1986,9 +1986,9 @@ namespace aspect
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
 
       /**
-       * The world holding the particles
+       * The worlds holding different sets of particles
        */
-      std::vector<std::unique_ptr<Particle::World<dim>>> particle_worlds;
+      std::vector<Particle::World<dim>> particle_worlds;
 
       /**
        * @}

@@ -48,6 +48,22 @@ namespace aspect
       = default;
 
     template <int dim>
+    World<dim>::World(World &&other)
+      : generator(std::move(other.generator)),
+        integrator(std::move(other.integrator)),
+        interpolator(std::move(other.interpolator)),
+        particle_handler(std::move(other.particle_handler)),
+        particle_handler_backup(), // can not move
+        property_manager(std::move(other.property_manager)),
+        particle_load_balancing(other.particle_load_balancing),
+        min_particles_per_cell(other.min_particles_per_cell),
+        max_particles_per_cell(other.max_particles_per_cell),
+        particle_weight(other.particle_weight)
+    {}
+
+
+
+    template <int dim>
     void
     World<dim>::initialize()
     {

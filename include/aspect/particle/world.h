@@ -94,6 +94,12 @@ namespace aspect
         ~World() override;
 
         /**
+         * Move constructor. This is required to be able to put instances
+         * of this class into a std::vector.
+         */
+        World(World &&);
+
+        /**
          * Initialize the particle world.
          */
         void initialize();
