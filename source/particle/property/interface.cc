@@ -215,21 +215,52 @@ namespace aspect
         Vector<double> solution;
         std::vector<Tensor<1,dim>> gradient;
 
+        bool need_solution = false;
+        bool need_gradient = false;
+        unsigned int n_components = numbers::invalid_unsigned_int;
+
+        if (inputs.solution.size() > 0)
+          {
+            n_components = inputs.solution[0].size();
+
+            for (unsigned int i=0; i<n_components; ++i)
+              if (get_update_flags(i) & update_values)
+                {
+                  need_solution = true;
+                  break;
+                }
+          }
+
+        if (inputs.gradients.size() > 0)
+          {
+            n_components = inputs.gradients[0].size();
+
+            for (unsigned int i=0; i<n_components; ++i)
+              if (get_update_flags(i) & update_gradients)
+                {
+                  need_gradient = true;
+                  break;
+                }
+          }
+
         unsigned int i = 0;
         for (auto particle = particles.begin(); particle != particles.end(); ++particle)
           {
-            if (get_needed_update_flags() & update_values)
+            if (need_solution)
               {
                 solution.reinit(inputs.solution[i].size());
                 for (unsigned int j=0; j<solution.size(); ++j)
-                  solution[j] = inputs.solution[i][j];
+                  if (get_update_flags(j) & update_values)
+                    solution[j] = inputs.solution[i][j];
               }
 
-            if (get_needed_update_flags() & update_gradients)
+            if (need_gradient)
               {
                 gradient.resize(inputs.gradients[i].size());
+
                 for (unsigned int j=0; j<gradient.size(); ++j)
-                  gradient[j] = inputs.gradients[i][j];
+                  if (get_update_flags(j) & update_gradients)
+                    gradient[j] = inputs.gradients[i][j];
               }
 
             // call the deprecated version of this function
@@ -261,6 +292,19 @@ namespace aspect
       {
         return update_never;
       }
+
+
+
+      DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
+      template <int dim>
+      UpdateFlags
+      Interface<dim>::get_update_flags (const unsigned int /*component*/) const
+      {
+        // If this function is not implemented by the derived class, we use
+        // the default implementation of the deprecated version of this class.
+        return get_needed_update_flags();
+      }
+      DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 
 
@@ -578,16 +622,27 @@ namespace aspect
 
 
       template <int dim>
-      UpdateFlags
-      Manager<dim>::get_needed_update_flags () const
+      std::vector<UpdateFlags>
+      Manager<dim>::get_update_flags () const
       {
-        UpdateFlags update = update_default;
+        const unsigned int n_components = this->introspection().n_components;
+        std::vector<UpdateFlags> update (n_components , update_default);
         for (const auto &p : this->plugin_objects)
           {
-            update |= p->get_needed_update_flags();
+            for (unsigned int i=0; i<n_components; ++i)
+              {
+                update[i] |= p->get_update_flags(i);
+              }
           }
 
-        return (update & (update_default | update_values | update_gradients));
+        // Make sure only the flags are set that we can deal with at the moment
+        for (unsigned int i=0; i<n_components; ++i)
+          {
+            Assert ((update[i] & ~(update_gradients | update_values)) == false,
+                    ExcNotImplemented());
+          }
+
+        return update;
       }
 
 

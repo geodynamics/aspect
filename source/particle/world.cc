@@ -445,6 +445,7 @@ namespace aspect
     void
     World<dim>::local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
                                        small_vector<Point<dim>> &positions,
+                                       std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
                                        SolutionEvaluator<dim> &evaluator)
     {
       const unsigned int n_particles = particle_handler->n_particles_in_cell(inputs.current_cell);
@@ -459,37 +460,41 @@ namespace aspect
           ++p;
         }
 
-      const UpdateFlags update_flags = property_manager->get_needed_update_flags();
-
       small_vector<double> solution_values(this->get_fe().dofs_per_cell);
 
       inputs.current_cell->get_dof_values(this->get_solution(),
                                           solution_values.begin(),
                                           solution_values.end());
 
-      if (update_flags & (update_values | update_gradients))
+      EvaluationFlags::EvaluationFlags evaluation_flags_union = EvaluationFlags::nothing;
+      for (unsigned int i=0; i<evaluation_flags.size(); ++i)
+        evaluation_flags_union |= evaluation_flags[i];
+
+      if (evaluation_flags_union & (update_values | update_gradients))
         {
+          // Reinitialize and evaluate the requested solution values and gradients
           evaluator.reinit(inputs.current_cell,
-          {positions.data(), positions.size()},
-          {solution_values.data(), solution_values.size()},
-          update_flags);
+          {positions.data(), positions.size()});
+
+          evaluator.evaluate({solution_values.data(),solution_values.size()},
+                             evaluation_flags);
         }
 
-      if (update_flags & update_values)
+      if (evaluation_flags_union & update_values)
         inputs.solution.resize(n_particles,small_vector<double,50>(evaluator.n_components()));
 
-      if (update_flags & update_gradients)
+      if (evaluation_flags_union & update_gradients)
         inputs.gradients.resize(n_particles,small_vector<Tensor<1,dim>,50>(evaluator.n_components()));
 
       for (unsigned int i = 0; i<n_particles; ++i)
         {
           // Evaluate the solution, but only if it is requested in the update_flags
-          if (update_flags & update_values)
-            evaluator.get_solution(i, {&inputs.solution[i][0],inputs.solution[i].size()});
+          if (evaluation_flags_union & update_values)
+            evaluator.get_solution(i, {&inputs.solution[i][0],inputs.solution[i].size()}, evaluation_flags);
 
           // Evaluate the gradients, but only if they are requested in the update_flags
-          if (update_flags & update_gradients)
-            evaluator.get_gradients(i, {&inputs.gradients[i][0],inputs.gradients[i].size()});
+          if (evaluation_flags_union & update_gradients)
+            evaluator.get_gradients(i, {&inputs.gradients[i][0],inputs.gradients[i].size()}, evaluation_flags);
         }
 
       property_manager->update_particles(inputs,particles);
@@ -631,10 +636,29 @@ namespace aspect
                             "of the class FEPointEvaluation. The mapping currently in use does not support this path. "
                             "It is safe to uncomment this assertion, but you can expect a performance penalty."));
 
-          const UpdateFlags update_flags = property_manager->get_needed_update_flags();
+          const std::vector<UpdateFlags> update_flags = property_manager->get_update_flags();
+
+          // combine all update flags to a single flag, which is the required information
+          // for the mapping inside the solution evaluator
+          UpdateFlags mapping_flags = update_flags[0];
+          for (unsigned int i=1; i<update_flags.size(); ++i)
+            mapping_flags |= update_flags[i];
 
           std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
-                                                               update_flags);
+                                                               mapping_flags);
+
+          // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
+          // Translate between the two.
+          std::vector<EvaluationFlags::EvaluationFlags> evaluation_flags (update_flags.size(), EvaluationFlags::nothing);
+
+          for (unsigned int i=0; i<update_flags.size(); ++i)
+            {
+              if (update_flags[i] & update_values)
+                evaluation_flags[i] |= EvaluationFlags::values;
+
+              if (update_flags[i] & update_gradients)
+                evaluation_flags[i] |= EvaluationFlags::gradients;
+            }
 
           Property::ParticleUpdateInputs<dim> inputs;
           small_vector<Point<dim>> positions;
@@ -649,6 +673,7 @@ namespace aspect
                     inputs.current_cell = cell;
                     local_update_particles(inputs,
                                            positions,
+                                           evaluation_flags,
                                            *evaluator);
                   }
 

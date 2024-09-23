@@ -90,9 +90,15 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      PTPath<dim>::get_needed_update_flags () const
+      PTPath<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_values;
+        const auto &component_indices = this->introspection().component_indices;
+
+        if (component == component_indices.pressure ||
+            component == component_indices.temperature)
+          return update_values;
+
+        return update_default;
       }
 
 

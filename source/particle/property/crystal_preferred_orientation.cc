@@ -427,9 +427,15 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      CrystalPreferredOrientation<dim>::get_needed_update_flags () const
+      CrystalPreferredOrientation<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_values | update_gradients;
+        const auto &component_indices = this->introspection().component_indices;
+
+        if (component >= component_indices.velocities[0] &&
+            component <= component_indices.velocities[dim-1])
+          return update_values | update_gradients;
+
+        return update_values;
       }
 
 

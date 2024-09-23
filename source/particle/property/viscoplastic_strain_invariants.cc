@@ -198,10 +198,15 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      ViscoPlasticStrainInvariant<dim>::get_needed_update_flags () const
+      ViscoPlasticStrainInvariant<dim>::get_update_flags (const unsigned int component) const
       {
-        // Need to update both of these to send into material model.
-        return update_values | update_gradients;
+        const auto &component_indices = this->introspection().component_indices;
+
+        if (component >= component_indices.velocities[0] &&
+            component <= component_indices.velocities[dim-1])
+          return update_values | update_gradients;
+
+        return update_values;
       }
 
       template <int dim>

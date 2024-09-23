@@ -85,10 +85,10 @@ namespace aspect
           need_update () const override;
 
           /**
-           * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
+           * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_needed_update_flags () const override;
+          get_update_flags (const unsigned int component) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_property_information()

@@ -150,42 +150,57 @@ namespace aspect
                         const UpdateFlags update_flags);
 
       /**
-       * Reinitialize all variables to evaluate the given solution for the given cell
-       * and the given positions. The update flags control if only the solution or
-       * also the gradients should be evaluated.
-       * If other flags are set an assertion is triggered.
+       * Reinitialize all variables to prepare for evaluation for the given @p cell
+       * and at the given @p positions in the reference coordinate system of that cell.
        */
       void
       reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
-             const ArrayView<Point<dim>> &positions,
-             const ArrayView<double> &solution_values,
-             const UpdateFlags update_flags);
+             const ArrayView<Point<dim>> &positions);
+
+      /**
+       * Evaluate all variables in the cell and at the positions controlled by a previous
+       * call to reinit().
+       *
+       * @p solution_values contains the values of the degrees of freedom.
+       * @p evaluation_flags controls if nothing, the solution values, or the gradients should be computed.
+       * The size of @p solution_flags has to be equal to the number of components as returned by
+       * n_components().
+       */
+      void
+      evaluate(const ArrayView<double> &solution_values,
+               const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags);
 
       /**
        * Fill @p solution with all solution components at the given @p evaluation_point. Note
-       * that this function only works after a successful call to reinit(),
+       * that this function only works after a successful call to reinit() and evaluate()
        * because this function only returns the results of the computation that
-       * happened in reinit().
+       * happened in those functions.
        *
        * @param evaluation_point The index of the evaluation point in the positions array.
        * @param solution The array to fill with the solution values. This array has to be
        *                 of size n_components().
+       * @param evaluation_flags The flags that indicate which values should be copied into the
+       *                        solution array. This vector has to be of size n_components().
        */
       void get_solution(const unsigned int evaluation_point,
-                        const ArrayView<double> &solution) const;
+                        const ArrayView<double> &solution,
+                        const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const;
 
       /**
        * Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
-       * that this function only works after a successful call to reinit(),
+       * that this function only works after a successful call to reinit() and evaluate()
        * because this function only returns the results of the computation that
-       * happened in reinit().
+       * happened in those functions.
        *
        * @param evaluation_point The index of the evaluation point in the positions array.
        * @param gradients The array to fill with the solution gradients. This array has to be
        *                  of size n_components().
+       * @param evaluation_flags The flags that indicate which gradients should be copied into the
+       *                        solution array. This vector has to be of size n_components().
        */
       void get_gradients(const unsigned int evaluation_point,
-                         const ArrayView<Tensor<1, dim>> &gradients) const;
+                         const ArrayView<Tensor<1, dim>> &gradients,
+                         const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags) const;
 
       /**
        * Return the evaluator for velocity or fluid velocity. This is the only

@@ -69,9 +69,15 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      Composition<dim>::get_needed_update_flags () const
+      Composition<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_values;
+        const auto &component_indices = this->introspection().component_indices;
+
+        if (component >= component_indices.compositional_fields.front() &&
+            component <= component_indices.compositional_fields.back())
+          return update_values;
+
+        return update_default;
       }
 
 

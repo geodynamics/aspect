@@ -88,9 +88,15 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      IntegratedStrain<dim>::get_needed_update_flags () const
+      IntegratedStrain<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_gradients;
+        const auto &component_indices = this->introspection().component_indices;
+
+        if (component >= component_indices.velocities[0] &&
+            component <= component_indices.velocities[dim-1])
+          return update_gradients;
+
+        return update_default;
       }
 
       template <int dim>
