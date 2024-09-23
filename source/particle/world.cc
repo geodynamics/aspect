@@ -68,20 +68,6 @@ namespace aspect
     World<dim>::initialize()
     {
       CitationInfo::add("particles");
-      if (particle_load_balancing & ParticleLoadBalancing::repartition)
-        this->get_triangulation().signals.weight.connect(
-#if DEAL_II_VERSION_GTE(9,6,0)
-          [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-               const CellStatus status)
-          -> unsigned int
-#else
-          [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-               const typename parallel::distributed::Triangulation<dim>::CellStatus status)
-          -> unsigned int
-#endif
-        {
-          return this->cell_weight(cell, status);
-        });
 
       // Create a particle handler that stores the future particles.
       // If we restarted from a checkpoint we will fill this particle handler
@@ -389,7 +375,6 @@ namespace aspect
       if (cell->is_active() && !cell->is_locally_owned())
         return 0;
 
-      const unsigned int base_weight = 1000;
       unsigned int n_particles_in_cell = 0;
       switch (status)
         {
@@ -424,7 +409,7 @@ namespace aspect
             Assert(false, ExcInternalError());
             break;
         }
-      return base_weight + n_particles_in_cell * particle_weight;
+      return n_particles_in_cell * particle_weight;
     }
 
 
@@ -911,6 +896,23 @@ namespace aspect
                                      + ">. This value does not correspond to any known load balancing strategy. Possible values "
                                      "are listed in the corresponding manual subsection."));
           }
+
+        if (particle_load_balancing & ParticleLoadBalancing::repartition)
+          this->get_triangulation().signals.weight.connect(
+#if DEAL_II_VERSION_GTE(9,6,0)
+            [ &, world_index] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                               const CellStatus status)
+            -> unsigned int
+#else
+            [ &, world_index] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                               const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+            -> unsigned int
+#endif
+          {
+            // Only add the base weight of cells in particle world 0, because all weights will be summed
+            // across all particle worlds.
+            return (world_index == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
+          });
 
 
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Initialization");
