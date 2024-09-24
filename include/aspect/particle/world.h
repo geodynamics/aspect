@@ -413,10 +413,17 @@ namespace aspect
 
         /**
          * Update the particle properties of one cell.
+         *
+         * @param inputs The input data required for the particle update. This
+         * function will fill this structure with the necessary data.
+         * @param positions The reference positions of the particles in the cell.
+         * This function will update these positions for the current cell.
+         * @param evaluator The solution evaluator that is used to update the particles.
          */
         void
-        local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                               SolutionEvaluator<dim> &evaluators);
+        local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
+                               small_vector<Point<dim>> &positions,
+                               SolutionEvaluator<dim> &evaluator);
 
         /**
          * Advect the particles of one cell. Performs only one step for

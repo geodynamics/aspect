@@ -383,7 +383,7 @@ namespace aspect
   template <int dim>
   void
   SolutionEvaluator<dim>::get_solution(const unsigned int evaluation_point,
-                                       const ArrayView<double> &solution)
+                                       const ArrayView<double> &solution) const
   {
     Assert(solution.size() == simulator_access.introspection().n_components,
            ExcDimensionMismatch(solution.size(), simulator_access.introspection().n_components));
@@ -421,7 +421,7 @@ namespace aspect
   template <int dim>
   void
   SolutionEvaluator<dim>::get_gradients(const unsigned int evaluation_point,
-                                        const ArrayView<Tensor<1,dim>> &gradients)
+                                        const ArrayView<Tensor<1,dim>> &gradients) const
   {
     Assert(gradients.size() == simulator_access.introspection().n_components,
            ExcDimensionMismatch(gradients.size(), simulator_access.introspection().n_components));
@@ -456,6 +456,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   FEPointEvaluation<dim, dim> &
   SolutionEvaluator<dim>::get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity)
@@ -467,6 +468,9 @@ namespace aspect
 
     return velocity;
   }
+
+
+
   template <int dim>
   NonMatching::MappingInfo<dim> &
   SolutionEvaluator<dim>::get_mapping_info()
@@ -475,7 +479,16 @@ namespace aspect
   }
 
 
-  // A function to create a pointer to a SolutionEvaluator object.
+
+  template <int dim>
+  unsigned int
+  SolutionEvaluator<dim>::n_components() const
+  {
+    return simulator_access.introspection().n_components;
+  }
+
+
+
   template <int dim>
   std::unique_ptr<SolutionEvaluator<dim>>
   construct_solution_evaluator (const SimulatorAccess<dim> &simulator_access,

@@ -224,179 +224,184 @@ namespace aspect
 
       template <int dim>
       void
-      CrystalPreferredOrientation<dim>::update_particle_property(const unsigned int data_position,
-                                                                 const Vector<double> &solution,
-                                                                 const std::vector<Tensor<1,dim>> &gradients,
-                                                                 typename ParticleHandler<dim>::particle_iterator &particle) const
+      CrystalPreferredOrientation<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+                                                                   typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        // STEP 1: Load data and preprocess it.
+        const unsigned int data_position = this->data_position;
+        std::vector<double> compositions(this->n_compositional_fields());
 
-        // need access to the pressure, viscosity,
-        // get velocity
-        Tensor<1,dim> velocity;
-        for (unsigned int i = 0; i < dim; ++i)
-          velocity[i] = solution[this->introspection().component_indices.velocities[i]];
-
-        // get velocity gradient tensor.
-        Tensor<2,dim> velocity_gradient;
-        for (unsigned int i = 0; i < dim; ++i)
-          velocity_gradient[i] = gradients[this->introspection().component_indices.velocities[i]];
-
-        // Calculate strain rate from velocity gradients
-        const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
-        const SymmetricTensor<2,dim> deviatoric_strain_rate
-          = (this->get_material_model().is_compressible()
-             ?
-             strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-             :
-             strain_rate);
-
-        const double pressure = solution[this->introspection().component_indices.pressure];
-        const double temperature = solution[this->introspection().component_indices.temperature];
-        const double water_content = solution[this->introspection().component_indices.compositional_fields[water_index]];
-
-        // get the composition of the particle
-        std::vector<double> compositions;
-        for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
+        unsigned int p = 0;
+        for (auto &particle: particles)
           {
-            const unsigned int solution_component = this->introspection().component_indices.compositional_fields[i];
-            compositions.push_back(solution[solution_component]);
-          }
+            // STEP 1: Load data and preprocess it.
 
-        const double dt = this->get_timestep();
+            // need access to the pressure, viscosity,
+            // get velocity
+            Tensor<1,dim> velocity;
+            for (unsigned int i = 0; i < dim; ++i)
+              velocity[i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
 
-        // even in 2d we need 3d strain-rates and velocity gradient tensors. So we make them 3d by
-        // adding an extra dimension which is zero.
-        SymmetricTensor<2,3> strain_rate_3d;
-        strain_rate_3d[0][0] = strain_rate[0][0];
-        strain_rate_3d[0][1] = strain_rate[0][1];
-        //sym: strain_rate_3d[1][0] = strain_rate[1][0];
-        strain_rate_3d[1][1] = strain_rate[1][1];
+            // get velocity gradient tensor.
+            Tensor<2,dim> velocity_gradient;
+            for (unsigned int i = 0; i < dim; ++i)
+              velocity_gradient[i] = inputs.gradients[p][this->introspection().component_indices.velocities[i]];
 
-        if (dim == 3)
-          {
-            strain_rate_3d[0][2] = strain_rate[0][2];
-            strain_rate_3d[1][2] = strain_rate[1][2];
-            //sym: strain_rate_3d[2][0] = strain_rate[0][2];
-            //sym: strain_rate_3d[2][1] = strain_rate[1][2];
-            strain_rate_3d[2][2] = strain_rate[2][2];
-          }
-        Tensor<2,3> velocity_gradient_3d;
-        velocity_gradient_3d[0][0] = velocity_gradient[0][0];
-        velocity_gradient_3d[0][1] = velocity_gradient[0][1];
-        velocity_gradient_3d[1][0] = velocity_gradient[1][0];
-        velocity_gradient_3d[1][1] = velocity_gradient[1][1];
-        if (dim == 3)
-          {
-            velocity_gradient_3d[0][2] = velocity_gradient[0][2];
-            velocity_gradient_3d[1][2] = velocity_gradient[1][2];
-            velocity_gradient_3d[2][0] = velocity_gradient[2][0];
-            velocity_gradient_3d[2][1] = velocity_gradient[2][1];
-            velocity_gradient_3d[2][2] = velocity_gradient[2][2];
-          }
+            // Calculate strain rate from velocity gradients
+            const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
+            const SymmetricTensor<2,dim> deviatoric_strain_rate
+              = (this->get_material_model().is_compressible()
+                 ?
+                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
+                 :
+                 strain_rate);
 
-        ArrayView<double> data = particle->get_properties();
+            const double pressure = inputs.solution[p][this->introspection().component_indices.pressure];
+            const double temperature = inputs.solution[p][this->introspection().component_indices.temperature];
+            const double water_content = inputs.solution[p][this->introspection().component_indices.compositional_fields[water_index]];
 
-        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
-          {
-
-            /**
-            * Now we have loaded all the data and can do the actual computation.
-            * The computation consists of two parts. The first part is computing
-            * the derivatives for the directions and grain sizes. Then those
-            * derivatives are used to advect the particle properties.
-            */
-            double sum_volume_mineral = 0;
-            std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-            derivatives_grains = this->compute_derivatives(data_position,
-                                                           data,
-                                                           mineral_i,
-                                                           strain_rate_3d,
-                                                           velocity_gradient_3d,
-                                                           particle->get_location(),
-                                                           temperature,
-                                                           pressure,
-                                                           velocity,
-                                                           compositions,
-                                                           strain_rate,
-                                                           deviatoric_strain_rate,
-                                                           water_content);
-
-            switch (advection_method)
+            // get the composition of the particle
+            for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
               {
-                case AdvectionMethod::forward_euler:
-
-                  sum_volume_mineral = this->advect_forward_euler(data_position,
-                                                                  data,
-                                                                  mineral_i,
-                                                                  dt,
-                                                                  derivatives_grains);
-
-                  break;
-
-                case AdvectionMethod::backward_euler:
-                  sum_volume_mineral = this->advect_backward_euler(data_position,
-                                                                   data,
-                                                                   mineral_i,
-                                                                   dt,
-                                                                   derivatives_grains);
-
-                  break;
+                const unsigned int solution_component = this->introspection().component_indices.compositional_fields[i];
+                compositions[i] = inputs.solution[p][solution_component];
               }
 
-            // normalize the volume fractions back to a total of 1 for each mineral
-            const double inv_sum_volume_mineral = 1.0/sum_volume_mineral;
+            const double dt = this->get_timestep();
 
-            Assert(std::isfinite(inv_sum_volume_mineral),
-                   ExcMessage("inv_sum_volume_mineral is not finite. sum_volume_enstatite = "
-                              + std::to_string(sum_volume_mineral)));
+            // even in 2d we need 3d strain-rates and velocity gradient tensors. So we make them 3d by
+            // adding an extra dimension which is zero.
+            SymmetricTensor<2,3> strain_rate_3d;
+            strain_rate_3d[0][0] = strain_rate[0][0];
+            strain_rate_3d[0][1] = strain_rate[0][1];
+            //sym: strain_rate_3d[1][0] = strain_rate[1][0];
+            strain_rate_3d[1][1] = strain_rate[1][1];
 
-            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+            if (dim == 3)
               {
-                const double volume_fraction_grains = get_volume_fractions_grains(data_position,data,mineral_i,grain_i)*inv_sum_volume_mineral;
-                set_volume_fractions_grains(data_position,data,mineral_i,grain_i,volume_fraction_grains);
-                Assert(isfinite(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)),
-                       ExcMessage("volume_fractions_grains[mineral_i]" + std::to_string(grain_i) + "] is not finite: "
-                                  + std::to_string(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)) + ", inv_sum_volume_mineral = "
-                                  + std::to_string(inv_sum_volume_mineral) + "."));
+                strain_rate_3d[0][2] = strain_rate[0][2];
+                strain_rate_3d[1][2] = strain_rate[1][2];
+                //sym: strain_rate_3d[2][0] = strain_rate[0][2];
+                //sym: strain_rate_3d[2][1] = strain_rate[1][2];
+                strain_rate_3d[2][2] = strain_rate[2][2];
+              }
+            Tensor<2,3> velocity_gradient_3d;
+            velocity_gradient_3d[0][0] = velocity_gradient[0][0];
+            velocity_gradient_3d[0][1] = velocity_gradient[0][1];
+            velocity_gradient_3d[1][0] = velocity_gradient[1][0];
+            velocity_gradient_3d[1][1] = velocity_gradient[1][1];
+            if (dim == 3)
+              {
+                velocity_gradient_3d[0][2] = velocity_gradient[0][2];
+                velocity_gradient_3d[1][2] = velocity_gradient[1][2];
+                velocity_gradient_3d[2][0] = velocity_gradient[2][0];
+                velocity_gradient_3d[2][1] = velocity_gradient[2][1];
+                velocity_gradient_3d[2][2] = velocity_gradient[2][2];
+              }
+
+            ArrayView<double> data = particle.get_properties();
+
+            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+              {
 
                 /**
-                 * Correct direction rotation matrices numerical error (orthnormality) after integration
-                 * Follows same method as in matlab version from Thissen (see https://github.com/cthissen/Drex-MATLAB/)
-                 * of finding the nearest orthonormal matrix using the SVD
-                 */
-                Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(data_position,data,mineral_i,grain_i);
-                for (size_t i = 0; i < 3; ++i)
+                * Now we have loaded all the data and can do the actual computation.
+                * The computation consists of two parts. The first part is computing
+                * the derivatives for the directions and grain sizes. Then those
+                * derivatives are used to advect the particle properties.
+                */
+                double sum_volume_mineral = 0;
+                std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
+                derivatives_grains = this->compute_derivatives(data_position,
+                                                               data,
+                                                               mineral_i,
+                                                               strain_rate_3d,
+                                                               velocity_gradient_3d,
+                                                               particle.get_location(),
+                                                               temperature,
+                                                               pressure,
+                                                               velocity,
+                                                               compositions,
+                                                               strain_rate,
+                                                               deviatoric_strain_rate,
+                                                               water_content);
+
+                switch (advection_method)
                   {
-                    for (size_t j = 0; j < 3; ++j)
-                      {
-                        Assert(!std::isnan(rotation_matrix[i][j]), ExcMessage("rotation_matrix is nan before orthogonalization."));
-                      }
+                    case AdvectionMethod::forward_euler:
+
+                      sum_volume_mineral = this->advect_forward_euler(data_position,
+                                                                      data,
+                                                                      mineral_i,
+                                                                      dt,
+                                                                      derivatives_grains);
+
+                      break;
+
+                    case AdvectionMethod::backward_euler:
+                      sum_volume_mineral = this->advect_backward_euler(data_position,
+                                                                       data,
+                                                                       mineral_i,
+                                                                       dt,
+                                                                       derivatives_grains);
+
+                      break;
                   }
 
-                rotation_matrix = dealii::project_onto_orthogonal_tensors(rotation_matrix);
-                for (size_t i = 0; i < 3; ++i)
-                  for (size_t j = 0; j < 3; ++j)
-                    {
-                      // I don't think this should happen with the projection, but D-Rex
-                      // does not do the orthogonal projection, but just clamps the values
-                      // to 1 and -1.
-                      Assert(std::fabs(rotation_matrix[i][j]) <= 1.0,
-                             ExcMessage("The rotation_matrix has a entry larger than 1."));
+                // normalize the volume fractions back to a total of 1 for each mineral
+                const double inv_sum_volume_mineral = 1.0/sum_volume_mineral;
 
-                      Assert(!std::isnan(rotation_matrix[i][j]),
-                             ExcMessage("rotation_matrix is nan after orthoganalization: "
-                                        + std::to_string(rotation_matrix[i][j])));
+                Assert(std::isfinite(inv_sum_volume_mineral),
+                       ExcMessage("inv_sum_volume_mineral is not finite. sum_volume_enstatite = "
+                                  + std::to_string(sum_volume_mineral)));
 
-                      Assert(abs(rotation_matrix[i][j]) <= 1.0,
-                             ExcMessage("3. rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
-                                        "] is larger than one: "
-                                        + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
-                                        + std::to_string(rotation_matrix[0][0]) + " " + std::to_string(rotation_matrix[0][1]) + " " + std::to_string(rotation_matrix[0][2]) + "\n"
-                                        + std::to_string(rotation_matrix[1][0]) + " " + std::to_string(rotation_matrix[1][1]) + " " + std::to_string(rotation_matrix[1][2]) + "\n"
-                                        + std::to_string(rotation_matrix[2][0]) + " " + std::to_string(rotation_matrix[2][1]) + " " + std::to_string(rotation_matrix[2][2])));
-                    }
+                for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+                  {
+                    const double volume_fraction_grains = get_volume_fractions_grains(data_position,data,mineral_i,grain_i)*inv_sum_volume_mineral;
+                    set_volume_fractions_grains(data_position,data,mineral_i,grain_i,volume_fraction_grains);
+                    Assert(isfinite(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)),
+                           ExcMessage("volume_fractions_grains[mineral_i]" + std::to_string(grain_i) + "] is not finite: "
+                                      + std::to_string(get_volume_fractions_grains(data_position,data,mineral_i,grain_i)) + ", inv_sum_volume_mineral = "
+                                      + std::to_string(inv_sum_volume_mineral) + "."));
+
+                    /**
+                     * Correct direction rotation matrices numerical error (orthnormality) after integration
+                     * Follows same method as in matlab version from Thissen (see https://github.com/cthissen/Drex-MATLAB/)
+                     * of finding the nearest orthonormal matrix using the SVD
+                     */
+                    Tensor<2,3> rotation_matrix = get_rotation_matrix_grains(data_position,data,mineral_i,grain_i);
+                    for (size_t i = 0; i < 3; ++i)
+                      {
+                        for (size_t j = 0; j < 3; ++j)
+                          {
+                            Assert(!std::isnan(rotation_matrix[i][j]), ExcMessage("rotation_matrix is nan before orthogonalization."));
+                          }
+                      }
+
+                    rotation_matrix = dealii::project_onto_orthogonal_tensors(rotation_matrix);
+                    for (size_t i = 0; i < 3; ++i)
+                      for (size_t j = 0; j < 3; ++j)
+                        {
+                          // I don't think this should happen with the projection, but D-Rex
+                          // does not do the orthogonal projection, but just clamps the values
+                          // to 1 and -1.
+                          Assert(std::fabs(rotation_matrix[i][j]) <= 1.0,
+                                 ExcMessage("The rotation_matrix has a entry larger than 1."));
+
+                          Assert(!std::isnan(rotation_matrix[i][j]),
+                                 ExcMessage("rotation_matrix is nan after orthoganalization: "
+                                            + std::to_string(rotation_matrix[i][j])));
+
+                          Assert(abs(rotation_matrix[i][j]) <= 1.0,
+                                 ExcMessage("3. rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
+                                            "] is larger than one: "
+                                            + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
+                                            + std::to_string(rotation_matrix[0][0]) + " " + std::to_string(rotation_matrix[0][1]) + " " + std::to_string(rotation_matrix[0][2]) + "\n"
+                                            + std::to_string(rotation_matrix[1][0]) + " " + std::to_string(rotation_matrix[1][1]) + " " + std::to_string(rotation_matrix[1][2]) + "\n"
+                                            + std::to_string(rotation_matrix[2][0]) + " " + std::to_string(rotation_matrix[2][1]) + " " + std::to_string(rotation_matrix[2][2])));
+                        }
+                  }
               }
+            ++p;
           }
       }
 

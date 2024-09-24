@@ -66,52 +66,50 @@ namespace aspect
 
       template <int dim>
       void
-      GrainSize<dim>::update_particle_properties(const unsigned int data_position,
-                                                 const std::vector<Vector<double>> &solution,
-                                                 const std::vector<std::vector<Tensor<1,dim>>> &gradients,
+      GrainSize<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
                                                  typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        material_inputs  = MaterialModel::MaterialModelInputs<dim>(solution.size(), this->n_compositional_fields());
-        material_outputs = MaterialModel::MaterialModelOutputs<dim>(solution.size(), this->n_compositional_fields());
+        material_inputs  = MaterialModel::MaterialModelInputs<dim>(inputs.solution.size(), this->n_compositional_fields());
+        material_outputs = MaterialModel::MaterialModelOutputs<dim>(inputs.solution.size(), this->n_compositional_fields());
         material_inputs.requested_properties = MaterialModel::MaterialProperties::reaction_terms;
-        material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particles.begin()->get_surrounding_cell(),
-                                                                                      &(this->get_dof_handler()));
+        material_inputs.current_cell = inputs.current_cell;
 
-        unsigned int i = 0;
+        unsigned int p = 0;
         for (auto particle: particles)
           {
             // Make sure all particles are in the same cell
-            Assert(particle.get_surrounding_cell() == particles.begin()->get_surrounding_cell(),
+            Assert(particle.get_surrounding_cell() == inputs.current_cell,
                    ExcMessage("All particles must be in the same cell."));
 
-            material_inputs.position[i] = particle.get_location();
-            material_inputs.temperature[i] = solution[i][this->introspection().component_indices.temperature];
-            material_inputs.pressure[i] = solution[i][this->introspection().component_indices.pressure];
+            material_inputs.position[p] = particle.get_location();
+            material_inputs.temperature[p] = inputs.solution[p][this->introspection().component_indices.temperature];
+            material_inputs.pressure[p] = inputs.solution[p][this->introspection().component_indices.pressure];
 
             for (unsigned int d = 0; d < dim; ++d)
-              material_inputs.velocity[i][d] = solution[i][this->introspection().component_indices.velocities[d]];
+              material_inputs.velocity[p][d] = inputs.solution[p][this->introspection().component_indices.velocities[d]];
 
             for (unsigned int n = 0; n < this->n_compositional_fields(); ++n)
-              material_inputs.composition[i][n] = solution[i][this->introspection().component_indices.compositional_fields[n]];
+              material_inputs.composition[p][n] = inputs.solution[p][this->introspection().component_indices.compositional_fields[n]];
 
-            material_inputs.composition[i][grain_size_index] = particle.get_properties()[data_position];
+            material_inputs.composition[p][grain_size_index] = particle.get_properties()[this->data_position];
 
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = gradients[i][d];
-            material_inputs.strain_rate[i] = symmetrize (grad_u);
+              grad_u[d] = inputs.gradients[p][this->introspection().component_indices.velocities[d]];
 
-            ++i;
+            material_inputs.strain_rate[p] = symmetrize (grad_u);
+
+            ++p;
           }
 
         this->get_material_model().evaluate(material_inputs,
                                             material_outputs);
 
-        i = 0;
-        for (auto particle: particles)
+        p = 0;
+        for (auto &particle: particles)
           {
-            particle.get_properties()[data_position] += material_outputs.reaction_terms[i][grain_size_index];
-            ++i;
+            particle.get_properties()[this->data_position] += material_outputs.reaction_terms[p][grain_size_index];
+            ++p;
           }
       }
 

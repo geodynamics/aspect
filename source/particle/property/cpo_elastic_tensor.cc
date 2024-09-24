@@ -140,25 +140,23 @@ namespace aspect
 
       template <int dim>
       void
-      CpoElasticTensor<dim>::update_particle_property(const unsigned int data_position,
-                                                      const Vector<double> &/*solution*/,
-                                                      const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                                      typename ParticleHandler<dim>::particle_iterator &particle) const
+      CpoElasticTensor<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+                                                        typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         // Get a reference to the CPO particle property.
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
           this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
+        for (auto &particle: particles)
+          {
+            const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
+                                                                                cpo_data_position,
+                                                                                particle.get_properties());
 
-        const SymmetricTensor<2,6> C_average = voigt_average_elastic_tensor(cpo_particle_property,
-                                                                            cpo_data_position,
-                                                                            particle->get_properties());
-
-        Particle::Property::CpoElasticTensor<dim>::set_elastic_tensor(data_position,
-                                                                      particle->get_properties(),
-                                                                      C_average);
-
-
+            Particle::Property::CpoElasticTensor<dim>::set_elastic_tensor(this->data_position,
+                                                                          particle.get_properties(),
+                                                                          C_average);
+          }
       }
 
 

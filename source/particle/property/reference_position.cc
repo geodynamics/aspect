@@ -37,13 +37,12 @@ namespace aspect
 
       template <int dim>
       void
-      ReferencePosition<dim>::update_particle_property(const unsigned int data_position,
-                                                       const Vector<double> &/*solution*/,
-                                                       const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
+      ReferencePosition<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+                                                         typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        for (unsigned int i = 0; i < dim; ++i)
-          particle->get_properties()[data_position+i] = particle->get_reference_location()[i];
+        for (auto &particle: particles)
+          for (unsigned int i = 0; i < dim; ++i)
+            particle.get_properties()[this->data_position+i] = particle.get_reference_location()[i];
       }
 
       template <int dim>

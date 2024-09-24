@@ -81,31 +81,35 @@ namespace aspect
 
       template <int dim>
       void
-      CpoBinghamAverage<dim>::update_particle_property(const unsigned int data_position,
-                                                       const Vector<double> &/*solution*/,
-                                                       const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
+      CpoBinghamAverage<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+                                                         typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
-        ArrayView<double> data = particle->get_properties();
-        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+
+        unsigned int p = 0;
+        for (auto &particle: particles)
           {
-            // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
-            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+            ArrayView<double> data = particle.get_properties();
+            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
-                volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
-                rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
+                // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
+                for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+                  {
+                    volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
+                    rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
+                  }
+
+                const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
+                std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
+
+                for (unsigned int i = 0; i < 3; ++i)
+                  for (unsigned int j = 0; j < 6; ++j)
+                    {
+                      data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
+                    }
               }
-
-            const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
-            std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
-
-            for (unsigned int i = 0; i < 3; ++i)
-              for (unsigned int j = 0; j < 6; ++j)
-                {
-                  data[data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
-                }
+            ++p;
           }
       }
 

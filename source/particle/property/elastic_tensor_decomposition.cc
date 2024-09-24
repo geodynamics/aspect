@@ -347,60 +347,62 @@ namespace aspect
 
       template <int dim>
       void
-      ElasticTensorDecomposition<dim>::update_particle_property(const unsigned int data_position,
-                                                                const Vector<double> &/*solution*/,
-                                                                const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                                                typename ParticleHandler<dim>::particle_iterator &particle) const
+      ElasticTensorDecomposition<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+                                                                  typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        ArrayView<double> data = particle->get_properties();
-        const SymmetricTensor<2,6> elastic_matrix = Particle::Property::CpoElasticTensor<dim>::get_elastic_tensor(cpo_elastic_tensor_data_position,
-                                                    data);
-
-        const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = Utilities::compute_dilatation_stiffness_tensor(elastic_matrix);
-        const SymmetricTensor<2,3> voigt_stiffness_tensor_full = Utilities::compute_voigt_stiffness_tensor(elastic_matrix);
-        const Tensor<2,3> SCCS_full = Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
-
-        const std::array<std::array<double,3>,7 > norms = Utilities::compute_elastic_tensor_SCCS_decompositions(SCCS_full, elastic_matrix);
-
-        // get max hexagonal element index, which is the same as the permutation index
-        const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
-        std::array<unsigned int, 3> permutation = Utilities::indexed_even_permutation(max_hexagonal_element_index);
-        // reorder the SCCS by the SCCS permutation which yields the largest hexagonal vector (percentage of anisotropy)
-        Tensor<2,3> hexagonal_permutated_SCCS;
-        for (size_t index = 0; index < 3; ++index)
+        const unsigned int data_position = this->data_position;
+        for (auto &particle: particles)
           {
-            hexagonal_permutated_SCCS[index] = SCCS_full[permutation[index]];
-          }
+            ArrayView<double> data = particle.get_properties();
+            const SymmetricTensor<2,6> elastic_matrix = Particle::Property::CpoElasticTensor<dim>::get_elastic_tensor(cpo_elastic_tensor_data_position,
+                                                        data);
 
-        data[data_position]    = SCCS_full[0][0];
-        data[data_position+1]  = SCCS_full[0][1];
-        data[data_position+2]  = SCCS_full[0][2];
-        data[data_position+3]  = SCCS_full[1][0];
-        data[data_position+4]  = SCCS_full[1][1];
-        data[data_position+5]  = SCCS_full[1][2];
-        data[data_position+6]  = SCCS_full[2][0];
-        data[data_position+7]  = SCCS_full[2][1];
-        data[data_position+8]  = SCCS_full[2][2];
-        data[data_position+9]  = hexagonal_permutated_SCCS[2][0];
-        data[data_position+10] = hexagonal_permutated_SCCS[2][1];
-        data[data_position+11] = hexagonal_permutated_SCCS[2][2];
-        data[data_position+12] = norms[6][0];
-        data[data_position+13] = norms[0][0]; // triclinic
-        data[data_position+14] = norms[0][1]; // triclinic
-        data[data_position+15] = norms[0][2]; // triclinic
-        data[data_position+16] = norms[1][0]; // monoclinic
-        data[data_position+17] = norms[1][1]; // monoclinic
-        data[data_position+18] = norms[1][2]; // monoclinic
-        data[data_position+19] = norms[2][0]; // orthorhomic
-        data[data_position+20] = norms[2][1]; // orthorhomic
-        data[data_position+21] = norms[2][2]; // orthorhomic
-        data[data_position+22] = norms[3][0]; // tetragonal
-        data[data_position+23] = norms[3][1]; // tetragonal
-        data[data_position+24] = norms[3][2]; // tetragonal
-        data[data_position+25] = norms[4][0]; // hexagonal
-        data[data_position+26] = norms[4][1]; // hexagonal
-        data[data_position+27] = norms[4][2]; // hexagonal
-        data[data_position+28] = norms[5][0]; // isotropic
+            const SymmetricTensor<2,3> dilatation_stiffness_tensor_full = Utilities::compute_dilatation_stiffness_tensor(elastic_matrix);
+            const SymmetricTensor<2,3> voigt_stiffness_tensor_full = Utilities::compute_voigt_stiffness_tensor(elastic_matrix);
+            const Tensor<2,3> SCCS_full = Utilities::compute_unpermutated_SCCS(dilatation_stiffness_tensor_full, voigt_stiffness_tensor_full);
+
+            const std::array<std::array<double,3>,7 > norms = Utilities::compute_elastic_tensor_SCCS_decompositions(SCCS_full, elastic_matrix);
+
+            // get max hexagonal element index, which is the same as the permutation index
+            const size_t max_hexagonal_element_index = std::max_element(norms[4].begin(),norms[4].end())-norms[4].begin();
+            std::array<unsigned int, 3> permutation = Utilities::indexed_even_permutation(max_hexagonal_element_index);
+            // reorder the SCCS by the SCCS permutation which yields the largest hexagonal vector (percentage of anisotropy)
+            Tensor<2,3> hexagonal_permutated_SCCS;
+            for (size_t index = 0; index < 3; ++index)
+              {
+                hexagonal_permutated_SCCS[index] = SCCS_full[permutation[index]];
+              }
+
+            data[data_position]    = SCCS_full[0][0];
+            data[data_position+1]  = SCCS_full[0][1];
+            data[data_position+2]  = SCCS_full[0][2];
+            data[data_position+3]  = SCCS_full[1][0];
+            data[data_position+4]  = SCCS_full[1][1];
+            data[data_position+5]  = SCCS_full[1][2];
+            data[data_position+6]  = SCCS_full[2][0];
+            data[data_position+7]  = SCCS_full[2][1];
+            data[data_position+8]  = SCCS_full[2][2];
+            data[data_position+9]  = hexagonal_permutated_SCCS[2][0];
+            data[data_position+10] = hexagonal_permutated_SCCS[2][1];
+            data[data_position+11] = hexagonal_permutated_SCCS[2][2];
+            data[data_position+12] = norms[6][0];
+            data[data_position+13] = norms[0][0]; // triclinic
+            data[data_position+14] = norms[0][1]; // triclinic
+            data[data_position+15] = norms[0][2]; // triclinic
+            data[data_position+16] = norms[1][0]; // monoclinic
+            data[data_position+17] = norms[1][1]; // monoclinic
+            data[data_position+18] = norms[1][2]; // monoclinic
+            data[data_position+19] = norms[2][0]; // orthorhomic
+            data[data_position+20] = norms[2][1]; // orthorhomic
+            data[data_position+21] = norms[2][2]; // orthorhomic
+            data[data_position+22] = norms[3][0]; // tetragonal
+            data[data_position+23] = norms[3][1]; // tetragonal
+            data[data_position+24] = norms[3][2]; // tetragonal
+            data[data_position+25] = norms[4][0]; // hexagonal
+            data[data_position+26] = norms[4][1]; // hexagonal
+            data[data_position+27] = norms[4][2]; // hexagonal
+            data[data_position+28] = norms[5][0]; // isotropic
+          }
       }
 
 

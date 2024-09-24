@@ -443,51 +443,56 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+    World<dim>::local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
+                                       small_vector<Point<dim>> &positions,
                                        SolutionEvaluator<dim> &evaluator)
     {
-      const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
-      typename ParticleHandler<dim>::particle_iterator_range particles = particle_handler->particles_in_cell(cell);
+      const unsigned int n_particles = particle_handler->n_particles_in_cell(inputs.current_cell);
 
-      std::vector<Point<dim>> positions;
-      positions.reserve(n_particles_in_cell);
+      typename ParticleHandler<dim>::particle_iterator_range particles = particle_handler->particles_in_cell(inputs.current_cell);
 
+      positions.resize(n_particles);
+      unsigned int p = 0;
       for (const auto &particle : particles)
-        positions.push_back(particle.get_reference_location());
+        {
+          positions[p] = particle.get_reference_location();
+          ++p;
+        }
 
       const UpdateFlags update_flags = property_manager->get_needed_update_flags();
 
       small_vector<double> solution_values(this->get_fe().dofs_per_cell);
 
-      cell->get_dof_values(this->get_solution(),
-                           solution_values.begin(),
-                           solution_values.end());
+      inputs.current_cell->get_dof_values(this->get_solution(),
+                                          solution_values.begin(),
+                                          solution_values.end());
 
       if (update_flags & (update_values | update_gradients))
-        evaluator.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags);
+        {
+          evaluator.reinit(inputs.current_cell,
+          {positions.data(), positions.size()},
+          {solution_values.data(), solution_values.size()},
+          update_flags);
+        }
 
-      std::vector<Vector<double>> solution;
       if (update_flags & update_values)
-        solution.resize(n_particles_in_cell,Vector<double>(this->introspection().n_components));
+        inputs.solution.resize(n_particles,small_vector<double>(evaluator.n_components()));
 
-      std::vector<std::vector<Tensor<1,dim>>> gradients;
       if (update_flags & update_gradients)
-        gradients.resize(n_particles_in_cell,std::vector<Tensor<1,dim>>(this->introspection().n_components));
+        inputs.gradients.resize(n_particles,small_vector<Tensor<1,dim>>(evaluator.n_components()));
 
-      for (unsigned int i = 0; i<n_particles_in_cell; ++i)
+      for (unsigned int i = 0; i<n_particles; ++i)
         {
           // Evaluate the solution, but only if it is requested in the update_flags
           if (update_flags & update_values)
-            evaluator.get_solution(i, {&solution[i][0],solution[i].size()});
+            evaluator.get_solution(i, {&inputs.solution[i][0],inputs.solution[i].size()});
 
           // Evaluate the gradients, but only if they are requested in the update_flags
           if (update_flags & update_gradients)
-            evaluator.get_gradients(i, gradients[i]);
+            evaluator.get_gradients(i, {&inputs.gradients[i][0],inputs.gradients[i].size()});
         }
 
-      property_manager->update_particles(particles,
-                                         solution,
-                                         gradients);
+      property_manager->update_particles(inputs,particles);
     }
 
 
@@ -631,6 +636,9 @@ namespace aspect
           std::unique_ptr<SolutionEvaluator<dim>> evaluator = construct_solution_evaluator(*this,
                                                                update_flags);
 
+          Property::ParticleUpdateInputs<dim> inputs;
+          small_vector<Point<dim>> positions;
+
           // Loop over all cells and update the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
@@ -638,7 +646,9 @@ namespace aspect
                 // Only update particles if there are any in this cell
                 if (particle_handler->n_particles_in_cell(cell) > 0)
                   {
-                    local_update_particles(cell,
+                    inputs.current_cell = cell;
+                    local_update_particles(inputs,
+                                           positions,
                                            *evaluator);
                   }
 

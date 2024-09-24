@@ -166,18 +166,26 @@ namespace aspect
        * that this function only works after a successful call to reinit(),
        * because this function only returns the results of the computation that
        * happened in reinit().
+       *
+       * @param evaluation_point The index of the evaluation point in the positions array.
+       * @param solution The array to fill with the solution values. This array has to be
+       *                 of size n_components().
        */
       void get_solution(const unsigned int evaluation_point,
-                        const ArrayView<double> &solution);
+                        const ArrayView<double> &solution) const;
 
       /**
        * Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
        * that this function only works after a successful call to reinit(),
        * because this function only returns the results of the computation that
        * happened in reinit().
+       *
+       * @param evaluation_point The index of the evaluation point in the positions array.
+       * @param gradients The array to fill with the solution gradients. This array has to be
+       *                  of size n_components().
        */
       void get_gradients(const unsigned int evaluation_point,
-                         const ArrayView<Tensor<1, dim>> &gradients);
+                         const ArrayView<Tensor<1, dim>> &gradients) const;
 
       /**
        * Return the evaluator for velocity or fluid velocity. This is the only
@@ -191,6 +199,12 @@ namespace aspect
        */
       NonMatching::MappingInfo<dim> &
       get_mapping_info();
+
+      /**
+       * Return the number of components in the solution vector.
+       */
+      unsigned int
+      n_components() const;
 
     private:
       /**
