@@ -476,10 +476,10 @@ namespace aspect
         }
 
       if (update_flags & update_values)
-        inputs.solution.resize(n_particles,small_vector<double>(evaluator.n_components()));
+        inputs.solution.resize(n_particles,small_vector<double,50>(evaluator.n_components()));
 
       if (update_flags & update_gradients)
-        inputs.gradients.resize(n_particles,small_vector<Tensor<1,dim>>(evaluator.n_components()));
+        inputs.gradients.resize(n_particles,small_vector<Tensor<1,dim>,50>(evaluator.n_components()));
 
       for (unsigned int i = 0; i<n_particles; ++i)
         {

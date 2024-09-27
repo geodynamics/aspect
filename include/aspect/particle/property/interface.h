@@ -54,14 +54,14 @@ namespace aspect
            * The solution vector at each particle position. This vector is
            * only filled if the update function requires the solution values.
            */
-          small_vector<small_vector<double>> solution;
+          std::vector<small_vector<double,50>> solution;
 
           /**
            * The solution gradients at each particle position.
            * This vector is only filled if the update function requires the
            * gradients of the solution values.
            */
-          small_vector<small_vector<Tensor<1,dim>>> gradients;
+          std::vector<small_vector<Tensor<1,dim>,50>> gradients;
 
           /**
            * Cell iterator of the cell that is currently being updated.
