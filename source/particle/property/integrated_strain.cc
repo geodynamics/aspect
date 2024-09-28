@@ -38,43 +38,45 @@ namespace aspect
 
       template <int dim>
       void
-      IntegratedStrain<dim>::update_particle_property(const unsigned int data_position,
-                                                      const Vector<double> &/*solution*/,
-                                                      const std::vector<Tensor<1,dim>> &gradients,
-                                                      typename ParticleHandler<dim>::particle_iterator &particle) const
+      IntegratedStrain<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+                                                        typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        const Tensor<2,dim> old_strain(make_array_view(&particle->get_properties()[data_position],
-                                                       &particle->get_properties()[data_position] + Tensor<2,dim>::n_independent_components));
-
-        Tensor<2,dim> grad_u;
-        for (unsigned int d=0; d<dim; ++d)
-          grad_u[d] = gradients[d];
-
         const double dt = this->get_timestep();
 
-        Tensor<2,dim> new_strain;
+        unsigned int p = 0;
+        for (auto &particle: particles)
+          {
+            const Tensor<2,dim> old_strain(make_array_view(&particle.get_properties()[this->data_position],
+                                                           &particle.get_properties()[this->data_position] + Tensor<2,dim>::n_independent_components));
 
-        // here we integrate the equation
-        // new_deformation_gradient = velocity_gradient * old_deformation_gradient
-        // using a RK4 integration scheme.
-        const Tensor<2,dim> k1 = grad_u * old_strain * dt;
-        new_strain = old_strain + 0.5*k1;
+            Tensor<2,dim> grad_u;
+            for (unsigned int d=0; d<dim; ++d)
+              grad_u[d] = inputs.gradients[p][this->introspection().component_indices.velocities[d]];
 
-        const Tensor<2,dim> k2 = grad_u * new_strain * dt;
-        new_strain = old_strain + 0.5*k2;
+            // here we integrate the equation
+            // new_deformation_gradient = velocity_gradient * old_deformation_gradient
+            // using a RK4 integration scheme.
+            const Tensor<2,dim> k1 = grad_u * old_strain * dt;
+            Tensor<2,dim> new_strain = old_strain + 0.5*k1;
 
-        const Tensor<2,dim> k3 = grad_u * new_strain * dt;
-        new_strain = old_strain + k3;
+            const Tensor<2,dim> k2 = grad_u * new_strain * dt;
+            new_strain = old_strain + 0.5*k2;
 
-        const Tensor<2,dim> k4 = grad_u * new_strain * dt;
+            const Tensor<2,dim> k3 = grad_u * new_strain * dt;
+            new_strain = old_strain + k3;
 
-        // the new strain is the rotated old strain plus the
-        // strain of the current time step
-        new_strain = old_strain + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0;
+            const Tensor<2,dim> k4 = grad_u * new_strain * dt;
 
-        // unroll and store the new strain
-        new_strain.unroll(&particle->get_properties()[data_position],
-                          &particle->get_properties()[data_position] + Tensor<2,dim>::n_independent_components);
+            // the new strain is the rotated old strain plus the
+            // strain of the current time step
+            new_strain = old_strain + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0;
+
+            // unroll and store the new strain
+            new_strain.unroll(&particle.get_properties()[this->data_position],
+                              &particle.get_properties()[this->data_position] + Tensor<2,dim>::n_independent_components);
+
+            ++p;
+          }
       }
 
       template <int dim>

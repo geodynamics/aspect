@@ -209,25 +209,36 @@ namespace aspect
       DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
       template <int dim>
       void
-      Interface<dim>::update_particle_properties (const unsigned int data_position,
-                                                  const std::vector<Vector<double>> &solution,
-                                                  const std::vector<std::vector<Tensor<1,dim>>> &gradients,
+      Interface<dim>::update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
                                                   typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        const Vector<double> invalid_solution;
-        const std::vector<Tensor<1,dim>> invalid_gradient;
+        Vector<double> solution;
+        std::vector<Tensor<1,dim>> gradient;
 
         unsigned int i = 0;
-        for (typename ParticleHandler<dim>::particle_iterator particle = particles.begin();
-             particle != particles.end(); ++particle, ++i)
+        for (auto particle = particles.begin(); particle != particles.end(); ++particle)
           {
+            if (get_needed_update_flags() & update_values)
+              {
+                solution.reinit(inputs.solution[i].size());
+                for (unsigned int j=0; j<solution.size(); ++j)
+                  solution[j] = inputs.solution[i][j];
+              }
+
+            if (get_needed_update_flags() & update_gradients)
+              {
+                gradient.resize(inputs.gradients[i].size());
+                for (unsigned int j=0; j<gradient.size(); ++j)
+                  gradient[j] = inputs.gradients[i][j];
+              }
+
             // call the deprecated version of this function
-            update_particle_property(data_position,
-                                     (solution.size()>0) ?
-                                     solution[i] : invalid_solution,
-                                     (gradients.size()>0) ?
-                                     gradients[i] : invalid_gradient,
+            update_particle_property(this->data_position,
+                                     solution,
+                                     gradient,
                                      particle);
+
+            ++i;
           }
       }
       DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
@@ -267,6 +278,24 @@ namespace aspect
       Interface<dim>::late_initialization_mode () const
       {
         return interpolate;
+      }
+
+
+
+      template <int dim>
+      void
+      Interface<dim>::set_data_position (const unsigned int index)
+      {
+        data_position = index;
+      }
+
+
+
+      template <int dim>
+      unsigned int
+      Interface<dim>::get_data_position () const
+      {
+        return data_position;
       }
 
 
@@ -325,9 +354,12 @@ namespace aspect
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
+        unsigned int plugin_index = 0;
         for (const auto &p : this->plugin_objects)
           {
+            p->set_data_position(property_information.get_position_by_plugin_index(plugin_index));
             p->initialize();
+            ++plugin_index;
           }
       }
 
@@ -518,18 +550,14 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::update_particles (typename ParticleHandler<dim>::particle_iterator_range &particles,
-                                      const std::vector<Vector<double>> &solution,
-                                      const std::vector<std::vector<Tensor<1,dim>>> &gradients) const
+      Manager<dim>::update_particles (ParticleUpdateInputs<dim> &inputs,
+                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         unsigned int plugin_index = 0;
         for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
              p = this->plugin_objects.begin(); p!=this->plugin_objects.end(); ++p,++plugin_index)
           {
-            (*p)->update_particle_properties(property_information.get_position_by_plugin_index(plugin_index),
-                                             solution,
-                                             gradients,
-                                             particles);
+            (*p)->update_particle_properties(inputs,particles);
           }
       }
 

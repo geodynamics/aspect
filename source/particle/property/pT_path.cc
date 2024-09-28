@@ -65,13 +65,16 @@ namespace aspect
 
       template <int dim>
       void
-      PTPath<dim>::update_particle_property(const unsigned int data_position,
-                                            const Vector<double> &solution,
-                                            const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                            typename ParticleHandler<dim>::particle_iterator &particle) const
+      PTPath<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+                                              typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        particle->get_properties()[data_position]   = solution[this->introspection().component_indices.pressure];
-        particle->get_properties()[data_position+1] = solution[this->introspection().component_indices.temperature];
+        unsigned int p = 0;
+        for (auto &particle: particles)
+          {
+            particle.get_properties()[this->data_position]   = inputs.solution[p][this->introspection().component_indices.pressure];
+            particle.get_properties()[this->data_position+1] = inputs.solution[p][this->introspection().component_indices.temperature];
+            ++p;
+          }
       }
 
 

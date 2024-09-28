@@ -43,6 +43,36 @@ namespace aspect
       using namespace dealii::Particles;
 
       /**
+       * A data structure with all inputs for the
+       * Particle::Property::update_particle_properties() method.
+       */
+      template <int dim>
+      struct ParticleUpdateInputs
+      {
+        public:
+          /**
+           * The solution vector at each particle position. This vector is
+           * only filled if the update function requires the solution values.
+           */
+          std::vector<small_vector<double,50>> solution;
+
+          /**
+           * The solution gradients at each particle position.
+           * This vector is only filled if the update function requires the
+           * gradients of the solution values.
+           */
+          std::vector<small_vector<Tensor<1,dim>,50>> gradients;
+
+          /**
+           * Cell iterator of the cell that is currently being updated.
+           * This allows for evaluating additional properties at the cell vertices,
+           * or to query the cell for material ids, neighbors, or other
+           * information that is not available solely from the particles.
+           */
+          typename DoFHandler<dim>::active_cell_iterator current_cell;
+      };
+
+      /**
        * This class is used to store all the necessary information to translate
        * between the data structure of the particle properties (a flat vector of
        * doubles) and the semantic meaning of these properties. It contains
@@ -335,26 +365,18 @@ namespace aspect
            * therefore derived plugins that do not require an update do not
            * need to implement this function.
            *
-           * @param [in] data_position An unsigned integer that denotes which
-           * component of each particle property vector is associated with the
-           * current property. For properties that own several components it
-           * denotes the first component of this property, all other components
-           * fill consecutive entries in the properties vector.
-           *
-           * @param [in] solution A vector of values of the solution variables
-           * at the given particle positions.
-           *
-           * @param [in] gradients A vector of gradients of the solution
-           * variables at the given particle positions.
+           * @param [in] inputs A struct of type ParticleUpdateInputs that contains
+           * all necessary inputs to compute the particle updates. See
+           * the documentation of this struct in
+           * include/aspect/particle/property/interface.h for a list of all
+           * available inputs.
            *
            * @param [in,out] particles The particles that are to be updated
            * within this function.
            */
           virtual
           void
-          update_particle_properties (const unsigned int data_position,
-                                      const std::vector<Vector<double>> &solution,
-                                      const std::vector<std::vector<Tensor<1,dim>>> &gradients,
+          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
                                       typename ParticleHandler<dim>::particle_iterator_range &particles) const;
 
           /**
@@ -383,7 +405,9 @@ namespace aspect
            * using particle->get_location() and its properties using
            * particle->get_properties().
            *
-           * @deprecated Use update_particle_properties() instead.
+           * @deprecated This version of the function is deprecated.
+           * Use update_particle_properties() instead, which allows to
+           * update all particles of a cell in one function call.
            */
           DEAL_II_DEPRECATED
           virtual
@@ -456,6 +480,28 @@ namespace aspect
           virtual
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const = 0;
+
+          /**
+           * Set the position of this property in the particle property vector.
+           */
+          virtual
+          void
+          set_data_position (const unsigned int data_position);
+
+          /**
+           * Get the position of this property in the particle property vector.
+           */
+          virtual
+          unsigned int
+          get_data_position () const;
+
+        protected:
+          /**
+           * Store the position of the particle property in the particle property vector.
+           * If the property has multiple components, the first component is stored
+           * and all other components are stored consecutively after the first one.
+           */
+          unsigned int data_position;
       };
 
       /**
@@ -547,17 +593,17 @@ namespace aspect
            * Update function for particle properties. This function is
            * called once every time step for every cell.
            *
+           * @param inputs A struct of type ParticleUpdateInputs that contains
+           * all necessary inputs to compute the particle updates. See
+           * the documentation of this struct in
+           * include/aspect/particle/property/interface.h for a list of all
+           * available inputs.
            * @param particles The particles that are to be updated within
            * this function.
-           * @param solution The values of the solution variables at the
-           * given particle positions.
-           * @param gradients The gradients of the solution variables at
-           * the given particle positions.
            */
           void
-          update_particles (typename ParticleHandler<dim>::particle_iterator_range &particles,
-                            const std::vector<Vector<double>> &solution,
-                            const std::vector<std::vector<Tensor<1,dim>>> &gradients) const;
+          update_particles (ParticleUpdateInputs<dim> &inputs,
+                            typename ParticleHandler<dim>::particle_iterator_range &particles) const;
 
           /**
            * Returns an enum, which denotes at what time this class needs to
