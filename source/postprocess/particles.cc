@@ -259,6 +259,8 @@ namespace aspect
     template <int dim>
     void
     Particles<dim>::write_description_files (const internal::ParticleOutput<dim> &data_out,
+                                             const std::string &description_file_prefix,
+                                             const std::string &solution_file_directory,
                                              const std::string &solution_file_prefix,
                                              const std::vector<std::string> &filenames)
     {
@@ -267,23 +269,23 @@ namespace aspect
                                                this->get_time());
       const std::string pvtu_filename = (solution_file_prefix +
                                          ".pvtu");
-      std::ofstream pvtu_file (this->get_output_directory() + "particles/" +
+      std::ofstream pvtu_file (this->get_output_directory() + solution_file_directory +
                                pvtu_filename);
       data_out.write_pvtu_record (pvtu_file, filenames);
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
-      times_and_pvtu_file_names.emplace_back(time_in_years_or_seconds, "particles/"+pvtu_filename);
+      times_and_pvtu_file_names[description_file_prefix].emplace_back(time_in_years_or_seconds, solution_file_directory + pvtu_filename);
 
-      const std::string pvd_filename = (this->get_output_directory() + "particles.pvd");
+      const std::string pvd_filename = (this->get_output_directory() + description_file_prefix + ".pvd");
       std::ofstream pvd_file (pvd_filename);
 
-      DataOutBase::write_pvd_record (pvd_file, times_and_pvtu_file_names);
+      DataOutBase::write_pvd_record (pvd_file, times_and_pvtu_file_names[description_file_prefix]);
 
       // finally, do the same for VisIt via the .visit file for this
       // time step, as well as for all time steps together
       const std::string visit_filename = (this->get_output_directory()
-                                          + "particles/"
+                                          + solution_file_directory
                                           + solution_file_prefix
                                           + ".visit");
       std::ofstream visit_file (visit_filename);
@@ -297,19 +299,19 @@ namespace aspect
         filenames_with_path.reserve(filenames.size());
         for (const auto &filename : filenames)
           {
-            filenames_with_path.push_back("particles/" + filename);
+            filenames_with_path.push_back(solution_file_directory + filename);
           }
 
-        output_file_names_by_timestep.push_back (filenames_with_path);
+        output_file_names_by_timestep[description_file_prefix].push_back (filenames_with_path);
       }
 
       std::ofstream global_visit_file (this->get_output_directory() +
-                                       "particles.visit");
+                                       description_file_prefix + ".visit");
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
-      for (unsigned int timestep=0; timestep<times_and_pvtu_file_names.size(); ++timestep)
-        times_and_output_file_names.emplace_back(times_and_pvtu_file_names[timestep].first,
-                                                 output_file_names_by_timestep[timestep]);
+      for (unsigned int timestep=0; timestep<times_and_pvtu_file_names[description_file_prefix].size(); ++timestep)
+        times_and_output_file_names.emplace_back(times_and_pvtu_file_names[description_file_prefix][timestep].first,
+                                                 output_file_names_by_timestep[description_file_prefix][timestep]);
       DataOutBase::write_visit_record (global_visit_file, times_and_output_file_names);
     }
 
@@ -330,53 +332,54 @@ namespace aspect
       for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
         {
           const Particle::World<dim> &world = this->get_particle_world(particle_world);
-          statistics.add_value("Number of advected particles",world.n_global_particles());
 
-          // If it's not time to generate an output file
-          // return early with the number of particles that were advected
-          if (this->get_time() < last_output_time + output_interval)
+          const std::string statistics_column_name = (particle_world == 0 ?
+                                                      "Number of advected particles" :
+                                                      "Number of advected particles (World " + Utilities::int_to_string(particle_world+1) + ")");
+
+          statistics.add_value(statistics_column_name,world.n_global_particles());
+
+          if (particle_world > 0)
             {
-              write_output = false;
-              if (particle_world > 0)
-                {
-                  number_of_advected_particles += ", ";
-                }
-              number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
-
-              continue;
+              number_of_advected_particles += ", ";
             }
+          number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
+        }
 
-          // If we do not write output
-          // return early with the number of particles that were advected
-          if (output_formats.size() == 0 || output_formats[0] == "none")
-            {
-              // Up the next time we need output. This is relevant to correctly
-              // write output after a restart if the format is changed.
-              set_last_output_time (this->get_time());
+      // If it's not time to generate an output file
+      // return early with the number of particles that were advected
+      if (this->get_time() < last_output_time + output_interval)
+        {
+          write_output = false;
+        }
 
-              write_output = false;
-              if (particle_world > 0)
-                {
-                  number_of_advected_particles += ", ";
-                }
-              number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
+      // If we do not write output
+      // return early with the number of particles that were advected
+      if (output_formats.size() == 0 || output_formats[0] == "none")
+        {
+          // Up the next time we need output. This is relevant to correctly
+          // write output after a restart if the format is changed.
+          set_last_output_time (this->get_time());
 
-              continue;
-            }
+          write_output = false;
+        }
 
-          Assert(write_output, ExcMessage("Trying to write output while it was set to not do so."));
+      if (write_output == false)
+        return std::make_pair("Number of advected particles", number_of_advected_particles);
 
-          if (output_file_number == numbers::invalid_unsigned_int)
-            output_file_number = 0;
-          else
-            ++output_file_number;
+      if (output_file_number == numbers::invalid_unsigned_int)
+        output_file_number = 0;
+      else
+        ++output_file_number;
 
+      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
+        {
+          const Particle::World<dim> &world = this->get_particle_world(particle_world);
           std::string particles_output_base_name = "particles";
           if (particle_world > 0)
             {
               particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
             }
-
 
           // Create the particle output
           const bool output_hdf5 = std::find(output_formats.begin(), output_formats.end(),"hdf5") != output_formats.end();
@@ -415,8 +418,8 @@ namespace aspect
                                                                               particle_file_name,
                                                                               time_in_years_or_seconds,
                                                                               this->get_mpi_communicator());
-                  xdmf_entries.push_back(new_xdmf_entry);
-                  data_out.write_xdmf_file(xdmf_entries, this->get_output_directory() + xdmf_filename,
+                  xdmf_entries[particles_output_base_name].push_back(new_xdmf_entry);
+                  data_out.write_xdmf_file(xdmf_entries[particles_output_base_name], this->get_output_directory() + xdmf_filename,
                                            this->get_mpi_communicator());
                 }
               else if (output_format == "vtu")
@@ -433,7 +436,11 @@ namespace aspect
                         filenames.push_back (particle_file_prefix
                                              + "." + Utilities::int_to_string(i, 4)
                                              + ".vtu");
-                      write_description_files (data_out, particle_file_prefix, filenames);
+                      write_description_files (data_out,
+                                               particles_output_base_name,
+                                               particles_output_base_name + "/",
+                                               particle_file_prefix,
+                                               filenames);
                     }
 
                   const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
@@ -548,14 +555,14 @@ namespace aspect
             screen_output = particle_output;
 
           // record the file base file name in the output file
-          statistics.add_value ("Particle file name",
+          const std::string statistics_column_name = (particle_world == 0 ?
+                                                      "Particle file name" :
+                                                      "Particle file name (" + Utilities::int_to_string(particle_world+1) + ")");
+          statistics.add_value (statistics_column_name,
                                 particle_output);
         }
 
-      if (write_output)
-        return std::make_pair("Writing particle output:", screen_output);
-      else
-        return std::make_pair("Number of advected particles:", number_of_advected_particles);
+      return std::make_pair("Writing particle output:", screen_output);
     }
 
 
