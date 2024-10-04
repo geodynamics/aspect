@@ -289,6 +289,11 @@ namespace aspect
     // A property component mask indicating for each particle world which particle properties need to be interpolated
     std::vector<ComponentMask> property_mask;
 
+    // Mark for each advection field if it has been found in any particle world. We need to keep track of this to:
+    // - make sure all fields tracked by particles are found in at least one particle world
+    // - make sure that we do not interpolate the same field twice from different particle worlds
+    std::vector<bool> advection_field_has_been_found(advection_fields.size(),false);
+
     for (unsigned int world_index = 0; world_index < particle_worlds.size(); ++world_index)
       {
         const Particle::Property::Manager<dim> &particle_property_manager = particle_worlds[world_index].get_property_manager();
@@ -306,9 +311,13 @@ namespace aspect
                 // If not: assume we find it in another world.
                 if (particle_property_manager.get_data_info().fieldname_exists(particle_property_and_component.first))
                   {
+                    Assert (advection_field_has_been_found[advection_field] == false,
+                            ExcMessage("The same advection field is mapped to particle properties in different particle worlds. This is not supported."));
+
                     const unsigned int particle_property_index = particle_property_manager.get_data_info().get_position_by_field_name(particle_property_and_component.first)
                                                                  + particle_property_and_component.second;
 
+                    advection_field_has_been_found[advection_field] = true;
                     particle_property_indices[world_index].push_back({advection_field, particle_property_index});
                     property_mask[world_index].set(particle_property_index,true);
                   }
@@ -326,11 +335,17 @@ namespace aspect
                             ExcMessage("Can not automatically match particle properties to fields, because there are"
                                        "more fields that are marked as particle advected than particle properties"));
 
+                advection_field_has_been_found[advection_field] = true;
                 particle_property_indices[world_index].push_back({advection_field,particle_property_index});
                 property_mask[world_index].set(particle_property_index,true);
               }
           }
       }
+
+    for (unsigned int advection_field=0; advection_field<advection_fields.size(); ++advection_field)
+      Assert (advection_field_has_been_found[advection_field] == true,
+              ExcMessage("An compositional field is marked as advected by particles, but no particle property exists that is mapped to this compositional field. "
+                         "Make sure that the particle property exists and is mapped to the compositional field in the parameter file."));
 
     LinearAlgebra::BlockVector particle_solution;
 
