@@ -224,7 +224,7 @@ namespace aspect
             }
           else
             {
-              const double exponential = -kappa * std::pow(numbers::PI, 2) * age_top / std::pow(lithosphere_thickness, 2);
+              const double exponential = -kappa * Utilities::fixed_power<2>(numbers::PI) * age_top / Utilities::fixed_power<2>(lithosphere_thickness);
               double sum_terms = 0.;
               for (unsigned int n=1; n<11; ++n)
                 {

@@ -409,7 +409,7 @@ namespace aspect
 
             const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
             const double arrhenius = std::exp(-b*d_cutoff);
-            const double edot_ii = (quadratic_term*std::pow(stress, 2.) + linear_term*stress) * arrhenius;
+            const double edot_ii = (quadratic_term*Utilities::fixed_power<2>(stress) + linear_term*stress) * arrhenius;
             const double deriv = (2*quadratic_term*stress + linear_term) * arrhenius;
 
             return std::make_pair(edot_ii, deriv);
@@ -474,7 +474,7 @@ namespace aspect
 
             const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
             const double arrhenius = std::exp(-b*d_cutoff);
-            const double edot_ii = (quadratic_term*std::pow(stress, 2.) + linear_term*stress) * arrhenius;
+            const double edot_ii = (quadratic_term*Utilities::fixed_power<2>(stress) + linear_term*stress) * arrhenius;
             const double deriv_log = 2 - linear_term / (quadratic_term * stress + linear_term);
 
             return std::make_pair(std::log(edot_ii), deriv_log);

@@ -54,10 +54,10 @@ namespace aspect
                             - beta*std::log(beta*beta+pow(1.-y0,2.0))+2.*(1.-y0)*std::atan(yminus)
                             + 2.*numbers::PI*(1.+2.*epsilon) );
 
-        const double C2 = ( beta*std::log( beta*beta+std::pow(1+y0,2.) )- 2.*(1.+y0)*std::atan(yplus)
+        const double C2 = ( beta*std::log( beta*beta+Utilities::fixed_power<2>(1+y0) )- 2.*(1.+y0)*std::atan(yplus)
                             + numbers::PI*(1.+2.*epsilon) )*C1 ;
         const double y = pos[1]-1.0;
-        const double v_x = (-beta*C1*std::log(beta*beta+std::pow(y-y0,2.0))+2.*(y-y0)*C1*std::atan((y-y0)/beta)
+        const double v_x = (-beta*C1*std::log(beta*beta+Utilities::fixed_power<2>(y-y0))+2.*(y-y0)*C1*std::atan((y-y0)/beta)
                             + numbers::PI*(1.+2.*epsilon)*y*C1+C2)/(2.*numbers::PI);
         const double v_y = 0;
         return Point<2> (v_x,v_y);

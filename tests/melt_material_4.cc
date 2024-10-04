@@ -62,7 +62,7 @@ namespace aspect
           {
             const double y = in.position[i][dim-1] + 0.1;
             out.viscosities[i] = 3.0/4.0;
-            out.densities[i] = 2 + std::pow(y,2)/0.001;
+            out.densities[i] = 2 + Utilities::fixed_power<2>(y)/0.001;
             out.thermal_expansion_coefficients[i] = 1.0;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -107,12 +107,12 @@ namespace aspect
         double x = p(0);
         double y = p(1);
 
-        const double porosity = 1.0 - 0.001/std::pow(y+0.1,2.0);
+        const double porosity = 1.0 - 0.001/Utilities::fixed_power<2>(y+0.1);
         const double p_f = 1.0 - (y+0.1);
         const double p_s = 0.0;
 
         values[0]=0;  // x vel
-        values[1]=0.5 * std::pow(y+0.1, 2.0);  // y vel
+        values[1]=0.5 * Utilities::fixed_power<2>(y+0.1);  // y vel
         values[2]=p_f;  // p_f
         values[3]=(1.0-porosity)*(p_s-p_f); // p_c
         values[4]=-1; // u_f_x

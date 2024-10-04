@@ -89,7 +89,7 @@ namespace aspect
                             out.densities[0] *
                             gravity *
                             out.thermal_expansion_coefficients[0] *
-                            temperature_contrast * std::pow(model_depth,3)/
+                            temperature_contrast * Utilities::fixed_power<3>(model_depth)/
                             (thermal_diffusivity * out.viscosities[0])
                             :
                             std::numeric_limits<double>::infinity();

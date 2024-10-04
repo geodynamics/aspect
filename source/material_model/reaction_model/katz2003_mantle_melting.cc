@@ -46,7 +46,7 @@ namespace aspect
       reference_darcy_coefficient () const
       {
         // 0.01 = 1% melt
-        return reference_permeability * std::pow(0.01,3.0) / viscosity_fluid;
+        return reference_permeability * Utilities::fixed_power<3>(0.01) / viscosity_fluid;
       }
 
 
@@ -151,7 +151,7 @@ namespace aspect
                   = dF_max_dp
                     - dF_max_dp * std::pow((temperature - T_max)/(T_liquidus - T_max),beta)
                     + (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
-                    * (dT_max_dp * (T_max - T_liquidus) - (dT_liquidus_dp - dT_max_dp) * (temperature - T_max)) / std::pow(T_liquidus - T_max, 2);
+                    * (dT_max_dp * (T_max - T_liquidus) - (dT_liquidus_dp - dT_max_dp) * (temperature - T_max)) / Utilities::fixed_power<2>(T_liquidus - T_max);
               }
 
             double melt_fraction_derivative = 0;
@@ -307,7 +307,7 @@ namespace aspect
                 double porosity = std::max(in.composition[i][porosity_idx],0.0);
 
                 melt_out->fluid_viscosities[i] = viscosity_fluid;
-                melt_out->permeabilities[i] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+                melt_out->permeabilities[i] = reference_permeability * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
 
                 // first, calculate temperature dependence of density
                 double temperature_dependence = 1.0;

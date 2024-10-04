@@ -55,10 +55,10 @@ namespace aspect
           {
             double total_area = 0;
             for (unsigned int i = 0; i < radial_layers; ++i)
-              total_area += std::pow(P_min[0] + (radial_spacing * i),2);
+              total_area += Utilities::fixed_power<2>(P_min[0] + (radial_spacing * i));
             for (unsigned int i = 0; i < radial_layers; ++i)
               {
-                const double area = std::pow(P_min[0] + (radial_spacing * i),2);
+                const double area = Utilities::fixed_power<2>(P_min[0] + (radial_spacing * i));
                 particles_per_layer[i] = static_cast<unsigned int>(round(n_particles * area / total_area));
               }
           }

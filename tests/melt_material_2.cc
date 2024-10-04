@@ -46,7 +46,7 @@ namespace aspect
 
       virtual double reference_darcy_coefficient () const
       {
-        const double permeability = 1.0 + std::pow(0.5, 2.0);
+        const double permeability = 1.0 + Utilities::fixed_power<2>(0.5);
         return permeability / 2.0;
       }
 
@@ -75,7 +75,7 @@ namespace aspect
               {
                 melt_out->compaction_viscosities[i] = 1.0;
                 melt_out->fluid_viscosities[i]= 2.0;
-                melt_out->permeabilities[i]= 1.0 + std::pow(in.position[i][1],2);
+                melt_out->permeabilities[i]= 1.0 + Utilities::fixed_power<2>(in.position[i][1]);
                 melt_out->fluid_densities[i]= 1.0;
                 melt_out->fluid_density_gradients[i] = Tensor<1,dim>();
               }

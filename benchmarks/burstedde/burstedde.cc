@@ -360,20 +360,20 @@ namespace aspect
 
       Tensor<1,dim> g;
 
-      g[0]=((y*z+3.*std::pow(x,2)*std::pow(y,3)*z)- mu*(2.+6.*x*y))
-           -dmudx*(2.+4.*x+2.*y+6.*std::pow(x,2)*y)
-           -dmudy*(x+std::pow(x,3)+y+2.*x*std::pow(y,2))
+      g[0]=((y*z+3.*Utilities::fixed_power<2>(x)*Utilities::fixed_power<3>(y)*z)- mu*(2.+6.*x*y))
+           -dmudx*(2.+4.*x+2.*y+6.*Utilities::fixed_power<2>(x)*y)
+           -dmudy*(x+Utilities::fixed_power<3>(x)+y+2.*x*Utilities::fixed_power<2>(y))
            -dmudz*(-3.*z-10.*x*y*z);
 
-      g[1]=((x*z+3.*std::pow(x,3)*std::pow(y,2)*z)- mu*(2.+2.*std::pow(x,2)+2.*std::pow(y,2)))
-           -dmudx*(x+std::pow(x,3)+y+2.*x*std::pow(y,2))
-           -dmudy*(2.+2.*x+4.*y+4.*std::pow(x,2)*y)
-           -dmudz*(-3.*z-5.*std::pow(x,2)*z);
+      g[1]=((x*z+3.*Utilities::fixed_power<3>(x)*Utilities::fixed_power<2>(y)*z)- mu*(2.+2.*Utilities::fixed_power<2>(x)+2.*Utilities::fixed_power<2>(y)))
+           -dmudx*(x+Utilities::fixed_power<3>(x)+y+2.*x*Utilities::fixed_power<2>(y))
+           -dmudy*(2.+2.*x+4.*y+4.*Utilities::fixed_power<2>(x)*y)
+           -dmudz*(-3.*z-5.*Utilities::fixed_power<2>(x)*z);
 
-      g[2]=((x*y+std::pow(x,3)*std::pow(y,3)) - mu*(-10.*y*z))
+      g[2]=((x*y+Utilities::fixed_power<3>(x)*Utilities::fixed_power<3>(y)) - mu*(-10.*y*z))
            -dmudx*(-3.*z-10.*x*y*z)
-           -dmudy*(-3.*z-5.*std::pow(x,2)*z)
-           -dmudz*(-4.-6.*x-6.*y-10.*std::pow(x,2)*y);
+           -dmudy*(-3.*z-5.*Utilities::fixed_power<2>(x)*z)
+           -dmudz*(-4.-6.*x-6.*y-10.*Utilities::fixed_power<2>(x)*y);
 
       return g;
     }
