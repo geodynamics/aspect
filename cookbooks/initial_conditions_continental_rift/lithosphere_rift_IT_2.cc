@@ -273,7 +273,7 @@ namespace aspect
 
           // To obtain the radioactive heating rate in W/kg, we divide the volumetric heating rate by density
           AssertThrow(heat_productivities.size() == 3 && densities.size() == 3 && conductivities.size() == 3,
-                      ExcMessage("The entries for density, conductivity and heat production do not match with the expected number of layers (3)."))
+                      ExcMessage("The entries for density, conductivity and heat production do not match with the expected number of layers (3)."));
 
           for (unsigned int i = 0; i<3; ++i)
             heat_productivities[i] /= densities[i];
