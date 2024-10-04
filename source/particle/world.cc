@@ -755,7 +755,7 @@ namespace aspect
     void
     World<dim>::declare_parameters (ParameterHandler &prm)
     {
-      constexpr unsigned int number_of_particle_worlds = 1;
+      constexpr unsigned int number_of_particle_worlds = ASPECT_MAX_NUM_PARTICLE_WORLDS;
       for (unsigned int world_index = 0; world_index < number_of_particle_worlds; ++world_index)
         {
           if (world_index == 0)
