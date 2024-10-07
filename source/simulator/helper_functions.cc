@@ -205,6 +205,19 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  std::string
+  Simulator<dim>::AdvectionField::name(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return "temperature";
+    else
+      return "composition " + std::to_string(compositional_variable) + " (" + introspection.name_for_compositional_index(compositional_variable) + ")";
+  }
+
+
+
   template <int dim>
   void Simulator<dim>::write_plugin_graph (std::ostream &out) const
   {
