@@ -413,7 +413,7 @@ namespace aspect
 
                 // Calculate the corresponding conduction timestep
                 min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                         this->get_parameters().CFL_number*std::pow(fscell->face(face_no)->minimum_vertex_distance(),2.)
+                                                         this->get_parameters().CFL_number*Utilities::fixed_power<2>(fscell->face(face_no)->minimum_vertex_distance())
                                                          / diffusivity);
               }
 

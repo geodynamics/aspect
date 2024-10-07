@@ -399,13 +399,13 @@ namespace aspect
 
         double length_scaling (const double porosity) const
         {
-          return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
+          return std::sqrt(reference_permeability * Utilities::fixed_power<3>(porosity) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
         }
 
         double velocity_scaling (const double porosity) const
         {
           const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-          return reference_permeability * std::pow(porosity,2) * (reference_rho_s - reference_rho_f)
+          return reference_permeability * Utilities::fixed_power<2>(porosity) * (reference_rho_s - reference_rho_f)
                  * this->get_gravity_model().gravity_vector(surface_point).norm() / eta_f;
         }
 
@@ -451,7 +451,7 @@ namespace aspect
 
                 melt_out->compaction_viscosities[i] = xi_0 * (1.0 - porosity);
                 melt_out->fluid_viscosities[i]= eta_f;
-                melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,3);
+                melt_out->permeabilities[i]= reference_permeability * Utilities::fixed_power<3>(porosity);
                 melt_out->fluid_densities[i]= reference_rho_f;
                 melt_out->fluid_density_gradients[i] = 0.0;
               }

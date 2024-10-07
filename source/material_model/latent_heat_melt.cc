@@ -194,7 +194,7 @@ namespace aspect
                 = dF_max_dp
                   - dF_max_dp * std::pow((temperature - T_max)/(T_liquidus - T_max),beta)
                   + (1.0 - F_max) * beta * std::pow((temperature - T_max)/(T_liquidus - T_max),beta-1)
-                  * (dT_max_dp * (T_max - T_liquidus) - (dT_liquidus_dp - dT_max_dp) * (temperature - T_max)) / std::pow(T_liquidus - T_max, 2);
+                  * (dT_max_dp * (T_max - T_liquidus) - (dT_liquidus_dp - dT_max_dp) * (temperature - T_max)) / Utilities::fixed_power<2>(T_liquidus - T_max);
             }
 
           double melt_fraction_derivative = 0;

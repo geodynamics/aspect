@@ -434,7 +434,7 @@ namespace aspect
                 for (unsigned int e=0; e<dim; ++e)
                   for (unsigned int f=e; f<dim; ++f)
                     g_gradient_theory[p][e][f] += -(- 3.0 * satellite_position[e] * satellite_position[f])
-                                                  /  std::pow(r,5);
+                                                  /  Utilities::fixed_power<5>(r);
                 g_gradient_theory[p] *= common_factor;
               }
           }

@@ -124,8 +124,8 @@ namespace aspect
         const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1)); // distance from origin projected onto x-y plane
         const double th     = std::atan2(R * x(2), b * p); // starting guess for theta
         const double phi    = std::atan2(x(1), x(0)); // azimuth (geodetic longitude)
-        const double theta  = std::atan2(x(2) + (R * R - b * b) / b * std::pow(std::sin(th),3),
-                                         (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3)))); // first iterate for theta
+        const double theta  = std::atan2(x(2) + (R * R - b * b) / b * Utilities::fixed_power<3>(std::sin(th)),
+                                         (p - (eccentricity * eccentricity * R  * Utilities::fixed_power<3>(std::cos(th))))); // first iterate for theta
         const double R_bar  = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta))); // first iterate for R_bar
 
         Point<3> phi_theta_d;

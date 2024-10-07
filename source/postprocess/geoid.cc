@@ -149,9 +149,15 @@ namespace aspect
 
                         const double density = out.densities[q];
                         const double r_q = in.position[q].norm();
+                        const double JxW = fe_values.JxW(q);
 
-                        integrated_density_cos_component += density * (1./r_q) * std::pow(r_q/outer_radius,ideg+1) * cos_component * fe_values.JxW(q);
-                        integrated_density_sin_component += density * (1./r_q) * std::pow(r_q/outer_radius,ideg+1) * sin_component * fe_values.JxW(q);
+#if DEAL_II_VERSION_GTE(9,6,0)
+                        integrated_density_cos_component += density * (1./r_q) * Utilities::pow(r_q/outer_radius,ideg+1) * cos_component * JxW;
+                        integrated_density_sin_component += density * (1./r_q) * Utilities::pow(r_q/outer_radius,ideg+1) * sin_component * JxW;
+#else
+                        integrated_density_cos_component += density * (1./r_q) * std::pow(r_q/outer_radius,ideg+1) * cos_component * JxW;
+                        integrated_density_sin_component += density * (1./r_q) * std::pow(r_q/outer_radius,ideg+1) * sin_component * JxW;
+#endif
                       }
                   }
               SH_density_coecos.push_back(integrated_density_cos_component);
@@ -466,10 +472,17 @@ namespace aspect
                   surface_topo_contribution_coecos.push_back(coecos_surface_topo);
                   surface_topo_contribution_coesin.push_back(coesin_surface_topo);
 
+#if DEAL_II_VERSION_GTE(9,6,0)
+                  const double coecos_CMB_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                                 * CMB_delta_rho*SH_CMB_topo_coes.second.first.at(ind)*inner_radius*Utilities::pow(inner_radius/outer_radius,ideg+1);
+                  const double coesin_CMB_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
+                                                 * CMB_delta_rho*SH_CMB_topo_coes.second.second.at(ind)*inner_radius*Utilities::pow(inner_radius/outer_radius,ideg+1);
+#else
                   const double coecos_CMB_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
                                                  * CMB_delta_rho*SH_CMB_topo_coes.second.first.at(ind)*inner_radius*std::pow(inner_radius/outer_radius,ideg+1);
                   const double coesin_CMB_topo = (4 * numbers::PI * G / (surface_gravity * (2 * ideg + 1)))
                                                  * CMB_delta_rho*SH_CMB_topo_coes.second.second.at(ind)*inner_radius*std::pow(inner_radius/outer_radius,ideg+1);
+#endif
                   CMB_topo_contribution_coecos.push_back(coecos_CMB_topo);
                   CMB_topo_contribution_coesin.push_back(coesin_CMB_topo);
 

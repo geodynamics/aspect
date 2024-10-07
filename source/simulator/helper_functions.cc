@@ -1417,7 +1417,7 @@ namespace aspect
 
     const unsigned int n_q_points_1 = quadrature_formula_1.size();
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
-    const unsigned int n_q_points   = dim * n_q_points_2 * static_cast<unsigned int>(std::pow(n_q_points_1, dim-1));
+    const unsigned int n_q_points   = dim * n_q_points_2 * Utilities::fixed_power<dim-1>(n_q_points_1);
 
     std::vector<Point <dim>> quadrature_points;
     quadrature_points.reserve(n_q_points);

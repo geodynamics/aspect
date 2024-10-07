@@ -280,7 +280,7 @@ namespace aspect
       // Finally, if ghost nodes are used we add two additional points on each side.
       const unsigned int ghost_nodes = 2*use_ghost_nodes;
       const unsigned int fastscape_refinement_level = maximum_surface_refinement_level + additional_refinement_levels;
-      const unsigned int fastscape_nodes = std::pow(2,fastscape_refinement_level);
+      const unsigned int fastscape_nodes = Utilities::pow(2,fastscape_refinement_level);
       fastscape_nx = fastscape_nodes * repetitions[0] + ghost_nodes + 1;
 
       // Size of FastScape cell.
@@ -604,7 +604,7 @@ namespace aspect
 
       // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
       const QIterated<dim-1> face_corners (QTrapezoid<1>(),
-                                           std::pow(2,additional_refinement_levels+surface_refinement_difference));
+                                           Utilities::pow(2,additional_refinement_levels+surface_refinement_difference));
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
