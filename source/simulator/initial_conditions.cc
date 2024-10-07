@@ -312,7 +312,7 @@ namespace aspect
                 if (particle_property_manager.get_data_info().fieldname_exists(particle_property_and_component.first))
                   {
                     Assert (advection_field_has_been_found[advection_field] == false,
-                            ExcMessage("The same advection field is mapped to particle properties in different particle worlds. This is not supported."));
+                            ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is mapped to particle properties in more than one particle world. This is not supported."));
 
                     const unsigned int particle_property_index = particle_property_manager.get_data_info().get_position_by_field_name(particle_property_and_component.first)
                                                                  + particle_property_and_component.second;
@@ -344,8 +344,8 @@ namespace aspect
 
     for (unsigned int advection_field=0; advection_field<advection_fields.size(); ++advection_field)
       Assert (advection_field_has_been_found[advection_field] == true,
-              ExcMessage("An compositional field is marked as advected by particles, but no particle property exists that is mapped to this compositional field. "
-                         "Make sure that the particle property exists and is mapped to the compositional field in the parameter file."));
+              ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is marked as advected by particles, but no particle property exists that is mapped to this field. "
+                         "Make sure that the particle property exists and is mapped to the correct field in the parameter file."));
 
     LinearAlgebra::BlockVector particle_solution;
 

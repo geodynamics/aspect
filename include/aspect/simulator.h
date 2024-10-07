@@ -388,6 +388,13 @@ namespace aspect
          * field. See Introspection::polynomial_degree for more information.
          */
         unsigned int polynomial_degree(const Introspection<dim> &introspection) const;
+
+        /**
+         * Return a string that describes the field type and the compositional
+         * variable number and name, if applicable.
+         */
+        std::string
+        name(const Introspection<dim> &introspection) const;
       };
 
     private:
