@@ -392,7 +392,7 @@ namespace aspect
       prm.leave_subsection();
 
       // Check that we have enough integration points for this mesh.
-      AssertThrow(Utilities::pow(2.0,refinement) <= n_points, ExcMessage("Not enough integration points for this resolution."));
+      AssertThrow(Utilities::pow(2u,refinement) <= n_points, ExcMessage("Not enough integration points for this resolution."));
 
       pressure.resize(n_points,-1);
     }

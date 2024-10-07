@@ -83,18 +83,31 @@ namespace aspect
           const double inverse_pressure = 1.0/pressure;
           for (unsigned int j = 0; j<devolatilization_enthalpy_changes[i].size(); ++j)
             {
+#if DEAL_II_VERSION_GTE(9, 6, 0)
               LR_values[i] += devolatilization_enthalpy_changes[i][j] * Utilities::pow(inverse_pressure, devolatilization_enthalpy_changes[i].size() - 1 - j);
+#else
+              LR_values[i] += devolatilization_enthalpy_changes[i][j] * std::pow(inverse_pressure, devolatilization_enthalpy_changes[i].size() - 1 - j);
+#endif
             }
 
           for (unsigned int j = 0; j<water_mass_fractions[i].size(); ++j)
             {
+#if DEAL_II_VERSION_GTE(9, 6, 0)
               csat_values[i] += i==3 ? water_mass_fractions[i][j] * Utilities::pow(std::log10(pressure), water_mass_fractions[i].size() - 1 - j) :\
                                 water_mass_fractions[i][j] * Utilities::pow(pressure, water_mass_fractions[i].size() - 1 - j);
+#else
+              csat_values[i] += i==3 ? water_mass_fractions[i][j] * std::pow(std::log10(pressure), water_mass_fractions[i].size() - 1 - j) :\
+                                water_mass_fractions[i][j] * std::pow(pressure, water_mass_fractions[i].size() - 1 - j);
+#endif
             }
 
           for (unsigned int j = 0; j<devolatilization_onset_temperatures[i].size(); ++j)
             {
+#if DEAL_II_VERSION_GTE(9, 6, 0)
               Td_values[i] += devolatilization_onset_temperatures[i][j] * Utilities::pow(pressure, devolatilization_onset_temperatures[i].size() - 1 - j);
+#else
+              Td_values[i] += devolatilization_onset_temperatures[i][j] * std::pow(pressure, devolatilization_onset_temperatures[i].size() - 1 - j);
+#endif
             }
         }
 
