@@ -20,7 +20,7 @@
 
 #include <aspect/simulator_signals.h>
 #include <aspect/simulator_access.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <deal.II/particles/particle_handler.h>
 
 #include <iostream>
@@ -34,7 +34,7 @@ void post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
   // Get the reference location of the one particle,
   // and check that it has the correct value.
   const Point<dim> predicted_particle_reference_location =
-    simulator_access.get_particle_world(0).get_particle_handler().begin()->get_reference_location();
+    simulator_access.get_particle_manager(0).get_particle_handler().begin()->get_reference_location();
   // At timestep 0, the mesh is not deformed
   // other than through the initial topography/
   // initial mesh deformation plugins, which

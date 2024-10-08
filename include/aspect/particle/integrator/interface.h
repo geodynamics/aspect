@@ -81,7 +81,7 @@ namespace aspect
            * false, which is ok for single-step integration methods.
            *
            * @return This function returns true if the integrator requires
-           * another integration step. The particle world will continue
+           * another integration step. The particle manager will continue
            * to start new integration steps until this function returns false.
            */
           virtual bool new_integration_step();

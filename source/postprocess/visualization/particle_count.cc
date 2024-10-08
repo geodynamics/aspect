@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/particle_count.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 
 namespace aspect
@@ -51,10 +51,10 @@ namespace aspect
           if (cell->is_locally_owned())
             {
               unsigned int n_particles_in_cell = 0;
-              for (unsigned int particle_handler_index = 0;
-                   particle_handler_index < this->n_particle_worlds();
-                   ++particle_handler_index)
-                n_particles_in_cell += this->get_particle_world(particle_handler_index).get_particle_handler().n_particles_in_cell(cell);
+              for (unsigned int particle_manager_index = 0;
+                   particle_manager_index < this->n_particle_managers();
+                   ++particle_manager_index)
+                n_particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
 
               (*return_value.second)(cell->active_cell_index()) = static_cast<float>(n_particles_in_cell);
             }

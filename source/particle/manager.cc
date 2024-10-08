@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/citation_info.h>
@@ -40,15 +40,15 @@ namespace aspect
   namespace Particle
   {
     template <int dim>
-    World<dim>::World()
+    Manager<dim>::Manager()
       = default;
 
     template <int dim>
-    World<dim>::~World()
+    Manager<dim>::~Manager()
       = default;
 
     template <int dim>
-    World<dim>::World(World &&other)
+    Manager<dim>::Manager(Manager &&other)
       : generator(std::move(other.generator)),
         integrator(std::move(other.integrator)),
         interpolator(std::move(other.interpolator)),
@@ -65,7 +65,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::initialize()
+    Manager<dim>::initialize()
     {
       CitationInfo::add("particles");
 
@@ -87,7 +87,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::update()
+    Manager<dim>::update()
     {
       generator->update();
       integrator->update();
@@ -99,7 +99,7 @@ namespace aspect
 
     template <int dim>
     const Property::Manager<dim> &
-    World<dim>::get_property_manager() const
+    Manager<dim>::get_property_manager() const
     {
       return *property_manager;
     }
@@ -108,7 +108,7 @@ namespace aspect
 
     template <int dim>
     const Particles::ParticleHandler<dim> &
-    World<dim>::get_particle_handler() const
+    Manager<dim>::get_particle_handler() const
     {
       return *particle_handler.get();
     }
@@ -117,7 +117,7 @@ namespace aspect
 
     template <int dim>
     Particles::ParticleHandler<dim> &
-    World<dim>::get_particle_handler()
+    Manager<dim>::get_particle_handler()
     {
       return *particle_handler.get();
     }
@@ -126,8 +126,8 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
-                                       Particles::ParticleHandler<dim> &to_particle_handler) const
+    Manager<dim>::copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
+                                         Particles::ParticleHandler<dim> &to_particle_handler) const
     {
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Copy");
@@ -140,7 +140,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::backup_particles ()
+    Manager<dim>::backup_particles ()
     {
       copy_particle_handler (*particle_handler.get(), particle_handler_backup);
     }
@@ -149,7 +149,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::restore_particles ()
+    Manager<dim>::restore_particles ()
     {
       copy_particle_handler (particle_handler_backup, *particle_handler.get());
     }
@@ -158,7 +158,7 @@ namespace aspect
 
     template <int dim>
     const Interpolator::Interface<dim> &
-    World<dim>::get_interpolator() const
+    Manager<dim>::get_interpolator() const
     {
       return *interpolator;
     }
@@ -167,7 +167,7 @@ namespace aspect
 
     template <int dim>
     types::particle_index
-    World<dim>::n_global_particles() const
+    Manager<dim>::n_global_particles() const
     {
       return particle_handler->n_global_particles();
     }
@@ -176,7 +176,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::connect_to_signals(aspect::SimulatorSignals<dim> &signals)
+    Manager<dim>::connect_to_signals(aspect::SimulatorSignals<dim> &signals)
     {
       signals.post_set_initial_state.connect(
         [&] (const SimulatorAccess<dim> &)
@@ -205,9 +205,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
-                                                 ParticleHandler<dim> &particle_handler_,
-                                                 const bool connect_to_checkpoint_signals) const
+    Manager<dim>::connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
+                                                   ParticleHandler<dim> &particle_handler_,
+                                                   const bool connect_to_checkpoint_signals) const
     {
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
@@ -259,7 +259,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::apply_particle_per_cell_bounds()
+    Manager<dim>::apply_particle_per_cell_bounds()
     {
       // If any load balancing technique is selected that creates/destroys particles
       if (particle_load_balancing & ParticleLoadBalancing::remove_and_add_particles)
@@ -364,13 +364,13 @@ namespace aspect
 
     template <int dim>
     unsigned int
-    World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+    Manager<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
 #if DEAL_II_VERSION_GTE(9,6,0)
-                            const CellStatus status
+                              const CellStatus status
 #else
-                            const typename parallel::distributed::Triangulation<dim>::CellStatus status
+                              const typename parallel::distributed::Triangulation<dim>::CellStatus status
 #endif
-                           )
+                             )
     {
       if (cell->is_active() && !cell->is_locally_owned())
         return 0;
@@ -415,7 +415,7 @@ namespace aspect
 
     template <int dim>
     std::map<types::subdomain_id, unsigned int>
-    World<dim>::get_subdomain_id_to_neighbor_map() const
+    Manager<dim>::get_subdomain_id_to_neighbor_map() const
     {
       std::map<types::subdomain_id, unsigned int> subdomain_id_to_neighbor_map;
       const std::set<types::subdomain_id> ghost_owners = this->get_triangulation().ghost_owners();
@@ -432,8 +432,8 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                           const typename ParticleHandler<dim>::particle_iterator &end_particle)
+    Manager<dim>::local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                             const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
       for (typename ParticleHandler<dim>::particle_iterator it = begin_particle; it!=end_particle; ++it)
         property_manager->initialize_one_particle(it);
@@ -443,10 +443,10 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
-                                       small_vector<Point<dim>> &positions,
-                                       std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
-                                       SolutionEvaluator<dim> &evaluator)
+    Manager<dim>::local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
+                                         small_vector<Point<dim>> &positions,
+                                         std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
+                                         SolutionEvaluator<dim> &evaluator)
     {
       const unsigned int n_particles = particle_handler->n_particles_in_cell(inputs.current_cell);
 
@@ -504,10 +504,10 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                                       SolutionEvaluator<dim> &evaluator)
+    Manager<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                         const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                         const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                                         SolutionEvaluator<dim> &evaluator)
     {
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
@@ -572,7 +572,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::setup_initial_state ()
+    Manager<dim>::setup_initial_state ()
     {
       // If we are in the first adaptive refinement cycle generate particles
       if (this->get_pre_refinement_step() == 0)
@@ -587,7 +587,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::generate_particles()
+    Manager<dim>::generate_particles()
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
       generator->generate_particles(*particle_handler);
@@ -597,7 +597,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::initialize_particles()
+    Manager<dim>::initialize_particles()
     {
       // TODO: Change this loop over all cells to use the WorkStream interface
       if (property_manager->get_n_property_components() > 0)
@@ -623,7 +623,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::update_particles()
+    Manager<dim>::update_particles()
     {
       // TODO: Change this loop over all cells to use the WorkStream interface
 
@@ -685,7 +685,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::advect_particles()
+    Manager<dim>::advect_particles()
     {
       {
         // TODO: Change this loop over all cells to use the WorkStream interface
@@ -728,7 +728,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::advance_timestep()
+    Manager<dim>::advance_timestep()
     {
       this->get_pcout() << "   Advecting particles... " << std::flush;
       do
@@ -758,7 +758,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::save (std::ostringstream &os) const
+    Manager<dim>::save (std::ostringstream &os) const
     {
       aspect::oarchive oa (os);
       oa << (*this);
@@ -768,7 +768,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::load (std::istringstream &is)
+    Manager<dim>::load (std::istringstream &is)
     {
       aspect::iarchive ia (is);
       ia >> (*this);
@@ -778,18 +778,18 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::declare_parameters (ParameterHandler &prm)
+    Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
-      constexpr unsigned int number_of_particle_worlds = ASPECT_MAX_NUM_PARTICLE_WORLDS;
-      for (unsigned int world_index = 0; world_index < number_of_particle_worlds; ++world_index)
+      constexpr unsigned int number_of_particle_managers = ASPECT_MAX_NUM_PARTICLE_MANAGERS;
+      for (unsigned int particle_manager = 0; particle_manager < number_of_particle_managers; ++particle_manager)
         {
-          if (world_index == 0)
+          if (particle_manager == 0)
             {
               prm.enter_subsection("Particles");
             }
           else
             {
-              prm.enter_subsection("Particles " + std::to_string(world_index+1));
+              prm.enter_subsection("Particles " + std::to_string(particle_manager+1));
             }
           {
             prm.declare_entry ("Load balancing strategy", "repartition",
@@ -859,7 +859,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::parse_parameters (ParameterHandler &prm, const unsigned int world_index)
+    Manager<dim>::parse_parameters (ParameterHandler &prm, const unsigned int particle_manager)
     {
       // First do some error checking. The current algorithm does not find
       // the cells around particles, if the particles moved more than one
@@ -876,13 +876,13 @@ namespace aspect
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
 
-      if (world_index == 0)
+      if (particle_manager == 0)
         {
           prm.enter_subsection("Particles");
         }
       else
         {
-          prm.enter_subsection("Particles " + std::to_string(world_index+1));
+          prm.enter_subsection("Particles " + std::to_string(particle_manager+1));
         }
       {
         min_particles_per_cell = prm.get_integer("Minimum particles per cell");
@@ -935,18 +935,18 @@ namespace aspect
         if (particle_load_balancing & ParticleLoadBalancing::repartition)
           this->get_triangulation().signals.weight.connect(
 #if DEAL_II_VERSION_GTE(9,6,0)
-            [ &, world_index] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                               const CellStatus status)
+            [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                                    const CellStatus status)
             -> unsigned int
 #else
-            [ &, world_index] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                               const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+            [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                                    const typename parallel::distributed::Triangulation<dim>::CellStatus status)
             -> unsigned int
 #endif
           {
-            // Only add the base weight of cells in particle world 0, because all weights will be summed
-            // across all particle worlds.
-            return (world_index == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
+            // Only add the base weight of cells in particle manager 0, because all weights will be summed
+            // across all particle managers.
+            return (particle_manager == 0) ? 1000 + this->cell_weight(cell, status) : this->cell_weight(cell, status);
           });
 
 
@@ -956,7 +956,7 @@ namespace aspect
         generator = Generator::create_particle_generator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(generator.get()))
           sim->initialize_simulator (this->get_simulator());
-        generator->set_particle_world_index(world_index);
+        generator->set_particle_manager_index(particle_manager);
         generator->parse_parameters(prm);
         generator->initialize();
 
@@ -964,7 +964,7 @@ namespace aspect
         property_manager = std::make_unique<Property::Manager<dim>> ();
         SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
         sim->initialize_simulator (this->get_simulator());
-        property_manager->set_particle_world_index(world_index);
+        property_manager->set_particle_manager_index(particle_manager);
         property_manager->parse_parameters(prm);
         property_manager->initialize();
 
@@ -972,7 +972,7 @@ namespace aspect
         integrator = Integrator::create_particle_integrator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
           sim->initialize_simulator (this->get_simulator());
-        integrator->set_particle_world_index(world_index);
+        integrator->set_particle_manager_index(particle_manager);
         integrator->parse_parameters(prm);
         integrator->initialize();
 
@@ -980,7 +980,7 @@ namespace aspect
         interpolator = Interpolator::create_particle_interpolator<dim> (prm);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(interpolator.get()))
           sim->initialize_simulator (this->get_simulator());
-        interpolator->set_particle_world_index(world_index);
+        interpolator->set_particle_manager_index(particle_manager);
         interpolator->parse_parameters(prm);
         interpolator->initialize();
 
@@ -997,7 +997,7 @@ namespace aspect
   namespace Particle
   {
 #define INSTANTIATE(dim) \
-  template class World<dim>;
+  template class Manager<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

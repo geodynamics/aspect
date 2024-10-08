@@ -799,11 +799,11 @@ namespace aspect
           parse_parameters (ParameterHandler &prm) override;
 
           /**
-           * @brief Set the particle world index for all particle properties
+           * @brief Set the particle manager index for all particle properties
            *
-           * @param particle_world_index The index of the particle world.
+           * @param particle_manager_index The index of the particle manager.
            */
-          void set_particle_world_index(unsigned int particle_world_index);
+          void set_particle_manager_index(unsigned int particle_manager_index);
 
           /**
            * For the current plugin subsystem, write a connection graph of all of the
@@ -820,9 +820,9 @@ namespace aspect
 
         private:
           /**
-           * Stores the index to the particle world, to which this manager belongs.
+           * Stores the index to the particle manager, to which this manager belongs.
            */
-          unsigned int particle_world_index;
+          unsigned int particle_manager_index;
 
           /**
            * A class that stores all information about the particle properties,

@@ -1,15 +1,10 @@
-# Test that we can activate multiple particle worlds and
-# interpolate properties from different particle worlds into
-# the compositional fields. This test is supposed to fail
-# because one of the necessary particle properties exists
-# in more than one particle world.
-#
-# EXPECT FAILURE
+# Test that we can activate multiple particle managers and
+# interpolate properties from different particle managers into
+# the compositional fields.
 
 set Dimension                              = 2
-set End time                               = 1
+set End time                               = 0
 set Use years in output instead of seconds = false
-set Number of particle worlds = 2
 
 subsection Geometry model
   set Model name = box
@@ -44,9 +39,6 @@ subsection Gravity model
   end
 end
 
-############### Parameters describing the temperature field
-# Note: The temperature plays no role in this model
-
 subsection Initial temperature model
   set Model name = function
 
@@ -54,10 +46,6 @@ subsection Initial temperature model
     set Function expression = 0
   end
 end
-
-############### Parameters describing the compositional field
-# Note: The compositional field is what drives the flow
-# in this example
 
 subsection Compositional fields
   set Number of fields = 2
@@ -76,30 +64,29 @@ subsection Initial composition model
   end
 end
 
-############### Parameters describing the discretization
-
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Strategy                           = composition
-  set Initial global refinement          = 4
+  set Initial global refinement          = 1
   set Time steps between mesh refinement = 0
-  set Coarsening fraction                = 0.05
-  set Refinement fraction                = 0.3
 end
 
-############### Parameters describing what to do with the solution
-
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics, particles
+  set List of postprocessors = velocity statistics, composition statistics, particles, visualization
+
+  subsection Visualization
+    set Output format =  gnuplot
+  end
 
   subsection Particles
     set Time between data output = 70
-    set Data output format = vtu
+    set Data output format =
   end
 end
 
 subsection Particles
-  set List of particle properties = function, initial composition
+  set Number of particle managers = 2
+  set List of particle properties = initial composition
   set Particle generator name = reference cell
 end
 

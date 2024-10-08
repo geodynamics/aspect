@@ -97,7 +97,7 @@ namespace aspect
       oa << parameters.names_of_compositional_fields;
       oa << parameters.normalized_fields;
       oa << parameters.mesh_deformation_enabled;
-      oa << parameters.n_particle_worlds;
+      oa << parameters.n_particle_managers;
     }
 
 
@@ -261,10 +261,10 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
-      unsigned int n_particle_worlds;
-      ia >> n_particle_worlds;
-      AssertThrow (n_particle_worlds == parameters.n_particle_worlds,
-                   ExcMessage ("The number of particle worlds that were stored "
+      unsigned int n_particle_managers;
+      ia >> n_particle_managers;
+      AssertThrow (n_particle_managers == parameters.n_particle_managers,
+                   ExcMessage ("The number of particle managers that were stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "
                                "These need to be the same during restarting "

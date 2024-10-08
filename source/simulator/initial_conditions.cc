@@ -275,19 +275,19 @@ namespace aspect
     // need to write into it and we can not
     // write into vectors with ghost elements
 
-    // For each particle world store the pairs of corresponding advection field index (first) and particle property index (second)
+    // For each particle manager store the pairs of corresponding advection field index (first) and particle property index (second)
     std::vector<std::vector<std::pair<unsigned int, unsigned int>>> particle_property_indices;
-    // A property component mask indicating for each particle world which particle properties need to be interpolated
+    // A property component mask indicating for each particle manager which particle properties need to be interpolated
     std::vector<ComponentMask> property_mask;
 
-    // Mark for each advection field if it has been found in any particle world. We need to keep track of this to:
-    // - make sure all fields tracked by particles are found in at least one particle world
-    // - make sure that we do not interpolate the same field twice from different particle worlds
+    // Mark for each advection field if it has been found in any particle manager. We need to keep track of this to:
+    // - make sure all fields tracked by particles are found in at least one particle manager
+    // - make sure that we do not interpolate the same field twice from different particle managers
     std::vector<bool> advection_field_has_been_found(advection_fields.size(),false);
 
-    for (unsigned int world_index = 0; world_index < particle_worlds.size(); ++world_index)
+    for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
       {
-        const Particle::Property::Manager<dim> &particle_property_manager = particle_worlds[world_index].get_property_manager();
+        const Particle::Property::Manager<dim> &particle_property_manager = particle_managers[particle_manager].get_property_manager();
 
         particle_property_indices.push_back(std::vector<std::pair<unsigned int, unsigned int>>());
         property_mask.push_back(ComponentMask(particle_property_manager.get_data_info().n_components(),false));
@@ -298,24 +298,24 @@ namespace aspect
               {
                 const std::pair<std::string,unsigned int> particle_property_and_component = parameters.mapped_particle_properties.find(advection_fields[advection_field].compositional_variable)->second;
 
-                // Check if the required particle property exists in the current particle world.
+                // Check if the required particle property exists in the current particle manager.
                 // If not: assume we find it in another world.
                 if (particle_property_manager.get_data_info().fieldname_exists(particle_property_and_component.first))
                   {
                     Assert (advection_field_has_been_found[advection_field] == false,
-                            ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is mapped to particle properties in more than one particle world. This is not supported."));
+                            ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is mapped to particle properties in more than one particle manager. This is not supported."));
 
                     const unsigned int particle_property_index = particle_property_manager.get_data_info().get_position_by_field_name(particle_property_and_component.first)
                                                                  + particle_property_and_component.second;
 
                     advection_field_has_been_found[advection_field] = true;
-                    particle_property_indices[world_index].push_back({advection_field, particle_property_index});
-                    property_mask[world_index].set(particle_property_index,true);
+                    particle_property_indices[particle_manager].push_back({advection_field, particle_property_index});
+                    property_mask[particle_manager].set(particle_property_index,true);
                   }
               }
             else
               {
-                Assert(particle_worlds.size() == 1,
+                Assert(particle_managers.size() == 1,
                        ExcMessage("Automatically mapping particle properties to compositional fields is only supported if there is exactly one set of particles. "
                                   "Please specify the particle properties manually in the parameter file using the parameter 'Compositional Fields/Mapped particle properties'."));
 
@@ -327,8 +327,8 @@ namespace aspect
                                        "more fields that are marked as particle advected than particle properties"));
 
                 advection_field_has_been_found[advection_field] = true;
-                particle_property_indices[world_index].push_back({advection_field,particle_property_index});
-                property_mask[world_index].set(particle_property_index,true);
+                particle_property_indices[particle_manager].push_back({advection_field,particle_property_index});
+                property_mask[particle_manager].set(particle_property_index,true);
               }
           }
       }
@@ -373,15 +373,15 @@ namespace aspect
           const std::vector<Point<dim>> quadrature_points = fe_values.get_quadrature_points();
 
           std::vector<std::vector<double>> particle_properties;
-          for (unsigned int world_index = 0; world_index < particle_worlds.size(); ++world_index)
+          for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
             {
               try
                 {
                   particle_properties =
-                    particle_worlds[world_index].get_interpolator().properties_at_points(particle_worlds[world_index].get_particle_handler(),
-                                                                                         quadrature_points,
-                                                                                         property_mask[world_index],
-                                                                                         cell);
+                    particle_managers[particle_manager].get_interpolator().properties_at_points(particle_managers[particle_manager].get_particle_handler(),
+                                                                                                quadrature_points,
+                                                                                                property_mask[particle_manager],
+                                                                                                cell);
                 }
               // interpolators that throw exceptions usually do not result in
               // anything good, because they result in an unwinding of the stack
@@ -411,14 +411,14 @@ namespace aspect
               // to the particle field interpolated at these points
               cell->get_dof_indices (local_dof_indices);
               const unsigned int n_dofs_per_cell = finite_element.base_element(base_element_index).dofs_per_cell;
-              for (unsigned int j=0; j<particle_property_indices[world_index].size(); ++j)
+              for (unsigned int j=0; j<particle_property_indices[particle_manager].size(); ++j)
                 for (unsigned int i=0; i<n_dofs_per_cell; ++i)
                   {
                     const unsigned int system_local_dof
-                      = finite_element.component_to_system_index(advection_fields[particle_property_indices[world_index][j].first].component_index(introspection),
+                      = finite_element.component_to_system_index(advection_fields[particle_property_indices[particle_manager][j].first].component_index(introspection),
                                                                  /*dof index within component=*/i);
 
-                    particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][particle_property_indices[world_index][j].second];
+                    particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][particle_property_indices[particle_manager][j].second];
                   }
             }
         }

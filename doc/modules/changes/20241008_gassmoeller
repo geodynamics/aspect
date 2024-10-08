@@ -1,0 +1,7 @@
+Changed: The class Particle::World has been renamed to
+Particle::Manager. All references to world have been replaced
+by references to manager. The existing header file "world.h"
+is now deprecated and user plugins should instead include
+"manager.h".
+<br>
+(Rene Gassmoeller, 2024/10/08)

@@ -13,7 +13,7 @@ The violated condition was:
     advection_field_has_been_found[advection_field] == false
 Additional information: 
     The field composition 0 (anomaly) is mapped to particle properties in
-    more than one particle world. This is not supported.
+    more than one particle manager. This is not supported.
 
 Stacktrace:
 (rest of the output replaced by default.sh script)

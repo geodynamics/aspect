@@ -801,13 +801,13 @@ namespace aspect
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
               sim->initialize_simulator (this->get_simulator());
 
-            this->plugin_objects.back()->set_particle_world_index(particle_world_index);
+            this->plugin_objects.back()->set_particle_manager_index(particle_manager_index);
             this->plugin_objects.back()->parse_parameters (prm);
           }
 
         // lastly store internal integrator properties:
         this->plugin_objects.emplace_back (std::make_unique<IntegratorProperties<dim>>());
-        this->plugin_objects.back()->set_particle_world_index(particle_world_index);
+        this->plugin_objects.back()->set_particle_manager_index(particle_manager_index);
         this->plugin_objects.back()->parse_parameters (prm);
         this->plugin_names.emplace_back("internal: integrator properties");
       }
@@ -816,11 +816,11 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::set_particle_world_index(unsigned int particle_world_index)
+      Manager<dim>::set_particle_manager_index(unsigned int particle_manager_index)
       {
         // Save this value. We will tell our plugins about this, once they
         // have been created in parse_parameters().
-        this->particle_world_index = particle_world_index;
+        this->particle_manager_index = particle_manager_index;
       }
 
 

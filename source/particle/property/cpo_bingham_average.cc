@@ -19,7 +19,7 @@
  */
 
 #include <aspect/particle/property/cpo_bingham_average.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <aspect/utilities.h>
 
@@ -35,7 +35,7 @@ namespace aspect
       {
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
         this->random_number_generator.seed(random_number_seed+my_rank);
-        const auto &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
+        const auto &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No crystal preferred orientation property plugin found."));
 
@@ -256,7 +256,7 @@ namespace aspect
         {
           // Get a pointer to the CPO particle property.
           cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
-                                    this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>());
+                                    this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>());
 
           random_number_seed = prm.get_integer ("Random number seed");
           n_grains = cpo_particle_property->get_number_of_grains();

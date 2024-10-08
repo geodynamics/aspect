@@ -19,7 +19,7 @@
  */
 
 #include <aspect/particle/property/cpo_elastic_tensor.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <aspect/utilities.h>
 
@@ -66,7 +66,7 @@ namespace aspect
       void
       CpoElasticTensor<dim>::initialize ()
       {
-        const auto &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
+        const auto &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No crystal preferred orientation property plugin found."));
 
@@ -145,7 +145,7 @@ namespace aspect
       {
         // Get a reference to the CPO particle property.
         const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
-          this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
+          this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
 
         for (auto &particle: particles)
           {

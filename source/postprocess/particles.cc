@@ -20,7 +20,7 @@
 
 #include <aspect/global.h>
 #include <aspect/postprocess/particles.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <aspect/utilities.h>
 
 #include <boost/archive/text_oarchive.hpp>
@@ -329,21 +329,21 @@ namespace aspect
       std::string number_of_advected_particles = "";
       std::string screen_output = "";
 
-      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
+      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
-          const Particle::World<dim> &world = this->get_particle_world(particle_world);
+          const Particle::Manager<dim> &manager = this->get_particle_manager(particle_manager);
 
-          const std::string statistics_column_name = (particle_world == 0 ?
+          const std::string statistics_column_name = (particle_manager == 0 ?
                                                       "Number of advected particles" :
-                                                      "Number of advected particles (World " + Utilities::int_to_string(particle_world+1) + ")");
+                                                      "Number of advected particles (Manager " + Utilities::int_to_string(particle_manager+1) + ")");
 
-          statistics.add_value(statistics_column_name,world.n_global_particles());
+          statistics.add_value(statistics_column_name,manager.n_global_particles());
 
-          if (particle_world > 0)
+          if (particle_manager > 0)
             {
               number_of_advected_particles += ", ";
             }
-          number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
+          number_of_advected_particles += Utilities::int_to_string(manager.n_global_particles());
         }
 
       // If it's not time to generate an output file
@@ -372,20 +372,20 @@ namespace aspect
       else
         ++output_file_number;
 
-      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
+      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
-          const Particle::World<dim> &world = this->get_particle_world(particle_world);
+          const Particle::Manager<dim> &manager = this->get_particle_manager(particle_manager);
           std::string particles_output_base_name = "particles";
-          if (particle_world > 0)
+          if (particle_manager > 0)
             {
-              particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
+              particles_output_base_name += "-" + Utilities::int_to_string(particle_manager+1);
             }
 
           // Create the particle output
           const bool output_hdf5 = std::find(output_formats.begin(), output_formats.end(),"hdf5") != output_formats.end();
           internal::ParticleOutput<dim> data_out;
-          data_out.build_patches(world.get_particle_handler(),
-                                 world.get_property_manager().get_data_info(),
+          data_out.build_patches(manager.get_particle_handler(),
+                                 manager.get_property_manager().get_data_info(),
                                  exclude_output_properties,
                                  output_hdf5);
 
@@ -551,13 +551,13 @@ namespace aspect
 
           const std::string particle_output = this->get_output_directory() + particles_output_base_name + "/" + particle_file_prefix;
 
-          if (particle_world == 0)
+          if (particle_manager == 0)
             screen_output = particle_output;
 
           // record the file base file name in the output file
-          const std::string statistics_column_name = (particle_world == 0 ?
+          const std::string statistics_column_name = (particle_manager == 0 ?
                                                       "Particle file name" :
-                                                      "Particle file name (" + Utilities::int_to_string(particle_world+1) + ")");
+                                                      "Particle file name (" + Utilities::int_to_string(particle_manager+1) + ")");
           statistics.add_value (statistics_column_name,
                                 particle_output);
         }
@@ -604,17 +604,17 @@ namespace aspect
     void
     Particles<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
-      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
+      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
           std::string particles_output_base_name = "Particles";
-          if (particle_world > 0)
+          if (particle_manager > 0)
             {
-              particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
+              particles_output_base_name += "-" + Utilities::int_to_string(particle_manager+1);
             }
           std::ostringstream os;
           aspect::oarchive oa (os);
 
-          this->get_particle_world(particle_world).save(os);
+          this->get_particle_manager(particle_manager).save(os);
           oa << (*this);
 
           status_strings[particles_output_base_name] = os.str();
@@ -626,12 +626,12 @@ namespace aspect
     void
     Particles<dim>::load (const std::map<std::string, std::string> &status_strings)
     {
-      for (unsigned int particle_world = 0; particle_world < this->n_particle_worlds(); ++particle_world)
+      for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
           std::string particles_output_base_name = "Particles";
-          if (particle_world > 0)
+          if (particle_manager > 0)
             {
-              particles_output_base_name += "-" + Utilities::int_to_string(particle_world+1);
+              particles_output_base_name += "-" + Utilities::int_to_string(particle_manager+1);
             }
           // see if something was saved
           if (status_strings.find(particles_output_base_name) != status_strings.end())
@@ -639,8 +639,8 @@ namespace aspect
               std::istringstream is (status_strings.find(particles_output_base_name)->second);
               aspect::iarchive ia (is);
 
-              // Load the particle world
-              this->get_particle_world(particle_world).load(is);
+              // Load the particle manager
+              this->get_particle_manager(particle_manager).load(is);
 
               ia >> (*this);
             }
@@ -712,7 +712,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      Particle::World<dim>::declare_parameters(prm);
+      Particle::Manager<dim>::declare_parameters(prm);
     }
 
 
@@ -750,15 +750,15 @@ namespace aspect
                          output_formats.end(),
                          "none") == output_formats.end())
             {
-              // Note that we iterate until the value of parameters.n_particle_worlds and not
-              // this->particle_worlds, because at this point in the program execution the
-              // particle worlds have not been created yet. We want to prepare as many directories
-              // as there will be particle worlds, once they are created.
-              for (unsigned int particle_world = 0; particle_world < this->get_parameters().n_particle_worlds; ++particle_world)
+              // Note that we iterate until the value of parameters.n_particle_managers and not
+              // this->particle_managers, because at this point in the program execution the
+              // particle managers have not been created yet. We want to prepare as many directories
+              // as there will be particle managers, once they are created.
+              for (unsigned int particle_manager = 0; particle_manager < this->get_parameters().n_particle_managers; ++particle_manager)
                 {
                   std::string particles_directory_base_name = "particles";
-                  if (particle_world > 0)
-                    particles_directory_base_name += "-" + Utilities::int_to_string(particle_world+1);
+                  if (particle_manager > 0)
+                    particles_directory_base_name += "-" + Utilities::int_to_string(particle_manager+1);
 
                   aspect::Utilities::create_directory (this->get_output_directory() + particles_directory_base_name + "/",
                                                        this->get_mpi_communicator(),
