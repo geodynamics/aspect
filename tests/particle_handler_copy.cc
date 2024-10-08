@@ -19,6 +19,8 @@
 */
 
 #include <aspect/simulator_signals.h>
+
+// On purpose use the old file name here to test that backwards compatibility works.
 #include <aspect/particle/world.h>
 
 #include <iostream>
@@ -31,6 +33,7 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
                                 const unsigned int,
                                 const SolverControl &)
 {
+  // On purpose use the old class name here to test that backwards compatibility works.
   const Particle::World<dim> &particle_manager = simulator_access.get_particle_manager(0);
   dealii::Particles::ParticleHandler<dim> particle_handler;
   std::cout << "duplicating particle handler" << std::endl;
