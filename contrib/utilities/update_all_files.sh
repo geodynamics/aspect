@@ -10,14 +10,14 @@ BASE_DIR=`cd ${UTIL_DIR}/../..;pwd`
 echo "Scanning ${BASE_DIR} for changes..."
 
 # Update source files
-SOURCE_FILES=`find $BASE_DIR -type f \( -name *.cc -or -name *.h \) -and -not -name *.bak | grep -v doc`
+SOURCE_FILES=`find $BASE_DIR -type f \( -name \*.cc -or -name \*.h \) -and -not -name \*.bak | grep -v doc`
 bash ${UTIL_DIR}/update_source_files.sh $SOURCE_FILES
 
 # Update prm files
-PRM_FILES=`find $BASE_DIR -type f -name *.prm* -not -name *update_script* -not -name *prmbackslash_2.prm -not -name *.bak`
+PRM_FILES=`find $BASE_DIR -type f -name \*.prm\* -and -not \( -name \*update_script\*.prm -or -name \*prmbackslash_2.prm -or -name \*.bak \)`
 bash ${UTIL_DIR}/update_prm_files.sh $PRM_FILES
 
 # To remove the backup files that are created you will likely want to use the
 # following command. It is commented out by default, because you should think
 # carefully before automatically removing files.
-#find ${BASE_DIR} -name *.bak -delete
+#find ${BASE_DIR} -name \*.bak -delete
