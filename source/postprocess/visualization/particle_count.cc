@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/particle_count.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 
 namespace aspect

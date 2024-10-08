@@ -232,7 +232,7 @@ namespace aspect
          * filename and is used to create a descriptive
          * .visit file for the entire simulation.
          * We store one list per particle manager, because each particle
-         * world will have its own output directory and description file.
+         * manager will have its own output directory and description file.
          */
         std::map<std::string,std::vector<std::vector<std::string>>> output_file_names_by_timestep;
 
@@ -242,7 +242,7 @@ namespace aspect
          * These XDMF data contain things such as the dimensions
          * and names of data written at all steps during the simulation.
          * We store one list per particle manager, because each particle
-         * world will have its own output directory and description file.
+         * manager will have its own output directory and description file.
          */
         std::map<std::string,std::vector<XDMFEntry>>  xdmf_entries;
 

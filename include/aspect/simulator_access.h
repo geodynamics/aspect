@@ -140,7 +140,7 @@ namespace aspect
 
   namespace Particle
   {
-    template <int dim> class World;
+    template <int dim> class Manager;
   }
 
   namespace TimeStepping

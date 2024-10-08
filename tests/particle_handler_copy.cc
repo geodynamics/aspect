@@ -19,7 +19,7 @@
 */
 
 #include <aspect/simulator_signals.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <deal.II/particles/particle_handler.h>
 

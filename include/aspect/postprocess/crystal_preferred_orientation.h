@@ -22,7 +22,7 @@
 #define _aspect_postprocess_crystal_preferred_orientation_h
 
 #include <aspect/postprocess/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <aspect/simulator_access.h>
 

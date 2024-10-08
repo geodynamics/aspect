@@ -20,7 +20,7 @@
 
 #include "common.h"
 #include <aspect/particle/property/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <deal.II/base/parameter_handler.h>
 
 TEST_CASE("Particle Manager plugin names")

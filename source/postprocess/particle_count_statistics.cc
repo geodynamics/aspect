@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/particle_count_statistics.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>

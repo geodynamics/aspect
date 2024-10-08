@@ -21,7 +21,7 @@
 
 #include <aspect/mesh_refinement/particle_density.h>
 
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {

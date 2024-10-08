@@ -453,7 +453,7 @@ namespace aspect
 
     template <int dim>
     template <class Archive>
-    void World<dim>::serialize (Archive &ar, const unsigned int)
+    void Manager<dim>::serialize (Archive &ar, const unsigned int)
     {
       // Note that although Boost claims to handle serialization of pointers
       // correctly, at least for the case of unique_ptr it seems to not work.

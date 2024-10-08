@@ -20,7 +20,7 @@
 
 #include <aspect/global.h>
 #include <aspect/postprocess/particles.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <aspect/utilities.h>
 
 #include <boost/archive/text_oarchive.hpp>
@@ -331,19 +331,19 @@ namespace aspect
 
       for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
-          const Particle::Manager<dim> &world = this->get_particle_manager(particle_manager);
+          const Particle::Manager<dim> &manager = this->get_particle_manager(particle_manager);
 
           const std::string statistics_column_name = (particle_manager == 0 ?
                                                       "Number of advected particles" :
-                                                      "Number of advected particles (World " + Utilities::int_to_string(particle_manager+1) + ")");
+                                                      "Number of advected particles (Manager " + Utilities::int_to_string(particle_manager+1) + ")");
 
-          statistics.add_value(statistics_column_name,world.n_global_particles());
+          statistics.add_value(statistics_column_name,manager.n_global_particles());
 
           if (particle_manager > 0)
             {
               number_of_advected_particles += ", ";
             }
-          number_of_advected_particles += Utilities::int_to_string(world.n_global_particles());
+          number_of_advected_particles += Utilities::int_to_string(manager.n_global_particles());
         }
 
       // If it's not time to generate an output file
@@ -374,7 +374,7 @@ namespace aspect
 
       for (unsigned int particle_manager = 0; particle_manager < this->n_particle_managers(); ++particle_manager)
         {
-          const Particle::Manager<dim> &world = this->get_particle_manager(particle_manager);
+          const Particle::Manager<dim> &manager = this->get_particle_manager(particle_manager);
           std::string particles_output_base_name = "particles";
           if (particle_manager > 0)
             {
@@ -384,8 +384,8 @@ namespace aspect
           // Create the particle output
           const bool output_hdf5 = std::find(output_formats.begin(), output_formats.end(),"hdf5") != output_formats.end();
           internal::ParticleOutput<dim> data_out;
-          data_out.build_patches(world.get_particle_handler(),
-                                 world.get_property_manager().get_data_info(),
+          data_out.build_patches(manager.get_particle_handler(),
+                                 manager.get_property_manager().get_data_info(),
                                  exclude_output_properties,
                                  output_hdf5);
 
