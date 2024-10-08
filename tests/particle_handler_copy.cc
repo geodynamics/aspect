@@ -19,9 +19,7 @@
 */
 
 #include <aspect/simulator_signals.h>
-#include <aspect/particle/manager.h>
-
-#include <deal.II/particles/particle_handler.h>
+#include <aspect/particle/world.h>
 
 #include <iostream>
 
@@ -33,7 +31,7 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
                                 const unsigned int,
                                 const SolverControl &)
 {
-  const auto &particle_manager = simulator_access.get_particle_manager(0);
+  const Particle::World<dim> &particle_manager = simulator_access.get_particle_manager(0);
   dealii::Particles::ParticleHandler<dim> particle_handler;
   std::cout << "duplicating particle handler" << std::endl;
 
