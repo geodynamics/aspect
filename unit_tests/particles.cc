@@ -28,7 +28,7 @@ TEST_CASE("Particle Manager plugin names")
   dealii::ParameterHandler prm;
   aspect::Particle::Property::Manager<2> manager;
   // The property manager needs to know about the integrator, which is declared in World
-  aspect::Particle::World<2>::declare_parameters(prm);
+  aspect::Particle::Manager<2>::declare_parameters(prm);
 
   prm.enter_subsection("Particles");
   manager.declare_parameters(prm);

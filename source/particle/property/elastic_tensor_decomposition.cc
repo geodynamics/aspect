@@ -17,7 +17,7 @@
 #include <aspect/particle/property/elastic_tensor_decomposition.h>
 #include <aspect/particle/property/cpo_elastic_tensor.h>
 #include <aspect/particle/property/crystal_preferred_orientation.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <aspect/utilities.h>
 
@@ -270,7 +270,7 @@ namespace aspect
       void
       ElasticTensorDecomposition<dim>::initialize ()
       {
-        const Particle::Property::Manager<dim> &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
+        const Particle::Property::Manager<dim> &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No cpo property plugin found."));
         AssertThrow(manager.plugin_name_exists("cpo elastic tensor"),

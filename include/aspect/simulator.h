@@ -1995,7 +1995,7 @@ namespace aspect
       /**
        * The worlds holding different sets of particles
        */
-      std::vector<Particle::World<dim>> particle_worlds;
+      std::vector<Particle::Manager<dim>> particle_managers;
 
       /**
        * @}

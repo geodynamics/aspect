@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_particle_world_h
-#define _aspect_particle_world_h
+#ifndef _aspect_particle_manager_h
+#define _aspect_particle_manager_h
 
 #include <aspect/global.h>
 
@@ -75,58 +75,58 @@ namespace aspect
      * particles. The implementation of most of these methods is outsourced
      * to different plugin systems, this class is mostly concerned with
      * managing the interactions of the different systems with the code
-     * outside the particle world.
+     * outside the particle manager.
      *
      * @ingroup Particle
      */
     template <int dim>
-    class World : public SimulatorAccess<dim>
+    class Manager : public SimulatorAccess<dim>
     {
       public:
         /**
-         * Default World constructor.
+         * Default constructor.
          */
-        World();
+        Manager();
 
         /**
-         * Default World destructor.
+         * Default destructor.
          */
-        ~World() override;
+        ~Manager() override;
 
         /**
          * Move constructor. This is required to be able to put instances
          * of this class into a std::vector.
          */
-        World(World &&);
+        Manager(Manager &&);
 
         /**
-         * Initialize the particle world.
+         * Initialize the particle manager.
          */
         void initialize();
 
         /**
-         * Update the particle world.
+         * Update the particle manager.
         */
         void update();
 
         /**
-         * Get the particle property manager for this particle world.
+         * Get the particle property manager for this particle manager.
          *
-         * @return The property manager for this world.
+         * @return The property manager for this particle manager.
          */
         const Property::Manager<dim> &
         get_property_manager() const;
 
         /**
-         * Get the const particle handler for this particle world.
+         * Get the const particle handler for this particle manager.
          *
-         * @return The particle handler for this world.
+         * @return The particle handler for this particle manager.
          */
         const Particles::ParticleHandler<dim> &
         get_particle_handler() const;
 
         /**
-         * Get the particle handler for this particle world.
+         * Get the particle handler for this particle manager.
          * There is no get_particles() function in the deal.II
          * ParticleHandler, so we get and set the positions
          * of the particles. These getter/setter functions are
@@ -134,7 +134,7 @@ namespace aspect
          * but the existing get_particle_handler is.
          * Therefore this non-const function is added.
          *
-         * @return The particle handler for this world.
+         * @return The particle handler for this particle manager.
          */
         Particles::ParticleHandler<dim> &
         get_particle_handler();
@@ -144,7 +144,7 @@ namespace aspect
          * particle handler @p to_particle_handler. This will copy
          * all particles and properties and leave @p to_particle_handler
          * as an identical copy of @p from_particle_handler, assuming it
-         * was set up by this particle world class. This means we assume
+         * was set up by this particle manager class. This means we assume
          * @p from_particle_handler uses the same triangulation and
          * particle properties as are used in this model. Existing
          * particles in @p to_particle_handler are deleted.
@@ -182,9 +182,9 @@ namespace aspect
         void setup_initial_state ();
 
         /**
-         * Get the particle interpolator for this particle world.
+         * Get the particle interpolator for this particle manager.
          *
-         * @return The interpolator for this world.
+         * @return The interpolator for this particle manager.
          */
         const Interpolator::Interface<dim> &
         get_interpolator() const;
@@ -224,7 +224,7 @@ namespace aspect
          * This callback function is registered within Simulator by the
          * constructor of this class and will be
          * called from Simulator during construction. It allows to attach slot
-         * functions to the provided SimulatorSignals. This world will register
+         * functions to the provided SimulatorSignals. This particle manager will register
          * the register_store_callback_function() and
          * register_load_callback_function() to the
          * pre_refinement_store_user_data signal and the
@@ -284,11 +284,11 @@ namespace aspect
          * Read the parameters this class declares from the parameter file.
          *
          * @param prm The ParameterHandler.
-         * @param world_index Parse the parameters for the Particle world with this index.
+         * @param particle_manager Parse the parameters for the Particle manager with this index.
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm, const unsigned int world_index);
+        parse_parameters (ParameterHandler &prm, const unsigned int particle_manager);
 
       private:
         struct ParticleLoadBalancing
@@ -304,17 +304,17 @@ namespace aspect
         };
 
         /**
-         * Generation scheme for creating particles in this world
+         * Generation scheme for creating particles in this manager
          */
         std::unique_ptr<Generator::Interface<dim>> generator;
 
         /**
-         * Integration scheme for moving particles in this world
+         * Integration scheme for moving particles in this manager
          */
         std::unique_ptr<Integrator::Interface<dim>> integrator;
 
         /**
-         * Interpolation scheme for moving particles in this world
+         * Interpolation scheme for moving particles in this manager
          */
         std::unique_ptr<Interpolator::Interface<dim>> interpolator;
 
