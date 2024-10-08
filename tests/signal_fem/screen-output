@@ -16,7 +16,7 @@ Number of degrees of freedom: 334 (50+9+25+200+25+25)
    Solving temperature system... 0 iterations.
    Skipping A composition solve because RHS is zero.
    Skipping B composition solve because RHS is zero.
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-signal_fem/solution/solution-00000

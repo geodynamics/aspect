@@ -21,7 +21,7 @@ Number of degrees of freedom: 8,016 (1,728+240+864+864+864+864+864+864+864)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Copying properties into prescribed temperature field... done.
-   Solving Stokes system... 65+0 iterations.
+   Solving Stokes system (GMG)... 65+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0.012107
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.012107
 

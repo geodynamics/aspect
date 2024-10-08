@@ -5,7 +5,7 @@ Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 0 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
 Number of active cells: 349 (on 6 levels)
 Number of degrees of freedom: 14,423 (3,066+401+1,533+3,141+3,141+3,141)
@@ -13,7 +13,7 @@ Number of degrees of freedom: 14,423 (3,066+401+1,533+3,141+3,141+3,141)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 0 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
 Number of active cells: 571 (on 7 levels)
 Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
@@ -22,7 +22,7 @@ Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving advection_field system ... 0 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      RMS, max velocity:            0.000399 m/s, 0.000659 m/s
@@ -36,7 +36,7 @@ Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving advection_field system ... 6 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      RMS, max velocity:            0.000265 m/s, 0.000437 m/s
@@ -50,7 +50,7 @@ Number of degrees of freedom: 22,909 (4,948+637+2,474+4,950+4,950+4,950)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving advection_field system ... 4 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      RMS, max velocity:            0.000174 m/s, 0.000287 m/s

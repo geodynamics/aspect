@@ -10,7 +10,7 @@ Number of mesh deformation degrees of freedom: 882
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system (GMG)... 30+0 iterations.
 
 Number of active cells: 544 (on 3 levels)
 Number of degrees of freedom: 12,838 (4,652+604+604+2,326+2,326+2,326)
@@ -23,7 +23,7 @@ Number of mesh deformation degrees of freedom: 1,208
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
@@ -46,7 +46,7 @@ Number of mesh deformation degrees of freedom: 1,156
    Solving ve_stress_xx system ... 18 iterations.
    Solving ve_stress_yy system ... 18 iterations.
    Solving ve_stress_xy system ... 18 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -1.533e+05/2.687e+05/-2.453e+10 // -2.687e+05/1.533e+05/2.453e+10 // -6.333e+04/3.277e+05/1.178e+16

@@ -6,7 +6,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving field2 system ... 0 iterations.
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1000 K, 1000 K, 1000 K
@@ -15,7 +15,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 1000 K, 1000 K, 1000 K
@@ -24,7 +24,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 11 iterations.
    Solving porosity system ... 16 iterations.
    Solving field2 system ... 16 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 990.9 K, 1010 K, 1107 K
@@ -33,7 +33,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 14 iterations.
    Solving porosity system ... 15 iterations.
    Solving field2 system ... 16 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 987 K, 1017 K, 1165 K
@@ -42,7 +42,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 14 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 15 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 986.8 K, 1028 K, 1236 K
@@ -51,7 +51,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 16 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 987.9 K, 1039 K, 1287 K
@@ -60,7 +60,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 14 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 16 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.7 K, 1050 K, 1316 K
@@ -69,7 +69,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 15 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1061 K, 1337 K
@@ -78,7 +78,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1072 K, 1358 K
@@ -87,7 +87,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 14 iterations.
    Solving field2 system ... 15 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1084 K, 1369 K
@@ -96,7 +96,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 13 iterations.
    Solving field2 system ... 15 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1095 K, 1368 K
@@ -105,7 +105,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 13 iterations.
    Solving field2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989.1 K, 1106 K, 1376 K
@@ -114,7 +114,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 13 iterations.
    Solving field2 system ... 15 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989.1 K, 1117 K, 1378 K
@@ -123,7 +123,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989.1 K, 1127 K, 1376 K
@@ -132,7 +132,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1137 K, 1380 K
@@ -141,7 +141,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1146 K, 1377 K
@@ -150,7 +150,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 11 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1154 K, 1380 K
@@ -159,7 +159,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 11 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1161 K, 1379 K
@@ -168,7 +168,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 989 K, 1166 K, 1381 K
@@ -177,7 +177,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 12 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.9 K, 1168 K, 1380 K
@@ -186,7 +186,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.9 K, 1170 K, 1381 K
@@ -195,7 +195,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.9 K, 1170 K, 1381 K
@@ -204,7 +204,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.8 K, 1170 K, 1380 K
@@ -213,7 +213,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 12 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.8 K, 1169 K, 1381 K
@@ -222,7 +222,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 12 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.8 K, 1169 K, 1378 K
@@ -231,7 +231,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 10 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.8 K, 1168 K, 1373 K
@@ -240,7 +240,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 10 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.8 K, 1168 K, 1367 K
@@ -249,7 +249,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 13 iterations.
    Solving porosity system ... 9 iterations.
    Solving field2 system ... 13 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 988.7 K, 1168 K, 1362 K
@@ -258,7 +258,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 11 iterations.
    Solving porosity system ... 11 iterations.
    Solving field2 system ... 11 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 982.8 K, 1173 K, 1361 K

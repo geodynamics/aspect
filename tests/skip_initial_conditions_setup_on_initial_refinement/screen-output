@@ -10,14 +10,14 @@ Number of degrees of freedom: 634 (386+55+193)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Heat fluxes through boundary parts: -2.356e+07 W, 2.356e+07 W, 0 W, 0 W
 
 *** Timestep 1:  t=1 years, dt=1 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Heat fluxes through boundary parts: -2.356e+07 W, 2.356e+07 W, 0 W, 0 W

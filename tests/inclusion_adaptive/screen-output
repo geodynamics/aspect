@@ -5,7 +5,7 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
@@ -20,7 +20,7 @@ Number of active cells: 100 (on 5 levels)
 Number of degrees of freedom: 1,520 (930+125+465)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
@@ -35,7 +35,7 @@ Number of active cells: 172 (on 6 levels)
 Number of degrees of freedom: 2,716 (1,666+217+833)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
@@ -50,7 +50,7 @@ Number of active cells: 292 (on 7 levels)
 Number of degrees of freedom: 4,484 (2,754+353+1,377)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
@@ -65,7 +65,7 @@ Number of active cells: 364 (on 7 levels)
 Number of degrees of freedom: 5,524 (3,394+433+1,697)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
@@ -80,7 +80,7 @@ Number of active cells: 472 (on 8 levels)
 Number of degrees of freedom: 7,344 (4,514+573+2,257)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system (GMG)... 28+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 

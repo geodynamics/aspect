@@ -11,7 +11,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (AMG)... 11+0 iterations.
    Solving fluid velocity system... 1 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23571e-16, 0, 2.70797e-16, 0, 1.90017e-16, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
@@ -24,7 +24,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23571e-16, 0, 2.70797e-16, 0, 1.90017e-16, 0, 0, 4.64654e-10
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.64654e-10
@@ -43,7 +43,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (AMG)... 4+0 iterations.
    Solving fluid velocity system... 1 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.98897e-10, 3.76196e-10, 1.52938e-09, 0, 1.77859e-16, 0, 0, 0.0208124
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0208124
@@ -56,7 +56,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (AMG)... 2+0 iterations.
    Solving fluid velocity system... 1 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.671e-07, 1.20626e-05, 1.23233e-06, 0, 2.02305e-16, 0, 0, 1.0975e-06
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.20626e-05
@@ -69,7 +69,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.7708e-12, 1.64463e-10, 4.67304e-12, 0, 2.16909e-16, 0, 0, 2.23779e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 2.23779e-09

@@ -7,7 +7,7 @@ Number of degrees of freedom: 13,431 (4,290+561+2,145+2,145+2,145+2,145)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
-   Solving Stokes system... 30+39 iterations.
+   Solving Stokes system (GMG)... 30+39 iterations.
 
    Postprocessing:
      Writing graphical output: output-multicomponent_steinberger/solution/solution-00000
@@ -17,7 +17,7 @@ Number of degrees of freedom: 13,431 (4,290+561+2,145+2,145+2,145+2,145)
    Solving C_1 system ... 8 iterations.
    Solving C_2 system ... 10 iterations.
    Solving C_3 system ... 9 iterations.
-   Solving Stokes system... 30+29 iterations.
+   Solving Stokes system (GMG)... 30+29 iterations.
 
    Postprocessing:
 

@@ -8,7 +8,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system (AMG)... 28+0 iterations.
 
    Postprocessing:
      Errors u_L2, p_L2, rho_L2 4.407832e+00, 4.560843e+00, 2.028187e+02
@@ -19,7 +19,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system (AMG)... 22+0 iterations.
 
    Postprocessing:
      Errors u_L2, p_L2, rho_L2 4.769034e+00, 4.551835e+00, 2.186217e+02
@@ -30,7 +30,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (AMG)... 23+0 iterations.
 
    Postprocessing:
      Errors u_L2, p_L2, rho_L2 4.560728e+00, 4.555384e+00, 2.094610e+02

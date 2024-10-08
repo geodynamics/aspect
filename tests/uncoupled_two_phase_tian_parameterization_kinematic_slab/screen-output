@@ -10,7 +10,7 @@ Number of degrees of freedom: 754 (162+25+81+81+81+81+81+81+81)
    Skipping gabbro composition solve because RHS is zero.
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -22,7 +22,7 @@ Skipping mesh refinement, because the mesh did not change.
    Skipping gabbro composition solve because RHS is zero.
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/1/9.913e+09 // 0/0/0 // 0/0/0 // 0/0/0
@@ -36,7 +36,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving gabbro system ... 10 iterations.
    Solving MORB system ... 11 iterations.
    Skipping sediment composition solve because RHS is zero.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // -0.002639/0.02/1.036e+06 // 0/1.008/9.91e+09 // -0.1322/1/1.295e+07 // -0.1319/1/5.179e+07 // 0/0/0
@@ -50,7 +50,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving gabbro system ... 10 iterations.
    Solving MORB system ... 11 iterations.
    Skipping sediment composition solve because RHS is zero.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -1.354e-07/4.978e-05/8418 // -0.002357/0.02/1.081e+06 // 0/1.015/9.908e+09 // -0.1184/1/1.362e+07 // -0.1178/1/5.446e+07 // 0/0/0

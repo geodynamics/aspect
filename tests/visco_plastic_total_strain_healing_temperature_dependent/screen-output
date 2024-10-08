@@ -5,7 +5,7 @@ Number of degrees of freedom: 520 (242+36+121+121)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00069951
 
 
@@ -25,7 +25,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 1:  t=2e+06 years, dt=2e+06 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 10 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.22749e-11
 
 
@@ -42,7 +42,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 2:  t=4e+06 years, dt=2e+06 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.52734e-11
 
 
@@ -59,7 +59,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 3:  t=6e+06 years, dt=2e+06 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.36746e-15
 
 
@@ -76,7 +76,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 4:  t=8e+06 years, dt=2e+06 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 1 iterations.
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.34569e-15
 
 
@@ -93,7 +93,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 5:  t=1e+07 years, dt=2e+06 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 1 iterations.
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.46264e-15
 
 

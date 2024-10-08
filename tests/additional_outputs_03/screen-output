@@ -42,7 +42,7 @@ averaging!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
 * evaluate called without additional outputs!
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
 * evaluate called without additional outputs!

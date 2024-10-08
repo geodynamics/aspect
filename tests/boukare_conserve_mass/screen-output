@@ -8,7 +8,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (AMG)... 42+0 iterations.
    Solving fluid velocity system... 12 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73256e-16, 1.26427e-16, 1.30034e-16, 1.30034e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
@@ -18,7 +18,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (AMG)... 42+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.73256e-16, 1.26427e-16, 1.30034e-16, 1.30034e-16, 9.68751e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 9.68751e-08
@@ -39,7 +39,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (AMG)... 39+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.13238e-15, 0.000112054, 1.52547e-16, 1.62677e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
@@ -49,7 +49,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (AMG)... 40+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.07689e-15, 0.0229237, 1.60215e-16, 1.62245e-16, 0.360625
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.360625
@@ -59,7 +59,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system (AMG)... 31+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.11013e-15, 7.06332e-06, 1.66049e-16, 1.71023e-16, 0.00766772
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00766772
@@ -69,7 +69,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (AMG)... 21+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.18901e-15, 9.99015e-08, 1.60243e-16, 1.59602e-16, 0.000222001
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000222001
@@ -79,7 +79,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (AMG)... 13+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.07465e-15, 4.10549e-09, 1.61697e-16, 1.63746e-16, 1.26016e-05
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.26016e-05
@@ -100,7 +100,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (AMG)... 44+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.48063e-15, 0.0487234, 1.82119e-16, 1.79827e-16, 1.02433
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.02433
@@ -110,7 +110,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (AMG)... 44+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.46577e-15, 0.0800311, 1.77709e-16, 1.7344e-16, 0.0488303
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0488303
@@ -120,7 +120,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system (AMG)... 30+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40991e-15, 2.25023e-05, 1.77294e-16, 1.74547e-16, 0.000320326
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000320326
@@ -130,7 +130,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
    Solving molar_Fe_in_solid system ... 0 iterations.
    Solving molar_Fe_in_melt system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (AMG)... 17+0 iterations.
    Solving fluid velocity system... 11 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.42841e-15, 2.36483e-07, 1.73594e-16, 1.85164e-16, 3.08234e-06
       Relative nonlinear residual (total system) after nonlinear iteration 4: 3.08234e-06

@@ -5,34 +5,34 @@ Number of degrees of freedom: 3,909 (2,210+297+297+1,105)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 0+12 iterations.
+   Solving Stokes system (GMG)... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 0+197 iterations.
+   Solving Stokes system (GMG)... 0+197 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.109954
 
-   Solving Stokes system... 0+93 iterations.
+   Solving Stokes system (GMG)... 0+93 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000100658
 
-   Solving Stokes system... 0+87 iterations.
+   Solving Stokes system (GMG)... 0+87 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 1.99856e-05
 
-   Solving Stokes system... 0+141 iterations.
+   Solving Stokes system (GMG)... 0+141 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.75957e-05
 
-   Solving Stokes system... 0+168 iterations.
+   Solving Stokes system (GMG)... 0+168 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.79182e-05
 
-   Solving Stokes system... 0+178 iterations.
+   Solving Stokes system (GMG)... 0+178 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.80235e-05
 
-   Solving Stokes system... 0+190 iterations.
+   Solving Stokes system (GMG)... 0+190 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.13231e-05
 
-   Solving Stokes system... 0+191 iterations.
+   Solving Stokes system (GMG)... 0+191 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 2.88113e-05
 
-   Solving Stokes system... 0+231 iterations.
+   Solving Stokes system (GMG)... 0+231 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 2.45622e-05
 
 

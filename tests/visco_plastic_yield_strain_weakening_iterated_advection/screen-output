@@ -5,7 +5,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39736e-16, 0, 0.23759
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.23759
 
@@ -15,7 +15,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
-   Solving Stokes system... 0+2 iterations.
+   Solving Stokes system (GMG)... 0+2 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39736e-16, 0, 9.7506e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 9.7506e-09
 
@@ -25,7 +25,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39736e-16, 0, 1.39643e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.39643e-09
 
@@ -35,7 +35,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39736e-16, 0, 1.39643e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.39643e-09
 
@@ -45,7 +45,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39736e-16, 0, 1.39643e-09
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.39643e-09
 
@@ -63,7 +63,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 11 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79843e-16, 1, 1.43258e-09
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
@@ -73,7 +73,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79843e-16, 3.27099e-13, 1.43258e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.43258e-09
 
@@ -83,7 +83,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79843e-16, 3.27099e-13, 1.43258e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.43258e-09
 
@@ -93,7 +93,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79843e-16, 3.27099e-13, 1.43258e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.43258e-09
 
@@ -103,7 +103,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79843e-16, 3.27099e-13, 1.43258e-09
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.43258e-09
 
@@ -121,7 +121,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 2:  t=200000 years, dt=100000 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 2 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.86842e-16, 1.26213e-10, 1.4319e-09
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.4319e-09
 
@@ -131,7 +131,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.86842e-16, 3.63427e-13, 1.4319e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.4319e-09
 
@@ -141,7 +141,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.86842e-16, 3.63427e-13, 1.4319e-09
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.4319e-09
 
@@ -151,7 +151,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.86842e-16, 3.63427e-13, 1.4319e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.4319e-09
 
@@ -161,7 +161,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.86842e-16, 3.63427e-13, 1.4319e-09
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.4319e-09
 

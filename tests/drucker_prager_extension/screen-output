@@ -4,34 +4,34 @@ Number of degrees of freedom: 2,804 (2,210+297+297)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 0+12 iterations.
+   Solving Stokes system (GMG)... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999798
 
-   Solving Stokes system... 0+17 iterations.
+   Solving Stokes system (GMG)... 0+17 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.124343
 
-   Solving Stokes system... 0+23 iterations.
+   Solving Stokes system (GMG)... 0+23 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0180502
 
-   Solving Stokes system... 0+27 iterations.
+   Solving Stokes system (GMG)... 0+27 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0600714
 
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system (GMG)... 0+15 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.015231
 
-   Solving Stokes system... 0+25 iterations.
+   Solving Stokes system (GMG)... 0+25 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0257693
 
-   Solving Stokes system... 0+28 iterations.
+   Solving Stokes system (GMG)... 0+28 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0183956
 
-   Solving Stokes system... 0+45 iterations.
+   Solving Stokes system (GMG)... 0+45 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0255448
 
-   Solving Stokes system... 0+69 iterations.
+   Solving Stokes system (GMG)... 0+69 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.0353832
 
-   Solving Stokes system... 0+69 iterations.
+   Solving Stokes system (GMG)... 0+69 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0972081
 
 

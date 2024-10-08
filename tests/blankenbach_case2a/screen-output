@@ -6,7 +6,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system (GMG)... 28+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  465 m/s, 1.19e+03 m/s
@@ -16,7 +16,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 1:  t=0.000127826 seconds, dt=0.000127826 seconds
    Solving temperature system... 36 iterations.
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system (GMG)... 30+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  494 m/s, 1.31e+03 m/s
@@ -26,7 +26,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 2:  t=0.000242558 seconds, dt=0.000114732 seconds
    Solving temperature system... 36 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system (GMG)... 33+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  533 m/s, 1.49e+03 m/s
@@ -36,7 +36,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 3:  t=0.000342998 seconds, dt=0.000100439 seconds
    Solving temperature system... 38 iterations.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  588 m/s, 1.68e+03 m/s
@@ -46,7 +46,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 4:  t=0.000432053 seconds, dt=8.90553e-05 seconds
    Solving temperature system... 42 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  669 m/s, 2.54e+03 m/s
@@ -56,7 +56,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 5:  t=0.000491826 seconds, dt=5.97726e-05 seconds
    Solving temperature system... 39 iterations.
-   Solving Stokes system... 47+0 iterations.
+   Solving Stokes system (GMG)... 47+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  722 m/s, 3.17e+03 m/s
@@ -66,7 +66,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 6:  t=0.000538803 seconds, dt=4.6977e-05 seconds
    Solving temperature system... 33 iterations.
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  716 m/s, 3.09e+03 m/s
@@ -76,7 +76,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 7:  t=0.000586519 seconds, dt=4.77161e-05 seconds
    Solving temperature system... 31 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  666 m/s, 2.63e+03 m/s
@@ -86,7 +86,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 8:  t=0.00064318 seconds, dt=5.66608e-05 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 45+0 iterations.
+   Solving Stokes system (GMG)... 45+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  595 m/s, 2.08e+03 m/s
@@ -96,7 +96,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 9:  t=0.000715575 seconds, dt=7.23954e-05 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  516 m/s, 1.56e+03 m/s
@@ -106,7 +106,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 10:  t=0.000813194 seconds, dt=9.76186e-05 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  433 m/s, 1.09e+03 m/s
@@ -116,7 +116,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 11:  t=0.000952449 seconds, dt=0.000139256 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  353 m/s, 993 m/s
@@ -126,7 +126,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 12:  t=0.00110003 seconds, dt=0.000147576 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  305 m/s, 1.06e+03 m/s
@@ -136,7 +136,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 13:  t=0.00123439 seconds, dt=0.000134368 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  281 m/s, 1.09e+03 m/s
@@ -146,7 +146,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 14:  t=0.0013641 seconds, dt=0.000129703 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  262 m/s, 1.02e+03 m/s
@@ -156,7 +156,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 15:  t=0.00150363 seconds, dt=0.000139534 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  241 m/s, 875 m/s
@@ -166,7 +166,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 16:  t=0.00166766 seconds, dt=0.000164034 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  216 m/s, 759 m/s
@@ -176,7 +176,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 17:  t=0.00185631 seconds, dt=0.000188648 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  194 m/s, 767 m/s
@@ -186,7 +186,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 18:  t=0.0020386 seconds, dt=0.00018229 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  186 m/s, 817 m/s
@@ -196,7 +196,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 19:  t=0.00220904 seconds, dt=0.000170443 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  183 m/s, 811 m/s
@@ -206,7 +206,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 20:  t=0.00238246 seconds, dt=0.000173418 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  178 m/s, 734 m/s
@@ -216,7 +216,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 21:  t=0.00257695 seconds, dt=0.000194489 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  168 m/s, 624 m/s
@@ -226,7 +226,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 22:  t=0.00280553 seconds, dt=0.000228582 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  156 m/s, 592 m/s
@@ -236,7 +236,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 23:  t=0.00304281 seconds, dt=0.000237276 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  154 m/s, 666 m/s
@@ -246,7 +246,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 24:  t=0.00325241 seconds, dt=0.000209596 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  163 m/s, 747 m/s
@@ -256,7 +256,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 25:  t=0.00343814 seconds, dt=0.000185735 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  172 m/s, 743 m/s
@@ -266,7 +266,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 26:  t=0.00362792 seconds, dt=0.000189782 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  175 m/s, 672 m/s
@@ -276,7 +276,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 27:  t=0.0038439 seconds, dt=0.00021598 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  170 m/s, 608 m/s
@@ -286,7 +286,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 28:  t=0.00409254 seconds, dt=0.000248639 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  165 m/s, 600 m/s
@@ -296,7 +296,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 29:  t=0.0043281 seconds, dt=0.000235556 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  172 m/s, 721 m/s
@@ -306,7 +306,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 30:  t=0.0045222 seconds, dt=0.000194097 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  187 m/s, 804 m/s
@@ -316,7 +316,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 31:  t=0.00469772 seconds, dt=0.000175527 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  203 m/s, 809 m/s
@@ -326,7 +326,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 32:  t=0.00487717 seconds, dt=0.000179451 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  217 m/s, 804 m/s
@@ -336,7 +336,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 33:  t=0.00506461 seconds, dt=0.000187438 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  234 m/s, 792 m/s
@@ -346,7 +346,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 34:  t=0.00525577 seconds, dt=0.000191161 seconds
    Solving temperature system... 31 iterations.
-   Solving Stokes system... 46+0 iterations.
+   Solving Stokes system (GMG)... 46+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  279 m/s, 1.05e+03 m/s
@@ -356,7 +356,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 35:  t=0.00539786 seconds, dt=0.000142089 seconds
    Solving temperature system... 33 iterations.
-   Solving Stokes system... 47+0 iterations.
+   Solving Stokes system (GMG)... 47+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  355 m/s, 1.58e+03 m/s
@@ -366,7 +366,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 36:  t=0.00549147 seconds, dt=9.36049e-05 seconds
    Solving temperature system... 34 iterations.
-   Solving Stokes system... 47+0 iterations.
+   Solving Stokes system (GMG)... 47+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  427 m/s, 2.07e+03 m/s
@@ -376,7 +376,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 37:  t=0.00556265 seconds, dt=7.11838e-05 seconds
    Solving temperature system... 33 iterations.
-   Solving Stokes system... 45+0 iterations.
+   Solving Stokes system (GMG)... 45+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  459 m/s, 2.22e+03 m/s
@@ -386,7 +386,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 38:  t=0.00562923 seconds, dt=6.65773e-05 seconds
    Solving temperature system... 31 iterations.
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  439 m/s, 2.08e+03 m/s
@@ -396,7 +396,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 39:  t=0.00570108 seconds, dt=7.18501e-05 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  381 m/s, 1.77e+03 m/s
@@ -406,7 +406,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 40:  t=0.00578604 seconds, dt=8.49647e-05 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  307 m/s, 1.35e+03 m/s
@@ -416,7 +416,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 41:  t=0.00589766 seconds, dt=0.000111616 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  234 m/s, 924 m/s
@@ -426,7 +426,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 42:  t=0.00606188 seconds, dt=0.000164221 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  178 m/s, 566 m/s
@@ -436,7 +436,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 43:  t=0.00633104 seconds, dt=0.00026916 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  157 m/s, 638 m/s
@@ -446,7 +446,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 44:  t=0.00655123 seconds, dt=0.000220188 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  166 m/s, 774 m/s
@@ -456,7 +456,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 45:  t=0.00673282 seconds, dt=0.000181594 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  177 m/s, 747 m/s
@@ -466,7 +466,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 46:  t=0.00692577 seconds, dt=0.000192952 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  181 m/s, 698 m/s
@@ -476,7 +476,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 47:  t=0.00714298 seconds, dt=0.000217212 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  176 m/s, 623 m/s
@@ -486,7 +486,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 48:  t=0.00738877 seconds, dt=0.000245783 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  168 m/s, 594 m/s
@@ -496,7 +496,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 49:  t=0.00763504 seconds, dt=0.000246276 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  176 m/s, 685 m/s
@@ -506,7 +506,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 50:  t=0.00785204 seconds, dt=0.000217 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  209 m/s, 797 m/s
@@ -516,7 +516,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 51:  t=0.00804017 seconds, dt=0.000188125 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  262 m/s, 906 m/s
@@ -526,7 +526,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 52:  t=0.00820646 seconds, dt=0.00016629 seconds
    Solving temperature system... 31 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  337 m/s, 1.01e+03 m/s
@@ -536,7 +536,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 53:  t=0.00835603 seconds, dt=0.000149574 seconds
    Solving temperature system... 38 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  430 m/s, 1.17e+03 m/s
@@ -546,7 +546,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 54:  t=0.00848757 seconds, dt=0.000131536 seconds
    Solving temperature system... 46 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  490 m/s, 1.62e+03 m/s
@@ -556,7 +556,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 55:  t=0.0085801 seconds, dt=9.25317e-05 seconds
    Solving temperature system... 39 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  491 m/s, 1.54e+03 m/s
@@ -566,7 +566,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 56:  t=0.00867595 seconds, dt=9.58546e-05 seconds
    Solving temperature system... 34 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  467 m/s, 1.39e+03 m/s
@@ -576,7 +576,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 57:  t=0.00878674 seconds, dt=0.000110784 seconds
    Solving temperature system... 33 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  417 m/s, 1.22e+03 m/s
@@ -586,7 +586,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 58:  t=0.00891272 seconds, dt=0.000125985 seconds
    Solving temperature system... 30 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  348 m/s, 950 m/s
@@ -596,7 +596,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 59:  t=0.00907546 seconds, dt=0.00016274 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  274 m/s, 680 m/s
@@ -606,7 +606,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 60:  t=0.00929834 seconds, dt=0.000222878 seconds
    Solving temperature system... 22 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  232 m/s, 911 m/s
@@ -616,7 +616,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 61:  t=0.00945709 seconds, dt=0.000158748 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  239 m/s, 1.15e+03 m/s
@@ -626,7 +626,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 62:  t=0.00958168 seconds, dt=0.000124589 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  246 m/s, 1.15e+03 m/s
@@ -636,7 +636,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 63:  t=0.00970941 seconds, dt=0.000127727 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  238 m/s, 1.04e+03 m/s
@@ -646,7 +646,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 64:  t=0.00985356 seconds, dt=0.000144154 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  215 m/s, 853 m/s
@@ -656,7 +656,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 65:  t=0.0100318 seconds, dt=0.000178193 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  187 m/s, 636 m/s
@@ -666,7 +666,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 66:  t=0.0102734 seconds, dt=0.000241613 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  175 m/s, 678 m/s
@@ -676,7 +676,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 67:  t=0.0104822 seconds, dt=0.000208864 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  189 m/s, 843 m/s
@@ -686,7 +686,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 68:  t=0.0106507 seconds, dt=0.000168455 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  205 m/s, 831 m/s
@@ -696,7 +696,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 69:  t=0.0108248 seconds, dt=0.000174079 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  211 m/s, 747 m/s
@@ -706,7 +706,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 70:  t=0.0110273 seconds, dt=0.000202499 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  213 m/s, 741 m/s
@@ -716,7 +716,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 71:  t=0.0112262 seconds, dt=0.00019891 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  227 m/s, 777 m/s
@@ -726,7 +726,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 72:  t=0.0114221 seconds, dt=0.000195938 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  243 m/s, 796 m/s
@@ -736,7 +736,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 73:  t=0.0116083 seconds, dt=0.000186146 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  250 m/s, 686 m/s
@@ -746,7 +746,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 74:  t=0.011831 seconds, dt=0.000222743 seconds
    Solving temperature system... 30 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  243 m/s, 582 m/s
@@ -756,7 +756,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 75:  t=0.0120956 seconds, dt=0.000264626 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  226 m/s, 490 m/s
@@ -766,7 +766,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 76:  t=0.012413 seconds, dt=0.000317333 seconds
    Solving temperature system... 30 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  220 m/s, 646 m/s
@@ -776,7 +776,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 77:  t=0.0126404 seconds, dt=0.000227399 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  262 m/s, 1.04e+03 m/s
@@ -786,7 +786,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 78:  t=0.0127824 seconds, dt=0.000142013 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  312 m/s, 1.38e+03 m/s
@@ -796,7 +796,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 79:  t=0.0128901 seconds, dt=0.000107768 seconds
    Solving temperature system... 30 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  343 m/s, 1.52e+03 m/s
@@ -806,7 +806,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 80:  t=0.0129876 seconds, dt=9.74285e-05 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  346 m/s, 1.42e+03 m/s
@@ -816,7 +816,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 81:  t=0.0130915 seconds, dt=0.000103961 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  332 m/s, 1.24e+03 m/s
@@ -826,7 +826,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 82:  t=0.0132132 seconds, dt=0.000121621 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  304 m/s, 1.01e+03 m/s
@@ -836,7 +836,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 83:  t=0.0133632 seconds, dt=0.000150037 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  267 m/s, 789 m/s
@@ -846,7 +846,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 84:  t=0.0135584 seconds, dt=0.000195168 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  233 m/s, 695 m/s
@@ -856,7 +856,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 85:  t=0.0137698 seconds, dt=0.000211393 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  235 m/s, 982 m/s
@@ -866,7 +866,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 86:  t=0.0139169 seconds, dt=0.00014719 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  260 m/s, 1.21e+03 m/s
@@ -876,7 +876,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 87:  t=0.0140365 seconds, dt=0.000119555 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  276 m/s, 1.22e+03 m/s
@@ -886,7 +886,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 88:  t=0.0141571 seconds, dt=0.000120563 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  274 m/s, 1.12e+03 m/s
@@ -896,7 +896,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 89:  t=0.0142907 seconds, dt=0.000133674 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  257 m/s, 966 m/s
@@ -906,7 +906,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 90:  t=0.014448 seconds, dt=0.000157297 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  235 m/s, 772 m/s
@@ -916,7 +916,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 91:  t=0.0146423 seconds, dt=0.000194307 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  229 m/s, 925 m/s
@@ -926,7 +926,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 92:  t=0.0147978 seconds, dt=0.000155419 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  250 m/s, 1.12e+03 m/s
@@ -936,7 +936,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 93:  t=0.0149274 seconds, dt=0.00012966 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  274 m/s, 1.18e+03 m/s
@@ -946,7 +946,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 94:  t=0.0150506 seconds, dt=0.00012314 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  287 m/s, 1.16e+03 m/s
@@ -956,7 +956,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 95:  t=0.0151791 seconds, dt=0.000128586 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  286 m/s, 1.09e+03 m/s
@@ -966,7 +966,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 96:  t=0.0153175 seconds, dt=0.000138335 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  275 m/s, 998 m/s
@@ -976,7 +976,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 97:  t=0.0154633 seconds, dt=0.000145813 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  269 m/s, 1.07e+03 m/s
@@ -986,7 +986,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 98:  t=0.015599 seconds, dt=0.000135725 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  270 m/s, 1.1e+03 m/s
@@ -996,7 +996,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 99:  t=0.0157314 seconds, dt=0.000132388 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  270 m/s, 1.07e+03 m/s
@@ -1006,7 +1006,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 100:  t=0.0158705 seconds, dt=0.00013909 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  262 m/s, 1.02e+03 m/s
@@ -1019,7 +1019,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 101:  t=0.0160185 seconds, dt=0.000147999 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  247 m/s, 922 m/s
@@ -1029,7 +1029,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 102:  t=0.0161831 seconds, dt=0.000164585 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  232 m/s, 855 m/s
@@ -1039,7 +1039,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 103:  t=0.0163518 seconds, dt=0.000168769 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  231 m/s, 911 m/s
@@ -1049,7 +1049,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 104:  t=0.0165109 seconds, dt=0.000159058 seconds
    Solving temperature system... 24 iterations.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  241 m/s, 958 m/s
@@ -1059,7 +1059,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 105:  t=0.0166631 seconds, dt=0.000152217 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  253 m/s, 979 m/s
@@ -1069,7 +1069,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 106:  t=0.0168132 seconds, dt=0.000150084 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  261 m/s, 980 m/s
@@ -1079,7 +1079,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 107:  t=0.0169641 seconds, dt=0.000150861 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  263 m/s, 977 m/s
@@ -1089,7 +1089,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 108:  t=0.017113 seconds, dt=0.000148898 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  265 m/s, 992 m/s
@@ -1099,7 +1099,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 109:  t=0.0172594 seconds, dt=0.000146409 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system (GMG)... 33+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  267 m/s, 993 m/s
@@ -1109,7 +1109,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 110:  t=0.0174068 seconds, dt=0.000147437 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  268 m/s, 981 m/s
@@ -1119,7 +1119,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 111:  t=0.0175591 seconds, dt=0.000152267 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  269 m/s, 956 m/s
@@ -1129,7 +1129,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 112:  t=0.0177169 seconds, dt=0.000157824 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  271 m/s, 931 m/s
@@ -1139,7 +1139,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 113:  t=0.0178745 seconds, dt=0.000157581 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system (GMG)... 33+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  278 m/s, 985 m/s
@@ -1149,7 +1149,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 114:  t=0.0180229 seconds, dt=0.000148444 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  291 m/s, 1.07e+03 m/s
@@ -1159,7 +1159,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 115:  t=0.0181597 seconds, dt=0.000136806 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  306 m/s, 1.14e+03 m/s
@@ -1169,7 +1169,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 116:  t=0.0182877 seconds, dt=0.000127987 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  316 m/s, 1.17e+03 m/s
@@ -1179,7 +1179,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 117:  t=0.0184129 seconds, dt=0.000125158 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  317 m/s, 1.16e+03 m/s
@@ -1189,7 +1189,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 118:  t=0.0185413 seconds, dt=0.000128461 seconds
    Solving temperature system... 28 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  307 m/s, 1.12e+03 m/s
@@ -1199,7 +1199,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 119:  t=0.0186761 seconds, dt=0.000134712 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  291 m/s, 1.04e+03 m/s
@@ -1209,7 +1209,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 120:  t=0.0188208 seconds, dt=0.000144727 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  276 m/s, 969 m/s
@@ -1219,7 +1219,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 121:  t=0.0189761 seconds, dt=0.00015528 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system (GMG)... 34+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  270 m/s, 945 m/s
@@ -1229,7 +1229,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 122:  t=0.0191324 seconds, dt=0.00015632 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  277 m/s, 1.01e+03 m/s
@@ -1239,7 +1239,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 123:  t=0.0192776 seconds, dt=0.00014525 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  300 m/s, 1.16e+03 m/s
@@ -1249,7 +1249,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 124:  t=0.0194042 seconds, dt=0.000126559 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  330 m/s, 1.34e+03 m/s
@@ -1259,7 +1259,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 125:  t=0.0195136 seconds, dt=0.000109426 seconds
    Solving temperature system... 30 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  353 m/s, 1.45e+03 m/s
@@ -1269,7 +1269,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 126:  t=0.0196143 seconds, dt=0.000100688 seconds
    Solving temperature system... 30 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  361 m/s, 1.45e+03 m/s
@@ -1279,7 +1279,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 127:  t=0.0197164 seconds, dt=0.000102056 seconds
    Solving temperature system... 29 iterations.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  347 m/s, 1.39e+03 m/s
@@ -1289,7 +1289,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 128:  t=0.0198244 seconds, dt=0.000108053 seconds
    Solving temperature system... 27 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  316 m/s, 1.24e+03 m/s
@@ -1299,7 +1299,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 129:  t=0.0199463 seconds, dt=0.000121875 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  278 m/s, 1.02e+03 m/s
@@ -1309,7 +1309,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 130:  t=0.02 seconds, dt=5.37146e-05 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system (GMG)... 33+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  266 m/s, 945 m/s

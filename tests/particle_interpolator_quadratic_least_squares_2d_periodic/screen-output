@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,524 (578+81+289+576)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (AMG)... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-particle_interpolator_quadratic_least_squares_2d_periodic/solution/solution-00000
@@ -16,7 +16,7 @@ Number of degrees of freedom: 1,524 (578+81+289+576)
 *** Timestep 1:  t=70 seconds, dt=70 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (AMG)... 17+0 iterations.
 
    Postprocessing:
      Writing particle output:   output-particle_interpolator_quadratic_least_squares_2d_periodic/particles/particles-00001

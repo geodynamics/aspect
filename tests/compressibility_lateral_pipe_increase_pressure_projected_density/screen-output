@@ -8,23 +8,23 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system (AMG)... 3+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.51607e-17, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.51607e-17, 0, 5.4727e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.4727e-13
+   Solving Stokes system (AMG)... 20+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.51607e-17, 0, 7.79159e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.79159e-13
 
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_increase_pressure_projected_density/solution/solution-00000
-     RMS, max velocity:                                 1.65e-24 m/s, 3.47e-24 m/s
+     RMS, max velocity:                                 1.54e-24 m/s, 3.59e-24 m/s
      Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
-     Mass fluxes through boundary parts:                0 kg/s, 3.212e-27 kg/s, 0 kg/s, 0 kg/s
+     Mass fluxes through boundary parts:                0 kg/s, -6.301e-27 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3300 kg/m^3, 1e+20 Pa s, 3.3e+14 kg
      Pressure min/avg/max:                              1e+08 Pa, 1e+08 Pa, 1e+08 Pa
 
@@ -32,23 +32,23 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.14565e-17, 0, 1
+   Solving Stokes system (AMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.23798e-17, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field... done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.44233e-16, 0, 6.85302e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.85302e-13
+   Solving Stokes system (AMG)... 20+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23713e-16, 0, 7.24681e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.24681e-13
 
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_increase_pressure_projected_density/solution/solution-00001
-     RMS, max velocity:                                 1.51e-24 m/s, 4.85e-24 m/s
+     RMS, max velocity:                                 1.2e-24 m/s, 4.18e-24 m/s
      Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
-     Mass fluxes through boundary parts:                0 kg/s, -5.978e-30 kg/s, 0 kg/s, 0 kg/s
+     Mass fluxes through boundary parts:                0 kg/s, -2.805e-29 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3300 kg/m^3, 1e+20 Pa s, 3.3e+14 kg
      Pressure min/avg/max:                              1.003e+08 Pa, 1.003e+08 Pa, 1.003e+08 Pa
 

@@ -6,7 +6,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system (AMG)... 1+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:                         0.001/0.001/1e+07
@@ -19,7 +19,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:                         0.0009998/0.0009998/9.998e+06

@@ -5,7 +5,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 151+0 iterations.
+   Solving Stokes system (GMG)... 151+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/2.25e+06
@@ -14,7 +14,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
 *** Timestep 1:  t=1000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 114+0 iterations.
+   Solving Stokes system (GMG)... 114+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:    -1.26e+07/1.169e+07/-7.563e+11 // -1.169e+07/1.26e+07/7.563e+11 // -3.406e+06/1.216e+06/-3.736e+12 // 0/1/2.275e+06
@@ -23,7 +23,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
 *** Timestep 2:  t=2000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 109+0 iterations.
+   Solving Stokes system (GMG)... 109+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:    -1.901e+07/1.799e+07/-7.836e+11 // -1.799e+07/1.901e+07/7.836e+11 // -4.451e+06/1.476e+06/-4.028e+12 // 0/1/2.293e+06

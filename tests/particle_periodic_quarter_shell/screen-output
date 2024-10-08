@@ -7,7 +7,7 @@ Number of degrees of freedom: 13,637 (6,402+833+3,201+3,201)
    Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 47+0 iterations.
+   Solving Stokes system (AMG)... 47+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0129 m/s, 0.0409 m/s
@@ -19,40 +19,40 @@ Number of degrees of freedom: 13,637 (6,402+833+3,201+3,201)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 17 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (AMG)... 42+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.0136 m/s, 0.0421 m/s
-     Compositions min/max/mass:    -0.06231/1.073/4.39
-     Number of advected particles: 50
+     RMS, max velocity:           0.0136 m/s, 0.0421 m/s
+     Compositions min/max/mass:   -0.06231/1.073/4.39
+     Number of advected particles 50
 
 *** Timestep 2:  t=2.9007 seconds, dt=1.42854 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 17 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (AMG)... 40+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.0143 m/s, 0.0431 m/s
-     Compositions min/max/mass:    -0.06825/1.107/4.379
-     Number of advected particles: 50
+     RMS, max velocity:           0.0143 m/s, 0.0431 m/s
+     Compositions min/max/mass:   -0.06825/1.107/4.379
+     Number of advected particles 50
 
 *** Timestep 3:  t=4.29292 seconds, dt=1.39222 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 17 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (AMG)... 40+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.015 m/s, 0.0441 m/s
-     Compositions min/max/mass:    -0.0808/1.104/4.369
-     Number of advected particles: 50
+     RMS, max velocity:           0.015 m/s, 0.0441 m/s
+     Compositions min/max/mass:   -0.0808/1.104/4.369
+     Number of advected particles 50
 
 *** Timestep 4:  t=5 seconds, dt=0.707078 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 14 iterations.
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (AMG)... 40+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0154 m/s, 0.0447 m/s

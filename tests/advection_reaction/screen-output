@@ -7,7 +7,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -1/1/-1.297e-18
@@ -18,7 +18,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 22 iterations.
    Solving C_1 system ... 22 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.9974/0.9974/-3.301e-08

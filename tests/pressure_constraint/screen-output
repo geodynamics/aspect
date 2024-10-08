@@ -8,7 +8,7 @@ adding constraint idx= 162 to value= 100
 *** Timestep 0:  t=0 seconds, dt=0 seconds
 adding constraint idx= 162 to value= 100
    Solving temperature system... 11 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.183 m/s, 0.249 m/s
@@ -30,7 +30,7 @@ system preconditioner matrix nnz by block:
 *** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
 adding constraint idx= 162 to value= 100
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.183 m/s, 0.249 m/s

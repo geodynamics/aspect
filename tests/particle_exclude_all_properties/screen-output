@@ -15,7 +15,7 @@ Number of degrees of freedom: 56,014 (8,450+1,089+4,225+4,225+4,225+4,225+4,225+
    Solving C_8 system ... 0 iterations.
    Solving C_9 system ... 0 iterations.
    Solving C_10 system ... 0 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-particle_exclude_all_properties/solution/solution-00000

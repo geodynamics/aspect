@@ -11,7 +11,7 @@ Number of degrees of freedom: 989 (162+73+162+25+81+81+81+81+81+81+81)
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system (AMG)... 20+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
 Skipping mesh refinement, because the mesh did not change.
@@ -25,7 +25,7 @@ Skipping mesh refinement, because the mesh did not change.
    Skipping MORB composition solve because RHS is zero.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system (AMG)... 20+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -42,7 +42,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving MORB system ... 11 iterations.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (AMG)... 15+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -58,7 +58,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving MORB system ... 11 iterations.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (AMG)... 14+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:

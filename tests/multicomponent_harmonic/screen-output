@@ -7,7 +7,7 @@ Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
-   Solving Stokes system... 30+3 iterations.
+   Solving Stokes system (GMG)... 30+3 iterations.
 
 Number of active cells: 1,198 (on 7 levels)
 Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
@@ -17,7 +17,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
    Solving C_3 system ... 0 iterations.
-   Solving Stokes system... 30+15 iterations.
+   Solving Stokes system (GMG)... 30+15 iterations.
 
    Postprocessing:
      Writing graphical output: output-multicomponent_harmonic/solution/solution-00000
@@ -27,7 +27,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 12 iterations.
    Solving C_3 system ... 10 iterations.
-   Solving Stokes system... 30+8 iterations.
+   Solving Stokes system (GMG)... 30+8 iterations.
 
    Postprocessing:
 
@@ -36,7 +36,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 11 iterations.
    Solving C_3 system ... 10 iterations.
-   Solving Stokes system... 30+11 iterations.
+   Solving Stokes system (GMG)... 30+11 iterations.
 
    Postprocessing:
 

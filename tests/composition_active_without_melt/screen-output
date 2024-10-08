@@ -8,7 +8,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
@@ -18,7 +18,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5019 K, 1 K
@@ -28,7 +28,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5034 K, 1 K
@@ -38,7 +38,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5046 K, 1 K
@@ -48,7 +48,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5055 K, 1 K
@@ -58,7 +58,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5064 K, 1 K
@@ -68,7 +68,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5071 K, 1 K
@@ -78,7 +78,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5079 K, 1 K
@@ -88,7 +88,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5088 K, 1 K
@@ -98,7 +98,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5095 K, 1 K
@@ -108,7 +108,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5102 K, 1 K
@@ -118,7 +118,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5108 K, 1 K
@@ -128,7 +128,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5116 K, 1 K
@@ -138,7 +138,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5122 K, 1 K
@@ -148,7 +148,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5129 K, 1 K
@@ -158,7 +158,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5135 K, 1 K
@@ -168,7 +168,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5141 K, 1 K

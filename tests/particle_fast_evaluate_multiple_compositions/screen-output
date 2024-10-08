@@ -11,7 +11,7 @@ Number of mesh deformation degrees of freedom: 1,610
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving 3 system ... 0 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.6048e-16, 1.29464e-16, 1.6048e-16, 0.0322709
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0322709
 
@@ -20,7 +20,7 @@ Number of mesh deformation degrees of freedom: 1,610
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving 3 system ... 0 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.6048e-16, 1.29464e-16, 1.6048e-16, 1.58597e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.58597e-09
 

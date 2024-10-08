@@ -7,10 +7,10 @@ Number of mesh deformation degrees of freedom: 1,394
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system (GMG)... 0+11 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000956812
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.52378e-11
 
 
@@ -22,10 +22,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system (GMG)... 0+11 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000782024
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.84233e-11
 
 
@@ -51,10 +51,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 1:  t=136892 years, dt=136892 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 0+25 iterations.
+   Solving Stokes system (GMG)... 0+25 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00145794
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.87767e-11
 
 
@@ -65,10 +65,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 2:  t=377514 years, dt=240622 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 0+30 iterations.
+   Solving Stokes system (GMG)... 0+30 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00695698
 
-   Solving Stokes system... 0+3 iterations.
+   Solving Stokes system (GMG)... 0+3 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.5245e-10
 
 
@@ -79,10 +79,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 3:  t=521218 years, dt=143704 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+25 iterations.
+   Solving Stokes system (GMG)... 0+25 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00186532
 
-   Solving Stokes system... 0+5 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.5098e-10
 
 
@@ -93,10 +93,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 4:  t=704238 years, dt=183020 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+26 iterations.
+   Solving Stokes system (GMG)... 0+26 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00102339
 
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.17679e-10
 
 
@@ -107,10 +107,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 5:  t=898046 years, dt=193809 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+25 iterations.
+   Solving Stokes system (GMG)... 0+25 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000147358
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.26324e-11
 
 
@@ -124,10 +124,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 6:  t=1.09023e+06 years, dt=192183 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+26 iterations.
+   Solving Stokes system (GMG)... 0+26 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.57517e-05
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.5755e-11
 
 
@@ -138,10 +138,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 7:  t=1.28767e+06 years, dt=197437 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+25 iterations.
+   Solving Stokes system (GMG)... 0+25 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.93028e-05
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.86305e-11
 
 
@@ -152,10 +152,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 8:  t=1.48683e+06 years, dt=199168 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+24 iterations.
+   Solving Stokes system (GMG)... 0+24 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.03973e-05
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.95584e-11
 
 
@@ -166,10 +166,10 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 9:  t=1.68961e+06 years, dt=202775 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+22 iterations.
+   Solving Stokes system (GMG)... 0+22 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.11178e-05
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.29694e-11
 
 
@@ -180,7 +180,7 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 10:  t=1.89503e+06 years, dt=205416 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 0+22 iterations.
+   Solving Stokes system (GMG)... 0+22 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.35973e-06
 
 

@@ -8,7 +8,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 51+0 iterations.
+   Solving Stokes system (AMG)... 51+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00000
@@ -19,7 +19,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 32+0 iterations.
+   Solving Stokes system (AMG)... 32+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00001
@@ -30,7 +30,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (AMG)... 25+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00002
@@ -41,7 +41,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00003
@@ -54,7 +54,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00004
@@ -65,7 +65,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system (AMG)... 28+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00005
@@ -76,7 +76,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system (AMG)... 26+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00006
@@ -87,7 +87,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system (AMG)... 24+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00007
@@ -100,7 +100,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (AMG)... 18+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00008

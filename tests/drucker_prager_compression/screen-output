@@ -4,34 +4,34 @@ Number of degrees of freedom: 2,804 (2,210+297+297)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 0+12 iterations.
+   Solving Stokes system (GMG)... 0+12 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999814
 
-   Solving Stokes system... 0+17 iterations.
+   Solving Stokes system (GMG)... 0+17 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.103034
 
-   Solving Stokes system... 0+18 iterations.
+   Solving Stokes system (GMG)... 0+18 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0267627
 
-   Solving Stokes system... 0+10 iterations.
+   Solving Stokes system (GMG)... 0+10 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0136305
 
-   Solving Stokes system... 0+8 iterations.
+   Solving Stokes system (GMG)... 0+8 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0117487
 
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0115315
 
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0117271
 
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0126799
 
-   Solving Stokes system... 0+13 iterations.
+   Solving Stokes system (GMG)... 0+13 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.0138451
 
-   Solving Stokes system... 0+19 iterations.
+   Solving Stokes system (GMG)... 0+19 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.015363
 
 

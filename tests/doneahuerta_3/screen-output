@@ -6,7 +6,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 0+21 iterations.
+   Solving Stokes system (GMG)... 0+21 iterations.
 
    Postprocessing:
      Writing graphical output:      output-doneahuerta_3/solution/solution-00000
