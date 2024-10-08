@@ -38,7 +38,7 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
   std::cout << "duplicating particle handler" << std::endl;
 
   particle_manager.copy_particle_handler(particle_manager.get_particle_handler(),
-                                       particle_handler);
+                                         particle_handler);
 
   auto copied_particle = particle_handler.begin();
   for (const auto &particle: particle_manager.get_particle_handler())
@@ -57,7 +57,7 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
   auto &non_const_particle_handler = const_cast<dealii::Particles::ParticleHandler<dim> &>(particle_manager.get_particle_handler());
 
   particle_manager.copy_particle_handler(particle_handler,
-                                       non_const_particle_handler);
+                                         non_const_particle_handler);
 
   copied_particle = particle_handler.begin();
   for (const auto &particle: particle_manager.get_particle_handler())

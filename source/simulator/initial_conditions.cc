@@ -388,9 +388,9 @@ namespace aspect
                 {
                   particle_properties =
                     particle_managers[particle_manager].get_interpolator().properties_at_points(particle_managers[particle_manager].get_particle_handler(),
-                                                                                         quadrature_points,
-                                                                                         property_mask[particle_manager],
-                                                                                         cell);
+                                                                                                quadrature_points,
+                                                                                                property_mask[particle_manager],
+                                                                                                cell);
                 }
               // interpolators that throw exceptions usually do not result in
               // anything good, because they result in an unwinding of the stack

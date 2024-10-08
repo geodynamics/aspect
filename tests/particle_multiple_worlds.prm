@@ -6,7 +6,6 @@
 set Dimension                              = 2
 set End time                               = 70
 set Use years in output instead of seconds = false
-set Number of particle managers = 2
 
 subsection Geometry model
   set Model name = box
@@ -81,6 +80,7 @@ subsection Postprocess
 end
 
 subsection Particles
+  set Number of particle managers = 2
   set List of particle properties = initial composition
 
   subsection Generator

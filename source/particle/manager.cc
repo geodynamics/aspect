@@ -127,7 +127,7 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
-                                       Particles::ParticleHandler<dim> &to_particle_handler) const
+                                         Particles::ParticleHandler<dim> &to_particle_handler) const
     {
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Copy");
@@ -206,8 +206,8 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
-                                                 ParticleHandler<dim> &particle_handler_,
-                                                 const bool connect_to_checkpoint_signals) const
+                                                   ParticleHandler<dim> &particle_handler_,
+                                                   const bool connect_to_checkpoint_signals) const
     {
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
@@ -366,11 +366,11 @@ namespace aspect
     unsigned int
     Manager<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
 #if DEAL_II_VERSION_GTE(9,6,0)
-                            const CellStatus status
+                              const CellStatus status
 #else
-                            const typename parallel::distributed::Triangulation<dim>::CellStatus status
+                              const typename parallel::distributed::Triangulation<dim>::CellStatus status
 #endif
-                           )
+                             )
     {
       if (cell->is_active() && !cell->is_locally_owned())
         return 0;
@@ -433,7 +433,7 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::local_initialize_particles(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                           const typename ParticleHandler<dim>::particle_iterator &end_particle)
+                                             const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
       for (typename ParticleHandler<dim>::particle_iterator it = begin_particle; it!=end_particle; ++it)
         property_manager->initialize_one_particle(it);
@@ -444,8 +444,8 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
-                                       small_vector<Point<dim>> &positions,
-                                       SolutionEvaluator<dim> &evaluator)
+                                         small_vector<Point<dim>> &positions,
+                                         SolutionEvaluator<dim> &evaluator)
     {
       const unsigned int n_particles = particle_handler->n_particles_in_cell(inputs.current_cell);
 
@@ -500,9 +500,9 @@ namespace aspect
     template <int dim>
     void
     Manager<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                                       SolutionEvaluator<dim> &evaluator)
+                                         const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                         const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                                         SolutionEvaluator<dim> &evaluator)
     {
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 
@@ -911,11 +911,11 @@ namespace aspect
           this->get_triangulation().signals.weight.connect(
 #if DEAL_II_VERSION_GTE(9,6,0)
             [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                               const CellStatus status)
+                                    const CellStatus status)
             -> unsigned int
 #else
             [ &, particle_manager] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
-                               const typename parallel::distributed::Triangulation<dim>::CellStatus status)
+                                    const typename parallel::distributed::Triangulation<dim>::CellStatus status)
             -> unsigned int
 #endif
           {
