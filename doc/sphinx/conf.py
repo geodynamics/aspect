@@ -77,7 +77,7 @@ html_theme_options = {
             "icon": "fab fa-github-square",
         },
     ],
-    "show_navbar_depth": 2,
+    "show_navbar_depth": 1,
     "use_repository_button": True,
     "use_edit_page_button": True,
     "use_issues_button": True,

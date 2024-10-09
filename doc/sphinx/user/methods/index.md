@@ -1,5 +1,5 @@
 (cha:methods)=
-# Modeling assumptions and numerical methods
+# Assumptions and methods
 
 :::{toctree}
 ---
