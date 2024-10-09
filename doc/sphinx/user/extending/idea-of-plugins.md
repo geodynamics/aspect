@@ -9,11 +9,26 @@ change the geometry; change the direction and magnitude of the gravity vector
 $\mathbf g$; or change the initial and boundary conditions.
 
 To make this as simple as possible, all of these parts of the program (and
-some more) have been separated into what we call *plugins* that can be
-replaced quickly and where it is simple to add a new implementation and make
-it available to the rest of the program and the input parameter file. There
-are *a lot* of plugins already, see {numref}`fig:plugins`, that will often be useful
-starting points and examples if you want to implement plugins yourself.
+some more) have been separated into what we call *plugins* in which, for example,
+each one of many material models is implemented as a separate class in the
+"material model plugin system"; each one of many geometries is implemented
+as a separate class in the "geometry model plugin systems"; etc. In the
+input file, you can then select one (or for some plugin systems, multiple) plugins
+from a plugin system to pick which material model, geometry model, etc., it is you
+want in your simulation.
+
+In ASPECT, nearly everything is implemented as plugins. There
+are *a lot* of plugins already, see {numref}`fig:plugins`. At the same time,
+there are situations where you want to do something that is not yet
+available in the existing plugins. Say, you want a very specific geometry;
+or, a common situation, you want to implement a specific postprocessor that is
+not yet implemented -- perhaps you are interested in evaluating only the
+vertical component of the velocity in a particular part of the domain.
+In these cases, the plugin system allows you to  quickly add an implementation
+of the necessary plugin which will then be available in the input file
+like all of the existing plugins of that particular system. In writing a new
+plugin, you will often find it useful to look at the existing plugins as
+starting points for the implementation of your own plugin.
 
 ```{figure-md} fig:plugins
 <img src="images/plugin_graph.*" alt="The graph of all current plugins of ASPECT. The yellow octagon and square represent the [Simulator](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html) and [SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT."  width="95%"/>
@@ -21,7 +36,7 @@ starting points and examples if you want to implement plugins yourself.
 The graph of all current plugins of ASPECT. The yellow octagon and square represent the [Simulator](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html) and [SimulatorAccess](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html) classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT.
 ```
 
-The way this is achieved is through the following two steps:
+The central idea of plugins is achieved is through the following two steps:
 
 -   The core of ASPECT really only communicates
     with material models, geometry descriptions, etc., through a simple and
@@ -29,7 +44,8 @@ The way this is achieved is through the following two steps:
     [include/aspect/material_model/interface.h](https://github.com/geodynamics/aspect/blob/main/include/aspect/material_model/interface.h),
     [include/aspect/geometry_model/interface.h](https://github.com/geodynamics/aspect/blob/main/include/aspect/geometry_model/interface.h)
     etc., header files. These classes are always called `Interface`, are located in namespaces that
-    identify their purpose, and their documentation can be found from the
+    identify their purpose, are derived from the common base class
+    `Plugins::InterfaceBase`, and their documentation can be found from the
     general class overview in
     <https://aspect.geodynamics.org/doc/doxygen/classes.html>.
 
@@ -38,30 +54,25 @@ The way this is achieved is through the following two steps:
     class (documentation comments have been removed):
 
     ```{code-block} c++
-    class Interface
-        {
-          public:
-            virtual ~Interface();
-
-            virtual
-            Tensor<1,dim>
-            gravity_vector (const Point<dim> &position) const = 0;
-
-            static void declare_parameters (ParameterHandler &prm);
-
-            virtual void parse_parameters (ParameterHandler &prm);
-        };
+    template <int dim>
+    class Interface : public Plugins::InterfaceBase
+    {
+      public:
+        virtual Tensor<1,dim> gravity_vector (const Point<dim> &position) const = 0;
+    };
     ```
 
-    If you want to implement a new model for gravity, you just need to write a
+    If you want to implement a new model for gravity, in its simplest form
+    you just need to write a
     class that derives from this base class and implements the
     `gravity_vector` function. If your model wants to read parameters from the
-    input file, you also need to have functions called `declare_parameters`
-    and `parse_parameters` in your class with the same signatures as the ones
-    above. On the other hand, if the new model does not need any run-time
+    input file, you also need to have functions called `declare_parameters()`
+    and `parse_parameters()` in your class with the same signatures as the ones
+    declared in the `Plugins::Interface` base class.
+    On the other hand, if the new model does not need any run-time
     parameters, you do not need to overload these functions.[^footnote1]
 
-    Each of the categories above that allow plugins have several
+    Each of the other plugin categories (mentioned above or otherwise) have several
     implementations of their respective interfaces that you can use to get an
     idea of how to implement a new model.
 
@@ -110,25 +121,52 @@ The procedure for the other areas where plugins are supported works
 essentially the same, with the obvious change in namespace for the interface
 class and macro name.
 
-In the following, we will discuss the requirements for individual plugins.
-Before doing so, however, let us discuss ways in which plugins can query other
-information, in particular about the current state of the simulation. To this
+In the following, we will discuss some general requirements for individual plugins.
+In particular, let us discuss ways in which plugins can query other
+information, such as the current state of the simulation. To this
 end, let us not consider those plugins that by and large just provide
 information without any context of the simulation, such as gravity models,
 prescribed boundary velocities, or initial temperatures. Rather, let us
-consider things like postprocessors that can compute things like boundary heat
-fluxes. Taking this as an example (see
-{ref}`sec:extending:plugin-types:postprocessors`), you are
-required to write a function with the following interface
+consider as an example postprocessors that can compute things like boundary heat
+fluxes (see
+{ref}`sec:extending:plugin-types:postprocessors`).
 
+Recall that the base class for postprocessors looks as follows:
 ```{code-block} c++
-template <int dim>
-    class MyPostprocessor : public aspect::Postprocess::Interface
+    template <int dim>
+    class Interface : public Plugins::InterfaceBase
     {
       public:
         virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) = 0;
+
+        virtual
+        std::list<std::string>
+        required_other_postprocessors () const;
+
+        virtual
+        void save (std::map<std::string, std::string> &status_strings) const;
+
+        virtual
+        void load (const std::map<std::string, std::string> &status_strings);
+    };
+```
+
+The `required_other_postprocessors(), `save()`, and `load()` functions are
+discussed in the documentation of that class, and we will ignore it here. Rather,
+we want to discuss how to implement a simple postprocessor class that does
+not need the facilities of these other three functions, and only overloads the
+`execute()` function. We start with the following
+class declaration for our own postprocessor class:
+
+```{code-block} c++
+    template <int dim>
+    class MyPostprocessor : public aspect::Postprocess::Interface
+    {
+      public:
+        std::pair<std::string,std::string>
+        execute (TableHandler &statistics) override;
 
       // ... more things ...
 ```
@@ -164,9 +202,11 @@ template <int dim>
     class SimulatorAccess
     {
     protected:
-      double       get_time () const;
+      double
+      get_time () const;
 
-      std::string  get_output_directory () const;
+      std::string
+      get_output_directory () const;
 
       const LinearAlgebra::BlockVector &
       get_solution () const;
@@ -217,7 +257,7 @@ template <int dim>
 ```
 
 The second piece of information that plugins can use is called
-"introspection." In the code snippet above, we had to use that the
+"introspection". In the code snippet above, we had to use that the
 pressure variable is at position `dim`. This kind of *implicit knowledge* is
 usually bad style: it is error prone because one can easily forget where each
 component is located; and it is an obstacle to the extensibility of a code if
@@ -245,7 +285,7 @@ that can be used in this way, i.e., they provide symbolic names for things one
 frequently has to do and that would otherwise require implicit knowledge of
 things such as the order of variables, etc.
 
-[^footnote1]: At first glance one may think that only the `parse_parameters` function can be overloaded since `declare_parameters` is not
+[^footnote1]: At first glance one may think that only the `parse_parameters()` function of the base class can be overloaded since `declare_parameters()` is not
 virtual. However, while the latter is called by the class that manages plugins through pointers to the interface class, the former
 function is called essentially at the time of registering a plugin, from code that knows the actual type and name of the class
 you are implementing. Thus, it can call the function – if it exists in your class, or the default implementation in the base class
