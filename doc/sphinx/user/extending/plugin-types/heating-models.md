@@ -46,7 +46,7 @@ any of these arguments.
 The remaining functions that need to be implemented are used in postprocessing as well as handling
 run-time parameters. The exact meaning of these member functions is documented
 in the [aspect::HeatingModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1HeatingModel.html)
-class documentation. SOme of the
+class documentation. Some of the
 functions listed have a default implementation, as discussed on the
 documentation page just mentioned.
 
