@@ -68,7 +68,7 @@ The central idea of plugins is achieved is through the following two steps:
     `gravity_vector` function. If your model wants to read parameters from the
     input file, you also need to have functions called `declare_parameters()`
     and `parse_parameters()` in your class with the same signatures as the ones
-    declared in the `Plugins::Interface` base class.
+    declared in the `Plugins::InterfaceBase` base class.
     On the other hand, if the new model does not need any run-time
     parameters, you do not need to overload these functions.[^footnote1]
 
