@@ -1,0 +1,8 @@
+New: ASPECT now has a Visual Studio Code extension named
+ASPECT (https://marketplace.visualstudio.com/items?itemName=zhikui.vscode-aspect).
+This extension provides syntax highlighting and auto-completion for input parameter
+files, and can display the documentation of input parameters while writing parameter
+files in VS Code. It is now one of the recommended extensions for VS Code when using
+ASPECT.
+<br>
+(Zhikui Guo, Timo Heister, Rene Gassmoeller, 2024/10/09)
