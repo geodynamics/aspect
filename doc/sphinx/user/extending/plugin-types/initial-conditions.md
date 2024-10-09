@@ -1,47 +1,26 @@
-# Initial conditions
+# Initial conditions for temperature and composition
 
-The initial conditions model is responsible for describing the initial
-temperature distribution throughout the domain. It essentially has to provide
-a function that for each point can return the initial temperature. Note that
+The initial temperature conditions plugins are responsible for describing the initial
+temperature distribution throughout the domain. Corresponding classes describe the
+initial values for compositional fields.
+Both in essence only have to provide
+a function that for each point can return the initial temperature or composition. (Note that
 the model {math:numref}`eq:stokes-1`&ndash;{math:numref}`eq:temperature` does not require
-initial values for the pressure or velocity. However, if coefficients are
+initial values for the pressure or velocity, and so there are no corresponding
+plugins for these variables. However, if coefficients are
 nonlinear, one can significantly reduce the number of initial nonlinear
 iterations if a good guess for them is available; consequently,
 ASPECT initializes the pressure with the
-adiabatically computed hydrostatic pressure, and a zero velocity. Neither of
-these two has to be provided by the objects considered in this section.
+adiabatically computed hydrostatic pressure, and a zero velocity.)
 
-To implement a new initial conditions model, you need to overload the
-`aspect::InitialConditions::Interface` class and use the
-`ASPECT_REGISTER_INITIAL_CONDITIONS` macro to register your new class. The
+To implement a new initial temperature model, you need to overload the
+`aspect::InitialTemperature::Interface` class and use the
+`ASPECT_REGISTER_INITIAL_TEMPERATURE_MODEL` macro to register your new class. The
 implementation of the new class should be in namespace
-`aspect::InitialConditions`.
+`aspect::InitialTemperature`. For initial compositional values, the class and
+macro names have to be adjusted correspondingly.
 
-Specifically, your new class needs to implement the following basic interface:
-
-```{code-block} c++
-template <int dim>
-    class aspect::InitialConditions::Interface
-    {
-      public:
-        void
-        initialize (const GeometryModel::Interface<dim>       &geometry_model,
-                    const BoundaryTemperature::Interface<dim> &boundary_temperature,
-                    const AdiabaticConditions<dim>            &adiabatic_conditions);
-
-        virtual
-        double
-        initial_temperature (const Point<dim> &position) const = 0;
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-    };
-```
-
-The meaning of the first class should be clear. The purpose of the last two
-functions has been discussed in the general overview of plugins above.
+The functions you need to overload are extensively
+discussed in the documentation of this interface class at
+[aspect::InitialTemperature::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1InitialTemperature.html) and
+[aspect::InitialComposition::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1InitialComposition.html).

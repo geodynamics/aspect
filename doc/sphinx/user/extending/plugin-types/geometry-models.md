@@ -12,13 +12,13 @@ boundary with different *boundary indicators* for which one can then, in the
 input file, select whether these boundaries should be Dirichlet-type (fixed
 temperature) or Neumann-type (no heat flux) boundaries for the temperature,
 and what kind of velocity conditions should hold there. In
-deal.II, a boundary indicator is a number of type
+deal.II, a boundary indicator is a number of (integer) type
 `types::boundary_id`, but since boundaries are hard to remember and get right
 in input files, geometry models also have a function that provide a map from
 symbolic names that can be used to describe pieces of the boundary to the
 corresponding boundary indicators. For example, the simple `box` geometry
 model in 2d provides the map
-`{"left"\rightarrow0, "right"\rightarrow1, "bottom"\rightarrow2,"top"\rightarrow3}`,
+`{"left" -> 0, "right" -> 1, "bottom" -> 2,"top" -> 3}`,
 and we have consistently used these symbolic names in the input files used in
 this manual.
 
@@ -29,55 +29,10 @@ class and use the
 implementation of the new class should be in namespace
 `aspect::GeometryModel`.
 
-Specifically, your new class needs to implement the following basic interface:
-
-```{code-block} c++
-template <int dim>
-    class aspect::GeometryModel::Interface
-    {
-      public:
-        virtual
-        void
-        create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const = 0;
-
-        virtual
-        double
-        length_scale () const = 0;
-
-        virtual
-        double depth(const Point<dim> &position) const = 0;
-
-        virtual
-        Point<dim> representative_point(const double depth) const = 0;
-
-        virtual
-        double maximal_depth() const = 0;
-
-        virtual
-        std::set<types::boundary_id_t>
-        get_used_boundary_indicators () const = 0;
-
-        virtual
-        std::map<std::string,types::boundary_id>
-        get_symbolic_boundary_names_map () const;
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-    };
-```
-
-The kind of information these functions need to provide is extensively
+The functions you need to overload are extensively
 discussed in the documentation of this interface class at
 [aspect::GeometryModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1GeometryModel.html).
-The purpose of the last two functions
-has been discussed in the general overview of plugins above.
-
-The `create_coarse_mesh` function does not only create the actual mesh (i.e.,
+Note that the `create_coarse_mesh()` function you need to provide does not only create the actual mesh (i.e.,
 the locations of the vertices of the coarse mesh and how they connect to
 cells) but it must also set the boundary indicators for all parts of the
 boundary of the mesh. The deal.II glossary
@@ -100,10 +55,7 @@ describes the purpose of boundary indicators as follows:
 > 42 for all faces located at $x=-1$:
 >
 > ```{code-block} c++
-> for (typename Triangulation<dim>::active_cell_iterator
->          cell = triangulation.begin_active();
->        cell != triangulation.end();
->        ++cell)
+> for (auto &cell : triangulation.active_cell_iterators())
 >     for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
 >       if (cell->face(f)->at_boundary())
 >         if (cell->face(f)->center(true)[0] == -1)
@@ -202,7 +154,7 @@ been declared as a (non-static, but possibly private) member function of the
 `MyGeometry` class, then the following will work:
 
 ```{code-block} c++
-#include <functional>
+    #include <functional>
 
     template <int dim>
     void
@@ -236,7 +188,7 @@ work on. Note that because the `create_coarse_mesh` function is declared as
 declared `const`.
 
 :::{note}
-For reasons that have to do with the way the `parallel::distributed::Triangulation` is
+For reasons that have to do with the way the `parallel::distributed::Triangulation` class is
 implemented, functions that have been attached to the post-refinement signal of the triangulation
 are called more than once, sometimes several times, every time the triangulation is actually refined.
 :::
