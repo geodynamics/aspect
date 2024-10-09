@@ -250,8 +250,12 @@ namespace aspect
               {
                 solution.reinit(inputs.solution[i].size());
                 for (unsigned int j=0; j<solution.size(); ++j)
-                  if (get_update_flags(j) & update_values)
-                    solution[j] = inputs.solution[i][j];
+                  {
+                    if (get_update_flags(j) & update_values)
+                      solution[j] = inputs.solution[i][j];
+                    else
+                      solution[j] = numbers::signaling_nan<double>();
+                  }
               }
 
             if (need_gradient)
@@ -259,8 +263,12 @@ namespace aspect
                 gradient.resize(inputs.gradients[i].size());
 
                 for (unsigned int j=0; j<gradient.size(); ++j)
-                  if (get_update_flags(j) & update_gradients)
-                    gradient[j] = inputs.gradients[i][j];
+                  {
+                    if (get_update_flags(j) & update_gradients)
+                      gradient[j] = inputs.gradients[i][j];
+                    else
+                      gradient[j] = numbers::signaling_nan<Tensor<1,dim>>();
+                  }
               }
 
             // call the deprecated version of this function

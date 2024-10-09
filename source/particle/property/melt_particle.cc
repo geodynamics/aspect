@@ -66,10 +66,7 @@ namespace aspect
       UpdateFlags
       MeltParticle<dim>::get_update_flags (const unsigned int component) const
       {
-        const auto &component_indices = this->introspection().component_indices;
-
-        if (component >= component_indices.compositional_fields.front() &&
-            component <= component_indices.compositional_fields.back())
+        if (this->introspection().component_masks.compositions[component] == true)
           return update_values;
 
         return update_default;

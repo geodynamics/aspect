@@ -162,7 +162,7 @@ namespace aspect
        * call to reinit().
        *
        * @p solution_values contains the values of the degrees of freedom.
-       * @p evaluation_flags controls if nothing, the solution values, or the gradients should be computed.
+       * @p evaluation_flags controls if nothing, the solution values, and/or the gradients should be computed.
        * The size of @p solution_flags has to be equal to the number of components as returned by
        * n_components().
        */

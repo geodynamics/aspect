@@ -92,10 +92,8 @@ namespace aspect
       UpdateFlags
       PTPath<dim>::get_update_flags (const unsigned int component) const
       {
-        const auto &component_indices = this->introspection().component_indices;
-
-        if (component == component_indices.pressure ||
-            component == component_indices.temperature)
+        if (this->introspection().component_masks.pressure[component] == true ||
+            this->introspection().component_masks.temperature[component] == true)
           return update_values;
 
         return update_default;

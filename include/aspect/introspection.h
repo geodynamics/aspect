@@ -355,10 +355,34 @@ namespace aspect
       {
         ComponentMasks (const FEVariableCollection<dim> &fevs, const Introspection<dim>::ComponentIndices &indices);
 
+        /**
+         * The component mask for all velocity components.
+         */
         ComponentMask              velocities;
+
+        /**
+         * The component mask for the pressure component.
+         */
         ComponentMask              pressure;
+
+        /**
+         * The component mask for the temperature component.
+         */
         ComponentMask              temperature;
+
+        /**
+         * The component mask for each individual compositional field.
+         * The size of this vector is equal to the number of compositional fields.
+         * Each entry is a component mask that selects the component
+         * that corresponds to the respective compositional field.
+         */
         std::vector<ComponentMask> compositional_fields;
+
+        /**
+         * The component mask for all composition components.
+         * This mask selects all compositional fields.
+         */
+        ComponentMask              compositions;
       };
 
       /**

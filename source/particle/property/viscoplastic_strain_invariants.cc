@@ -200,10 +200,7 @@ namespace aspect
       UpdateFlags
       ViscoPlasticStrainInvariant<dim>::get_update_flags (const unsigned int component) const
       {
-        const auto &component_indices = this->introspection().component_indices;
-
-        if (component >= component_indices.velocities[0] &&
-            component <= component_indices.velocities[dim-1])
+        if (this->introspection().component_masks.velocities[component] == true)
           return update_values | update_gradients;
 
         return update_values;
