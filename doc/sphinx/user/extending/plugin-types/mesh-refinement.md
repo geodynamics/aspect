@@ -24,7 +24,7 @@ refinement criteria (see the parameter "Strategy" in
 {ref}`parameters:Mesh_20refinement/Strategy`). Each such plugin is responsible for producing a
 vector of values (one per active cell on the current processor, though only
 those values for cells that the current processor owns are used) with an
-indicator of how badly this cell needs to be refined: large values mean that
+indicator of how badly this cell needs to be refined: Large values mean that
 the cell should be refined, small values that the cell may be coarsened away.
 
 To implement a new mesh refinement criterion, you need to overload the
@@ -33,35 +33,9 @@ To implement a new mesh refinement criterion, you need to overload the
 The implementation of the new class should be in namespace
 `aspect::MeshRefinement`.
 
-Specifically, your new class needs to implement the following basic interface:
-
-```{code-block} c++
-template <int dim>
-    class aspect::MeshRefinement::Interface
-    {
-      public:
-        virtual
-        void
-        execute (Vector<float> &error_indicators) const = 0;
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-    };
-```
-
-The first of these functions computes the set of refinement criteria (one per
-cell) and returns it in the given argument. Typical examples can be found in
+The primary function of this interface, `execute()`, computes the set of refinement criteria (one per
+cell) and returns through its function argument. Typical examples can be found in
 the existing implementations in the `source/mesh_refinement` directory. As
 usual, your termination criterion implementation will likely need to be
-derived from the `SimulatorAccess` to get access to the current state of the
+derived from the `SimulatorAccess` class to get access to the current state of the
 simulation.
-
-The remaining functions are obvious, and are also discussed in the
-documentation of this interface class at
-`aspect::MeshRefinement::Interface`. The purpose of the last two functions
-has been discussed in the general overview of plugins above.

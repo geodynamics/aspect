@@ -3,12 +3,11 @@
 
 Postprocessors are arguably the most complex and powerful of the plugins
 available in ASPECT since they do not only
-passively provide any information but can actually compute quantities derived
-from the solution. They are executed once at the end of each time step and,
-unlike all the other plugins discussed above, there can be an arbitrary number
-of active postprocessors in the same program (for the plugins discussed in
-previous sections it was clear that there is always exactly one material
-model, geometry model, etc.).
+passively provide information that enters the simulation as parameters or boundary
+conditions, but can actually compute quantities derived
+from the solution. They are executed once at the end of each time step (or at the
+end of nonlinear iterations); there can be an arbitrary number
+of active postprocessors in the same program.
 
 ## Motivation.
 
@@ -24,15 +23,17 @@ solution. Examples for already existing postprocessors are:
 -   Computing statistics about the velocity field (e.g., computing minimal,
     maximal, and average velocities), temperature field (minimal, maximal, and
     average temperatures), or about the heat fluxes across boundaries of the
-    domain. This is provided by the
+    domain. These are provided by the
     `aspect::Postprocess::VelocityStatistics`,
     `aspect::Postprocess::TemperatureStatistics`,
     `aspect::Postprocess::HeatFluxStatistics` classes, respectively.
 
-Since writing this text, there may have been other additions as well.
+In addition to these examples, there are many other postprocessors that are part of ASPECT.
 
-However, postprocessors can be more powerful than this. For example, while the
-ones listed above are by and large stateless, i.e., they do not carry
+Postprocessors can be more powerful than the examples: They do not only need
+to passively take the solution and transform it into something that ends up
+in output files or on the screen. For example, while the
+ones listed above are by and large "stateless", i.e., they do not carry
 information from one invocation at one timestep to the next invocation,[^footnote1]
 there is nothing that prohibits postprocessors from doing so. For example, the
 following ideas would fit nicely into the postprocessor framework:
@@ -47,8 +48,8 @@ following ideas would fit nicely into the postprocessor framework:
     carry any information that feeds into material properties; in other words,
     they are *passive*), their location could well be stored in a
     postprocessor object and then be output in periodic intervals for
-    visualization. In fact, such a passive particle postprocessor is already
-    available.
+    visualization. In fact, this is how ASPECT's particle infrastructure
+    was originally implemented.
 
 -   *Surface or crustal processes:* Another possibility would be to keep track
     of surface or crustal processes induced by mantle flow. An example would
@@ -60,12 +61,19 @@ following ideas would fit nicely into the postprocessor framework:
     eventually forming a trench; if the divergence is negative, a mountain
     belt eventually forms.
 
-In all of these cases, the essential limitation is that postprocessors are
-*passive*, i.e., that they do not affect the simulation but only observe it.
+While these examples suggest that postprocessors are
+*passive*, i.e., do not affect the simulation but only observe it, this is not
+an essential limitation. In fact, some of the existing postprocessors perform
+actions, store the results, and these results can then be queried by other
+parts of ASPECT or other postprocessors. For example, one could imagine letting
+a postprocessor compute a depth average at the end of each time step, and
+then letting a material model query this information the next time it is
+asked to provide material properties for a specific point.
+
 
 ## The statistics file.
 
-Postprocessors fall into two categories: ones that produce lots of output
+Postprocessors tend to fall into two categories: ones that produce lots of output
 every time they run (e.g., the visualization postprocessor), and ones that
 only produce one, two, or in any case a small and fixed number of often
 numerical results (e.g., the postprocessors computing velocity, temperature,
@@ -75,7 +83,7 @@ allows the latter class of postprocessors to store their data into a central
 file that is updated at the end of each time step, after all postprocessors
 are run.
 
-To this end, the function that executes each of the postprocessors is given a
+To this end, the `execute()` function that postprocessors implement and that performs their "action" is given a
 reference to a `dealii::TableHandler` object that allows to store data in
 named columns, with one row for each time step. This table is then stored in
 the `statistics` file in the directory designated for output in the input
@@ -87,6 +95,7 @@ Note that the data deposited into the statistics object need not be numeric in
 type, though it often is. An example of text-based entries in this table is
 the visualization class that stores the name of the graphical output file
 written in a particular time step.
+
 
 ## Implementing a postprocessor.
 
@@ -123,56 +132,12 @@ Primarily, this difficulty results from two facts:
     certainly good examples to start from in trying to understand how to do
     this.
 
-Given these comments, the interface a postprocessor class has to implement is
-rather basic:
-
-```{code-block} c++
-template <int dim>
-    class aspect::Postprocess::Interface
-    {
-      public:
-        virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics) = 0;
-
-        virtual
-        void
-        save (std::map<std::string, std::string> &status_strings) const;
-
-        virtual
-        void
-        load (const std::map<std::string, std::string> &status_strings);
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-    };
-```
-
-The purpose of these functions is described in detail in the documentation of
-the `aspect::Postprocess::Interface` class. While the first one is
-responsible for evaluating the solution at the end of a time step, the
-`save/load` functions are used in checkpointing the program and restarting it
-at a previously saved point during the simulation. The first of these
-functions therefore, needs to store the status of the object as a string under
-a unique key in the database described by the argument, while the latter
-function restores the same state as before by looking up the status string
-under the same key. The default implementation of these functions is to do
-nothing; postprocessors that do have non-static member variables that contain
-a state need to overload these functions.
-
-There are numerous postprocessors already implemented. If you want to
-implement a new one, it would be helpful to look at the existing ones to see
-how they implement their functionality.
 
 ## Postprocessors and checkpoint/restart.
 
-Postprocessors have `save()` and `load()` functions that are used to write the
-data a postprocessor has into a checkpoint file, and to load it again upon
+Postprocessors have `save()` and `load()` functions (inherited from
+`aspect::Plugins::InterfaceBase` by way of `aspect::Postprocess::Interface`) that are used to write the
+data a postprocessor stores between successive invocations into a checkpoint file, and to load it again upon
 restart. This is important since many postprocessors store some state &ndash;
 say, a temporal average over all the time steps seen so far, or the number of
 the last graphical output file generated so that we know how the next one
@@ -191,13 +156,13 @@ is the postprocessor that supports advecting passive particles along the
 velocity field: on every processor, it handles only those particles that lie
 inside the part of the domain that is owned by this MPI rank. The
 serialization approach outlined above can not work in this case, for obvious
-reasons. In cases like this, one needs to implement the `save()` and `load()`
+reasons. In cases like this, one needs to implement `save()` and `load()`
 differently than usual: one needs to put all variables that are common across
 processors into the maps of string as usual, but one then also needs to save
 all state that is different across processors, from all processors. There are
-two ways: If the amount of data is small, you can use MPI communications to
+two ways: If the amount of data is small, you can use MPI communication to
 send the state of all processors to processor zero, and have processor zero
-store it in the result so that it gets written into the checkpoint file; in
+return it so that it gets written into the checkpoint file; in
 the `load()` function, you will then have to identify which part of the text
 written by processor 0 is relevant to the current processor. Or, if your
 postprocessor stores a large amount of data, you may want to open a restart

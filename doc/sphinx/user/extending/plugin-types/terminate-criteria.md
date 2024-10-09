@@ -15,34 +15,8 @@ To implement a termination criterion, you need to overload the
 implementation of the new class should be in namespace
 `aspect::TerminationCriteria`.
 
-Specifically, your new class needs to implement the following basic interface:
-
-```{code-block} c++
-template <int dim>
-    class aspect::TerminationCriteria::Interface
-    {
-      public:
-        virtual
-        bool
-        execute () const = 0;
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-    };
-```
-
-The first of these functions returns a value that indicates whether the
+The principal function that needs to be overloaded returns a value that indicates whether the
 simulation should be terminated. Typical examples can be found in the existing
-implementations in the `source/termination_criteria` directory. As usual, your
+implementations in the `source/termination_criteria/` directory. As usual, your
 termination criterion implementation will likely need to be derived from the
 `SimulatorAccess` to get access to the current state of the simulation.
-
-The remaining functions are obvious, and are also discussed in the
-documentation of this interface class at
-`aspect::TerminationCriteria::Interface`. The purpose of the last two
-functions has been discussed in the general overview of plugins above.

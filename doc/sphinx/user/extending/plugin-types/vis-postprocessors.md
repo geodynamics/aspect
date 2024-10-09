@@ -7,17 +7,17 @@ already implemented in ASPECT is the
 outputs it as a collection of files that can then be visualized graphically,
 see {ref}`sec:run-aspect:visualizing-results`. The question is which variables to output:
 the solution of the basic equations we solve here is characterized by the
-velocity, pressure and temperature; on the other hand, we are frequently
-interested in derived, spatially and temporally variable quantities such as
-the viscosity for the actual pressure, temperature and strain rate at a given
-location, or seismic wave speeds.
+velocity, pressure, temperature, and any compositional fields there may be; on the other hand, we are frequently
+interested in *derived*, spatially and temporally variable quantities such as
+the viscosity, temperature and strain rate at a given
+location, the difference between the actual and the adiabatic pressure, or seismic wave speeds.
 
 ASPECT already implements a good number of such
 derived quantities that one may want to visualize. On the other hand, always
 outputting *all* of them would yield very large output files, and would
-furthermore not scale very well as the list continues to grow. Consequently,
+furthermore not scale very well as the list of things that can be output continues to grow. Consequently,
 as with the postprocessors described in the previous section, what *can* be
-computed is implemented in a number of plugins and what *is* computed is
+computed and output is implemented in a number of plugins, and what *is* computed is
 selected in the input parameter file (see {ref}`parameters:Postprocess/Visualization`).
 
 Defining visualization postprocessors works in much the same way as for the
@@ -48,7 +48,7 @@ Visualization plugins can come in two flavors:
     class (and possibly the [SimulatorAccess][aspect::SimulatorAccess class]
     class) but also from the deal.II class `DataPostprocessor` or any of the
     classes like `DataPostprocessorScalar` or `DataPostprocessorVector`. These
-    classes can be thought of as filters: DataOut will call a function in them
+    classes can be thought of as transformers: DataOut will call a function in them
     for every cell and this function will transform the values or gradients of
     the solution and other information such as the location of quadrature
     points into the desired quantity to output. A typical case would be if the
@@ -70,53 +70,14 @@ Visualization plugins can come in two flavors:
         `aspect::Postprocess::VisualizationPostprocessors::Interface`. The
         functions of this interface class are all already implemented as doing
         nothing in the base class but can be overridden in a plugin.
-        Specifically, the following functions exist:
-
-        ```{code-block} c++
-        class Interface
-            {
-              public:
-                static
-                void
-                declare_parameters (ParameterHandler &prm);
-
-                virtual
-                void
-                parse_parameters (ParameterHandler &prm);
-
-                virtual
-                void save (std::map<std::string, std::string> &status_strings) const;
-
-                virtual
-                void load (const std::map<std::string, std::string> &status_strings);
-            };
-        ```
 
     -   They derive from either the `dealii::DataPostprocessor` class, or the
         simpler to use `dealii::DataPostprocessorScalar` or
-        `dealii::DataPostprocessorVector` classes. For example, to derive from
-        the second of these classes, the following interface functions has to
-        be implemented:
-
-        ```{code-block} c++
-        class dealii::DataPostprocessorScalar
-            {
-              public:
-                virtual
-                void
-                compute_derived_quantities_vector
-                  (const std::vector<Vector<double> >              &uh,
-                   const std::vector<std::vector<Tensor<1,dim> > > &duh,
-                   const std::vector<std::vector<Tensor<2,dim> > > &dduh,
-                   const std::vector<Point<dim> >                  &normals,
-                   const std::vector<Point<dim> >                  &evaluation_points,
-                   std::vector<Vector<double> >                    &computed_quantities) const;
-            };
-        ```
-
-        What this function does is described in detail in the deal.II
+        `dealii::DataPostprocessorVector` classes. You will want to read up
+        on the specifics of what function you have to implement in the deal.II
         documentation. In addition, one has to write a suitable constructor to
-        call `dealii::DataPostprocessorScalar::DataPostprocessorScalar`.
+        call `dealii::DataPostprocessorScalar::DataPostprocessorScalar` or
+        the constructor other deal.II classes.
 
 -   *Plugins that compute things from the solution in a cell-wise way:* The
     second possibility is for a class to not derive from
