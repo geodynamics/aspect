@@ -481,10 +481,10 @@ namespace aspect
         }
 
       if (evaluation_flags_union & update_values)
-        inputs.solution.resize(n_particles,small_vector<double,50>(evaluator.n_components()));
+        inputs.solution.resize(n_particles,small_vector<double,50>(evaluator.n_components(), numbers::signaling_nan<double>()));
 
       if (evaluation_flags_union & update_gradients)
-        inputs.gradients.resize(n_particles,small_vector<Tensor<1,dim>,50>(evaluator.n_components()));
+        inputs.gradients.resize(n_particles,small_vector<Tensor<1,dim>,50>(evaluator.n_components(), numbers::signaling_nan<Tensor<1,dim>>()));
 
       for (unsigned int i = 0; i<n_particles; ++i)
         {
