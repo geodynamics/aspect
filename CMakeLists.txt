@@ -1006,51 +1006,6 @@ MESSAGE(STATUS "===== Configuring ASPECT documentation =============")
 
 add_subdirectory(doc)
 
-
-# Find the deal.II parameter GUI and install helper script
-find_program(PARAMETER_GUI_EXECUTABLE
-        parameter_gui
-        HINTS $ENV{PARAMETER_GUI_DIR} $ENV{PARAMETER_GUI_DIR}/bin ${PARAMETER_GUI_DIR} ${PARAMETER_GUI_DIR}/bin
-        PATH bin)
-mark_as_advanced(CLEAR PARAMETER_GUI_EXECUTABLE)
-
-# Did the user specify something that doesn't exist?
-if(PARAMETER_GUI_EXECUTABLE
-        AND
-    (NOT EXISTS ${PARAMETER_GUI_EXECUTABLE} OR IS_DIRECTORY ${PARAMETER_GUI_EXECUTABLE}))
-  message(STATUS "Warning: PARAMETER_GUI_EXECUTABLE '${PARAMETER_GUI_EXECUTABLE}' does not exist")
-  set(PARAMETER_GUI_EXECUTABLE "PARAMETER_GUI_EXECUTABLE-NOTFOUND" CACHE FILEPATH "" FORCE)
-endif()
-
-if(NOT PARAMETER_GUI_EXECUTABLE)
-  message(STATUS "Parameter GUI not found: install and provide a hint using -D PARAMETER_GUI_DIR or set -D PARAMETER_GUI_EXECUTABLE directly.")
-else()
-  message(STATUS "Found parameter GUI at: ${PARAMETER_GUI_EXECUTABLE}")
-  configure_file(
-    ${CMAKE_SOURCE_DIR}/doc/aspect-gui
-    ${CMAKE_BINARY_DIR}/aspect-gui
-    @ONLY
-  )
-install(FILES ${CMAKE_BINARY_DIR}/aspect-gui
-        DESTINATION bin
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-                GROUP_READ GROUP_EXECUTE
-                WORLD_READ WORLD_EXECUTE)
-endif()
-
-
-
-# A target to create parameters.json after building the ASPECT binary.
-
-add_custom_command(TARGET ${TARGET_EXE} POST_BUILD
-  COMMAND sh -c 'echo "" | ./$<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME> --output-json -- > parameters.json'
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-
-
-
-message(STATUS "")
-message(STATUS "===== Writing final configuration ==================")
-
 include(cmake/write_config)
 
 # print "info" if run for the first time:
