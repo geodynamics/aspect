@@ -1,4 +1,4 @@
-# A test for the Particle::World::copy_particle_handler
+# A test for the Particle::Manager::copy_particle_handler
 # function that copies the particle handler (and all contained
 # particles), modifies one of them, and then resets the
 # the particles every time the composition system is solved.

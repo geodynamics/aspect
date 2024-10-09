@@ -213,36 +213,36 @@ namespace aspect
         std::vector<std::string> output_formats;
 
         /**
-         * A map between particle world name and list of pairs of
+         * A map between particle manager name and list of pairs of
          * (time, pvtu_filename) that have so far been written.
          * We will pass these lists to DataOutInterface::write_pvd_record
          * to create a description file that can make the association
          * between simulation time and corresponding file name (this
          * is done because there is no way to store the simulation
          * time inside the .pvtu or .vtu files). We store one list
-         * per particle world, because each particle world will
+         * per particle manager, because each particle manager will
          * have its own output directory and description file.
          */
         std::map<std::string,std::vector<std::pair<double,std::string>>> times_and_pvtu_file_names;
 
         /**
-         * A map between particle world name and list of list of
+         * A map between particle manager name and list of list of
          * filenames that corresponds to
          * what has been created as output. This list is sorted by
          * filename and is used to create a descriptive
          * .visit file for the entire simulation.
-         * We store one list per particle world, because each particle
-         * world will have its own output directory and description file.
+         * We store one list per particle manager, because each particle
+         * manager will have its own output directory and description file.
          */
         std::map<std::string,std::vector<std::vector<std::string>>> output_file_names_by_timestep;
 
         /**
-         * A map between particle world name and a list of data for
+         * A map between particle manager name and a list of data for
          * the XDMF file sections describing the HDF5 files created.
          * These XDMF data contain things such as the dimensions
          * and names of data written at all steps during the simulation.
-         * We store one list per particle world, because each particle
-         * world will have its own output directory and description file.
+         * We store one list per particle manager, because each particle
+         * manager will have its own output directory and description file.
          */
         std::map<std::string,std::vector<XDMFEntry>>  xdmf_entries;
 

@@ -22,7 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/mesh_deformation/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -819,29 +819,29 @@ namespace aspect
 
   template <int dim>
   unsigned int
-  SimulatorAccess<dim>::n_particle_worlds() const
+  SimulatorAccess<dim>::n_particle_managers() const
   {
-    return simulator->particle_worlds.size();
+    return simulator->particle_managers.size();
   }
 
 
 
   template <int dim>
-  const Particle::World<dim> &
-  SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index) const
+  const Particle::Manager<dim> &
+  SimulatorAccess<dim>::get_particle_manager(unsigned int particle_manager_index) const
   {
-    AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
-    return simulator->particle_worlds[particle_world_index];
+    AssertThrow (particle_manager_index < simulator->particle_managers.size(), ExcInternalError());
+    return simulator->particle_managers[particle_manager_index];
   }
 
 
 
   template <int dim>
-  Particle::World<dim> &
-  SimulatorAccess<dim>::get_particle_world(unsigned int particle_world_index)
+  Particle::Manager<dim> &
+  SimulatorAccess<dim>::get_particle_manager(unsigned int particle_manager_index)
   {
-    AssertThrow (particle_world_index < simulator->particle_worlds.size(), ExcInternalError());
-    return const_cast<Particle::World<dim>&>(simulator->particle_worlds[particle_world_index]);
+    AssertThrow (particle_manager_index < simulator->particle_managers.size(), ExcInternalError());
+    return const_cast<Particle::Manager<dim>&>(simulator->particle_managers[particle_manager_index]);
   }
 
 

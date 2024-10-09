@@ -21,7 +21,7 @@
 
 #include <aspect/mesh_refinement/particle_density.h>
 
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -31,12 +31,12 @@ namespace aspect
     void
     ParticleDensity<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow(this->n_particle_worlds() > 0,
+      AssertThrow(this->n_particle_managers() > 0,
                   ExcMessage("The mesh refinement plugin `particle density' requires the "
                              "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
 
-      const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_world(0).get_particle_handler();
+      const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_manager(0).get_particle_handler();
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())

@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/particle_count_statistics.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -35,11 +35,11 @@ namespace aspect
     ParticleCountStatistics<dim>::execute (TableHandler &statistics)
     {
       const Particle::ParticleHandler<dim> &particle_handler =
-        this->get_particle_world(0).get_particle_handler();
+        this->get_particle_manager(0).get_particle_handler();
 
       unsigned int local_min_particles = std::numeric_limits<unsigned int>::max();
       unsigned int local_max_particles = 0;
-      const Particle::types::particle_index global_particles = this->get_particle_world(0).n_global_particles();
+      const Particle::types::particle_index global_particles = this->get_particle_manager(0).n_global_particles();
 
       // compute local min/max
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
