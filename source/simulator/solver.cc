@@ -772,7 +772,7 @@ namespace aspect
       if (parameters.use_direct_stokes_solver)
         return "direct";
       if (parameters.use_bfbt)
-        return "BFBT-AMG";
+        return "AMG-BFBT";
       return "AMG";
     }();
 
