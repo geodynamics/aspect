@@ -28,6 +28,7 @@
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/peierls_creep.h>
 #include <aspect/material_model/rheology/drucker_prager_power.h>
+#include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -92,6 +93,24 @@ namespace aspect
                             const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
+           * Compute the inverse of the scalar elastic viscosity
+           * obtained from the elasticity rheology. The required scalar shear modulus is
+           * calculated by harmonically averaging the individual component shear moduli
+           * weighted by the @p volume_fractions of the components.
+           */
+          double
+          compute_inverse_kelvin_viscosity(const std::vector<double> &volume_fractions) const;
+
+          /**
+           * Compute the effective viscoelastic strain rate used to calculate the
+           * viscosity.
+           */
+          SymmetricTensor<2, dim>
+          compute_effective_strain_rate(const SymmetricTensor<2, dim> &strain_rate,
+                                        const SymmetricTensor<2, dim> &elastic_stress,
+                                        const double inverse_kelvin_viscosity) const;
+
+          /**
            * Compute the viscosity based on the composite viscous creep law.
            * If @p n_phase_transitions_per_composition points to a vector of
            * unsigned integers this is considered the number of phase transitions
@@ -103,10 +122,73 @@ namespace aspect
                              const double temperature,
                              const double grain_size,
                              const std::vector<double> &volume_fractions,
-                             const SymmetricTensor<2,dim> &strain_rate,
+                             const SymmetricTensor<2,dim> &effective_strain_rate,
+                             const double inverse_kelvin_viscosity,
                              std::vector<double> &partial_strain_rates,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
+
+          /**
+           * Create the two additional material model output objects that contain the
+           * elastic shear moduli, elastic viscosity, ratio of computational to elastic timestep,
+           * and deviatoric stress of the current timestep and the reaction rates.
+           */
+          /*
+          void
+          create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+          */
+
+          /**
+           * Given the stress of the previous time step in the material model inputs @p in,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+           * and the (viscous) viscosities given in the material model outputs object @p out,
+           * fill a material model outputs objects with the elastic force terms, viscoelastic
+           * strain rate and viscous dissipation.
+           */
+          /*
+          void
+          fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                const std::vector<double> &average_elastic_shear_moduli,
+                                MaterialModel::MaterialModelOutputs<dim> &out) const;
+          */
+
+          /**
+          * Given the stress of the previous time step in the material model inputs @p in,
+          * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+          * and the (viscous) viscosities given in the material model outputs object @p out,
+          * fill a material model outputs (ElasticAdditionalOutputs) object with the
+          * average shear modulus, elastic viscosity, and the deviatoric stress of the current timestep.
+          */
+          /*
+          void
+          fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                           const std::vector<double> &average_elastic_shear_moduli,
+                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
+          */
+
+          /**
+           * Given the stress of the previous time step in the material model inputs @p in,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+           * and the (viscous) viscosities given in the material model outputs object @p out,
+           * compute an update to the elastic stresses and use it to fill the reaction terms
+           * material model output property.
+           */
+          void
+          fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                 const std::vector<double> &average_elastic_shear_moduli,
+                                 MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * Given the stress of the previous time step in the material model inputs @p in,
+           * the elastic shear moduli @p average_elastic_shear_moduli at each point,
+           * and the (viscous) viscosities given in the material model outputs object @p out,
+           * compute the update to the elastic stresses of the previous timestep and use it
+           * to fill the reaction rates material model output property.
+           */
+          void
+          fill_reaction_rates (const MaterialModel::MaterialModelInputs<dim> &in,
+                               const std::vector<double> &average_elastic_shear_moduli,
+                               MaterialModel::MaterialModelOutputs<dim> &out) const;
 
         private:
           /**
@@ -122,7 +204,8 @@ namespace aspect
                                        const double temperature,
                                        const double grain_size,
                                        const std::vector<double> &volume_fractions,
-                                       const SymmetricTensor<2,dim> &strain_rate,
+                                       const SymmetricTensor<2,dim> &effective_strain_rate,
+                                       const double inverse_kelvin_viscosity,
                                        std::vector<double> &partial_strain_rates,
                                        const std::vector<double> &phase_function_values = std::vector<double>(),
                                        const std::vector<unsigned int> &n_phase_transitions_per_composition = std::vector<unsigned int>()) const;
@@ -135,6 +218,7 @@ namespace aspect
           std::pair<double, double>
           calculate_isostress_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
                                                              const double viscoplastic_stress,
+                                                             const double inverse_kelvin_viscosity,
                                                              std::vector<double> &partial_strain_rates) const;
 
           /**
@@ -197,6 +281,7 @@ namespace aspect
           bool use_dislocation_creep;
           bool use_peierls_creep;
           bool use_drucker_prager;
+          bool use_elasticity;
 
           /**
            * Vector storing which flow mechanisms are active.
@@ -209,16 +294,31 @@ namespace aspect
            * which is arranged in parallel with the viscoplastic elements and
            * therefore does not contribute to the total strain rate.
            */
-          static constexpr unsigned int n_decomposed_strain_rates = 5;
+          static constexpr unsigned int n_decomposed_strain_rates = 6;
+
+          /**
+           * The index of the hard damper in the decomposed strain rates.
+           * This is always the last element.
+           */
+          static constexpr unsigned int damper_strain_rate_index = 5;
+          static constexpr unsigned int isostrain_damper_strain_rate_index = 4;
+
+          /**
+           * The index of the elastic element in the decomposed strain rates.
+           * This is always the penultimate element.
+           */
+          static constexpr unsigned int elastic_strain_rate_index = 4;
 
           /**
            * Pointers to objects for computing deformation mechanism
            * strain rates and effective viscosities.
            */
-          std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
+          std::unique_ptr<Rheology::DiffusionCreep<dim>>
+          diffusion_creep;
           std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
           std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
           std::unique_ptr<Rheology::DruckerPragerPower<dim>> drucker_prager;
+          std::unique_ptr<Rheology::Elasticity<dim>> elasticity;
 
           /**
            * The expected number of chemical compositional fields.
@@ -229,8 +329,14 @@ namespace aspect
            * The maximum viscosity, imposed via an isoviscous damper
            * in series with the composite viscoplastic element.
            */
+          double inverse_maximum_viscosity;
           double maximum_viscosity;
 
+          /**
+           * The minimum viscosity, imposed via an isoviscous damper
+           * in parallel with the flow law components
+           */
+          double minimum_viscosity;
 
           /**
            * The viscosity of an isoviscous damper placed in parallel
@@ -273,6 +379,8 @@ namespace aspect
            * Useful number to aid in adding together exponentials.
            */
           const double logmin = std::log(std::numeric_limits<double>::min());
+
+          static constexpr unsigned int n_independent_components = SymmetricTensor<2, dim>::n_independent_components;
       };
     }
   }

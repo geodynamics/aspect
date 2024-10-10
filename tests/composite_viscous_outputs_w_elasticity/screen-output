@@ -1,0 +1,42 @@
+
+Loading shared library <./libcomposite_viscous_outputs_w_elasticity.debug.so>
+
+* Connecting signals
+temperature (K)   eta (Pas)   creep stress (Pa)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, drpr, kel, max)
+1000 3.45481e+19 6.8899e+08 1e-11 1.29806e-06 0.00363118 0.0652213 0.916549 0.0145971 3.45481e-09
+1100 2.98014e+19 5.94052e+08 1e-11 7.21254e-05 0.827709 0.159074 0.000553006 0.0125916 2.98014e-09
+1200 7.69828e+18 1.51972e+08 1e-11 0.000593854 0.996147 6.39569e-06 1.3794e-33 0.00325265 7.69828e-10
+1300 2.39205e+18 4.58431e+07 1e-11 0.00337984 0.995609 3.18669e-09 1.30376e-59 0.00101068 2.39205e-10
+1400 9.18038e+17 1.63615e+07 1e-11 0.0149592 0.984653 1.26476e-11 5.5297e-82 0.000387886 9.18038e-11
+1500 4.32047e+17 6.64131e+06 1e-11 0.0538275 0.94599 2.09799e-13 1.45943e-101 0.000182547 4.32047e-11
+1600 2.47231e+17 2.94483e+06 1e-11 0.161072 0.838824 8.74218e-15 3.19521e-119 0.000104459 2.47231e-11
+1700 1.6737e+17 1.34754e+06 1e-11 0.397334 0.602596 5.42836e-16 3.37707e-136 7.07165e-05 1.6737e-11
+1800 1.28441e+17 568929 1e-11 0.74995 0.249996 2.2677e-17 6.37367e-155 5.42684e-05 1.28441e-11
+1900 1.09558e+17 191248 1e-11 0.962657 0.0372966 2.59096e-19 1.35307e-178 4.629e-05 1.09558e-11
+2000 1.0296e+17 59277.5 1e-11 0.996497 0.0034591 2.26166e-21 4.96601e-204 4.35021e-05 1.0296e-11
+OK
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 14,795 (3,969+242+1,323+1,323+1,323+1,323+1,323+1,323+1,323+1,323)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_zz composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xz composition solve because RHS is zero.
+   Skipping ve_stress_yz composition solve because RHS is zero.
+   Skipping foreground composition solve because RHS is zero.
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.98903e-08
+
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
+

@@ -125,6 +125,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double temperature;
   double pressure;
   const double grain_size = 1.e-3;
+  const double inverse_kelvin_viscosity = 0.;
   SymmetricTensor<2,dim> strain_rate;
   strain_rate[0][0] = -1e-11;
   strain_rate[0][1] = 0.;
@@ -133,7 +134,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   strain_rate[2][1] = 0.;
   strain_rate[2][2] = 0.;
 
-  std::cout << "temperature (K)   phase transition progress   eta (Pas)   creep stress (Pa)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, drpr, max)" << std::endl;
+  std::cout << "temperature (K)   phase transition progress   eta (Pas)   creep stress (Pa)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, drpr, kel, max)" << std::endl;
 
   // Loop through strain rates, tracking whether there is a discrepancy in
   // the decomposed strain rates.
@@ -146,7 +147,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double disl_stress;
   double prls_stress;
   double drpr_stress;
-  std::vector<double> partial_strain_rates(5, 0.);
+  std::vector<double> partial_strain_rates(6, 0.);
 
   for (unsigned int i=0; i <= 2; i++)
     {
@@ -176,14 +177,14 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
           Rheology::DruckerPragerParameters p = drucker_prager_power->compute_drucker_prager_parameters(composition, phase_function_values, n_phase_transitions_per_composition);
 
           // Compute the viscosity
-          viscosity = composite_creep->compute_viscosity(pressure, temperature, grain_size, volume_fractions, strain_rate, partial_strain_rates, phase_function_values, n_phase_transitions_per_composition);
+          viscosity = composite_creep->compute_viscosity(pressure, temperature, grain_size, volume_fractions, strain_rate, inverse_kelvin_viscosity, partial_strain_rates, phase_function_values, n_phase_transitions_per_composition);
           total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
 
           // The creep strain rate is calculated by subtracting the strain rate
           // of the max viscosity dashpot from the total strain rate
           // The creep stress is then calculated by subtracting the stress running
           // through the strain rate limiter from the total stress
-          creep_strain_rate = total_strain_rate - partial_strain_rates[4];
+          creep_strain_rate = total_strain_rate - partial_strain_rates[4] - partial_strain_rates[5];
           creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
 
           // Print the output
