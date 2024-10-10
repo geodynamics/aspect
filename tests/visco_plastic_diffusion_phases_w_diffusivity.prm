@@ -1,0 +1,68 @@
+# This test is a copy of visco_plastic_diffusion.prm
+# but one in which phase transitions take place within the domain.
+# The viscosities, densities, thermal expansivities and heat capacities
+# change within the domain.
+
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_diffusion.prm
+
+# Model geometry (100x100 km, 25 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 4
+    set Y repetitions = 4
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = right
+  set Compositional field methods = field
+end
+
+subsection Initial composition model
+  set List of model names = function
+  set List of model operators = add
+  subsection Function
+     set Coordinate system = cartesian
+     set Variable names = x, y
+     set Function constants = XMAX=100e3
+     set Function expression = (x>XMAX/2.0) ? 1.0 : 0.0
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Phase transition depths = background:50e3|75e3, right:50e3|75e3
+    set Phase transition widths = background:1e3|1e3, right:1e3|1e3
+    set Phase transition temperatures = background:273|273, right:273|273
+    set Phase transition Clapeyron slopes = background:0|0, right:0|0
+
+    set Densities = background:3300|3400|3500, right:3600|3700|3800
+    set Thermal expansivities = background:3.5e-5|2e-5|1.5e-5, right:3.5e-5|2e-5|1.5e-5
+    set Thermal diffusivities = background:0.4e-6|0.5e-6|0.6e-6, right:0.7e-6|0.8e-6|0.9e-6
+    set Thermal conductivities = background:1|2|3, right:4|5|6
+    set Heat capacities = background:600|500|450, right:1200|1000|900
+
+    set Viscous flow law = diffusion
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = material properties
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, thermal diffusivity, specific heat, viscosity
+    end
+  end
+end
