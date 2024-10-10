@@ -2299,10 +2299,10 @@ namespace aspect
                 fe_face_values.reinit (cell, face_number);
                 fe_face_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
                                                                                         face_current_velocity_values);
-              // get the mesh velocity, as we need to subtract it off of the advection systems
-              if (parameters.mesh_deformation_enabled)
-                fe_face_values[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
-                    face_current_mesh_velocity_values);
+                // get the mesh velocity, as we need to subtract it off of the advection systems
+                if (parameters.mesh_deformation_enabled)
+                  fe_face_values[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
+                                                                                          face_current_mesh_velocity_values);
 
                 // ... check if the face is an outflow boundary by integrating the normal velocities
                 // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
@@ -2317,22 +2317,16 @@ namespace aspect
                       boundary_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(),
                                                                                       fe_face_values.quadrature_point(q));
 
-                    std::cout << "boundary_velocity: " << boundary_velocity[dim-1] << std::endl; 
-                    std::cout << "mesh_velocity: " << face_current_mesh_velocity_values[q][dim-1] << std::endl; 
                     if (parameters.mesh_deformation_enabled)
                       boundary_velocity -= face_current_mesh_velocity_values[q];
-                    std::cout << "updated_boundary_velocity: " << boundary_velocity[dim-1] << std::endl; 
 
                     integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
                                        fe_face_values.JxW(q);
                   }
 
                 // ... and change the boundary id of any outflow boundary faces.
-                if (timestep_number<=1 || simulator_is_past_initialization == false ||  integrated_flow > 0)
-                {
-		  std::cout << "Changing B id with integrated_flow: " << integrated_flow << " for id " << face->boundary_id() <<  std::endl; 
+                if (timestep_number <= 1 || simulator_is_past_initialization == false ||  integrated_flow > 0)
                   face->set_boundary_id(face->boundary_id() + offset);
-                } 
               }
           }
   }
@@ -2352,10 +2346,7 @@ namespace aspect
               {
                 // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.
                 if (face->boundary_id() >= offset)
-                {
                   face->set_boundary_id(face->boundary_id() - offset);
-                  std::cout << "Resetting boundary id" << std::endl;
-                }
               }
           }
   }
