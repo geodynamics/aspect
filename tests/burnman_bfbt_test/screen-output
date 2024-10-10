@@ -24,14 +24,14 @@ Number of degrees of freedom: 240 (144+24+72)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 792 (480+72+240)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-burnman_bfbt_test/solution/solution-00000
