@@ -5,7 +5,7 @@ Number of degrees of freedom: 25,294 (14,739+729+4,913+4,913)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 26+0 iterations.
+   Solving Stokes system (GMG)... 26+0 iterations.
 
    Postprocessing:
 

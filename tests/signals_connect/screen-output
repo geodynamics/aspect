@@ -13,7 +13,7 @@ Number of degrees of freedom: 268 (162+25+81)
 *** constraints signal called ***
 
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
 

@@ -5,34 +5,34 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving viscous_strain system ... 0 iterations.
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.43863
 
-   Solving Stokes system... 0+5 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000257961
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 4.66257e-05
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.30741e-05
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.64903e-05
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.39552e-05
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.26011e-05
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 1.16629e-05
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 1.08694e-05
 
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 1.0141e-05
 
 

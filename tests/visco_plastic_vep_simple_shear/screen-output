@@ -8,11 +8,11 @@ Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (AMG)... 2+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.48285e-12
 
 
@@ -25,7 +25,7 @@ Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
    Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 11 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.96604e-12
 
 
@@ -38,7 +38,7 @@ Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.50027e-12
 
 
@@ -51,7 +51,7 @@ Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.0527e-12
 
 
@@ -64,7 +64,7 @@ Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.60238e-12
 
 
@@ -77,7 +77,7 @@ Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
    Solving ve_stress_yy system ... 10 iterations.
    Solving ve_stress_xy system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.141e-12
 
 

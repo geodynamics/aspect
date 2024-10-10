@@ -7,7 +7,7 @@ Number of mesh deformation degrees of freedom: 578
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  8.58 m/s, 12.8 m/s
@@ -19,7 +19,7 @@ Number of mesh deformation degrees of freedom: 578
 *** Timestep 1:  t=0.0024 seconds, dt=0.0024 seconds
    Solving mesh displacement system... 4 iterations.
    Solving temperature system... 21 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  31.9 m/s, 125 m/s

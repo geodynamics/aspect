@@ -12,7 +12,7 @@ found Simulator -> SimulatorAccess
 found N6aspect19BoundaryComposition9AsciiDataILi2EEE [label="ascii data"
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
 

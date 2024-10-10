@@ -8,14 +8,14 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.06401e-16, 7.57063e-17, 1.69402e-16, 0.999906
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.999906
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.06401e-16, 7.57063e-17, 1.69402e-16, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 
@@ -28,14 +28,14 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 17 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.76026e-16, 1.62502e-16, 0.153152, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.153152
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.76026e-16, 1.62502e-16, 8.478e-13, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 
@@ -48,14 +48,14 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 16 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.01835e-16, 1.32239e-16, 0.0482778, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0482778
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.01835e-16, 1.32239e-16, 4.35337e-13, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 
@@ -68,14 +68,14 @@ Number of degrees of freedom: 44,070 (16,770+2,145+8,385+8,385+8,385)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40836e-16, 2.12626e-16, 0.0286959, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0286959
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving fluid system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.40836e-16, 2.12487e-16, 4.06506e-13, 3.71636e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 3.71636e-09
 

@@ -5,7 +5,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.23759
 
 
@@ -24,7 +24,7 @@ Continuing to the next timestep even though solution is not fully converged.
 *** Timestep 1:  t=1 years, dt=1 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 0+5 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.54406e-05
 
 

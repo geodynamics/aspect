@@ -317,7 +317,7 @@ Boundary_velocity called with boundary_id =1
 Boundary_velocity called with boundary_id =3
 Boundary_velocity called with boundary_id =3
 Boundary_velocity called with boundary_id =3
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0
 
 

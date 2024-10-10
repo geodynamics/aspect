@@ -6,7 +6,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving field system ... 0 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00000
@@ -16,7 +16,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 15 iterations.
    Advecting particles...  done.
    Solving field system ... 11 iterations.
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -25,7 +25,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00001
@@ -35,7 +35,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -44,7 +44,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00002
@@ -54,7 +54,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00003
@@ -64,7 +64,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -73,7 +73,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00004
@@ -83,7 +83,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00005
@@ -93,7 +93,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -102,7 +102,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 13 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00006
@@ -112,7 +112,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 13 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -121,14 +121,14 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
    Solving temperature system... 13 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
 *** Timestep 12:  t=0.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 10 iterations.
    Advecting particles...  done.
    Solving field system ... 10 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-time_stepping_repeat_particles/solution/solution-00007
@@ -138,14 +138,14 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 10 iterations.
    Advecting particles...  done.
    Solving field system ... 10 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
 *** Timestep 13:  t=0.734688 seconds, dt=0.0159375 seconds
    Solving temperature system... 9 iterations.
    Advecting particles...  done.
    Solving field system ... 9 iterations.
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system (GMG)... 3+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -154,14 +154,14 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 9 iterations.
    Advecting particles...  done.
    Solving field system ... 9 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
 *** Timestep 14:  t=0.742816 seconds, dt=0.00812812 seconds
    Solving temperature system... 8 iterations.
    Advecting particles...  done.
    Solving field system ... 8 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -170,14 +170,14 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 8 iterations.
    Advecting particles...  done.
    Solving field system ... 8 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
 *** Timestep 15:  t=0.746961 seconds, dt=0.00414534 seconds
    Solving temperature system... 8 iterations.
    Advecting particles...  done.
    Solving field system ... 8 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -186,14 +186,14 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 7 iterations.
    Advecting particles...  done.
    Solving field system ... 8 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
 *** Timestep 16:  t=0.749075 seconds, dt=0.00211413 seconds
    Solving temperature system... 7 iterations.
    Advecting particles...  done.
    Solving field system ... 7 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -202,7 +202,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 7 iterations.
    Advecting particles...  done.
    Solving field system ... 7 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -211,7 +211,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 20 iterations.
    Advecting particles...  done.
    Solving field system ... 21 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -220,7 +220,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 15 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -229,7 +229,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Solving field system ... 15 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -238,7 +238,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 13 iterations.
    Advecting particles...  done.
    Solving field system ... 15 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -247,7 +247,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 13 iterations.
    Advecting particles...  done.
    Solving field system ... 15 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -256,7 +256,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 13 iterations.
    Advecting particles...  done.
    Solving field system ... 14 iterations.
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63
@@ -265,7 +265,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving temperature system... 8 iterations.
    Advecting particles...  done.
    Solving field system ... 8 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Number of advected particles: 63

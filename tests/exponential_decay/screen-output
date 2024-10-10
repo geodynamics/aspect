@@ -7,7 +7,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 1/1/1
@@ -18,7 +18,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.5/0.5/0.5
@@ -29,7 +29,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.25/0.25/0.25
@@ -40,7 +40,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.125/0.125/0.125
@@ -51,7 +51,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0625/0.0625/0.0625
@@ -62,7 +62,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.03125/0.03125/0.03125
@@ -73,7 +73,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.01562/0.01562/0.01562
@@ -84,7 +84,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.007812/0.007812/0.007812
@@ -95,7 +95,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.003906/0.003906/0.003906
@@ -106,7 +106,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.001953/0.001953/0.001953
@@ -117,7 +117,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0009766/0.0009766/0.0009766

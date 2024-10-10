@@ -4,7 +4,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 1000+16 iterations.
+   Solving Stokes system (GMG)... 1000+16 iterations.
 
    Postprocessing:
      Pressure at top/bottom of domain: 1.787e-06 Pa, 9.425e+10 Pa

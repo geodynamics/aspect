@@ -15,7 +15,7 @@ Number of degrees of freedom: 9,602 (2,187+125+729+729+729+729+729+729+729+729+7
    Skipping strain_zx composition solve because RHS is zero.
    Skipping strain_zy composition solve because RHS is zero.
    Solving strain_zz system ... 0 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-surface_stress_strainrate_3d/solution/solution-00000
@@ -31,7 +31,7 @@ Number of degrees of freedom: 9,602 (2,187+125+729+729+729+729+729+729+729+729+7
    Solving strain_zx system ... 11 iterations.
    Skipping strain_zy composition solve because RHS is zero.
    Solving strain_zz system ... 9 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-surface_stress_strainrate_3d/solution/solution-00001

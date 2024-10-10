@@ -6,7 +6,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 0 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -19,7 +19,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 25 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -32,7 +32,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 19 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -45,7 +45,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 19 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -60,7 +60,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 19 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -73,7 +73,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 19 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -86,7 +86,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 19 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -99,7 +99,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 19 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -114,7 +114,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 20 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average
@@ -127,7 +127,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 9 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Skipping C_2 composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:     output1.tmp/depth_average

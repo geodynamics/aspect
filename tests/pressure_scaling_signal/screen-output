@@ -7,7 +7,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
 pressure_scaling = 69.1186 reference_viscosity = 1.38237 length_scale = 0.02
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 

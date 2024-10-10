@@ -8,13 +8,13 @@ Number of mesh deformation degrees of freedom: 1,610
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0322709
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0322709
 
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.58597e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.58597e-09
 

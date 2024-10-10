@@ -8,7 +8,7 @@ Number of degrees of freedom: 948 (578+81+289)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
 Signal start_timestep triggered!
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.159 K, 10 K
@@ -19,7 +19,7 @@ Skipping mesh refinement, because the mesh did not change.
 *** Timestep 1:  t=751090 seconds, dt=751090 seconds
 Signal start_timestep triggered!
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.233 K, 10 K
@@ -32,7 +32,7 @@ Number of degrees of freedom: 844 (514+73+257)
 *** Timestep 2:  t=1.38563e+06 seconds, dt=634541 seconds
 Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.289 K, 10 K
@@ -45,7 +45,7 @@ Number of degrees of freedom: 808 (492+70+246)
 *** Timestep 3:  t=1.9585e+06 seconds, dt=572867 seconds
 Signal start_timestep triggered!
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.328 K, 10 K
@@ -58,7 +58,7 @@ Number of degrees of freedom: 844 (514+73+257)
 *** Timestep 4:  t=2.40911e+06 seconds, dt=450616 seconds
 Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.357 K, 10 K
@@ -70,7 +70,7 @@ Skipping mesh refinement, because the mesh did not change.
 Signal start_timestep triggered!
 Reducing CFL number!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.382 K, 10 K
@@ -81,7 +81,7 @@ Skipping mesh refinement, because the mesh did not change.
 *** Timestep 6:  t=3.08768e+06 seconds, dt=222269 seconds
 Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.393 K, 10 K
@@ -92,7 +92,7 @@ Skipping mesh refinement, because the mesh did not change.
 *** Timestep 7:  t=3.30732e+06 seconds, dt=219641 seconds
 Signal start_timestep triggered!
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.404 K, 10 K
@@ -103,7 +103,7 @@ Skipping mesh refinement, because the mesh did not change.
 *** Timestep 8:  t=3.52459e+06 seconds, dt=217263 seconds
 Signal start_timestep triggered!
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.415 K, 10 K
@@ -114,7 +114,7 @@ Skipping mesh refinement, because the mesh did not change.
 *** Timestep 9:  t=3.73957e+06 seconds, dt=214980 seconds
 Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.425 K, 10 K
@@ -125,7 +125,7 @@ Skipping mesh refinement, because the mesh did not change.
 *** Timestep 10:  t=3.95222e+06 seconds, dt=212658 seconds
 Signal start_timestep triggered!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.435 K, 10 K

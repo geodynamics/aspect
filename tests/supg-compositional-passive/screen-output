@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00000
@@ -17,7 +17,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
@@ -27,7 +27,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00001
@@ -38,7 +38,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.4999 K, 1 K
@@ -48,7 +48,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00002
@@ -59,7 +59,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00003
@@ -70,7 +70,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.006056 K, 0.4998 K, 1 K
@@ -80,7 +80,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00004
@@ -91,7 +91,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00005
@@ -102,7 +102,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.009015 K, 0.4995 K, 1 K
@@ -112,7 +112,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00006
@@ -123,7 +123,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.009233 K, 0.4994 K, 1 K
@@ -133,7 +133,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00007
@@ -144,7 +144,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00008
@@ -155,7 +155,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   -0.009029 K, 0.4993 K, 1 K
@@ -165,7 +165,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00009
@@ -176,7 +176,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-supg-compositional-passive/solution/solution-00010

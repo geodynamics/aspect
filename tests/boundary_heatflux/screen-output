@@ -4,7 +4,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 90 K, 90 K
@@ -13,7 +13,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 1:  t=2.50388e+12 seconds, dt=2.50388e+12 seconds
    Solving temperature system... 25 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 95.25 K, 132 K
@@ -22,7 +22,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 2:  t=5.00566e+12 seconds, dt=2.50178e+12 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 100.5 K, 155.2 K
@@ -31,7 +31,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 3:  t=7.50629e+12 seconds, dt=2.50063e+12 seconds
    Solving temperature system... 20 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 105.7 K, 171.3 K
@@ -40,7 +40,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 4:  t=1.00061e+13 seconds, dt=2.49982e+12 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 110.9 K, 184.4 K
@@ -49,7 +49,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 5:  t=1.25053e+13 seconds, dt=2.49917e+12 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 116 K, 195.7 K
@@ -58,7 +58,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 6:  t=1.50039e+13 seconds, dt=2.4986e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 121.1 K, 205.9 K
@@ -67,7 +67,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 7:  t=1.7502e+13 seconds, dt=2.4981e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 126 K, 215.2 K
@@ -76,7 +76,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 8:  t=1.99996e+13 seconds, dt=2.49763e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 130.9 K, 223.9 K
@@ -85,7 +85,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 9:  t=2.24968e+13 seconds, dt=2.4972e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 135.6 K, 232.1 K
@@ -94,7 +94,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 10:  t=2.49936e+13 seconds, dt=2.49679e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 140.1 K, 239.7 K
@@ -103,7 +103,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 11:  t=2.749e+13 seconds, dt=2.49641e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 144.5 K, 247 K
@@ -112,7 +112,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 12:  t=2.9986e+13 seconds, dt=2.49604e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 148.8 K, 253.9 K
@@ -121,7 +121,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 13:  t=3.24817e+13 seconds, dt=2.4957e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 152.9 K, 260.6 K
@@ -130,7 +130,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 14:  t=3.49771e+13 seconds, dt=2.49537e+12 seconds
    Solving temperature system... 18 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 156.9 K, 266.9 K
@@ -139,7 +139,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 15:  t=3.74722e+13 seconds, dt=2.49505e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 160.7 K, 273 K
@@ -148,7 +148,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 16:  t=3.99669e+13 seconds, dt=2.49475e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 164.3 K, 278.8 K
@@ -157,7 +157,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 17:  t=4.24614e+13 seconds, dt=2.49446e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 167.9 K, 284.4 K
@@ -166,7 +166,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 18:  t=4.49556e+13 seconds, dt=2.49418e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 171.3 K, 289.8 K
@@ -175,7 +175,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 19:  t=4.74495e+13 seconds, dt=2.49391e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 174.6 K, 294.9 K
@@ -184,7 +184,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 20:  t=4.99431e+13 seconds, dt=2.49365e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 177.7 K, 299.9 K
@@ -193,7 +193,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 21:  t=5.24365e+13 seconds, dt=2.49341e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 180.7 K, 304.7 K
@@ -202,7 +202,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 22:  t=5.49297e+13 seconds, dt=2.49317e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 183.7 K, 309.3 K
@@ -211,7 +211,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 23:  t=5.74226e+13 seconds, dt=2.49294e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 186.5 K, 313.7 K
@@ -220,7 +220,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 24:  t=5.99153e+13 seconds, dt=2.49272e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 189.2 K, 317.9 K
@@ -229,7 +229,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 25:  t=6.24078e+13 seconds, dt=2.49251e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 191.8 K, 322 K
@@ -238,7 +238,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 26:  t=6.49002e+13 seconds, dt=2.4923e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 194.3 K, 326 K
@@ -247,7 +247,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 27:  t=6.73923e+13 seconds, dt=2.49211e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 196.7 K, 329.7 K
@@ -256,7 +256,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 28:  t=6.98842e+13 seconds, dt=2.49192e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 199 K, 333.4 K
@@ -265,7 +265,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 29:  t=7.23759e+13 seconds, dt=2.49173e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 201.2 K, 336.9 K
@@ -274,7 +274,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 30:  t=7.48675e+13 seconds, dt=2.49156e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 203.4 K, 340.3 K
@@ -283,7 +283,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 31:  t=7.73589e+13 seconds, dt=2.49139e+12 seconds
    Solving temperature system... 17 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 205.5 K, 343.5 K
@@ -292,7 +292,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 32:  t=7.98501e+13 seconds, dt=2.49123e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 207.4 K, 346.6 K
@@ -301,7 +301,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 33:  t=8.23412e+13 seconds, dt=2.49107e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 209.4 K, 349.6 K
@@ -310,7 +310,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 34:  t=8.48321e+13 seconds, dt=2.49092e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 211.2 K, 352.5 K
@@ -319,7 +319,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 35:  t=8.73229e+13 seconds, dt=2.49078e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 213 K, 355.3 K
@@ -328,7 +328,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 36:  t=8.98135e+13 seconds, dt=2.49064e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 214.7 K, 358 K
@@ -337,7 +337,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 37:  t=9.2304e+13 seconds, dt=2.49051e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 216.3 K, 360.6 K
@@ -346,7 +346,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 38:  t=9.47944e+13 seconds, dt=2.49038e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 217.9 K, 363 K
@@ -355,7 +355,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 39:  t=9.72847e+13 seconds, dt=2.49026e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 219.4 K, 365.4 K
@@ -364,7 +364,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 40:  t=9.97748e+13 seconds, dt=2.49014e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 220.9 K, 367.7 K
@@ -373,7 +373,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 41:  t=1.02265e+14 seconds, dt=2.49002e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 222.3 K, 369.9 K
@@ -382,7 +382,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 42:  t=1.04755e+14 seconds, dt=2.48991e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 223.6 K, 372 K
@@ -391,7 +391,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 43:  t=1.07245e+14 seconds, dt=2.48981e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 224.9 K, 374.1 K
@@ -400,7 +400,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 44:  t=1.09734e+14 seconds, dt=2.4897e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 226.2 K, 376 K
@@ -409,7 +409,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 45:  t=1.12224e+14 seconds, dt=2.48961e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 227.4 K, 377.9 K
@@ -418,7 +418,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 46:  t=1.14713e+14 seconds, dt=2.48951e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 228.5 K, 379.8 K
@@ -427,7 +427,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 47:  t=1.17203e+14 seconds, dt=2.48942e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 229.7 K, 381.5 K
@@ -436,7 +436,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 48:  t=1.19692e+14 seconds, dt=2.48933e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 230.7 K, 383.2 K
@@ -445,7 +445,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 49:  t=1.22181e+14 seconds, dt=2.48925e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 231.8 K, 384.8 K
@@ -454,7 +454,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 50:  t=1.24671e+14 seconds, dt=2.48917e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 232.8 K, 386.4 K
@@ -463,7 +463,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 51:  t=1.2716e+14 seconds, dt=2.48909e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 233.7 K, 387.9 K
@@ -472,7 +472,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 52:  t=1.29649e+14 seconds, dt=2.48902e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 234.6 K, 389.3 K
@@ -481,7 +481,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 53:  t=1.32138e+14 seconds, dt=2.48894e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 235.5 K, 390.7 K
@@ -490,7 +490,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 54:  t=1.34626e+14 seconds, dt=2.48887e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 236.4 K, 392.1 K
@@ -499,7 +499,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 55:  t=1.37115e+14 seconds, dt=2.48881e+12 seconds
    Solving temperature system... 16 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 237.2 K, 393.3 K
@@ -508,7 +508,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 56:  t=1.39604e+14 seconds, dt=2.48874e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 238 K, 394.6 K
@@ -517,7 +517,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 57:  t=1.42093e+14 seconds, dt=2.48868e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 238.7 K, 395.8 K
@@ -526,7 +526,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 58:  t=1.44581e+14 seconds, dt=2.48862e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 239.5 K, 396.9 K
@@ -535,7 +535,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 59:  t=1.4707e+14 seconds, dt=2.48857e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 240.2 K, 398 K
@@ -544,7 +544,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 60:  t=1.49558e+14 seconds, dt=2.48851e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 240.8 K, 399.1 K
@@ -553,7 +553,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 61:  t=1.52047e+14 seconds, dt=2.48846e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 241.5 K, 400.1 K
@@ -562,7 +562,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 62:  t=1.54535e+14 seconds, dt=2.48841e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 242.1 K, 401.1 K
@@ -571,7 +571,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 63:  t=1.57024e+14 seconds, dt=2.48836e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 242.7 K, 402 K
@@ -580,7 +580,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 64:  t=1.59512e+14 seconds, dt=2.48831e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 243.3 K, 402.9 K
@@ -589,7 +589,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 65:  t=1.62e+14 seconds, dt=2.48826e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 243.9 K, 403.8 K
@@ -598,7 +598,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 66:  t=1.64488e+14 seconds, dt=2.48822e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 244.4 K, 404.7 K
@@ -607,7 +607,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 67:  t=1.66977e+14 seconds, dt=2.48818e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 244.9 K, 405.5 K
@@ -616,7 +616,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 68:  t=1.69465e+14 seconds, dt=2.48814e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 245.4 K, 406.3 K
@@ -625,7 +625,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 69:  t=1.71953e+14 seconds, dt=2.4881e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 245.9 K, 407 K
@@ -634,7 +634,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 70:  t=1.74441e+14 seconds, dt=2.48806e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 246.3 K, 407.7 K
@@ -643,7 +643,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 71:  t=1.76929e+14 seconds, dt=2.48803e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 246.8 K, 408.4 K
@@ -652,7 +652,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 72:  t=1.79417e+14 seconds, dt=2.48799e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 247.2 K, 409.1 K
@@ -661,7 +661,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 73:  t=1.81905e+14 seconds, dt=2.48796e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 247.6 K, 409.7 K
@@ -670,7 +670,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 74:  t=1.84393e+14 seconds, dt=2.48793e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 248 K, 410.4 K
@@ -679,7 +679,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 75:  t=1.86881e+14 seconds, dt=2.48789e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 248.4 K, 411 K
@@ -688,7 +688,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 76:  t=1.89369e+14 seconds, dt=2.48786e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 248.8 K, 411.5 K
@@ -697,7 +697,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 77:  t=1.91856e+14 seconds, dt=2.48784e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 249.1 K, 412.1 K
@@ -706,7 +706,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 78:  t=1.94344e+14 seconds, dt=2.48781e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 249.5 K, 412.6 K
@@ -715,7 +715,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 79:  t=1.96832e+14 seconds, dt=2.48778e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 249.8 K, 413.1 K
@@ -724,7 +724,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 80:  t=1.9932e+14 seconds, dt=2.48776e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 250.1 K, 413.6 K
@@ -733,7 +733,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 81:  t=2.01807e+14 seconds, dt=2.48773e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 250.4 K, 414.1 K
@@ -742,7 +742,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 82:  t=2.04295e+14 seconds, dt=2.48771e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 250.7 K, 414.5 K
@@ -751,7 +751,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 83:  t=2.06783e+14 seconds, dt=2.48769e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 251 K, 415 K
@@ -760,7 +760,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 84:  t=2.09271e+14 seconds, dt=2.48766e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 251.2 K, 415.4 K
@@ -769,7 +769,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 85:  t=2.11758e+14 seconds, dt=2.48764e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 251.5 K, 415.8 K
@@ -778,7 +778,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 86:  t=2.14246e+14 seconds, dt=2.48762e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 251.7 K, 416.2 K
@@ -787,7 +787,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 87:  t=2.16733e+14 seconds, dt=2.4876e+12 seconds
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 252 K, 416.6 K
@@ -796,7 +796,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 88:  t=2.19221e+14 seconds, dt=2.48758e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 252.2 K, 416.9 K
@@ -805,7 +805,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 89:  t=2.21709e+14 seconds, dt=2.48757e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 252.4 K, 417.3 K
@@ -814,7 +814,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 90:  t=2.24196e+14 seconds, dt=2.48755e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 252.6 K, 417.6 K
@@ -823,7 +823,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 91:  t=2.26684e+14 seconds, dt=2.48753e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 252.8 K, 417.9 K
@@ -832,7 +832,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 92:  t=2.29171e+14 seconds, dt=2.48752e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 253 K, 418.2 K
@@ -841,7 +841,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 93:  t=2.31659e+14 seconds, dt=2.4875e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 253.2 K, 418.5 K
@@ -850,7 +850,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 94:  t=2.34146e+14 seconds, dt=2.48749e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 253.4 K, 418.8 K
@@ -859,7 +859,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 95:  t=2.36634e+14 seconds, dt=2.48747e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 253.6 K, 419.1 K
@@ -868,7 +868,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 96:  t=2.39121e+14 seconds, dt=2.48746e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 253.8 K, 419.4 K
@@ -877,7 +877,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 97:  t=2.41608e+14 seconds, dt=2.48744e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 253.9 K, 419.6 K
@@ -886,7 +886,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 98:  t=2.44096e+14 seconds, dt=2.48743e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 254.1 K, 419.9 K
@@ -895,7 +895,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 99:  t=2.46583e+14 seconds, dt=2.48742e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 254.2 K, 420.1 K
@@ -904,7 +904,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 100:  t=2.49071e+14 seconds, dt=2.48741e+12 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 21+0 iterations.
+   Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 254.4 K, 420.3 K
@@ -916,7 +916,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 101:  t=2.5e+14 seconds, dt=9.29249e+11 seconds
    Solving temperature system... 10 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 254.4 K, 420.4 K

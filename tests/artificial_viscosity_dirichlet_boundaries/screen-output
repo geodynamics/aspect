@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system (AMG)... 1+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:       0.1/0.5/0.1729
@@ -18,7 +18,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving temperature system... 10 iterations.
    Solving porosity system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:       0.08732/0.5158/0.1729
@@ -30,7 +30,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:       0.08205/0.5233/0.1729

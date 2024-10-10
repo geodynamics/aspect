@@ -13,7 +13,7 @@ Number of degrees of freedom: 17,441 (3,969+242+1,323+1,323+1,323+1,323+1,323+1,
    Skipping s31 composition solve because RHS is zero.
    Skipping s32 composition solve because RHS is zero.
    Solving s33 system ... 0 iterations.
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.247945
 
 
@@ -39,7 +39,7 @@ Continuing to the next timestep even though solution is not fully converged.
    Solving s31 system ... 12 iterations.
    Solving s32 system ... 12 iterations.
    Solving s33 system ... 6 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.82289e-10
 
 

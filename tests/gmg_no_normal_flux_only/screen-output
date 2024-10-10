@@ -3,13 +3,13 @@ Number of active cells: 768 (on 2 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
 
 Number of active cells: 2,112 (on 3 levels)
 Number of degrees of freedom: 89,938 (65,142+3,082+21,714)
 
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving Stokes system... 44+0 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-gmg_no_normal_flux_only/solution/solution-00000

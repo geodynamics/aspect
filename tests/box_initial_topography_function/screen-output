@@ -4,7 +4,7 @@ Number of degrees of freedom: 84 (50+9+25)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
 Number of active cells: 10 (on 3 levels)
 Number of degrees of freedom: 189 (114+18+57)
@@ -13,7 +13,7 @@ Number of degrees of freedom: 189 (114+18+57)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system (GMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-box_initial_topography_function/solution/solution-00000

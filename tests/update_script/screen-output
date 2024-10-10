@@ -14,7 +14,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-update_script/solution/solution-00000
@@ -31,7 +31,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-update_script/solution/solution-00001

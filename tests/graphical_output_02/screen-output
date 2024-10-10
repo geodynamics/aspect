@@ -6,7 +6,7 @@ Number of degrees of freedom: 430 (162+25+81+81+81)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
 

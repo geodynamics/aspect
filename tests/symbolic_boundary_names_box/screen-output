@@ -4,7 +4,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-symbolic_boundary_names_box/solution/solution-00000

@@ -5,25 +5,25 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.1057
 
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0554202
 
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system (GMG)... 3+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00419825
 
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000165567
 
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.21555e-05
 
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 6.62258e-07
 
 
@@ -33,7 +33,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Heating rate (average/total):  4.251e-05 W/kg, 5.515e-05 W
 
 *** Timestep 1:  t=0.0001 seconds, dt=0.0001 seconds
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.55568e-08
 
 

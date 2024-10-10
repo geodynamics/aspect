@@ -6,7 +6,7 @@ Number of degrees of freedom: 4,560 (1,728+240+864+864+864)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-shell_boundary_composition_spherical_constant/solution/solution-00000

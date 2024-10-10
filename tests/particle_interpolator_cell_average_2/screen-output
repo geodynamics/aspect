@@ -5,7 +5,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Number of advected particles: 20000
@@ -16,7 +16,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 *** Timestep 1:  t=0.015625 seconds, dt=0.015625 seconds
    Solving temperature system... 10 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Number of advected particles: 20000
@@ -27,7 +27,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 *** Timestep 2:  t=0.03 seconds, dt=0.014375 seconds
    Solving temperature system... 10 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
      Number of advected particles: 20000

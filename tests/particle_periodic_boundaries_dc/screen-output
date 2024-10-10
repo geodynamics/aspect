@@ -5,7 +5,7 @@ Number of degrees of freedom: 1,524 (578+81+289+576)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (AMG)... 17+0 iterations.
 
 Number of active cells: 55 (on 5 levels)
 Number of degrees of freedom: 1,399 (552+76+276+495)
@@ -14,7 +14,7 @@ Number of degrees of freedom: 1,399 (552+76+276+495)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (AMG)... 18+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-particle_periodic_boundaries_dc/solution/solution-00000
@@ -24,7 +24,7 @@ Number of degrees of freedom: 1,399 (552+76+276+495)
 *** Timestep 1:  t=70 seconds, dt=70 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (AMG)... 17+0 iterations.
 
    Postprocessing:
      Writing particle output:   output-particle_periodic_boundaries_dc/particles/particles-00001

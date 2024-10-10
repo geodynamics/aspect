@@ -12,7 +12,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 8:  t=9.63611e+06 seconds, dt=1.40452e+06 seconds
    Solving temperature system... 21 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:    output-checkpoint_05_mpi_resume/depth_average
@@ -22,7 +22,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Timestep 9:  t=1e+07 seconds, dt=363889 seconds
    Solving temperature system... 11 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing depth average:    output-checkpoint_05_mpi_resume/depth_average

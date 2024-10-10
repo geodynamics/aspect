@@ -7,10 +7,10 @@ Number of mesh deformation degrees of freedom: 1,071
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 0+19 iterations.
+   Solving Stokes system (GMG)... 0+19 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 0+180 iterations.
+   Solving Stokes system (GMG)... 0+180 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.146052
 
 

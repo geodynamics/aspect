@@ -8,7 +8,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 997.366, v = 432.304, p = 898.806
 
-   Solving Stokes system... 0+22 iterations.
+   Solving Stokes system (GMG)... 0+22 iterations.
       Newton system information: Norm of the rhs: 997.366
       Relative nonlinear residuals (temperature, Stokes system): 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
@@ -31,7 +31,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 898.181, v = 601.449, p = 667.075
 
-   Solving Stokes system... 0+22 iterations.
+   Solving Stokes system (GMG)... 0+22 iterations.
       Newton system information: Norm of the rhs: 898.181
       Relative nonlinear residuals (temperature, Stokes system): 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1

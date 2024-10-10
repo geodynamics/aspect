@@ -16,7 +16,7 @@ InitialComposition is found!
    Solving temperature system... 0 iterations.
    Solving field_a system ... 0 iterations.
    Solving field_b system ... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
 

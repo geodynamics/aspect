@@ -12,7 +12,7 @@ Number of degrees of freedom: 718 (162+25+81+81+81+144+144)
    Skipping strain_yx composition solve because RHS is zero.
    Solving strain_yy system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system (AMG)... 1+0 iterations.
 
    Postprocessing:
      Writing particle output:  output-particle_property_integrated_strain_simple_shear_mixed_dg/particles/particles-00000
@@ -26,7 +26,7 @@ Number of degrees of freedom: 718 (162+25+81+81+81+144+144)
    Solving strain_yx system ... 3 iterations.
    Solving strain_yy system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Writing particle output:  output-particle_property_integrated_strain_simple_shear_mixed_dg/particles/particles-00001

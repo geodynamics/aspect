@@ -4,7 +4,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00000
@@ -13,7 +13,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 1:  t=242158 years, dt=242158 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00001
@@ -22,7 +22,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 2:  t=483449 years, dt=241292 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00002
@@ -33,7 +33,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 3:  t=724395 years, dt=240945 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00003
@@ -42,7 +42,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 4:  t=965159 years, dt=240764 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00004
@@ -53,7 +53,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 5:  t=1.20579e+06 years, dt=240632 years
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00005
@@ -62,7 +62,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 6:  t=1.4463e+06 years, dt=240510 years
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00006
@@ -73,7 +73,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 7:  t=1.68668e+06 years, dt=240382 years
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00007
@@ -82,7 +82,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 8:  t=1.92693e+06 years, dt=240242 years
    Solving temperature system... 13 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00008
@@ -93,7 +93,7 @@ Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 9:  t=2e+06 years, dt=73074.7 years
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-no_dirichlet_on_outflow_refine/solution/solution-00009

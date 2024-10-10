@@ -6,7 +6,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0008/0.0008/8e+06
@@ -16,7 +16,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 1:  t=15625 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 16 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0008/0.0008023/8.023e+06
@@ -26,7 +26,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 2:  t=31250 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 15 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0008/0.0008046/8.045e+06
@@ -36,7 +36,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 3:  t=46875 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 16 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0008/0.0008068/8.066e+06
@@ -46,7 +46,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 *** Timestep 4:  t=50000 years, dt=3125 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 6 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.0008/0.0008072/8.07e+06

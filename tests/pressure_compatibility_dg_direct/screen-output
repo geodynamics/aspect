@@ -4,7 +4,7 @@ Number of degrees of freedom: 1,059 (770+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
@@ -13,7 +13,7 @@ Number of degrees of freedom: 1,059 (770+289)
 
 *** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,059 (770+289)
 
 *** Timestep 2:  t=0.1 seconds, dt=0.0375 seconds
    Solving temperature system... 12 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.5 K, 1 K

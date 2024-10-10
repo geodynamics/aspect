@@ -6,7 +6,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system (AMG)... 1+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
@@ -17,7 +17,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.002776/0.002776/2.776e+07
@@ -28,7 +28,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.003466/0.003466/3.466e+07
@@ -39,7 +39,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.003822/0.003822/3.822e+07
@@ -50,7 +50,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.004065/0.004065/4.065e+07
@@ -61,7 +61,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.004261/0.004261/4.261e+07
@@ -72,7 +72,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.00443/0.00443/4.43e+07
@@ -83,7 +83,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.004582/0.004582/4.582e+07
@@ -94,7 +94,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.00472/0.00472/4.72e+07
@@ -105,7 +105,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.004847/0.004847/4.847e+07
@@ -116,7 +116,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.004966/0.004966/4.966e+07
@@ -127,7 +127,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005077/0.005077/5.077e+07
@@ -138,7 +138,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005181/0.005181/5.181e+07
@@ -149,7 +149,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005279/0.005279/5.279e+07
@@ -160,7 +160,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005373/0.005373/5.373e+07
@@ -171,7 +171,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005462/0.005462/5.462e+07
@@ -182,7 +182,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005547/0.005547/5.547e+07
@@ -193,7 +193,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005628/0.005628/5.628e+07
@@ -204,7 +204,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005706/0.005706/5.706e+07
@@ -215,7 +215,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005781/0.005781/5.781e+07
@@ -226,7 +226,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (AMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.005853/0.005853/5.853e+07

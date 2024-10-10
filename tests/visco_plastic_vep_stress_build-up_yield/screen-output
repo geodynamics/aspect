@@ -7,10 +7,10 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 53+0 iterations.
+   Solving Stokes system (GMG)... 53+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.40927e-08
 
 
@@ -26,7 +26,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving ve_stress_xx system ... 11 iterations.
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 12 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.0851e-08
 
 
@@ -42,7 +42,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving ve_stress_xx system ... 12 iterations.
    Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 12 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 8.95334e-08
 
 
