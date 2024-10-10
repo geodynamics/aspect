@@ -42,9 +42,6 @@ namespace aspect
       std::pair<std::string, std::unique_ptr<Vector<float>>>
       ParticleCount<dim>::execute() const
       {
-        const Particle::ParticleHandler<dim> &particle_handler =
-          this->get_particle_world(0).get_particle_handler();
-
         std::pair<std::string, std::unique_ptr<Vector<float>>>
         return_value ("particles_per_cell",
                       std::make_unique<Vector<float>>(this->get_triangulation().n_active_cells()));
@@ -53,7 +50,13 @@ namespace aspect
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
             {
-              (*return_value.second)(cell->active_cell_index()) = static_cast<float> (particle_handler.n_particles_in_cell(cell));
+              unsigned int n_particles_in_cell = 0;
+              for (unsigned int particle_handler_index = 0;
+                   particle_handler_index < this->n_particle_worlds();
+                   ++particle_handler_index)
+                n_particles_in_cell += this->get_particle_world(particle_handler_index).get_particle_handler().n_particles_in_cell(cell);
+
+              (*return_value.second)(cell->active_cell_index()) = static_cast<float>(n_particles_in_cell);
             }
 
         return return_value;
