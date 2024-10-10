@@ -90,9 +90,13 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      PTPath<dim>::get_needed_update_flags () const
+      PTPath<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_values;
+        if (this->introspection().component_masks.pressure[component] == true ||
+            this->introspection().component_masks.temperature[component] == true)
+          return update_values;
+
+        return update_default;
       }
 
 

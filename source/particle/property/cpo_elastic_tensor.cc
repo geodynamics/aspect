@@ -196,7 +196,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      CpoElasticTensor<dim>::get_needed_update_flags () const
+      CpoElasticTensor<dim>::get_update_flags (const unsigned int /*component*/) const
       {
         return update_default;
       }

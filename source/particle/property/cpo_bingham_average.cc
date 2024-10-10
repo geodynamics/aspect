@@ -196,7 +196,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      CpoBinghamAverage<dim>::get_needed_update_flags () const
+      CpoBinghamAverage<dim>::get_update_flags (const unsigned int /*component*/) const
       {
         return update_default;
       }

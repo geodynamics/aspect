@@ -58,9 +58,12 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      Velocity<dim>::get_needed_update_flags () const
+      Velocity<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_values;
+        if (this->introspection().component_masks.velocities[component] == true)
+          return update_values;
+
+        return update_default;
       }
 
       template <int dim>

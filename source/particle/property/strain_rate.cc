@@ -72,9 +72,12 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      StrainRate<dim>::get_needed_update_flags () const
+      StrainRate<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_gradients;
+        if (this->introspection().component_masks.velocities[component] == true)
+          return update_gradients;
+
+        return update_default;
       }
 
       template <int dim>

@@ -104,11 +104,10 @@ namespace aspect
           need_update () const override;
 
           /**
-           * Return which data has to be provided to update the property.
-           * For example, the strains needs the gradients of the velocity.
+           * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_needed_update_flags () const override;
+          get_update_flags (const unsigned int component) const override;
 
           /**
            * Set up the information about the names and number of components
