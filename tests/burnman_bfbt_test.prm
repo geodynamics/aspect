@@ -26,4 +26,3 @@ subsection Solver parameters
     set AMG aggregation threshold = 0.02
   end
 end
-
