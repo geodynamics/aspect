@@ -18,12 +18,12 @@ individual points at the boundary. This can be implemented via plugins.
 To implement a new boundary velocity model, you need to overload the
 [aspect::VelocityBoundaryConditions::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1BoundaryVelocity_1_1Interface.html)
 class and use the
-`ASPECT_REGISTER_VELOCITY_BOUNDARY_VELOCITY_MODEL` macro to register your new
+`ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL` macro to register your new
 class. The implementation of the new class should be in namespace
 `aspect::VelocityBoundaryConditions`.
 
 In essence, the main function you have to implement for this plugin system is one
-that, given a point return the prescribed velocity at that point.
+that, given a point returns the prescribed velocity at that point.
 There are also member functions in the base class you can overload that are called
 at the beginning of each time step; this is useful if one needs to perform some
 operation once for each time step; examples are models that need to call an
@@ -45,11 +45,11 @@ velocities, a plugin system allows to describe this information, with the key
 function being one that for a given point returns the prescribed traction.
 
 To implement a new boundary traction model, you need to overload the
-[aspect::BoundaryTraction::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1BoundaryVelocity_1_1Interface.html)
+[aspect::BoundaryTraction::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1BoundaryTraction_1_1Interface.html)
 class and use the
-`ASPECT_REGISTER_VELOCITY_BOUNDARY_TRACTION_MODEL` macro to register your new
+`ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL` macro to register your new
 class. The implementation of the new class should be in namespace
 `aspect::BoundaryTraction`.
 The member functions that can be overloaded are discussed in the
 documentation of this interface class at
-[aspect::BoundaryTraction::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1BoundaryVelocity_1_1Interface.html).
+[aspect::BoundaryTraction::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1BoundaryTraction_1_1Interface.html).

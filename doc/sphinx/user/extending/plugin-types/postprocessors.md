@@ -136,7 +136,7 @@ Primarily, this difficulty results from two facts:
 ## Postprocessors and checkpoint/restart.
 
 Postprocessors have `save()` and `load()` functions (inherited from
-`aspect::Plugins::InterfaceBase` by way of `aspect::Postprocess::Interface`) that are used to write the
+`aspect::Postprocess::Interface`) that are used to write the
 data a postprocessor stores between successive invocations into a checkpoint file, and to load it again upon
 restart. This is important since many postprocessors store some state &ndash;
 say, a temporal average over all the time steps seen so far, or the number of
