@@ -551,7 +551,7 @@ namespace aspect
           {
             computing_timer.print_summary ();
             pcout << "-- Total wallclock time elapsed including restarts: "
-                  << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+                  << std::round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
                   << 's' << std::endl;
           }
 
@@ -666,7 +666,7 @@ namespace aspect
       {
         computing_timer.print_summary ();
         pcout << "-- Total wallclock time elapsed including restarts: "
-              << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+              << std::round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
               << 's' << std::endl;
       }
   }
