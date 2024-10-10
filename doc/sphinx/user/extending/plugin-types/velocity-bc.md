@@ -20,7 +20,7 @@ To implement a new boundary velocity model, you need to overload the
 class and use the
 `ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL` macro to register your new
 class. The implementation of the new class should be in namespace
-`aspect::VelocityBoundaryConditions`.
+`aspect::BoundaryVelocity`.
 
 In essence, the main function you have to implement for this plugin system is one
 that, given a point returns the prescribed velocity at that point.
