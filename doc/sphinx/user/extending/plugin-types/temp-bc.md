@@ -12,41 +12,12 @@ To implement a new boundary conditions model, you need to overload the
 The implementation of the new class should be in namespace
 `aspect::BoundaryTemperature`.
 
-Specifically, your new class needs to implement the following basic interface:
-
-```{code-block} c++
-template <int dim>
-    class aspect::BoundaryTemperature::Interface
-    {
-      public:
-        virtual
-        double
-        temperature (const GeometryModel::Interface<dim> &geometry_model,
-                     const unsigned int                   boundary_indicator,
-                     const Point<dim>                    &location) const = 0;
-
-        virtual
-        double minimal_temperature () const = 0;
-
-        virtual
-        double maximal_temperature () const = 0;
-
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
-    };
-```
-
-The first of these functions needs to provide the fixed temperature at the
-given point. The geometry model and the boundary indicator of the particular
+The principle function you need to overload needs to provide the fixed temperature at a
+given point. The boundary indicator of the particular
 piece of boundary on which the point is located is also given as a hint in
 determining where this point may be located; this may, for example, be used to
 determine if a point is on the inner or outer boundary of a spherical shell.
-The remaining functions are obvious, and are also discussed in the
-documentation of this interface class at
-`aspect::BoundaryTemperature::Interface`. The purpose of the last two
-functions has been discussed in the general overview of plugins above.
+Models may also need to query the geometry model (via the `SimulatorAccess` class)
+to understand what a specific boundary indicator is supposed to mean &ndash; e.g.,
+if the given boundary indicator corresponds to an inner or outer surface of a shell
+geometry.
