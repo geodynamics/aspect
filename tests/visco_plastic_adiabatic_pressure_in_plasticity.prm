@@ -82,7 +82,6 @@ subsection Material model
   subsection Visco Plastic
     set Reference strain rate = 1.e-16
     set Viscous flow law = composite
-
     set Use adiabatic pressure in plasticity = true
     set Angles of internal friction = 10
     set Cohesions = 1e6

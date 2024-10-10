@@ -158,6 +158,7 @@ end
 # Output the darcy velocity
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set List of output variables = darcy velocity
     set Output format            = gnuplot

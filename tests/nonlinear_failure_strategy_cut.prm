@@ -6,6 +6,5 @@ include $ASPECT_SOURCE_DIR/tests/iterated_advection_and_stokes_residual.prm
 
 set Nonlinear solver failure strategy = cut timestep size
 set Max nonlinear iterations = 4
-
 set Dimension = 2
 set End time = 20000

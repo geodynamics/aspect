@@ -64,7 +64,6 @@ subsection Compositional fields
   set Names of fields  = anomaly, function
   set Compositional field methods =  particles,  particles
   set Mapped particle properties = anomaly: function, function: initial anomaly
-
 end
 
 subsection Initial composition model
