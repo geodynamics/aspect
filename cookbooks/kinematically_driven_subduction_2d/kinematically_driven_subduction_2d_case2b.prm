@@ -1,7 +1,7 @@
 # This setup is a modification of the file
 # kinematically_driven_subduction_2d_case2a.prm
 # to include temperature-dependent density.
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
+set Additional shared libraries            = ./libsubduction_plate_cooling.so
 
 # 2D
 set Dimension                              = 2

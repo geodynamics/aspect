@@ -42,7 +42,8 @@ subsection Solver parameters
   end
 
   subsection Operator splitting parameters
-    set Reaction time step                     = 4e3 #2e2 for the restart
+    set Reaction solver type = fixed step
+    set Reaction time step   = 4e3 #2e2 for the restart
   end
 end
 

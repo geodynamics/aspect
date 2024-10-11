@@ -12,6 +12,7 @@ end
 
 subsection Solver parameters
   subsection Operator splitting parameters
+    set Reaction solver type = fixed step
     set Reaction time step                     = 2e2
     set Reaction time steps per advection step = 20
   end
