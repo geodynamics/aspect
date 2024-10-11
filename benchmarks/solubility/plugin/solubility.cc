@@ -156,7 +156,7 @@ namespace aspect
           for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
             {
               const double porosity = std::max(in.composition[q][porosity_idx],0.0);
-              out.viscosities[q] *= (1.0 - porosity) * exp(- alpha_phi * porosity);
+              out.viscosities[q] *= (1.0 - porosity) * std::exp(- alpha_phi * porosity);
             }
         }
 

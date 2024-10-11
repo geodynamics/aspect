@@ -103,11 +103,11 @@ namespace aspect
           }
         else if (vol < 0.5 * mpos / (1 - mpos))
           {
-            return norm1 * (-0.5 + sqrt (2.0*vol * mpos * (1 - mpos)));
+            return norm1 * (-0.5 + std::sqrt (2.0*vol * mpos * (1 - mpos)));
           }
         else if (vol > 1.0 - 0.5 * mpos / (1 - mpos))
           {
-            return norm1 * (0.5 - sqrt (2.0*(1.0 - vol) * mpos * (1 - mpos)));
+            return norm1 * (0.5 - std::sqrt (2.0*(1.0 - vol) * mpos * (1 - mpos)));
           }
         else
           {
@@ -294,7 +294,7 @@ namespace aspect
         const double v2 = v1 + 0.5*(m2-m1)/m3;
         if (vol<v2)
           {
-            return 0.5*(-1+m1+sqrt(m1*m1+8*m2*m3*(vol-v1)));
+            return 0.5*(-1+m1+std::sqrt(m1*m1+8*m2*m3*(vol-v1)));
           }
 
         // Case 3 of Scardovelli and Zaleski
@@ -314,8 +314,8 @@ namespace aspect
             const double a0 = 6*mprod*vol-m1*m1*m1-m2*m2*m2;
             const double np0 = a2*a2/9.0-a1/3.0;
             const double q0 = (a1*a2-3.0*a0)/6.0-a2*a2*a2/27.0;
-            const double theta = acos(q0/sqrt(np0*np0*np0))/3.0;
-            return sqrt(np0)*(sqrt(3.0)*sin(theta)-cos(theta))-a2/3.0;
+            const double theta = std::acos(q0/std::sqrt(np0*np0*np0))/3.0;
+            return std::sqrt(np0)*(std::sqrt(3.0)*std::sin(theta)-std::cos(theta))-a2/3.0;
           }
 
         // Case 4
@@ -327,8 +327,8 @@ namespace aspect
             double a0 = 6*mprod*vol-m1*m1*m1-m2*m2*m2-m3*m3*m3;
             double np0 = a2*a2/9.0-a1/3.0;
             double q0 = (a1*a2-3.0*a0)/6.0-a2*a2*a2/27.0;
-            double theta = acos(q0/sqrt(np0*np0*np0))/3.0;
-            return sqrt(np0)*(sqrt(3.0)*sin(theta)-cos(theta))-a2/3.0;
+            double theta = std::acos(q0/std::sqrt(np0*np0*np0))/3.0;
+            return std::sqrt(np0)*(std::sqrt(3.0)*std::sin(theta)-std::cos(theta))-a2/3.0;
           }
 
         return -0.5+m1*vol+0.5*m12;
@@ -345,12 +345,12 @@ namespace aspect
         const int basis_count=4;
         std::vector<double> coeffs(basis_count);
 
-        const double n_xp = fabs(normal[0]), n_yp = fabs(normal[1]);
+        const double n_xp = std::fabs(normal[0]), n_yp = std::fabs(normal[1]);
         const double sign_n_x = (((normal[0]) > 0) - ((normal[0]) < 0)),
                      sign_n_y = (((normal[1]) > 0) - ((normal[1]) < 0));
 
         const double norm1 = n_xp + n_yp;
-        const double triangle_break = 0.5*fabs(n_xp-n_yp);
+        const double triangle_break = 0.5*std::fabs(n_xp-n_yp);
 
         const unsigned int max_degree = 1;
 
@@ -404,7 +404,7 @@ namespace aspect
             //Trapezoid Y
             coeffs[0]=(d + 0.5*n_xp)/n_xp; // 1
             coeffs[1]=-0.5*n_yp/n_xp*sign_n_y; // 2*y - 1
-            coeffs[2]=0.25*(12.0*pow(d, 2) - 3.0*n_xp*n_xp + n_yp*n_yp)/(n_xp*n_xp)*sign_n_x; // 2*x - 1
+            coeffs[2]=0.25*(12.0*std::pow(d, 2) - 3.0*n_xp*n_xp + n_yp*n_yp)/(n_xp*n_xp)*sign_n_x; // 2*x - 1
             coeffs[3]=-3.0*d*n_yp/(n_xp*n_xp)*sign_n_x*sign_n_y; // (2*x - 1)*(2*y - 1)
           }
         else
@@ -455,12 +455,12 @@ namespace aspect
         const int basis_count=4;
         std::vector<double> coeffs(basis_count);
 
-        const double n_xp = fabs(normal[0]), n_yp = fabs(normal[1]);
+        const double n_xp = std::fabs(normal[0]), n_yp = std::fabs(normal[1]);
         const double sign_n_x = (((normal[0]) > 0) - ((normal[0]) < 0)),
                      sign_n_y = (((normal[1]) > 0) - ((normal[1]) < 0));
 
         const double norm1 = n_xp + n_yp;
-        const double triangle_break = 0.5L*fabs(n_xp-n_yp);
+        const double triangle_break = 0.5L*std::fabs(n_xp-n_yp);
 
         const int max_degree = 1;
 
@@ -566,7 +566,7 @@ namespace aspect
       {
         double norm1=0.0;
         for (int i=0; i<dim; ++i)
-          norm1+=fabs(normal[i]);
+          norm1+=std::fabs(normal[i]);
         double d_l=-0.5L*norm1, d_h=0.5L*norm1;
         double f_l=0.0, f_h=1.0;
         double d_guess= d_l + (volume_fraction-f_l)*(d_h-d_l)/(f_h-f_l);
@@ -589,7 +589,7 @@ namespace aspect
               }
 
             // Break if within tolerance
-            if (fabs(f_guess-volume_fraction)<epsilon)
+            if (std::fabs(f_guess-volume_fraction)<epsilon)
               {
                 break;
               }
@@ -605,7 +605,7 @@ namespace aspect
                 f_l = f_guess;
               }
 
-            if (fabs(df_guess)<epsilon)
+            if (std::fabs(df_guess)<epsilon)
               {
                 d_guess = (volume_fraction-f_l)/(f_h-f_l)*(d_h-d_l);
               }

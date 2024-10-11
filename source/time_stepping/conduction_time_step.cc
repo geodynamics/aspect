@@ -96,7 +96,7 @@ namespace aspect
                 if (thermal_diffusivity > 0)
                   {
                     min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                             this->get_parameters().CFL_number*pow(cell->minimum_vertex_distance(),2.)
+                                                             this->get_parameters().CFL_number*std::pow(cell->minimum_vertex_distance(),2.)
                                                              / thermal_diffusivity);
                   }
               }

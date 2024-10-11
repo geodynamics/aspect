@@ -391,7 +391,7 @@ namespace aspect
                                  ExcMessage("rotation_matrix is nan after orthoganalization: "
                                             + std::to_string(rotation_matrix[i][j])));
 
-                          Assert(abs(rotation_matrix[i][j]) <= 1.0,
+                          Assert(std::abs(rotation_matrix[i][j]) <= 1.0,
                                  ExcMessage("3. rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
                                             "] is larger than one: "
                                             + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
@@ -1238,7 +1238,7 @@ namespace aspect
                 volume_fractions_minerals_sum += fraction;
               }
 
-            AssertThrow(abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
+            AssertThrow(std::abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
                         ExcMessage("The sum of the CPO volume fractions should be one."));
           }
           prm.leave_subsection();

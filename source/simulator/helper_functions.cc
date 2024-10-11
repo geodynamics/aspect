@@ -417,7 +417,7 @@ namespace aspect
     // of the viscosity. The order of magnitude is the logarithm of
     // the viscosity, so
     //
-    //   \eta_{ref} = exp ( 1/N * (log(eta_1) + log(eta_2) + ... + log(eta_N))
+    //   \eta_{ref} = exp( 1/N * (log(eta_1) + log(eta_2) + ... + log(eta_N))
     //
     // where the \eta_i are typical viscosities on the cells of the mesh.
     // For this, we just take the viscosity at the cell center.

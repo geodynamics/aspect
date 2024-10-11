@@ -3105,7 +3105,7 @@ namespace aspect
       std::array<double,3> euler_angles;
       for (size_t i = 0; i < 3; ++i)
         for (size_t j = 0; j < 3; ++j)
-          Assert(abs(rotation_matrix[i][j]) <= 1.0,
+          Assert(std::abs(rotation_matrix[i][j]) <= 1.0,
                  ExcMessage("rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
                             "] is larger than one: " + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
                             + std::to_string(rotation_matrix[0][0]) + " " + std::to_string(rotation_matrix[0][1]) + " " + std::to_string(rotation_matrix[0][2]) + "\n"

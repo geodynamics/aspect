@@ -95,7 +95,7 @@ namespace aspect
                                                                       n_phase_transitions_per_composition);
 
         // Power law creep equation:
-        //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * exp((E + P*V)/(nRT))
+        //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * std::exp((E + P*V)/(nRT))
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.

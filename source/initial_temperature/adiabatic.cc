@@ -206,13 +206,13 @@ namespace aspect
           surface_cooling_temperature = age_top > 0.0 ?
                                         (T_surface - adiabatic_surface_temperature) *
                                         erfc(this->get_geometry_model().depth(position) /
-                                             (2 * sqrt(kappa * age_top)))
+                                             (2 * std::sqrt(kappa * age_top)))
                                         : 0.0;
           bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
                                        (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
                                        * erfc((this->get_geometry_model().maximal_depth()
                                                - this->get_geometry_model().depth(position)) /
-                                              (2 * sqrt(kappa * age_bottom)))
+                                              (2 * std::sqrt(kappa * age_bottom)))
                                        : 0.0;
         }
 
