@@ -36,8 +36,6 @@ namespace aspect
                              "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
 
-      const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_world(0).get_particle_handler();
-
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
@@ -45,7 +43,12 @@ namespace aspect
             // of particles per cell, therefore creating fine cells in regions
             // of high particle density and coarse cells in low particle
             // density regions.
-            indicators(cell->active_cell_index()) = static_cast<float>(particle_handler.n_particles_in_cell(cell));
+            indicators(cell->active_cell_index()) = 0.0;
+            for (unsigned int i=0; i<this->n_particle_worlds(); ++i)
+              {
+                const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_world(i).get_particle_handler();
+                indicators(cell->active_cell_index()) += static_cast<float>(particle_handler.n_particles_in_cell(cell));
+              }
           }
     }
   }
