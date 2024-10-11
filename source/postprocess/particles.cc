@@ -365,7 +365,7 @@ namespace aspect
         }
 
       if (write_output == false)
-        return std::make_pair("Number of advected particles", number_of_advected_particles);
+        return std::make_pair("Number of advected particles:", number_of_advected_particles);
 
       if (output_file_number == numbers::invalid_unsigned_int)
         output_file_number = 0;
