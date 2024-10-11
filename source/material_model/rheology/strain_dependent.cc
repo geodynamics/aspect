@@ -412,8 +412,11 @@ namespace aspect
         // Currently this functionality only works in field composition
         if (healing_mechanism != no_healing && this->n_particle_worlds() > 0)
           {
-            const Particle::Property::Manager<dim> &particle_property_manager = this->get_particle_world(0).get_property_manager();
-            AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
+            for (unsigned int i=0; i<this->n_particle_worlds(); ++i)
+              {
+                const Particle::Property::Manager<dim> &particle_property_manager = this->get_particle_world(i).get_property_manager();
+                AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
+              }
           }
 
         // Temperature dependent strain healing requires that adiabatic surface temperature is non zero
