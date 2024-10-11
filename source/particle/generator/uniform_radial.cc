@@ -48,7 +48,7 @@ namespace aspect
             for (unsigned int i = 0; i < radial_layers; ++i)
               {
                 const double radius = P_min[0] + (radial_spacing * i);
-                particles_per_layer[i] = static_cast<unsigned int>(round(n_particles * radius / total_radius));
+                particles_per_layer[i] = static_cast<unsigned int>(std::round(n_particles * radius / total_radius));
               }
           }
         else if (dim == 3)
@@ -59,7 +59,7 @@ namespace aspect
             for (unsigned int i = 0; i < radial_layers; ++i)
               {
                 const double area = Utilities::fixed_power<2>(P_min[0] + (radial_spacing * i));
-                particles_per_layer[i] = static_cast<unsigned int>(round(n_particles * area / total_area));
+                particles_per_layer[i] = static_cast<unsigned int>(std::round(n_particles * area / total_area));
               }
           }
         else
@@ -87,9 +87,9 @@ namespace aspect
             else if (dim == 3)
               {
                 const unsigned int theta_particles = static_cast<unsigned int>(
-                                                       round(sqrt(particles_per_layer[i])));
+                                                       std::round(sqrt(particles_per_layer[i])));
                 const unsigned int phi_particles = static_cast<unsigned int>(
-                                                     round(
+                                                     std::round(
                                                        static_cast<double>(particles_per_layer[i])
                                                        /
                                                        static_cast<double>(theta_particles)));

@@ -297,7 +297,7 @@ namespace aspect
       if (dim == 2)
         {
           fastscape_dy = fastscape_dx;
-          fastscape_y_extent = round(fastscape_y_extent_2d/fastscape_dy)*fastscape_dy + fastscape_dy * ghost_nodes;
+          fastscape_y_extent = std::round(fastscape_y_extent_2d/fastscape_dy)*fastscape_dy + fastscape_dy * ghost_nodes;
           fastscape_ny = 1+fastscape_y_extent/fastscape_dy;
         }
       else
@@ -637,7 +637,7 @@ namespace aspect
                     // same rule is used for all cell sizes, higher resolution areas will have interpolation
                     // points that do not correspond to a FastScape node. In which case, indx will not be a
                     // whole number and we can ignore the point.
-                    if (std::abs(indx - round(indx)) >= node_tolerance)
+                    if (std::abs(indx - std::round(indx)) >= node_tolerance)
                       continue;
 
 
@@ -652,7 +652,7 @@ namespace aspect
                             // this to correctly place the variables later on.
                             // Nx*ys effectively tells us what row we are in
                             // and then indx tells us what position in that row.
-                            const double index = round(indx)+fastscape_nx*ys;
+                            const double index = std::round(indx)+fastscape_nx*ys;
 
                             local_aspect_values[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);
                             local_aspect_values[1].push_back(index-1);
@@ -670,10 +670,10 @@ namespace aspect
                         // Because indy only gives us the row we're in, we don't need to add 2 for the ghost node.
                         const double indy = 1+use_ghost_nodes+(vertex(1) - grid_extent[1].first)/fastscape_dy;
 
-                        if (std::abs(indy - round(indy)) >= node_tolerance)
+                        if (std::abs(indy - std::round(indy)) >= node_tolerance)
                           continue;
 
-                        const double index = round((indy-1))*fastscape_nx+round(indx);
+                        const double index = std::round((indy-1))*fastscape_nx+std::round(indx);
 
                         local_aspect_values[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);   //z component
                         local_aspect_values[1].push_back(index-1);
@@ -1400,7 +1400,7 @@ namespace aspect
               // If we do not average the values, then use a slice near the center.
               if (!average_out_of_plane_surface_topography)
                 {
-                  const unsigned int index = x+fastscape_nx*(round((fastscape_ny-use_ghost_nodes)/2));
+                  const unsigned int index = x+fastscape_nx*(std::round((fastscape_ny-use_ghost_nodes)/2));
 
                   // If we are using the ghost nodes, then the x value locations need to be shifted back 1
                   // e.g., given a 4x4 mesh an index of 5 would correspond to an x of 1 and y of 1 in the loop,
