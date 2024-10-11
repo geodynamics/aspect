@@ -72,13 +72,13 @@ namespace aspect
 
               const double depth = 1.0-position(dim-1);
 
-              out.viscosities[i] = ((Di==0.0)?1.0:Di)/Ra*exp(-b*(temperature- this->get_adiabatic_conditions().temperature(position))+c*depth);
+              out.viscosities[i] = ((Di==0.0)?1.0:Di)/Ra*std::exp(-b*(temperature- this->get_adiabatic_conditions().temperature(position))+c*depth);
 
               out.specific_heat[i] = reference_specific_heat;
               out.thermal_conductivities[i] = 1.0;
               out.thermal_expansion_coefficients[i] = (Di==0.0)?1.0:Di;
 
-              double rho = reference_rho * exp(depth * Di/gamma);
+              double rho = reference_rho * std::exp(depth * Di/gamma);
               rho *= 1.0 - out.thermal_expansion_coefficients[i] * (temperature - this->get_adiabatic_conditions().temperature(position))
                      + (tala?0.0:1.0)*Di*gamma
                      *  (pressure - this->get_adiabatic_conditions().pressure(position));

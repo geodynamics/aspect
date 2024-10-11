@@ -64,10 +64,10 @@ namespace aspect
         const double theta = std::atan2(y,x);
         const double f_r = A*r + B/r;
         const double g_r = A*r/2 + B*std::log(r)/r + C/r;
-        const double v_r = g_r*k*sin(k*theta);
-        const double v_theta = f_r*cos(k*theta);
-        const double v_x = cos(theta)*v_r - sin(theta)*v_theta;
-        const double v_y = sin(theta)*v_r + cos(theta)*v_theta;
+        const double v_r = g_r*k*std::sin(k*theta);
+        const double v_theta = f_r*std::cos(k*theta);
+        const double v_x = std::cos(theta)*v_r - std::sin(theta)*v_theta;
+        const double v_y = std::sin(theta)*v_r + std::cos(theta)*v_theta;
         return Point<2> (v_x,v_y);
       }
 
@@ -82,7 +82,7 @@ namespace aspect
         const double f_r = 2*r + B/r;
         const double g_r = A*r/2 + B*std::log(r)/r + C/r;
         const double h_r=(2*g_r-f_r)/r;
-        return k*h_r*sin(k*theta)+rho_0*gravity*(outer_radius-r);
+        return k*h_r*std::sin(k*theta)+rho_0*gravity*(outer_radius-r);
       }
 
       template <int dim>

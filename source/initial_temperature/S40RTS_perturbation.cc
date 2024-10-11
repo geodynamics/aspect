@@ -251,7 +251,7 @@ namespace aspect
                                1.);
                   else if (order_m != 0)
                     // this removes the sqrt(2) factor difference in normalization (see PR # 966)
-                    prefact = 1./sqrt(2.);
+                    prefact = 1./std::sqrt(2.);
                   else
                     prefact = 1.0;
 

@@ -1126,7 +1126,7 @@ namespace aspect
           {
             // Do averaging when there are multiple phases
             if (operation == PhaseUtilities::logarithmic)
-              averaged_parameter = log(averaged_parameter);
+              averaged_parameter = std::log(averaged_parameter);
 
             for (unsigned int i=0; i<n_phase_transitions_per_composition[composition_index]; ++i)
               {
@@ -1146,7 +1146,7 @@ namespace aspect
                   AssertThrow(false, ExcInternalError());
               }
             if (operation == PhaseUtilities::logarithmic)
-              averaged_parameter = exp(averaged_parameter);
+              averaged_parameter = std::exp(averaged_parameter);
           }
         return averaged_parameter;
       }

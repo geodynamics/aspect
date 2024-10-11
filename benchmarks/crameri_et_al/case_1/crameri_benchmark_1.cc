@@ -46,7 +46,7 @@ namespace aspect
         /**
          * Generate a coarse mesh for the geometry described by this class.
          * Makes perturbs the top boundary of the box with a function
-         * of the form z' = amplitude * cos(order * x )
+         * of the form z' = amplitude * std::cos(order * x )
          */
         void create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const override;
 

@@ -299,7 +299,7 @@ namespace aspect
                      */
                     if (values_out[j] != 0)
                       {
-                        sum_value += weight*log(values_out[j]);
+                        sum_value += weight*std::log(values_out[j]);
                       }
 
                     sum_weights += weight;

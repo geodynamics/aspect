@@ -393,7 +393,7 @@ namespace aspect
             initial_composition_manager->template
             get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>>();
 
-          return reference_permeability * pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
+          return reference_permeability * std::pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
 
         }
 

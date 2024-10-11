@@ -192,7 +192,7 @@ namespace aspect
               const double x=p[0];
               const double y=p[1];
               const double z=p[2];
-              const double mu=exp(1. - beta * (x*(1.-x)+y*(1.-y) + z*(1.-z)));
+              const double mu=std::exp(1. - beta * (x*(1.-x)+y*(1.-y) + z*(1.-z)));
 
               out.viscosities[i] = mu;
               out.thermal_conductivities[i] = 0.0;
@@ -352,7 +352,7 @@ namespace aspect
       const double x=pos[0];
       const double y=pos[1];
       const double z=pos[2];
-      const double mu=exp(1. - beta * (x*(1.-x)+y*(1.-y) + z*(1.-z)));
+      const double mu=std::exp(1. - beta * (x*(1.-x)+y*(1.-y) + z*(1.-z)));
 
       const double dmudx=-beta*(1.-2.*x)*mu;
       const double dmudy=-beta*(1.-2.*y)*mu;

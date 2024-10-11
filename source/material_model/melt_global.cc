@@ -166,7 +166,7 @@ namespace aspect
               const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
 
               // calculate viscosity based on local melt
-              out.viscosities[i] *= exp(- alpha_phi * porosity);
+              out.viscosities[i] *= std::exp(- alpha_phi * porosity);
 
               if (include_melting_and_freezing && (in.requests_property(MaterialProperties::reaction_terms) ||
                                                    in.requests_property(MaterialProperties::reaction_rates) ||
@@ -224,7 +224,7 @@ namespace aspect
                   const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx], 0.0));
 
                   // calculate strengthening due to depletion:
-                  const double depletion_strengthening = std::min(exp(alpha_depletion * depletion_visc), delta_eta_depletion_max);
+                  const double depletion_strengthening = std::min(std::exp(alpha_depletion * depletion_visc), delta_eta_depletion_max);
 
                   // calculate viscosity change due to local melt and depletion:
                   out.viscosities[i] *= depletion_strengthening;
@@ -277,7 +277,7 @@ namespace aspect
               melt_out->fluid_densities[i] = reference_rho_f * temperature_dependence
                                              * std::exp(melt_compressibility * (in.pressure[i] - this->get_surface_pressure()));
 
-              melt_out->compaction_viscosities[i] = xi_0 * exp(- alpha_phi * porosity);
+              melt_out->compaction_viscosities[i] = xi_0 * std::exp(- alpha_phi * porosity);
 
               double visc_temperature_dependence = 1.0;
               if (this->include_adiabatic_heating ())
@@ -428,7 +428,7 @@ namespace aspect
                              "field $F$ (called peridotite). "
                              "Dimensionless factor. With a value of 0.0 (the default) the "
                              "viscosity does not depend on the depletion. The effective viscosity increase"
-                             "due to depletion is defined as $exp( \\alpha_F * F)$. "
+                             "due to depletion is defined as $std::exp( \\alpha_F * F)$. "
                              "Rationale: melting dehydrates the source rock by removing most of the volatiles,"
                              "and makes it stronger. Hirth and Kohlstedt (1996) report typical values around a "
                              "factor 100 to 1000 viscosity contrast between wet and dry rocks, although some "

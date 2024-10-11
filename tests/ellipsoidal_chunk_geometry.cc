@@ -84,7 +84,7 @@ int f()
 
   const double semi_major_axis_a = 6378137.0;
   const double eccentricity = 8.1819190842622e-2;
-  const double semi_minor = std::sqrt((1 - pow(eccentricity,2)) * pow(semi_major_axis_a,2));
+  const double semi_minor = std::sqrt((1 - std::pow(eccentricity,2)) * std::pow(semi_major_axis_a,2));
   {
     std::cout << "WGS84 test" << std::endl;
 

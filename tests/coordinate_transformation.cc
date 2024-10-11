@@ -52,8 +52,8 @@ int f()
   const dealii::Point<2> one2(1,1);
   const dealii::Point<3> one3(1,1,1);
 
-  const std::array<double,2> sone2 = {{sqrt(2),numbers::PI/4}};
-  const std::array<double,3> sone3 = {{sqrt(3),numbers::PI/4,std::acos(1/sqrt(3))}};
+  const std::array<double,2> sone2 = {{std::sqrt(2),numbers::PI/4}};
+  const std::array<double,3> sone3 = {{std::sqrt(3),numbers::PI/4,std::acos(1/std::sqrt(3))}};
 
   const dealii::Point<3> x(1,0,0);
   const dealii::Point<3> y(0,1,0);

@@ -650,7 +650,7 @@ namespace aspect
                 // important, as long as the result is still a valid number. Note that this
                 // is only important if \|u\| and eps are zero.
                 const double peclet = peclet_times_eps / (eps + 1e-100);
-                const double coth_of_peclet = (1.0 + exp(-2.0*peclet)) / (1.0 - exp(-2.0*peclet));
+                const double coth_of_peclet = (1.0 + std::exp(-2.0*peclet)) / (1.0 - std::exp(-2.0*peclet));
                 const double delta = h/(2.0*norm_of_advection_term*fe_order) * (coth_of_peclet - 1.0/peclet);
                 viscosity_per_cell[cell->active_cell_index()] = delta;
               }

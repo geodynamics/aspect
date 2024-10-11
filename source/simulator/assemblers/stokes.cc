@@ -147,7 +147,7 @@ namespace aspect
             }
           if (this->get_parameters().use_bfbt == true)
             {
-              const double sqrt_eta = sqrt(eta);
+              const double sqrt_eta = std::sqrt(eta);
               const unsigned int pressure_component_index = this->introspection().component_indices.pressure;
 
               for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)

@@ -298,8 +298,8 @@ namespace aspect
           }
           prm.leave_subsection ();
 
-          L=sqrt(3*K0*(log(Rho_cen/Rho_0)+1)/(2*M_PI*constants::big_g*Rho_0*Rho_cen));
-          D=sqrt(3*Cp/(2*M_PI*Alpha*Rho_cen*constants::big_g));
+          L=std::sqrt(3*K0*(std::log(Rho_cen/Rho_0)+1)/(2*M_PI*constants::big_g*Rho_0*Rho_cen));
+          D=std::sqrt(3*Cp/(2*M_PI*Alpha*Rho_cen*constants::big_g));
 
         }
         prm.leave_subsection ();
@@ -569,9 +569,9 @@ namespace aspect
       else
         {
           if (composition_dependency)
-            return (Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*pow(p,2)));
+            return (Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*std::pow(p,2)));
           else
-            return (Tm0*(1-Theta)*(1+Tm1*p+Tm2*pow(p,2)));
+            return (Tm0*(1-Theta)*(1+Tm1*p+Tm2*std::pow(p,2)));
         }
     }
 
@@ -579,7 +579,7 @@ namespace aspect
     double
     DynamicCore<dim>::get_X(double r) const
     {
-      double xi_3=pow(r/Rc,3);
+      double xi_3=std::pow(r/Rc,3);
       return X_init/(1-xi_3+Delta*xi_3);
     }
 
@@ -789,7 +789,7 @@ namespace aspect
     DynamicCore<dim>::
     get_Mass(double r) const
     {
-      return 4.*M_PI*Rho_cen*(-pow(L,2)/2.*r*exp(-pow(r/L,2))+pow(L,3)/4.*sqrt(M_PI)*erf(r/L));
+      return 4.*M_PI*Rho_cen*(-std::pow(L,2)/2.*r*std::exp(-std::pow(r/L,2))+std::pow(L,3)/4.*std::sqrt(M_PI)*std::erf(r/L));
     }
 
     template <int dim>
@@ -797,9 +797,9 @@ namespace aspect
     DynamicCore<dim>::
     fun_Sn(double B,double R,double n) const
     {
-      double S=R/(2.*sqrt(M_PI));
+      double S=R/(2.*std::sqrt(M_PI));
       for (unsigned i=1; i<=n; ++i)
-        S+=B/sqrt(M_PI)*exp(-pow(i,2)/4.)/i*sinh(i*R/B);
+        S+=B/std::sqrt(M_PI)*std::exp(-std::pow(i,2)/4.)/i*std::sinh(i*R/B);
       return S;
     }
 
@@ -808,9 +808,9 @@ namespace aspect
     DynamicCore<dim>::
     get_Pressure(double r) const
     {
-      return P_CMB-(4*M_PI*constants::big_g*pow(Rho_cen,2))/3
-             *((3*pow(r,2)/10.-pow(L,2)/5)*exp(-pow(r/L,2))
-               -(3*pow(Rc,2)/10-pow(L,2)/5)*exp(-pow(Rc/L,2)));
+      return P_CMB-(4*M_PI*constants::big_g*std::pow(Rho_cen,2))/3
+             *((3*std::pow(r,2)/10.-std::pow(L,2)/5)*std::exp(-std::pow(r/L,2))
+               -(3*std::pow(Rc,2)/10-std::pow(L,2)/5)*std::exp(-std::pow(Rc/L,2)));
     }
 
     template <int dim>
@@ -818,7 +818,7 @@ namespace aspect
     DynamicCore<dim>::
     get_Rho(double r) const
     {
-      return Rho_cen*exp(-pow(r/L,2));
+      return Rho_cen*std::exp(-std::pow(r/L,2));
     }
 
     template <int dim>
@@ -826,7 +826,7 @@ namespace aspect
     DynamicCore<dim>::
     get_g(double r) const
     {
-      return (4*M_PI/3)*constants::big_g*Rho_cen*r*(1-3*pow(r,2)/(5*pow(L,2)));
+      return (4*M_PI/3)*constants::big_g*Rho_cen*r*(1-3*std::pow(r,2)/(5*std::pow(L,2)));
     }
 
     template <int dim>
@@ -834,7 +834,7 @@ namespace aspect
     DynamicCore<dim>::
     get_T(double Tc,double r) const
     {
-      return Tc*exp((pow(Rc,2)-pow(r,2))/pow(D,2));
+      return Tc*std::exp((std::pow(Rc,2)-std::pow(r,2))/std::pow(D,2));
     }
 
     template <int dim>
@@ -842,8 +842,8 @@ namespace aspect
     DynamicCore<dim>::
     get_gravity_potential(double r) const
     {
-      return 2./3.*M_PI*constants::big_g*Rho_cen*(pow(r,2)*(1.-3.*pow(r,2)
-                                                            /(10.*pow(L,2)))-pow(Rc,2)*(1.-3.*pow(Rc,2)/(10.*pow(L,2))));
+      return 2./3.*M_PI*constants::big_g*Rho_cen*(std::pow(r,2)*(1.-3.*std::pow(r,2)
+                                                                 /(10.*std::pow(L,2)))-std::pow(Rc,2)*(1.-3.*std::pow(Rc,2)/(10.*std::pow(L,2))));
     }
 
     template <int dim>
@@ -851,8 +851,8 @@ namespace aspect
     DynamicCore<dim>::
     get_specific_heating(double Tc, double &Qs,double &Es)
     {
-      double A=sqrt(1./(pow(L,-2)+pow(D,-2)));
-      double Is=4.*M_PI*get_T(Tc,0.)*Rho_cen*(-pow(A,2)*Rc/2.*exp(-pow(Rc/A,2))+pow(A,3)*sqrt(M_PI)/4.*erf(Rc/A));
+      double A=std::sqrt(1./(std::pow(L,-2)+std::pow(D,-2)));
+      double Is=4.*M_PI*get_T(Tc,0.)*Rho_cen*(-std::pow(A,2)*Rc/2.*std::exp(-std::pow(Rc/A,2))+std::pow(A,3)*std::sqrt(M_PI)/4.*std::erf(Rc/A));
 
       Qs=-Cp/Tc*Is;
       Es=Cp/Tc*(Mc-Is/Tc);
@@ -866,13 +866,13 @@ namespace aspect
       double B,It;
       if (D>L)
         {
-          B=sqrt(1/(1/pow(L,2)-1/pow(D,2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(-pow(B,2)*Rc/2*exp(-pow(Rc/B,2))+pow(B,3)/sqrt(M_PI)/4*erf(Rc/B));
+          B=std::sqrt(1/(1/std::pow(L,2)-1/std::pow(D,2)));
+          It=4*M_PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(M_PI)/4*std::erf(Rc/B));
         }
       else
         {
-          B=sqrt(1/(pow(D,-2)-pow(L,-2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(pow(B,2)*Rc/2*exp(pow(Rc/B,2))-pow(B,2)*fun_Sn(B,Rc,100)/2);
+          B=std::sqrt(1/(std::pow(D,-2)-std::pow(L,-2)));
+          It=4*M_PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
         }
       Qr=Mc*core_data.H;
       Er=(Mc/Tc-It)*core_data.H;
@@ -887,17 +887,17 @@ namespace aspect
       double B,It;
       if (D>L)
         {
-          B=sqrt(1/(1/pow(L,2)-1/pow(D,2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(-pow(B,2)*Rc/2*exp(-pow(Rc/B,2))+pow(B,3)/sqrt(M_PI)/4*erf(Rc/B));
-          It-=4*M_PI*Rho_cen/get_T(Tc,0)*(-pow(B,2)*r/2*exp(-pow(r/B,2))+pow(B,3)/sqrt(M_PI)/4*erf(r/B));
+          B=std::sqrt(1/(1/std::pow(L,2)-1/std::pow(D,2)));
+          It=4*M_PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(M_PI)/4*std::erf(Rc/B));
+          It-=4*M_PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*r/2*std::exp(-std::pow(r/B,2))+std::pow(B,3)/std::sqrt(M_PI)/4*std::erf(r/B));
         }
       else
         {
-          B=sqrt(1/(pow(D,-2)-pow(L,-2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(pow(B,2)*Rc/2*exp(pow(Rc/B,2))-pow(B,2)*fun_Sn(B,Rc,100)/2);
-          It-=4*M_PI*Rho_cen/get_T(Tc,0)*(pow(B,2)*r/2*exp(pow(r/B,2))-pow(B,2)*fun_Sn(B,r,100)/2);
+          B=std::sqrt(1/(std::pow(D,-2)-std::pow(L,-2)));
+          It=4*M_PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
+          It-=4*M_PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*r/2*std::exp(std::pow(r/B,2))-std::pow(B,2)*fun_Sn(B,r,100)/2);
         }
-      double Cc=4*M_PI*pow(r,2)*get_Rho(r)*X/(Mc-get_Mass(r));
+      double Cc=4*M_PI*std::pow(r,2)*get_Rho(r)*X/(Mc-get_Mass(r));
       Eh=Rh*(It-(Mc-get_Mass(r))/get_T(Tc,r))*Cc;
     }
 
@@ -906,16 +906,16 @@ namespace aspect
     DynamicCore<dim>::
     get_gravity_heating(double Tc, double r,double X,double &Qg,double &Eg)
     {
-      double Cc=4*M_PI*pow(r,2)*get_Rho(r)*X/(Mc-get_Mass(r));
-      double C_2=3./16.*pow(L,2)-0.5*pow(Rc,2)*(1.-3./10.*pow(Rc/L,2));
+      double Cc=4*M_PI*std::pow(r,2)*get_Rho(r)*X/(Mc-get_Mass(r));
+      double C_2=3./16.*std::pow(L,2)-0.5*std::pow(Rc,2)*(1.-3./10.*std::pow(Rc/L,2));
       if (r==Rc)
         Qg=0.;
       else
-        Qg=(8./3.*pow(M_PI*Rho_cen,2)*constants::big_g*(
-              ((3./20.*pow(Rc,5)-pow(L,2)*pow(Rc,3)/8.-C_2*pow(L,2)*Rc)*exp(-pow(Rc/L,2))
-               +C_2/2.*pow(L,3)*sqrt(M_PI)*erf(Rc/L))
-              -((3./20.*pow(r,5)-pow(L,2)*pow(r,3)/8.-C_2*pow(L,2)*r)*exp(-pow(r/L,2))
-                +C_2/2.*pow(L,3)*sqrt(M_PI)*erf(r/L)))
+        Qg=(8./3.*std::pow(M_PI*Rho_cen,2)*constants::big_g*(
+              ((3./20.*std::pow(Rc,5)-std::pow(L,2)*std::pow(Rc,3)/8.-C_2*std::pow(L,2)*Rc)*std::exp(-std::pow(Rc/L,2))
+               +C_2/2.*std::pow(L,3)*std::sqrt(M_PI)*std::erf(Rc/L))
+              -((3./20.*std::pow(r,5)-std::pow(L,2)*std::pow(r,3)/8.-C_2*std::pow(L,2)*r)*std::exp(-std::pow(r/L,2))
+                +C_2/2.*std::pow(L,3)*std::sqrt(M_PI)*std::erf(r/L)))
             -(Mc-get_Mass(r))*get_gravity_potential(r))*Beta_c*Cc;
       Eg=Qg/Tc;
 
@@ -926,15 +926,15 @@ namespace aspect
     DynamicCore<dim>::
     get_adiabatic_heating(double Tc, double &Ek, double &Qk)
     {
-      Ek=16*M_PI*k_c*pow(Rc,5)/5/pow(D,4);
-      Qk=8*M_PI*pow(Rc,3)*k_c*Tc/pow(D,2);
+      Ek=16*M_PI*k_c*std::pow(Rc,5)/5/std::pow(D,4);
+      Qk=8*M_PI*std::pow(Rc,3)*k_c*Tc/std::pow(D,2);
     }
     template <int dim>
     void
     DynamicCore<dim>::
     get_latent_heating(double Tc, double r, double &El, double &Ql)
     {
-      Ql=4.*M_PI*pow(r,2)*Lh*get_Rho(r);
+      Ql=4.*M_PI*std::pow(r,2)*Lh*get_Rho(r);
       El=Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
     }
 
@@ -946,7 +946,7 @@ namespace aspect
       double time=this->get_time()+0.5*this->get_timestep();
       double Ht=0;
       for (unsigned i=0; i<n_radioheating_elements; ++i)
-        Ht+=heating_rate[i]*initial_concentration[i]*1e-6*pow(0.5,time/half_life[i]/year_in_seconds/1e9);
+        Ht+=heating_rate[i]*initial_concentration[i]*1e-6*std::pow(0.5,time/half_life[i]/year_in_seconds/1e9);
       return Ht;
     }
 

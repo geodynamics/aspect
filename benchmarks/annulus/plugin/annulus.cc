@@ -219,7 +219,7 @@ namespace aspect
             const double r = spherical_position[0];
             const double theta = spherical_position[1];
 
-            const double forcing_term = m(r,k)*k*sin(k*(theta-phase(t))) + rho_0;
+            const double forcing_term = m(r,k)*k*std::sin(k*(theta-phase(t))) + rho_0;
             gravity_magnitude = forcing_term / Annulus_density(pos,k,t, transient);
           }
 

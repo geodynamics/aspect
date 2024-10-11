@@ -90,10 +90,10 @@ namespace aspect
 
               const Point<dim> &pos = in.position[i];
               const double depth = 1.0 - pos[dim-1];
-              const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
+              const double temperature = std::sin(numbers::PI*pos(dim-1))*std::cos(numbers::PI*wavenumber*pos(0));
 
-              out.viscosities[i] = ( Di==0.0 ? 1.0 : Di ) * exp( a * depth );
-              out.densities[i] = ( Di==0.0 ? 1.0 : Di ) * (-1.0 * temperature ) * exp( Di/gamma * (depth) );
+              out.viscosities[i] = ( Di==0.0 ? 1.0 : Di ) * std::exp( a * depth );
+              out.densities[i] = ( Di==0.0 ? 1.0 : Di ) * (-1.0 * temperature ) * std::exp( Di/gamma * (depth) );
               out.specific_heat[i] = 1.0;
               out.thermal_conductivities[i] = 1.0;
               out.thermal_expansion_coefficients[i] = ( Di==0.0 ) ? 1.0 : Di;
@@ -293,7 +293,7 @@ namespace aspect
                                    const Point<dim> &position) const override
       {
         double wavenumber=1;
-        return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
+        return std::sin(numbers::PI*position(dim-1))*std::cos(numbers::PI*wavenumber*position(0));
       }
 
       double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;

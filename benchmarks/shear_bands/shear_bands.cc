@@ -86,7 +86,7 @@ namespace aspect
 
         double reference_darcy_coefficient () const override
         {
-          return reference_permeability * pow(0.01, permeability_exponent) / eta_f;
+          return reference_permeability * std::pow(0.01, permeability_exponent) / eta_f;
         }
 
 
@@ -150,7 +150,7 @@ namespace aspect
               {
                 double porosity = std::max(in.composition[i][porosity_idx],1e-4);
 
-                melt_out->compaction_viscosities[i] = xi_0 * pow(porosity/background_porosity,-compaction_viscosity_exponent);
+                melt_out->compaction_viscosities[i] = xi_0 * std::pow(porosity/background_porosity,-compaction_viscosity_exponent);
                 melt_out->fluid_viscosities[i]= eta_f;
                 melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,permeability_exponent);
                 melt_out->fluid_densities[i]= reference_rho_f;
@@ -534,8 +534,8 @@ namespace aspect
     PlaneWaveMeltBandsInitialCondition<dim>::
     initial_composition (const Point<dim> &position, const unsigned int /*n_comp*/) const
     {
-      return background_porosity * (1.0 + amplitude * cos(wave_number*position[0]*sin(initial_band_angle)
-                                                          + wave_number*position[1]*cos(initial_band_angle)));
+      return background_porosity * (1.0 + amplitude * std::cos(wave_number*position[0]*std::sin(initial_band_angle)
+                                                               + wave_number*position[1]*std::cos(initial_band_angle)));
     }
 
 
@@ -736,7 +736,7 @@ namespace aspect
       const double min_velocity = bm.boundary_velocity(lower_boundary, lower_boundary_point).norm();
 
       const double strain_rate = 0.5 * (max_velocity + min_velocity) / this->get_geometry_model().maximal_depth();
-      const double theta = std::atan(std::sin(initial_band_angle) / (std::cos(initial_band_angle) - time * strain_rate/sqrt(2.0) * std::sin(initial_band_angle)));
+      const double theta = std::atan(std::sin(initial_band_angle) / (std::cos(initial_band_angle) - time * strain_rate/numbers::SQRT2 * std::sin(initial_band_angle)));
       const double analytical_growth_rate = - eta_0 / (xi_0 + 4.0/3.0 * eta_0) * alpha * (1.0 - background_porosity)
                                             * 2.0 * strain_rate * std::sin(2.0 * theta);
 

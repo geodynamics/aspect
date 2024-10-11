@@ -349,7 +349,7 @@ namespace aspect
       if (peridotite_melt_fraction > F_max && temperature < T_liquidus)
         {
           const double T_max = std::pow(F_max,1/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
-          peridotite_melt_fraction = F_max + (1 - F_max) * pow((temperature - T_max) / (T_liquidus - T_max),beta);
+          peridotite_melt_fraction = F_max + (1 - F_max) * std::pow((temperature - T_max) / (T_liquidus - T_max),beta);
         }
       return peridotite_melt_fraction;
     }
@@ -486,7 +486,7 @@ namespace aspect
 
               // 4) Reduce shear viscosity due to melt presence
               const double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
-              out.viscosities[i] *= exp(- alpha_phi * porosity);
+              out.viscosities[i] *= std::exp(- alpha_phi * porosity);
             }
         }
 
@@ -534,7 +534,7 @@ namespace aspect
 
                   // Convert friction angle from degrees to radians
                   double phi = angles_internal_friction[c] * constants::degree_to_radians;
-                  const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  sin(phi));
+                  const double transition_pressure = (cohesions[c] * std::cos(phi) - tensile_strength_c) / (1.0 -  std::sin(phi));
 
                   double yield_strength_c = 0.0;
                   // In case we're not using the Keller et al. formulation,
