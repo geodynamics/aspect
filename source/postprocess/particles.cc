@@ -117,7 +117,7 @@ namespace aspect
         patches.resize(particle_handler.n_locally_owned_particles());
         typename dealii::Particles::ParticleHandler<dim>::particle_iterator particle = particle_handler.begin();
 
-        for (unsigned int i=0; particle != particle_handler.end(); ++particle, ++i)
+        for (types::particle_index i=0; particle != particle_handler.end(); ++particle, ++i)
           {
             patches[i].vertices[0] = particle->get_location();
             patches[i].patch_index = i;
