@@ -21,6 +21,8 @@
 /benchmarks/**/cmake_install.cmake
 /benchmarks/**/lib*.so
 /benchmarks/**/aspect
+/benchmarks/**/aspect-debug
+/benchmarks/**/aspect-release
 /benchmarks/**/temp.prm
 /benchmarks/tangurnis/*/*csv
 /benchmarks/tangurnis/*/solution*
@@ -30,6 +32,8 @@
 /cookbooks/**/lib*.so
 /cookbooks/**/Makefile
 /cookbooks/**/aspect
+/cookbooks/**/aspect-debug
+/cookbooks/**/aspect-release
 /detailed.log
 /doc/aspect.dox
 /doc/aspect.tag
