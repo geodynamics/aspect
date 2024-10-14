@@ -45,18 +45,18 @@ namespace aspect
 
       if (this->n_particle_worlds() > 0)
         {
-          unsigned int locally_owned_particles = 0;
+          types::particle_index locally_owned_particles = 0;
           for (unsigned int particle_handler_index = 0; particle_handler_index < this->n_particle_worlds(); ++particle_handler_index)
             locally_owned_particles += this->get_particle_world(particle_handler_index).
                                        get_particle_handler().n_locally_owned_particles();
 
           const dealii::Utilities::MPI::MinMaxAvg particles_per_process =
-            dealii::Utilities::MPI::min_max_avg(locally_owned_particles,this->get_mpi_communicator());
+            dealii::Utilities::MPI::min_max_avg(locally_owned_particles, this->get_mpi_communicator());
 
           statistics.add_value ("Minimal particles per process",
-                                static_cast<unsigned int>(particles_per_process.min));
+                                static_cast<types::particle_index>(particles_per_process.min));
           statistics.add_value ("Maximal particles per process",
-                                static_cast<unsigned int>(particles_per_process.max));
+                                static_cast<types::particle_index>(particles_per_process.max));
           statistics.add_value ("Average particles per process",
                                 particles_per_process.avg);
 
