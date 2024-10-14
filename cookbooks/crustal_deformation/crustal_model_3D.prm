@@ -39,6 +39,7 @@ end
 
 subsection Material model
   set Model name = drucker prager
+  set Material averaging =  harmonic average only viscosity
 
   subsection Drucker Prager
     set Reference density = 2800
@@ -123,6 +124,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-9
-    set Number of cheap Stokes solver steps = 0
+    set Maximum number of expensive Stokes solver steps = 0
   end
 end
