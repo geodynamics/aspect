@@ -1,31 +1,108 @@
 
-Number of active cells: 192 (on 2 levels)
-Number of degrees of freedom: 8,937 (6,435+357+2,145)
+Number of active cells: 24 (on 1 levels)
+Number of degrees of freedom: 1,500 (1,071+72+357)
 
-Number of mesh deformation degrees of freedom: 1,071
+Number of mesh deformation degrees of freedom: 216
    Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 0+19 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system (GMG)... 22+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999999
 
-   Solving Stokes system (GMG)... 0+180 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.146052
+   Solving Stokes system (GMG)... 25+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.159695
+
+   Solving Stokes system (GMG)... 21+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 6.70296e-05
+
+   Solving Stokes system (GMG)... 20+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.60333e-05
+
+   Solving Stokes system (GMG)... 18+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.98817e-05
+
+   Solving Stokes system (GMG)... 17+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 6.69786e-06
+
+   Solving Stokes system (GMG)... 16+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 5.74977e-06
+
+   Solving Stokes system (GMG)... 15+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.55677e-06
+
+   Solving Stokes system (GMG)... 15+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 1.88832e-06
+
+   Solving Stokes system (GMG)... 14+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 1.14181e-06
+
+   Solving Stokes system (GMG)... 14+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 11: 8.44013e-07
+
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 12: 5.81288e-07
+
+   Solving Stokes system (GMG)... 13+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 13: 4.37762e-07
+
+   Solving Stokes system (GMG)... 12+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 14: 3.21668e-07
+
+   Solving Stokes system (GMG)... 12+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 15: 2.44738e-07
+
+   Solving Stokes system (GMG)... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 16: 1.84042e-07
+
+   Solving Stokes system (GMG)... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 17: 1.40618e-07
+
+   Solving Stokes system (GMG)... 11+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 18: 1.07097e-07
+
+   Solving Stokes system (GMG)... 10+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 19: 8.22713e-08
+
+   Solving Stokes system (GMG)... 10+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 20: 6.31244e-08
+
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 21: 4.86369e-08
+
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 22: 3.74679e-08
+
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 23: 2.89298e-08
+
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 24: 2.23418e-08
+
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 25: 1.72726e-08
+
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 26: 1.33585e-08
+
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 27: 1.03318e-08
+
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 28: 7.99386e-09
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
-     Writing graphical output: output-crustal_model_3D/solution/solution-00000
-     RMS, max velocity:        0.0098 m/year, 0.0264 m/year
-     Topography min/max:       0 m, 0 m
-     Pressure min/avg/max:     -4.725e+09 Pa, 1.682e+08 Pa, 2.528e+09 Pa
+     RMS, max velocity:    0.00904 m/year, 0.0111 m/year
+     Topography min/max:   0 m, 0 m
+     Pressure min/avg/max: -1.005e+08 Pa, 1.869e+08 Pa, 5.418e+08 Pa
+
+Skipping mesh refinement, because the mesh did not change.
+
+
+
 
 Termination requested by criterion: end time
 
 
 
-
-WARNING: During this computation 1 nonlinear solver failures occurred!
