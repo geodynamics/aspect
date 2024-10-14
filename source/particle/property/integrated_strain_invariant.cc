@@ -55,7 +55,7 @@ namespace aspect
             // Velocity gradients
             Tensor<2,dim> grad_u;
             for (unsigned int d=0; d<dim; ++d)
-              grad_u[d] = inputs.gradients[p][d];
+              grad_u[d] = inputs.gradients[p][this->introspection().component_indices.velocities[d]];
 
             // Calculate strain rate from velocity gradients
             const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
@@ -83,9 +83,12 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      IntegratedStrainInvariant<dim>::get_needed_update_flags () const
+      IntegratedStrainInvariant<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_gradients;
+        if (this->introspection().component_masks.velocities[component] == true)
+          return update_gradients;
+
+        return update_default;
       }
 
 

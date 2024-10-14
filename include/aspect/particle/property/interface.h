@@ -435,13 +435,41 @@ namespace aspect
           need_update () const;
 
           /**
+           * Return which data of the solution component @p component
+           * has to be provided to update the current particle property.
+           *
+           * Note that particle properties can only ask for update_default
+           * (no data), update_values (solution values), and update_gradients
+           * (solution gradients). All other update flags will have no effect.
+           *
+           * As an example consider a particle property that depends on the
+           * solution values and gradients of the velocity field. In this case
+           * the function should return update_values | update_gradients if the
+           * @p component is one of the velocity components, and update_default
+           * otherwise.
+           *
+           * @param component The component of the solution which is to be
+           * evaluated.
+           *
+           * @return The necessary update flags for the solution component
+           * @p component that is required for this particle property.
+           */
+          virtual
+          UpdateFlags
+          get_update_flags (const unsigned int component) const;
+
+          /**
            * Return which data has to be provided to update all properties.
            * Note that particle properties can only ask for update_default
            * (no data), update_values (solution values), and update_gradients
            * (solution gradients). All other update flags will have no effect.
            *
            * @return The necessary update flags for this particle property.
+           *
+           * @deprecated This function is deprecated. Use the above version of
+           * get_update_flags() instead.
            */
+          DEAL_II_DEPRECATED
           virtual
           UpdateFlags
           get_needed_update_flags () const;
@@ -624,9 +652,16 @@ namespace aspect
            * Note that particle properties can only ask for update_default
            * (no data), update_values (solution values), and update_gradients
            * (solution gradients). All other update flags will have no effect.
+           * The result of this function is a combination of the
+           * get_update_flags() functions of all individual properties
+           * that are selected.
+           *
+           * @return A vector that contains the update flags that are
+           * required to update all particle properties. The vector has as many entries
+           * as there solution components.
            */
-          UpdateFlags
-          get_needed_update_flags () const;
+          std::vector<UpdateFlags>
+          get_update_flags () const;
 
           /**
            * Checks if the particle plugin specified by @p name exists

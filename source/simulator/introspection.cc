@@ -398,6 +398,16 @@ namespace aspect
         }
       return result;
     }
+
+    template <int dim>
+    ComponentMask
+    make_composition_component_mask (const FEVariableCollection<dim> &fevs, const std::vector<ComponentMask> &compositional_fields)
+    {
+      ComponentMask result(fevs.n_components(), false);
+      for (const auto &mask : compositional_fields)
+        result = result | mask;
+      return result;
+    }
   }
 
 
@@ -408,7 +418,8 @@ namespace aspect
     velocities (fevs.variable("velocity").component_mask),
     pressure (fevs.variable("pressure").component_mask),
     temperature (fevs.variable("temperature").component_mask),
-    compositional_fields (make_composition_component_mask_sequence (fevs, indices))
+    compositional_fields (make_composition_component_mask_sequence (fevs, indices)),
+    compositions(make_composition_component_mask(fevs, compositional_fields))
   {}
 
 
