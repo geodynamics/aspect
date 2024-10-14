@@ -2284,19 +2284,33 @@ namespace aspect
           consider_darcy_velocity = true;
       }
 
+    const UpdateFlags update_flags
+      = UpdateFlags(
+          consider_darcy_velocity
+          ?
+          update_values |
+          update_gradients |
+          update_normal_vectors |
+          update_quadrature_points |
+          update_JxW_values
+          :
+          update_values |
+          update_normal_vectors |
+          update_quadrature_points |
+          update_JxW_values);
+
     FEFaceValues<dim> fe_face_values (*mapping,
                                       finite_element,
                                       quadrature_formula,
-                                      update_values   | update_normal_vectors |
-                                      update_quadrature_points | update_JxW_values);
+                                      update_flags);
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
-    std::vector<Tensor<1,dim>> face_current_fluid_velocity_values(fe_face_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_current_fluid_velocity_values (fe_face_values.n_quadrature_points);
 
     MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MeltHandler<dim>::create_material_model_outputs(out);
-    MaterialModel::MeltOutputs<dim> *fluid_out = nullptr;
+    MaterialModel::MeltOutputs<dim> *fluid_out = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();;
 
     const auto &tangential_velocity_boundaries =
       boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
@@ -2326,11 +2340,18 @@ namespace aspect
                 fe_face_values.reinit (cell, face_number);
                 fe_face_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
                                                                                         face_current_velocity_values);
-
                 // ... check if the face is an outflow boundary by integrating the normal velocities
                 // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
-                double integrated_flow = 0;
-                double integrated_darcy_flow = 0;
+                // do this for the solid velocity, the darcy velocity, and/or the fluid velocity.
+                double integrated_solid_flow = 0;
+                double integrated_darcy_flow = consider_darcy_velocity ? 0 : std::numeric_limits<double>::max();
+                double integrated_fluid_flow = parameters.include_melt_transport ? 0 : std::numeric_limits<double>::max();
+
+                if (consider_darcy_velocity)
+                  {
+                    in.reinit(fe_face_values, cell, introspection, solution);
+                    material_model->evaluate(in, out);
+                  }
 
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
@@ -2356,12 +2377,24 @@ namespace aspect
                                                  fe_face_values.JxW(q);
                       }
 
-                    integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
-                                       fe_face_values.JxW(q);
+                    if (parameters.include_melt_transport)
+                      {
+                        const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+                        fe_face_values[ex_u_f].get_function_values(current_linearization_point, face_current_fluid_velocity_values);
+                        integrated_fluid_flow += (face_current_fluid_velocity_values[q] * fe_face_values.normal_vector(q)) *
+                                                 fe_face_values.JxW(q);
+                      }
+
+                    integrated_solid_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
+                                             fe_face_values.JxW(q);
                   }
 
-                // ... and change the boundary id of any outflow boundary faces.
-                if (integrated_flow > 0 || integrated_darcy_flow > 0)
+                // ... and change the boundary id of any outflow boundary faces. By default, both integrated_darcy_flow and
+                // integrated_fluid_flow are set to values greater than 0. integrated_darcy_flow is only updated when a field
+                // named `porosity` is advected using the `darcy field` advection method, while integrated_fluid_flow is only
+                // updated when melt transport is included.
+                // TODO: Make the condition for setting outflow composition dependent
+                if (integrated_solid_flow > 0 && integrated_darcy_flow > 0 && integrated_fluid_flow > 0)
                   face->set_boundary_id(face->boundary_id() + offset);
               }
           }
