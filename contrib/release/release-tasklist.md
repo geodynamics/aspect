@@ -33,19 +33,15 @@ and the links are working
   cd ../..
   ```
 
-- Check and fix doxygen documentation. some of the changes of the script will destroy intentional indentation. Go through the list of changes manually and decide which ones to include.
+- Check and fix doxygen documentation and copyright years. Some of the changes of the script will destroy intentional indentation. Go through the list of changes manually and decide which ones to include.
   ```
   find . -name "*.h" -not -wholename "*/doc/modules/*" -not -wholename "*/contrib/world_builder/*" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
   git add -p
   git checkout .
-  ```
-
-- Fix formatting, copyright years:
-
-  ```
   ./contrib/utilities/indent
+  git commit -a -m "doxygen formatting"
   ./contrib/release/update_copyright.sh
-  git commit -a -m "doxygen formatting, update copyright years"
+  git commit -a -m "update copyright years"
   ```
 
 - Create a pull request with the pre release tasks
