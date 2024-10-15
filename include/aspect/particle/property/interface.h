@@ -697,9 +697,9 @@ namespace aspect
            * argument) is a class derived from the Interface class in this namespace.
            *
            * @deprecated Instead of this function, use the
-           *   Plugins::ManagerBase::has_matching_active_plugin() and
-           *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
-           *   class of the current class.
+           * Plugins::ManagerBase::has_matching_active_plugin() and
+           * Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+           * class of the current class.
            */
           template <typename ParticlePropertyType,
                     typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,ParticlePropertyType>::value>>
@@ -719,9 +719,9 @@ namespace aspect
            * argument) is a class derived from the Interface class in this namespace.
            *
            * @deprecated Instead of this function, use the
-           *   Plugins::ManagerBase::has_matching_active_plugin() and
-           *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
-           *   class of the current class.
+           * Plugins::ManagerBase::has_matching_active_plugin() and
+           * Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+           * class of the current class.
            */
           template <typename ParticlePropertyType,
                     typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,ParticlePropertyType>::value>>
@@ -781,7 +781,7 @@ namespace aspect
            * @param name The name under which this particle property
            * is to be called in parameter files.
            * @param description A text description of what this particle property
-           *  does and that will be listed in the documentation of the
+           * does and that will be listed in the documentation of the
            * parameter file.
            * @param declare_parameters_function A pointer to a function that
            * declares the parameters for this property.

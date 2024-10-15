@@ -162,9 +162,9 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_active_plugin() and
-         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
-         *   class of the current class.
+         * Plugins::ManagerBase::has_matching_active_plugin() and
+         * Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         * class of the current class.
          */
         template <typename MeshRefinementType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>
@@ -184,9 +184,9 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_active_plugin() and
-         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
-         *   class of the current class.
+         * Plugins::ManagerBase::has_matching_active_plugin() and
+         * Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         * class of the current class.
          */
         template <typename MeshRefinementType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,MeshRefinementType>::value>>

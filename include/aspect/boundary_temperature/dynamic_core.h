@@ -109,8 +109,8 @@ namespace aspect
          * at the inner and outer boundaries.
          *
          * @param boundary_indicator The boundary indicator of the part of the boundary
-         *   of the domain on which the point is located at which we are requesting the
-         *   temperature.
+         * of the domain on which the point is located at which we are requesting the
+         * temperature.
          * @param location The location of the point at which we ask for the temperature.
          */
         double  boundary_temperature (const types::boundary_id            boundary_indicator,
@@ -246,9 +246,9 @@ namespace aspect
         /**
          * Parameters for core solidus following:
          * if not dependent on composition
-         *   Tm(p)= Tm0*(1-Theta)*(1+Tm1*p+Tm2*p^2)
+         * Tm(p)= Tm0*(1-Theta)*(1+Tm1*p+Tm2*p^2)
          * if depend on composition X
-         *   Tm(p)= Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*p^2)
+         * Tm(p)= Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*p^2)
          */
         double Tm0;
         double Tm1;

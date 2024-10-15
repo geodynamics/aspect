@@ -38,9 +38,9 @@ namespace aspect
      * A namespace for selecting how to determine the age of a
      * boundary layer. Current options are:
      *
-     *  'constant': A constant age independent of position.
-     *  'ascii_data': Age is specified in an ascii data file.
-     *  'function': Age is specified as a function in the input file.
+     * 'constant': A constant age independent of position.
+     * 'ascii_data': Age is specified in an ascii data file.
+     * 'function': Age is specified as a function in the input file.
      */
     namespace BoundaryLayerAgeModel
     {

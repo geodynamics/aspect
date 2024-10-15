@@ -61,9 +61,9 @@ namespace aspect
      * Given an array @p values, consider three cases:
      * - If it has size @p N, return the original array.
      * - If it has size one, return an array of size @p N where all
-     *   elements are equal to the one element of @p value.
+     * elements are equal to the one element of @p value.
      * - If it has any other size, throw an exception that uses
-     *   @p id_text as an identifying string.
+     * @p id_text as an identifying string.
      *
      * This function is typically used for parameter lists that can either
      * contain different values for each of a set of objects (e.g., for
@@ -197,18 +197,18 @@ namespace aspect
        * settings.
        *
        * @param[in] input_string The string representation of the map
-       *   to be parsed.
+       * to be parsed.
        * @param[in] options An object of type MapParsing::Options() that contains
-       *   the parsing options that are considered by this function. See the
-       *   documentation of Options() for the available settings.
+       * the parsing options that are considered by this function. See the
+       * documentation of Options() for the available settings.
        *
        * @return A vector of values that are parsed from the @p input_string according
-       *   to the provided @p options and is sorted according to the member variable
-       *   list_of_required_keys inside @p options.
-       *   If multiple values per key are allowed, the vector contains first all
-       *   values for key 1, then all values for key 2 and so forth. Using the
-       *   n_values_per_key vector inside @p options allows the caller to
-       *   associate entries in the returned vector with specific keys.
+       * to the provided @p options and is sorted according to the member variable
+       * list_of_required_keys inside @p options.
+       * If multiple values per key are allowed, the vector contains first all
+       * values for key 1, then all values for key 2 and so forth. Using the
+       * n_values_per_key vector inside @p options allows the caller to
+       * associate entries in the returned vector with specific keys.
        */
       std::vector<double>
       parse_map_to_double_array(const std::string &input_string,
@@ -611,13 +611,13 @@ namespace aspect
      * process 0.
      *
      * @param [in] filename The name of the ascii file to load. If the
-     *  file name ends in `.gz`, then the function assumes that the file
-     *  has been compressed using gzip; it then reads and uncompresses the file
-     *  before distributing it. If the file name is a URL (starting with either
-     *  `http://`, `https://`, or `file://`), and if ASPECT has been configured
-     *  with libDAP, then the file is read from that location via libDAP
-     *  and the returned string is an ASCII data representation of what was
-     *  obtained this way.
+     * file name ends in `.gz`, then the function assumes that the file
+     * has been compressed using gzip; it then reads and uncompresses the file
+     * before distributing it. If the file name is a URL (starting with either
+     * `http://`, `https://`, or `file://`), and if ASPECT has been configured
+     * with libDAP, then the file is read from that location via libDAP
+     * and the returned string is an ASCII data representation of what was
+     * obtained this way.
      * @param [in] comm The MPI communicator in which the content is
      * distributed.
      * @return A string which contains the data in @p filename.
@@ -1051,20 +1051,20 @@ namespace aspect
      *
      * @p solver_name A name that identifies the solver and appears in the error message.
      * @p function_name The name of the function that used the solver (to identify where in the code
-     *   a solver failed).
+     * a solver failed).
      * @p solver_controls One or more solver controls that describe the history of the solver(s)
-     *   that failed. The reason the function takes multiple controls is we sometimes use
-     *   multi-stage solvers, e.g. we try a cheap solver first, and use an expensive solver if the
-     *   cheap solver fails.
+     * that failed. The reason the function takes multiple controls is we sometimes use
+     * multi-stage solvers, e.g. we try a cheap solver first, and use an expensive solver if the
+     * cheap solver fails.
      * @p exc The exception that was thrown by the solver when it failed, containing additional
-     *   information about what happened.
+     * information about what happened.
      * @p mpi_communicator The MPI Communicator of the problem.
      * @p output_filename An optional file name into which (if present) the solver history will
-     *   be written.
+     * be written.
      *
      * @note This function never returns normally. It always exits via an exception, either
-     *   of type ExcMessage (on rank 0 of the parallel computation) or QuietException (on all
-     *   other ranks).
+     * of type ExcMessage (on rank 0 of the parallel computation) or QuietException (on all
+     * other ranks).
      */
     void throw_linear_solver_failure_exception(const std::string &solver_name,
                                                const std::string &function_name,
@@ -1170,8 +1170,8 @@ namespace aspect
                                                    std::mt19937 &random_number_generator);
 
     /**
-    * Wraps angle between 0 and 360 degrees.
-    */
+     * Wraps angle between 0 and 360 degrees.
+     */
     double wrap_angle(const double angle);
 
     /**

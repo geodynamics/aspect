@@ -265,13 +265,13 @@ namespace aspect
          * @param input_data The data used to populate the material model input quantities.
          * @param introspection A reference to the simulator introspection object.
          * @param compute_strain_rate If set to `true`, then the object that
-         *   is currently created will also store the strain rates at all evaluation
-         *   points. This is an expensive operation. If set to `false`, then the
-         *   `strain_rate` array is going to be empty, and strain rates are not
-         *   evaluated. As a consequence, strain rates are then also not
-         *   available to functions that take this MaterialModelInputs
-         *   object as input, for example to compute strain rate-dependent
-         *   viscosities.
+         * is currently created will also store the strain rates at all evaluation
+         * points. This is an expensive operation. If set to `false`, then the
+         * `strain_rate` array is going to be empty, and strain rates are not
+         * evaluated. As a consequence, strain rates are then also not
+         * available to functions that take this MaterialModelInputs
+         * object as input, for example to compute strain rate-dependent
+         * viscosities.
          */
         MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
                             const Introspection<dim> &introspection,
@@ -289,13 +289,13 @@ namespace aspect
          * @param introspection A reference to the simulator introspection object.
          * @param solution_vector The finite element vector from which to construct the inputs.
          * @param compute_strain_rate If set to `true`, then the object that
-         *   is currently created will also store the strain rates at all evaluation
-         *   points. This is an expensive operation. If set to `false`, then the
-         *   `strain_rate` array is going to be empty, and strain rates are not
-         *   evaluated. As a consequence, strain rates are then also not
-         *   available to functions that take this MaterialModelInputs
-         *   object as input, for example to compute strain rate-dependent
-         *   viscosities.
+         * is currently created will also store the strain rates at all evaluation
+         * points. This is an expensive operation. If set to `false`, then the
+         * `strain_rate` array is going to be empty, and strain rates are not
+         * evaluated. As a consequence, strain rates are then also not
+         * available to functions that take this MaterialModelInputs
+         * object as input, for example to compute strain rate-dependent
+         * viscosities.
          */
         MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                             const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -878,9 +878,9 @@ namespace aspect
          * Base constructor.
          *
          * @param output_names A list of names for the additional output variables
-         *   this object will store. The length of the list also indicates
-         *   how many additional output variables objects of derived classes
-         *   will store.
+         * this object will store. The length of the list also indicates
+         * how many additional output variables objects of derived classes
+         * will store.
          */
         NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names);
 
@@ -888,11 +888,11 @@ namespace aspect
          * Constructor for case where outputs are stored for a number of points.
          *
          * @param output_names A list of names for the additional output variables
-         *   this object will store. The length of the list also indicates
-         *   how many additional output variables objects of derived classes
-         *   will store.
+         * this object will store. The length of the list also indicates
+         * how many additional output variables objects of derived classes
+         * will store.
          * @param n_points The number of points for which to store each of the
-         *   output variables.
+         * output variables.
          */
         NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names,
                                        const unsigned int n_points);
@@ -1139,10 +1139,10 @@ namespace aspect
      * the following terms will be assembled:
      *
      * 1) $\int - (R,q)$ to the conservation of mass equation, creating
-     *    $-(div u,q) = -(R,q)$.
+     * $-(div u,q) = -(R,q)$.
      * 2) $\int - 2.0 / 3.0 * eta * (R, div v)$ to the RHS of the momentum
-     *    equation (if the model is incompressible), otherwise this term is
-     *    already present on the left side.
+     * equation (if the model is incompressible), otherwise this term is
+     * already present on the left side.
      */
     template <int dim>
     class PrescribedPlasticDilation : public NamedAdditionalMaterialOutputs<dim>

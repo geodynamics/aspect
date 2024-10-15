@@ -141,7 +141,7 @@ namespace aspect
          * used in the computation, as specified in the input file.
          *
          * @deprecated Use Plugins::ManagerBase::get_active_plugin_names()
-         *   instead.
+         * instead.
          */
         DEAL_II_DEPRECATED
         const std::vector<std::string> &
@@ -152,7 +152,7 @@ namespace aspect
          * currently used in the computation, as specified in the input file.
          *
          * @deprecated Use Plugins::ManagerBase::get_active_plugins()
-         *   instead.
+         * instead.
          */
         DEAL_II_DEPRECATED
         const std::list<std::unique_ptr<Interface<dim>>> &
@@ -168,9 +168,9 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_active_plugin() and
-         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
-         *   class of the current class.
+         * Plugins::ManagerBase::has_matching_active_plugin() and
+         * Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         * class of the current class.
          */
         template <typename BoundaryCompositionType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryCompositionType>::value>>
@@ -190,9 +190,9 @@ namespace aspect
          * argument) is a class derived from the Interface class in this namespace.
          *
          * @deprecated Instead of this function, use the
-         *   Plugins::ManagerBase::has_matching_active_plugin() and
-         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
-         *   class of the current class.
+         * Plugins::ManagerBase::has_matching_active_plugin() and
+         * Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         * class of the current class.
          */
         template <typename BoundaryCompositionType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryCompositionType>::value>>

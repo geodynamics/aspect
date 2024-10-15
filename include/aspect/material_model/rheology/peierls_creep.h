@@ -269,7 +269,7 @@ namespace aspect
           /**
            * A parameter determines whether a strict cutoff
            * on the stress is applied to the Peierls creep
-          */
+           */
           bool apply_strict_cutoff;
 
           /**

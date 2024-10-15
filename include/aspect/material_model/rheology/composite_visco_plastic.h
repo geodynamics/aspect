@@ -43,8 +43,8 @@ namespace aspect
        * over multiple chemical compositions.
        *
        * Current options are:
-       *  'isostress': Reuss (harmonic) averaging of viscosities.
-       *  'isostrain': Voigt (arithmetic) averaging of viscosities.
+       * 'isostress': Reuss (harmonic) averaging of viscosities.
+       * 'isostrain': Voigt (arithmetic) averaging of viscosities.
        */
       namespace ViscosityAveraging
       {

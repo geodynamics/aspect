@@ -616,11 +616,11 @@ namespace aspect
       get_boundary_composition_manager () const;
 
       /**
-      * Return an reference to the manager of the boundary traction models.
-      * This can then, for example, be used to get the names of the boundary traction
-      * models used in a computation, or to compute the boundary traction
-      * for a given position.
-      */
+       * Return an reference to the manager of the boundary traction models.
+       * This can then, for example, be used to get the names of the boundary traction
+       * models used in a computation, or to compute the boundary traction
+       * for a given position.
+       */
       const BoundaryTraction::Manager<dim> &
       get_boundary_traction_manager () const;
 
@@ -869,12 +869,12 @@ namespace aspect
        * returned by the SimulatorAccess object reliable and correct.
        *
        * @note This function returns @p true starting with the moment where the
-       *   Simulator starts the time stepping loop. However, it may
-       *   temporarily revert to returning @p false if, for example,
-       *   the Simulator does the initial mesh refinement steps where
-       *   it starts the time loop, but then goes back to
-       *   initialization steps (mesh refinement, interpolation of initial
-       *   conditions, etc.) before re-starting the time loop.
+       * Simulator starts the time stepping loop. However, it may
+       * temporarily revert to returning @p false if, for example,
+       * the Simulator does the initial mesh refinement steps where
+       * it starts the time loop, but then goes back to
+       * initialization steps (mesh refinement, interpolation of initial
+       * conditions, etc.) before re-starting the time loop.
        */
       bool simulator_is_past_initialization () const;
 

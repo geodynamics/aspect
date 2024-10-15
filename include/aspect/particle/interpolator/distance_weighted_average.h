@@ -60,7 +60,7 @@ namespace aspect
           /**
            * Cached information that stores information about the grid so that we
            * do not need to recompute it every time properties_at_points() is called.
-          */
+           */
           std::unique_ptr<GridTools::Cache<dim>> grid_cache;
       };
     }

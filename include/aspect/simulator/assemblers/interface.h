@@ -379,7 +379,7 @@ namespace aspect
            * Extract the values listed in @p all_dof_indices only if
            * it corresponds to the Stokes component and copy it to the variable
            * local_dof_indices declared above in the same class as this function
-          */
+           */
           void extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
                                           const Introspection<dim>                   &introspection,
                                           const FiniteElement<dim>                   &finite_element);
@@ -416,8 +416,8 @@ namespace aspect
            * Constructor.
            *
            * @param finite_element The element that describes the field for
-           *    which we are trying to assemble a linear system. <b>Not</b>
-           *    the global finite element.
+           * which we are trying to assemble a linear system. <b>Not</b>
+           * the global finite element.
            * @param field_is_discontinuous If true, the field is a DG element.
            */
           AdvectionSystem (const FiniteElement<dim> &finite_element,

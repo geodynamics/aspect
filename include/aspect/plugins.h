@@ -583,18 +583,18 @@ namespace aspect
          * connect to other parts of the ASPECT code.
          *
          * @param plugin_system_name The name to be used for the current
-         *   plugin system. This name will be used for the "Interface"
-         *   class to which all plugins connect.
+         * plugin system. This name will be used for the "Interface"
+         * class to which all plugins connect.
          * @param output_stream The stream to write the output to.
          * @param attachment_point The point to which a plugin subsystem
-         *   feeds information. By default, this is the Simulator class,
-         *   but some plugin systems (most notably the visualization
-         *   postprocessors, which feeds to one of the postprocessor
-         *   classes) hook into other places. If other than the
-         *   "Simulator" default, the attachment point should be of
-         *   the form <code>typeid(ClassName).name()</code> as this is
-         *   the form used by this function to identify nodes in the
-         *   plugin graph.
+         * feeds information. By default, this is the Simulator class,
+         * but some plugin systems (most notably the visualization
+         * postprocessors, which feeds to one of the postprocessor
+         * classes) hook into other places. If other than the
+         * "Simulator" default, the attachment point should be of
+         * the form <code>typeid(ClassName).name()</code> as this is
+         * the form used by this function to identify nodes in the
+         * plugin graph.
          */
         static
         void

@@ -113,8 +113,8 @@ namespace aspect
           /**
            * Constructor.
            * @param finite_element The element that describes the field for which we
-           *    are trying to assemble a linear system. <b>Not</b> the global finite
-           *    element.
+           * are trying to assemble a linear system. <b>Not</b> the global finite
+           * element.
            */
           VolumeOfFluidSystem(const FiniteElement<dim> &finite_element);
           VolumeOfFluidSystem(const VolumeOfFluidSystem &data);

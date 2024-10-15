@@ -77,7 +77,7 @@ namespace aspect
            *
            * The forward Euler integrator only requires the solution vector at the
            * old time (k), and consequently returns `{false, true, false}`.
-          */
+           */
           std::array<bool, 3> required_solution_vectors() const override;
 
           /**

@@ -178,9 +178,9 @@ namespace aspect
        *
        * @param evaluation_point The index of the evaluation point in the positions array.
        * @param solution The array to fill with the solution values. This array has to be
-       *                 of size n_components().
+       * of size n_components().
        * @param evaluation_flags The flags that indicate which values should be copied into the
-       *                        solution array. This vector has to be of size n_components().
+       * solution array. This vector has to be of size n_components().
        */
       void get_solution(const unsigned int evaluation_point,
                         const ArrayView<double> &solution,
@@ -194,9 +194,9 @@ namespace aspect
        *
        * @param evaluation_point The index of the evaluation point in the positions array.
        * @param gradients The array to fill with the solution gradients. This array has to be
-       *                  of size n_components().
+       * of size n_components().
        * @param evaluation_flags The flags that indicate which gradients should be copied into the
-       *                        solution array. This vector has to be of size n_components().
+       * solution array. This vector has to be of size n_components().
        */
       void get_gradients(const unsigned int evaluation_point,
                          const ArrayView<Tensor<1, dim>> &gradients,
