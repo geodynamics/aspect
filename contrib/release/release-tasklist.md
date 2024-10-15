@@ -5,8 +5,8 @@
 - Go through the list of TODOs in the source code and see what can be done
 - Go through the list of issues marked as bugs (https://github.com/geodynamics/aspect/issues?q=is%3Aissue+is%3Aopen+label%3Abug) and see which have to be fixed
 - Go through the list of open pull requests and decide which ones have to go into the release, postpone all others
-- Check that the used deal.II version for the Docker container in [contrib/docker/docker/Dockerfile](../docker/docker/Dockerfile) and in the manual is appropriate for the release
-- Check that [README.md](../../README.md) and https://aspect.geodynamics.org/ is up-to-date
+- Check that the used deal.II version for the Docker container in [contrib/docker/docker/Dockerfile](https://github.com/geodynamics/aspect/blob/main/contrib/docker/docker/Dockerfile) and in the manual is appropriate for the release
+- Check that [README.md](https://github.com/geodynamics/aspect/blob/main/README.md) and https://aspect.geodynamics.org/ is up-to-date
 and the links are working
 - Run (and be patient), if any cookbooks/benchmarks fail, find a fix or open an issue as broken:
 
