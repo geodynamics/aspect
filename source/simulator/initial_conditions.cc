@@ -251,15 +251,6 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::interpolate_particle_properties (const AdvectionField &advection_field)
-  {
-    std::vector<AdvectionField> advection_fields(1,advection_field);
-    interpolate_particle_properties(advection_fields);
-  }
-
-
-
-  template <int dim>
   void Simulator<dim>::interpolate_particle_properties (const std::vector<AdvectionField> &advection_fields)
   {
     TimerOutput::Scope timer (computing_timer, "Particles: Interpolate");
@@ -568,8 +559,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::set_initial_temperature_and_compositional_fields(); \
   template void Simulator<dim>::compute_initial_pressure_field(); \
-  template void Simulator<dim>::interpolate_particle_properties(const AdvectionField &);
-
+  template void Simulator<dim>::interpolate_particle_properties(const std::vector<AdvectionField> &advection_fields);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

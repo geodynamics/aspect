@@ -767,11 +767,6 @@ namespace aspect
          */
         std::unique_ptr<aspect::Utilities::StructuredDataLookup<1>> lookup;
     };
-
-
-
-    template <int dim>
-    using AsciiDataLookup DEAL_II_DEPRECATED = StructuredDataLookup<dim>;
   }
 }
 

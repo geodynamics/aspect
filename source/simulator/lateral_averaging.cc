@@ -811,16 +811,6 @@ namespace aspect
 
   template <int dim>
   std::vector<std::vector<double>>
-  LateralAveraging<dim>::get_averages(const unsigned int n_slices,
-                                      const std::vector<std::string> &property_names) const
-  {
-    return compute_lateral_averages(n_slices, property_names);
-  }
-
-
-
-  template <int dim>
-  std::vector<std::vector<double>>
   LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
                                                   const std::vector<std::string> &property_names) const
   {
