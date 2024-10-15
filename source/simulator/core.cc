@@ -451,11 +451,11 @@ namespace aspect
       {
         particle_managers.resize(parameters.n_particle_managers);
 
-        AssertThrow(particle_managers.size() <= ASPECT_MAX_NUM_PARTICLE_MANAGERS,
+        AssertThrow(particle_managers.size() <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
                     ExcMessage("You have selected " + std::to_string(particle_managers.size()) + " particle managers, but ASPECT "
-                               "has been compiled with a maximum of " + std::to_string(ASPECT_MAX_NUM_PARTICLE_MANAGERS) + ". "
-                               "Please recompile ASPECT with a higher value for ASPECT_MAX_NUM_PARTICLE_MANAGERS. You can set a higher number "
-                               "specifying the CMake variable -DASPECT_MAX_NUM_PARTICLE_MANAGERS=<number>"));
+                               "has been compiled with a maximum of " + std::to_string(ASPECT_MAX_NUM_PARTICLE_SYSTEMS) + ". "
+                               "Please recompile ASPECT with a higher value for ASPECT_MAX_NUM_PARTICLE_SYSTEMS. You can set a higher number "
+                               "specifying the CMake variable -DASPECT_MAX_NUM_PARTICLE_SYSTEMS=<number>"));
 
         for (unsigned int particle_manager_index = 0 ; particle_manager_index < particle_managers.size(); ++particle_manager_index)
           {

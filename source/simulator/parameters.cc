@@ -346,10 +346,10 @@ namespace aspect
 
     prm.enter_subsection ("Particles");
     {
-      prm.declare_entry ("Number of particle managers", "1",
-                         Patterns::Integer(0, ASPECT_MAX_NUM_PARTICLE_MANAGERS),
-                         "The number of particle managers to be created. The maximum number of particle managers "
-                         "is set by the CMake variable `ASPECT_MAX_NUM_PARTICLE_MANAGERS` and is by default 2.");
+      prm.declare_entry ("Number of particle systems", "1",
+                         Patterns::Integer(0, ASPECT_MAX_NUM_PARTICLE_SYSTEMS),
+                         "The number of particle systems to be created. The maximum number of particle systems "
+                         "is set by the CMake variable `ASPECT_MAX_NUM_PARTICLE_SYSTEMS` and is by default 2.");
     }
     prm.leave_subsection();
 
@@ -1439,10 +1439,10 @@ namespace aspect
 
     prm.enter_subsection("Particles");
     {
-      n_particle_managers       = prm.get_integer("Number of particle managers");
-      Assert(n_particle_managers <= ASPECT_MAX_NUM_PARTICLE_MANAGERS,
+      n_particle_managers       = prm.get_integer("Number of particle systems");
+      Assert(n_particle_managers <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
              ExcMessage("You have specified more particle managers (" + Utilities::int_to_string(n_particle_managers) +
-                        ") than the maximum amount of particle managers set in CMake (" + Utilities::int_to_string(ASPECT_MAX_NUM_PARTICLE_MANAGERS) + ")."));
+                        ") than the maximum amount of particle managers set in CMake (" + Utilities::int_to_string(ASPECT_MAX_NUM_PARTICLE_SYSTEMS) + ")."));
     }
     prm.leave_subsection();
 

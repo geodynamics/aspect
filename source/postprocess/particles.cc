@@ -335,7 +335,7 @@ namespace aspect
 
           const std::string statistics_column_name = (particle_manager == 0 ?
                                                       "Number of advected particles" :
-                                                      "Number of advected particles (Manager " + Utilities::int_to_string(particle_manager+1) + ")");
+                                                      "Number of advected particles (Particle system " + Utilities::int_to_string(particle_manager+1) + ")");
 
           statistics.add_value(statistics_column_name,manager.n_global_particles());
 

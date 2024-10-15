@@ -780,7 +780,7 @@ namespace aspect
     void
     Manager<dim>::declare_parameters (ParameterHandler &prm)
     {
-      constexpr unsigned int number_of_particle_managers = ASPECT_MAX_NUM_PARTICLE_MANAGERS;
+      constexpr unsigned int number_of_particle_managers = ASPECT_MAX_NUM_PARTICLE_SYSTEMS;
       for (unsigned int particle_manager = 0; particle_manager < number_of_particle_managers; ++particle_manager)
         {
           if (particle_manager == 0)

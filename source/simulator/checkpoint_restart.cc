@@ -264,7 +264,7 @@ namespace aspect
       unsigned int n_particle_managers;
       ia >> n_particle_managers;
       AssertThrow (n_particle_managers == parameters.n_particle_managers,
-                   ExcMessage ("The number of particle managers that were stored "
+                   ExcMessage ("The number of particle systems that were stored "
                                "in the checkpoint file is not the same as the one "
                                "you currently set in your input file. "
                                "These need to be the same during restarting "

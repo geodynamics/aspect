@@ -92,7 +92,7 @@ else()
 endif()
 
 # Some other ASPECT configuration options:
-set(ASPECT_MAX_NUM_PARTICLE_MANAGERS 2 CACHE STRING "The maximum number of particle managers supported at runtime.")
+set(ASPECT_MAX_NUM_PARTICLE_SYSTEMS 2 CACHE STRING "The maximum number of particle systems supported at runtime.")
 
 
 

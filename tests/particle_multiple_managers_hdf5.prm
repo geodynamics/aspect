@@ -81,7 +81,7 @@ subsection Postprocess
 end
 
 subsection Particles
-  set Number of particle managers = 2
+  set Number of particle systems = 2
   set List of particle properties = initial composition
 
   subsection Generator
