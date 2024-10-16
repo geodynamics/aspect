@@ -215,10 +215,14 @@ subsection Postprocess
   set List of postprocessors                         = velocity statistics, basic statistics, temperature statistics, visualization
 
   subsection Visualization
-    set List of output variables                     = density, viscosity, strain rate, error indicator
+    set List of output variables                     = material properties, strain rate, error indicator
     set Output format                                = vtu
     set Time between graphical output                = 144   # Equivalent to ~0.5 cm of shortening
     set Interpolate output                           = true
     set Number of grouped files                      = 1
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end

@@ -91,8 +91,12 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Output format                 = vtu
-    set List of output variables      = density, thermal conductivity, thermal expansivity
+    set List of output variables      = material properties
     set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density, thermal conductivity, thermal expansivity
+    end
   end
 
   subsection Depth average

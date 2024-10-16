@@ -106,7 +106,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Output format                 = gnuplot
-    set List of output variables      = material properties, thermal conductivity
+    set List of output variables      = material properties
     set Time between graphical output = 0
 
     subsection Vp anomaly
@@ -115,6 +115,10 @@ subsection Postprocess
 
     subsection Vs anomaly
       set Number of depth slices = 12
+    end
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, specific heat, viscosity, thermal conductivity
     end
   end
 

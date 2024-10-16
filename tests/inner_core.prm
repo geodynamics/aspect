@@ -129,7 +129,11 @@ subsection Postprocess
     set Output format                 = vtu
     set Time between graphical output = 0
     set Number of grouped files       = 0
-    set List of output variables      = strain rate, gravity, density, specific heat, heating
+    set List of output variables      = strain rate, gravity, material properties, heating
+
+    subsection Material properties
+      set List of material properties = density, specific heat
+    end
   end
 
   subsection Depth average

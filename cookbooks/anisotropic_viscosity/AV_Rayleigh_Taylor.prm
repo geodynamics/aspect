@@ -88,13 +88,17 @@ subsection Postprocess
 
   subsection Visualization
     # add "named additional outputs" to the list to save the stress-strain director (AV tensor)
-    set List of output variables = compositional vector, density, viscosity, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
+    set List of output variables = compositional vector, material properties, gravity, shear stress, stress, strain rate, strain rate tensor, named additional outputs
     set Output format                 = vtu
     set Time between graphical output = 0.5
 
     subsection Compositional fields as vectors
       set Names of fields = ni,nj
       set Names of vectors = n
+    end
+
+    subsection Material properties
+      set List of material properties = density, viscosity
     end
   end
 end

@@ -127,7 +127,11 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Time between graphical output = 0.01
-    set List of output variables = viscosity, density, nonadiabatic temperature
+    set List of output variables = material properties, nonadiabatic temperature
+
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
   end
 
   subsection Global statistics

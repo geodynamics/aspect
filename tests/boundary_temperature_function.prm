@@ -65,6 +65,10 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set List of output variables      = density
+    set List of output variables      = material properties
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 end

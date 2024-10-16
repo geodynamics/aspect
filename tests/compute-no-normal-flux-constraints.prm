@@ -130,9 +130,13 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = density, viscosity, error indicator
+    set List of output variables = material properties, error indicator
     set Output format = vtu
     set Time between graphical output = 0.1e6
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end
 
