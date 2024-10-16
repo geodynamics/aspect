@@ -36,16 +36,16 @@ namespace aspect
     {
 
       /**
-      * A melt model that calculates melt fraction and entropy change
-      * according to the melting model for dry peridotite of Katz, 2003.
-      * This also includes a computation of the latent heat of melting (if the latent heat
-      * heating model is active).
-      *
-      * These functions can be used in the calculation of melting and melt transport
-      * in the melt_simple material model and can be extended to other material models
-      *
-      * @ingroup ReactionModel
-      */
+       * A melt model that calculates melt fraction and entropy change
+       * according to the melting model for dry peridotite of Katz, 2003.
+       * This also includes a computation of the latent heat of melting (if the latent heat
+       * heating model is active).
+       *
+       * These functions can be used in the calculation of melting and melt transport
+       * in the melt_simple material model and can be extended to other material models
+       *
+       * @ingroup ReactionModel
+       */
       template <int dim>
       class Katz2003MantleMelting : public ::aspect::SimulatorAccess<dim>
       {
@@ -54,8 +54,8 @@ namespace aspect
           Katz2003MantleMelting();
 
           /**
-          * Declare the parameters this function takes through input files.
-          */
+           * Declare the parameters this function takes through input files.
+           */
           static
           void
           declare_parameters (ParameterHandler &prm);
@@ -77,13 +77,13 @@ namespace aspect
                          const double pressure) const;
 
           /**
-          * Compute the change in entropy due to melting for a given @p temperature
-          * and @p pressure, and under the assumption that a fraction
-          * @p maximum_melt_fraction of the material has already been molten
-          * previously. The entropy change is computed with respect to temperature
-          * or pressure, depending on @p dependence.
-          * This is needed to calculate the latent heat of melt.
-          */
+           * Compute the change in entropy due to melting for a given @p temperature
+           * and @p pressure, and under the assumption that a fraction
+           * @p maximum_melt_fraction of the material has already been molten
+           * previously. The entropy change is computed with respect to temperature
+           * or pressure, depending on @p dependence.
+           * This is needed to calculate the latent heat of melt.
+           */
           double
           entropy_change (const double temperature,
                           const double pressure,
@@ -96,7 +96,7 @@ namespace aspect
            * Katz 2003 formulation. Takes the material model inputs @p in to compute the material model outputs @p out.
            * This function mainly fills the reaction_rate_out object but populates out.reaction_terms,
            * out.entropy_derivative_pressure and entropy_derivative_temperature
-          */
+           */
           void calculate_reaction_rate_outputs(const typename Interface<dim>::MaterialModelInputs &in,
                                                typename Interface<dim>::MaterialModelOutputs &out) const;
 
@@ -107,7 +107,7 @@ namespace aspect
            * to fill MeltOutputs. Solid outputs such as out.Thermal_expansion_coefficients are expected
            * to have already been computed when this function is called. Solid viscosities are also modified
            * in the out object here because the presence of melt weakens the material.
-          */
+           */
           void calculate_fluid_outputs(const typename Interface<dim>::MaterialModelInputs &in,
                                        typename Interface<dim>::MaterialModelOutputs &out,
                                        const double reference_T) const;
@@ -117,8 +117,8 @@ namespace aspect
 
         private:
           /**
-          * Parameters for anhydrous melting of peridotite after Katz, 2003
-          */
+           * Parameters for anhydrous melting of peridotite after Katz, 2003
+           */
 
           double reference_rho_fluid;
           double xi_0;

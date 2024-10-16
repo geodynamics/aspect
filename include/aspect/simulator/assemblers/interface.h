@@ -379,7 +379,7 @@ namespace aspect
            * Extract the values listed in @p all_dof_indices only if
            * it corresponds to the Stokes component and copy it to the variable
            * local_dof_indices declared above in the same class as this function
-          */
+           */
           void extract_stokes_dof_indices(const std::vector<types::global_dof_index> &all_dof_indices,
                                           const Introspection<dim>                   &introspection,
                                           const FiniteElement<dim>                   &finite_element);

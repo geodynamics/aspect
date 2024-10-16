@@ -41,7 +41,7 @@ namespace aspect
       public:
         /**
          * Evaluate the solution to find the deepest point of a user-specified isotherm.
-         **/
+         */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
 

@@ -42,7 +42,7 @@ namespace aspect
         /**
          * Evaluate the solution for the most left coordinate of the user-specified compositional field
          * along the surface of the domain.
-         **/
+         */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
 

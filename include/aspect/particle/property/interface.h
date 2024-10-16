@@ -770,7 +770,7 @@ namespace aspect
            * @param name The name under which this particle property
            * is to be called in parameter files.
            * @param description A text description of what this particle property
-           *  does and that will be listed in the documentation of the
+           * does and that will be listed in the documentation of the
            * parameter file.
            * @param declare_parameters_function A pointer to a function that
            * declares the parameters for this property.
