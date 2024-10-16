@@ -1,26 +1,61 @@
 # Release Tasklist
 
 ## Leading up to a release
-- send out an email about problems or outstanding patches
-- go through the list of TODOs in the source code and see what can be done
-- make sure the description of the interfaces that need to be updated
-    are up to date in the manual
-- update the used deal.II version for the Docker container in `contrib/docker/docker/Dockerfile`
-    and in the manual
-- check that `README.md` and https://aspect.geodynamics.org/ is up-to-date
+- Send out an email about problems or outstanding patches
+- Go through the list of TODOs in the source code and see what can be done
+- Go through the list of issues marked as bugs (https://github.com/geodynamics/aspect/issues?q=is%3Aissue+is%3Aopen+label%3Abug) and see which have to be fixed
+- Go through the list of open pull requests and decide which ones have to go into the release, postpone all others
+- Check that the used deal.II version for the Docker container in [contrib/docker/docker/Dockerfile](https://github.com/geodynamics/aspect/blob/main/contrib/docker/docker/Dockerfile) and in the manual is appropriate for the release
+- Check that [README.md](https://github.com/geodynamics/aspect/blob/main/README.md) and https://aspect.geodynamics.org/ is up-to-date
 and the links are working
-- run (and be patient):
+- Run (and be patient), if any cookbooks/benchmarks fail, find a fix or open an issue as broken:
 
   ```
   cd benchmarks && make -f check.mk BUILD=$BUILDDIR -j4
   cd cookbooks && make -f check.mk BUILD=$BUILDDIR -j4
   ```
 
+- Find and fix doxygen errors:
+
+  ```
+  git checkout -b pre-release-tasks
+  find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
+  git commit -a -m "doxygen fixes"
+  ```
+
+- Build doxygen and manual, check for missing labels and for warnings, fix if possible:
+
+  ```
+  cd doc
+  make aspect.tag
+  cd sphinx
+  make html
+  cd ../..
+  ```
+
+- Check and fix doxygen documentation. some of the changes of the script will destroy intentional indentation. Go through the list of changes manually and decide which ones to include.
+  ```
+  find . -name "*.h" -not -wholename "*/doc/modules/*" -not -wholename "*/contrib/world_builder/*" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
+  git add -p
+  git checkout .
+  ```
+
+- Fix formatting, copyright years:
+
+  ```
+  ./contrib/utilities/indent
+  ./contrib/release/update_copyright.sh
+  git commit -a -m "doxygen formatting, update copyright years"
+  ```
+
+- Create a pull request with the pre release tasks
+
+## Create a release pull-request
 - determine new version roughly following semantic versioning: http://semver.org/
   - format is X.Y.Z for a release, X.Y.Z-pre for the dev version or X.Y.Z-rcW for release candidates
   - backwards incompatible changes require incrementing X, adding features incrementing Y
 
-- setup:
+  setup version numbers:
 
   ```
   export OLDVER=2.4.0
@@ -31,37 +66,6 @@ and the links are working
   export DEALSRCDIR=$DEAL_II_DIR
   ```
 
-- fix doxygen errors:
-
-  ```
-  find include -name "*h" -print | xargs -n 1 $DEALSRCDIR/contrib/utilities/checkdoxygen.py
-  ```
-
-  and commit.
-- manual, check for missing labels:
-
-  ```
-  cd doc
-  make aspect.tag
-  cd sphinx
-  make html
-  ```
-
-  and check for warnings
-- fix formatting, copyright years:
-
-  ```
-  find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
-  ```
-- note: we started ignoring the rewrapping of comments, but we should still fix wrong indentation or other problems
-
-  ```
-  ./contrib/utilities/indent
-  ./contrib/release/update_copyright.sh
-  git commit -a -m "doxygen formatting, comment wrapping"
-  ```
-
-## Create a pull-request
 - create branch for main PR to update changes.h in doc/modules:
 
   ```
