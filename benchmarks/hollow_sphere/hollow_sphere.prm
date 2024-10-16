@@ -91,7 +91,11 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor, memory statistics, dynamic topography
 
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, dynamic topography, gravity
+    set List of output variables = material properties, strain rate, dynamic topography, gravity
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end
 

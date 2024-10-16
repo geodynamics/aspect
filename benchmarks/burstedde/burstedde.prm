@@ -99,6 +99,10 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, BursteddePostprocessor
 
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate
+    set List of output variables = material properties, strain rate
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end

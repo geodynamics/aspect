@@ -70,6 +70,10 @@ subsection Postprocess
   subsection Visualization
     set Output format                 = vtu
     set Time between graphical output = 0
-    set List of output variables = density, viscosity, strain rate
+    set List of output variables = material properties, strain rate
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end

@@ -96,9 +96,13 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics
 
   subsection Visualization
-    set List of output variables = density, viscosity, vertical heat flux
+    set List of output variables = material properties, vertical heat flux
     set Output format                 = vtu
     set Time between graphical output = 10e7
     set Number of grouped files       = 0
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end

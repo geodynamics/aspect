@@ -90,9 +90,11 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 1
   set Coarsening fraction                = 0.05
   set Refinement fraction                = 0.3
+
   subsection Maximum refinement function
     set Function expression = 3
   end
+
   subsection Minimum refinement function
     set Function expression = 3
   end

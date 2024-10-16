@@ -184,7 +184,11 @@ subsection Postprocess
     set Number of grouped files       = 1
     set Output format                 = vtu
     set Time between graphical output = 1e6
-    set List of output variables = density, viscosity, strain rate, stress, temperature anomaly, spherical velocity components, adiabat, heat flux map, heating, vertical heat flux
+    set List of output variables = material properties, strain rate, stress, temperature anomaly, spherical velocity components, adiabat, heat flux map, heating, vertical heat flux
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 
   subsection Particles
