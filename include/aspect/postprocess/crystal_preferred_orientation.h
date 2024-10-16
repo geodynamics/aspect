@@ -78,8 +78,8 @@ namespace aspect
         required_other_postprocessors () const override;
 
         /**
-        * Declare the parameters this class takes through input files.
-        */
+         * Declare the parameters this class takes through input files.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);

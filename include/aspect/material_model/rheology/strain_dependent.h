@@ -103,7 +103,7 @@ namespace aspect
           /**
            * @deprecated: Deprecated version of the function of the same
            * name described above.
-          */
+           */
           DEAL_II_DEPRECATED
           std::array<double, 3>
           compute_strain_weakening_factors(const unsigned int j,
@@ -145,7 +145,7 @@ namespace aspect
 
           /**
            * Whether to use the temperature-activated viscous strain weakening.
-          */
+           */
           bool use_temperature_activated_strain_softening;
 
           /**

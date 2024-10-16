@@ -77,13 +77,13 @@ namespace aspect
     {
       public:
         /**
-        * Constructor. When the MeltOutputs are created,
-        * all properties are initialized with signaling NaNs.
-        * This means that after the call to the material model
-        * it can be checked if the material model actually
-        * computed the values, by checking if the individual
-        * values are finite (using std::isfinite).
-        */
+         * Constructor. When the MeltOutputs are created,
+         * all properties are initialized with signaling NaNs.
+         * This means that after the call to the material model
+         * it can be checked if the material model actually
+         * computed the values, by checking if the individual
+         * values are finite (using std::isfinite).
+         */
         MeltOutputs (const unsigned int n_points,
                      const unsigned int n_comp);
 

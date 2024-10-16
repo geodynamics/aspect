@@ -268,9 +268,9 @@ namespace aspect
         };
 
         /**
-        * This class reads in an entropy-pressure material table and looks up material
-        * properties for the given entropy and pressure.
-        */
+         * This class reads in an entropy-pressure material table and looks up material
+         * properties for the given entropy and pressure.
+         */
         class EntropyReader
         {
           public:

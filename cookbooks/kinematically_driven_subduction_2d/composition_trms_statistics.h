@@ -42,7 +42,7 @@ namespace aspect
       public:
         /**
          * Evaluate the solution to compute the root-mean-square temperature per compositional field.
-         **/
+         */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
 

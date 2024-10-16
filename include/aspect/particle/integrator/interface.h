@@ -108,7 +108,7 @@ namespace aspect
            * requires the solution vector at the old time (k), and the third entry
            * indicates if the particle integrator requires the solution vector
            * at the new time (k+1).
-          */
+           */
           virtual std::array<bool, 3> required_solution_vectors() const = 0;
 
           /**

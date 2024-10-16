@@ -55,11 +55,11 @@ namespace aspect
         ~FastScape() override;
 
         /**
-          * A function that creates constraints for the velocity of certain mesh
-          * vertices (e.g. the surface vertices) for a specific boundary.
-          * The calling class will respect
-          * these constraints when computing the new vertex positions.
-          */
+         * A function that creates constraints for the velocity of certain mesh
+         * vertices (e.g. the surface vertices) for a specific boundary.
+         * The calling class will respect
+         * these constraints when computing the new vertex positions.
+         */
         virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
@@ -308,10 +308,10 @@ namespace aspect
         std::vector<double> sediment_rain_times;
 
         /**
-        * Flag for having FastScape advect/uplift the surface. If the free surface is used
-        * in conjunction with FastScape, this can be set to false, then FastScape will only
-        * apply erosion/deposition to the surface and not advect or uplift it.
-        */
+         * Flag for having FastScape advect/uplift the surface. If the free surface is used
+         * in conjunction with FastScape, this can be set to false, then FastScape will only
+         * apply erosion/deposition to the surface and not advect or uplift it.
+         */
         bool fastscape_advection_uplift;
 
         /**
@@ -324,16 +324,16 @@ namespace aspect
         double node_tolerance;
 
         /**
-          * Interval between the generation of graphical output. This parameter
-          * is read from the input file and consequently is not part of the
-          * state that needs to be saved and restored.
-          */
+         * Interval between the generation of graphical output. This parameter
+         * is read from the input file and consequently is not part of the
+         * state that needs to be saved and restored.
+         */
         double output_interval;
 
         /**
-          * A time (in seconds) at which the last graphical output was supposed
-          * to be produced. Used to check for the next necessary output time.
-          */
+         * A time (in seconds) at which the last graphical output was supposed
+         * to be produced. Used to check for the next necessary output time.
+         */
         mutable double last_output_time;
 
         /**
@@ -404,7 +404,7 @@ namespace aspect
          */
         double left_flux;
         /**
-           * @}
+         * @}
          */
 
         /**

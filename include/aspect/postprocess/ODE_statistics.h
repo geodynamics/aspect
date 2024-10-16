@@ -67,11 +67,11 @@ namespace aspect
         store_ODE_solver_history(const unsigned int iteration_count);
 
         /**
-          * Variables that store the ODE solver history of the current
-          * timestep, until they are written into the statistics object
-          * upon the call to execute(). They are cleared after writing
-          * the content.
-          */
+         * Variables that store the ODE solver history of the current
+         * timestep, until they are written into the statistics object
+         * upon the call to execute(). They are cleared after writing
+         * the content.
+         */
         unsigned int total_iteration_count;
         unsigned int number_of_solves;
     };
