@@ -1,4 +1,4 @@
-# Copyright (C) 2018 by the authors of the ASPECT code.
+# Copyright (C) 2018 - 2024 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
