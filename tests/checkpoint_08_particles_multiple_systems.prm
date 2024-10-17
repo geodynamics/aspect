@@ -1,12 +1,12 @@
 # test checkpoint/resume.
 
-# This test is controlled via the plugin in checkpoint_08_particles_multiple_worlds.cc.
+# This test is controlled via the plugin in checkpoint_08_particles_multiple_systems.cc.
 # The plugin will first execute ASPECT with this .prm and write the output into
 # output1.tmp/. This will generate a snapshot that is then resumed from. The
 # output for this second run will be written into output2.tmp/. Finally,
 # output files will be copied into the main output folder for comparison.
 
-# based on checkpoint_03.prm, but extended for multiple particle worlds.
+# based on checkpoint_03.prm, but extended for multiple particle systems.
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -16,7 +16,6 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
-set Number of particle worlds              = 2
 
 subsection Checkpointing
   set Steps between checkpoint = 4
@@ -83,6 +82,7 @@ subsection Solver parameters
 end
 
 subsection Particles
+  set Number of particle systems              = 2
   set List of particle properties = function, initial position, position, velocity
 
   subsection Function

@@ -33,8 +33,8 @@ int f()
   int ret;
   std::string command;
 
-  command = ("cd output-checkpoint_08_particles_multiple_worlds ; "
-             "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_08_particles_multiple_worlds.prm "
+  command = ("cd output-checkpoint_08_particles_multiple_systems ; "
+             "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_08_particles_multiple_systems.prm "
              " ; "
              " echo 'set Output directory = output1.tmp' "
              " ; "
@@ -48,7 +48,7 @@ int f()
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 
-  command = ("cd output-checkpoint_08_particles_multiple_worlds ; "
+  command = ("cd output-checkpoint_08_particles_multiple_systems ; "
              " rm -rf output2.tmp ; mkdir output2.tmp ; "
              " cp output1.tmp/restart* output2.tmp/");
   std::cout << "Executing the following command:\n"
@@ -60,8 +60,8 @@ int f()
 
 
   std::cout << "* now resuming:" << std::endl;
-  command = ("cd output-checkpoint_08_particles_multiple_worlds ; "
-             "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_08_particles_multiple_worlds.prm "
+  command = ("cd output-checkpoint_08_particles_multiple_systems ; "
+             "(cat " ASPECT_SOURCE_DIR "/tests/checkpoint_08_particles_multiple_systems.prm "
              " ; "
              " echo 'set Output directory = output2.tmp' "
              " ; "
@@ -77,7 +77,7 @@ int f()
 
   std::cout << "* now comparing:" << std::endl;
 
-  ret = system ("cd output-checkpoint_08_particles_multiple_worlds; "
+  ret = system ("cd output-checkpoint_08_particles_multiple_systems; "
                 "cp output1.tmp/particles/particles-00009.0000.gnuplot particles-00009.0000.gnuplot1;"
                 "cp output2.tmp/particles/particles-00009.0000.gnuplot particles-00009.0000.gnuplot2;"
                 "cp output1.tmp/particles-2/particles-2-00009.0000.gnuplot particles-2-00009.0000.gnuplot1;"

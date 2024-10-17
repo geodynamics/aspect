@@ -1,4 +1,4 @@
-# Like particle_multiple_managers, but tests that
+# Like particle_multiple_systems, but tests that
 # the .vtu output (in particular the summary files
 # .pvtu and .pvd) are written correctly.
 

@@ -1,8 +1,8 @@
-# Test that we can activate multiple particle managers and
-# interpolate properties from different particle managers into
+# Test that we can activate multiple particle systems and
+# interpolate properties from different particle systems into
 # the compositional fields. This test is supposed to fail
-# because one of the necessary particle properties does not
-# exist in any particle manager.
+# because one of the necessary particle properties exists
+# in more than one particle manager.
 #
 # EXPECT FAILURE
 
@@ -99,7 +99,7 @@ end
 
 subsection Particles
   set Number of particle systems = 2
-  set List of particle properties = #initial composition
+  set List of particle properties = function, initial composition
   set Particle generator name = reference cell
 end
 

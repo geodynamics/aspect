@@ -1,13 +1,11 @@
-# Test that we can activate multiple particle managers and
-# interpolate properties from different particle managers into
-# the compositional fields. This test is supposed to fail
-# because one of the necessary particle properties exists
-# in more than one particle manager.
-#
-# EXPECT FAILURE
+# Like particle_multiple_systems, but tests that
+# the HDF5 output (in particular the summary files
+# .xdmf) are written correctly.
+
+# MPI: 2
 
 set Dimension                              = 2
-set End time                               = 1
+set End time                               = 70
 set Use years in output instead of seconds = false
 
 subsection Geometry model
@@ -43,9 +41,6 @@ subsection Gravity model
   end
 end
 
-############### Parameters describing the temperature field
-# Note: The temperature plays no role in this model
-
 subsection Initial temperature model
   set Model name = function
 
@@ -54,15 +49,9 @@ subsection Initial temperature model
   end
 end
 
-############### Parameters describing the compositional field
-# Note: The compositional field is what drives the flow
-# in this example
-
 subsection Compositional fields
-  set Number of fields = 2
-  set Names of fields  = anomaly, function
-  set Compositional field methods =  particles,  particles
-  set Mapped particle properties = anomaly: function, function: initial anomaly
+  set Number of fields = 1
+  set Names of fields  = anomaly
 end
 
 subsection Initial composition model
@@ -71,45 +60,49 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
-    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02)); 0.0
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
   end
 end
-
-############### Parameters describing the discretization
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Strategy                           = composition
   set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
-  set Coarsening fraction                = 0.05
-  set Refinement fraction                = 0.3
 end
-
-############### Parameters describing what to do with the solution
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, composition statistics, particles
 
   subsection Particles
     set Time between data output = 70
-    set Data output format = vtu
+    set Data output format = hdf5
   end
 end
 
 subsection Particles
   set Number of particle systems = 2
-  set List of particle properties = function, initial composition
-  set Particle generator name = reference cell
+  set List of particle properties = initial composition
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
+  end
 end
 
 subsection Particles 2
   set List of particle properties = function
-  set Particle generator name = reference cell
 
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
-    set Function expression = x
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
   end
 end

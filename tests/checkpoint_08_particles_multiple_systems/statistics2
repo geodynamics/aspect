@@ -11,7 +11,7 @@
 # 11: RMS velocity (m/s)
 # 12: Max. velocity (m/s)
 # 13: Number of advected particles
-# 14: Number of advected particles (World 2)
+# 14: Number of advected particles (Particle system 2)
 # 15: Particle file name
 # 16: Particle file name (2)
 0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225  0 1.00000000e+00 1.04052848e+00 1.10000000e+00 5.91984042e-09 1.51937630e-08 100 100 output1.tmp/particles/particles-00000 output1.tmp/particles-2/particles-2-00000 

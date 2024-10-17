@@ -1,9 +1,10 @@
-# Test that we can activate multiple particle managers and
-# interpolate properties from different particle managers into
-# the compositional fields.
+# Test that we can activate multiple particle systems with
+# different particle properties and output directories.
+
+# MPI: 2
 
 set Dimension                              = 2
-set End time                               = 0
+set End time                               = 70
 set Use years in output instead of seconds = false
 
 subsection Geometry model
@@ -48,10 +49,8 @@ subsection Initial temperature model
 end
 
 subsection Compositional fields
-  set Number of fields = 2
-  set Names of fields  = anomaly, function
-  set Compositional field methods =  particles,  particles
-  set Mapped particle properties = anomaly: function, function: initial anomaly
+  set Number of fields = 1
+  set Names of fields  = anomaly
 end
 
 subsection Initial composition model
@@ -60,43 +59,49 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
-    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02)); 0.0
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
   end
 end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Strategy                           = composition
-  set Initial global refinement          = 1
+  set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
 end
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics, particles, visualization
-
-  subsection Visualization
-    set Output format =  gnuplot
-  end
+  set List of postprocessors = velocity statistics, composition statistics, particles
 
   subsection Particles
     set Time between data output = 70
-    set Data output format =
+    set Data output format = gnuplot
   end
 end
 
 subsection Particles
   set Number of particle systems = 2
   set List of particle properties = initial composition
-  set Particle generator name = reference cell
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
+  end
 end
 
 subsection Particles 2
   set List of particle properties = function
-  set Particle generator name = reference cell
 
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
-    set Function expression = x
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 10
+    end
   end
 end

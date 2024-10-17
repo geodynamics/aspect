@@ -17,7 +17,6 @@
 set Dimension                              = 2
 set End time                               = 0
 set Use years in output instead of seconds = false
-set Number of particle worlds = 2
 
 subsection Geometry model
   set Model name = box
@@ -117,6 +116,7 @@ subsection Postprocess
 end
 
 subsection Particles
+  set Number of particle systems = 2
   set Load balancing strategy = repartition
   set Integration scheme = euler
   set Particle weight = 5000
