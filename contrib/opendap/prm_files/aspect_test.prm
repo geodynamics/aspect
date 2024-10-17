@@ -68,9 +68,13 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics
 
   subsection Visualization
-    set List of output variables      = viscosity, density, strain rate
+    set List of output variables      = material properties, strain rate
     set Time between graphical output = 1.0
     set Output format = vtu
+
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
   end
 end
 

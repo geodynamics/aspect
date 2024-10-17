@@ -1420,53 +1420,22 @@ namespace aspect
                 viz_names.push_back (std::get<0>(*p));
             }
 
-          // Unify material property visualization plugins into the 'material properties'
-          // plugin to avoid duplicated code and multiple calls to the material model
-          prm.enter_subsection("Material properties");
-          {
-            bool material_properties_enabled = std::find(viz_names.begin(),
-                                                         viz_names.end(),
-                                                         "material properties") != viz_names.end() ;
+          // TODO: Remove deprecated options
+          const std::set<std::string> deprecated_postprocessors = {"density",
+                                                                   "specific heat",
+                                                                   "thermal conductivity",
+                                                                   "thermal diffusivity",
+                                                                   "thermal expansivity",
+                                                                   "viscosity"
+                                                                  };
 
-            std::set<std::string> deprecated_postprocessors = {"density",
-                                                               "specific heat",
-                                                               "thermal conductivity",
-                                                               "thermal diffusivity",
-                                                               "thermal expansivity",
-                                                               "viscosity"
-                                                              };
-
-            // For all selected visualization plugins
-            auto plugin_name = viz_names.begin();
-            while (plugin_name != viz_names.end())
-              {
-                // Check if the current name is in the set of the deprecated names
-                if (deprecated_postprocessors.count(*plugin_name) != 0)
-                  {
-                    // If there is no 'material properties' yet
-                    if (material_properties_enabled == false)
-                      {
-                        // Set the current property name as the parameter for 'material properties'
-                        prm.set("List of material properties",*plugin_name);
-                        // Then replace the currently selected plugin with 'material properties'
-                        *plugin_name = "material properties";
-                        material_properties_enabled = true;
-                        ++plugin_name;
-                      }
-                    else
-                      {
-                        // Add the current property name to the parameter of 'material properties'
-                        std::string new_property_names = prm.get("List of material properties") + ", " + *plugin_name;
-                        prm.set("List of material properties",new_property_names);
-                        // Then delete the current plugin
-                        plugin_name = viz_names.erase(plugin_name);
-                      }
-                  }
-                else
-                  ++plugin_name;
-              }
-          }
-          prm.leave_subsection();
+          for (const auto &viz_name: viz_names)
+            {
+              // Check if the current name is in the set of the deprecated names
+              AssertThrow(deprecated_postprocessors.count(viz_name) == 0,
+                          ExcMessage("The visualization postprocessor '" + viz_name + "' has been removed. "
+                                     "Please use the 'material properties' postprocessor instead."));
+            }
         }
         prm.leave_subsection();
       }

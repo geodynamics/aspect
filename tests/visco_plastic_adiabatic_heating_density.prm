@@ -109,7 +109,11 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set List of output variables = adiabat, density
+    set List of output variables = adiabat, material properties
     set Output format            = gnuplot
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 end

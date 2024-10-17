@@ -108,6 +108,10 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0.1
-    set List of output variables = density
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 end

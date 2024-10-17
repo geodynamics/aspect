@@ -25,6 +25,10 @@ subsection Postprocess
   set List of postprocessors = heating statistics, visualization
 
   subsection Visualization
-    set List of output variables = heating, viscosity, strain rate, stress second invariant
+    set List of output variables = heating, material properties, strain rate, stress second invariant
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end

@@ -76,7 +76,11 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set List of output variables = density, viscosity, strain rate, gravity
+    set List of output variables = material properties, strain rate, gravity
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end
 

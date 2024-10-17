@@ -2,6 +2,7 @@ set Dimension = 3
 
 include $ASPECT_SOURCE_DIR/benchmarks/nsinker/nsinker.prm
 
+
 # Follow as closely as possible the parameters from Rudi et al. (2017)
 subsection Solver parameters
   subsection Stokes solver parameters
@@ -18,6 +19,7 @@ subsection Solver parameters
     set AMG aggregation threshold = 0.02
   end
 end
+
 subsection Mesh refinement
   set Initial adaptive refinement              = 0
   set Initial global refinement                = 1

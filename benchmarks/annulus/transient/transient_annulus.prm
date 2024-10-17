@@ -53,8 +53,12 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = density, gravity, AnnulusVisualizationPostprocessor
+    set List of output variables = material properties, gravity, AnnulusVisualizationPostprocessor
     set Time between graphical output = 0.1
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 
   subsection Particles

@@ -152,8 +152,12 @@ subsection Postprocess
   set List of postprocessors = composition statistics, temperature statistics, velocity statistics, visualization, material statistics, ODE statistics
 
   subsection Visualization
-    set List of output variables = viscosity, shear stress, stress, stress second invariant
+    set List of output variables = material properties, shear stress, stress, stress second invariant
     set Time between graphical output = 5e3
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end
 

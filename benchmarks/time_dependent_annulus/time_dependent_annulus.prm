@@ -141,7 +141,11 @@ subsection Postprocess
     set Output format                 = vtu
     set Number of grouped files       = 1
     set Time between graphical output = 0.0009817477042468104
-    set List of output variables      = density, gravity
+    set List of output variables      = material properties, gravity
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 
   subsection Particles

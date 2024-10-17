@@ -135,7 +135,7 @@ subsection Postprocess
   set List of postprocessors = visualization,composition statistics,velocity statistics,solitary wave statistics
 
   subsection Visualization
-    set List of output variables      = density, viscosity, thermal expansivity, melt material properties
+    set List of output variables      = material properties, melt material properties
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
@@ -155,6 +155,10 @@ subsection Postprocess
 
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity
     end
   end
 end

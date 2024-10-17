@@ -35,6 +35,10 @@ end
 
 subsection Postprocess
   subsection Visualization
-    set List of output variables = density, heat flux map, vertical heat flux, heating, viscosity
+    set List of output variables = material properties, heat flux map, vertical heat flux, heating
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end

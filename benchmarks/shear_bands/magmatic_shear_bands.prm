@@ -125,13 +125,17 @@ subsection Postprocess
   set List of postprocessors = visualization,composition statistics,velocity statistics, shear bands growth rate
 
   subsection Visualization
-    set List of output variables      = density, viscosity, thermal expansivity, strain rate, melt material properties
+    set List of output variables      = material properties, strain rate, melt material properties
     set Number of grouped files       = 0
     set Output format                 = vtu
     set Time between graphical output = 0
 
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity
+    end
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity
     end
   end
 end

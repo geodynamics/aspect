@@ -90,8 +90,12 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output            = false
     set Output format                 = vtu
-    set List of output variables      = viscosity
+    set List of output variables      = material properties
     set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 
   subsection Depth average

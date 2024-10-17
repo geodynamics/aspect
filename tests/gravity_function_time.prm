@@ -66,7 +66,11 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Output format                 = gnuplot
-    set List of output variables      = density, gravity
+    set List of output variables      = material properties, gravity
     set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 end

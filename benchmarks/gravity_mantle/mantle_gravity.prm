@@ -57,9 +57,13 @@ subsection Postprocess
   set List of postprocessors = gravity calculation,visualization, material statistics
 
   subsection Visualization
-    set List of output variables = density, viscosity
+    set List of output variables = material properties
     set Time between graphical output = 0
     set Interpolate output = false
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 
   subsection Gravity calculation

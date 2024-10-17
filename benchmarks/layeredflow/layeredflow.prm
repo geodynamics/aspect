@@ -82,7 +82,11 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, LayeredFlowPostprocessor
 
   subsection Visualization
-    set List of output variables = viscosity, strain rate
+    set List of output variables = material properties, strain rate
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end
 
