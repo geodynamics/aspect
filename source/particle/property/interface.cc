@@ -726,15 +726,6 @@ namespace aspect
 
 
 
-      template <int dim>
-      unsigned int
-      Manager<dim>::get_property_component_by_name(const std::string &name) const
-      {
-        return property_information.get_position_by_field_name(name);
-      }
-
-
-
       namespace
       {
         std::tuple

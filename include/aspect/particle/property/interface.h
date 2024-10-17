@@ -760,17 +760,6 @@ namespace aspect
           get_data_info() const;
 
           /**
-           * Get the position of the property specified by name in the property
-           * vector of the particles.
-           *
-           * @deprecated This function will be replaced by
-           * ParticlePropertyInformation::get_position_by_field_name(name)
-           */
-          DEAL_II_DEPRECATED
-          unsigned int
-          get_property_component_by_name(const std::string &name) const;
-
-          /**
            * A function that is used to register particle property
            * objects in such a way that the Manager can deal with all of them
            * without having to know them by name. This allows the files in which

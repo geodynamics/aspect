@@ -182,10 +182,6 @@ namespace aspect
         boundary_velocity (const types::boundary_id boundary_indicator,
                            const Point<dim> &position) const override;
 
-        // avoid -Woverloaded-virtual warning until the deprecated function
-        // is removed from the interface:
-        using Interface<dim>::boundary_velocity;
-
         /**
          * Initialization function. This function is called once at the
          * beginning of the program. Checks preconditions.

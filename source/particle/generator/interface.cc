@@ -42,43 +42,6 @@ namespace aspect
 
 
       template <int dim>
-      void
-      Interface<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &/*particles*/)
-      {
-        AssertThrow(false,ExcInternalError());
-      }
-
-
-
-      template <int dim>
-      void
-      Interface<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
-      {
-        // This function is implemented to ensure backwards compatibility to an old interface.
-        // Once the old interface function has been removed this implementation can be removed
-        // as well and the function can be made pure.
-
-        std::multimap<Particles::internal::LevelInd, Particles::Particle<dim>> particles;
-
-        // avoid deprecation warnings about calling the old interface
-        DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-        generate_particles(particles);
-        DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
-        std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim>> new_particles;
-
-        for (const auto &particle : particles)
-          new_particles.insert(new_particles.end(),
-                               std::make_pair(typename Triangulation<dim>::active_cell_iterator(&this->get_triangulation(),
-                                              particle.first.first, particle.first.second),
-                                              particle.second));
-
-        particle_handler.insert_particles(new_particles);
-      }
-
-
-
-      template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
       Interface<dim>::generate_particle(const Point<dim> &position,
                                         const types::particle_index id) const

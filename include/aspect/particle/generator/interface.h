@@ -77,25 +77,6 @@ namespace aspect
            * has to decide on the method and number of particles to generate,
            * for example using input parameters declared in their
            * declare_parameters and parse_parameters functions. This function
-           * should generate the particles and associate them to their according
-           * cells by inserting them into a multimap between cell and particle.
-           * This map becomes very large if the particle count per process
-           * is large, so we hand it over by reference instead of returning
-           * the multimap.
-           *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
-           */
-          DEAL_II_DEPRECATED
-          virtual
-          void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles);
-
-          /**
-           * Generate particles. Every derived class
-           * has to decide on the method and number of particles to generate,
-           * for example using input parameters declared in their
-           * declare_parameters and parse_parameters functions. This function
            * should generate the particles and insert them into @p particle_handler
            * by calling its respective functions.
            *
@@ -104,7 +85,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(Particles::ParticleHandler<dim> &particle_handler);
+          generate_particles(Particles::ParticleHandler<dim> &particle_handler) = 0;
 
           /**
            * Generate one particle in the given cell. This function's main purpose

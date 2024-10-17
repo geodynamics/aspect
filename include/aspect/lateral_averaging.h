@@ -111,15 +111,6 @@ namespace aspect
   {
     public:
       /**
-       * @deprecated: This function is deprecated and only maintained for backward compatibility.
-       * Use the function compute_lateral_averages() with the same arguments instead.
-       */
-      DEAL_II_DEPRECATED
-      std::vector<std::vector<double>>
-      get_averages(const unsigned int n_slices,
-                   const std::vector<std::string> &property_names) const;
-
-      /**
        * Return a depth profile of lateral averages of the selected
        * @p property_names. This function is a convenience interface for
        * the other functions of the same name and is more efficient for

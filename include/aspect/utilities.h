@@ -288,6 +288,7 @@ namespace aspect
      *   Utilities::MapParsing::parse_map_to_double_array() function. Please
      *   use the other function instead.
      */
+    DEAL_II_DEPRECATED
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
                                const std::vector<std::string> &list_of_keys,
