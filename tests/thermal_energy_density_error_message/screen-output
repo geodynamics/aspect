@@ -1,0 +1,40 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 40 (on 2 levels)
+Number of degrees of freedom: 2,199 (1,575+99+525)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 31+0 iterations.
+
+Number of active cells: 5 (on 1 levels)
+Number of degrees of freedom: 420 (297+24+99)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:       0.578 m/s, 0.901 m/s
+     Temperature min/avg/max: 1 K, 1 K, 1 K
+
+
+
+----------------------------------------------------
+Exception on MPI process <0> while running mesh refinement plugin <thermal energy density>: 
+The mesh refinement plugin failed to compute a thermal energy density gradient. This could be caused by having a constant temperature in the model. If this is the case, please set an other mesh refinement strategy. DEAL.II error:
+--------------------------------------------------------
+(line in output replaced by thermal_energy_density.sh script)
+    void dealii::DerivativeApproximation::internal::approximate_cell(const dealii::Mapping<dim, spacedim>&, const DoFHandlerType<dim, spacedim>&, const InputVector&, unsigned int, const dealii::TriaActiveIterator<dealii::DoFCellAccessor<DoFHandlerType<dim, spacedim>, false> >&, typename DerivativeDescription::Derivative&) [with DerivativeDescription = dealii::DerivativeApproximation::internal::Gradient<3>; int dim = 3; DoFHandlerType = dealii::DoFHandler; InputVector = dealii::TrilinosWrappers::MPI::BlockVector; int spacedim = 3; typename DerivativeDescription::Derivative = dealii::Tensor<1, 3>]
+The violated condition was: 
+    determinant(Y) != 0
+Additional information: 
+    We have encountered a cell on which the number of linearly independent directions that span the matrix Y (discussed in the documentation of the DerivativeApproximation class) is not equal to dim. The matrix Y then is rank deficient and can not be inverted.
+--------------------------------------------------------
+
+Aborting!
