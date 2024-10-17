@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal value for composition anomaly
+# 15: Maximal value for composition anomaly
+# 16: Global mass for composition anomaly
+# 17: Minimal value for composition function
+# 18: Maximal value for composition function
+# 19: Global mass for composition function
+# 20: Number of advected particles
+# 21: Number of advected particles (Particle system 2)
+# 22: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 50 0 8 10 10 3.07552704e-03 4.65482045e-03 2.28550000e-01 6.85650000e-01 4.52704222e-01 0.00000000e+00 4.99913963e-01 1.90184427e-01 16 16 output-particle_multiple_systems_interpolation/solution/solution-00000 

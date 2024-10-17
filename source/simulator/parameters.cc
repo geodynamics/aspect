@@ -344,10 +344,14 @@ namespace aspect
                        Patterns::FileName(),
                        "Name of the world builder file. If empty, the world builder is not initialized.");
 
-    prm.declare_entry ("Number of particle worlds", "1",
-                       Patterns::Integer(0, ASPECT_MAX_NUM_PARTICLE_WORLDS),
-                       "The number of particle worlds to be created. The maximum number of particle worlds "
-                       "is set by the CMake variable `ASPECT_MAX_NUM_PARTICLE_WORLDS` and is by default 2.");
+    prm.enter_subsection ("Particles");
+    {
+      prm.declare_entry ("Number of particle systems", "1",
+                         Patterns::Integer(0, ASPECT_MAX_NUM_PARTICLE_SYSTEMS),
+                         "The number of particle systems to be created. The maximum number of particle systems "
+                         "is set by the CMake variable `ASPECT_MAX_NUM_PARTICLE_SYSTEMS` and is by default 2.");
+    }
+    prm.leave_subsection();
 
     prm.enter_subsection ("Solver parameters");
     {
@@ -1432,10 +1436,15 @@ namespace aspect
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
     world_builder_file      = prm.get("World builder file");
-    n_particle_worlds       = prm.get_integer("Number of particle worlds");
-    Assert(n_particle_worlds <= ASPECT_MAX_NUM_PARTICLE_WORLDS,
-           ExcMessage("You have specified more particle worlds (" + Utilities::int_to_string(n_particle_worlds) +
-                      ") than the maximum amount of particle worlds set in CMake (" + Utilities::int_to_string(ASPECT_MAX_NUM_PARTICLE_WORLDS) + ")."));
+
+    prm.enter_subsection("Particles");
+    {
+      n_particle_managers       = prm.get_integer("Number of particle systems");
+      Assert(n_particle_managers <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
+             ExcMessage("You have specified more particle managers (" + Utilities::int_to_string(n_particle_managers) +
+                        ") than the maximum amount of particle managers set in CMake (" + Utilities::int_to_string(ASPECT_MAX_NUM_PARTICLE_SYSTEMS) + ")."));
+    }
+    prm.leave_subsection();
 
     maximum_time_step       = prm.get_double("Maximum time step");
     if (convert_to_years == true)

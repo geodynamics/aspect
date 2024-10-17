@@ -21,7 +21,7 @@
 
 #include <aspect/postprocess/load_balance_statistics.h>
 
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -43,11 +43,11 @@ namespace aspect
       statistics.add_value ("Average cells per process",
                             cell_distribution.avg);
 
-      if (this->n_particle_worlds() > 0)
+      if (this->n_particle_managers() > 0)
         {
           types::particle_index locally_owned_particles = 0;
-          for (unsigned int particle_handler_index = 0; particle_handler_index < this->n_particle_worlds(); ++particle_handler_index)
-            locally_owned_particles += this->get_particle_world(particle_handler_index).
+          for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+            locally_owned_particles += this->get_particle_manager(particle_manager_index).
                                        get_particle_handler().n_locally_owned_particles();
 
           const dealii::Utilities::MPI::MinMaxAvg particles_per_process =

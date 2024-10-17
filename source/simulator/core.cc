@@ -449,21 +449,21 @@ namespace aspect
 
     if (postprocess_manager.template has_matching_active_plugin<Postprocess::Particles<dim>>())
       {
-        particle_worlds.resize(parameters.n_particle_worlds);
+        particle_managers.resize(parameters.n_particle_managers);
 
-        AssertThrow(particle_worlds.size() <= ASPECT_MAX_NUM_PARTICLE_WORLDS,
-                    ExcMessage("You have selected " + std::to_string(particle_worlds.size()) + " particle worlds, but ASPECT "
-                               "has been compiled with a maximum of " + std::to_string(ASPECT_MAX_NUM_PARTICLE_WORLDS) + ". "
-                               "Please recompile ASPECT with a higher value for ASPECT_MAX_NUM_PARTICLE_WORLDS. You can set a higher number "
-                               "specifying the CMake variable -DASPECT_MAX_NUM_PARTICLE_WORLDS=<number>"));
+        AssertThrow(particle_managers.size() <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
+                    ExcMessage("You have selected " + std::to_string(particle_managers.size()) + " particle managers, but ASPECT "
+                               "has been compiled with a maximum of " + std::to_string(ASPECT_MAX_NUM_PARTICLE_SYSTEMS) + ". "
+                               "Please recompile ASPECT with a higher value for ASPECT_MAX_NUM_PARTICLE_SYSTEMS. You can set a higher number "
+                               "specifying the CMake variable -DASPECT_MAX_NUM_PARTICLE_SYSTEMS=<number>"));
 
-        for (unsigned int particle_world_index = 0 ; particle_world_index < particle_worlds.size(); ++particle_world_index)
+        for (unsigned int particle_manager_index = 0 ; particle_manager_index < particle_managers.size(); ++particle_manager_index)
           {
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&particle_worlds[particle_world_index]))
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&particle_managers[particle_manager_index]))
               sim->initialize_simulator (*this);
 
-            particle_worlds[particle_world_index].parse_parameters(prm,particle_world_index);
-            particle_worlds[particle_world_index].initialize();
+            particle_managers[particle_manager_index].parse_parameters(prm,particle_manager_index);
+            particle_managers[particle_manager_index].initialize();
           }
       }
 
@@ -575,11 +575,11 @@ namespace aspect
   template <int dim>
   Simulator<dim>::~Simulator ()
   {
-    // The particle_world object is declared before the triangulation, and so
+    // The particle_manager object is declared before the triangulation, and so
     // is destroyed after the latter. But it stores a pointer to the
     // triangulation and uses it during destruction. This results in
     // trouble. So destroy it first.
-    particle_worlds.clear();
+    particle_managers.clear();
 
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
@@ -619,8 +619,8 @@ namespace aspect
 
     // Copy particle handler to restore particle location and properties
     // before repeating a timestep
-    for (auto &particle_world : particle_worlds)
-      particle_world.backup_particles();
+    for (auto &particle_manager : particle_managers)
+      particle_manager.backup_particles();
 
 
     // then interpolate the current boundary velocities. copy constraints
@@ -654,8 +654,8 @@ namespace aspect
     if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();
 
-    for (auto &particle_world : particle_worlds)
-      particle_world.update();
+    for (auto &particle_manager : particle_managers)
+      particle_manager.update();
 
     // do the same for the traction boundary conditions and other things
     // that end up in the bilinear form. we update those that end up in
@@ -2181,8 +2181,8 @@ namespace aspect
             // Restore particles through stored copy of particle handler,
             // created in start_timestep(),
             // but only if this timestep is to be repeated.
-            for (auto &particle_world : particle_worlds)
-              particle_world.restore_particles();
+            for (auto &particle_manager : particle_managers)
+              particle_manager.restore_particles();
 
             continue; // repeat time step loop
           }

@@ -140,7 +140,7 @@ namespace aspect
 
   namespace Particle
   {
-    template <int dim> class World;
+    template <int dim> class Manager;
   }
 
   namespace TimeStepping
@@ -931,26 +931,26 @@ namespace aspect
       get_postprocess_manager () const;
 
       /**
-       * Returns the number of active particle worlds.
+       * Returns the number of active particle managers.
        */
       unsigned int
-      n_particle_worlds() const;
+      n_particle_managers() const;
 
       /**
-       * Returns a const reference to a single particle world given the
+       * Returns a const reference to a single particle manager given the
        * index.
        */
-      const Particle::World<dim> &
-      get_particle_world(const unsigned int particle_world_index) const;
+      const Particle::Manager<dim> &
+      get_particle_manager(const unsigned int particle_manager_index) const;
 
       /**
-       * Returns a reference to a single particle world, in case anyone wants to
-       * change something within the particle world. Use with care, usually
+       * Returns a reference to a single particle manager, in case anyone wants to
+       * change something within the particle manager. Use with care, usually
        * you want to only let the functions within the particle subsystem
-       * change member variables of the particle world.
+       * change member variables of the particle manager.
        */
-      Particle::World<dim> &
-      get_particle_world(const unsigned int particle_world_index);
+      Particle::Manager<dim> &
+      get_particle_manager(const unsigned int particle_manager_index);
 
       /**
        * Return true if using the block GMG Stokes solver.

@@ -172,24 +172,24 @@ namespace aspect
     std::pair<std::string,std::string>
     CrystalPreferredOrientation<dim>::execute (TableHandler &statistics)
     {
-      unsigned int particle_world_index = numbers::invalid_unsigned_int;
-      for (unsigned int i = 0; i < this->n_particle_worlds(); ++i)
+      unsigned int particle_manager_index = numbers::invalid_unsigned_int;
+      for (unsigned int i = 0; i < this->n_particle_managers(); ++i)
         {
-          if (this->get_particle_world(i).get_property_manager().template has_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>())
+          if (this->get_particle_manager(i).get_property_manager().template has_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>())
             {
-              Assert(particle_world_index == numbers::invalid_unsigned_int,
+              Assert(particle_manager_index == numbers::invalid_unsigned_int,
                      ExcMessage("Multiple particle worlds with CPO data found. This is not supported."));
 
-              particle_world_index = i;
+              particle_manager_index = i;
             }
         }
 
-      AssertThrow(particle_world_index != numbers::invalid_unsigned_int,
+      AssertThrow(particle_manager_index != numbers::invalid_unsigned_int,
                   ExcMessage("No CPO particle properties found. Make sure that the CPO particle property plugin is selected."));
 
       // get particle data and a reference to the CPO particle property
-      const Particle::Property::Manager<dim> &manager = this->get_particle_world(particle_world_index).get_property_manager();
-      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world(particle_world_index).get_particle_handler();
+      const Particle::Property::Manager<dim> &manager = this->get_particle_manager(particle_manager_index).get_property_manager();
+      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
       const Particle::Property::ParticlePropertyInformation &property_information = manager.get_data_info();
       const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
         manager.template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();

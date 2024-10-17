@@ -21,7 +21,7 @@
 
 #include <aspect/mesh_refinement/particle_density.h>
 
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -31,7 +31,7 @@ namespace aspect
     void
     ParticleDensity<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow(this->n_particle_worlds() > 0,
+      AssertThrow(this->n_particle_managers() > 0,
                   ExcMessage("The mesh refinement plugin `particle density' requires the "
                              "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
@@ -44,9 +44,9 @@ namespace aspect
             // of high particle density and coarse cells in low particle
             // density regions.
             indicators(cell->active_cell_index()) = 0.0;
-            for (unsigned int i=0; i<this->n_particle_worlds(); ++i)
+            for (unsigned int i=0; i<this->n_particle_managers(); ++i)
               {
-                const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_world(i).get_particle_handler();
+                const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_manager(i).get_particle_handler();
                 indicators(cell->active_cell_index()) += static_cast<float>(particle_handler.n_particles_in_cell(cell));
               }
           }

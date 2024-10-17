@@ -226,17 +226,17 @@ namespace aspect
   {
     // Advect the particles before they are potentially used to
     // set up the compositional fields.
-    for (auto &particle_world : particle_worlds)
+    for (auto &particle_manager : particle_managers)
       {
         // Do not advect the particles in the initial refinement stage
         const bool in_initial_refinement = (timestep_number == 0)
                                            && (pre_refinement_step < parameters.initial_adaptive_refinement);
         if (!in_initial_refinement)
-          // Advance the particles in the world to the current time
-          particle_world.advance_timestep();
+          // Advance the particles in the manager to the current time
+          particle_manager.advance_timestep();
 
-        if (particle_world.get_property_manager().need_update() == Particle::Property::update_output_step)
-          particle_world.update_particles();
+        if (particle_manager.get_property_manager().need_update() == Particle::Property::update_output_step)
+          particle_manager.update_particles();
       }
 
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
@@ -963,8 +963,8 @@ namespace aspect
         // iteration (in the assemble_and_solve_composition call).
 
         if (nonlinear_iteration > 0)
-          for (auto &particle_world : particle_worlds)
-            particle_world.restore_particles();
+          for (auto &particle_manager : particle_managers)
+            particle_manager.restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1124,8 +1124,8 @@ namespace aspect
         // iteration (in the assemble_and_solve_composition call).
 
         if (nonlinear_iteration > 0)
-          for (auto &particle_world : particle_worlds)
-            particle_world.restore_particles();
+          for (auto &particle_manager : particle_managers)
+            particle_manager.restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,

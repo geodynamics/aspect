@@ -1,0 +1,20 @@
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 134 (50+9+25+25+25)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.00308 m/s, 0.00465 m/s
+     Compositions min/max/mass:    0.2285/0.6856/0.4527 // 0/0.4999/0.1902
+     Number of advected particles: 16, 16
+     Writing graphical output:     output-particle_multiple_systems_interpolation/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

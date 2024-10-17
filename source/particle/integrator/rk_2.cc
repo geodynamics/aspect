@@ -20,7 +20,7 @@
 
 #include <aspect/particle/integrator/rk_2.h>
 #include <aspect/particle/property/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <aspect/geometry_model/interface.h>
 
 namespace aspect
@@ -41,7 +41,7 @@ namespace aspect
       void
       RK2<dim>::initialize ()
       {
-        const auto &property_information = this->get_particle_world(this->get_particle_world_index()).get_property_manager().get_data_info();
+        const auto &property_information = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
         property_index_old_location = property_information.get_position_by_field_name("internal: integrator properties");
       }
 

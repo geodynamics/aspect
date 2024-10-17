@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Minimal temperature (K)
+# 9: Average temperature (K)
+# 10: Maximal temperature (K)
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+# 13: Number of advected particles
+# 14: Number of advected particles (Particle system 2)
+# 15: Particle file name
+# 16: Particle file name (2)
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225  0 1.00000000e+00 1.04052848e+00 1.10000000e+00 5.91984042e-09 1.51937630e-08 100 100 output1.tmp/particles/particles-00000 output1.tmp/particles-2/particles-2-00000 
+1 1.027740563611e+06 1.027740563611e+06 1024 9539 4225 25 1.00083937e+00 1.04052848e+00 1.09858280e+00 5.75299026e-09 1.45625072e-08 100 100 output1.tmp/particles/particles-00001 output1.tmp/particles-2/particles-2-00001 
+2 2.100299217251e+06 1.072558653640e+06 1024 9539 4225 19 1.00169873e+00 1.04052847e+00 1.09717985e+00 5.58019951e-09 1.39473406e-08 100 100 output1.tmp/particles/particles-00002 output1.tmp/particles-2/particles-2-00002 
+3 3.220363967262e+06 1.120064750011e+06 1024 9539 4225 19 1.00257153e+00 1.04052847e+00 1.09574102e+00 5.40192738e-09 1.33516117e-08 100 100 output1.tmp/particles/particles-00003 output1.tmp/particles-2/particles-2-00003 
+4 4.390588143865e+06 1.170224176603e+06 1024 9539 4225 19 1.00345721e+00 1.04052847e+00 1.09423562e+00 5.21896168e-09 1.27739784e-08 100 100 output1.tmp/particles/particles-00004 output1.tmp/particles-2/particles-2-00004 
+5 5.613384398901e+06 1.222796255036e+06 1024 9539 4225 19 1.00435420e+00 1.04052847e+00 1.09272828e+00 5.03214201e-09 1.22134529e-08 100 100 output1.tmp/particles/particles-00005 output1.tmp/particles-2/particles-2-00005 
+6 6.892312376386e+06 1.278927977485e+06 1024 9539 4225 19 1.00526248e+00 1.04052847e+00 1.09112517e+00 4.84211340e-09 1.16631797e-08 100 100 output1.tmp/particles/particles-00006 output1.tmp/particles-2/particles-2-00006 
+7 8.231590892708e+06 1.339278516321e+06 1024 9539 4225 19 1.00618276e+00 1.04052847e+00 1.08951784e+00 4.64943092e-09 1.11214780e-08 100 100 output1.tmp/particles/particles-00007 output1.tmp/particles-2/particles-2-00007 
+8 9.636111212012e+06 1.404520319304e+06 1024 9539 4225 20 1.00711599e+00 1.04052847e+00 1.08780699e+00 4.45458799e-09 1.05874774e-08 100 100 output2.tmp/particles/particles-00008 output2.tmp/particles-2/particles-2-00008 
+9 1.000000000000e+07 3.638887879881e+05 1024 9539 4225  9 1.00735258e+00 1.04052847e+00 1.08738428e+00 4.40529353e-09 1.04557172e-08 100 100 output2.tmp/particles/particles-00009 output2.tmp/particles-2/particles-2-00009 
