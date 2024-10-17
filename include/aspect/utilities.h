@@ -1171,8 +1171,8 @@ namespace aspect
                                                    std::mt19937 &random_number_generator);
 
     /**
-    * Wraps angle between 0 and 360 degrees.
-    */
+     * Wraps angle between 0 and 360 degrees.
+     */
     double wrap_angle(const double angle);
 
     /**

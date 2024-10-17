@@ -106,7 +106,7 @@ namespace aspect
 
         /**
          * Update the particle world.
-        */
+         */
         void update();
 
         /**

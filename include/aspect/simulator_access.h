@@ -616,11 +616,11 @@ namespace aspect
       get_boundary_composition_manager () const;
 
       /**
-      * Return an reference to the manager of the boundary traction models.
-      * This can then, for example, be used to get the names of the boundary traction
-      * models used in a computation, or to compute the boundary traction
-      * for a given position.
-      */
+       * Return an reference to the manager of the boundary traction models.
+       * This can then, for example, be used to get the names of the boundary traction
+       * models used in a computation, or to compute the boundary traction
+       * for a given position.
+       */
       const BoundaryTraction::Manager<dim> &
       get_boundary_traction_manager () const;
 

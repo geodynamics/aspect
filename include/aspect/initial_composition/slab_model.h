@@ -79,9 +79,9 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
         /**
-        * A function that returns the slab_boundary object to allow access
-        * in other places.
-        */
+         * A function that returns the slab_boundary object to allow access
+         * in other places.
+         */
         const Utilities::AsciiDataBoundary<dim> &get_slab_boundary() const;
 
       private:

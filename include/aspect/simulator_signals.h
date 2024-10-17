@@ -313,12 +313,12 @@ namespace aspect
     set_assemblers;
 
     /**
-    * A signal that is called before the build_patches() function is called during
-    * the creation of the visualization output. This signal
-    * allows for registering functions that take a DataOut object and can for example
-    * be used to select only certain cells of the mesh to be built into patches through
-    * calling the DataOut member function set_cell_selection().
-    */
+     * A signal that is called before the build_patches() function is called during
+     * the creation of the visualization output. This signal
+     * allows for registering functions that take a DataOut object and can for example
+     * be used to select only certain cells of the mesh to be built into patches through
+     * calling the DataOut member function set_cell_selection().
+     */
     boost::signals2::signal<void (DataOut<dim> &)>  pre_data_out_build_patches;
   };
 
