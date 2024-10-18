@@ -29,7 +29,7 @@ subsection Particles
       set Radial layers  = 50
     end
 
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles           = 123
     end
   end

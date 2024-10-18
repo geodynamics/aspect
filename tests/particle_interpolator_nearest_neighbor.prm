@@ -114,11 +114,6 @@ subsection Particles
   set Load balancing strategy = add particles
 
   subsection Generator
-    subsection Probability density function
-      set Variable names      = x,z
-      set Function expression = 1 #x*x*z
-    end
-
     subsection Uniform box
       set Number of particles = 1000
     end

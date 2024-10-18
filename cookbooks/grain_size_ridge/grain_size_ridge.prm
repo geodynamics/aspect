@@ -302,7 +302,7 @@ subsection Particles
   end
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 500000
     end
   end

@@ -94,7 +94,7 @@ subsection Particles
   set Load balancing strategy = none
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 400
     end
   end

@@ -101,7 +101,7 @@ subsection Particles
   set List of particle properties = initial composition
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles        = 20000
     end
   end
