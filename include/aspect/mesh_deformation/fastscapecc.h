@@ -332,6 +332,10 @@ namespace aspect
          */
         double precision;
 
+        double inner_radius;
+        double outer_radius;
+        double opening_angle;
+
 
     };
   }
