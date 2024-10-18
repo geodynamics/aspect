@@ -109,8 +109,6 @@ subsection Particles
 
   subsection Generator
     subsection Random uniform
-      set Variable names      = x,z
-      set Function expression = x*x*z
       set Number of particles = 1024
     end
   end
