@@ -99,21 +99,21 @@ namespace fastscapelib
     //*******************
 
     template <class S, class C>
-    class profile_grid_xt;
+    class profile_grid;
 
     /**
      * Profile grid specialized types.
      */
     template <class S, class C>
-    struct grid_inner_types<profile_grid_xt<S, C>>
+    struct grid_inner_types<profile_grid<S, C>>
     {
         static constexpr bool is_structured = true;
         static constexpr bool is_uniform = true;
 
         using grid_data_type = double;
 
-        using xt_selector = S;
-        static constexpr std::size_t xt_ndims = 1;
+        using container_selector = S;
+        static constexpr std::size_t container_ndims = 1;
 
         static constexpr uint8_t n_neighbors_max = 2u;
         using neighbors_cache_type = C;
@@ -131,18 +131,20 @@ namespace fastscapelib
      * @tparam S The xtensor container selector for data array members.
      * @tparam C The grid neighbor nodes cache type.
      */
-    template <class S, class C = neighbors_cache<2>>
-    class profile_grid_xt : public structured_grid<profile_grid_xt<S, C>>
+    template <class S = xt_selector, class C = neighbors_cache<2>>
+    class profile_grid : public structured_grid<profile_grid<S, C>>
     {
     public:
-        using self_type = profile_grid_xt<S, C>;
+        using self_type = profile_grid<S, C>;
         using base_type = structured_grid<self_type>;
         using inner_types = grid_inner_types<self_type>;
 
         using grid_data_type = typename base_type::grid_data_type;
 
-        using xt_selector = typename base_type::xt_selector;
-        using xt_type = xt_tensor_t<xt_selector, grid_data_type, inner_types::xt_ndims>;
+        using container_selector = typename base_type::container_selector;
+        using container_type = fixed_shape_container_t<container_selector,
+                                                       grid_data_type,
+                                                       inner_types::container_ndims>;
 
         using size_type = typename base_type::size_type;
         using shape_type = typename base_type::shape_type;
@@ -159,15 +161,15 @@ namespace fastscapelib
         using nodes_status_type = typename base_type::nodes_status_type;
         using nodes_status_map_type = typename std::map<size_type, node_status>;
 
-        profile_grid_xt(size_type size,
-                        spacing_type spacing,
-                        const profile_boundary_status& bounds_status,
-                        const nodes_status_map_type& nodes_status = {});
+        profile_grid(size_type size,
+                     spacing_type spacing,
+                     const profile_boundary_status& bounds_status,
+                     const nodes_status_map_type& nodes_status = {});
 
-        static profile_grid_xt from_length(size_type size,
-                                           length_type length,
-                                           const profile_boundary_status& bounds_status,
-                                           const nodes_status_map_type& nodes_status = {});
+        static profile_grid from_length(size_type size,
+                                        length_type length,
+                                        const profile_boundary_status& bounds_status,
+                                        const nodes_status_map_type& nodes_status = {});
 
     protected:
         using neighbors_distances_impl_type = typename base_type::neighbors_distances_impl_type;
@@ -199,7 +201,7 @@ namespace fastscapelib
         std::array<size_type, 3> m_neighbors_count;
         void build_neighbors_count();
 
-        inline xt_type nodes_areas_impl() const;
+        inline container_type nodes_areas_impl() const;
         inline grid_data_type nodes_areas_impl(const size_type& idx) const noexcept;
 
         inline size_type neighbors_count_impl(const size_type& idx) const noexcept;
@@ -214,7 +216,7 @@ namespace fastscapelib
     };
 
     template <class S, class C>
-    constexpr std::array<std::ptrdiff_t, 3> profile_grid_xt<S, C>::offsets;
+    constexpr std::array<std::ptrdiff_t, 3> profile_grid<S, C>::offsets;
 
     /**
      * @name Constructors
@@ -229,10 +231,10 @@ namespace fastscapelib
      * @param nodes_status Manually define the status at any node on the grid.
      */
     template <class S, class C>
-    profile_grid_xt<S, C>::profile_grid_xt(size_type size,
-                                           spacing_type spacing,
-                                           const profile_boundary_status& bounds_status,
-                                           const nodes_status_map_type& nodes_status)
+    profile_grid<S, C>::profile_grid(size_type size,
+                                     spacing_type spacing,
+                                     const profile_boundary_status& bounds_status,
+                                     const nodes_status_map_type& nodes_status)
         : base_type(size)
         , m_size(size)
         , m_spacing(spacing)
@@ -261,19 +263,18 @@ namespace fastscapelib
      * @param nodes_status Manually define the status at any node on the grid.
      */
     template <class S, class C>
-    profile_grid_xt<S, C> profile_grid_xt<S, C>::from_length(
-        size_type size,
-        length_type length,
-        const profile_boundary_status& bounds_status,
-        const nodes_status_map_type& nodes_status)
+    profile_grid<S, C> profile_grid<S, C>::from_length(size_type size,
+                                                       length_type length,
+                                                       const profile_boundary_status& bounds_status,
+                                                       const nodes_status_map_type& nodes_status)
     {
         spacing_type spacing = length / static_cast<length_type>(size - 1);
-        return profile_grid_xt<S, C>(size, spacing, bounds_status, nodes_status);
+        return profile_grid<S, C>(size, spacing, bounds_status, nodes_status);
     }
     //@}
 
     template <class S, class C>
-    void profile_grid_xt<S, C>::build_gcode()
+    void profile_grid<S, C>::build_gcode()
     {
         m_gcode_idx.resize({ m_size });
 
@@ -283,19 +284,19 @@ namespace fastscapelib
     }
 
     template <class S, class C>
-    auto profile_grid_xt<S, C>::gcode(const size_type& idx) const -> code_type
+    auto profile_grid<S, C>::gcode(const size_type& idx) const -> code_type
     {
         return m_gcode_idx[idx];
     }
 
     template <class S, class C>
-    void profile_grid_xt<S, C>::build_neighbors_distances()
+    void profile_grid<S, C>::build_neighbors_distances()
     {
         m_neighbors_distances.fill({ m_spacing, m_spacing });
     }
 
     template <class S, class C>
-    void profile_grid_xt<S, C>::build_neighbors_count()
+    void profile_grid<S, C>::build_neighbors_count()
     {
         if (m_bounds_status.is_horizontal_looped())
         {
@@ -308,8 +309,7 @@ namespace fastscapelib
     }
 
     template <class S, class C>
-    void profile_grid_xt<S, C>::set_nodes_status(
-        const std::map<size_type, node_status>& nodes_status)
+    void profile_grid<S, C>::set_nodes_status(const std::map<size_type, node_status>& nodes_status)
     {
         nodes_status_type temp_nodes_status(m_shape, node_status::core);
 
@@ -337,35 +337,35 @@ namespace fastscapelib
     }
 
     template <class S, class C>
-    inline auto profile_grid_xt<S, C>::nodes_areas_impl() const -> xt_type
+    inline auto profile_grid<S, C>::nodes_areas_impl() const -> container_type
     {
         return xt::broadcast(m_node_area, m_shape);
     }
 
     template <class S, class C>
-    inline auto profile_grid_xt<S, C>::nodes_areas_impl(const size_type& /*idx*/) const noexcept
+    inline auto profile_grid<S, C>::nodes_areas_impl(const size_type& /*idx*/) const noexcept
         -> grid_data_type
     {
         return m_node_area;
     }
 
     template <class S, class C>
-    inline auto profile_grid_xt<S, C>::neighbors_count_impl(const size_type& idx) const noexcept
+    inline auto profile_grid<S, C>::neighbors_count_impl(const size_type& idx) const noexcept
         -> size_type
     {
         return m_neighbors_count[gcode(idx)];
     }
 
     template <class S, class C>
-    auto profile_grid_xt<S, C>::neighbors_distances_impl(const size_type& /*idx*/) const
+    auto profile_grid<S, C>::neighbors_distances_impl(const size_type& /*idx*/) const
         -> const neighbors_distances_impl_type&
     {
         return m_neighbors_distances[0];
     }
 
     template <class S, class C>
-    inline auto profile_grid_xt<S, C>::neighbors_indices_impl(
-        neighbors_indices_impl_type& neighbors, const size_type& idx) const -> void
+    inline auto profile_grid<S, C>::neighbors_indices_impl(neighbors_indices_impl_type& neighbors,
+                                                           const size_type& idx) const -> void
     {
         if (idx == 0)
         {
@@ -396,18 +396,6 @@ namespace fastscapelib
             }
         }
     }
-
-    /**
-     * @typedef profile_grid
-     *
-     * \rst
-     * Alias template on ``profile_grid_xt`` with :cpp:type:`xt::xtensor`
-     * used as array container type for data members.
-     *
-     * This is mainly for convenience when using in C++ applications.
-     * \endrst
-     */
-    using profile_grid = profile_grid_xt<xt_selector>;
 }
 
 #endif

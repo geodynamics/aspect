@@ -9,7 +9,6 @@
 #include <cstddef>
 #include <type_traits>
 
-#include "xtensor.hpp"
 #include "xtensor/xcontainer.hpp"
 
 
