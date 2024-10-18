@@ -26,67 +26,121 @@ namespace aspect
     void
     FastScapecc<dim>::initialize ()
     {
-        // AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-        //                  ExcMessage("FastScape can only be run with a box geometry model."));
+      // Check if the geometry model is Box
+      const GeometryModel::Box<dim> *box_geometry
+        = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
 
-        const GeometryModel::Box<dim> *geometry
-          = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+      // Check if the geometry model is Spherical Shell
+      const GeometryModel::SphericalShell<dim> *spherical_geometry
+        = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
 
-        //   const GeometryModel::SphericalShell<dim> *geometry
-        //  = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
+      // If Box geometry is used
+      if (box_geometry != nullptr)
+      {
+          this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
 
-        // Find the id associated with the top boundary and boundaries that call mesh deformation.
-        const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-        const std::set<types::boundary_id> mesh_deformation_boundary_ids
-          = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
+          // Box specific initialization
+          grid_extent[0].first = box_geometry->get_origin()[0];
+          grid_extent[0].second = box_geometry->get_extents()[0];
+          grid_extent[1].first = box_geometry->get_origin()[1];
+          grid_extent[1].second = box_geometry->get_extents()[1];
 
-        // Get the deformation type names called for each boundary.
-        std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+          nx = repetitions[0] + 1;
+          dx = (grid_extent[0].second) / repetitions[0];
 
-        // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
-        for (std::set<types::boundary_id>::const_iterator p = mesh_deformation_boundary_ids.begin();
-            p != mesh_deformation_boundary_ids.end(); ++p)
-          {
-            const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
-            for (unsigned int i = 0; i < names.size(); ++i )
-              {
-                if (names[i] == "fastscape")
-                  AssertThrow((*p == top_boundary),
-                              ExcMessage("FastScape can only be called on the surface boundary."));
-              }
-          }
+          ny = repetitions[1] + 1;
+          dy = (grid_extent[1].second) / repetitions[1];
 
-      // Initialize parameters for restarting FastScape
-      restart = this->get_parameters().resume_computation;
+          x_extent = grid_extent[0].second;
+          y_extent = grid_extent[1].second;
+      }
+
+      // If Spherical Shell geometry is used
+      else if (spherical_geometry != nullptr)
+      {
+          this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
+
+          // Spherical Shell specific initialization
+          grid_extent[0].first = spherical_geometry->inner_radius();
+          grid_extent[0].second = spherical_geometry->outer_radius();
+
+          nx = repetitions[0] + 1;
+          dx = (grid_extent[0].second - grid_extent[0].first) / repetitions[0]; // radial resolution
+          x_extent = grid_extent[0].second - grid_extent[0].first;
+
+          ny = repetitions[1] + 1;
+          dy = (spherical_geometry->opening_angle() * numbers::PI / 180.0) / repetitions[1]; // angular resolution
+          y_extent = spherical_geometry->opening_angle() * numbers::PI / 180.0;
+      }
+      else
+      {
+          AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
+      }
+
+      array_size = nx * ny;
+      }
+    // {
+    //     // AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
+    //     //                  ExcMessage("FastScape can only be run with a box geometry model."));
+
+    //     const GeometryModel::Box<dim> *geometry
+    //       = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+
+    //     //   const GeometryModel::SphericalShell<dim> *geometry
+    //     //  = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
+
+    //     // Find the id associated with the top boundary and boundaries that call mesh deformation.
+    //     const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+    //     const std::set<types::boundary_id> mesh_deformation_boundary_ids
+    //       = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
+
+    //     // Get the deformation type names called for each boundary.
+    //     std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
+    //       = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+
+    //     // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
+    //     for (std::set<types::boundary_id>::const_iterator p = mesh_deformation_boundary_ids.begin();
+    //         p != mesh_deformation_boundary_ids.end(); ++p)
+    //       {
+    //         const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
+    //         for (unsigned int i = 0; i < names.size(); ++i )
+    //           {
+    //             if (names[i] == "fastscape")
+    //               AssertThrow((*p == top_boundary),
+    //                           ExcMessage("FastScape can only be called on the surface boundary."));
+    //           }
+    //       }
+
+    //   // Initialize parameters for restarting FastScape
+    //   restart = this->get_parameters().resume_computation;
       
-        // The first entry represents the minimum coordinates of the model domain, the second the model extent.
-        for (unsigned int i=0; i<dim; ++i)
-          {
-            grid_extent[i].first = geometry->get_origin()[i];
-            grid_extent[i].second = geometry->get_extents()[i];
-          }
+    //     // The first entry represents the minimum coordinates of the model domain, the second the model extent.
+    //     for (unsigned int i=0; i<dim; ++i)
+    //       {
+    //         grid_extent[i].first = geometry->get_origin()[i];
+    //         grid_extent[i].second = geometry->get_extents()[i];
+    //       }
 
-         nx = repetitions[0] + 1;
+    //      nx = repetitions[0] + 1;
 
-         // Size of FastScape cell.
-         dx = (grid_extent[0].second)/( repetitions[0]);
+    //      // Size of FastScape cell.
+    //      dx = (grid_extent[0].second)/( repetitions[0]);
 
-         // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
-         // in which case 2 cells are added on either side.
-         x_extent = (grid_extent[0].second) ;
+    //      // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
+    //      // in which case 2 cells are added on either side.
+    //      x_extent = (grid_extent[0].second) ;
 
-        // Sub intervals are 1 less than points.
-        table_intervals[0] = repetitions[0];
-        table_intervals[dim-1] = 1;
+    //     // Sub intervals are 1 less than points.
+    //     table_intervals[0] = repetitions[0];
+    //     table_intervals[dim-1] = 1;
 
-        ny = repetitions[1] + 1;
-        dy = (grid_extent[1].second)/( repetitions[1]);
-        table_intervals[1] = repetitions[1];
-        y_extent = (grid_extent[1].second)  ;
-        array_size = nx*ny;
+    //     ny = repetitions[1] + 1;
+    //     dy = (grid_extent[1].second)/( repetitions[1]);
+    //     table_intervals[1] = repetitions[1];
+    //     y_extent = (grid_extent[1].second)  ;
+    //     array_size = nx*ny;
 
-    }
+    // }
 
 
     template <int dim>
@@ -486,21 +540,38 @@ namespace aspect
     {
       prm.enter_subsection("Geometry model");
       {
-        prm.enter_subsection("Box");
-        {
-          prm.declare_entry ("X repetitions", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in X direction.");
-          prm.declare_entry ("Y repetitions", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in Y direction.");
-          prm.declare_entry ("Z repetitions", "1",
-                             Patterns::Integer (1),
-                             "Number of cells in Z direction.");
-        }
-        prm.leave_subsection();
+          // Declare parameters for the Box geometry
+          if (prm.get("Model name") == "box")
+          {
+              prm.enter_subsection("Box");
+              {
+                  prm.declare_entry("X repetitions", "1", Patterns::Integer(1),
+                                    "Number of cells in the X direction.");
+                  prm.declare_entry("Y repetitions", "1", Patterns::Integer(1),
+                                    "Number of cells in the Y direction.");
+                  prm.declare_entry("Z repetitions", "1", Patterns::Integer(1),
+                                    "Number of cells in the Z direction.");
+              }
+              prm.leave_subsection();  // End of Box
+          }
+          // Declare parameters for the Spherical shell geometry
+          else if (prm.get("Model name") == "spherical shell")
+          {
+              prm.enter_subsection("Spherical shell");
+              {
+                  prm.declare_entry("Inner radius", "3481000", Patterns::Double(0),
+                                    "The inner radius of the spherical shell.");
+                  prm.declare_entry("Outer radius", "6336000", Patterns::Double(0),
+                                    "The outer radius of the spherical shell.");
+                  prm.declare_entry("Opening angle", "360", Patterns::Double(0, 360),
+                                    "The opening angle of the spherical shell in degrees.");
+              }
+              prm.leave_subsection();  // End of Spherical shell
+          }
       }
-      prm.leave_subsection();
+      prm.leave_subsection();  // End of Geometry model
+
+
 
 
       prm.enter_subsection ("Mesh deformation");
@@ -600,25 +671,53 @@ namespace aspect
       if (prm.get_bool ("Use years in output instead of seconds") == true)
         end_time *= year_in_seconds;
 
+      // prm.enter_subsection("Geometry model");
+      // {
+      //   prm.enter_subsection("Box");
+      //   {
+      //     repetitions[0] = prm.get_integer ("X repetitions");
+      //     if (dim >= 2)
+      //       {
+      //         repetitions[1] = prm.get_integer ("Y repetitions");
+      //       }
+      //     if (dim >= 3)
+      //       {
+      //         repetitions[dim-1] = prm.get_integer ("Z repetitions");
+      //       }
+      //   }
+      //   prm.leave_subsection();
+      // }
+      // prm.leave_subsection();
+
+
+
       prm.enter_subsection("Geometry model");
       {
-        prm.enter_subsection("Box");
-        {
-          repetitions[0] = prm.get_integer ("X repetitions");
-          if (dim >= 2)
-            {
-              repetitions[1] = prm.get_integer ("Y repetitions");
-            }
-          if (dim >= 3)
-            {
-              repetitions[dim-1] = prm.get_integer ("Z repetitions");
-            }
-        }
-        prm.leave_subsection();
+          // Parse parameters for the Box geometry
+          if (prm.get("Model name") == "box")
+          {
+              prm.enter_subsection("Box");
+              {
+                  repetitions[0] = prm.get_integer("X repetitions");
+                  repetitions[1] = prm.get_integer("Y repetitions");
+                  if (dim == 3)
+                      repetitions[2] = prm.get_integer("Z repetitions");
+              }
+              prm.leave_subsection();  // End of Box
+          }
+          // Parse parameters for the Spherical shell geometry
+          else if (prm.get("Model name") == "spherical shell")
+          {
+              prm.enter_subsection("Spherical shell");
+              {
+                  inner_radius = prm.get_double("Inner radius");
+                  outer_radius = prm.get_double("Outer radius");
+                  opening_angle = prm.get_double("Opening angle");
+              }
+              prm.leave_subsection();  
+          }
       }
-      prm.leave_subsection();
-
-
+      prm.leave_subsection();  
 
       prm.enter_subsection ("Mesh deformation");
       {
