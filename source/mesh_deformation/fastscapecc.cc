@@ -119,7 +119,7 @@ namespace aspect
       std::vector<std::vector<double>> temporary_variables(dim+2, std::vector<double>());
 
       // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
-      const QIterated<dim-1> face_corners (QTrapez<1>(),
+      const QIterated<dim-1> face_corners (QTrapezoid<1>(),
                                            static_cast<unsigned int>(std::pow(2,additional_refinement_levels+surface_refinement_difference)));
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
@@ -310,8 +310,11 @@ namespace aspect
         {
           fastscape_iterations *= 2;
           fastscape_timestep_in_years *= 0.5;
-          std::cout << "here it works1 "<<std::endl;
         }
+
+      // auto triangulate = fastscapelib::triangulation(Points);
+
+      // auto grid = fs.TriMesh(tripoints, tritriangles, outlet_idx);
 
       // raster grid and boundary conditions
       fastscapelib::raster_boundary_status bs(fastscapelib::node_status::fixed_value);
@@ -321,12 +324,10 @@ namespace aspect
       // flow graph with single direction flow routing
       fastscapelib::flow_graph<fastscapelib::raster_grid> flow_graph(
         grid, { fastscapelib::single_flow_router(), fastscapelib::mst_sink_resolver() });
-      std::cout << "here it works 2"<<std::endl;
 
       // Setup eroders
       auto spl_eroder = fastscapelib::make_spl_eroder(flow_graph, 2e-4, 0.4, 1, 1e-5);
       auto diffusion_eroder = fastscapelib::make_diffusion_adi_eroder(grid, 0.01);
-      std::cout << "here it works 3"<<std::endl;
 
       // initial topographic surface elevation
       xt::xarray<double> vec_shape = xt::zeros<double>(grid.shape());
@@ -348,7 +349,6 @@ namespace aspect
             // std::cout << "uplift_rate_in_m_year[1]"<<uplift_rate_in_m_year[100]<<std::endl;
 
 
-
       // xt::xarray<double> uplift_rate(vec_shape.shape(), 0);
 
       std::vector<std::size_t> shape = { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) };
@@ -361,50 +361,34 @@ namespace aspect
       // xt::xarray<double> elevation(vec_shape.shape(), h);
       // xt::xarray<double> elevation_old(vec_shape.shape(), h_old);
 
-      std::cout << "here it works 4 "<<std::endl;
-      //
 
-      std::cout << "here it works 5"<<std::endl;
       // std::vector<double> uplift_rate_in_m_year(vz.size());
       // for (size_t i = 0; i < vz.size(); ++i) {
       //     uplift_rate_in_m_year[i] = vz[i] / year_in_seconds;
       // }
-      std::cout << "here it works 6"<<std::endl;
-      //
 
-
-      std::cout << "here it works 7"<<std::endl;
-      //
       // run model
       //
       //double dt = 2e4;
       for (unsigned int fastscape_iteration = 0; fastscape_iteration < fastscape_iterations; ++fastscape_iteration)
         {
-          std::cout << "here it works 8 "<<std::endl;
           std::cout << "Fastscape ite "<<fastscape_iteration<<std::endl;
           // apply uplift
           uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
-          std::cout << "here it works 8b "<<std::endl;
           // flow routing
           flow_graph.update_routes(uplifted_elevation);
-          std::cout << "here it works 8c "<<std::endl;
           // flow accumulation (drainage area)
           flow_graph.accumulate(drainage_area, 1.0);
-          std::cout << "here it works 8d "<<std::endl;
           // apply channel erosion then hillslope diffusion
           auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
-          std::cout << "here it works 8e "<<std::endl;
 
           //calculate the cumulated erosion flux
           auto sediment_flux = flow_graph.accumulate(spl_erosion);
 
           auto diff_erosion = diffusion_eroder.erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
-          std::cout << "here it works 9"<<std::endl;
           // update topography
           elevation = uplifted_elevation - spl_erosion - diff_erosion;
-          std::cout << "here it works 9b "<<std::endl;
         }
-      std::cout << "here it works 10"<<std::endl;
       std::vector<double> uplifted_erosion_std(uplifted_elevation.begin(), uplifted_elevation.end());
       std::vector<double> elevation_std(elevation.begin(), elevation.end());
       std::vector<double> elevation_old_std(elevation_old.begin(), elevation_old.end());
@@ -427,7 +411,6 @@ namespace aspect
           
           MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator()); 
       }  
-      std::cout << "here it works 11 "<<std::endl;
 
       // Get the sizes needed for a data table of the mesh velocities.
       TableIndices<dim> size_idx;
@@ -481,8 +464,6 @@ namespace aspect
       TableIndices<dim> idx;
 //      Assert(values.size() == data_table.size()[0]*data_table.size()[1]*data_table.size()[2],
 //                     ExcMessage("The size of the data table does not match the size of the values.");
-
-      std::cout << "here it works 12"<<std::endl;
 
       // Loop through the data table and fill it with the velocities from FastScape.
 
