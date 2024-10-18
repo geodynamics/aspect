@@ -102,7 +102,7 @@ subsection Particles
   end
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Random cell selection = false
       set Number of particles = 256
     end

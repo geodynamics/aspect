@@ -75,7 +75,12 @@ def move_number_of_particles_to_correct_subsection(parameters):
                         parameters["Particles"]["value"]["Generator"]["value"]["Uniform radial"] = {"comment": "", "value" : dict({}), "type": "subsection"}
                     parameters["Particles"]["value"]["Generator"]["value"]["Uniform radial"]["value"]["Number of particles"] = parameter
 
-                elif generator == "random uniform" or generator == "probability density function":
+                elif generator == "random uniform":
+                    if not "Random uniform" in parameters["Particles"]["value"]["Generator"]["value"]:
+                        parameters["Particles"]["value"]["Generator"]["value"]["Random uniform"] = {"comment": "", "value" : dict({}), "type": "subsection"}
+                    parameters["Particles"]["value"]["Generator"]["value"]["Random uniform"]["value"]["Number of particles"] = parameter
+
+                elif generator == "probability density function":
                     if not "Probability density function" in parameters["Particles"]["value"]["Generator"]["value"]:
                         parameters["Particles"]["value"]["Generator"]["value"]["Probability density function"] = {"comment": "", "value" : dict({}), "type": "subsection"}
                     parameters["Particles"]["value"]["Generator"]["value"]["Probability density function"]["value"]["Number of particles"] = parameter
@@ -83,11 +88,25 @@ def move_number_of_particles_to_correct_subsection(parameters):
                 # the parameter was not used by other generators. silently delete it
             else:
                 # No generator was manually selected, move the parameter into the default generator subsection
-                if not "Probability density function" in parameters["Particles"]["value"]["Generator"]["value"]:
-                    parameters["Particles"]["value"]["Generator"]["value"]["Probability density function"] = {"comment": "", "value" : dict({}), "type": "subsection"}
+                if not "Random uniform" in parameters["Particles"]["value"]["Generator"]["value"]:
+                    parameters["Particles"]["value"]["Generator"]["value"]["Random uniform"] = {"comment": "", "value" : dict({}), "type": "subsection"}
 
-                parameters["Particles"]["value"]["Generator"]["value"]["Probability density function"]["value"]["Number of particles"] = parameter
-            
+                parameters["Particles"]["value"]["Generator"]["value"]["Random uniform"]["value"]["Number of particles"] = parameter
+
+    # If 'random uniform' is selected or defaulted, but there is no 'random uniform' subsection, move the 'probability density function' subsection
+    # this is necessary, because for a while the 'probability density function' section was used for the 'random uniform' generator as well
+    for particle_section in ["Particles","Particles 2"]:
+        if particle_section in parameters:
+            if ("Particle generator name" in parameters[particle_section]["value"] and parameters[particle_section]["value"]["Particle generator name"]["value"] == "random uniform") \
+                or not "Particle generator name" in parameters[particle_section]["value"]:
+                if "Generator" in parameters["Particles"]["value"]:
+                    # if the parameter does not already exist in random uniform
+                    if not "Random uniform" in parameters[particle_section]["value"]["Generator"]["value"] \
+                    and "Probability density function" in parameters[particle_section]["value"]["Generator"]["value"]:
+                        subsection = parameters[particle_section]["value"]["Generator"]["value"]["Probability density function"]
+                        parameters[particle_section]["value"]["Generator"]["value"]["Random uniform"] = subsection
+                        del parameters[particle_section]["value"]["Generator"]["value"]["Probability density function"]
+        
     return parameters
 
 def move_particle_postprocess_parameters_back(parameters):

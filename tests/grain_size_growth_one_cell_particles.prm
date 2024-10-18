@@ -35,7 +35,7 @@ subsection Particles
   set Integration scheme = rk2
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 50000
     end
   end

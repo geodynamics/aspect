@@ -115,9 +115,7 @@ subsection Particles
   end
 
   subsection Generator
-    subsection Probability density function
-      set Variable names      = x,z
-      set Function expression = x*x*z
+    subsection Random uniform
       set Number of particles = 100000
     end
   end
