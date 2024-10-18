@@ -1,18 +1,4 @@
 #include <iostream>
-
-#include <xtensor/xarray.hpp>
-#include <xtensor/xmath.hpp>
-#include <xtensor/xview.hpp>
-#include <xtensor/xadapt.hpp>
-
-#include <fastscapelib/flow/flow_graph.hpp>
-#include <fastscapelib/flow/sink_resolver.hpp>
-#include <fastscapelib/flow/flow_router.hpp>
-#include <fastscapelib/grid/raster_grid.hpp>
-#include <fastscapelib/eroders/diffusion_adi.hpp>
-#include <fastscapelib/eroders/spl.hpp>
-
-
 #include <aspect/global.h>
 
 #include <aspect/mesh_deformation/fastscapecc.h>
@@ -22,11 +8,14 @@
 #include <ctime>
 #include <aspect/simulator.h>
 #include <aspect/simulator/assemblers/interface.h>
+#include <aspect/simulator_signals.h>
+
 
 #include <algorithm> // For std::copy
 
 #include <aspect/geometry_model/spherical_shell.h>
 
+// namespace fs = fastscapelib;
 
 
 namespace aspect
@@ -40,33 +29,33 @@ namespace aspect
         // AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
         //                  ExcMessage("FastScape can only be run with a box geometry model."));
 
-             const GeometryModel::Box<dim> *geometry
-               = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
+        const GeometryModel::Box<dim> *geometry
+          = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
 
-              //   const GeometryModel::SphericalShell<dim> *geometry
-              //  = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
+        //   const GeometryModel::SphericalShell<dim> *geometry
+        //  = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
 
-             // Find the id associated with the top boundary and boundaries that call mesh deformation.
-             const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-             const std::set<types::boundary_id> mesh_deformation_boundary_ids
-               = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
+        // Find the id associated with the top boundary and boundaries that call mesh deformation.
+        const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+        const std::set<types::boundary_id> mesh_deformation_boundary_ids
+          = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
 
-             // Get the deformation type names called for each boundary.
-             std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-               = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+        // Get the deformation type names called for each boundary.
+        std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
+          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
-             // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
-             for (std::set<types::boundary_id>::const_iterator p = mesh_deformation_boundary_ids.begin();
-                  p != mesh_deformation_boundary_ids.end(); ++p)
-               {
-                 const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
-                 for (unsigned int i = 0; i < names.size(); ++i )
-                   {
-                     if (names[i] == "fastscape")
-                       AssertThrow((*p == top_boundary),
-                                   ExcMessage("FastScape can only be called on the surface boundary."));
-                   }
-               }
+        // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
+        for (std::set<types::boundary_id>::const_iterator p = mesh_deformation_boundary_ids.begin();
+            p != mesh_deformation_boundary_ids.end(); ++p)
+          {
+            const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
+            for (unsigned int i = 0; i < names.size(); ++i )
+              {
+                if (names[i] == "fastscape")
+                  AssertThrow((*p == top_boundary),
+                              ExcMessage("FastScape can only be called on the surface boundary."));
+              }
+          }
 
       // Initialize parameters for restarting FastScape
       restart = this->get_parameters().resume_computation;
@@ -319,10 +308,10 @@ namespace aspect
       // raster grid and boundary conditions
       fastscapelib::raster_boundary_status bs(fastscapelib::node_status::fixed_value);
 
-      auto grid = fastscapelib::raster_grid::from_length({ static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) }, { x_extent, y_extent}, bs);
+      auto grid = fastscapelib::raster_grid<>::from_length({ static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) }, { x_extent, y_extent}, bs);
 
       // flow graph with single direction flow routing
-      fastscapelib::flow_graph<fastscapelib::raster_grid> flow_graph(
+      fastscapelib::flow_graph<fastscapelib::raster_grid<>> flow_graph(
         grid, { fastscapelib::single_flow_router(), fastscapelib::mst_sink_resolver() });
 
       // Setup eroders
