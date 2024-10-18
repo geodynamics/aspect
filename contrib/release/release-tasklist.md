@@ -198,6 +198,118 @@ and the links are working
 
 ## List of prior release notes
 
+Announcement for 3.0.0 (Nov 6, 2024)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 3.0.0. ASPECT is the Advanced
+Solver for Planetary Evolution, Convection, and Tectonics. It uses modern
+numerical methods such as adaptive mesh refinement, multigrid solvers, and
+a modular software design to provide a fast, flexible, and extensible mantle
+convection solver. ASPECT is available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://geodynamics.org/resources/aspect
+
+and
+
+        https://github.com/geodynamics/aspect/releases/tag/v3.0.0
+
+Among others this release includes the following significant changes:
+
+- ASPECT has been renamed from "Advanced Solver for Problems in Earth's
+  ConvecTion" to "Advanced Solver for Planetary Evolution, Convection, and
+  Tectonics" to reflect that the scope of ASPECT has grown beyond mantle
+  convection.
+  (Timo Heister on behalf of all maintainers)
+
+- ASPECT now includes version 1.0.0 of the Geodynamic World Builder and no
+  longer supports World Builder versions older than 0.5.0.
+  (Menno Fraters and other contributors)
+
+- ASPECT can now be coupled to the landscape evolution code FastScape to deform
+  the surface through erosion and sediment deposition. Solution variables can
+  now also be output on the surface mesh of the model domain.
+  (Derek Neuharth, Anne Glerum)
+
+- ASPECT can now compute crystal-preferred orientation of mineral fabrics.
+  DREX-like calculations are used to compute anisotropy tensors and
+  distributions of mineral orientations.
+  (Menno Fraters, Xiaochuan Tian)
+
+- A sea level postprocessor for glacial isostatic adjustment modeling has been
+  added. It computes the sea level based on the free surface topography, ocean
+  basin, ice thickness, and perturbed gravitational potential.
+  (Maaike Weerdesteijn, John Naliboff)
+
+- There is now a new material model that is designed to advect fluids and
+  compute fluid release and absorption based on different models for fluid-rock
+  interaction. New melt-rock interactions have been added.
+  (Daniel Douglas, Juliane Dannberg, Grant Block, John Naliboff)
+
+- ASPECT now requires deal.II 9.5 or newer. ASPECT is also compatible with
+  deal.II 9.6, including new features and performance improvements.
+  (Rene Gassmoeller, Timo Heister)
+
+- ASPECT now by default builds a debug and an optimized (release) version of
+  the executable in the same build directory.
+  (Rene Gassmoeller, Wolfgang Bangerth, Timo Heister)
+
+- ASPECT now has a Visual Studio Code extension, which provides syntax
+  highlighting and auto-completion for input parameter files. The old
+  Parameter GUI has been removed as it was no longer maintained.
+  (Zhikui Guo, Timo Heister, Rene Gassmoeller)
+
+- ASPECT now supports compositional fields with different discretizations
+  (continuous or discontinuous) and different polynomial degrees in the same
+  model. Compositional fields can now be solved using a different list of
+  assemblers for each field, effectively allowing to add additional terms to
+  each advection equation.
+  (Timo Heister, Juliane Dannberg)
+
+- ASPECT now outputs the physical units of quantities into .pvtu files.
+  (Wolfgang Bangerth)
+
+- The geometric multigrid (GMG) solver described in Clevenger and Heister,
+  2021, has become ASPECT's new default Stokes solver. The previous algebraic
+  multigrid (AMG) option is still available.
+  (Conrad Clevenger, Jiaqi Zhang, Timo Heister, Rene Gassmoeller)
+
+- ASPECT now utilizes solvers for ordinary differential equations from the
+  SUNDIALS ARKODE library for grain-size evolution and other purposes.
+  (Juliane Dannberg, Wolfgang Bangerth, Bob Myhill, Rene Gassmoeller)
+
+- All ASPECT plugin classes and plugin systems are now derived from common base
+  classes. This unifies class interfaces across plugin systems and allows for
+  removal of duplicate code and documentation.
+  (Wolfgang Bangerth)
+
+- The particle subsystem has been overhauled. Most particle parameters have
+  moved. Multiple particle systems (with different properties) can be active
+  in the same model. Existing input files can be updated with the update
+  scripts.
+  (Rene Gassmoeller, Menno Fraters, Timo Heister)
+
+- 15 new cookbooks and benchmark cases have been added.
+  (Many authors, see link below)
+
+- Many deprecated input options and source code functions have been removed.
+  Many bugs and inconsistencies have been fixed.
+  (Many authors, see link below).
+
+A complete list of all changes and their authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_2_85_80_and_3_80_80.html
+
+We are thankful for all feature and model contributions, code reviews,
+forum posts, bug reports, and general help provided by members of our
+community. Your contributions have helped make ASPECT what is it today.
+
+Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmoeller,
+Anne Glerum, Timo Heister, Bob Myhill, John Naliboff, Cedric Thieulot,
+and many other contributors.
+
+
 Announcement for 2.5.0 (July 8, 2023)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.5.0. ASPECT is the Advanced
