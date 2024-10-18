@@ -88,6 +88,10 @@ subsection Postprocess
   subsection Visualization
     set Time between graphical output = 0
     set Interpolate output = true
-    set List of output variables = material properties, thermal conductivity, artificial viscosity
+    set List of output variables = material properties, artificial viscosity
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, specific heat, viscosity, thermal conductivity
+    end
   end
 end

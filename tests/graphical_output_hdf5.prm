@@ -73,6 +73,10 @@ subsection Postprocess
     set Number of grouped files       = 0
     set Output format                 = hdf5
     set Time between graphical output = 0
-    set List of output variables = viscosity, nonadiabatic pressure
+    set List of output variables = material properties, nonadiabatic pressure
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end

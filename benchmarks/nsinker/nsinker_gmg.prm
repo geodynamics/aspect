@@ -87,6 +87,10 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = viscosity
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end

@@ -52,13 +52,17 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set List of output variables      = density, viscosity, thermal expansivity, melt material properties
+    set List of output variables      = material properties, melt material properties
     set Number of grouped files       = 0
     set Output format                 = gnuplot
     set Time between graphical output = 0
 
     subsection Melt material properties
       set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
+    end
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity
     end
   end
 end

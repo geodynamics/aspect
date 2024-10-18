@@ -116,8 +116,12 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography, pressure statistics
 
   subsection Visualization
-    set List of output variables = density, viscosity, strain rate, error indicator, partition
+    set List of output variables = material properties, strain rate, error indicator, partition
     set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end
 

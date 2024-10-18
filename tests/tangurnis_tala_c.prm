@@ -235,7 +235,7 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set List of output variables      = density, adiabat
+    set List of output variables      = material properties, adiabat
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
@@ -252,6 +252,10 @@ subsection Postprocess
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
     set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 end
 

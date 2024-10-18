@@ -104,10 +104,14 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set List of output variables      = strain rate, viscosity
+    set List of output variables      = strain rate, material properties
     set Output format                 = gnuplot
     set Time between graphical output = 0.25e6
     set Number of grouped files       = 0
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end
 

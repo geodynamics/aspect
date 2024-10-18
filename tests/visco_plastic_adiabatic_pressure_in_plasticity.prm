@@ -101,7 +101,11 @@ subsection Postprocess
 
   subsection Visualization
     set Interpolate output = false
-    set List of output variables = viscosity, named additional outputs, adiabat
+    set List of output variables = material properties, named additional outputs, adiabat
     set Output format            = gnuplot
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end

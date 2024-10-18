@@ -78,7 +78,11 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = viscosity, density, thermal expansivity, specific heat, nonadiabatic temperature #, named additional outputs
+    set List of output variables      = material properties, nonadiabatic temperature #, named additional outputs
     set Time between graphical output = 1e6
+
+    subsection Material properties
+      set List of material properties = viscosity, density, thermal expansivity, specific heat
+    end
   end
 end
