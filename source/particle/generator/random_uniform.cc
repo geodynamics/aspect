@@ -49,7 +49,7 @@ namespace aspect
       {
         prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Probability density function");
+          prm.enter_subsection("Random uniform");
           {
             prm.declare_entry ("Number of particles", "1000",
                                Patterns::Double (0.),
@@ -92,7 +92,7 @@ namespace aspect
       {
         prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Probability density function");
+          prm.enter_subsection("Random uniform");
           {
             n_particles = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
             random_cell_selection = prm.get_bool("Random cell selection");
