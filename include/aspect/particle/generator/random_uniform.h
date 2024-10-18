@@ -21,7 +21,7 @@
 #ifndef _aspect_particle_generator_random_uniform_h
 #define _aspect_particle_generator_random_uniform_h
 
-#include <aspect/particle/generator/probability_density_function.h>
+#include <aspect/particle/generator/interface.h>
 
 namespace aspect
 {
