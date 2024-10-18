@@ -3,7 +3,11 @@
 
 #include <array>
 #include <iterator>
+#include <limits>
+#include <unordered_set>
 #include <stack>
+#include <vector>
+#include <set>
 
 #include "xtensor/xbroadcast.hpp"
 #include "xtensor/xstrided_view.hpp"
@@ -11,7 +15,7 @@
 
 #include "fastscapelib/grid/base.hpp"
 #include "fastscapelib/utils/iterators.hpp"
-#include "fastscapelib/utils/xtensor_utils.hpp"
+#include "fastscapelib/utils/containers.hpp"
 
 
 namespace fastscapelib
@@ -65,22 +69,24 @@ namespace fastscapelib
         public:
             using self_type = flow_graph_impl<G, S, flow_graph_fixed_array_tag>;
             using grid_type = G;
-            using xt_selector = S;
+            using container_selector = S;
             using tag = flow_graph_fixed_array_tag;
 
             using size_type = typename grid_type::size_type;
             using data_type = typename grid_type::grid_data_type;
-            using data_array_type = xt_array_t<xt_selector, data_type>;
+            using data_array_type = dynamic_shape_container_t<container_selector, data_type>;
 
-            using donors_type = xt_tensor_t<xt_selector, size_type, 2>;
-            using donors_count_type = xt_tensor_t<xt_selector, size_type, 1>;
+            using donors_type = fixed_shape_container_t<container_selector, size_type, 2>;
+            using donors_count_type = fixed_shape_container_t<container_selector, size_type, 1>;
             using receivers_type = donors_type;
             using receivers_count_type = donors_count_type;
-            using receivers_distance_type = xt_tensor_t<xt_selector, data_type, 2>;
-            using receivers_weight_type = xt_tensor_t<xt_selector, data_type, 2>;
-            using dfs_indices_type = xt_tensor_t<xt_selector, size_type, 1>;
 
-            using basins_type = xt_tensor_t<xt_selector, size_type, 1>;
+            using receivers_distance_type
+                = fixed_shape_container_t<container_selector, data_type, 2>;
+            using receivers_weight_type = fixed_shape_container_t<container_selector, data_type, 2>;
+            using nodes_indices_type = fixed_shape_container_t<container_selector, size_type, 1>;
+
+            using basins_type = fixed_shape_container_t<container_selector, size_type, 1>;
 
             flow_graph_impl(grid_type& grid, bool single_flow = false)
                 : m_single_flow(single_flow)
@@ -105,7 +111,14 @@ namespace fastscapelib
                 m_donors = xt::ones<size_type>(donors_shape) * -1;
                 m_donors_count = xt::zeros<size_type>({ grid.size() });
 
+                // TODO: replace indices and levels for any traversal direction to save memory
+                // footprint
+                m_storage_indices = xt::arange<size_type>(0, grid.size(), 1);
+                m_any_order_levels = nodes_indices_type({ 0, size() });
+
                 m_dfs_indices = xt::ones<size_type>({ grid.size() }) * -1;
+                m_bfs_indices = xt::ones<size_type>({ grid.size() }) * -1;
+                m_bfs_levels = xt::ones<size_type>({ grid.size() + 1 }) * -1;
 
                 // TODO: basins are not always needed (only init on-demand)
                 m_basins = xt::empty<size_type>({ grid.size() });
@@ -158,18 +171,39 @@ namespace fastscapelib
 
             void compute_donors();
 
-            const dfs_indices_type& dfs_indices() const
+            const nodes_indices_type& storage_indices() const
+            {
+                return m_storage_indices;
+            };
+
+            const nodes_indices_type& any_order_levels() const
+            {
+                return m_any_order_levels;
+            };
+
+            const nodes_indices_type& dfs_indices() const
             {
                 return m_dfs_indices;
             };
 
+            const nodes_indices_type& bfs_indices() const
+            {
+                return m_bfs_indices;
+            };
+
+            const nodes_indices_type& bfs_levels() const
+            {
+                return m_bfs_levels;
+            };
+
             void compute_dfs_indices_bottomup();
             void compute_dfs_indices_topdown();
+            void compute_bfs_indices_bottomup();
 
             /*
              * Should be used for graph traversal in an explicit direction.
              */
-            inline stl_container_iterator_wrapper<dfs_indices_type> nodes_indices_bottomup() const
+            inline stl_container_iterator_wrapper<nodes_indices_type> nodes_indices_bottomup() const
             {
                 return m_dfs_indices;
             }
@@ -194,6 +228,40 @@ namespace fastscapelib
             template <class T>
             data_array_type accumulate(T&& src) const;
 
+            inline bool is_base_level(const size_type& idx) const
+            {
+                return bool(m_base_levels.count(idx));
+            }
+
+            const std::unordered_set<size_type>& base_levels() const
+            {
+                return m_base_levels;
+            }
+
+            template <class C>
+            void set_base_levels(const C& levels)
+            {
+                m_base_levels.clear();
+                m_base_levels.insert(levels.begin(), levels.end());
+            }
+
+            inline bool is_masked(const size_type& idx) const
+            {
+                return m_mask_initialized && m_mask.flat(idx);
+            }
+
+            const xt::xarray<bool>& mask() const
+            {
+                return m_mask;
+            }
+
+            template <class C>
+            void set_mask(C&& mask)
+            {
+                m_mask = mask;
+                m_mask_initialized = true;
+            }
+
         private:
             bool m_single_flow;
             grid_type& m_grid;
@@ -206,11 +274,16 @@ namespace fastscapelib
             receivers_distance_type m_receivers_distance;
             receivers_weight_type m_receivers_weight;
 
-            dfs_indices_type m_dfs_indices;
+            nodes_indices_type m_dfs_indices, m_bfs_indices, m_bfs_levels, m_storage_indices,
+                m_any_order_levels;
 
             basins_type m_basins;
             std::vector<size_type> m_outlets;
             std::vector<size_type> m_pits;
+
+            std::unordered_set<size_type> m_base_levels;
+            xt::xarray<bool> m_mask;
+            bool m_mask_initialized = false;
 
             template <class FG, class FR>
             friend class flow_router_impl;
@@ -278,6 +351,69 @@ namespace fastscapelib
         }
 
         /*
+         * Perform breadth-first search on the flow graph.
+         */
+        template <class G, class S>
+        void flow_graph_impl<G, S, flow_graph_fixed_array_tag>::compute_bfs_indices_bottomup()
+        {
+            std::vector<std::uint8_t> visited(m_grid.size(), std::uint8_t(0));
+            std::vector<size_type> levels(m_grid.size() + 1, 0);
+            size_type nstack = 0;
+            size_type level = 0;
+            bool skip;
+
+            for (size_type i = 0; i < size(); ++i)
+                if (m_receivers(i, 0) == i)
+                {
+                    m_bfs_indices(nstack++) = i;
+                }
+
+            levels[level++] = 0;
+            levels[level++] = nstack;
+
+            while (nstack < size())
+            {
+                for (size_type i = levels[level - 2]; i < levels[level - 1]; ++i)
+                {
+                    auto node_idx = m_bfs_indices(i);
+                    visited[node_idx] = 1;
+
+                    for (size_type k = 0; k < m_donors_count(node_idx); ++k)
+                    {
+                        auto donor_idx = m_donors(node_idx, k);
+
+                        skip = visited[donor_idx] > 0;
+                        if (skip)
+                            continue;
+
+                        for (std::size_t rcv_idx = 0; rcv_idx < m_receivers_count(donor_idx);
+                             ++rcv_idx)
+                        {
+                            if (visited[m_receivers(donor_idx, rcv_idx)] != 1)
+                            {
+                                skip = true;
+                                break;
+                            }
+                        }
+
+                        if (!skip && visited[donor_idx] == 0)
+                        {
+                            m_bfs_indices(nstack++) = donor_idx;
+                            visited[donor_idx] = 2;
+                        }
+                    }
+                }
+
+                for (size_type i = levels[level - 2]; i < levels[level - 1]; ++i)
+                    visited[m_bfs_indices(i)] = 1;
+
+                levels[level++] = nstack;
+            }
+
+            m_bfs_levels = xt::adapt(levels, { level });
+        }
+
+        /*
          * Perform depth-first search in the upstream->dowstream direction
          * and store the node indices for faster graph traversal.
          *
@@ -327,12 +463,19 @@ namespace fastscapelib
         template <class G, class S>
         void flow_graph_impl<G, S, flow_graph_fixed_array_tag>::compute_basins()
         {
-            size_type current_basin = 0;
+            size_type current_basin = static_cast<size_type>(-1);
+            size_type no_basin = std::numeric_limits<size_type>::max();
 
             m_outlets.clear();
 
             for (const auto& inode : nodes_indices_bottomup())
             {
+                if (is_masked(inode))
+                {
+                    m_basins(inode) = no_basin;
+                    continue;
+                }
+
                 // outlet node has only one receiver: itself
                 if (inode == m_receivers(inode, 0))
                 {
@@ -340,22 +483,21 @@ namespace fastscapelib
                     current_basin++;
                 }
 
-                m_basins(inode) = current_basin - 1;
+                m_basins(inode) = current_basin;
             }
 
-            assert(m_outlets.size() == current_basin);
+            assert(m_outlets.size() == current_basin + 1);
         }
 
         template <class G, class S>
         auto flow_graph_impl<G, S, flow_graph_fixed_array_tag>::pits()
             -> const std::vector<size_type>&
         {
-            const auto& nodes_status = grid().nodes_status();
             m_pits.clear();
 
             for (const auto outlet : m_outlets)
             {
-                if (nodes_status.flat(outlet) != node_status::fixed_value)
+                if (!is_base_level(outlet))
                 {
                     m_pits.push_back(outlet);
                 }

@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "fastscapelib/utils/thread_pool.hpp"
+
 
 namespace fastscapelib
 {
@@ -117,11 +119,15 @@ namespace fastscapelib
         {
         public:
             using graph_impl_type = FG;
+            using size_type = typename FG::size_type;
             using data_array_type = typename graph_impl_type::data_array_type;
-            using graph_impl_map = std::map<std::string, FG&>;
+            using graph_impl_map = std::map<std::string, std::shared_ptr<FG>>;
             using elevation_map = std::map<std::string, std::unique_ptr<data_array_type>>;
+            using thread_pool_type = thread_pool<size_type>;
 
-            void apply(FG& /*graph_impl*/, data_array_type& /*elevation*/)
+            void apply(FG& /*graph_impl*/,
+                       data_array_type& /*elevation*/,
+                       thread_pool_type& /*pool*/)
             {
             }
 
@@ -180,8 +186,10 @@ namespace fastscapelib
         {
         public:
             using data_array_type = typename FG::data_array_type;
-            using graph_impl_map = std::map<std::string, FG&>;
+            using graph_impl_map = std::map<std::string, std::shared_ptr<FG>>;
             using elevation_map = std::map<std::string, std::unique_ptr<data_array_type>>;
+            using size_type = typename FG::size_type;
+            using thread_pool_type = thread_pool<size_type>;
 
             template <class OP>
             flow_operator_impl_facade(std::shared_ptr<OP> ptr)
@@ -196,9 +204,9 @@ namespace fastscapelib
             {
             }
 
-            void apply(FG& graph_impl, data_array_type& elevation)
+            void apply(FG& graph_impl, data_array_type& elevation, thread_pool_type& pool)
             {
-                return m_wrapper_ptr->apply(graph_impl, elevation);
+                return m_wrapper_ptr->apply(graph_impl, elevation, pool);
             }
 
             void save(const FG& graph_impl,
@@ -215,7 +223,10 @@ namespace fastscapelib
                 virtual ~flow_operator_impl_wrapper_base()
                 {
                 }
-                virtual void apply(FG& graph_impl, data_array_type& elevation) = 0;
+                virtual void apply(FG& graph_impl,
+                                   data_array_type& elevation,
+                                   thread_pool_type& pool)
+                    = 0;
                 virtual void save(const FG& graph_impl,
                                   graph_impl_map& graph_impl_snapshots,
                                   const data_array_type& elevation,
@@ -232,9 +243,11 @@ namespace fastscapelib
                 {
                 }
 
-                void apply(FG& graph_impl, data_array_type& elevation) override
+                void apply(FG& graph_impl,
+                           data_array_type& elevation,
+                           thread_pool_type& pool) override
                 {
-                    return m_op_impl.apply(graph_impl, elevation);
+                    return m_op_impl.apply(graph_impl, elevation, pool);
                 }
 
                 void save(const FG& graph_impl,
@@ -458,13 +471,9 @@ namespace fastscapelib
     template <class OP>
     void flow_operator_sequence<FG>::add_operator(std::shared_ptr<OP> ptr)
     {
-        // static_assert(std::is_base_of_v<flow_operator, OP>, "not a flow_operator type");
-         static_assert(std::is_base_of<flow_operator, OP>::value, "not a flow_operator type");
-        // if constexpr (std::is_same_v<OP, flow_snapshot>)
-        if constexpr (std::is_same<OP, flow_snapshot>::value)
-        // static_assert(std::is_base_of_v<flow_operator, OP>, "not a flow_operator type");
+        static_assert(std::is_base_of_v<flow_operator, OP>, "not a flow_operator type");
 
-        // if constexpr (std::is_same_v<OP, flow_snapshot>)
+        if constexpr (std::is_same_v<OP, flow_snapshot>)
         {
             update_snapshots(*ptr);
         }

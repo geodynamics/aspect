@@ -20,6 +20,19 @@
 #include <aspect/global.h>
 
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/simulator_access.h>
+
+#include <xtensor/xarray.hpp>
+#include <xtensor/xmath.hpp>
+#include <xtensor/xview.hpp>
+#include <xtensor/xadapt.hpp>
+
+#include <fastscapelib/flow/flow_graph.hpp>
+#include <fastscapelib/flow/sink_resolver.hpp>
+#include <fastscapelib/flow/flow_router.hpp>
+#include <fastscapelib/grid/raster_grid.hpp>
+#include <fastscapelib/eroders/diffusion_adi.hpp>
+#include <fastscapelib/eroders/spl.hpp>
 
 namespace aspect
 {
@@ -73,16 +86,16 @@ namespace aspect
         std::unique_ptr<fastscapelib::raster_boundary_status> bs;
 
         // Unique pointer for fastscapelib raster_grid.
-        std::unique_ptr<fastscapelib::raster_grid> grid;
+        std::unique_ptr<fastscapelib::raster_grid<>> grid;
 
         // Unique pointer for fastscapelib flow_graph with raster_grid as template parameter.
-        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::raster_grid>> flow_graph;
+        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::raster_grid<>>> flow_graph;
 
         // Unique pointer for fastscapelib spl_eroder with flow_graph<raster_grid> as template parameter.
-        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::raster_grid>>> spl_eroder;
+        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::raster_grid<>>>> spl_eroder;
 
         // Unique pointer for fastscapelib diffusion_adi_eroder with raster_grid as template parameter.
-        std::unique_ptr<fastscapelib::diffusion_adi_eroder<fastscapelib::raster_grid>> diffusion_eroder;
+        std::unique_ptr<fastscapelib::diffusion_adi_eroder<fastscapelib::raster_grid<>>> diffusion_eroder;
 
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.

@@ -16,7 +16,7 @@
 #include "xtensor/xmanipulation.hpp"
 
 #include "fastscapelib/utils/utils.hpp"
-#include "fastscapelib/utils/xtensor_utils.hpp"
+#include "fastscapelib/utils/containers.hpp"
 
 
 namespace fastscapelib
@@ -76,17 +76,17 @@ namespace fastscapelib
      * @tparam FG The flow graph type.
      * @tparam S The xtensor container selector for data array members.
      */
-    template <class FG, class S = typename FG::xt_selector>
+    template <class FG, class S = typename FG::container_selector>
     class spl_eroder
     {
     public:
         using flow_graph_type = FG;
-        using xt_selector = S;
+        using container_selector = S;
 
         using size_type = typename flow_graph_type::size_type;
         using shape_type = typename flow_graph_type::shape_type;
         using data_type = typename flow_graph_type::data_type;
-        using data_array_type = xt_array_t<xt_selector, data_type>;
+        using data_array_type = dynamic_shape_container_t<container_selector, data_type>;
 
         /**
          * Create a new SPL eroder.
