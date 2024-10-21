@@ -1,11 +1,11 @@
-(parameters:Particles)=
-# Particles
+(parameters:Particles_202)=
+# Particles 2
 
 
-## **Subsection:** Particles
+## **Subsection:** Particles 2
 
 
-(parameters:Particles/Allow_20cells_20without_20particles)=
+(parameters:Particles_202/Allow_20cells_20without_20particles)=
 ### __Parameter name:__ Allow cells without particles
 **Default value:** false
 
@@ -13,7 +13,7 @@
 
 **Documentation:** By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&rsquo;s properties.
 
-(parameters:Particles/Integration_20scheme)=
+(parameters:Particles_202/Integration_20scheme)=
 ### __Parameter name:__ Integration scheme
 **Default value:** rk2
 
@@ -33,7 +33,7 @@ Select one of the following models:
 
 &lsquo;rk4&rsquo;: Runge Kutta fourth order integrator, where $y_{n+1} = y_n + \frac{1}{6} k_1 + \frac{1}{3} k_2 + \frac{1}{3} k_3 + \frac{1}{6} k_4$ and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.
 
-(parameters:Particles/Interpolation_20scheme)=
+(parameters:Particles_202/Interpolation_20scheme)=
 ### __Parameter name:__ Interpolation scheme
 **Default value:** cell average
 
@@ -53,7 +53,7 @@ Select one of the following models:
 
 &lsquo;quadratic least squares&rsquo;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 
-(parameters:Particles/List_20of_20particle_20properties)=
+(parameters:Particles_202/List_20of_20particle_20properties)=
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
@@ -101,7 +101,7 @@ The following properties are available:
 
 &lsquo;viscoplastic strain invariants&rsquo;: A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in `benchmarks/buiter\_et\_al\_2008\_jgr/plugin/`,and is effectively the same as what the visco plastic material model uses for compositional fields.
 
-(parameters:Particles/Load_20balancing_20strategy)=
+(parameters:Particles_202/Load_20balancing_20strategy)=
 ### __Parameter name:__ Load balancing strategy
 **Default value:** repartition
 
@@ -109,7 +109,7 @@ The following properties are available:
 
 **Documentation:** Strategy that is used to balance the computational load across processors for adaptive meshes.
 
-(parameters:Particles/Maximum_20particles_20per_20cell)=
+(parameters:Particles_202/Maximum_20particles_20per_20cell)=
 ### __Parameter name:__ Maximum particles per cell
 **Default value:** 100
 
@@ -117,7 +117,7 @@ The following properties are available:
 
 **Documentation:** Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are `n\_number\_of\_particles` $>$ `max\_particles\_per\_cell` particles in one cell then `n\_number\_of\_particles` - `max\_particles\_per\_cell` particles in this cell are randomly chosen and destroyed.
 
-(parameters:Particles/Minimum_20particles_20per_20cell)=
+(parameters:Particles_202/Minimum_20particles_20per_20cell)=
 ### __Parameter name:__ Minimum particles per cell
 **Default value:** 0
 
@@ -125,15 +125,7 @@ The following properties are available:
 
 **Documentation:** Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are `n\_number\_of\_particles` $<$ `min\_particles\_per\_cell` particles in one cell then `min\_particles\_per\_cell` - `n\_number\_of\_particles` particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
 
-(parameters:Particles/Number_20of_20particle_20systems)=
-### __Parameter name:__ Number of particle systems
-**Default value:** 1
-
-**Pattern:** [Integer range 0...2 (inclusive)]
-
-**Documentation:** The number of particle systems to be created. The maximum number of particle systems is set by the CMake variable &lsquo;ASPECT_MAX_NUM_PARTICLE_SYSTEMS&lsquo; and is by default 2.
-
-(parameters:Particles/Particle_20generator_20name)=
+(parameters:Particles_202/Particle_20generator_20name)=
 ### __Parameter name:__ Particle generator name
 **Default value:** random uniform
 
@@ -155,7 +147,7 @@ The following properties are available:
 
 &lsquo;uniform radial&rsquo;: Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
-(parameters:Particles/Particle_20weight)=
+(parameters:Particles_202/Particle_20weight)=
 ### __Parameter name:__ Particle weight
 **Default value:** 10
 
@@ -163,7 +155,7 @@ The following properties are available:
 
 **Documentation:** Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the &lsquo;repartition&rsquo; particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
 
-(parameters:Particles/Update_20ghost_20particles)=
+(parameters:Particles_202/Update_20ghost_20particles)=
 ### __Parameter name:__ Update ghost particles
 **Default value:** true
 
@@ -171,9 +163,9 @@ The following properties are available:
 
 **Documentation:** Some particle interpolation algorithms require knowledge about particles in neighboring cells. To allow this, particles in ghost cells need to be exchanged between the processes neighboring this cell. This parameter determines whether this transport is happening. This parameter is deprecated and will be removed in the future. Ghost particle updates are always performed. Please set the parameter to &lsquo;true&rsquo;.
 
-(parameters:Particles/CPO_20Bingham_20Average)=
-## **Subsection:** Particles / CPO Bingham Average
-(parameters:Particles/CPO_20Bingham_20Average/Number_20of_20samples)=
+(parameters:Particles_202/CPO_20Bingham_20Average)=
+## **Subsection:** Particles 2 / CPO Bingham Average
+(parameters:Particles_202/CPO_20Bingham_20Average/Number_20of_20samples)=
 ### __Parameter name:__ Number of samples
 **Default value:** 0
 
@@ -181,7 +173,7 @@ The following properties are available:
 
 **Documentation:** This determines how many samples are taken when using the random draw volume averaging. Setting it to zero means that the number of samples is set to be equal to the number of grains.
 
-(parameters:Particles/CPO_20Bingham_20Average/Random_20number_20seed)=
+(parameters:Particles_202/CPO_20Bingham_20Average/Random_20number_20seed)=
 ### __Parameter name:__ Random number seed
 **Default value:** 1
 
@@ -189,9 +181,9 @@ The following properties are available:
 
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation)=
-## **Subsection:** Particles / Crystal Preferred Orientation
-(parameters:Particles/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation)=
+## **Subsection:** Particles 2 / Crystal Preferred Orientation
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/CPO_20derivatives_20algorithm)=
 ### __Parameter name:__ CPO derivatives algorithm
 **Default value:** Spin tensor
 
@@ -199,7 +191,7 @@ The following properties are available:
 
 **Documentation:** Options: Spin tensor
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Number_20of_20grains_20per_20particle)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Number_20of_20grains_20per_20particle)=
 ### __Parameter name:__ Number of grains per particle
 **Default value:** 50
 
@@ -207,7 +199,7 @@ The following properties are available:
 
 **Documentation:** The number of grains of each different mineral each particle contains.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Property_20advection_20max_20iterations)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Property_20advection_20max_20iterations)=
 ### __Parameter name:__ Property advection max iterations
 **Default value:** 100
 
@@ -215,7 +207,7 @@ The following properties are available:
 
 **Documentation:** The Backward Euler property advection method involve internal iterations. This option allows for setting the maximum number of iterations. Note that when the iteration is ended by the max iteration amount an assert is thrown.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Property_20advection_20method)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Property_20advection_20method)=
 ### __Parameter name:__ Property advection method
 **Default value:** Backward Euler
 
@@ -223,7 +215,7 @@ The following properties are available:
 
 **Documentation:** Options: Forward Euler, Backward Euler
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Property_20advection_20tolerance)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Property_20advection_20tolerance)=
 ### __Parameter name:__ Property advection tolerance
 **Default value:** 1e-10
 
@@ -231,7 +223,7 @@ The following properties are available:
 
 **Documentation:** The Backward Euler property advection method involve internal iterations. This option allows for setting a tolerance. When the norm of tensor new - tensor old is smaller than this tolerance, the iteration is stopped.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Random_20number_20seed)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Random_20number_20seed)=
 ### __Parameter name:__ Random number seed
 **Default value:** 1
 
@@ -239,9 +231,9 @@ The following properties are available:
 
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same number of MPI processes. It is implemented as final seed = user seed + MPI Rank.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004)=
-## **Subsection:** Particles / Crystal Preferred Orientation / D-Rex 2004
-(parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Exponents_20p)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/D_2dRex_202004)=
+## **Subsection:** Particles 2 / Crystal Preferred Orientation / D-Rex 2004
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/D_2dRex_202004/Exponents_20p)=
 ### __Parameter name:__ Exponents p
 **Default value:** 1.5
 
@@ -249,7 +241,7 @@ The following properties are available:
 
 **Documentation:** This is exponent p as defined in equation 11 of Kaminski et al., 2004.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/D_2dRex_202004/Mobility)=
 ### __Parameter name:__ Mobility
 **Default value:** 50
 
@@ -257,7 +249,7 @@ The following properties are available:
 
 **Documentation:** The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Nucleation_20efficiency)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/D_2dRex_202004/Nucleation_20efficiency)=
 ### __Parameter name:__ Nucleation efficiency
 **Default value:** 5
 
@@ -265,7 +257,7 @@ The following properties are available:
 
 **Documentation:** This is the dimensionless nucleation rate as defined in equation 8 of Kaminski et al., 2004.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Stress_20exponents)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/D_2dRex_202004/Stress_20exponents)=
 ### __Parameter name:__ Stress exponents
 **Default value:** 3.5
 
@@ -273,7 +265,7 @@ The following properties are available:
 
 **Documentation:** This is the power law exponent that characterizes the rheology of the slip systems. It is used in equation 11 of Kaminski et al., 2004.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Threshold_20GBS)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/D_2dRex_202004/Threshold_20GBS)=
 ### __Parameter name:__ Threshold GBS
 **Default value:** 0.3
 
@@ -281,7 +273,7 @@ The following properties are available:
 
 **Documentation:** The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/D_2dRex_202004/Volume_20fractions_20minerals)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/D_2dRex_202004/Volume_20fractions_20minerals)=
 ### __Parameter name:__ Volume fractions minerals
 **Default value:** 0.5, 0.5
 
@@ -289,9 +281,9 @@ The following properties are available:
 
 **Documentation:** The volume fraction for the different minerals. There need to be the same amount of values as there are minerals
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains)=
-## **Subsection:** Particles / Crystal Preferred Orientation / Initial grains
-(parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Minerals)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Initial_20grains)=
+## **Subsection:** Particles 2 / Crystal Preferred Orientation / Initial grains
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Initial_20grains/Minerals)=
 ### __Parameter name:__ Minerals
 **Default value:** Olivine: Karato 2008, Enstatite
 
@@ -299,7 +291,7 @@ The following properties are available:
 
 **Documentation:** This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Initial_20grains/Model_20name)=
 ### __Parameter name:__ Model name
 **Default value:** Uniform grains and random uniform rotations
 
@@ -307,7 +299,7 @@ The following properties are available:
 
 **Documentation:** The model used to initialize the CPO for all particles. Currently &rsquo;Uniform grains and random uniform rotations&rsquo; and &rsquo;World Builder&rsquo; are the only valid option.
 
-(parameters:Particles/Crystal_20Preferred_20Orientation/Initial_20grains/Volume_20fractions_20minerals)=
+(parameters:Particles_202/Crystal_20Preferred_20Orientation/Initial_20grains/Volume_20fractions_20minerals)=
 ### __Parameter name:__ Volume fractions minerals
 **Default value:** 0.7, 0.3
 
@@ -315,9 +307,9 @@ The following properties are available:
 
 **Documentation:** The volume fractions for the different minerals. There need to be the same number of values as there are minerals.Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases
 
-(parameters:Particles/Function)=
-## **Subsection:** Particles / Function
-(parameters:Particles/Function/Function_20constants)=
+(parameters:Particles_202/Function)=
+## **Subsection:** Particles 2 / Function
+(parameters:Particles_202/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
 
@@ -327,7 +319,7 @@ The following properties are available:
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
 
-(parameters:Particles/Function/Function_20expression)=
+(parameters:Particles_202/Function/Function_20expression)=
 ### __Parameter name:__ Function expression
 **Default value:** 0
 
@@ -337,7 +329,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
-(parameters:Particles/Function/Number_20of_20components)=
+(parameters:Particles_202/Function/Number_20of_20components)=
 ### __Parameter name:__ Number of components
 **Default value:** 1
 
@@ -345,7 +337,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The number of function components where each component is described by a function expression delimited by a &rsquo;;&rsquo;.
 
-(parameters:Particles/Function/Variable_20names)=
+(parameters:Particles_202/Function/Variable_20names)=
 ### __Parameter name:__ Variable names
 **Default value:** x,y,t
 
@@ -353,11 +345,11 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 
-(parameters:Particles/Generator)=
-## **Subsection:** Particles / Generator
-(parameters:Particles/Generator/Ascii_20file)=
-## **Subsection:** Particles / Generator / Ascii file
-(parameters:Particles/Generator/Ascii_20file/Data_20directory)=
+(parameters:Particles_202/Generator)=
+## **Subsection:** Particles 2 / Generator
+(parameters:Particles_202/Generator/Ascii_20file)=
+## **Subsection:** Particles 2 / Generator / Ascii file
+(parameters:Particles_202/Generator/Ascii_20file/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
 
@@ -365,7 +357,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The name of a directory that contains the particle data. This path may either be absolute (if starting with a &rsquo;/&rsquo;) or relative to the current directory. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
 
-(parameters:Particles/Generator/Ascii_20file/Data_20file_20name)=
+(parameters:Particles_202/Generator/Ascii_20file/Data_20file_20name)=
 ### __Parameter name:__ Data file name
 **Default value:** particle.dat
 
@@ -373,9 +365,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The name of the particle file.
 
-(parameters:Particles/Generator/Probability_20density_20function)=
-## **Subsection:** Particles / Generator / Probability density function
-(parameters:Particles/Generator/Probability_20density_20function/Function_20constants)=
+(parameters:Particles_202/Generator/Probability_20density_20function)=
+## **Subsection:** Particles 2 / Generator / Probability density function
+(parameters:Particles_202/Generator/Probability_20density_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
 
@@ -385,7 +377,7 @@ If the function you are describing represents a vector-valued function with mult
 
 A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
 
-(parameters:Particles/Generator/Probability_20density_20function/Function_20expression)=
+(parameters:Particles_202/Generator/Probability_20density_20function/Function_20expression)=
 ### __Parameter name:__ Function expression
 **Default value:** 0
 
@@ -395,7 +387,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 
-(parameters:Particles/Generator/Probability_20density_20function/Number_20of_20particles)=
+(parameters:Particles_202/Generator/Probability_20density_20function/Number_20of_20particles)=
 ### __Parameter name:__ Number of particles
 **Default value:** 1000
 
@@ -403,7 +395,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &rsquo;1e4&rsquo; particles) but it is interpreted as an integer, of course.
 
-(parameters:Particles/Generator/Probability_20density_20function/Random_20cell_20selection)=
+(parameters:Particles_202/Generator/Probability_20density_20function/Random_20cell_20selection)=
 ### __Parameter name:__ Random cell selection
 **Default value:** true
 
@@ -411,7 +403,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** If true, particle numbers per cell are calculated randomly according to their respective probability density. This means particle numbers per cell can deviate statistically from the integral of the probability density. If false, first determine how many particles each cell should have based on the integral of the density over each of the cells, and then once we know how many particles we want on each cell, choose their locations randomly within each cell.
 
-(parameters:Particles/Generator/Probability_20density_20function/Random_20number_20seed)=
+(parameters:Particles_202/Generator/Probability_20density_20function/Random_20number_20seed)=
 ### __Parameter name:__ Random number seed
 **Default value:** 5432
 
@@ -419,7 +411,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The seed for the random number generator that controls the particle generation. Keep constant to generate identical particle distributions in subsequent model runs. Change to get a different distribution. In parallel computations the seed is further modified on each process to ensure different particle patterns on different processes. Note that the number of particles per processor is not affected by the seed.
 
-(parameters:Particles/Generator/Probability_20density_20function/Variable_20names)=
+(parameters:Particles_202/Generator/Probability_20density_20function/Variable_20names)=
 ### __Parameter name:__ Variable names
 **Default value:** x,y,t
 
@@ -427,9 +419,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
 
-(parameters:Particles/Generator/Random_20uniform)=
-## **Subsection:** Particles / Generator / Random uniform
-(parameters:Particles/Generator/Random_20uniform/Number_20of_20particles)=
+(parameters:Particles_202/Generator/Random_20uniform)=
+## **Subsection:** Particles 2 / Generator / Random uniform
+(parameters:Particles_202/Generator/Random_20uniform/Number_20of_20particles)=
 ### __Parameter name:__ Number of particles
 **Default value:** 1000
 
@@ -437,7 +429,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &rsquo;1e4&rsquo; particles) but it is interpreted as an integer, of course.
 
-(parameters:Particles/Generator/Random_20uniform/Random_20cell_20selection)=
+(parameters:Particles_202/Generator/Random_20uniform/Random_20cell_20selection)=
 ### __Parameter name:__ Random cell selection
 **Default value:** true
 
@@ -445,7 +437,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** If true, particle numbers per cell are calculated randomly according to their respective probability density. This means particle numbers per cell can deviate statistically from the integral of the probability density. If false, first determine how many particles each cell should have based on the integral of the density over each of the cells, and then once we know how many particles we want on each cell, choose their locations randomly within each cell.
 
-(parameters:Particles/Generator/Random_20uniform/Random_20number_20seed)=
+(parameters:Particles_202/Generator/Random_20uniform/Random_20number_20seed)=
 ### __Parameter name:__ Random number seed
 **Default value:** 5432
 
@@ -453,9 +445,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The seed for the random number generator that controls the particle generation. Keep constant to generate identical particle distributions in subsequent model runs. Change to get a different distribution. In parallel computations the seed is further modified on each process to ensure different particle patterns on different processes. Note that the number of particles per processor is not affected by the seed.
 
-(parameters:Particles/Generator/Reference_20cell)=
-## **Subsection:** Particles / Generator / Reference cell
-(parameters:Particles/Generator/Reference_20cell/Number_20of_20particles_20per_20cell_20per_20direction)=
+(parameters:Particles_202/Generator/Reference_20cell)=
+## **Subsection:** Particles 2 / Generator / Reference cell
+(parameters:Particles_202/Generator/Reference_20cell/Number_20of_20particles_20per_20cell_20per_20direction)=
 ### __Parameter name:__ Number of particles per cell per direction
 **Default value:** 2
 
@@ -463,9 +455,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, &rsquo;1e4&rsquo; particles) but it is interpreted as an integer, of course.
 
-(parameters:Particles/Generator/Uniform_20box)=
-## **Subsection:** Particles / Generator / Uniform box
-(parameters:Particles/Generator/Uniform_20box/Maximum_20x)=
+(parameters:Particles_202/Generator/Uniform_20box)=
+## **Subsection:** Particles 2 / Generator / Uniform box
+(parameters:Particles_202/Generator/Uniform_20box/Maximum_20x)=
 ### __Parameter name:__ Maximum x
 **Default value:** 1.
 
@@ -473,7 +465,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Maximum x coordinate for the region of particles.
 
-(parameters:Particles/Generator/Uniform_20box/Maximum_20y)=
+(parameters:Particles_202/Generator/Uniform_20box/Maximum_20y)=
 ### __Parameter name:__ Maximum y
 **Default value:** 1.
 
@@ -481,7 +473,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Maximum y coordinate for the region of particles.
 
-(parameters:Particles/Generator/Uniform_20box/Maximum_20z)=
+(parameters:Particles_202/Generator/Uniform_20box/Maximum_20z)=
 ### __Parameter name:__ Maximum z
 **Default value:** 1.
 
@@ -489,7 +481,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Maximum z coordinate for the region of particles.
 
-(parameters:Particles/Generator/Uniform_20box/Minimum_20x)=
+(parameters:Particles_202/Generator/Uniform_20box/Minimum_20x)=
 ### __Parameter name:__ Minimum x
 **Default value:** 0.
 
@@ -497,7 +489,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Minimum x coordinate for the region of particles.
 
-(parameters:Particles/Generator/Uniform_20box/Minimum_20y)=
+(parameters:Particles_202/Generator/Uniform_20box/Minimum_20y)=
 ### __Parameter name:__ Minimum y
 **Default value:** 0.
 
@@ -505,7 +497,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Minimum y coordinate for the region of particles.
 
-(parameters:Particles/Generator/Uniform_20box/Minimum_20z)=
+(parameters:Particles_202/Generator/Uniform_20box/Minimum_20z)=
 ### __Parameter name:__ Minimum z
 **Default value:** 0.
 
@@ -513,7 +505,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Minimum z coordinate for the region of particles.
 
-(parameters:Particles/Generator/Uniform_20box/Number_20of_20particles)=
+(parameters:Particles_202/Generator/Uniform_20box/Number_20of_20particles)=
 ### __Parameter name:__ Number of particles
 **Default value:** 1000
 
@@ -521,9 +513,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &rsquo;1e4&rsquo; particles) but it is interpreted as an integer, of course.
 
-(parameters:Particles/Generator/Uniform_20radial)=
-## **Subsection:** Particles / Generator / Uniform radial
-(parameters:Particles/Generator/Uniform_20radial/Center_20x)=
+(parameters:Particles_202/Generator/Uniform_20radial)=
+## **Subsection:** Particles 2 / Generator / Uniform radial
+(parameters:Particles_202/Generator/Uniform_20radial/Center_20x)=
 ### __Parameter name:__ Center x
 **Default value:** 0.
 
@@ -531,7 +523,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** x coordinate for the center of the spherical region, where particles are generated.
 
-(parameters:Particles/Generator/Uniform_20radial/Center_20y)=
+(parameters:Particles_202/Generator/Uniform_20radial/Center_20y)=
 ### __Parameter name:__ Center y
 **Default value:** 0.
 
@@ -539,7 +531,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** y coordinate for the center of the spherical region, where particles are generated.
 
-(parameters:Particles/Generator/Uniform_20radial/Center_20z)=
+(parameters:Particles_202/Generator/Uniform_20radial/Center_20z)=
 ### __Parameter name:__ Center z
 **Default value:** 0.
 
@@ -547,7 +539,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** z coordinate for the center of the spherical region, where particles are generated.
 
-(parameters:Particles/Generator/Uniform_20radial/Maximum_20latitude)=
+(parameters:Particles_202/Generator/Uniform_20radial/Maximum_20latitude)=
 ### __Parameter name:__ Maximum latitude
 **Default value:** 180.
 
@@ -555,7 +547,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Maximum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
 
-(parameters:Particles/Generator/Uniform_20radial/Maximum_20longitude)=
+(parameters:Particles_202/Generator/Uniform_20radial/Maximum_20longitude)=
 ### __Parameter name:__ Maximum longitude
 **Default value:** 360.
 
@@ -563,7 +555,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Maximum longitude coordinate for the region of particles in degrees. Measured from the center position.
 
-(parameters:Particles/Generator/Uniform_20radial/Maximum_20radius)=
+(parameters:Particles_202/Generator/Uniform_20radial/Maximum_20radius)=
 ### __Parameter name:__ Maximum radius
 **Default value:** 1.
 
@@ -571,7 +563,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Maximum radial coordinate for the region of particles. Measured from the center position.
 
-(parameters:Particles/Generator/Uniform_20radial/Minimum_20latitude)=
+(parameters:Particles_202/Generator/Uniform_20radial/Minimum_20latitude)=
 ### __Parameter name:__ Minimum latitude
 **Default value:** 0.
 
@@ -579,7 +571,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Minimum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
 
-(parameters:Particles/Generator/Uniform_20radial/Minimum_20longitude)=
+(parameters:Particles_202/Generator/Uniform_20radial/Minimum_20longitude)=
 ### __Parameter name:__ Minimum longitude
 **Default value:** 0.
 
@@ -587,7 +579,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Minimum longitude coordinate for the region of particles in degrees. Measured from the center position.
 
-(parameters:Particles/Generator/Uniform_20radial/Minimum_20radius)=
+(parameters:Particles_202/Generator/Uniform_20radial/Minimum_20radius)=
 ### __Parameter name:__ Minimum radius
 **Default value:** 0.
 
@@ -595,7 +587,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Minimum radial coordinate for the region of particles. Measured from the center position.
 
-(parameters:Particles/Generator/Uniform_20radial/Number_20of_20particles)=
+(parameters:Particles_202/Generator/Uniform_20radial/Number_20of_20particles)=
 ### __Parameter name:__ Number of particles
 **Default value:** 1000
 
@@ -603,7 +595,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &rsquo;1e4&rsquo; particles) but it is interpreted as an integer, of course.
 
-(parameters:Particles/Generator/Uniform_20radial/Radial_20layers)=
+(parameters:Particles_202/Generator/Uniform_20radial/Radial_20layers)=
 ### __Parameter name:__ Radial layers
 **Default value:** 1
 
@@ -611,11 +603,11 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The number of radial shells of particles that will be generated around the central point.
 
-(parameters:Particles/Integrator)=
-## **Subsection:** Particles / Integrator
-(parameters:Particles/Integrator/RK2)=
-## **Subsection:** Particles / Integrator / RK2
-(parameters:Particles/Integrator/RK2/Higher_20order_20accurate_20in_20time)=
+(parameters:Particles_202/Integrator)=
+## **Subsection:** Particles 2 / Integrator
+(parameters:Particles_202/Integrator/RK2)=
+## **Subsection:** Particles 2 / Integrator / RK2
+(parameters:Particles_202/Integrator/RK2/Higher_20order_20accurate_20in_20time)=
 ### __Parameter name:__ Higher order accurate in time
 **Default value:** true
 
@@ -623,11 +615,11 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Whether to correctly evaluate old and current velocity solution to reach higher-order accuracy in time. If set to &rsquo;false&rsquo; only the old velocity solution is evaluated to simulate a first order method in time. This is only recommended for benchmark purposes.
 
-(parameters:Particles/Interpolator)=
-## **Subsection:** Particles / Interpolator
-(parameters:Particles/Interpolator/Bilinear_20least_20squares)=
-## **Subsection:** Particles / Interpolator / Bilinear least squares
-(parameters:Particles/Interpolator/Bilinear_20least_20squares/Use_20boundary_20extrapolation)=
+(parameters:Particles_202/Interpolator)=
+## **Subsection:** Particles 2 / Interpolator
+(parameters:Particles_202/Interpolator/Bilinear_20least_20squares)=
+## **Subsection:** Particles 2 / Interpolator / Bilinear least squares
+(parameters:Particles_202/Interpolator/Bilinear_20least_20squares/Use_20boundary_20extrapolation)=
 ### __Parameter name:__ Use boundary extrapolation
 **Default value:** false
 
@@ -635,7 +627,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Extends the range used by &rsquo;Use linear least squares limiter&rsquo; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &rsquo;Use boundary extrapolation&rsquo; requires enabling &rsquo;Use linear least squares limiter&rsquo;.
 
-(parameters:Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
+(parameters:Particles_202/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter)=
 ### __Parameter name:__ Use linear least squares limiter
 **Default value:** true
 
@@ -643,9 +635,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 
-(parameters:Particles/Interpolator/Quadratic_20least_20squares)=
-## **Subsection:** Particles / Interpolator / Quadratic least squares
-(parameters:Particles/Interpolator/Quadratic_20least_20squares/Use_20boundary_20extrapolation)=
+(parameters:Particles_202/Interpolator/Quadratic_20least_20squares)=
+## **Subsection:** Particles 2 / Interpolator / Quadratic least squares
+(parameters:Particles_202/Interpolator/Quadratic_20least_20squares/Use_20boundary_20extrapolation)=
 ### __Parameter name:__ Use boundary extrapolation
 **Default value:** false
 
@@ -653,7 +645,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Extends the range used by &rsquo;Use quadratic least squares limiter&rsquo; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &rsquo;Use boundary extrapolation&rsquo; requires enabling &rsquo;Use quadratic least squares limiter&rsquo;.
 
-(parameters:Particles/Interpolator/Quadratic_20least_20squares/Use_20quadratic_20least_20squares_20limiter)=
+(parameters:Particles_202/Interpolator/Quadratic_20least_20squares/Use_20quadratic_20least_20squares_20limiter)=
 ### __Parameter name:__ Use quadratic least squares limiter
 **Default value:** true
 
@@ -661,9 +653,9 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 
-(parameters:Particles/Melt_20particle)=
-## **Subsection:** Particles / Melt particle
-(parameters:Particles/Melt_20particle/Threshold_20for_20melt_20presence)=
+(parameters:Particles_202/Melt_20particle)=
+## **Subsection:** Particles 2 / Melt particle
+(parameters:Particles_202/Melt_20particle/Threshold_20for_20melt_20presence)=
 ### __Parameter name:__ Threshold for melt presence
 **Default value:** 1e-3
 
