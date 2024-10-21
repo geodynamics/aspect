@@ -38,6 +38,8 @@ namespace aspect
      * A plugin that computes the deformation of surface
      * vertices according to the solution of a dim-1 diffusion
      * problem.
+     *
+     * @ingroup MeshDeformation
      */
     template <int dim>
     class Diffusion : public Interface<dim>, public SimulatorAccess<dim>

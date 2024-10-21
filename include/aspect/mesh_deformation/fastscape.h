@@ -39,6 +39,7 @@ namespace aspect
      * hillslope diffusion, sediment deposition, marine diffusion,
      * and the stream power law, which describes river incision.
      *
+     * @ingroup MeshDeformation
      */
     template <int dim>
     class FastScape : public Interface<dim>, public SimulatorAccess<dim>
