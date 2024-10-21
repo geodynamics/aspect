@@ -326,10 +326,15 @@ namespace aspect
     {
       std::ostringstream oss;
 
-      // serialize into a stringstream
-      aspect::oarchive oa (oss);
-      save_critical_parameters (this->parameters, oa);
-      oa << (*this);
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query its properties below.
+      {
+        aspect::oarchive oa (oss);
+        save_critical_parameters (this->parameters, oa);
+        oa << (*this);
+      }
 
       // compress with zlib and write to file on the root processor
 #ifdef DEAL_II_WITH_ZLIB

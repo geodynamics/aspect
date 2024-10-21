@@ -611,11 +611,18 @@ namespace aspect
             {
               particles_output_base_name += "-" + Utilities::int_to_string(particle_manager+1);
             }
-          std::ostringstream os;
-          aspect::oarchive oa (os);
 
-          this->get_particle_manager(particle_manager).save(os);
-          oa << (*this);
+          // Serialize into a stringstream. Put the following into a code
+          // block of its own to ensure the destruction of the 'oa'
+          // archive triggers a flush() on the stringstream so we can
+          // query the completed string below.
+          std::ostringstream os;
+          {
+            aspect::oarchive oa (os);
+
+            this->get_particle_manager(particle_manager).save(os);
+            oa << (*this);
+          }
 
           status_strings[particles_output_base_name] = os.str();
         }

@@ -565,8 +565,15 @@ namespace aspect
     SeaLevel<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
       std::ostringstream os;
-      aspect::oarchive oa (os);
-      oa << (*this);
+
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
 
       status_strings["SeaLevel"] = os.str();
     }
