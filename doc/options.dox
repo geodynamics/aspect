@@ -885,6 +885,8 @@ HTML_FOOTER            = footer.html
 
 HTML_STYLESHEET        =
 
+HTML_EXTRA_STYLESHEET = doxygen-awesome.css
+
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
 # that these files will be copied to the base HTML output directory. Use the
