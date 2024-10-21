@@ -1736,7 +1736,7 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
-      */
+       */
       bool
       stokes_A_block_is_symmetric () const;
 
@@ -1756,10 +1756,10 @@ namespace aspect
       check_consistency_of_formulation ();
 
       /**
-      * This function checks if the default solver and/or material
-      * averaging were selected and if so, determines the appropriate
-      * solver and/or averaging option.
-      */
+       * This function checks if the default solver and/or material
+       * averaging were selected and if so, determines the appropriate
+       * solver and/or averaging option.
+       */
       void
       select_default_solver_and_averaging ();
 
@@ -2110,7 +2110,7 @@ namespace aspect
       /**
        * This vector is used for the weighted BFBT preconditioner. It
        * stores the inverted lumped velocity mass matrix.
-      */
+       */
       LinearAlgebra::BlockVector                                inverse_lumped_mass_matrix;
 
       /**

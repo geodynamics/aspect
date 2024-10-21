@@ -86,17 +86,17 @@ namespace aspect
         /**
          * Enabled by nonlinear_solver_has_failed() to signal that this
          * plugin needs to act in the current timestep;
-        */
+         */
         mutable bool nonlinear_solver_just_failed;
 
         /**
          * How many times should we try cutting the timestep size before giving up?
-        */
+         */
         unsigned int maximum_number_of_repeats;
 
         /**
          * How many times have we been repeating already in this timestep?
-        */
+         */
         unsigned int current_number_of_repeats;
     };
   }

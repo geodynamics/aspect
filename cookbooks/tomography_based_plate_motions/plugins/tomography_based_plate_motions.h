@@ -69,7 +69,7 @@ namespace aspect
      * "High-resolution mantle flow models reveal importance of plate boundary geometry and slab pull
      * forces on generating tectonic plate motions", J. Geophys. Research.:Solid Earth,
      * 128, e2022JB025877.
-
+     *
      * @ingroup MaterialModels
      */
     template <int dim>
@@ -400,25 +400,25 @@ namespace aspect
         /**
          * Parameter value that determines whether to read the viscosity with depth
          * from an ascii data file.
-        */
+         */
         bool use_depth_dependent_viscosity;
 
         /**
          * Parameter value that determines whether to read the density scaling with depth
          * from an ascii data file.
-        */
+         */
         bool use_depth_dependent_rho_vs;
 
         /**
          * Parameter value that determines whether to read the thermal expansivity
          * from an ascii data file.
-        */
+         */
         bool use_depth_dependent_thermal_expansivity;
 
         /**
          * Parameter value that determines whether to read the temperature scaling with depth
          * from an ascii data file.
-        */
+         */
         bool use_depth_dependent_dT_vs;
 
         /**
@@ -473,7 +473,7 @@ namespace aspect
          * Approximate lithosphere thickness used to separate the regions of
          * temperature derived from seismic tomography and linear temperature
          * gradient.
-        */
+         */
         double lithosphere_thickness;
 
         /**
@@ -499,11 +499,11 @@ namespace aspect
         std::vector<std::shared_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup>> material_lookup;
 
         /**
-        * A shared pointer to the initial temperature object
-        * that ensures that the current object can continue
-        * to access the initial composition object beyond the
-        * first time step.
-        */
+         * A shared pointer to the initial temperature object
+         * that ensures that the current object can continue
+         * to access the initial composition object beyond the
+         * first time step.
+         */
         std::shared_ptr<const aspect::InitialTemperature::Manager<dim>> initial_temperature_manager;
     };
 

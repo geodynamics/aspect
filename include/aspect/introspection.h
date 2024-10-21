@@ -71,7 +71,7 @@ namespace aspect
 
     /**
      * The number of different types defined in Type.
-    */
+     */
     constexpr static unsigned int n_types = 9;
 
     /**

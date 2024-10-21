@@ -47,7 +47,7 @@ namespace aspect
       public:
         /**
          * Initialize some variables.
-        */
+         */
         void
         initialize() override;
 
