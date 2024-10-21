@@ -1,0 +1,9 @@
+Changed: ASPECT's boundary traction and boundary velocity manager classes are
+now also derived from the common classes Plugins::ManagerBase. In order to
+standardize the interface, the functions get_active_boundary_traction_conditions()
+and get_active_boundary_traction_names() (and their velocity counterparts)
+have been deprecated. They have been replaced by the new functions get_active_plugins(),
+get_active_plugin_boundary_indicators(), get_prescribed_boundary_traction_indicators(),
+and get_component_mask().
+<br>
+(Rene Gassmoeller, 2025/02/02)

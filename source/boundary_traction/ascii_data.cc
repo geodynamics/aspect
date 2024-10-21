@@ -35,13 +35,16 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      for (const auto &bv : this->get_boundary_traction_manager().get_active_boundary_traction_conditions())
+      unsigned int i=0;
+      for (const auto &plugin : this->get_boundary_traction_manager().get_active_plugins())
         {
-          for (const auto &plugin : bv.second)
-            if (plugin.get() == this)
-              boundary_ids.insert(bv.first);
+          if (plugin.get() == this)
+            boundary_ids.insert(this->get_boundary_traction_manager().get_active_plugin_boundary_indicators()[i]);
+
+          ++i;
         }
-      AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
+
+      AssertThrow(boundary_ids.empty() == false,
                   ExcMessage("Did not find the boundary indicator for the traction ascii data plugin."));
 
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,

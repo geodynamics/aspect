@@ -1,5 +1,11 @@
 
 
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.0.txt.
+
+
+   Also loading next Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.1.txt.
+
+
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt.
 
 
@@ -20,12 +26,6 @@
    If the Ascii data represented a time-dependent boundary condition,
    that time-dependence ends at this timestep  (i.e. the boundary condition
    will continue unchanged from the last known state into the future).
-
-
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.0.txt.
-
-
-   Also loading next Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.1.txt.
 
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)

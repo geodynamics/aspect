@@ -79,28 +79,9 @@ namespace aspect
      * @ingroup BoundaryVelocities
      */
     template <int dim>
-    class Manager : public SimulatorAccess<dim>
+    class Manager : public Plugins::ManagerBase<Interface<dim>>, public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Destructor. Made virtual since this class has virtual member
-         * functions.
-         */
-        ~Manager () override;
-
-        /**
-         * A function that is called at the beginning of each time step and
-         * calls the corresponding functions of all created plugins.
-         *
-         * The point of this function is to allow complex boundary velocity
-         * models to do an initialization step once at the beginning of each
-         * time step. An example would be a model that needs to call an
-         * external program to compute the velocity change at a boundary.
-         */
-        virtual
-        void
-        update ();
-
         /**
          * A function that calls the boundary_velocity functions of all the
          * individual boundary velocity objects and uses the stored operators
@@ -146,7 +127,11 @@ namespace aspect
          * If there are no prescribed boundary velocity plugins
          * for a particular boundary, this boundary identifier will not appear
          * in the map.
+         *
+         * @deprecated This function will be removed. Use the function
+         * get_active_plugin_names() of the base class ManagerBase instead.
          */
+        DEAL_II_DEPRECATED
         const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> &
         get_active_boundary_velocity_names () const;
 
@@ -158,9 +143,42 @@ namespace aspect
          * boundary models for this boundary. If there are no prescribed
          * boundary velocity plugins for a particular boundary this boundary
          * identifier will not appear in the map.
+         *
+         * @deprecated This function has been removed. Use the function
+         * get_active_plugins() of the base class ManagerBase instead.
          */
+        DEAL_II_DEPRECATED
         const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>> &
         get_active_boundary_velocity_conditions () const;
+
+        /**
+         * Return a list of boundary indicators that indicate for
+         * each active plugin which boundary id
+         * it is responsible for. The list of active plugins can be
+         * requested by calling get_active_plugins().
+         */
+        const std::vector<types::boundary_id> &
+        get_active_plugin_boundary_indicators() const;
+
+        /**
+         * Return a component mask that indicates for the given
+         * @p boundary_id which velocity components are prescribed by
+         * this manager class. All plugins that are responsible
+         * for this boundary use the same component mask.
+         * The list of plugin objects can be
+         * requested by calling get_active_plugins() and the
+         * list of boundaries they are responsible for is
+         * returned by get_active_plugin_boundary_indicators().
+         */
+        ComponentMask
+        get_component_mask(const types::boundary_id boundary_id) const;
+
+        /**
+         * Return a set of boundary indicators for which boundary
+         * velocities are prescribed.
+         */
+        const std::set<types::boundary_id> &
+        get_prescribed_boundary_velocity_indicators () const;
 
         /**
          * Return a list of boundary ids on which the velocity is prescribed
@@ -190,7 +208,7 @@ namespace aspect
          * then let these objects read their parameters as well.
          */
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
 
         /**
          * Go through the list of all boundary velocity models that have been selected
@@ -200,9 +218,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename BoundaryVelocityType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryVelocityType>::value>>
+        DEAL_II_DEPRECATED
         bool
         has_matching_boundary_velocity_model () const;
 
@@ -216,9 +240,15 @@ namespace aspect
          *
          * This function can only be called if the given template type (the first template
          * argument) is a class derived from the Interface class in this namespace.
+         *
+         * @deprecated Instead of this function, use the
+         *   Plugins::ManagerBase::has_matching_active_plugin() and
+         *   Plugins::ManagerBase::get_matching_active_plugin() functions of the base
+         *   class of the current class.
          */
         template <typename BoundaryVelocityType,
                   typename = typename std::enable_if_t<std::is_base_of<Interface<dim>,BoundaryVelocityType>::value>>
+        DEAL_II_DEPRECATED
         const BoundaryVelocityType &
         get_matching_boundary_velocity_model () const;
 
@@ -246,8 +276,31 @@ namespace aspect
                         << "> among the names of registered boundary velocity objects.");
       private:
         /**
+         * A list of boundary indicators that indicate for
+         * each plugin in the list of plugin_objects which boundary id
+         * it is responsible for. By default each plugin
+         * is active for all boundaries, but this list
+         * can be modified by derived classes to limit the application
+         * of plugins to specific boundaries.
+         */
+        std::vector<types::boundary_id> boundary_indicators;
+
+        /**
+         * A list of boundary indicators that indicate for
+         * each plugin in the list of plugin_objects which components
+         * it is responsible for. By default each plugin
+         * is active for all components, but this list
+         * can be modified by derived classes to limit the application
+         * of plugins to specific boundaries.
+         */
+        std::vector<ComponentMask> component_masks;
+
+        /**
          * A list of boundary velocity objects that have been requested in the
          * parameter file.
+         *
+         * @deprecated This variable is no longer used, but needed to issue a proper
+         * error message in the function get_active_boundary_velocity_conditions().
          */
         std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>> boundary_velocity_objects;
 
@@ -258,8 +311,18 @@ namespace aspect
          * mapped to one of the plugins of velocity boundary conditions (e.g.
          * "function"). If the components string is empty, it is assumed the
          * plugins are used for all components.
+         *
+         * @deprecated Remove this variable when the deprecated functions
+         * get_active_boundary_velocity_names and
+         * get_active_boundary_velocity_conditions are removed. Use the base class
+         * variable plugin_names instead.
          */
         std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> boundary_velocity_indicators;
+
+        /**
+         * A set of boundary indicators, on which velocities are prescribed.
+         */
+        std::set<types::boundary_id> prescribed_velocity_boundary_indicators;
 
         /**
          * A set of boundary indicators, on which velocities are prescribed to

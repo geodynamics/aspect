@@ -96,7 +96,7 @@ namespace aspect
                              " defined that handles this formulation."));
 
     // add the terms for traction boundary conditions
-    if (!this->get_boundary_traction_manager().get_active_boundary_traction_names().empty())
+    if (!this->get_boundary_traction_manager().get_prescribed_boundary_traction_indicators().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
           std::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim>>());
