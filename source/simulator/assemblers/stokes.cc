@@ -939,9 +939,10 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(scratch.face_number);
 
-      if (this->get_boundary_traction_manager().get_active_boundary_traction_names().find (face->boundary_id())
-          !=
-          this->get_boundary_traction_manager().get_active_boundary_traction_names().end())
+      const auto &traction_bis = this->get_boundary_traction_manager().get_active_plugin_boundary_indicators();
+
+      if (std::find(traction_bis.begin(), traction_bis.end(), face->boundary_id())
+          != traction_bis.end())
         {
           for (unsigned int q=0; q<scratch.face_finite_element_values.n_quadrature_points; ++q)
             {
