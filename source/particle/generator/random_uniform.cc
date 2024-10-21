@@ -117,7 +117,10 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_GENERATOR(RandomUniform,
                                          "random uniform",
                                          "Generates a random uniform distribution of "
-                                         "particles over the entire simulation domain.")
+                                         "particles over the entire simulation domain. "
+                                         "This generator can be understood as the special case "
+                                         "of the 'probability density function' generator where "
+                                         "the probability density is constant over the domain.")
     }
   }
 }

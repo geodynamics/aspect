@@ -55,6 +55,26 @@ namespace aspect
           {
             Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
 
+            // This parameter overwrites one of the parameters in ParsedFunction
+            // with a new default value of 1.0. The original default value was 0
+            // everywhere, which is not allowed.
+            prm.declare_entry("Function expression",
+                              "1.0",
+                              Patterns::Anything(),
+                              "The formula that denotes the function you want to evaluate for "
+                              "particular values of the independent variables. This expression "
+                              "may contain any of the usual operations such as addition or "
+                              "multiplication, as well as all of the common functions such as "
+                              "`sin' or `cos'. In addition, it may contain expressions like "
+                              "`if(x>0, 1, -1)' where the expression evaluates to the second "
+                              "argument if the first argument is true, and to the third argument "
+                              "otherwise. For a full overview of possible expressions accepted "
+                              "see the documentation of the muparser library at http://muparser.beltoforion.de/."
+                              "\n\n"
+                              "If the function you are describing represents a vector-valued "
+                              "function with multiple components, then separate the expressions "
+                              "for individual components by a semicolon.");
+
             prm.declare_entry ("Number of particles", "1000",
                                Patterns::Double (0.),
                                "Total number of particles to create (not per processor or per element). "

@@ -1,0 +1,9 @@
+Changed: The 'random uniform' particle generator no longer uses
+the input parameters in the subsection 'Probability density function'.
+Instead it uses its own subsection 'Random uniform'. Additionally,
+the default parameters of the 'probability density function' generator
+have been fixed to allow not specifying a probability density function.
+If no function is specified the 'probability density function' generator
+now behaves identically to the 'random uniform' generator.
+<br>
+(Rene Gassmoeller, Qianyi Lu, 2024/10/21)
