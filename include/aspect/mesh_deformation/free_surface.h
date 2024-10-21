@@ -39,6 +39,8 @@ namespace aspect
      * vertices according to the solution of the flow problem.
      * In particular this means if the surface of the domain is
      * left open to flow, this flow will carry the mesh with it.
+     *
+     * @ingroup MeshDeformation
      */
     template <int dim>
     class FreeSurface : public Interface<dim>, public SimulatorAccess<dim>
