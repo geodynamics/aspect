@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir build-no-unity
         cd build-no-unity
-        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' ..
+        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Wdeprecated-declarations -Werror' ..
         make -j 4
         ./aspect --test
 
@@ -129,7 +129,7 @@ jobs:
         cmake \
         -D CMAKE_BUILD_TYPE=Debug \
         -G 'Ninja' \
-        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D CMAKE_CXX_FLAGS='-Wdeprecated-declarations -Werror' \
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
