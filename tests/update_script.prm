@@ -17,7 +17,7 @@ subsection Adiabatic conditions model
   subsection Compute profile
     set Use surface condition function = true
     subsection Surface condition function
-      set Function expression = 1e-2*t; 1613.0+1e-13*t
+      set Function expression = 1e-2*(365.2425*24*60*60)*t; 1613.0+1e-13*(365.2425*24*60*60)*t
     end
   end
 end
