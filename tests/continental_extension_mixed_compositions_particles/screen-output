@@ -1,0 +1,263 @@
+
+Number of active cells: 200 (on 2 levels)
+Number of degrees of freedom: 6,875 (1,722+231+861+800+800+800+861+800)
+
+Number of mesh deformation degrees of freedom: 462
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 20+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.85385e-16, 0, 0, 0, 1.76462e-16, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 21+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.84515e-16, 0, 0, 0, 1.76462e-16, 0, 0.0638466
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0638466
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 19+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.84515e-16, 0, 0, 0, 1.76462e-16, 0, 0.0137314
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0137314
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 18+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.84515e-16, 0, 0, 0, 1.76462e-16, 0, 0.00221455
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00221455
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 0 iterations.
+   Solving mantle_lithosphere system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 18+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.84515e-16, 0, 0, 0, 1.76462e-16, 0, 0.00189298
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00189298
+
+
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
+   Postprocessing:
+     Compositions min/max/mass:          0/1.472/6.041e+09 // 0/0/0 // 0/1/4e+09 // 0/1/4e+09 // 0/1/1.1e+10
+     Heat flux densities for boundaries: 0.19 W/m, 0.19 W/m, -0.344 W/m, 0.05501 W/m
+     Heat fluxes through boundary parts: 1.9e+04 W, 1.9e+04 W, -6.881e+04 W, 1.1e+04 W
+     Mass fluxes through boundary parts: 7.634e+05 kg/yr, 7.634e+05 kg/yr, -1.606e+06 kg/yr, 0.0376 kg/yr
+     Writing particle output:            output-continental_extension_mixed_compositions_particles/particles/particles-00000
+     Pressure min/avg/max:               -4.233e+07 Pa, 1.372e+09 Pa, 2.996e+09 Pa
+     Temperature min/avg/max:            273 K, 998.3 K, 1613 K
+     Topography min/max:                 0 m, 0 m
+     RMS, max velocity:                  0.00218 m/year, 0.00343 m/year
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 9 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 18+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000175132, 0, 0, 0, 0.00125806, 0, 0.00472434
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00472434
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 7 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 17+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.34434e-06, 0, 0, 0, 3.25537e-05, 0, 0.00476159
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00476159
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 7 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 17+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.46612e-06, 0, 0, 0, 2.40278e-05, 0, 0.00447767
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00447767
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 7 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 16+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.77793e-06, 0, 0, 0, 1.80826e-05, 0, 0.00424365
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00424365
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 7 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.32809e-06, 0, 0, 0, 1.55738e-05, 0, 0.00366469
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00366469
+
+
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
+   Postprocessing:
+     Compositions min/max/mass:          0/1.472/6.043e+09 // 0/0.0008647/1.867e+06 // 0/1/4e+09 // -0.001458/1.001/3.999e+09 // -1.29e-07/1/1.1e+10
+     Heat flux densities for boundaries: 0.19 W/m, 0.19 W/m, -0.345 W/m, 0.05501 W/m
+     Heat fluxes through boundary parts: 1.9e+04 W, 1.9e+04 W, -6.9e+04 W, 1.1e+04 W
+     Mass fluxes through boundary parts: 7.634e+05 kg/yr, 7.634e+05 kg/yr, -1.606e+06 kg/yr, -26.5 kg/yr
+     Writing particle output:            output-continental_extension_mixed_compositions_particles/particles/particles-00001
+     Pressure min/avg/max:               -4.257e+07 Pa, 1.374e+09 Pa, 2.997e+09 Pa
+     Temperature min/avg/max:            273 K, 998.5 K, 1613 K
+     Topography min/max:                 -4.132 m, 2.952 m
+     RMS, max velocity:                  0.00227 m/year, 0.0034 m/year
+
+*** Timestep 2:  t=20000 years, dt=10000 years
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 8 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 17+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.04035e-05, 0, 0, 0, 8.3185e-05, 0, 0.00497966
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00497966
+
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 8 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 16+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.30247e-06, 0, 0, 0, 9.08414e-05, 0, 0.0013254
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0013254
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 7 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 16+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.13751e-07, 0, 0, 0, 5.35382e-06, 0, 0.000766779
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000766779
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 7 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.24751e-07, 0, 0, 0, 5.02508e-06, 0, 0.000547262
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000547262
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 6 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.52333e-07, 0, 0, 0, 3.62875e-06, 0, 0.000440009
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000440009
+
+
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
+   Postprocessing:
+     Compositions min/max/mass:          0/1.472/6.044e+09 // 0/0.001942/3.746e+06 // 0/1/4e+09 // -0.002998/1.002/3.998e+09 // -4.899e-07/1/1.1e+10
+     Heat flux densities for boundaries: 0.19 W/m, 0.19 W/m, -0.3448 W/m, 0.05502 W/m
+     Heat fluxes through boundary parts: 1.9e+04 W, 1.9e+04 W, -6.895e+04 W, 1.1e+04 W
+     Mass fluxes through boundary parts: 7.634e+05 kg/yr, 7.634e+05 kg/yr, -1.606e+06 kg/yr, -72.53 kg/yr
+     Writing particle output:            output-continental_extension_mixed_compositions_particles/particles/particles-00002
+     Pressure min/avg/max:               -4.732e+07 Pa, 1.375e+09 Pa, 2.997e+09 Pa
+     Temperature min/avg/max:            273 K, 998.6 K, 1613 K
+     Topography min/max:                 -11.13 m, 7.33 m
+     RMS, max velocity:                  0.00235 m/year, 0.00337 m/year
+
+*** Timestep 3:  t=30000 years, dt=10000 years
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 8 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 17+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.45959e-06, 0, 0, 0, 8.38369e-05, 0, 0.00323798
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.00323798
+
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 8 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 18+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.75286e-06, 0, 0, 0, 6.71953e-05, 0, 0.000577019
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000577019
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 7 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.86e-07, 0, 0, 0, 1.12735e-05, 0, 0.000278451
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000278451
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 6 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.79247e-07, 0, 0, 0, 2.56499e-06, 0, 0.000228718
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000228718
+
+   Solving temperature system... 5 iterations.
+   Advecting particles...  done.
+   Solving crust_lower system ... 6 iterations.
+   Solving mantle_lithosphere system ... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.90487e-07, 0, 0, 0, 1.2724e-06, 0, 0.000186489
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000186489
+
+
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
+   Postprocessing:
+     Compositions min/max/mass:          0/1.473/6.046e+09 // 0/0.003107/5.626e+06 // 0/1/4e+09 // -0.004627/1.002/3.997e+09 // -1.281e-06/1/1.101e+10
+     Heat flux densities for boundaries: 0.1899 W/m, 0.19 W/m, -0.3445 W/m, 0.05503 W/m
+     Heat fluxes through boundary parts: 1.9e+04 W, 1.9e+04 W, -6.891e+04 W, 1.101e+04 W
+     Mass fluxes through boundary parts: 7.635e+05 kg/yr, 7.634e+05 kg/yr, -1.606e+06 kg/yr, -142.6 kg/yr
+     Writing particle output:            output-continental_extension_mixed_compositions_particles/particles/particles-00003
+     Pressure min/avg/max:               -5.444e+07 Pa, 1.375e+09 Pa, 2.997e+09 Pa
+     Temperature min/avg/max:            273 K, 998.8 K, 1613 K
+     Topography min/max:                 -21.61 m, 13.27 m
+     RMS, max velocity:                  0.00236 m/year, 0.00336 m/year
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 4 nonlinear solver failures occurred!
