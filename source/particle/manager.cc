@@ -470,7 +470,7 @@ namespace aspect
       for (unsigned int i=0; i<evaluation_flags.size(); ++i)
         evaluation_flags_union |= evaluation_flags[i];
 
-      if (evaluation_flags_union & (update_values | update_gradients))
+      if (evaluation_flags_union & (EvaluationFlags::values | EvaluationFlags::gradients))
         {
           // Reinitialize and evaluate the requested solution values and gradients
           evaluator.reinit(inputs.current_cell,
@@ -480,20 +480,20 @@ namespace aspect
                              evaluation_flags);
         }
 
-      if (evaluation_flags_union & update_values)
+      if (evaluation_flags_union & EvaluationFlags::values)
         inputs.solution.resize(n_particles,small_vector<double,50>(evaluator.n_components(), numbers::signaling_nan<double>()));
 
-      if (evaluation_flags_union & update_gradients)
+      if (evaluation_flags_union & EvaluationFlags::gradients)
         inputs.gradients.resize(n_particles,small_vector<Tensor<1,dim>,50>(evaluator.n_components(), numbers::signaling_nan<Tensor<1,dim>>()));
 
       for (unsigned int i = 0; i<n_particles; ++i)
         {
           // Evaluate the solution, but only if it is requested in the update_flags
-          if (evaluation_flags_union & update_values)
+          if (evaluation_flags_union & EvaluationFlags::values)
             evaluator.get_solution(i, {&inputs.solution[i][0],inputs.solution[i].size()}, evaluation_flags);
 
           // Evaluate the gradients, but only if they are requested in the update_flags
-          if (evaluation_flags_union & update_gradients)
+          if (evaluation_flags_union & EvaluationFlags::gradients)
             evaluator.get_gradients(i, {&inputs.gradients[i][0],inputs.gradients[i].size()}, evaluation_flags);
         }
 
