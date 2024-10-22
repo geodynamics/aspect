@@ -120,6 +120,13 @@ namespace aspect
         get_active_boundary_traction_conditions () const;
 
         /**
+         * Return a set of boundary indicators for which boundary
+         * tractions are prescribed.
+         */
+        const std::set<types::boundary_id> &
+        get_prescribed_boundary_traction_indicators () const;
+
+        /**
          * Return a list of boundary indicators that indicate for
          * each active plugin which boundary id
          * it is responsible for. The list of active plugins can be
@@ -219,6 +226,11 @@ namespace aspect
          * of plugins to specific boundaries.
          */
         std::vector<ComponentMask> component_masks;
+
+        /**
+         * A set of boundary indicators, on which tractions are prescribed.
+         */
+        std::set<types::boundary_id> prescribed_traction_boundary_indicators;
 
         /**
          * A list of boundary traction objects that have been requested in the

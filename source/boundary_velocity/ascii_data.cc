@@ -38,14 +38,17 @@ namespace aspect
     void
     AsciiData<dim>::initialize ()
     {
-      for (const auto &p : this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions())
+      unsigned int i=0;
+      for (const auto &plugin : this->get_boundary_velocity_manager().get_active_plugins())
         {
-          for (const auto &plugin : p.second)
-            if (plugin.get() == this)
-              boundary_ids.insert(p.first);
+          if (plugin.get() == this)
+            boundary_ids.insert(this->get_boundary_velocity_manager().get_active_plugin_boundary_indicators()[i]);
+
+          ++i;
         }
-      AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
-                  ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
+
+      AssertThrow(boundary_ids.empty() == false,
+                  ExcMessage("Did not find the boundary indicator for the velocity ascii data plugin."));
 
       Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
                                                     dim);

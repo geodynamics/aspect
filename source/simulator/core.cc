@@ -505,8 +505,8 @@ namespace aspect
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
-    for (const auto &p : boundary_velocity_manager.get_active_boundary_velocity_names())
-      open_velocity_boundary_indicators.erase (p.first);
+    for (const auto p : boundary_velocity_manager.get_prescribed_boundary_velocity_indicators())
+      open_velocity_boundary_indicators.erase (p);
     for (const auto p : boundary_velocity_manager.get_zero_boundary_velocity_indicators())
       open_velocity_boundary_indicators.erase (p);
     for (const auto p : boundary_velocity_manager.get_tangential_boundary_velocity_indicators())
@@ -1375,67 +1375,54 @@ namespace aspect
     // set the current time and do the interpolation
     // for the prescribed velocity fields
     boundary_velocity_manager.update();
-    for (const auto &p : boundary_velocity_manager.get_active_boundary_velocity_names())
+
+    // translate from component mask per plugin to component mask per boundary id
+    std::map<types::boundary_id, ComponentMask> boundary_component_masks;
+    for (unsigned int i=0; i<boundary_velocity_manager.get_active_plugins().size(); ++i)
+      {
+        const types::boundary_id boundary_id = boundary_velocity_manager.get_active_plugin_boundary_indicators()[i];
+        const auto &component_mask = boundary_velocity_manager.get_active_plugin_component_masks()[i];
+
+        const auto it = boundary_component_masks.find(boundary_id);
+        if (it != boundary_component_masks.end())
+          {
+            AssertThrow (it->second == component_mask,
+                         ExcMessage("Boundary indicator <"
+                                    +
+                                    Utilities::int_to_string(boundary_id)
+                                    +
+                                    "> with symbolic name <"
+                                    +
+                                    geometry_model->translate_id_to_symbol_name (boundary_id)
+                                    +
+                                    "> is listed as having different component masks "
+                                    "for different boundary velocity plugins. This is not allowed."));
+          }
+        else
+          boundary_component_masks[boundary_id] = component_mask;
+      }
+
+    // put boundary conditions into constraints object for each boundary
+    for (const auto boundary_id: boundary_velocity_manager.get_prescribed_boundary_velocity_indicators())
       {
         Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
         (introspection.n_components,
          [&] (const dealii::Point<dim> &x) -> Tensor<1,dim>
         {
-          return boundary_velocity_manager.boundary_velocity(p.first, x);
+          if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0))
+            return boundary_velocity_manager.boundary_velocity(boundary_id, x);
+          else
+            return Tensor<1,dim>();
+
+          return Tensor<1,dim>();
         });
 
-        // here we create a mask for interpolate_boundary_values out of the 'selector'
-        std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-        const std::string &comp = p.second.first;
-
-        if (comp.length()>0)
-          {
-            for (const char direction : comp)
-              {
-                switch (direction)
-                  {
-                    case 'x':
-                      mask[introspection.component_indices.velocities[0]] = true;
-                      break;
-                    case 'y':
-                      mask[introspection.component_indices.velocities[1]] = true;
-                      break;
-                    case 'z':
-                      // we must be in 3d, or 'z' should never have gotten through
-                      Assert (dim==3, ExcInternalError());
-                      if (dim==3)
-                        mask[introspection.component_indices.velocities[dim-1]] = true;
-                      break;
-                    default:
-                      Assert (false, ExcInternalError());
-                  }
-              }
-          }
-        else
-          {
-            // no mask given -- take all velocities
-            for (unsigned int i=0; i<introspection.component_masks.velocities.size(); ++i)
-              mask[i]=introspection.component_masks.velocities[i];
-          }
-
-        if (!assemble_newton_stokes_system || (assemble_newton_stokes_system && nonlinear_iteration == 0))
-          {
-            VectorTools::interpolate_boundary_values (*mapping,
-                                                      dof_handler,
-                                                      p.first,
-                                                      vel,
-                                                      constraints,
-                                                      ComponentMask(mask));
-          }
-        else
-          {
-            VectorTools::interpolate_boundary_values (*mapping,
-                                                      dof_handler,
-                                                      p.first,
-                                                      Functions::ZeroFunction<dim>(introspection.n_components),
-                                                      constraints,
-                                                      ComponentMask(mask));
-          }
+        VectorTools::interpolate_boundary_values (*mapping,
+                                                  dof_handler,
+                                                  boundary_id,
+                                                  vel,
+                                                  constraints,
+                                                  boundary_component_masks.at(boundary_id));
       }
   }
 

@@ -114,6 +114,15 @@ namespace aspect
 
 
     template <int dim>
+    const std::set<types::boundary_id> &
+    Manager<dim>::get_prescribed_boundary_traction_indicators () const
+    {
+      return prescribed_traction_boundary_indicators;
+    }
+
+
+
+    template <int dim>
     const std::vector<types::boundary_id> &
     Manager<dim>::get_active_plugin_boundary_indicators() const
     {
@@ -273,16 +282,17 @@ namespace aspect
 
             this->plugin_names.push_back(value);
             boundary_indicators.push_back(boundary_id);
+            prescribed_traction_boundary_indicators.insert(boundary_id);
 
-            const bool default_component_mask = comp.empty();
-            ComponentMask component_mask(dim, default_component_mask);
+            ComponentMask component_mask(this->introspection().n_components,
+                                         false);
 
-            if (comp.find('x') != std::string::npos)
-              component_mask.set(0,true);
-            if (comp.find('y') != std::string::npos)
-              component_mask.set(1,true);
-            if (dim == 3 && comp.find('z') != std::string::npos)
-              component_mask.set(2,true);
+            if (comp.empty() || comp.find('x') != std::string::npos)
+              component_mask.set(this->introspection().component_indices.velocities[0],true);
+            if (comp.empty() || comp.find('y') != std::string::npos)
+              component_mask.set(this->introspection().component_indices.velocities[1],true);
+            if (dim == 3 && (comp.empty() || comp.find('z') != std::string::npos))
+              component_mask.set(this->introspection().component_indices.velocities[2],true);
 
             component_masks.push_back(component_mask);
           }
