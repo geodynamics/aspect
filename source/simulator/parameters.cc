@@ -330,7 +330,39 @@ namespace aspect
     prm.declare_entry ("Output directory", "output",
                        Patterns::DirectoryName(),
                        "The name of the directory into which all output files should be "
-                       "placed. This may be an absolute or a relative path.");
+                       "placed. This may be an absolute or a relative path. ASPECT will "
+                       "write output such as statistics files or visualization files "
+                       "into this directory or into directories further nested within.");
+
+    prm.declare_entry ("Output directory LFS stripe count", "0",
+                       Patterns::Integer(0),
+                       "Many large clusters use the Lustre file system (LFS) that allows to 'stripe' "
+                       "files, i.e., to use multiple file servers to store a single file. This is "
+                       "useful when writing very large files from multiple MPI processes, such "
+                       "as when creating graphical output or creating checkpoints. In those "
+                       "cases, if all MPI processes try to route their data to a single file "
+                       "server, that file server and the disks it manages may be saturated by "
+                       "data and everything slows down. File striping instead ensures that the "
+                       "data is sent to several file servers, improving performance. A "
+                       "description of how Lustre manages file striping can be found at "
+                       "https://doc.lustre.org/lustre_manual.xhtml#managingstripingfreespace . "
+                       "How file striping can be configured is discussed at "
+                       "https://wiki.lustre.org/Configuring_Lustre_File_Striping ."
+                       "\n\n"
+                       "When this parameter is set to anything other than zero, "
+                       "ASPECT will call the Lustre support tool, `lst`, as follows: "
+                       "`lst setstripe -c N OUTPUT_DIR`, where `N` is the value of the "
+                       "input parameter discussed here, and `OUTPUT_DIR` is the directory "
+                       "into which ASPECT writes its output. The file striping so set on "
+                       "the output directory are also inherited by the sub-directories "
+                       "ASPECT creates within it."
+                       "\n\n"
+                       "In order to use this parameter, your cluster must obviously be "
+                       "using the Lustre file system. What the correct value for the stripe "
+                       "count is is something you will have to find out from your cluster's "
+                       "local documentation, or your cluster administrator. It depends on "
+                       "the physical details and configuration of the file servers attached "
+                       "to a cluster.");
 
     prm.declare_entry ("Use operator splitting", "false",
                        Patterns::Bool(),
@@ -1568,9 +1600,40 @@ namespace aspect
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
 
+    // Ensure that the output directory exists. If asked for in the input file,
+    // set LFS striping as well to improve performance.
     Utilities::create_directory (output_directory,
                                  mpi_communicator,
                                  false);
+    {
+      const unsigned int lfs_stripe_count = prm.get_integer("Output directory LFS stripe count");
+      if (lfs_stripe_count != 0)
+        {
+          if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+            {
+              const std::string command = "lst setstripe -c " + std::to_string(lfs_stripe_count)
+                                          + ' ' + output_directory;
+              const int error_code = system (command.c_str());
+
+              Utilities::MPI::broadcast(mpi_communicator, error_code, 0);
+
+              AssertThrow (error_code == 0,
+                           ExcMessage ("Could not successfully execute the LFS file striping "
+                                       "command '" + command + "'. The error code of the "
+                                       "system() command was " +
+                                       std::to_string(error_code)));
+            }
+          else
+            {
+              int error_code;
+              error_code = Utilities::MPI::broadcast(mpi_communicator, error_code, 0);
+
+              if (error_code != 0)
+                throw QuietException();
+            }
+        }
+    }
+
 
     if (prm.get ("Resume computation") == "true")
       resume_computation = true;
