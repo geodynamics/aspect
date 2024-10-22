@@ -672,7 +672,7 @@ namespace aspect
      */
     void create_directory(const std::string &pathname,
                           const MPI_Comm comm,
-                          bool silent);
+                          const bool silent);
 
     /**
      * A namespace defining the cubic spline interpolation that can be used

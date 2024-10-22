@@ -1335,7 +1335,7 @@ namespace aspect
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
 
-      std::string visualization_subdirectory = this->get_output_directory() + "solution/";
+      const std::string visualization_subdirectory = this->get_output_directory() + "solution/";
       Utilities::create_directory (visualization_subdirectory,
                                    this->get_mpi_communicator(),
                                    true);

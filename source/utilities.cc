@@ -1658,7 +1658,6 @@ namespace aspect
           int mkdir_return_value;
           if ((mkdir_return_value = mkdir(subdir.c_str(),mode)) && (errno != EEXIST))
             return mkdir_return_value;
-
         }
 
       return 0;
@@ -1668,7 +1667,7 @@ namespace aspect
 
     void create_directory(const std::string &pathname,
                           const MPI_Comm comm,
-                          bool silent)
+                          const bool silent)
     {
       // verify that the output directory actually exists. if it doesn't, create
       // it on processor zero
@@ -1689,7 +1688,6 @@ namespace aspect
                           << std::endl;
 
               error = Utilities::mkdirp(pathname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-
             }
           else
             {
