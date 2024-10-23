@@ -143,7 +143,7 @@ namespace aspect
          * The list of plugin objects can be
          * requested by calling get_active_plugins() and the
          * list of boundaries they are responsible for is
-         * returnd by get_active_plugin_boundary_indicators().
+         * returned by get_active_plugin_boundary_indicators().
          */
         ComponentMask
         get_component_mask(const types::boundary_id boundary_id) const;
