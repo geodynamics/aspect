@@ -136,13 +136,17 @@ namespace aspect
         get_active_plugin_boundary_indicators() const;
 
         /**
-         * Return a list of component masks that indicate for
-         * each active plugin which components it is responsible for.
+         * Return a component masks that indicates for
+         * each boundary which components are prescribed by
+         * this manager class. All plugins that are responsible
+         * for this boundary use the same component mask.
          * The list of plugin objects can be
-         * requested by calling get_active_plugins().
+         * requested by calling get_active_plugins() and the
+         * list of boundaries they are responsible for is
+         * returnd by get_active_plugin_boundary_indicators().
          */
-        const std::vector<ComponentMask> &
-        get_active_plugin_component_masks() const;
+        ComponentMask
+        get_component_mask(const types::boundary_id boundary_id) const;
 
         /**
          * Declare the parameters of all known boundary traction plugins, as

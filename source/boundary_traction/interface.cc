@@ -132,10 +132,30 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<ComponentMask> &
-    Manager<dim>::get_active_plugin_component_masks() const
+    ComponentMask
+    Manager<dim>::get_component_mask(const types::boundary_id boundary_id) const
     {
-      return component_masks;
+      Assert(prescribed_traction_boundary_indicators.find(boundary_id) != prescribed_traction_boundary_indicators.end(),
+             ExcMessage("The boundary traction manager class was asked for the "
+                        "component mask of boundary indicator <"
+                        +
+                        Utilities::int_to_string(boundary_id)
+                        +
+                        "> with symbolic name <"
+                        +
+                        this->get_geometry_model().translate_id_to_symbol_name(boundary_id)
+                        +
+                        ">, but this boundary is not part of the active boundary traction plugins."));
+
+      // Since all component masks of plugins at the same boundary are identical, we can use
+      // the component mask of the first plugin we find that is responsible for this boundary.
+      for (unsigned int i=0; i<boundary_indicators.size(); ++i)
+        if (boundary_indicators[i] == boundary_id)
+          return component_masks[i];
+
+      // We should never get here if plugins and boundary indicators were set up correctly.
+      AssertThrow(false, ExcInternalError());
+      return ComponentMask();
     }
 
 

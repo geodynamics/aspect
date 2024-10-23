@@ -127,7 +127,7 @@ namespace aspect
                              " defined that handles this formulation."));
 
     // add the terms for traction boundary conditions
-    if (!boundary_traction_manager.get_active_plugins().empty())
+    if (!boundary_traction_manager.get_prescribed_boundary_traction_indicators().empty())
       {
         assemblers->stokes_system_on_boundary_face.push_back(
           std::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim>>());
@@ -767,7 +767,7 @@ namespace aspect
       = (
           // see if we need to assemble traction boundary conditions.
           // only if so do we actually need to have an FEFaceValues object
-          !boundary_traction_manager.get_active_plugins().empty()
+          !boundary_traction_manager.get_prescribed_boundary_traction_indicators().empty()
           ?
           update_values |
           update_quadrature_points |

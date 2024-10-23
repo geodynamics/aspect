@@ -2487,24 +2487,23 @@ namespace aspect
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
 
       std::set<types::boundary_id> dirichlet_boundary = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators();
-      for (unsigned int i=0; i<sim.boundary_velocity_manager.get_active_plugins().size(); ++i)
+      for (const auto boundary_id: sim.boundary_velocity_manager.get_prescribed_boundary_velocity_indicators())
         {
-          const types::boundary_id bdryid = sim.boundary_velocity_manager.get_active_plugin_boundary_indicators()[i];
-          const ComponentMask component_mask = sim.boundary_velocity_manager.get_active_plugin_component_masks()[i];
+          const ComponentMask component_mask = sim.boundary_velocity_manager.get_component_mask(boundary_id);
 
           if (component_mask != ComponentMask(sim.introspection.n_components, false))
             {
-              ComponentMask mask(fe_v.n_components(), false);
+              ComponentMask velocity_mask(fe_v.n_components(), false);
 
               for (unsigned int i=0; i<dim; ++i)
-                mask.set(i, component_mask[sim.introspection.component_indices.velocities[i]]);
+                velocity_mask.set(i, component_mask[sim.introspection.component_indices.velocities[i]]);
 
-              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {bdryid}, mask);
+              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {boundary_id}, velocity_mask);
             }
           else
             {
               // no mask given: add at the end
-              dirichlet_boundary.insert(bdryid);
+              dirichlet_boundary.insert(boundary_id);
             }
         }
 

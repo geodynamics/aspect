@@ -2387,38 +2387,42 @@ namespace aspect
     boundary_indicator_lists.emplace_back(boundary_velocity_manager.get_prescribed_boundary_velocity_indicators());
     boundary_indicator_lists.emplace_back(boundary_traction_manager.get_prescribed_boundary_traction_indicators());
 
-    // Make sure that each combination of boundary velocity and boundary traction plugin
+    // Make sure that each combination of boundary velocity and boundary traction condition
     // either refers to different boundary indicators or to different components
-    const auto &velocity_boundary_ids = boundary_velocity_manager.get_active_plugin_boundary_indicators();
-    const auto &traction_boundary_ids = boundary_traction_manager.get_active_plugin_boundary_indicators();
+    for (const auto velocity_boundary_id: boundary_indicator_lists[2])
+      {
+        bool found_compatible_duplicate_boundary_id = false;
+        for (const auto traction_boundary_id: boundary_indicator_lists[3])
+          {
+            if (velocity_boundary_id == traction_boundary_id)
+              {
+                // if boundary ids are identical, make sure that the components are different
+                AssertThrow((boundary_velocity_manager.get_component_mask(velocity_boundary_id) &
+                             boundary_traction_manager.get_component_mask(traction_boundary_id)) ==
+                            ComponentMask(introspection.n_components, false),
+                            ExcMessage("Boundary indicator <"
+                                       +
+                                       Utilities::int_to_string(velocity_boundary_id)
+                                       +
+                                       "> with symbolic name <"
+                                       +
+                                       geometry_model->translate_id_to_symbol_name (velocity_boundary_id)
+                                       +
+                                       "> is listed as having both "
+                                       "velocity and traction boundary conditions in the input file."));
 
-    for (unsigned int i=0; i<velocity_boundary_ids.size(); ++i)
-      for (unsigned int j=0; j<traction_boundary_ids.size(); ++j)
-        {
-          if (velocity_boundary_ids[i] == traction_boundary_ids[j])
-            {
-              // if boundary ids are identical, make sure that the components are different
-              AssertThrow((boundary_velocity_manager.get_active_plugin_component_masks()[i] &
-                           boundary_traction_manager.get_active_plugin_component_masks()[j]) ==
-                          ComponentMask(introspection.n_components, false),
-                          ExcMessage("Boundary indicator <"
-                                     +
-                                     Utilities::int_to_string(velocity_boundary_ids[i])
-                                     +
-                                     "> with symbolic name <"
-                                     +
-                                     geometry_model->translate_id_to_symbol_name (velocity_boundary_ids[i])
-                                     +
-                                     "> is listed as having both "
-                                     "velocity and traction boundary conditions in the input file."));
-
-              // we have ensured the prescribed velocity and prescribed traction boundary conditions
-              // are compatible. In order to check them against the other boundary conditions, we
-              // need to remove the boundary indicator from one of the lists to make sure it only
-              // appears in one of them. We choose to remove the boundary indicator from the traction list.
-              boundary_indicator_lists[3].erase(traction_boundary_ids[j]);
-            }
-        }
+                found_compatible_duplicate_boundary_id = true;
+              }
+          }
+        // we have ensured the prescribed velocity and prescribed traction boundary conditions
+        // for the current boundary id are compatible. In order to check them against the other
+        // boundary conditions, we need to remove the boundary indicator from one of the lists
+        // to make sure it only appears in one of them. We choose to remove the boundary
+        // indicator from the traction list. We cannot do that in the loop above, because it
+        // invalidates the range of the loop.
+        if (found_compatible_duplicate_boundary_id)
+          boundary_indicator_lists[3].erase(velocity_boundary_id);
+      }
 
     // for each combination of velocity boundary indicator lists, make sure that the
     // intersection is empty

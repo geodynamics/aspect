@@ -1376,32 +1376,6 @@ namespace aspect
     // for the prescribed velocity fields
     boundary_velocity_manager.update();
 
-    // translate from component mask per plugin to component mask per boundary id
-    std::map<types::boundary_id, ComponentMask> boundary_component_masks;
-    for (unsigned int i=0; i<boundary_velocity_manager.get_active_plugins().size(); ++i)
-      {
-        const types::boundary_id boundary_id = boundary_velocity_manager.get_active_plugin_boundary_indicators()[i];
-        const auto &component_mask = boundary_velocity_manager.get_active_plugin_component_masks()[i];
-
-        const auto it = boundary_component_masks.find(boundary_id);
-        if (it != boundary_component_masks.end())
-          {
-            AssertThrow (it->second == component_mask,
-                         ExcMessage("Boundary indicator <"
-                                    +
-                                    Utilities::int_to_string(boundary_id)
-                                    +
-                                    "> with symbolic name <"
-                                    +
-                                    geometry_model->translate_id_to_symbol_name (boundary_id)
-                                    +
-                                    "> is listed as having different component masks "
-                                    "for different boundary velocity plugins. This is not allowed."));
-          }
-        else
-          boundary_component_masks[boundary_id] = component_mask;
-      }
-
     // put boundary conditions into constraints object for each boundary
     for (const auto boundary_id: boundary_velocity_manager.get_prescribed_boundary_velocity_indicators())
       {
@@ -1422,7 +1396,7 @@ namespace aspect
                                                   boundary_id,
                                                   vel,
                                                   constraints,
-                                                  boundary_component_masks.at(boundary_id));
+                                                  boundary_velocity_manager.get_component_mask(boundary_id));
       }
   }
 
