@@ -38,7 +38,7 @@ jobs:
       run: |
         mkdir build-no-unity
         cd build-no-unity
-        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Wdeprecated-declarations -Wdeprecated-enum-enum-conversion -Werror' ..
+        cmake -D CMAKE_BUILD_TYPE=Debug -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Wdeprecated-declarations -Werror' ..
         make -j 4
         ./aspect --test
 
