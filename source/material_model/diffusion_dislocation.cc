@@ -145,12 +145,10 @@ namespace aspect
           Utilities::MapParsing::Options options(chemical_field_names, "Densities");
           options.list_of_allowed_keys = compositional_field_names;
 
-          densities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Densities"),
-                                                                        options);
+          densities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           options.property_name = "Thermal expansivities";
-          thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Thermal expansivities"),
-                                                                                    options);
+          thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           // Phenomenological parameters
           thermal_diffusivity = prm.get_double("Thermal diffusivity");
