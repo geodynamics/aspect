@@ -1,21 +1,21 @@
 
 
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_bottom.0.txt.
+
+
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_left.0.txt.
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_right.0.txt.
 
 
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_top.0.txt.
+
+
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_front.0.txt.
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_back.0.txt.
-
-
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_bottom.0.txt.
-
-
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_3d_top.0.txt.
 
 Number of active cells: 200 (on 2 levels)
 Number of degrees of freedom: 9,183 (6,615+363+2,205)
