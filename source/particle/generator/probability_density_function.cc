@@ -55,6 +55,26 @@ namespace aspect
           {
             Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
 
+            // This parameter overwrites one of the parameters in ParsedFunction
+            // with a new default value of 1.0. The original default value was 0
+            // everywhere, which is not allowed.
+            prm.declare_entry("Function expression",
+                              "1.0",
+                              Patterns::Anything(),
+                              "The formula that denotes the spatially variable probability density function. "
+                              "This expression "
+                              "may contain any of the usual operations such as addition or "
+                              "multiplication, as well as all of the common functions such as "
+                              "`sin' or `cos'. In addition, it may contain expressions like "
+                              "`if(x>0, 1, 0)' where the expression evaluates to the second "
+                              "argument if the first argument is true, and to the third argument "
+                              "otherwise; this example would result in no particles at all in that "
+                              "part of the domain where $x==0$, and a constant particle density "
+                              "in the rest of the domain. For a full overview of possible expressions accepted "
+                              "see the documentation of the muparser library at http://muparser.beltoforion.de/. "
+                              "Note that the function has to be non-negative everywhere in the domain, "
+                              "and needs to be positive in at least some parts of the domain.");
+
             prm.declare_entry ("Number of particles", "1000",
                                Patterns::Double (0.),
                                "Total number of particles to create (not per processor or per element). "
