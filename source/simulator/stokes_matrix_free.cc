@@ -72,7 +72,7 @@ namespace aspect
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv;
         rwv.reinit(in);
-        out.import(rwv, VectorOperation::insert);
+        out.import_elements(rwv, VectorOperation::insert);
       }
 
       void copy(TrilinosWrappers::MPI::BlockVector &out,

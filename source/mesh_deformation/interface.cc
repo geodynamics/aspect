@@ -1451,7 +1451,7 @@ namespace aspect
                                                                        this->get_triangulation().get_communicator());
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
       rwv.reinit(mesh_displacements);
-      displacements.import(rwv, VectorOperation::insert);
+      displacements.import_elements(rwv, VectorOperation::insert);
 
       const unsigned int n_levels = sim.triangulation.n_global_levels();
       for (unsigned int level = 0; level < n_levels; ++level)
