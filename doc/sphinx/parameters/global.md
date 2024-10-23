@@ -128,7 +128,19 @@ Units: \%.
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The name of the directory into which all output files should be placed. This may be an absolute or a relative path.
+**Documentation:** The name of the directory into which all output files should be placed. This may be an absolute or a relative path. ASPECT will write output such as statistics files or visualization files into this directory or into directories further nested within.
+
+(parameters:Output_20directory_20LFS_20stripe_20count)=
+### __Parameter name:__ Output directory LFS stripe count
+**Default value:** 0
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** Many large clusters use the Lustre file system (LFS) that allows to &rsquo;stripe&rsquo; files, i.e., to use multiple file servers to store a single file. This is useful when writing very large files from multiple MPI processes, such as when creating graphical output or creating checkpoints. In those cases, if all MPI processes try to route their data to a single file server, that file server and the disks it manages may be saturated by data and everything slows down. File striping instead ensures that the data is sent to several file servers, improving performance. A description of how Lustre manages file striping can be found at https://doc.lustre.org/lustre_manual.xhtml#managingstripingfreespace . How file striping can be configured is discussed at https://wiki.lustre.org/Configuring_Lustre_File_Striping .
+
+When this parameter is set to anything other than zero, ASPECT will call the Lustre support tool, &lsquo;lst&lsquo;, as follows: &lsquo;lst setstripe -c N OUTPUT_DIR&lsquo;, where &lsquo;N&lsquo; is the value of the input parameter discussed here, and &lsquo;OUTPUT_DIR&lsquo; is the directory into which ASPECT writes its output. The file striping so set on the output directory are also inherited by the sub-directories ASPECT creates within it.
+
+In order to use this parameter, your cluster must obviously be using the Lustre file system. What the correct value for the stripe count is is something you will have to find out from your cluster&rsquo;s local documentation, or your cluster administrator. It depends on the physical details and configuration of the file servers attached to a cluster.
 
 (parameters:Pressure_20normalization)=
 ### __Parameter name:__ Pressure normalization
