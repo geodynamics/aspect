@@ -294,7 +294,16 @@ namespace aspect
     template <typename InterfaceType>
     ManagerBase<InterfaceType>::~ManagerBase()
     {
-      Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+      // only check and throw if we are not unwinding the stack due
+      // to an active exception
+#ifdef DEAL_II_HAVE_CXX17
+      if (std::uncaught_exceptions() == 0)
+#else
+      if (std::uncaught_exception() == false)
+#endif
+        {
+          Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+        }
     }
 
 
