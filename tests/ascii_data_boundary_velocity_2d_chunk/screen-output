@@ -1,15 +1,15 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/chunk_2d_bottom.0.txt.
-
-
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/chunk_2d_top.0.txt.
-
-
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/chunk_2d_west.0.txt.
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/chunk_2d_east.0.txt.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/chunk_2d_bottom.0.txt.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/chunk_2d_top.0.txt.
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
