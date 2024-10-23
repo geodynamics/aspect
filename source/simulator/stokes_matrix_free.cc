@@ -2416,7 +2416,7 @@ namespace aspect
       const IndexSet locally_relevant_dofs = DoFTools::extract_locally_relevant_dofs(dof_handler_v);
 #else
       IndexSet locally_relevant_dofs;
-      DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, relevant_dofs);
+      DoFTools::extract_locally_relevant_dofs(dof_handler_v, locally_relevant_dofs);
 #endif
 
 #if DEAL_II_VERSION_GTE(9,6,0)
