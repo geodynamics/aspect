@@ -2471,6 +2471,8 @@ namespace aspect
                              "> is listed as having more "
                              "than one type of temperature or heat flux boundary condition in the input file."));
 
+    boundary_indicator_lists.emplace_back(boundary_composition_manager.get_fixed_composition_boundary_indicators());
+
     // Check that the periodic boundaries do not have other boundary conditions set
     using periodic_boundary_set
       = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
@@ -2516,8 +2518,11 @@ namespace aspect
       for (const auto &p : list)
         AssertThrow (all_boundary_indicators.find (p)
                      != all_boundary_indicators.end(),
-                     ExcMessage ("One of the boundary indicators listed in the input file "
-                                 "is not used by the geometry model."));
+                     ExcMessage ("Boundary indicator <"
+                                 +
+                                 Utilities::int_to_string(p)
+                                 +
+                                 "> is listed for a boundary condition, but is not used by the geometry model."));
 
     if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
       {
@@ -2525,7 +2530,8 @@ namespace aspect
         for (unsigned int i=0; i<4; ++i)
           AssertThrow (boundary_indicator_lists[i].empty(),
                        ExcMessage ("With the solver scheme `single Advection, no Stokes', "
-                                   "one cannot set boundary conditions for velocity."));
+                                   "one cannot set boundary conditions for velocity or traction, "
+                                   "but a boundary condition has been set."));
       }
   }
 
