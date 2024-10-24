@@ -180,7 +180,8 @@ namespace aspect
          */
         double
         get_data(const Point<dim> &position,
-                 const unsigned int component) const;
+                 const unsigned int component,
+                 const bool crash_if_not_in_range = false) const;
 
         /**
          * Returns the gradient of the function based on the bilinear

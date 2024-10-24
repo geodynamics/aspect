@@ -855,9 +855,24 @@ namespace aspect
     template <int dim>
     double
     StructuredDataLookup<dim>::get_data(const Point<dim> &position,
-                                        const unsigned int component) const
+                                        const unsigned int component,
+                                        bool crash_if_not_in_range) const
     {
       Assert(component<n_components, ExcMessage("Invalid component index"));
+
+      if (crash_if_not_in_range)
+        {
+          const std::vector<double> x_coordinates = get_interpolation_point_coordinates(0);
+
+          Assert (position[0] >= x_coordinates[0] && position[0] <= x_coordinates[x_coordinates.size()-1],
+                  ExcMessage("The requested position is outside the range of the data."));
+
+          const std::vector<double> y_coordinates = get_interpolation_point_coordinates(1);
+
+          Assert (position[1] >= y_coordinates[0] && position[1] <= y_coordinates[y_coordinates.size()-1],
+                  ExcMessage("The requested position is outside the range of the data."));
+        }
+
       return data[component]->value(position);
     }
 
