@@ -129,8 +129,9 @@ namespace aspect
           std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
           // Establish that a background field is required here
           compositional_field_names.insert(compositional_field_names.begin(),"background");
-          Utilities::MapParsing::Options options(compositional_field_names, "Viscosities");
+          Utilities::MapParsing::Options options(compositional_field_names, "");
 
+          options.property_name = "Viscosities";
           viscosities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           options.property_name = "Thermal conductivities";
