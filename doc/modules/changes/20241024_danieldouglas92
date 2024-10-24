@@ -1,0 +1,4 @@
+Changed: The function simulator::replace_outflow_boundary_ids to allow outflow boundary conditions 
+to be determined based on the velocity that each compositional field is advected with.
+<br>
+(Daniel Douglas, 2024/10/24)
