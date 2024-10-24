@@ -1,0 +1,126 @@
+# A model which takes utilizes the python script `extract_local_velocity.py`
+# to take the output of the global convection cookbook `initial-condition-S20RTS`
+# and apply the velocity as boundary conditions in a regional 3D spherical chunk.
+# This will outline the workflow for running the `extract_local_velocity.py` script,
+# and show how the solution to the regional spherical chunk model varies between the case
+# where the boundaries are free-slip, or when the boundaries are prescribed velocity
+# boundary conditions. With the exception of the velocity boundary conditions and the
+# geometry model, the .prm file for this cookbook is identical to the `initial-condition-S20RTS`
+# cookbook .prm file.
+
+# Specify the time you want to let the model run for in
+# years and the output directory. Here we only calculate
+# the instantaneous solution.
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Output directory                       = output-chunk-free-slip-S20RTS
+set Dimension                              = 3
+
+# The following variables describe how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain. The 'Surface pressure' and
+# 'Adiabatic surface temperature' are used to compute
+# the adiabatic reference profile.
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600
+
+# Here we specify the geometry of the regional mode
+# domain, which is a spherical chunk with inner radius
+# of 4770 km and outer radius of 6370 km, spanning from
+# -20 to -55 degrees latitude and 152 to 210 degrees
+# longitude.
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk inner radius  = 4770e3
+    set Chunk outer radius  = 6370e3
+
+    set Chunk maximum latitude = -20
+    set Chunk minimum latitude = -55
+
+    set Chunk maximum longitude = 210
+    set Chunk minimum longitude = 152
+  end
+end
+
+# This section describes the gravity field, which is pointing
+# towards the Earth's center with the same magnitude of 10 m/s^2
+# everywhere
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# This section prescribes the initial condition in the temperature
+# field, which is chosen as a scaled version of the S20RTS shear
+# wave velocity model (Ritsema et al., 2000). S20RTS is defined
+# by spherical harmonics up to degree 20 that are radially interpolated
+# with a cubic spline.
+subsection Initial temperature model
+  set Model name = S40RTS perturbation
+
+  subsection S40RTS perturbation
+    # The two input options here are S20RTS or the higher resolution
+    # S40RTS (Ritsema et al., 2011). One can choose to remove the
+    # degree 0 from these files so that the depth average value
+    # is zero.
+    set Initial condition file name       = S20RTS.sph
+    set Remove degree 0 from perturbation = false
+
+    # The following parameters determine the scaling from shear wave
+    # velocity perturbation to temperature differences. We chose the
+    # scaling to density perturbation as 0.15
+    set Vs to density scaling             = 0.15
+    set Thermal expansion coefficient in initial temperature scaling = 3e-5
+
+    # This specifies the background temperature to which we add the
+    # temperature difference.
+    set Reference temperature             = 1600
+  end
+end
+
+# The material model is based on the simple material model, which assumes
+# a constant density, and other parameters as stated below.
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density                 = 3300
+    set Viscosity                         = 1e21
+    set Thermal expansion coefficient     = 3e-5
+    set Reference temperature             = 1600
+    set Thermal conductivity              = 4.125
+    set Reference specific heat           = 1250
+  end
+end
+
+# For the regional calculation we do 5 global refinement steps, 3 more than the
+# global S20RTS model in the `initial-condition-S20RTS` cookbook. This showcases
+# how the 'extract_local_velocity' python script allows the user to interpolate
+# coarser global models for higher resolution regional models.
+subsection Mesh refinement
+  set Initial global refinement = 5
+end
+
+# We apply free slip boundary conditions in this model for comparison with the
+# case where global velocities are prescribed on the boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = outer, inner, east, west, south, north
+end
+
+# We output the velocity and the material properties for visualization.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization, basic statistics
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = material properties, depth
+    set Time between graphical output = 0
+    set Number of grouped files       = 1
+  end
+end
