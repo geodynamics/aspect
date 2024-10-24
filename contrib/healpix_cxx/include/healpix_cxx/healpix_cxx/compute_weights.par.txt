@@ -1,0 +1,37 @@
+Parameters read by compute_weights:
+
+nside (integer):
+  Nside parameter for which weights should be computed
+
+nlmax (integer):
+  maximum order of l
+  A good value is typically 3*nside. Using a slightly higher value may work,
+  but it is possible that the minimization will not converge.
+  NOTE: map analyses using the resulting pixel weights will be accurate if the
+  input map is band-limited at nlmax/2!
+
+epsilon (double, default=1e-7):
+  termination criterion for the minimization iteration
+  This value must lie between 0 and 1, and gives a rough estimate for the
+  reduction of the errors when analyzing a map with the computed weights,
+  compared to an analysis with uniform weights.
+
+  Convergence will become slower for increasing Nside when keeping epsilon
+  constant; for high Nside it may be necessary to increase epsilon to 1e-3
+  or even higher.
+
+  The output file will contain the last epsilon value reached during the
+  iteration, which may be higher than the requested value if the maximum
+  number of iterations was reached.
+
+max_iter (integer, default=10000):
+  maximum number of iterations for the iterative minimization
+  if max_iter is reached, the current estimate for the weights will be written
+  to the output file, even though the desired epsilon has not been reached.
+
+outfile_ring (string, optional):
+  if present, the Healpix ring weights will be computed and written to this
+  file
+
+outfile_full (string, optional):
+  if present, the full pixel weights will be computed and written to this file

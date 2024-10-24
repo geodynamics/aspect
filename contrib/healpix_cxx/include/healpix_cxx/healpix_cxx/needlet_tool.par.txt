@@ -1,0 +1,90 @@
+Parameters read by needlet_tool:
+
+mode (string):
+  split:
+      a single a_lm file is input and split into needlet bands
+  assemble:
+      multiple needlet bands are read and combined into a single a_lm file
+  write_coefficients:
+      needlet coefficients are written to a FITS file
+
+needlet_type (string):
+  needatool: use needlets as defined by Pietrobon et al., ApJ 723, 1 (2010),
+             following the construction in section 3
+  cosine   : use needlets as defined by Basak et al., MNRAS 419, 1163 (2012),
+             following the equations in section 3
+  sdw      : use needlets as defined by Leistedt et al., A&A 558, A128 (2013),
+             following equations 10 to 15
+  spline   : use B-spline based wavelets, similar to those defined by Starck et
+             al., A&A 446, 1191 (2006), but with band number ascending towards
+             higher resolutions.
+
+if (needlet_type=="cosine"):
+  llim: string
+    For n bands, this list must contain n+2 comma-separated integers:
+      - start of band 1
+      - start of band 2 == peak of band 1
+      - start of band 3 == peak of band 2 == end of band 1
+      [...]
+      - start of band n == peak of band n-1 == end of band n-2
+      - peak of band n == end of band n-1
+      - end of band n
+    The values must be strictly increasing, with the exception of the first and
+    second value, which may both be 0.
+else
+  B (double):
+    B parameter for the respective needlet
+    The window for the nth band peaks at l=B^n.
+endif
+
+minband, maxband (integer):
+  the minimum and maximum needlet scales requested for the operation
+
+if (mode=="write_coefficients"):
+  outfile_needlets(string): output file name root for needlet coefficients
+else
+  infile (string):
+    if mode=="split"   : input file containing the a_lm
+    if mode=="assemble": root name for the input a_lm files
+                         Full names are "<infile>###.fits",
+                         where ### is the three-digit number of the band
+
+  outfile (string):
+    if mode=="split"   : root name for the output a_lm files
+                         Full names are "<outfile>###.fits",
+                         where ### is the three-digit number of the band
+    if mode=="assemble": output file containing the assembled a_lm
+
+  polarisation (bool, default=false):
+    if false, only the intensity a_lm are processed,
+    if true, the code currently exits with an error message,
+    since polarisation is not yet supported.
+endif
+
+double_precision (bool, default=false):
+  if false, a_lm are read/written in single precision,
+  otherwise in double precision.
+
+
+
+General remarks on the code
+===========================
+
+In contrast to most other needlet-related codes, needlet_tool does not read and
+write map data, but spherical harmonic coefficients. This is done because
+ - the code is then independent of a particular pixelisation.
+ - the necessary transforms between map and spherical harmonic domain are
+   subject to many complications (like choice of band limits, removal of low
+   multipoles, masking, pixel weighting, iterative map analysis, choice of
+   resolution for the output maps, etc.) so that it would be cumbersome to
+   reproduce all these details in needlet_tool.
+ - the separation of the transforms and needlet operations does not degrade
+   overall performance, so it is just as efficient to let the SHTs be done by
+   dedicated codes like anafast/synfast etc.
+
+Splitting and then reassembling a set of a_lm should accurately reproduce the
+input a_lm at all l starting from the first peak (which is 1 for "needatool" and
+"sdw" needlets, but may be different for "cosine" wavelets).
+The remaining information in the input data (monopole for "needatool" and "sdw",
+part of the coefficients below the first peak for "cosine") is currently
+discarded, but could also be written to an additional output file.
