@@ -850,7 +850,13 @@ namespace aspect
 
     vec.compress(VectorOperation::insert);
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+    AffineConstraints<double> hanging_node_constraints(introspection.index_sets.system_relevant_set,
+                                                       introspection.index_sets.system_relevant_set);
+#else
     AffineConstraints<double> hanging_node_constraints(introspection.index_sets.system_relevant_set);
+#endif
+
     DoFTools::make_hanging_node_constraints(dof_handler, hanging_node_constraints);
     hanging_node_constraints.close();
 

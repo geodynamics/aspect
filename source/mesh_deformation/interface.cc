@@ -600,7 +600,12 @@ namespace aspect
       // For the moment add constraints from all plugins into one matrix, then
       // merge that matrix with the existing constraints (respecting the existing
       // constraints as more important)
+#if DEAL_II_VERSION_GTE(9,7,0)
+      AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                   mesh_vertex_constraints.get_local_lines());
+#else
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
       for (const auto &boundary_id : mesh_deformation_objects)
         {
@@ -609,7 +614,12 @@ namespace aspect
 
           for (const auto &model : boundary_id.second)
             {
+#if DEAL_II_VERSION_GTE(9,7,0)
+              AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                                   mesh_vertex_constraints.get_local_lines());
+#else
               AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
               model->compute_velocity_constraints_on_boundary(mesh_deformation_dof_handler,
                                                               current_plugin_constraints,
@@ -714,7 +724,12 @@ namespace aspect
       // For the moment add constraints from all plugins into one matrix, then
       // merge that matrix with the existing constraints (respecting the existing
       // constraints as more important)
+#if DEAL_II_VERSION_GTE(9,7,0)
+      AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                   mesh_vertex_constraints.get_local_lines());
+#else
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
       std::set<types::boundary_id> boundary_id_set;
 
@@ -722,7 +737,12 @@ namespace aspect
         {
           for (const auto &deformation_object : boundary_id_and_deformation_objects.second)
             {
+#if DEAL_II_VERSION_GTE(9,7,0)
+              AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                                   mesh_vertex_constraints.get_local_lines());
+#else
               AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
               Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
               (dim,
@@ -1020,10 +1040,17 @@ namespace aspect
 
       for (unsigned int level = 0; level < n_levels; ++level)
         {
+#if DEAL_II_VERSION_GTE(9,7,0)
+          const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
+                                                                                       level);
+#else
           IndexSet relevant_dofs;
           DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
                                                         level,
                                                         relevant_dofs);
+#endif
+
+
           AffineConstraints<double> level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
           level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
@@ -1333,10 +1360,15 @@ namespace aspect
           // need to evaluate the mapping later.
           for (unsigned int level = 0; level < n_levels; ++level)
             {
+#if DEAL_II_VERSION_GTE(9,7,0)
+              const IndexSet relevant_mg_dofs = DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler, level);
+#else
               IndexSet relevant_mg_dofs;
               DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
                                                             level,
                                                             relevant_mg_dofs);
+#endif
+
               level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                                 relevant_mg_dofs,
                                                 sim.mpi_communicator);
@@ -1386,8 +1418,12 @@ namespace aspect
       }
 
       mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
+#if DEAL_II_VERSION_GTE(9,7,0)
+      mesh_locally_relevant = DoFTools::extract_locally_relevant_dofs(mesh_deformation_dof_handler);
+#else
       DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
                                                mesh_locally_relevant);
+#endif
 
       // This will initialize the mesh displacement and free surface
       // mesh velocity vectors with zero-valued entries.
@@ -1451,7 +1487,7 @@ namespace aspect
                                                                        this->get_triangulation().get_communicator());
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
       rwv.reinit(mesh_displacements);
-      displacements.import(rwv, VectorOperation::insert);
+      displacements.import_elements(rwv, VectorOperation::insert);
 
       const unsigned int n_levels = sim.triangulation.n_global_levels();
       for (unsigned int level = 0; level < n_levels; ++level)
