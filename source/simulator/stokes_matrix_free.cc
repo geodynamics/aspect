@@ -2617,10 +2617,10 @@ namespace aspect
 
           {
 #if DEAL_II_VERSION_GTE(9,7,0)
-            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level);
+            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level);
 #else
             IndexSet relevant_dofs;
-            DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
+            DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
 #endif
 
 #if DEAL_II_VERSION_GTE(9,6,0)
