@@ -363,7 +363,10 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/fastscape/include/")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/xtensor/")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtl/include/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/healpix_cxx/include/healpix_cxx/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/healpix_cxx/include/healpix_cxx/cxxsupport/")
 
+#include "datatypes.h"
 
 #
 # Other stuff about external tools and how we interact with the system:
