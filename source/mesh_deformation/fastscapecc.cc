@@ -55,7 +55,7 @@ namespace aspect
         {
             this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-          nsides =(int) sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference) * 2) / 12);
+          nsides =(int) sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference+maximum_surface_refinement_level) * 2) / 12);
           // array_size = 12*nsides;
         }
         else
@@ -299,7 +299,7 @@ namespace aspect
           uplift_rate_in_m_year[i] = vz[i];
           //  / year_in_seconds;
       }
-      std::vector<std::size_t> shape = { array_size };
+      std::vector<std::size_t> shape = { static_cast<unsigned long>(array_size) };
       auto uplift_rate = xt::adapt(uplift_rate_in_m_year, shape);
 
 
@@ -352,7 +352,7 @@ namespace aspect
       // Find out our velocities from the change in height.
       // Where V is a vector of array size that exists on all processes.
         
-        std::cout<<"Timestep : "<<this->get_timestep()<<std::endl;
+        std::cout<<"Timestep : "<<this->get_timestep()/year_in_seconds<<std::endl;
       for (unsigned int i=0; i<array_size; ++i)
         {
           V[i] = (elevation_std[i] - elevation_old_std[i])/ (this->get_timestep()/ year_in_seconds);
