@@ -374,7 +374,7 @@ namespace aspect
         }
 
       // Initialize a table to hold all velocity values that will be interpolated back to ASPECT.
-      Table<dim,double> velocity_table = fill_data_table(V, size_idx, nx, ny);
+      Table<dim,double> velocity_table = fill_data_table(V, size_idx, array_size);
 
       // As our grid_extent variable end points do not account for the change related to an origin
       // not at 0, we adjust this here into an interpolation extent.
@@ -410,8 +410,7 @@ namespace aspect
     Table<dim,double>
     FastScapecc<dim>::fill_data_table(std::vector<double> &values,
                                       TableIndices<dim> &size_idx,
-                                      const int &nx,
-                                      const int &ny) const
+                                      const int &array_size) const
     {
       // Create data table based off of the given size.
       Table<dim,double> data_table;
@@ -436,7 +435,7 @@ namespace aspect
                   idx[0] = j;
 
                   // Convert back to m/s.
-                  data_table(idx) = values[nx*i+j] / year_in_seconds;
+                  data_table(idx) = values[array_size*i+j] / year_in_seconds;
                     
 
                 }
