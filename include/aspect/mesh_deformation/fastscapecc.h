@@ -86,16 +86,15 @@ namespace aspect
       private:
         GeometryType geometry_type;
 
-        // Add unique pointers for FastScape components
-        std::unique_ptr<fastscapelib::healpix_grid<>> grid; // Healpix grid pointer
+        // // Add unique pointers for FastScape components
+        // std::unique_ptr<fastscapelib::healpix_grid<>> grid; // Healpix grid pointer
 
-        // Unique pointer for fastscapelib flow_graph with healpix_grid as template parameter.
-        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>> flow_graph;
+        // // Unique pointer for fastscapelib flow_graph with healpix_grid as template parameter.
+        // std::unique_ptr<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>> flow_graph;
 
-        // Unique pointer for fastscapelib spl_eroder with flow_graph as template parameter.
-        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>>> spl_eroder;
+        // // Unique pointer for fastscapelib spl_eroder with flow_graph as template parameter.
+        // std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>>> spl_eroder;
 
- 
 
 
         // Unique pointer for fastscapelib raster_boundary_status.

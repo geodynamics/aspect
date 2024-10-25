@@ -283,41 +283,45 @@ namespace aspect
       // raster grid and boundary conditions
       fastscapelib::raster_boundary_status bs(fastscapelib::node_status::fixed_value);
 
-      if (geometry_type == GeometryType::Box)
-      {
-          // grid_box =  std::unique_ptr<fastscapelib::raster_grid<>>(fastscapelib::raster_grid<>::from_length(
-          //     { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) }, 
-          //     { x_extent, y_extent }, 
-          //     bs
-          // ));
 
-          grid_box = std::make_unique<fastscapelib::raster_grid<>>({ static_cast<unsigned long>(ny), static_cast<unsigned long>(nx)}, { dy, dx}, 
-              bs);
+      // if (geometry_type == GeometryType::Box)
+      // {
+      //     // grid_box =  std::unique_ptr<fastscapelib::raster_grid<>>(fastscapelib::raster_grid<>::from_length(
+      //     //     { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) }, 
+      //     //     { x_extent, y_extent }, 
+      //     //     bs
+      //     // ));
+
+      //     //grid_box = std::make_unique<fastscapelib::raster_grid<>>({ static_cast<unsigned long>(ny), static_cast<unsigned long>(nx)}, { dy, dx}, 
+      //     //    bs);
           
 
-          flow_graph_box = std::make_unique<fastscapelib::flow_graph<fastscapelib::raster_grid<>>>(
-              *grid_box, {
-              fastscapelib::single_flow_router(), 
-              fastscapelib::mst_sink_resolver()
-          });
-          spl_eroder_box = fastscapelib::make_spl_eroder(*flow_graph_box, 2e-4, 0.4, 1, 1e-5);
-          diffusion_eroder_box = fastscapelib::make_diffusion_adi_eroder(*grid_box, 0.01);
-      } 
-      else if (geometry_type == GeometryType::SphericalShell)
-      {
-        std::vector<fastscapelib::node_status> node_status_array(nsides, fastscapelib::node_status::fixed_value);
-        grid = std::make_unique<fastscapelib::healpix_grid<>>(nsides, node_status_array,6.371e6);
-        flow_graph = std::make_unique<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>>(
-            *grid, {
+      //     //flow_graph_box = std::make_unique<fastscapelib::flow_graph<fastscapelib::raster_grid<>>>(
+      //     //     *grid_box, {
+      //     //     fastscapelib::single_flow_router(), 
+      //     //     fastscapelib::mst_sink_resolver()
+      //     // });
+      //     // spl_eroder_box = fastscapelib::make_spl_eroder(*flow_graph_box, 2e-4, 0.4, 1, 1e-5);
+      //     // diffusion_eroder_box = fastscapelib::make_diffusion_adi_eroder(*grid_box, 0.01);
+      // } 
+      // else if (geometry_type == GeometryType::SphericalShell)
+      // {
+
+        xt::xarray<fastscapelib::node_status> node_status_array(fastscapelib::node_status::fixed_value);
+
+        // xt::xarray<fastscapelib::node_status> node_status_array(nsides, fastscapelib::node_status::fixed_value);
+        auto grid = fastscapelib::healpix_grid<>(nsides, node_status_array,6.371e6);
+        auto flow_graph = fastscapelib::flow_graph<fastscapelib::healpix_grid<>>(
+            grid, {
             fastscapelib::single_flow_router(), 
             fastscapelib::mst_sink_resolver()}
         );
-        spl_eroder = fastscapelib::make_spl_eroder(*flow_graph, 2e-4, 0.4, 1, 1e-5);
-      }
+        auto spl_eroder = fastscapelib::make_spl_eroder(flow_graph, 2e-4, 0.4, 1, 1e-5);
+      // }
 
       xt::xarray<double> uplifted_elevation ;
-      xt::xarray<double> drainage_area = xt::zeros<double>(grid->shape());
-      xt::xarray<double> sediment_flux = xt::zeros<double>(grid->shape());
+      xt::xarray<double> drainage_area = xt::zeros<double>(grid.shape());
+      xt::xarray<double> sediment_flux = xt::zeros<double>(grid.shape());
 
             // std::cout << "uplift_rate_in_m_year[1]"<<uplift_rate_in_m_year[100]<<std::endl;
 
@@ -352,21 +356,21 @@ namespace aspect
           // apply uplift
           uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
           // flow routing
-          flow_graph->update_routes(uplifted_elevation);
+          flow_graph.update_routes(uplifted_elevation);
           // flow accumulation (drainage area)
-          flow_graph->accumulate(drainage_area, 1.0);
+          flow_graph.accumulate(drainage_area, 1.0);
           // apply channel erosion then hillslope diffusion
-          auto spl_erosion = spl_eroder->erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
+          auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
 
           //calculate the cumulated erosion flux
-          auto sediment_flux = flow_graph->accumulate(spl_erosion);
-          if (geometry_type == GeometryType::Box)
-          {
-          auto diff_erosion = diffusion_eroder_box->erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
+          sediment_flux = flow_graph.accumulate(spl_erosion);
+          // if (geometry_type == GeometryType::Box)
+          // {
+          // auto diff_erosion = diffusion_eroder_box.erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
           // update topography
-          auto elevation = uplifted_elevation - spl_erosion - diff_erosion;
-          }else if (geometry_type == GeometryType::SphericalShell)
-          auto elevation = uplifted_elevation - spl_erosion;
+          // auto elevation = uplifted_elevation - spl_erosion - diff_erosion;
+          // }else if (geometry_type == GeometryType::SphericalShell)
+          elevation = uplifted_elevation - spl_erosion;
           }
 
           std::vector<double> uplifted_erosion_std(uplifted_elevation.begin(), uplifted_elevation.end());
