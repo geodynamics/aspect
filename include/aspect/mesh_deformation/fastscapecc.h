@@ -117,8 +117,7 @@ namespace aspect
          */
         Table<dim,double> fill_data_table(std::vector<double> &values,
                                           TableIndices<dim> &size_idx,
-                                          const int &nx,
-                                          const int &ny) const;
+                                          const int &array_size) const;
 
 
         /**
