@@ -276,19 +276,19 @@ namespace aspect
       // else if (geometry_type == GeometryType::SphericalShell)
       // {
 
-        xt::xarray<fastscapelib::node_status> node_status_array(fastscapelib::node_status::fixed_value);
+       // xt::xarray<fastscapelib::node_status> node_status_array(fastscapelib::node_status::fixed_value);
+        xt::xarray<fastscapelib::node_status> node_status_array = xt::zeros<fastscapelib::node_status>({ array_size });
 
         // xt::xarray<fastscapelib::node_status> node_status_array(nsides, fastscapelib::node_status::fixed_value);
         auto grid = fastscapelib::healpix_grid<>(nsides, node_status_array,6.371e6);
         auto flow_graph = fastscapelib::flow_graph<fastscapelib::healpix_grid<>>(
             grid, {
-            fastscapelib::single_flow_router(), 
-            fastscapelib::mst_sink_resolver()}
+            fastscapelib::single_flow_router()}
         );
         auto spl_eroder = fastscapelib::make_spl_eroder(flow_graph, 2e-4, 0.4, 1, 1e-5);
       // }
 
-      xt::xarray<double> uplifted_elevation ;
+      xt::xarray<double> uplifted_elevation = xt::zeros<double>(grid.shape()) ;
       xt::xarray<double> drainage_area = xt::zeros<double>(grid.shape());
       xt::xarray<double> sediment_flux = xt::zeros<double>(grid.shape());
 
@@ -299,7 +299,7 @@ namespace aspect
           uplift_rate_in_m_year[i] = vz[i];
           //  / year_in_seconds;
       }
-      std::vector<std::size_t> shape = { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) };
+      std::vector<std::size_t> shape = { array_size };
       auto uplift_rate = xt::adapt(uplift_rate_in_m_year, shape);
 
 
