@@ -117,42 +117,29 @@ namespace aspect
       void
       MulticomponentCompressible<dim>::parse_parameters (ParameterHandler &prm)
       {
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
         // Establish that a background field is required here
-        const bool has_background_field = true;
-
-        // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        compositional_field_names.insert(compositional_field_names.begin(),"background");
+        Utilities::MapParsing::Options options(compositional_field_names, "");
 
         // Parse multicomponent properties
-        reference_temperatures = Utilities::parse_map_to_double_array (prm.get("Reference temperatures"),
-                                                                       list_of_composition_names,
-                                                                       has_background_field,
-                                                                       "Reference temperatures");
+        options.property_name = "Reference temperatures";
+        reference_temperatures = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-        reference_densities = Utilities::parse_map_to_double_array (prm.get("Reference densities"),
-                                                                    list_of_composition_names,
-                                                                    has_background_field,
-                                                                    "Reference densities");
+        options.property_name = "Reference densities";
+        reference_densities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-        reference_isothermal_compressibilities = Utilities::parse_map_to_double_array (prm.get("Reference isothermal compressibilities"),
-                                                                                       list_of_composition_names,
-                                                                                       has_background_field,
-                                                                                       "Reference isothermal compressibilities");
+        options.property_name = "Reference isothermal compressibilities";
+        reference_isothermal_compressibilities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-        isothermal_bulk_modulus_pressure_derivatives = Utilities::parse_map_to_double_array (prm.get("Isothermal bulk modulus pressure derivatives"),
-                                                       list_of_composition_names,
-                                                       has_background_field,
-                                                       "Isothermal bulk modulus pressure derivatives");
+        options.property_name = "Isothermal bulk modulus pressure derivatives";
+        isothermal_bulk_modulus_pressure_derivatives = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-        reference_thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Reference thermal expansivities"),
-                                                                                list_of_composition_names,
-                                                                                has_background_field,
-                                                                                "Reference thermal expansivities");
+        options.property_name = "Reference thermal expansivities";
+        reference_thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-        isochoric_specific_heats = Utilities::parse_map_to_double_array (prm.get("Isochoric specific heats"),
-                                                                         list_of_composition_names,
-                                                                         has_background_field,
-                                                                         "Isochoric specific heats");
+        options.property_name = "Isochoric specific heats";
+        isochoric_specific_heats = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
       }
     }
   }

@@ -93,7 +93,12 @@ namespace aspect
       check_diffusion_time_step(mesh_deformation_dof_handler, boundary_ids);
 
       // Set up constraints
+#if DEAL_II_VERSION_GTE(9,6,0)
+      AffineConstraints<double> matrix_constraints(mesh_locally_relevant, mesh_locally_relevant);
+#else
       AffineConstraints<double> matrix_constraints(mesh_locally_relevant);
+#endif
+
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, matrix_constraints);
 
       std::set<types::boundary_id> periodic_boundary_indicators;
@@ -445,9 +450,7 @@ namespace aspect
       LinearAlgebra::Vector boundary_velocity;
 
       const IndexSet &mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
-      IndexSet mesh_locally_relevant;
-      DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
-                                               mesh_locally_relevant);
+      const IndexSet mesh_locally_relevant = DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler);
       boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant,
                                this->get_mpi_communicator());
 

@@ -1170,75 +1170,48 @@ namespace aspect
                 AssertThrow (false, ExcNotImplemented());
             }
 
-          molar_masses = Utilities::parse_map_to_double_array (prm.get("Molar masses"),
-                                                               endmember_names,
-                                                               false,
-                                                               "Molar masses");
+          Utilities::MapParsing::Options options(endmember_names, "");
+          options.property_name = "Molar masses";
+          molar_masses = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          number_of_atoms = Utilities::parse_map_to_double_array (prm.get("Number of atoms"),
-                                                                  endmember_names,
-                                                                  false,
-                                                                  "Number of atoms");
+          options.property_name = "Number of atoms";
+          number_of_atoms = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_volumes = Utilities::parse_map_to_double_array (prm.get("Reference volumes"),
-                                                                    endmember_names,
-                                                                    false,
-                                                                    "Reference volumes");
+          options.property_name = "Reference volumes";
+          reference_volumes = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Reference thermal expansivities"),
-                                                                                  endmember_names,
-                                                                                  false,
-                                                                                  "Reference thermal expansivities");
+          options.property_name = "Reference thermal expansivities";
+          reference_thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_bulk_moduli = Utilities::parse_map_to_double_array (prm.get("Reference bulk moduli"),
-                                                                        endmember_names,
-                                                                        false,
-                                                                        "Reference bulk moduli");
+          options.property_name = "Reference bulk moduli";
+          reference_bulk_moduli = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          bulk_modulus_pressure_derivatives = Utilities::parse_map_to_double_array (prm.get("First derivatives of the bulk modulus"),
-                                                                                    endmember_names,
-                                                                                    false,
-                                                                                    "First derivatives of the bulk modulus");
+          options.property_name = "First derivatives of the bulk modulus";
+          bulk_modulus_pressure_derivatives = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          bulk_modulus_second_pressure_derivatives = Utilities::parse_map_to_double_array (prm.get("Second derivatives of the bulk modulus"),
-                                                     endmember_names,
-                                                     false,
-                                                     "Second derivatives of the bulk modulus");
+          options.property_name = "Second derivatives of the bulk modulus";
+          bulk_modulus_second_pressure_derivatives = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          Einstein_temperatures = Utilities::parse_map_to_double_array (prm.get("Einstein temperatures"),
-                                                                        endmember_names,
-                                                                        false,
-                                                                        "Einstein temperatures");
+          options.property_name = "Einstein temperatures";
+          Einstein_temperatures = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_enthalpies = Utilities::parse_map_to_double_array (prm.get("Reference enthalpies"),
-                                                                       endmember_names,
-                                                                       false,
-                                                                       "Reference enthalpies");
+          options.property_name = "Reference enthalpies";
+          reference_enthalpies = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_entropies = Utilities::parse_map_to_double_array (prm.get("Reference entropies"),
-                                                                      endmember_names,
-                                                                      false,
-                                                                      "Reference entropies");
+          options.property_name = "Reference entropies";
+          reference_entropies = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_specific_heats = Utilities::parse_map_to_double_array (prm.get("Reference specific heat capacities"),
-                                                                           endmember_names,
-                                                                           false,
-                                                                           "Reference specific heat capacities");
+          options.property_name = "Reference specific heat capacities";
+          reference_specific_heats = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          specific_heat_linear_coefficients = Utilities::parse_map_to_double_array (prm.get("Linear coefficients for specific heat polynomial"),
-                                                                                    endmember_names,
-                                                                                    false,
-                                                                                    "Linear coefficients for specific heat polynomial");
+          options.property_name = "Linear coefficients for specific heat polynomial";
+          specific_heat_linear_coefficients = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          specific_heat_second_coefficients = Utilities::parse_map_to_double_array (prm.get("Second coefficients for specific heat polynomial"),
-                                                                                    endmember_names,
-                                                                                    false,
-                                                                                    "Second coefficients for specific heat polynomial");
+          options.property_name = "Second coefficients for specific heat polynomial";
+          specific_heat_second_coefficients = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          specific_heat_third_coefficients = Utilities::parse_map_to_double_array (prm.get("Third coefficients for specific heat polynomial"),
-                                                                                   endmember_names,
-                                                                                   false,
-                                                                                   "Third coefficients for specific heat polynomial");
+          options.property_name = "Third coefficients for specific heat polynomial";
+          specific_heat_third_coefficients = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           // Check all lists have the correct length.
           AssertThrow(endmember_names.size() == endmember_states.size(),

@@ -126,21 +126,16 @@ namespace aspect
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
 
+          std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
           // Establish that a background field is required here
-          const bool has_background_field = true;
+          compositional_field_names.insert(compositional_field_names.begin(),"background");
+          Utilities::MapParsing::Options options(compositional_field_names, "");
 
-          // Retrieve the list of composition names
-          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+          options.property_name = "Viscosities";
+          viscosities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
-                                                              list_of_composition_names,
-                                                              has_background_field,
-                                                              "Viscosities");
-
-          thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
-                                                                         list_of_composition_names,
-                                                                         has_background_field,
-                                                                         "Thermal conductivities");
+          options.property_name = "Thermal conductivities";
+          thermal_conductivities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
         }
         prm.leave_subsection();
       }

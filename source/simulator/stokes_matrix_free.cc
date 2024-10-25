@@ -72,7 +72,7 @@ namespace aspect
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv;
         rwv.reinit(in);
-        out.import(rwv, VectorOperation::insert);
+        out.import_elements(rwv, VectorOperation::insert);
       }
 
       void copy(TrilinosWrappers::MPI::BlockVector &out,
@@ -543,7 +543,11 @@ namespace aspect
         for (const unsigned int q : velocity.quadrature_point_indices())
           {
             const Tensor<1, dim, VectorizedArray<number>> phi_u_i = velocity.get_value(q);
+#if DEAL_II_VERSION_GTE(9,7,0)
+            const auto &normal_vector = velocity.normal_vector(q);
+#else
             const auto &normal_vector = velocity.get_normal_vector(q);
+#endif
             const auto stabilization_tensor = cell_data->free_surface_stabilization_term_table(face - n_faces_interior, q);
             const auto value_submit = -(stabilization_tensor * phi_u_i) * normal_vector;
 
@@ -1694,7 +1698,11 @@ namespace aspect
             for (const unsigned int q : velocity_boundary.quadrature_point_indices())
               {
                 const Tensor<1, dim, VectorizedArray<double>> phi_u_i = velocity_boundary.get_value(q);
+#if DEAL_II_VERSION_GTE(9, 7, 0)
+                const auto &normal_vector = velocity_boundary.normal_vector(q);
+#else
                 const auto &normal_vector = velocity_boundary.get_normal_vector(q);
+#endif
                 const auto stabilization_tensor = active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q);
                 const auto value_submit = (stabilization_tensor * phi_u_i) * normal_vector;
                 velocity_boundary.submit_value(value_submit, q);
@@ -2404,9 +2412,13 @@ namespace aspect
 
       DoFRenumbering::hierarchical(dof_handler_v);
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+      const IndexSet locally_relevant_dofs = DoFTools::extract_locally_relevant_dofs(dof_handler_v);
+#else
       IndexSet locally_relevant_dofs;
-      DoFTools::extract_locally_relevant_dofs (dof_handler_v,
-                                               locally_relevant_dofs);
+      DoFTools::extract_locally_relevant_dofs(dof_handler_v, locally_relevant_dofs);
+#endif
+
 #if DEAL_II_VERSION_GTE(9,6,0)
       constraints_v.reinit(dof_handler_v.locally_owned_dofs(), locally_relevant_dofs);
 #else
@@ -2446,9 +2458,14 @@ namespace aspect
 
       DoFRenumbering::hierarchical(dof_handler_p);
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+      const IndexSet locally_relevant_dofs = DoFTools::extract_locally_relevant_dofs(dof_handler_p);
+#else
       IndexSet locally_relevant_dofs;
-      DoFTools::extract_locally_relevant_dofs (dof_handler_p,
-                                               locally_relevant_dofs);
+      DoFTools::extract_locally_relevant_dofs(dof_handler_p,
+                                              locally_relevant_dofs);
+#endif
+
       constraints_p.reinit(
 #if DEAL_II_VERSION_GTE(9,6,0)
         dof_handler_p.locally_owned_dofs(),
@@ -2599,8 +2616,13 @@ namespace aspect
             (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
 
           {
+#if DEAL_II_VERSION_GTE(9,7,0)
+            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level);
+#else
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
+#endif
+
 #if DEAL_II_VERSION_GTE(9,6,0)
             level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
             for (const auto index : mg_constrained_dofs_A_block.get_boundary_indices(level))
@@ -2641,8 +2663,12 @@ namespace aspect
               }
           }
           {
+#if DEAL_II_VERSION_GTE(9,7,0)
+            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level);
+#else
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
+#endif
 
 #if DEAL_II_VERSION_GTE(9,6,0)
             level_constraints_p.reinit(dof_handler_p.locally_owned_mg_dofs(level), relevant_dofs);
