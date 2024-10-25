@@ -34,6 +34,8 @@
 #include <fastscapelib/eroders/diffusion_adi.hpp>
 #include <fastscapelib/eroders/spl.hpp>
 
+#include <fastscapelib/grid/healpix_grid.hpp>
+
 namespace aspect
 {
   using namespace dealii;
@@ -52,6 +54,7 @@ namespace aspect
     class FastScapecc : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        enum class GeometryType { Box, SphericalShell, Undefined };
         /**
          * Initialize variables for FastScape.
          */
@@ -81,21 +84,34 @@ namespace aspect
         void parse_parameters (ParameterHandler &prm);
 
       private:
-        
+        GeometryType geometry_type;
+
+        // Add unique pointers for FastScape components
+        std::unique_ptr<fastscapelib::healpix_grid<>> grid; // Healpix grid pointer
+
+        // Unique pointer for fastscapelib flow_graph with healpix_grid as template parameter.
+        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>> flow_graph;
+
+        // Unique pointer for fastscapelib spl_eroder with flow_graph as template parameter.
+        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>>> spl_eroder;
+
+ 
+
+
         // Unique pointer for fastscapelib raster_boundary_status.
         std::unique_ptr<fastscapelib::raster_boundary_status> bs;
 
         // Unique pointer for fastscapelib raster_grid.
-        std::unique_ptr<fastscapelib::raster_grid<>> grid;
+        std::unique_ptr<fastscapelib::raster_grid<>> grid_box;
 
         // Unique pointer for fastscapelib flow_graph with raster_grid as template parameter.
-        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::raster_grid<>>> flow_graph;
+        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::raster_grid<>>> flow_graph_box;
 
         // Unique pointer for fastscapelib spl_eroder with flow_graph<raster_grid> as template parameter.
-        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::raster_grid<>>>> spl_eroder;
+        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::raster_grid<>>>> spl_eroder_box;
 
         // Unique pointer for fastscapelib diffusion_adi_eroder with raster_grid as template parameter.
-        std::unique_ptr<fastscapelib::diffusion_adi_eroder<fastscapelib::raster_grid<>>> diffusion_eroder;
+        std::unique_ptr<fastscapelib::diffusion_adi_eroder<fastscapelib::raster_grid<>>> diffusion_eroder_box;
 
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
@@ -173,6 +189,8 @@ namespace aspect
          * Size of the FastScape array (nx*ny).
          */
         unsigned int array_size;
+
+        int nsides;
 
 
         /**
