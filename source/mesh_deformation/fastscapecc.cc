@@ -56,7 +56,7 @@ namespace aspect
             this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
           nsides =(int) sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference) * 2) / 12);
-          array_size = nsides;
+          // array_size = 12*nsides;
         }
         else
         {
@@ -91,6 +91,7 @@ namespace aspect
                                         face_corners,
                                         update_values |
                                         update_quadrature_points);
+      auto healpix_grid = T_Healpix_Base<int>(nsides, Healpix_Ordering_Scheme::RING, SET_NSIDE);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
@@ -123,7 +124,6 @@ namespace aspect
                         //   continue;
 
                         // const double index = std::atan2(vertex(1), vertex(0))
-                          auto healpix_grid = T_Healpix_Base<int>(nsides, Healpix_Ordering_Scheme::RING, SET_NSIDE);
                         int index = healpix_grid.vec2pix({vertex(0),vertex(1),vertex(2)});
 
                         // const double index = vertex(0) vertex(1)  vertex(2)
@@ -140,6 +140,8 @@ namespace aspect
               }
 
       // // Vector to hold the velocities that represent the change to the surface.
+
+      int array_size = healpix_grid.Npix();
       std::vector<double> V(array_size);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
