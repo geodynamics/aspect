@@ -55,7 +55,7 @@ namespace aspect
         {
             this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-          int nsides =(int) sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference) * 2) / 12);
+          nsides =(int) sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference) * 2) / 12);
           array_size = nsides;
         }
         else
@@ -110,56 +110,32 @@ namespace aspect
 
                     // Find what x point we're at. Add 1 or 2 depending on if ghost nodes are used.
                     // Subtract the origin point so that it corresponds to an origin of 0,0 in FastScape.
-                    const double indx = 1+(vertex(0) - grid_extent[0].first)/dx;
-
+                    // const double indx = 1+(vertex(0) - grid_extent[0].first)/dx;
                     // If our x or y index isn't close to a whole number, then it's likely an artifact
                     // from using an over-resolved quadrature rule, in that case ignore it.
-                    if (abs(indx - round(indx)) >= precision)
-                      continue;
-
-
-                    // If we're in 2D, we want to take the values and apply them to every row of X points.
-                    if (dim == 2)
-                      {
-                        for (int ys=0; ys<ny; ++ys)
-                          {
-                            // FastScape indexes from 1 to n, starting at X and Y = 0, and increases
-                            // across the X row. At the end of the row, it jumps back to X = 0
-                            // and up to the next X row in increasing Y direction. We track
-                            // this to correctly place the variables later on.
-                            // Nx*ys effectively tells us what row we are in
-                            // and then indx tells us what position in that row.
-                            const double index = round(indx)+nx*ys;
-
-                            temporary_variables[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);
-                            temporary_variables[1].push_back(index-1);
-
-                            for (unsigned int i=0; i<dim; ++i)
-                              {
-                                // Always convert to m/yr for FastScape
-                                temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
-                              }
-                          }
-                      }
+                    // if (abs(indx - round(indx)) >= precision)
+                    //   continue;
+                    
                     // 3D case
-                    else
-                      {
-                        // Because indy only gives us the row we're in, we don't need to add 2 for the ghost node.
-                        const double indy = 1+(vertex(1) - grid_extent[1].first)/dx;
+                        // const double indy = 1+(vertex(1) - grid_extent[1].first)/dx;
 
-                        if (abs(indy - round(indy)) >= precision)
-                          continue;
+                        // if (abs(indy - round(indy)) >= precision)
+                        //   continue;
 
-                        const double index = round((indy-1))*nx+round(indx);
+                        // const double index = std::atan2(vertex(1), vertex(0))
+                          auto healpix_grid = T_Healpix_Base<int>(nsides, Healpix_Ordering_Scheme::RING, SET_NSIDE);
+                        int index = healpix_grid.vec2pix({vertex(0),vertex(1),vertex(2)});
 
-                        temporary_variables[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);   //z component
-                        temporary_variables[1].push_back(index-1);
+                        // const double index = vertex(0) vertex(1)  vertex(2)
+                        // round((indy-1))*nx+round(indx);
+
+                        temporary_variables[0].push_back(vertex(dim-1) - outer_radius);   //z component
+                        temporary_variables[1].push_back(index);
 
                         for (unsigned int i=0; i<dim; ++i)
                           {
                             temporary_variables[i+2].push_back(vel[corner][i]*year_in_seconds);
                           }
-                      }
                   }
               }
 
@@ -183,11 +159,7 @@ namespace aspect
           h[index] = temporary_variables[0][i];
           vx[index] = temporary_variables[2][i];
           vz[index] = temporary_variables[dim+1][i];
-
-          if (dim == 2)
-            vy[index] = 0;
-          else
-            vy[index] = temporary_variables[3][i];
+          vy[index] = temporary_variables[3][i];
         }
 
       for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
@@ -215,12 +187,7 @@ namespace aspect
               h[index] = temporary_variables[0][i];
               vx[index] = temporary_variables[2][i];
               vz[index] = temporary_variables[dim+1][i];
-
-              // In 2D there are no y velocities, so we set them to zero.
-              if (dim == 2 )
-                vy[index] = 0;
-              else
-                vy[index] = temporary_variables[3][i];
+              vy[index] = temporary_variables[3][i];
             }
         }
 
@@ -610,11 +577,15 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::parse_parameters(ParameterHandler &prm)
     {
+      prm.enter_subsection("Geometry model");
+      {
       if (prm.get("Model name") == "box"){
-        geometry_type == GeometryType::Box;
-    }else if if (prm.get("Model name") == "spherical shell"){
-      geometry_type == GeometryType::SphericalShell;
+        geometry_type = GeometryType::Box;
+    }else if (prm.get("Model name") == "spherical shell"){
+      geometry_type = GeometryType::SphericalShell;
     }
+      }prm.leave_subsection();
+
 
       end_time = prm.get_double ("End time");
       if (prm.get_bool ("Use years in output instead of seconds") == true)
