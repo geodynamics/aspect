@@ -292,7 +292,8 @@ if(ASPECT_WITH_WORLD_BUILDER)
 
       set(WB_TARGET "WorldBuilderDebug")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      target_compile_options(WorldBuilderDebug PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+      separate_arguments(SEPARATED_FLAGS NATIVE_COMMAND ${ASPECT_ADDITIONAL_CXX_FLAGS})
+      target_compile_options(WorldBuilderDebug PRIVATE "-g" "${SEPARATED_FLAGS}")
 
       set(CMAKE_BUILD_TYPE ${_build_type})
     endif()
@@ -308,7 +309,9 @@ if(ASPECT_WITH_WORLD_BUILDER)
       set(WB_TARGET "WorldBuilderRelease")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
       target_compile_definitions(WorldBuilderRelease PUBLIC "NDEBUG")
-      target_compile_options(WorldBuilderRelease PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+
+      separate_arguments(SEPARATED_FLAGS NATIVE_COMMAND ${ASPECT_ADDITIONAL_CXX_FLAGS})
+      target_compile_options(WorldBuilderRelease PRIVATE "-O3" "${SEPARATED_FLAGS}")
 
       set(CMAKE_BUILD_TYPE ${_build_type})
     endif()
