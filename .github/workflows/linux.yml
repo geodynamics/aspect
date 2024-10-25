@@ -129,7 +129,7 @@ jobs:
         cmake \
         -D CMAKE_BUILD_TYPE=Debug \
         -G 'Ninja' \
-        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D CMAKE_CXX_FLAGS='-Werror --coverage' \
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
@@ -174,3 +174,14 @@ jobs:
         else
           exit 0
         fi
+    - name: lcov
+      working-directory: ${{github.workspace}}/build
+      run: |
+        lcov --capture --directory ${{github.workspace}}/build --output-file coverage.info;
+        lcov --remove coverage.info '${{github.workspace}}/build/*' '${{github.workspace}}/include/*' '${{github.workspace}}/tests/*' '/usr/*' -o coverage_filtered.info
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        parallel: true
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: ${{github.workspace}}/build/coverage_filtered.info
