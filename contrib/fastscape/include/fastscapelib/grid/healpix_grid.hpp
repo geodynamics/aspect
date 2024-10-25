@@ -3,7 +3,7 @@
 
 #include "healpix_cxx/healpix_base.h"
 #include "healpix_cxx/healpix_tables.h"
-#include "cxxsupport/vec3.h"
+#include "healpix_cxx/vec3.h"
 
 // conflict between healpix xcomplex macro and xtl xcomplex
 #undef xcomplex
