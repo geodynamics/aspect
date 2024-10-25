@@ -484,21 +484,21 @@ namespace aspect
       prm.enter_subsection("Geometry model");
       {
           // Declare parameters for the Box geometry
-          if (prm.get("Model name") == "box")
-          {
-              prm.enter_subsection("Box");
-              {
-                  prm.declare_entry("X repetitions", "1", Patterns::Integer(1),
-                                    "Number of cells in the X direction.");
-                  prm.declare_entry("Y repetitions", "1", Patterns::Integer(1),
-                                    "Number of cells in the Y direction.");
-                  prm.declare_entry("Z repetitions", "1", Patterns::Integer(1),
-                                    "Number of cells in the Z direction.");
-              }
-              prm.leave_subsection();  // End of Box
-          }
+          // if (prm.get("Model name") == "box")
+          // {
+          //     prm.enter_subsection("Box");
+          //     {
+          //         prm.declare_entry("X repetitions", "1", Patterns::Integer(1),
+          //                           "Number of cells in the X direction.");
+          //         prm.declare_entry("Y repetitions", "1", Patterns::Integer(1),
+          //                           "Number of cells in the Y direction.");
+          //         prm.declare_entry("Z repetitions", "1", Patterns::Integer(1),
+          //                           "Number of cells in the Z direction.");
+          //     }
+          //     prm.leave_subsection();  // End of Box
+          // }
           // Declare parameters for the Spherical shell geometry
-          else if (prm.get("Model name") == "spherical shell")
+          // else if (prm.get("Model name") == "spherical shell")
           {
               prm.enter_subsection("Spherical shell");
               {
@@ -610,6 +610,12 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::parse_parameters(ParameterHandler &prm)
     {
+      if (prm.get("Model name") == "box"){
+        geometry_type == GeometryType::Box;
+    }else if if (prm.get("Model name") == "spherical shell"){
+      geometry_type == GeometryType::SphericalShell;
+    }
+
       end_time = prm.get_double ("End time");
       if (prm.get_bool ("Use years in output instead of seconds") == true)
         end_time *= year_in_seconds;
