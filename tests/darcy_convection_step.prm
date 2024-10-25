@@ -45,6 +45,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Maximum time step                      = 200
 set Use operator splitting                 = true
+set Adiabatic surface temperature          = 293
 
 # 10 km x 10 km box
 subsection Geometry model

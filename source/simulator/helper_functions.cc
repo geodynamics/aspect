@@ -2236,7 +2236,8 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
     MeltHandler<dim>::create_material_model_outputs(out);
-    MaterialModel::MeltOutputs<dim> *fluid_out = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+    std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out
+      = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
     const auto &tangential_velocity_boundaries =
       boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
@@ -2275,12 +2276,13 @@ namespace aspect
                   {
                     in.reinit(fe_face_values, cell, introspection, solution);
                     material_model->evaluate(in, out);
+                    fluid_out = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
                   }
 
                 if (consider_fluid_velocity)
                   {
-                    const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
-                    fe_face_values[ex_u_f].get_function_values(current_linearization_point, face_current_fluid_velocity_values);
+                    fe_face_values[introspection.variable("fluid velocity").extractor_vector()].get_function_values(current_linearization_point,
+                        face_current_fluid_velocity_values);
                   }
 
                 // ... check if the face is an outflow boundary by integrating the normal velocities
