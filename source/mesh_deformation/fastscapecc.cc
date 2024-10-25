@@ -10,10 +10,11 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_signals.h>
 
-
+#include <memory>
 #include <algorithm> // For std::copy
 
 #include <aspect/geometry_model/spherical_shell.h>
+#include <fastscapelib/grid/healpix_grid.hpp>
 
 // namespace fs = fastscapelib;
 
@@ -23,125 +24,45 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    void
-    FastScapecc<dim>::initialize ()
+    void FastScapecc<dim>::initialize ()
     {
-      // Check if the geometry model is Box
-      const GeometryModel::Box<dim> *box_geometry
-        = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
+        const GeometryModel::Box<dim> *box_geometry
+          = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
 
-      // Check if the geometry model is Spherical Shell
-      const GeometryModel::SphericalShell<dim> *spherical_geometry
-        = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
+        const GeometryModel::SphericalShell<dim> *spherical_geometry
+          = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
 
-      // If Box geometry is used
-      if (box_geometry != nullptr)
-      {
-          this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
+        if (geometry_type == GeometryType::Box)
+        {
+            this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
 
-          // Box specific initialization
-          grid_extent[0].first = box_geometry->get_origin()[0];
-          grid_extent[0].second = box_geometry->get_extents()[0];
-          grid_extent[1].first = box_geometry->get_origin()[1];
-          grid_extent[1].second = box_geometry->get_extents()[1];
+            grid_extent[0].first = box_geometry->get_origin()[0];
+            grid_extent[0].second = box_geometry->get_extents()[0];
+            grid_extent[1].first = box_geometry->get_origin()[1];
+            grid_extent[1].second = box_geometry->get_extents()[1];
 
-          nx = repetitions[0] + 1;
-          dx = (grid_extent[0].second) / repetitions[0];
+            nx = repetitions[0] + 1;
+            dx = (grid_extent[0].second) / repetitions[0];
 
-          ny = repetitions[1] + 1;
-          dy = (grid_extent[1].second) / repetitions[1];
+            ny = repetitions[1] + 1;
+            dy = (grid_extent[1].second) / repetitions[1];
 
-          x_extent = grid_extent[0].second;
-          y_extent = grid_extent[1].second;
-      }
+            x_extent = grid_extent[0].second;
+            y_extent = grid_extent[1].second;
+            array_size = nx * ny;
+        }
+        else if (geometry_type == GeometryType::SphericalShell)
+        {
+            this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-      // If Spherical Shell geometry is used
-      else if (spherical_geometry != nullptr)
-      {
-          this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
-
-          // Spherical Shell specific initialization
-          grid_extent[0].first = spherical_geometry->inner_radius();
-          grid_extent[0].second = spherical_geometry->outer_radius();
-
-          nx = repetitions[0] + 1;
-          dx = (grid_extent[0].second - grid_extent[0].first) / repetitions[0]; // radial resolution
-          x_extent = grid_extent[0].second - grid_extent[0].first;
-
-          ny = repetitions[1] + 1;
-          dy = (spherical_geometry->opening_angle() * numbers::PI / 180.0) / repetitions[1]; // angular resolution
-          y_extent = spherical_geometry->opening_angle() * numbers::PI / 180.0;
-      }
-      else
-      {
-          AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
-      }
-
-      array_size = nx * ny;
-      }
-    // {
-    //     // AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-    //     //                  ExcMessage("FastScape can only be run with a box geometry model."));
-
-    //     const GeometryModel::Box<dim> *geometry
-    //       = dynamic_cast<const GeometryModel::Box<dim>*> (&this->get_geometry_model());
-
-    //     //   const GeometryModel::SphericalShell<dim> *geometry
-    //     //  = dynamic_cast<const GeometryModel::SphericalShell<dim>*> (&this->get_geometry_model());
-
-    //     // Find the id associated with the top boundary and boundaries that call mesh deformation.
-    //     const types::boundary_id top_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-    //     const std::set<types::boundary_id> mesh_deformation_boundary_ids
-    //       = this->get_mesh_deformation_handler().get_active_mesh_deformation_boundary_indicators();
-
-    //     // Get the deformation type names called for each boundary.
-    //     std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-    //       = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
-
-    //     // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
-    //     for (std::set<types::boundary_id>::const_iterator p = mesh_deformation_boundary_ids.begin();
-    //         p != mesh_deformation_boundary_ids.end(); ++p)
-    //       {
-    //         const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
-    //         for (unsigned int i = 0; i < names.size(); ++i )
-    //           {
-    //             if (names[i] == "fastscape")
-    //               AssertThrow((*p == top_boundary),
-    //                           ExcMessage("FastScape can only be called on the surface boundary."));
-    //           }
-    //       }
-
-    //   // Initialize parameters for restarting FastScape
-    //   restart = this->get_parameters().resume_computation;
-      
-    //     // The first entry represents the minimum coordinates of the model domain, the second the model extent.
-    //     for (unsigned int i=0; i<dim; ++i)
-    //       {
-    //         grid_extent[i].first = geometry->get_origin()[i];
-    //         grid_extent[i].second = geometry->get_extents()[i];
-    //       }
-
-    //      nx = repetitions[0] + 1;
-
-    //      // Size of FastScape cell.
-    //      dx = (grid_extent[0].second)/( repetitions[0]);
-
-    //      // FastScape X extent, which is generally ASPECT's extent unless the ghost nodes are used,
-    //      // in which case 2 cells are added on either side.
-    //      x_extent = (grid_extent[0].second) ;
-
-    //     // Sub intervals are 1 less than points.
-    //     table_intervals[0] = repetitions[0];
-    //     table_intervals[dim-1] = 1;
-
-    //     ny = repetitions[1] + 1;
-    //     dy = (grid_extent[1].second)/( repetitions[1]);
-    //     table_intervals[1] = repetitions[1];
-    //     y_extent = (grid_extent[1].second)  ;
-    //     array_size = nx*ny;
-
-    // }
-
+          int nsides =(int) sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference) * 2) / 12);
+          array_size = nsides;
+        }
+        else
+        {
+            AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
+        }
+  }
 
     template <int dim>
     void
@@ -362,38 +283,49 @@ namespace aspect
       // raster grid and boundary conditions
       fastscapelib::raster_boundary_status bs(fastscapelib::node_status::fixed_value);
 
-      auto grid = fastscapelib::raster_grid<>::from_length({ static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) }, { x_extent, y_extent}, bs);
+      if (geometry_type == GeometryType::Box)
+      {
+          // grid_box =  std::unique_ptr<fastscapelib::raster_grid<>>(fastscapelib::raster_grid<>::from_length(
+          //     { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) }, 
+          //     { x_extent, y_extent }, 
+          //     bs
+          // ));
 
-      // flow graph with single direction flow routing
-      fastscapelib::flow_graph<fastscapelib::raster_grid<>> flow_graph(
-        grid, { fastscapelib::single_flow_router(), fastscapelib::mst_sink_resolver() });
+          grid_box = std::make_unique<fastscapelib::raster_grid<>>({ static_cast<unsigned long>(ny), static_cast<unsigned long>(nx)}, { dy, dx}, 
+              bs);
+          
 
-      // Setup eroders
-      auto spl_eroder = fastscapelib::make_spl_eroder(flow_graph, 2e-4, 0.4, 1, 1e-5);
-      auto diffusion_eroder = fastscapelib::make_diffusion_adi_eroder(grid, 0.01);
+          flow_graph_box = std::make_unique<fastscapelib::flow_graph<fastscapelib::raster_grid<>>>(
+              *grid_box, {
+              fastscapelib::single_flow_router(), 
+              fastscapelib::mst_sink_resolver()
+          });
+          spl_eroder_box = fastscapelib::make_spl_eroder(*flow_graph_box, 2e-4, 0.4, 1, 1e-5);
+          diffusion_eroder_box = fastscapelib::make_diffusion_adi_eroder(*grid_box, 0.01);
+      } 
+      else if (geometry_type == GeometryType::SphericalShell)
+      {
+        std::vector<fastscapelib::node_status> node_status_array(nsides, fastscapelib::node_status::fixed_value);
+        grid = std::make_unique<fastscapelib::healpix_grid<>>(nsides, node_status_array,6.371e6);
+        flow_graph = std::make_unique<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>>(
+            *grid, {
+            fastscapelib::single_flow_router(), 
+            fastscapelib::mst_sink_resolver()}
+        );
+        spl_eroder = fastscapelib::make_spl_eroder(*flow_graph, 2e-4, 0.4, 1, 1e-5);
+      }
 
-      // initial topographic surface elevation
-      xt::xarray<double> vec_shape = xt::zeros<double>(grid.shape());
-      // std::vector<double> vec_shape_std(vec_shape.begin(), vec_shape.end());
+      xt::xarray<double> uplifted_elevation ;
+      xt::xarray<double> drainage_area = xt::zeros<double>(grid->shape());
+      xt::xarray<double> sediment_flux = xt::zeros<double>(grid->shape());
 
-      // init drainage area and temp arrays
-      xt::xarray<double> drainage_area(vec_shape.shape());
-      xt::xarray<double> uplifted_elevation(vec_shape.shape());
+            // std::cout << "uplift_rate_in_m_year[1]"<<uplift_rate_in_m_year[100]<<std::endl;
 
-      //sediment flux
-      xt::xarray<double> sediment_flux(vec_shape.shape());
-
-      
-      std::vector<double> uplift_rate_in_m_year(vz.size());
+     std::vector<double> uplift_rate_in_m_year(vz.size());
       for (size_t i = 0; i < vz.size(); ++i) {
           uplift_rate_in_m_year[i] = vz[i];
           //  / year_in_seconds;
       }
-            // std::cout << "uplift_rate_in_m_year[1]"<<uplift_rate_in_m_year[100]<<std::endl;
-
-
-      // xt::xarray<double> uplift_rate(vec_shape.shape(), 0);
-
       std::vector<std::size_t> shape = { static_cast<unsigned long>(nx), static_cast<unsigned long>(ny) };
       auto uplift_rate = xt::adapt(uplift_rate_in_m_year, shape);
 
@@ -413,30 +345,36 @@ namespace aspect
       // run model
       //
       //double dt = 2e4;
+
       for (unsigned int fastscape_iteration = 0; fastscape_iteration < fastscape_iterations; ++fastscape_iteration)
         {
           std::cout << "Fastscape ite "<<fastscape_iteration<<std::endl;
           // apply uplift
           uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
           // flow routing
-          flow_graph.update_routes(uplifted_elevation);
+          flow_graph->update_routes(uplifted_elevation);
           // flow accumulation (drainage area)
-          flow_graph.accumulate(drainage_area, 1.0);
+          flow_graph->accumulate(drainage_area, 1.0);
           // apply channel erosion then hillslope diffusion
-          auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
+          auto spl_erosion = spl_eroder->erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
 
           //calculate the cumulated erosion flux
-          auto sediment_flux = flow_graph.accumulate(spl_erosion);
-
-          auto diff_erosion = diffusion_eroder.erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
+          auto sediment_flux = flow_graph->accumulate(spl_erosion);
+          if (geometry_type == GeometryType::Box)
+          {
+          auto diff_erosion = diffusion_eroder_box->erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
           // update topography
-          elevation = uplifted_elevation - spl_erosion - diff_erosion;
-        }
-      std::vector<double> uplifted_erosion_std(uplifted_elevation.begin(), uplifted_elevation.end());
-      std::vector<double> elevation_std(elevation.begin(), elevation.end());
-      std::vector<double> elevation_old_std(elevation_old.begin(), elevation_old.end());
+          auto elevation = uplifted_elevation - spl_erosion - diff_erosion;
+          }else if (geometry_type == GeometryType::SphericalShell)
+          auto elevation = uplifted_elevation - spl_erosion;
+          }
 
-      std::vector<double> uplift_rate_std(uplift_rate.begin(), uplift_rate.end());
+          std::vector<double> uplifted_erosion_std(uplifted_elevation.begin(), uplifted_elevation.end());
+          std::vector<double> elevation_std(elevation.begin(), elevation.end());
+          std::vector<double> elevation_old_std(elevation_old.begin(), elevation_old.end());
+
+          std::vector<double> uplift_rate_std(uplift_rate.begin(), uplift_rate.end());       
+        //}
 
       // Find out our velocities from the change in height.
       // Where V is a vector of array size that exists on all processes.
@@ -473,6 +411,7 @@ namespace aspect
           interpolation_extent[i].first = grid_extent[i].first;
           interpolation_extent[i].second = (grid_extent[i].second + grid_extent[i].first);
         }
+    
 
       //Functions::InterpolatedUniformGridData<dim> *velocities;
       Functions::InterpolatedUniformGridData<dim> velocities (interpolation_extent,
@@ -566,10 +505,10 @@ namespace aspect
                   prm.declare_entry("Opening angle", "360", Patterns::Double(0, 360),
                                     "The opening angle of the spherical shell in degrees.");
               }
-              prm.leave_subsection();  // End of Spherical shell
+              prm.leave_subsection();  
           }
       }
-      prm.leave_subsection();  // End of Geometry model
+      prm.leave_subsection();  
 
 
 
