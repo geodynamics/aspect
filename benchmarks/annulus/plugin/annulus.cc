@@ -615,7 +615,7 @@ namespace aspect
         compute_dynamic_topography_error() const
         {
           const Postprocess::DynamicTopography<dim> &dynamic_topography =
-            this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
+            this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::DynamicTopography<dim>>();
 
           const AnnulusMaterial<dim> &material_model
             = Plugins::get_plugin_as_type<const AnnulusMaterial<dim>>(this->get_material_model());

@@ -306,7 +306,7 @@ namespace aspect
         out.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
+        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
 
       const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
 
@@ -897,7 +897,7 @@ namespace aspect
           = this->get_initial_temperature_manager_pointer();
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
+        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
 
       // This function will fill the outputs for grain size, viscosity, and dislocation viscosity
       if (in.requests_property(MaterialProperties::viscosity))

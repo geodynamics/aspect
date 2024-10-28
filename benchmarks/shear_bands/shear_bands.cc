@@ -712,7 +712,7 @@ namespace aspect
 
       const PlaneWaveMeltBandsInitialCondition<dim> &initial_composition
         = this->get_initial_composition_manager().template
-          get_matching_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim>> ();
+          get_matching_active_plugin<PlaneWaveMeltBandsInitialCondition<dim>> ();
 
       amplitude           = initial_composition.get_wave_amplitude();
       initial_band_angle  = initial_composition.get_initial_band_angle();
