@@ -72,6 +72,12 @@ namespace aspect
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const;
 
+
+        /**
+         * Returns whether or not the plugin requires surface stabilization
+         */
+        bool needs_surface_stabilization () const override;
+        
         /**
          * Declare parameters for the FastScape plugin.
          */
