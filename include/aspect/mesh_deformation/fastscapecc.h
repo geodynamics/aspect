@@ -187,9 +187,11 @@ namespace aspect
          * Size of the FastScape array (nx*ny).
          */
         unsigned int array_size;
-
+        
+        /**
+         * Number of faces for the healpix grid.
+         */
         int nsides;
-
 
         /**
          * How many levels FastScape should be refined above the maximum ASPECT surface resolution.
@@ -351,8 +353,6 @@ namespace aspect
         double inner_radius;
         double outer_radius;
         double opening_angle;
-
-
     };
   }
 }
