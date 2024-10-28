@@ -391,7 +391,7 @@ namespace aspect
           // solitary wave initial condition.
           const SolitaryWaveInitialCondition<dim> &initial_composition =
             initial_composition_manager->template
-            get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>>();
+            get_matching_active_plugin<SolitaryWaveInitialCondition<dim>>();
 
           return reference_permeability * std::pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
 
@@ -706,7 +706,7 @@ namespace aspect
       // then get the parameters we need
 
       const SolitaryWaveInitialCondition<dim> &initial_composition
-        = this->get_initial_composition_manager().template get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>> ();
+        = this->get_initial_composition_manager().template get_matching_active_plugin<SolitaryWaveInitialCondition<dim>> ();
 
       amplitude           = initial_composition.get_amplitude();
       background_porosity = initial_composition.get_background_porosity();

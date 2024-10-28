@@ -37,6 +37,10 @@ macro(ASPECT_SETUP_PLUGIN _target)
   message(STATUS "  name <${_target}>")
   message(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
 
+  # deal.II versions >=9.5 disable deprecation warnings in user code. Enable
+  # the warnings again by removing the flag that disables them.
+  string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
+
   # We create lib${_target}.debug.so, lib${_target}.release.so, or both
   # depending on the compilation mode of ASPECT. Note that the user already
   # created the target under the name ${_target}, so we only need to create

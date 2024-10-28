@@ -600,7 +600,7 @@ namespace aspect
     {
       const unsigned int dim = 3;
       const Postprocess::DynamicTopography<dim> &dynamic_topography =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
+        this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::DynamicTopography<dim>>();
 
       const HollowSphereMaterial<dim> &material_model
         = Plugins::get_plugin_as_type<const HollowSphereMaterial<dim>>(this->get_material_model());
