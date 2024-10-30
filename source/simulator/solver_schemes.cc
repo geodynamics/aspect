@@ -735,6 +735,11 @@ namespace aspect
 
     if (nonlinear_iteration != 0)
       last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
+
+    // The rest of ASPECT assumes 'solution' contains the solution values, not the update
+    // to the solution. Make sure the outside never sees the solution update we computed.
+    solution.block(introspection.block_indices.pressure) = current_linearization_point.block(introspection.block_indices.pressure);
+    solution.block(introspection.block_indices.velocities) = current_linearization_point.block(introspection.block_indices.velocities);
   }
 
 
@@ -848,9 +853,6 @@ namespace aspect
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
             postprocess ();
           }
 
@@ -1172,9 +1174,6 @@ namespace aspect
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
             postprocess ();
           }
 
@@ -1281,9 +1280,6 @@ namespace aspect
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
             postprocess ();
           }
 
