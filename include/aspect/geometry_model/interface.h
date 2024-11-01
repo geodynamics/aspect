@@ -120,10 +120,10 @@ namespace aspect
         double depth(const Point<dim> &position) const = 0;
 
         /**
-         * Function that uses the stored surface topography to calculate the depth
-         * including changes from mesh deformation. This will linearly interpolate
-         * between the two nearest surface points to get a depth for the given
-         * position.
+         * Function that calculates and returns the depth of point @p position
+         * also considering the effect of mesh deformation. This function is not implemented
+         * for all geometry models and the default implementation will throw an exception if
+         * it is called.
          */
         virtual
         double depth_including_mesh_deformation(const Point<dim> &position) const;
