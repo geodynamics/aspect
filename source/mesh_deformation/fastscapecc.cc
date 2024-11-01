@@ -244,54 +244,115 @@ namespace aspect
 
       auto healpix_velocity_function = [&](const Point<dim> &p) -> double
       {
-        int index = healpix_grid.vec2pix({p(0), p(1), p(2)});
-        return V[index];
+          // Normalize the point to ensure it's on the unit sphere
+          Point<dim> normalized_p = p / p.norm();
+
+          // Find the index of the closest Healpix pixel
+          int main_index = healpix_grid.vec2pix({normalized_p(0), normalized_p(1), normalized_p(2)});
+
+          // Create a fixed array to hold up to 8 neighbors
+          fix_arr<int, 8> neighbor_indices;
+
+          // Retrieve neighboring indices of the closest Healpix pixel
+          healpix_grid.neighbors(main_index, neighbor_indices);
+
+          // Add the main pixel to the list of neighbors to consider
+          std::vector<int> neighbors;
+          neighbors.push_back(main_index);
+
+          // Append neighbors from the fixed array
+          for (int i = 0; i < 8; ++i)
+          {
+              if (neighbor_indices[i] >= 0) // Assuming negative values indicate invalid entries
+                  neighbors.push_back(neighbor_indices[i]);
+          }
+
+          double interpolated_velocity = 0.0;
+          double total_weight = 0.0;
+
+          // Compute weighted average velocity
+          for (int neighbor_index : neighbors)
+          {
+              // Get the vec3 object representing the center of the Healpix pixel
+              auto healpix_center_vec3 = healpix_grid.pix2vec(neighbor_index);
+
+              // Convert vec3 to Point<dim>
+              Point<dim> healpix_center(healpix_center_vec3.x, healpix_center_vec3.y, healpix_center_vec3.z);
+
+              // Calculate distance between normalized point and Healpix center
+              double distance = (normalized_p - healpix_center).norm();
+              double weight = 1.0 / (distance + 1e-6); // Inverse distance weighting, small value to avoid division by zero
+
+              interpolated_velocity += V[neighbor_index] * weight;
+              total_weight += weight;
+          }
+
+          // Return the weighted average velocity
+          return interpolated_velocity / total_weight;
       };
 
-      VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-        healpix_velocity_function,
-        dim - 1,
-        dim);
 
-      VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
-                                                *boundary_ids.begin(),
-                                                vector_function_object,
-                                                mesh_velocity_constraints);
+
+      VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+          healpix_velocity_function,
+          dim - 1,
+          dim);
+
+      VectorTools::interpolate_boundary_values(
+          mesh_deformation_dof_handler,
+          *boundary_ids.begin(),
+          vector_function_object,
+          mesh_velocity_constraints);
     }
 
-
     template <int dim>
-    Table<dim,double>
-    FastScapecc<dim>::fill_data_table(std::vector<double> &values,
-                                      TableIndices<dim> &size_idx,
-                                      const int &array_size) const
+    Table<dim, double> FastScapecc<dim>::fill_data_table(std::vector<double> &values,
+                                                        const int &array_size) const
     {
-      // Create data table based off of the given size.
-      Table<dim,double> data_table;
-      data_table.TableBase<dim,double>::reinit(size_idx);
-      TableIndices<dim> idx;
-
-      // Loop through the data table and fill it with the velocities from FastScape.
-
-      // Indexes through z, y, and then x.
-      for (unsigned int k=0; k<data_table.size()[2]; ++k)
+        // Define the size index based on the array size.
+        TableIndices<dim> size_idx;
+        for (unsigned int i = 0; i < dim; ++i)
         {
-          idx[2] = k;
+            size_idx[i] = array_size; // or set different values depending on the specific problem dimensions.
+        }
 
-          for (unsigned int i=0; i<data_table.size()[1]; ++i)
+        // Create data table based off of the given size.
+        Table<dim, double> data_table;
+        data_table.TableBase<dim, double>::reinit(size_idx);
+        TableIndices<dim> idx;
+
+        // Loop through the data table and fill it with the velocities from FastScape.
+        // Indexes through z, y, and then x.
+        for (unsigned int k = 0; k < data_table.size()[2]; ++k)
+        {
+            idx[2] = k;
+
+            for (unsigned int i = 0; i < data_table.size()[1]; ++i)
             {
-              idx[1] = i;
+                idx[1] = i;
 
-              for (unsigned int j=0; j<data_table.size()[0]; ++j)
+                for (unsigned int j = 0; j < data_table.size()[0]; ++j)
                 {
-                  idx[0] = j;
+                    idx[0] = j;
 
-                  // Convert back to m/s.
-                  data_table(idx) = values[array_size*i+j] / year_in_seconds;
+                    // Convert back to m/s.
+                    double velocity = values[array_size * i + j] / year_in_seconds;
+
+                    // Debug output to verify the value
+                    // if (std::isnan(velocity) || std::isinf(velocity))
+                    // {
+                        std::cout << "Invalid velocity value detected at idx (" << k << ", " << i << ", " << j << "): " << velocity << std::endl;
+                    // }
+                    // else if (velocity > 1e6 || velocity < -1e6) // Adjust threshold as needed
+                    // {
+                        // std::cout << "Unusually large velocity value detected at idx (" << k << ", " << i << ", " << j << "): " << velocity << std::endl;
+                    // }
+
+                    data_table(idx) = velocity;
                 }
             }
         }
-      return data_table;
+        return data_table;
     }
 
 

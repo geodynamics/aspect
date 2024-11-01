@@ -77,7 +77,7 @@ namespace aspect
          * Returns whether or not the plugin requires surface stabilization
          */
         bool needs_surface_stabilization () const override;
-        
+
         /**
          * Declare parameters for the FastScape plugin.
          */
@@ -121,8 +121,10 @@ namespace aspect
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
          */
-        Table<dim,double> fill_data_table(std::vector<double> &values,
-                                          TableIndices<dim> &size_idx,
+        // Table<dim,double> fill_data_table(std::vector<double> &values,
+        //                                   TableIndices<dim> &size_idx,
+        //                                   const int &array_size) const;
+        Table<dim, double> fill_data_table(std::vector<double> &values,
                                           const int &array_size) const;
 
 
