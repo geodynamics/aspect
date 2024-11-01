@@ -2,9 +2,7 @@
 # Temperature boundary conditions
 
 The boundary conditions are responsible for describing the temperature values
-at those parts of the boundary at which the temperature is fixed (see
-{ref}`sec:extending:plugin-types:geometry-models` for how it is determined which
-parts of the boundary this applies to).
+at those parts of the boundary at which the temperature is fixed.
 
 To implement a new boundary conditions model, you need to overload the
 `aspect::BoundaryTemperature::Interface` class and use the
