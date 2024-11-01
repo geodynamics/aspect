@@ -73,7 +73,7 @@ namespace aspect
                                                   "depth",
                                                   "A visualization output postprocessor that outputs "
                                                   "the depth for all points inside the domain, as "
-                                                  "determined by the initial surface of the geometry model. "
+                                                  "determined by the undeformed surface of the geometry model. "
                                                   "\n\n"
                                                   "It is worth comparing this visualization postprocessor with the "
                                                   "one called ``surface elevation''. The current one is used to visualize a volume "
