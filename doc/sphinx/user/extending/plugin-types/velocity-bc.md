@@ -1,5 +1,5 @@
 (sec:extending:plugin-types:velocity-bc)=
-# Velocity boundary conditions
+# Velocity and traction boundary conditions
 
 ## Prescribed velocity boundary conditions
 
