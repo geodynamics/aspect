@@ -280,7 +280,7 @@ namespace aspect
         AssertThrow(dim==2,
                   ExcMessage("The geometry update function currently only works with a 2D box geometry model."));
 
-        this->get_pcout() << "   Updating surface values... " <<std::endl;
+        this->get_pcout() << "   Updating surface values... " << std::endl;
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
 
         // loop over all of the surface cells and save the elevation to a stored value.
@@ -312,7 +312,7 @@ namespace aspect
                       const Point<dim> vertex = fe_face_values.quadrature_point(corner);
 
                       // We can't push back a point so we convert it into a vector.
-                      // This is needed later to keep the vertexes together when sorting.
+                      // This is needed later to keep the vertices together when sorting.
                       std::vector<double> vertex_row;
                       for(unsigned int i=0; i<dim; ++i)
                         vertex_row.push_back(vertex[i]);

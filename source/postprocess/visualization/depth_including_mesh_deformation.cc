@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2024 -  by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,7 +34,7 @@ namespace aspect
       DepthIncMeshDef<dim>::
       DepthIncMeshDef ()
         :
-        DataPostprocessorScalar<dim> ("depth",
+        DataPostprocessorScalar<dim> ("depth_including_mesh_deformation",
                                       update_quadrature_points),
         Interface<dim>("m")
       {}

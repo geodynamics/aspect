@@ -36,7 +36,7 @@ namespace aspect
     Interface<dim>::depth_including_mesh_deformation(const Point<dim> &) const
     {
       AssertThrow(false,
-                  ExcMessage("The depth including mesh deformation function only works with a 2D box geometry model."));
+                  ExcMessage("The function depth_including_mesh_deformation () was called, but it is not implemented for the current geometry model."));
 
       return 0;
     }
