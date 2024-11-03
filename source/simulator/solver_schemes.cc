@@ -429,19 +429,14 @@ namespace aspect
   void Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
                                                             const bool use_picard)
   {
-    /**
-     * copied from solver.cc
-     */
-
     // Many parts of the solver depend on the block layout (velocity = 0,
     // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
-    const unsigned int block_vel = introspection.block_indices.velocities;
-    const unsigned int block_p = (parameters.include_melt_transport) ?
-                                 introspection.variable("fluid pressure").block_index
-                                 : introspection.block_indices.pressure;
-    Assert(block_vel == 0, ExcNotImplemented());
-    Assert(block_p == 1, ExcNotImplemented());
+    const unsigned int pressure_block_index = (parameters.include_melt_transport) ?
+                                              introspection.variable("fluid pressure").block_index
+                                              : introspection.block_indices.pressure;
+    Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+    Assert(pressure_block_index == 1, ExcNotImplemented());
     Assert(!parameters.include_melt_transport
            || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
@@ -449,8 +444,8 @@ namespace aspect
     // the scaled and denormalized solution and later used as a
     // starting guess for the linear solver
     LinearAlgebra::BlockVector linearized_stokes_initial_guess(introspection.index_sets.stokes_partitioning, mpi_communicator);
-    linearized_stokes_initial_guess.block(block_vel) = current_linearization_point.block(block_vel);
-    linearized_stokes_initial_guess.block(block_p) = current_linearization_point.block(block_p);
+    linearized_stokes_initial_guess.block(introspection.block_indices.velocities) = current_linearization_point.block(introspection.block_indices.velocities);
+    linearized_stokes_initial_guess.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
 
     if (nonlinear_iteration == 0)
       {
