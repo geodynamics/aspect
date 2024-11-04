@@ -6,7 +6,7 @@ present) are responsible for describing the fields' values at those
 parts of the boundary at which the temperature or composition is
 fixed, as well as at inflow boundaries.
 
-To implement a new a boundary conditions model for the temperature, you need to overload the
+To implement a new boundary conditions model for the temperature, you need to overload the
 `aspect::BoundaryTemperature::Interface` class and use the
 `ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL` macro to register your new class.
 The implementation of the new class should be in namespace
