@@ -316,87 +316,31 @@ namespace aspect
                 }
 
         // Combine all local_surfaces and broadcast back.
-        std::vector<std::vector<double>> temp_surface;
-        if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          // Save the surface stored on processor 0
-          for (unsigned int i=0; i<local_surface_height.size(); i++)
-                  temp_surface.push_back(local_surface_height[i]);
+        std::vector<std::vector<double>> temp_surface =
+           Utilities::MPI::compute_set_union(local_surface_height,this->get_mpi_communicator());
 
-          // Save the surface stored on all other processors. will this need to be sorted
-          // when using more than only a few processors?
-          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-          {
-            // First, find out the size of the array a process wants to send.
-           MPI_Status status;
-           int incoming_size = 0;
-           MPI_Recv(&incoming_size, 1, MPI_INT, p, 42, this->get_mpi_communicator(), &status);
+        // Resize data table.
+        TableIndices<dim-1> size_idx;
+        for (unsigned int d=0; d<dim-1; ++d)
+            size_idx[d] = temp_surface.size();
 
-            std::vector<std::vector<double>> nonlocal_surface_height(incoming_size, std::vector<double>(dim));
-
-            for (unsigned int i=0; i<nonlocal_surface_height.size(); ++i)
-              MPI_Recv(&nonlocal_surface_height[i][0], dim, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
-
-            for (unsigned int i=0; i<nonlocal_surface_height.size(); ++i)
-                    temp_surface.push_back(nonlocal_surface_height[i]);
-          }
-
-          // Sort the points. This may not be necessary in 2D.
-          std::sort(temp_surface.begin(), temp_surface.end());
-
-          // Define a comparison to remove duplicate surface points.
-          bool (*compareRows)(const std::vector<double>&, const std::vector<double>&) = [](const std::vector<double>& row1, const std::vector<double>& row2) {
-            return row1 == row2;
-          };
-
-          // Remove non-unique rows from the sorted 2D vector
-          auto last = std::unique(temp_surface.begin(), temp_surface.end(), compareRows);
-          temp_surface.erase(last, temp_surface.end());
-
-          // First, bcast the size so that other processors can resize the relevant vector
-          // to store the incoming data.
-          int vector_size = temp_surface.size();
-
-          TableIndices<dim-1> size_idx;
-          for (unsigned int d=0; d<dim-1; ++d)
-              size_idx[d] = vector_size;
-
-          data_table.TableBase<dim-1,double>::reinit(size_idx);
-          TableIndices<dim-1> idx;
+        data_table.TableBase<dim-1,double>::reinit(size_idx);
+        TableIndices<dim-1> idx;
 			
-          if(dim==2)
+        if(dim==2)
+        {
+          for (unsigned int x=0; x<(data_table.size()[0]); ++x)
           {
-              for (unsigned int x=0; x<(data_table.size()[0]); ++x)
-              {
-                idx[0] = x;
-                data_table(idx) = temp_surface[x][1];
-              }
+            idx[0] = x;
+            data_table(idx) = temp_surface[x][1];
           }
-
-          Utilities::MPI::broadcast(this->get_mpi_communicator(), temp_surface, 0);
-        }
-        else
-        {
-          // Send local surface data.
-          int vector_size = local_surface_height.size();
-          MPI_Send(&vector_size, 1, MPI_INT, 0, 42, this->get_mpi_communicator());
-
-          for (unsigned int i=0; i<local_surface_height.size(); i++)
-              MPI_Ssend(&local_surface_height[i][0], dim, MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
-
-          // Do I need to resize the temp_surface variable when using this broadcast?
-          temp_surface = Utilities::MPI::broadcast(this->get_mpi_communicator(), temp_surface, 0);
         }
 		
-        data_table.replicate_across_communicator (this->get_mpi_communicator(), 0);
-		
-		std::array<std::vector<double>, dim-1> coordinates;
+		    std::array<std::vector<double>, dim-1> coordinates;
         for(unsigned int i=0; i<temp_surface.size(); ++i)
-        {
             coordinates[0].push_back(temp_surface[i][0]);
-        }
 
-		surface_function = new Functions::InterpolatedTensorProductGridData<dim-1> (coordinates, data_table);
+		  surface_function = new Functions::InterpolatedTensorProductGridData<dim-1> (coordinates, data_table);
     }
 
     template <int dim>
