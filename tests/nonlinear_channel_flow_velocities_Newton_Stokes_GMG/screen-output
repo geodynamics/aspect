@@ -219,7 +219,7 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Skipping temperature solve because RHS is zero.
    Solving Stokes system (GMG)... 22+0 iterations.
-      Newton system information: Norm of the rhs: 787649, Derivative scaling factor: 0
+      Newton system information: Norm of the rhs: 787648, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 1.71622e-11
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.71622e-11
 
@@ -230,7 +230,7 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 5: 1.13757e-11
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 1000+83 iterations.
+   Solving Stokes system (GMG)... 1000+280 iterations.
       Newton system information: Norm of the rhs: 346150, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 7.54233e-12
       Relative nonlinear residual (total system) after nonlinear iteration 6: 7.54233e-12
@@ -263,13 +263,13 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.92714e-11
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 22+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
       Newton system information: Norm of the rhs: 585758, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 1.27632e-11
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.27632e-11
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 22+0 iterations.
+   Solving Stokes system (GMG)... 161+0 iterations.
       Newton system information: Norm of the rhs: 388083, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 8.45601e-12
       Relative nonlinear residual (total system) after nonlinear iteration 5: 8.45601e-12
@@ -296,13 +296,13 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.62101e-11
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 44+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
       Newton system information: Norm of the rhs: 493302, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 1.07486e-11
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.07486e-11
 
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system (GMG)... 22+0 iterations.
+   Solving Stokes system (GMG)... 296+0 iterations.
       Newton system information: Norm of the rhs: 327183, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, Stokes system): 0, 7.12905e-12
       Relative nonlinear residual (total system) after nonlinear iteration 4: 7.12905e-12
@@ -319,8 +319,8 @@ Continuing to the next timestep even though solution is not fully converged.
 
    Solving Stokes system (GMG)... 0+0 iterations.
       Newton system information: Norm of the rhs: 266648
-      Relative nonlinear residuals (temperature, Stokes system): 0, 5.81003e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 5.81003e-12
+      Relative nonlinear residuals (temperature, Stokes system): 0, 5.81004e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 5.81004e-12
 
 
    Postprocessing:
