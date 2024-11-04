@@ -124,8 +124,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
-      Newton system information: Norm of the rhs: 0.0888943, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.97362e-07, 3.91322e-07, 1.91793e-09
+      Newton system information: Norm of the rhs: 0.0888938, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.97362e-07, 3.91322e-07, 1.91792e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 9.97362e-07
 
 
@@ -158,7 +158,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
-      Newton system information: Norm of the rhs: 0.0775619, Derivative scaling factor: 0
+      Newton system information: Norm of the rhs: 0.0775618, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.53626e-07, 2.52268e-07, 1.65699e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 7.53626e-07
 
@@ -192,8 +192,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
-      Newton system information: Norm of the rhs: 0.0815927, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.29098e-07, 2.02145e-07, 1.72535e-09
+      Newton system information: Norm of the rhs: 0.0815926, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.29098e-07, 2.02145e-07, 1.72534e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 7.29098e-07
 
 
@@ -260,7 +260,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Solving porosity system ... 6 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
-      Newton system information: Norm of the rhs: 0.0853343, Derivative scaling factor: 0
+      Newton system information: Norm of the rhs: 0.0853344, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.49554e-07, 1.56802e-07, 1.76195e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 6.49554e-07
 
@@ -294,8 +294,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 7 iterations.
    Solving porosity system ... 6 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
-      Newton system information: Norm of the rhs: 0.0889198, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.08983e-07, 1.51654e-07, 1.80383e-09
+      Newton system information: Norm of the rhs: 0.0889203, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.08983e-07, 1.51654e-07, 1.80384e-09
       Relative nonlinear residual (total system) after nonlinear iteration 4: 6.08983e-07
 
 
@@ -321,7 +321,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
-      Newton system information: Norm of the rhs: 0.870833, Derivative scaling factor: 0
+      Newton system information: Norm of the rhs: 0.870832, Derivative scaling factor: 0
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.77068e-06, 1.59923e-06, 1.73586e-08
       Relative nonlinear residual (total system) after nonlinear iteration 3: 5.77068e-06
 
