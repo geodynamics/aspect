@@ -31,8 +31,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      DepthIncMeshDef<dim>::
-      DepthIncMeshDef ()
+      DepthIncludingMeshDeformation<dim>::
+      DepthIncludingMeshDeformation ()
         :
         DataPostprocessorScalar<dim> ("depth_including_mesh_deformation",
                                       update_quadrature_points),
@@ -43,7 +43,7 @@ namespace aspect
 
       template <int dim>
       void
-      DepthIncMeshDef<dim>::
+      DepthIncludingMeshDeformation<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double>> &computed_quantities) const
       {
@@ -69,7 +69,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(DepthIncMeshDef,
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(DepthIncludingMeshDeformation,
                                                   "depth including mesh deformation",
                                                   "A visualization output postprocessor that outputs "
                                                   "the depth for all points inside the domain, as "
