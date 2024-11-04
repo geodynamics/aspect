@@ -855,8 +855,7 @@ namespace aspect
         // initial residual we could skip all of this stuff.
         distributed_stokes_solution.block(velocity_and_pressure_block) = solution.block(velocity_and_pressure_block);
         denormalize_pressure (this->last_pressure_normalization_adjustment,
-                              distributed_stokes_solution,
-                              solution);
+                              distributed_stokes_solution);
         current_stokes_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
@@ -973,8 +972,7 @@ namespace aspect
             linearized_stokes_initial_guess.block (pressure_block_index) = current_linearization_point.block (pressure_block_index);
 
             denormalize_pressure (this->last_pressure_normalization_adjustment,
-                                  linearized_stokes_initial_guess,
-                                  current_linearization_point);
+                                  linearized_stokes_initial_guess);
           }
         else
           {

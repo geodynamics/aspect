@@ -437,19 +437,13 @@ namespace aspect
                                               : introspection.block_indices.pressure;
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
     Assert(pressure_block_index == 1, ExcNotImplemented());
+    (void) pressure_block_index;
     Assert(!parameters.include_melt_transport
            || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
-    // create a completely distributed vector that will be used for
-    // the scaled and denormalized solution and later used as a
-    // starting guess for the linear solver
-    LinearAlgebra::BlockVector linearized_stokes_initial_guess(introspection.index_sets.stokes_partitioning, mpi_communicator);
-    linearized_stokes_initial_guess.block(introspection.block_indices.velocities) = current_linearization_point.block(introspection.block_indices.velocities);
-    linearized_stokes_initial_guess.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
-
     if (nonlinear_iteration == 0)
       {
-        dcr.initial_residual = compute_initial_newton_residual(linearized_stokes_initial_guess);
+        dcr.initial_residual = compute_initial_newton_residual();
         dcr.switch_initial_residual = dcr.initial_residual;
         dcr.residual_old = dcr.initial_residual;
         dcr.residual = dcr.initial_residual;
@@ -460,12 +454,6 @@ namespace aspect
     if (nonlinear_iteration == 0)
       {
         assemble_newton_stokes_system = assemble_newton_stokes_matrix = false;
-      }
-    else
-      {
-        denormalize_pressure (last_pressure_normalization_adjustment,
-                              linearized_stokes_initial_guess,
-                              current_linearization_point);
       }
 
     if (nonlinear_iteration <= 1)

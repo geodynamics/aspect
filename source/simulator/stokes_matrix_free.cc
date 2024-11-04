@@ -1919,8 +1919,7 @@ namespace aspect
         linearized_stokes_initial_guess.block (block_p) = sim.current_linearization_point.block (block_p);
 
         sim.denormalize_pressure (sim.last_pressure_normalization_adjustment,
-                                  linearized_stokes_initial_guess,
-                                  sim.current_linearization_point);
+                                  linearized_stokes_initial_guess);
       }
     else
       {
