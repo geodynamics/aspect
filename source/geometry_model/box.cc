@@ -274,12 +274,6 @@ namespace aspect
     Box<dim>::
     update ()
     {
-        AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
-                  ExcMessage("The geometry update function currently only works with a 2D box geometry model."));
-
-        AssertThrow(dim==2,
-                  ExcMessage("The geometry update function currently only works with a 2D box geometry model."));
-
         this->get_pcout() << "   Updating surface values... " << std::endl;
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
 
