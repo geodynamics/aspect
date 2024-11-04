@@ -1316,7 +1316,7 @@ namespace aspect
   {
     LinearAlgebra::BlockVector linearized_stokes_variables (introspection.index_sets.stokes_partitioning, mpi_communicator);
     LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
-    const unsigned int block_p =
+    const unsigned int pressure_block_index =
       parameters.include_melt_transport ?
       introspection.variable("fluid pressure").block_index
       :
@@ -1324,7 +1324,7 @@ namespace aspect
 
     // if velocity and pressure are in the same block, we have to copy the
     // pressure to the solution and RHS vector with a zero velocity
-    if (block_p == introspection.block_indices.velocities)
+    if (pressure_block_index == introspection.block_indices.velocities)
       {
         const IndexSet &idxset = (parameters.include_melt_transport) ?
                                  introspection.index_sets.locally_owned_fluid_pressure_dofs
@@ -1336,10 +1336,10 @@ namespace aspect
             types::global_dof_index idx = idxset.nth_index_in_set(i);
             linearized_stokes_variables(idx)        = current_linearization_point(idx);
           }
-        linearized_stokes_variables.block(block_p).compress(VectorOperation::insert);
+        linearized_stokes_variables.block(pressure_block_index).compress(VectorOperation::insert);
       }
     else
-      linearized_stokes_variables.block (block_p) = current_linearization_point.block (block_p);
+      linearized_stokes_variables.block (pressure_block_index) = current_linearization_point.block (pressure_block_index);
 
     // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
     // bigger vector here, oh well.
@@ -1348,15 +1348,15 @@ namespace aspect
                                         mpi_communicator);
     // TODO for Timo: can we create the ghost vector inside of denormalize_pressure
     // (only in cases where we need it)
-    ghosted.block(block_p) = linearized_stokes_variables.block(block_p);
+    ghosted.block(pressure_block_index) = linearized_stokes_variables.block(pressure_block_index);
     denormalize_pressure (this->last_pressure_normalization_adjustment, linearized_stokes_variables, ghosted);
     current_constraints.set_zero (linearized_stokes_variables);
 
-    linearized_stokes_variables.block (block_p) /= pressure_scaling;
+    linearized_stokes_variables.block (pressure_block_index) /= pressure_scaling;
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
-    if (block_p == introspection.block_indices.velocities)
+    if (pressure_block_index == introspection.block_indices.velocities)
       {
         // we can use the whole block here because we set the velocity to zero above
         return system_matrix.block(0,0).residual (residual.block(0),
@@ -1368,7 +1368,7 @@ namespace aspect
         const double residual_u = system_matrix.block(0,1).residual (residual.block(0),
                                                                      linearized_stokes_variables.block(1),
                                                                      system_rhs.block(0));
-        const double residual_p = system_rhs.block(block_p).l2_norm();
+        const double residual_p = system_rhs.block(pressure_block_index).l2_norm();
         return std::sqrt(residual_u*residual_u+residual_p*residual_p);
       }
   }
@@ -2591,11 +2591,10 @@ namespace aspect
     // Store the values of the current_linearization_point and linearized_stokes_initial_guess so we can reset them again.
     LinearAlgebra::BlockVector temp_linearization_point = current_linearization_point;
     LinearAlgebra::BlockVector temp_linearized_stokes_initial_guess = linearized_stokes_initial_guess;
-    const unsigned int block_vel = introspection.block_indices.velocities;
 
     // Set the velocity initial guess to zero, but we use the initial guess for the pressure.
     current_linearization_point.block(introspection.block_indices.velocities) = 0;
-    temp_linearized_stokes_initial_guess.block (block_vel) = 0;
+    temp_linearized_stokes_initial_guess.block (introspection.block_indices.velocities) = 0;
 
     denormalize_pressure (last_pressure_normalization_adjustment,
                           temp_linearized_stokes_initial_guess,
