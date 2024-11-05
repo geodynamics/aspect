@@ -274,86 +274,87 @@ namespace aspect
     Box<dim>::
     update ()
     {
-        this->get_pcout() << "   Updating surface values... " << std::endl;
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
+      this->get_pcout() << "   Updating surface values... " << std::endl;
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
 
-        // loop over all of the surface cells and save the elevation to a stored value.
-        // This needs to be sent to 1 processor, sorted, and broadcast so that every processor knows the entire surface.
-        // (Does bcast create memory of the entire variable on every processor or only a pointer to the one stored on 0?)
-        std::vector<std::vector<double>> local_surface_height;
-        Table<dim-1, double> data_table;
-        const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-        const QTrapezoid<dim-1> face_corners;
-        FEFaceValues<dim> fe_face_values(this->get_mapping(),
-                                          this->get_fe(),
-                                          face_corners,
-                                          update_quadrature_points);
+      // loop over all of the surface cells and save the elevation to a stored value.
+      // This needs to be sent to 1 processor, sorted, and broadcast so that every processor knows the entire surface.
+      // (Does bcast create memory of the entire variable on every processor or only a pointer to the one stored on 0?)
+      std::vector<std::vector<double>> local_surface_height;
+      Table<dim-1, double> data_table;
+      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+      const QTrapezoid<dim-1> face_corners;
+      FEFaceValues<dim> fe_face_values(this->get_mapping(),
+                                       this->get_fe(),
+                                       face_corners,
+                                       update_quadrature_points);
 
-        // Loop over all corners at the surface and save their position.
-        // TODO: Update this to work in 3D. Spherical?
-        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-          if (cell->is_locally_owned() && cell->at_boundary())
-            for (const unsigned int face_no : cell->face_indices())
-              if (cell->face(face_no)->at_boundary())
-                {
-                  if ( cell->face(face_no)->boundary_id() != relevant_boundary)
-                    continue;
+      // Loop over all corners at the surface and save their position.
+      // TODO: Update this to work in 3D. Spherical?
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned() && cell->at_boundary())
+          for (const unsigned int face_no : cell->face_indices())
+            if (cell->face(face_no)->at_boundary())
+              {
+                if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                  continue;
 
-                  fe_face_values.reinit(cell, face_no);
+                fe_face_values.reinit(cell, face_no);
 
-                  for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
-                    {
-                      const Point<dim> vertex = fe_face_values.quadrature_point(corner);
+                for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
+                  {
+                    const Point<dim> vertex = fe_face_values.quadrature_point(corner);
 
-                      // We can't push back a point so we convert it into a vector.
-                      // This is needed later to keep the vertices together when sorting.
-                      std::vector<double> vertex_row;
-                      for(unsigned int i=0; i<dim; ++i)
-                        vertex_row.push_back(vertex[i]);
+                    // We can't push back a point so we convert it into a vector.
+                    // This is needed later to keep the vertices together when sorting.
+                    std::vector<double> vertex_row;
+                    for (unsigned int i=0; i<dim; ++i)
+                      vertex_row.push_back(vertex[i]);
 
-                      local_surface_height.push_back(vertex_row);
-                    }
-                }
+                    local_surface_height.push_back(vertex_row);
+                  }
+              }
 
-        // Combine all local_surfaces and broadcast back.
-        std::vector<std::vector<double>> temp_surface =
-           Utilities::MPI::compute_set_union(local_surface_height,this->get_mpi_communicator());
+      // Combine all local_surfaces and broadcast back.
+      std::vector<std::vector<double>> temp_surface =
+        Utilities::MPI::compute_set_union(local_surface_height,this->get_mpi_communicator());
 
 
-        // Define a comparison to remove duplicate surface points.
-        bool (*compareRows)(const std::vector<double>&, const std::vector<double>&) = [](const std::vector<double>& row1, const std::vector<double>& row2) {
-          return row1 == row2;
-        };
+      // Define a comparison to remove duplicate surface points.
+      bool (*compareRows)(const std::vector<double> &, const std::vector<double> &) = [](const std::vector<double> &row1, const std::vector<double> &row2)
+      {
+        return row1 == row2;
+      };
 
-        // Remove non-unique rows from the sorted 2D vector
-        auto last = std::unique(temp_surface.begin(), temp_surface.end(), compareRows);
-        temp_surface.erase(last, temp_surface.end());
+      // Remove non-unique rows from the sorted 2D vector
+      auto last = std::unique(temp_surface.begin(), temp_surface.end(), compareRows);
+      temp_surface.erase(last, temp_surface.end());
 
-        
-        // Resize data table.
-        TableIndices<dim-1> size_idx;
-        for (unsigned int d=0; d<dim-1; ++d)
-            size_idx[d] = temp_surface.size();
 
-        data_table.TableBase<dim-1,double>::reinit(size_idx);
-        TableIndices<dim-1> idx;
-			
-        // Fill the data table with the y-values that correspond to the surface.
-        if(dim==2)
+      // Resize data table.
+      TableIndices<dim-1> size_idx;
+      for (unsigned int d=0; d<dim-1; ++d)
+        size_idx[d] = temp_surface.size();
+
+      data_table.TableBase<dim-1,double>::reinit(size_idx);
+      TableIndices<dim-1> idx;
+
+      // Fill the data table with the y-values that correspond to the surface.
+      if (dim==2)
         {
           for (unsigned int x=0; x<(data_table.size()[0]); ++x)
-          {
-            idx[0] = x;
-            data_table(idx) = temp_surface[x][1];
-          }
+            {
+              idx[0] = x;
+              data_table(idx) = temp_surface[x][1];
+            }
         }
-		
-        //Fill the coordinates with the x-values used for the data table.
-		    std::array<std::vector<double>, dim-1> coordinates;
-        for(unsigned int i=0; i<temp_surface.size(); ++i)
-          coordinates[0].push_back(temp_surface[i][0]);
-            
-		  surface_function = new Functions::InterpolatedTensorProductGridData<dim-1> (coordinates, data_table);
+
+      //Fill the coordinates with the x-values used for the data table.
+      std::array<std::vector<double>, dim-1> coordinates;
+      for (unsigned int i=0; i<temp_surface.size(); ++i)
+        coordinates[0].push_back(temp_surface[i][0]);
+
+      surface_function = new Functions::InterpolatedTensorProductGridData<dim-1> (coordinates, data_table);
     }
 
     template <int dim>
