@@ -1,21 +1,8 @@
 -----------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
 -----------------------------------------------------------------------------
---     . version 2.6.0-pre (depth_with_deformation, 39c905f86)
---     . using deal.II 9.6.0
---     .       with 32 bit indices
---     .       with vectorization level 3 (AVX512, 8 doubles, 512 bits)
---     . using Trilinos 14.4.0
---     . using p4est 2.3.6
---     . using Geodynamic World Builder 1.0.0
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
 -----------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&mf=1&sha=39c905f86&src=code
 -----------------------------------------------------------------------------
 Number of active cells: 128 (on 4 levels)
 Number of degrees of freedom: 1,836 (1,122+153+561)
@@ -30,7 +17,7 @@ Number of mesh deformation degrees of freedom: 306
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
-     Writing graphical output: depth_with_mesh_deformation/solution/solution-00000
+     Writing graphical output: output-depth_with_mesh_deformation/solution/solution-00000
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Updating surface values... 
@@ -40,32 +27,14 @@ Number of mesh deformation degrees of freedom: 306
    Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
-     Writing graphical output: depth_with_mesh_deformation/solution/solution-00001
+     Writing graphical output: output-depth_with_mesh_deformation/solution/solution-00001
 
 Termination requested by criterion: end time
 
 
 +---------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start    |     0.284s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
 +---------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs      |         2 |    0.0146s |       5.2% |
-| Assemble temperature system     |         2 |    0.0134s |       4.7% |
-| Build Stokes preconditioner     |         2 |   0.00103s |      0.36% |
-| Geometry model surface update   |         4 |  0.000245s |         0% |
-| Initialization                  |         1 |     0.193s |        68% |
-| Mesh deformation                |         2 |    0.0124s |       4.4% |
-| Mesh deformation initialize     |         1 |    0.0061s |       2.1% |
-| Postprocessing                  |         2 |    0.0164s |       5.8% |
-| Setup dof systems               |         1 |    0.0164s |       5.8% |
-| Setup initial conditions        |         1 |   0.00305s |       1.1% |
-| Setup matrices                  |         1 |   0.00129s |      0.45% |
-| Solve Stokes system             |         2 |   0.00331s |       1.2% |
 +---------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 0s
 -----------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&mf=1&sha=39c905f86&src=code
 -----------------------------------------------------------------------------
