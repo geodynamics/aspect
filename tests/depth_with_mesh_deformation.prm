@@ -1,0 +1,94 @@
+# This is a test where a central region is uplifted
+# through the mesh deformation boundary function,
+# and the depth with mesh deformation visualizations
+# is output.
+set Dimension                              = 2
+
+set Use years in output instead of seconds = true
+set End time                               = 1e4
+set Maximum time step                      = 1e4
+set Output directory                       = depth_with_mesh_deformation
+
+set Pressure normalization                 = no
+set Surface pressure                       = 0
+
+subsection Geometry model
+  set Model name = box
+
+    subsection Box
+      set X extent = 100e3
+      set Y extent = 50e3
+      set X repetitions = 2
+      set Y repetitions = 1
+    end
+
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top : free surface & boundary function
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Boundary function
+    set Function constants  = y2s = 31536000, v = 0.1
+    set Function expression           = 0; if(x>50e3, v/y2s, 0)
+  end
+
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set List of output variables      = depth including mesh deformation
+    set Output format                 = gnuplot
+    set Number of grouped files = 1
+  end
+end
