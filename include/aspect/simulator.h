@@ -1300,14 +1300,6 @@ namespace aspect
        * "physical" pressure so that all following postprocessing
        * steps can use the latter.
        *
-       * In the case of the surface average, whether a face is part of
-       * the surface is determined by asking whether its depth of its
-       * midpoint (as determined by the geometry model) is less than
-       * 1/3*1/sqrt(dim-1)*diameter of the face. For reasonably curved
-       * boundaries, this rules out side faces that are perpendicular
-       * to the surface boundary but includes those faces that are
-       * along the boundary even if the real boundary is curved.
-       *
        * Whether the pressure should be normalized based on the
        * surface or volume average is decided by a parameter in the
        * input file.
@@ -1352,12 +1344,7 @@ namespace aspect
        * come out of GMRES, namely the one on which we later called
        * normalize_pressure().
        *
-       * This function modifies @p vector in-place. In some cases, we need
-       * locally_relevant values of the pressure. To avoid creating a new vector
-       * and transferring data, this function uses a second vector with relevant
-       * dofs (@p relevant_vector) for accessing these pressure values. Both
-       * @p vector and @p relevant_vector are expected to already contain
-       * the correct pressure values.
+       * This function modifies @p vector in-place.
        *
        * @note The adjustment made in this function is done using the
        * negative of the @p pressure_adjustment function argument that
@@ -1371,8 +1358,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void denormalize_pressure(const double                      pressure_adjustment,
-                                LinearAlgebra::BlockVector       &vector,
-                                const LinearAlgebra::BlockVector &relevant_vector) const;
+                                LinearAlgebra::BlockVector       &vector) const;
 
       /**
        * Apply the bound preserving limiter to the discontinuous Galerkin solutions:
@@ -1780,7 +1766,7 @@ namespace aspect
        * Computes the initial Newton residual.
        */
       double
-      compute_initial_newton_residual (const LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
+      compute_initial_newton_residual ();
 
       /**
        * This function computes the Eisenstat Walker linear tolerance used for the Newton iterations
