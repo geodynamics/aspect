@@ -441,14 +441,6 @@ namespace aspect
     Assert(!parameters.include_melt_transport
            || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
-
-    if (nonlinear_iteration > 0)
-      {
-        // The solution is used as an initial guess. For a defect correction type of solver, a 0 guess is often best after the first nonlinear iteration.
-        solution.block(introspection.block_indices.pressure) = 0;
-        solution.block(introspection.block_indices.velocities) = 0;
-      }
-
     if (nonlinear_iteration == 0)
       {
         dcr.initial_residual = compute_initial_newton_residual();
