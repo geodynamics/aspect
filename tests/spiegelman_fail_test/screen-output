@@ -19,9 +19,9 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 1.42972e+15, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.33204e-16, 0.184271
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.184271
+      Newton system information: Norm of the rhs: 1.62027e+15, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.33204e-16, 0.208831
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.208831
 
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
@@ -29,75 +29,75 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 9.38898e+14, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.33204e-16, 0.121011
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.121011
-
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 0 iterations.
-   The linear solver tolerance is set to 0.82638. Stabilization Preconditioner is none and A block is none.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 4.32086e+14, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.33204e-16, 0.0556899
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0556899
-
-
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
-   Postprocessing:
-     RMS, max velocity:                  6.75e-09 m/s, 1.5e-08 m/s
-     Pressure min/avg/max:               -7.011e+10 Pa, 1.059e+09 Pa, 2.582e+11 Pa
-     Mass fluxes through boundary parts: -0.03241 kg/s, -0.03241 kg/s, 0 kg/s, -1.732 kg/s
-     Writing graphical output:           output-spiegelman_fail_test/solution/solution-00000
-
-*** Timestep 1:  t=1 seconds, dt=1 seconds
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 0 iterations.
-   Initial Newton Stokes residual = 8.60621e+15, v = 8.60621e+15, p = 3.41947e+12
-
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 4.35071e+14
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.24412e-13, 0.0505531
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0505531
-
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 0 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 2.15302e+14, Derivative scaling factor: 0
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.24412e-13, 0.025017
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.025017
-
-   Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 0 iterations.
-   Switching from defect correction form of Picard to the Newton solver scheme.
-   The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is none and A block is none.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 1.36576e+14, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.75875e-13, 0.0158695
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0158695
+      Newton system information: Norm of the rhs: 9.54798e+14, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.33204e-16, 0.12306
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.12306
 
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 8.35682e+13, Derivative scaling factor: 1
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.86622e-13, 0.00971022
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00971022
+      Newton system information: Norm of the rhs: 4.36974e+14, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.33204e-16, 0.0563199
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0563199
 
 
 WARNING: The nonlinear solver in the current timestep failed to converge.
 Acting according to the parameter 'Nonlinear solver failure strategy'...
 Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
-     RMS, max velocity:                  2.7e-09 m/s, 7.91e-09 m/s
-     Pressure min/avg/max:               -2.049e+10 Pa, 1.597e+08 Pa, 3.409e+10 Pa
-     Mass fluxes through boundary parts: -0.03241 kg/s, -0.03241 kg/s, 0 kg/s, -1.174 kg/s
+     RMS, max velocity:                  6.76e-09 m/s, 1.5e-08 m/s
+     Pressure min/avg/max:               -7.019e+10 Pa, 1.063e+09 Pa, 2.587e+11 Pa
+     Mass fluxes through boundary parts: -0.03241 kg/s, -0.03241 kg/s, 0 kg/s, -1.728 kg/s
+     Writing graphical output:           output-spiegelman_fail_test/solution/solution-00000
+
+*** Timestep 1:  t=1 seconds, dt=1 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Initial Newton Stokes residual = 8.60842e+15, v = 8.60842e+15, p = 3.41939e+12
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+      Newton system information: Norm of the rhs: 4.36222e+14
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.2409e-13, 0.0506738
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0506738
+
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+1 iterations.
+      Newton system information: Norm of the rhs: 2.17689e+14, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.2409e-13, 0.025288
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.025288
+
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Switching from defect correction form of Picard to the Newton solver scheme.
+   The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is none and A block is none.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+1 iterations.
+      Newton system information: Norm of the rhs: 1.35994e+14, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.76328e-13, 0.0157978
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0157978
+
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is none and A block is none.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+1 iterations.
+      Newton system information: Norm of the rhs: 7.18526e+13, Derivative scaling factor: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.87227e-13, 0.00834678
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00834678
+
+
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
+   Postprocessing:
+     RMS, max velocity:                  2.71e-09 m/s, 8.03e-09 m/s
+     Pressure min/avg/max:               -2.037e+10 Pa, 1.602e+08 Pa, 3.381e+10 Pa
+     Mass fluxes through boundary parts: -0.03241 kg/s, -0.03241 kg/s, 0 kg/s, -1.176 kg/s
 
 Termination requested by criterion: end time
 

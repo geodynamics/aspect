@@ -941,11 +941,17 @@ namespace aspect
        * first element of the pair, where $F_k=F(x_k)$ is the residual
        * vector for the previous solution $x_k$.
        *
+       * @param solution_vector The solution vector that is computed by this
+       * function. This vector is a block vector that has the same block
+       * structure as the full solution vector and its pressure and velocity
+       * blocks will be overwritten by the solution of the Stokes system.
+       *
+       *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
       std::pair<double,double>
-      solve_stokes ();
+      solve_stokes (LinearAlgebra::BlockVector &solution_vector);
 
       /**
        * This function is called at the end of every time step. It runs all
