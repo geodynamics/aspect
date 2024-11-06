@@ -22,6 +22,10 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
+#ifdef ASPECT_WITH_WORLD_BUILDER
+#include <world_builder/world.h>
+#endif
+
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
@@ -616,6 +620,16 @@ run_simulator(const std::string &raw_input_as_string,
 
           std::ofstream file(output_directory + "original.prm");
           file << raw_input_as_string;
+
+          // If using the Geodynamic World Builder, create output/original.wb
+          // containing the exact file used to create the world:
+          std::string world_builder_file = prm.get("World builder file");
+          if (world_builder_file != "")
+            {
+              std::stringstream json_input_stream(WorldBuilder::Utilities::read_and_distribute_file_content(world_builder_file));
+              std::ofstream wb_file(output_directory + "original.wb");
+              wb_file << json_input_stream.str();
+            }
         }
 
       simulator.run();
