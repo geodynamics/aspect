@@ -123,9 +123,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.64043e-12
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 1000+376 iterations.
-      Newton system information: Norm of the rhs: 40618.7, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.85049e-13
+   Solving Stokes system (AMG)... 1000+76 iterations.
+      Newton system information: Norm of the rhs: 40618.8, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.85051e-13
 
 
    Postprocessing:
@@ -144,8 +144,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 92+0 iterations.
-      Newton system information: Norm of the rhs: 22073.9, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.80973e-13
+      Newton system information: Norm of the rhs: 22073.8, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.80971e-13
 
 
    Postprocessing:
@@ -160,7 +160,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 81382
+      Newton system information: Norm of the rhs: 81381.9
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.77325e-12
 
 
@@ -175,8 +175,8 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
-      Newton system information: Norm of the rhs: 141623
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.08587e-12
+      Newton system information: Norm of the rhs: 141624
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.08588e-12
 
 
    Postprocessing:

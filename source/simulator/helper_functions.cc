@@ -2627,8 +2627,6 @@ namespace aspect
 
     assemble_stokes_system();
 
-    last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
-
     const double initial_newton_residual_vel = system_rhs.block(introspection.block_indices.velocities).l2_norm();
     const double initial_newton_residual_p = system_rhs.block(introspection.block_indices.pressure).l2_norm();
     const double initial_newton_residual = std::sqrt(initial_newton_residual_vel * initial_newton_residual_vel + initial_newton_residual_p * initial_newton_residual_p);
