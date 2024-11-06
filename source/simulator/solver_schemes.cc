@@ -501,13 +501,7 @@ namespace aspect
       {
         if (!use_picard || newton_handler->parameters.use_Eisenstat_Walker_method_for_Picard_iterations)
           {
-            const bool EisenstatWalkerChoiceOne = true;
-            parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                        newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                        parameters.linear_stokes_solver_tolerance,
-                                                        dcr.stokes_residuals.second,
-                                                        dcr.residual,
-                                                        dcr.residual_old);
+            parameters.linear_stokes_solver_tolerance = std::min(1./(std::pow(0.55,log(dcr.residual/dcr.initial_residual))),newton_handler->parameters.maximum_linear_stokes_solver_tolerance);
 
             pcout << "   The linear solver tolerance is set to "
                   << parameters.linear_stokes_solver_tolerance
@@ -583,13 +577,7 @@ namespace aspect
 
                 if (!use_picard)
                   {
-                    const bool EisenstatWalkerChoiceOne = true;
-                    parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                                newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                                parameters.linear_stokes_solver_tolerance,
-                                                                dcr.stokes_residuals.second,
-                                                                dcr.residual,
-                                                                dcr.residual_old);
+                    parameters.linear_stokes_solver_tolerance = std::min(1./(std::pow(0.55,log(dcr.residual/dcr.initial_residual))),newton_handler->parameters.maximum_linear_stokes_solver_tolerance);
 
                     pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
                   }
