@@ -948,12 +948,6 @@ namespace aspect
       solve_stokes ();
 
       /**
-       * Solve the Stokes system using a block preconditioner and GMG.
-       */
-      std::pair<double,double>
-      solve_stokes_block_gmg ();
-
-      /**
        * This function is called at the end of every time step. It runs all
        * the postprocessors that have been listed in the input parameter file
        * (see the manual) in turn. In particular, this usually includes
