@@ -435,7 +435,8 @@ namespace aspect
     const unsigned int pressure_block_index = (parameters.include_melt_transport) ?
                                               introspection.variable("fluid pressure").block_index
                                               : introspection.block_indices.pressure;
-    Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
+    const unsigned int velocity_block_index = introspection.block_indices.velocities;
+    Assert(velocity_block_index == 0, ExcNotImplemented());
     Assert(pressure_block_index == 1, ExcNotImplemented());
     (void) pressure_block_index;
     Assert(!parameters.include_melt_transport
@@ -447,15 +448,14 @@ namespace aspect
         dcr.switch_initial_residual = dcr.initial_residual;
         dcr.residual_old = dcr.initial_residual;
         dcr.residual = dcr.initial_residual;
-      }
-
-    assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
-
-    if (nonlinear_iteration == 0)
-      {
         assemble_newton_stokes_system = assemble_newton_stokes_matrix = false;
       }
+    else
+      assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
 
+    // Make sure we use the correct assemblers for first and all other iterations
+    // We solve the normal system in the first iteration, and the defect correction
+    // system in all other iterations.
     if (nonlinear_iteration <= 1)
       {
         set_assemblers();
@@ -481,8 +481,8 @@ namespace aspect
     assemble_stokes_system();
 
     // recompute rhs
-    dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-    dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+    dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+    dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
     dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
 
     // Test whether the rhs has dropped so much that we can assume that the iteration is done.
@@ -573,8 +573,8 @@ namespace aspect
         if (nonlinear_iteration > 1)
           {
             dcr.residual_old = dcr.residual;
-            dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-            dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+            dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+            dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
             dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
 
             if (!use_picard)
@@ -600,22 +600,14 @@ namespace aspect
         dcr.stokes_residuals = solve_stokes();
       }
 
-    dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-    dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-    dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
-
-    double test_residual = dcr.residual;
     if (nonlinear_iteration == 0)
       {
-        /**
-         * The first nonlinear iteration we are computing the whole system in a non-defect corrected Picard way,
-         * to make sure that the boundary conditions are correct in combination with correct initial guesses.
-         */
-        current_linearization_point.block(introspection.block_indices.velocities) = solution.block(introspection.block_indices.velocities);
-        current_linearization_point.block(introspection.block_indices.pressure) = solution.block(introspection.block_indices.pressure);
+        // The first nonlinear iteration we are computing the whole system in a non-defect corrected Picard way,
+        // to make sure that the boundary conditions are correct in combination with correct initial guesses.
+        current_linearization_point.block(velocity_block_index) = solution.block(velocity_block_index);
+        current_linearization_point.block(pressure_block_index) = solution.block(pressure_block_index);
 
         dcr.residual = dcr.stokes_residuals.first;
-
         pcout << "      Newton system information: Norm of the rhs: " << dcr.stokes_residuals.first << std::endl;
       }
     else
@@ -629,32 +621,18 @@ namespace aspect
          * is met, or the line search iteration limit is reached.
          */
         LinearAlgebra::BlockVector backup_linearization_point(introspection.index_sets.stokes_partitioning, mpi_communicator);
-        backup_linearization_point.block(introspection.block_indices.pressure) = current_linearization_point.block(introspection.block_indices.pressure);
-        backup_linearization_point.block(introspection.block_indices.velocities) = current_linearization_point.block(introspection.block_indices.velocities);
+        backup_linearization_point.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
+        backup_linearization_point.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
 
-
-        double test_velocity_residual = 0;
-        double test_pressure_residual = 0;
-        double step_length_factor = 1;
-        double alpha = 1e-4;
+        double step_length_factor = 1.0;
         unsigned int line_search_iteration = 0;
-
-
-        /**
-         * Do the loop for the line search. Even when we
-         * don't do a line search we go into this loop
-         */
+        // Do the loop for the line search at least once
         do
           {
-            // Reset the current linearization point and the search direction
-            current_linearization_point.block(introspection.block_indices.pressure) = backup_linearization_point.block(introspection.block_indices.pressure);
-            current_linearization_point.block(introspection.block_indices.velocities) = backup_linearization_point.block(introspection.block_indices.velocities);
-
-            LinearAlgebra::BlockVector search_direction = solution;
-            search_direction *= step_length_factor;
-
-            current_linearization_point.block(introspection.block_indices.pressure) += search_direction.block(introspection.block_indices.pressure);
-            current_linearization_point.block(introspection.block_indices.velocities) += search_direction.block(introspection.block_indices.velocities);
+            current_linearization_point.block(pressure_block_index) = backup_linearization_point.block(pressure_block_index);
+            current_linearization_point.block(velocity_block_index) = backup_linearization_point.block(velocity_block_index);
+            current_linearization_point.block(pressure_block_index).add(step_length_factor, solution.block(pressure_block_index));
+            current_linearization_point.block(velocity_block_index).add(step_length_factor, solution.block(velocity_block_index));
 
             // Rebuild the rhs to determine the new residual.
             assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
@@ -663,12 +641,13 @@ namespace aspect
 
             assemble_stokes_system();
 
-            test_velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-            test_pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-            test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
-                                      + test_pressure_residual * test_pressure_residual);
+            const double test_velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+            const double test_pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+            const double test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
+                                                   + test_pressure_residual * test_pressure_residual);
 
-            // Determine if the decrease is sufficient.
+            // Determine if the residual has decreased sufficiently.
+            const double alpha = 1e-4;
             if (test_residual < (1.0 - alpha * step_length_factor) * dcr.residual
                 ||
                 line_search_iteration >= newton_handler->parameters.max_newton_line_search_iterations
@@ -682,7 +661,6 @@ namespace aspect
               }
             else
               {
-
                 pcout << "   Line search iteration " << line_search_iteration << ", with norm of the rhs "
                       << test_residual << " and going to " << (1.0 - alpha * step_length_factor) * dcr.residual
                       << ", relative residual: " << test_residual/dcr.initial_residual << std::endl;
@@ -696,9 +674,7 @@ namespace aspect
 
             ++line_search_iteration;
             Assert(line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations,
-                   ExcMessage ("This tests the while condition. This condition should "
-                               "actually never be false, because the break statement "
-                               "above should have caught it."));
+                   ExcInternalError());
           }
         while (true);
       }
@@ -721,7 +697,7 @@ namespace aspect
          * by Raid Hassani.
          */
         if (newton_handler->parameters.use_newton_residual_scaling_method)
-          dcr.newton_residual_for_derivative_scaling_factor = test_residual;
+          dcr.newton_residual_for_derivative_scaling_factor = dcr.residual;
         else
           dcr.newton_residual_for_derivative_scaling_factor = 0;
       }
