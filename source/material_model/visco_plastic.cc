@@ -15,7 +15,7 @@
 
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
-  <http://www.gnu.org/licenses/>.
+  <http://www.gnu.org/licenses/
 */
 
 #include <aspect/material_model/visco_plastic.h>
