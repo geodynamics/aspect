@@ -1074,7 +1074,7 @@ namespace aspect
   MeltHandler<dim>::
   compute_melt_variables(LinearAlgebra::BlockSparseMatrix &system_matrix,
                          LinearAlgebra::BlockVector &solution,
-                         LinearAlgebra::BlockVector &system_rhs)
+                         LinearAlgebra::BlockVector &system_rhs) const
   {
     if (!this->include_melt_transport())
       return;

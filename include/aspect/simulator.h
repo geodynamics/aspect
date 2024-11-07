@@ -1444,7 +1444,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-                                            LinearAlgebra::Vector &vec);
+                                            LinearAlgebra::Vector &vec) const;
 
 
       /**
@@ -1476,7 +1476,7 @@ namespace aspect
        * <code>source/simulator/nullspace.cc</code>.
        */
       void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-                            LinearAlgebra::BlockVector &tmp_distributed_stokes);
+                            LinearAlgebra::BlockVector &tmp_distributed_stokes) const;
 
       /**
        * Compute the angular momentum and other rotation properties
@@ -1513,10 +1513,10 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_net_angular_momentum( const bool use_constant_density,
-                                        LinearAlgebra::BlockVector &relevant_dst,
-                                        LinearAlgebra::BlockVector &tmp_distributed_stokes,
-                                        const bool limit_to_top_faces = false);
+      void remove_net_angular_momentum(const bool use_constant_density,
+                                       LinearAlgebra::BlockVector &relevant_dst,
+                                       LinearAlgebra::BlockVector &tmp_distributed_stokes,
+                                       const bool limit_to_top_faces = false) const;
 
       /**
        * Offset the boundary id of all faces located on an outflow boundary
@@ -1549,9 +1549,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_net_linear_momentum( const bool use_constant_density,
-                                       LinearAlgebra::BlockVector &relevant_dst,
-                                       LinearAlgebra::BlockVector &tmp_distributed_stokes);
+      void remove_net_linear_momentum(const bool use_constant_density,
+                                      LinearAlgebra::BlockVector &relevant_dst,
+                                      LinearAlgebra::BlockVector &tmp_distributed_stokes) const;
 
       /**
        * Compute the maximal velocity throughout the domain. This is needed to
