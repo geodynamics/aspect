@@ -487,7 +487,7 @@ namespace aspect
        */
       void compute_melt_variables(LinearAlgebra::BlockSparseMatrix &system_matrix,
                                   LinearAlgebra::BlockVector &solution,
-                                  LinearAlgebra::BlockVector &system_rhs);
+                                  LinearAlgebra::BlockVector &system_rhs) const;
 
       /**
        * Return whether this object refers to the porosity field.

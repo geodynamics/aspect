@@ -823,7 +823,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-                                                        LinearAlgebra::Vector &vec)
+                                                        LinearAlgebra::Vector &vec) const
   {
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
 
@@ -2771,7 +2771,7 @@ namespace aspect
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template bool Simulator<dim>::stokes_A_block_is_symmetric() const; \
-  template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
+  template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec) const;\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::initialize_current_linearization_point (); \
