@@ -22,10 +22,6 @@
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 
-#ifdef ASPECT_WITH_WORLD_BUILDER
-#include <world_builder/world.h>
-#endif
-
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
@@ -626,9 +622,13 @@ run_simulator(const std::string &raw_input_as_string,
           std::string world_builder_file = prm.get("World builder file");
           if (world_builder_file != "")
             {
-              std::stringstream json_input_stream(WorldBuilder::Utilities::read_and_distribute_file_content(world_builder_file));
-              std::ofstream wb_file(output_directory + "original.wb");
-              wb_file << json_input_stream.str();
+              // TODO: We just want to make a copy of the file, but to do this
+              // platform-independently we need the C++17 filesystem header.
+              // Update this when we require C++17
+              std::ifstream  wb_source(world_builder_file, std::ios::binary);
+              std::ofstream  wb_destination(output_directory + "original.wb",   std::ios::binary);
+
+              wb_destination << wb_source.rdbuf();
             }
         }
 

@@ -1,0 +1,5 @@
+Added: When using the Geodynamic World Builder, ASPECT will create a file
+called 'original.wb' in the output directory which contains the exact 
+worldbuilder file used to run the ASPECT model.
+<br>
+(Daniel Douglas, 2024/11/06)
