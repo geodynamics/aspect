@@ -612,27 +612,37 @@ namespace aspect
       }
     else
       {
-        /**
-         * We may need to do a line search if the solution update doesn't decrease the norm of the rhs enough.
-         * This is done by adding the solution update to the current linearization point and then assembling
-         * the Newton right hand side. If the Newton residual has decreased enough by using this update,
-         * then we continue, otherwise we reset the current linearization point with the help of the backup and
-         * add each iteration an increasingly smaller solution update until the decreasing residual condition
-         * is met, or the line search iteration limit is reached.
-         */
+        // We have computed an update. Prepare for a line search.
         LinearAlgebra::BlockVector backup_linearization_point(introspection.index_sets.stokes_partitioning, mpi_communicator);
-        backup_linearization_point.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
-        backup_linearization_point.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
+        LinearAlgebra::BlockVector search_direction(introspection.index_sets.stokes_partitioning, mpi_communicator);
+        search_direction.block(pressure_block_index) = solution.block(pressure_block_index);
+        search_direction.block(velocity_block_index) = solution.block(velocity_block_index);
 
         double step_length_factor = 1.0;
         unsigned int line_search_iteration = 0;
-        // Do the loop for the line search at least once
+
+        // Do the loop for the line search at least once with the full step length.
+        // If line search is disabled we will exit the loop in the first iteration.
         do
           {
-            current_linearization_point.block(pressure_block_index) = backup_linearization_point.block(pressure_block_index);
-            current_linearization_point.block(velocity_block_index) = backup_linearization_point.block(velocity_block_index);
-            current_linearization_point.block(pressure_block_index).add(step_length_factor, solution.block(pressure_block_index));
-            current_linearization_point.block(velocity_block_index).add(step_length_factor, solution.block(velocity_block_index));
+            if (line_search_iteration == 0)
+              {
+                // backup our starting point for the line search
+                backup_linearization_point.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
+                backup_linearization_point.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
+              }
+            else
+              {
+                // undo the last iteration and try again with smaller step length
+                current_linearization_point.block(pressure_block_index) = backup_linearization_point.block(pressure_block_index);
+                current_linearization_point.block(velocity_block_index) = backup_linearization_point.block(velocity_block_index);
+                search_direction.block(pressure_block_index) *= step_length_factor;
+                search_direction.block(velocity_block_index) *= step_length_factor;
+              }
+
+            // Update the current linearization point with the search direction
+            current_linearization_point.block(pressure_block_index) += search_direction.block(pressure_block_index);
+            current_linearization_point.block(velocity_block_index) += search_direction.block(velocity_block_index);
 
             // Rebuild the rhs to determine the new residual.
             assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
@@ -665,11 +675,10 @@ namespace aspect
                       << test_residual << " and going to " << (1.0 - alpha * step_length_factor) * dcr.residual
                       << ", relative residual: " << test_residual/dcr.initial_residual << std::endl;
 
-                /**
-                 * The line search step was not sufficient to decrease the residual
-                 * enough, so we take a smaller step to see if it improves the residual.
-                 */
-                step_length_factor *= (2.0/3.0);// TODO: make a parameter out of this.
+                // The current search direction has not decreased the residual
+                // enough, so we take a smaller step and try again.
+                // TODO: make a parameter out of this.
+                step_length_factor = 2.0/3.0;
               }
 
             ++line_search_iteration;
@@ -691,11 +700,9 @@ namespace aspect
       }
     else
       {
-        /**
-         * This method allows to slowly introduce the derivatives based
-         * on the improvement of the residual. This method was suggested
-         * by Raid Hassani.
-         */
+        // This method allows to slowly introduce the derivatives based
+        // on the improvement of the residual. This method was suggested
+        // by Raid Hassani.
         if (newton_handler->parameters.use_newton_residual_scaling_method)
           dcr.newton_residual_for_derivative_scaling_factor = dcr.residual;
         else
