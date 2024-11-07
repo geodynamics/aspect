@@ -1,0 +1,5 @@
+# test that output/original.wb is written correctly
+
+# based on world_builder_simple.prm:
+include $ASPECT_SOURCE_DIR/tests/world_builder_simple.prm
+set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_simple.wb
