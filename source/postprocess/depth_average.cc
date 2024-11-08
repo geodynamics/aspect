@@ -174,7 +174,7 @@ namespace aspect
               else
                 {
                   const std::string filename (this->get_output_directory() + "depth_average.txt");
-                  std::ofstream f(filename, std::ofstream::out);
+                  std::ofstream f(filename);
 
                   // Write the header
                   f << "#       time" << "        depth";
