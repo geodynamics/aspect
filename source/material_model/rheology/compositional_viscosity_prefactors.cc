@@ -73,7 +73,9 @@ namespace aspect
                             "being caused by the temperature being zero somewhere in the model. The relevant "
                             "values for debugging are: temperature (" + Utilities::to_string(in.temperature[q]) +
                             "), and adiabatic temperature ("
-                            + Utilities::to_string(this->get_adiabatic_conditions().temperature(in.position[q])) + ")."));
+                            + Utilities::to_string(this->get_adiabatic_conditions().temperature(in.position[q])) +
+                            "). If the adiabatic temperature is 0, double check that you are correctly defining an "
+                            " 'Adiabatic conditions model'."));
 
               const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
               const double mass_fraction_H2O = std::max(minimum_mass_fraction_water_for_dry_creep[composition_index], in.composition[q][bound_fluid_idx]); // mass fraction of bound water
