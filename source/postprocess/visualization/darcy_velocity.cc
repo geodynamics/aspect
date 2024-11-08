@@ -66,6 +66,10 @@ namespace aspect
 
         const unsigned int porosity_idx = this->introspection().find_composition_type(CompositionalFieldDescription::porosity);
 
+        AssertThrow(this->introspection().compositional_field_methods[porosity_idx] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
+                    ExcMessage("The 'darcy velocity' postprocessor requires that the compositional "
+                               "field called porosity is advected with the 'darcy field' advection method."));
+
         const double velocity_scaling_factor =
           this->convert_output_to_years() ? year_in_seconds : 1.0;
 
