@@ -1,0 +1,8 @@
+# This is a simple case of the Spiegelman et al. 2016 benchmark set.
+# This test exists to make sure the benchmark input file is executable and
+# the results remain approximately unchanged. See the benchmark for
+# more details on the model and results.
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/spiegelman_et_al_2016/input.prm
