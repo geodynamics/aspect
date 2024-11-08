@@ -1,0 +1,13 @@
+Fixed: Several fixes for the Newton solver that would slow down convergence or
+rarely lead to wrong results. The Newton solver and defect correction Picard
+solver computed a wrong pressure scaling for the linear solver. This has been
+fixed, leading to a reduction in linear solver iterations. The solution
+variable temporarily contained the update to the solution when using the Newton
+solver or defect correction Picard solver, leading to bugs in models that
+assumed the vector contains the values. This has been fixed by always storing
+the values of the solution in the variable and never the update. The
+Eisenstat-Walker method to compute linear solver tolerances for the Newton
+solver would compute too coarse linear residuals leading to poor nonlinear
+convergence. This has been fixed.
+<br>
+(Rene Gassmoeller, Menno Fraters, 2024/11/08)
