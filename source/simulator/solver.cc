@@ -761,7 +761,7 @@ namespace aspect
 
   template <int dim>
   std::pair<double,double>
-  Simulator<dim>::solve_stokes ()
+  Simulator<dim>::solve_stokes (LinearAlgebra::BlockVector &solution_vector)
   {
     TimerOutput::Scope timer (computing_timer, "Solve Stokes system");
 
@@ -780,7 +780,7 @@ namespace aspect
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
-        return stokes_matrix_free->solve();
+        return stokes_matrix_free->solve(solution_vector);
       }
 
     // In the following, we will operate on a vector that contains only
@@ -849,19 +849,19 @@ namespace aspect
         // (it will be ignored by the solver anyway), we need this if we are
         // using a nonlinear scheme, because we use this to compute the current
         // nonlinear residual (see initial_residual below).
-        solution.block(velocity_and_pressure_block) = current_linearization_point.block(velocity_and_pressure_block);
+        solution_vector.block(velocity_and_pressure_block) = current_linearization_point.block(velocity_and_pressure_block);
 
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
-        distributed_stokes_solution.block(velocity_and_pressure_block) = solution.block(velocity_and_pressure_block);
+        distributed_stokes_solution.block(velocity_and_pressure_block) = solution_vector.block(velocity_and_pressure_block);
         denormalize_pressure (this->last_pressure_normalization_adjustment,
                               distributed_stokes_solution);
         current_stokes_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
-        IndexSet &pressure_idxset = parameters.include_melt_transport ?
-                                    introspection.index_sets.locally_owned_melt_pressure_dofs
-                                    : introspection.index_sets.locally_owned_pressure_dofs;
+        const IndexSet &pressure_idxset = parameters.include_melt_transport ?
+                                          introspection.index_sets.locally_owned_melt_pressure_dofs
+                                          : introspection.index_sets.locally_owned_pressure_dofs;
 
         for (unsigned int i=0; i< pressure_idxset.n_elements(); ++i)
           {
@@ -934,7 +934,7 @@ namespace aspect
         // into the ghosted one with all solution components. Note that
         // for a direct solver, we have only one block for velocity+pressure,
         // and so only one block needs to be copied.
-        solution.block(velocity_and_pressure_block) = distributed_stokes_solution.block(velocity_and_pressure_block);
+        solution_vector.block(velocity_and_pressure_block) = distributed_stokes_solution.block(velocity_and_pressure_block);
 
         pcout << "done." << std::endl;
       }
@@ -1218,8 +1218,8 @@ namespace aspect
 
         // then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components
-        solution.block(velocity_block_index) = distributed_stokes_solution.block(velocity_block_index);
-        solution.block(pressure_block_index) = distributed_stokes_solution.block(pressure_block_index);
+        solution_vector.block(velocity_block_index) = distributed_stokes_solution.block(velocity_block_index);
+        solution_vector.block(pressure_block_index) = distributed_stokes_solution.block(pressure_block_index);
 
         // signal successful solver
         signals.post_stokes_solver(*this,
@@ -1230,13 +1230,13 @@ namespace aspect
       }
 
     // do some cleanup now that we have the solution
-    remove_nullspace(solution, distributed_stokes_solution);
+    remove_nullspace(solution_vector, distributed_stokes_solution);
     if (assemble_newton_stokes_system == false)
-      this->last_pressure_normalization_adjustment = normalize_pressure(solution);
+      this->last_pressure_normalization_adjustment = normalize_pressure(solution_vector);
 
     // convert melt pressures:
     if (parameters.include_melt_transport)
-      melt_handler->compute_melt_variables(system_matrix,solution,system_rhs);
+      melt_handler->compute_melt_variables(system_matrix,solution_vector,system_rhs);
 
     return std::pair<double,double>(initial_nonlinear_residual,
                                     final_linear_residual);
@@ -1251,7 +1251,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template double Simulator<dim>::solve_advection (const AdvectionField &); \
-  template std::pair<double,double> Simulator<dim>::solve_stokes ();
+  template std::pair<double,double> Simulator<dim>::solve_stokes (LinearAlgebra::BlockVector &solution_vector);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

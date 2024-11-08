@@ -2,6 +2,8 @@
 # flow benchmark. This is used to test the velocity boundary conditions
 # of the Newton Stokes solver.
 
+# MPI: 2
+
 set Dimension = 2
 set CFL number                             = 1.0
 set Maximum time step                      = 1
@@ -23,7 +25,7 @@ subsection Solver parameters
   end
 
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-8
+    set Linear solver tolerance = 1e-7
     set Stokes solver type =  block AMG
   end
 end

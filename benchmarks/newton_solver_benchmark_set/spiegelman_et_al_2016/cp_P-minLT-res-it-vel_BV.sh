@@ -31,7 +31,7 @@ declare -a BV=("1e23" "1e24" "5e24")
 SOLVER_SHORT="NS" #"itAdandSt"
 SOLVER="iterated Advection and Stokes"
 if [ $SOLVER_SHORT == "NS" ]; then
-SOLVER="Newton Stokes"
+SOLVER="iterated Advection and Newton Stokes"
 elif [ $SOLVER_SHORT == "itAdandSt" ]; then
 SOLVER="iterated Advection and Stokes"
 fi  

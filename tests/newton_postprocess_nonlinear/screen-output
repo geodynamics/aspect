@@ -35,8 +35,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 6.47665e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0146001
+      Newton system information: Norm of the rhs: 6.44873e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0145372
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -46,8 +46,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 5.9453e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0134023
+      Newton system information: Norm of the rhs: 5.84163e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0131686
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
@@ -57,8 +57,8 @@ Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+4 iterations.
-      Newton system information: Norm of the rhs: 6.08238e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0137113
+      Newton system information: Norm of the rhs: 5.99087e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.013505
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08

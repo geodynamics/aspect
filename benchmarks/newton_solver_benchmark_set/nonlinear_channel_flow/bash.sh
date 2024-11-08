@@ -1,30 +1,31 @@
-!/bin/bash
+#!/bin/bash
+
 version="b1"
 build_dir="../../../build/"
-declare -a boundary_type=("v" "t")
-declare -a grid=(5) 
-declare -a UFS=("false" "true") # use failsafe
-declare -a NSP=("SPD" "none") # "Symmetric" "PD" "none") #Use Newton stabilization preconditioner
-declare -a NSA=("SPD" "symmetric" "none") # "Symmetric" "PD" "none") #Use Newton stabilization A block
-declare -a agrid=(0)
+declare -a boundary_type=("v" "t") # velocity or traction boundary conditions
+declare -a grid=(4) # global refinement levels
+declare -a agrid=(0) # adaptive refinement levels
+declare -a UFS=("false") # use Newton failsafe
+declare -a NSP=("SPD") # ("Symmetric" "PD" "none") # Use Newton stabilization preconditioner
+declare -a NSA=("SPD" "none") # ("Symmetric" "PD" "none") # Use Newton stabilization A block
 declare -a n=(3) #1 2 5 10 25 50 100)
-I=150
-declare -a P=(0 5 10 50 15 150 20 25 30) #0 5 10 15 20 150) # 1 2 3 4 5 10 15 25 50 100)
-declare -a LS=(0 5 10)
-declare -a ST=(1e-20)
-declare -a LT=("1e-5") # "1e-8") # "1e-8") #"1e-5") # "1e-8")
-declare -a NLT=("1e-14") # "1e-9" "1e-10" "1e-14" "1e-20")
-declare -a ABT=("1e-2")
-declare -a RSM=("false" "true") #"true" #"false"
-declare -a SF=("9e-1")
-declare -a UDS=("true")
+I=150 # maximum nonlinear iterations
+declare -a P=(5 10 15 150) # (0 5 10 15 20 25 30 50 150) # Picard iterations
+declare -a LS=(0 100) # (0 5 10 100) # Line search iterations
+declare -a ST=(1e-20) # Nonlinear newton solver switch tolerance
+declare -a LT=("1e-5") # "1e-8" # Linear solver tolerance
+declare -a NLT=("1e-14") # "1e-9" "1e-10" "1e-14" "1e-20" # Nonlinear solver tolerance
+declare -a ABT=("1e-2") # A block solver tolerance
+declare -a RSM=("false" "true") # "true" #"false" # Residual scaling method
+declare -a SF=("9e-1") # SPD safety factor
+declare -a UDS=("false")  # ("false" "true") # Use deviator of strain-rate
 declare -a AEW=("false") # always use Eisenstat Walker, even for picard
-AV=-1
-COMP="0" #"4e-12"
-declare -a OS=("9e-1" "1e-1" "1e-2" "1e-8") # "1e-3" "1e-4" "1e-5" "1e-6" "1e-6" "1e-7" "1e-8")
-materialmodelnameShort="SNL" #"VP2"
+AV=-1 # Viscosity averaging
+COMP="0" # "4e-12" # compressibility
+declare -a MLT=("9e-1" "1e-8") #  ("9e-1" "1e-1" "1e-2" "1e-8") # maximum linear Stokes solver tolerance
+materialmodelnameShort="SNL"
 materialmodelname="SNL"
-phi=0 # 0
+phi=0
 declare -a vel=(0) #(25 50 125) # 50 125) #25 50 125)
 declare -a BV=(1e19) #("1e23" "1e24" "5e24") #"1e23" "1e24" "5e24")
 processes=4
@@ -47,7 +48,7 @@ fi
 SOLVER_SHORT="NS" #"itAdandSt" #"NS" #NS"
 SOLVER="NS"
 if [ $SOLVER_SHORT == "NS" ]; then
- SOLVER="Newton Stokes"
+ SOLVER="iterated Advection and Newton Stokes"
 elif [ $SOLVER_SHORT == "itAdandSt" ]; then
  SOLVER="iterated Advection and Stokes"
 fi
@@ -85,7 +86,7 @@ do
               do
                for i_AEW in "${AEW[@]}"
                do
-                for i_OS in "${OS[@]}"
+                for i_MLT in "${MLT[@]}"
                 do
                  for i_RSM in "${RSM[@]}"
                  do
@@ -102,7 +103,7 @@ do
                      U="3.96109558e-10"
                     fi
 
-                    dirname_clean="$version""$materialmodelnameShort""_BT""$i_boundary_type""_""$SOLVER_SHORT""_ST""$i_ST""_UFS""$i_UFS""_NSP-""$i_NSP""_NSA-""$i_NSA""_C""$COMP""_g""$i_grid""_ag""$i_agrid""_AEW""$i_AEW""_UDS""$i_UDS""_SF""$i_SF""_NLT""$i_NLT""_ABT""$i_ABT""_LT""$i_LT""_mLT""$i_OS""_I""$I""_P""$i_P""_EW1""_theta1""_LS""$i_LS""_RSM""$i_RSM""_AV""$AV""_phi""$phi""_vel""$i_vel""_BV""$i_BV""_n""$i_n"
+                    dirname_clean="$version""$materialmodelnameShort""_BT""$i_boundary_type""_""$SOLVER_SHORT""_ST""$i_ST""_UFS""$i_UFS""_NSP-""$i_NSP""_NSA-""$i_NSA""_C""$COMP""_g""$i_grid""_ag""$i_agrid""_AEW""$i_AEW""_UDS""$i_UDS""_SF""$i_SF""_NLT""$i_NLT""_ABT""$i_ABT""_LT""$i_LT""_mLT""$i_MLT""_I""$I""_P""$i_P""_EW1""_theta1""_LS""$i_LS""_RSM""$i_RSM""_AV""$AV""_phi""$phi""_vel""$i_vel""_BV""$i_BV""_n""$i_n"
                     dirname="results/""$dirname_clean"
                     infilename="$dirname""/input.prm"
                     outfilename="$dirname""/output.log"
@@ -140,13 +141,13 @@ do
                      -e "s/set SPD safety factor = .*/set SPD safety factor = $i_SF/g" \
                      -e "s/set Use deviator of strain-rate = .*/set Use deviator of strain-rate = $i_UDS/g" \
                      -e "s/set Max Newton line search iterations = .*/    set Max Newton line search iterations = $i_LS/g" \
-                     -e "s/set Maximum linear Stokes solver tolerance =.*/set Maximum linear Stokes solver tolerance = $i_OS/g" \
+                     -e "s/set Maximum linear Stokes solver tolerance =.*/set Maximum linear Stokes solver tolerance = $i_MLT/g" \
                      -e "s/set Use Newton residual scaling method .*/    set Use Newton residual scaling method = $i_RSM/g" \
                      $input_name > "$infilename"
 
                     nohup mpirun -np $processes $build_dir./aspect $infilename > $outfilename 2>$errorfilename
 
-                    grep "Relative nonlinear residual" $outfilename > $outplotfilename
+                    grep "Relative nonlinear residual " $outfilename > $outplotfilename
 
                    done
                   done
