@@ -1,0 +1,70 @@
+# This test is almost identical to the test hk04_olivine_composite_hydration_prefactor,
+# the only difference being that this model includes melt transport. This test ensures
+# that the water fugacity calculation uses the temperature defined in the Adiabatic
+# conditions model during initialization.
+include $ASPECT_SOURCE_DIR/tests/hk04_olivine_composite_hydration_prefactor.prm
+
+# The reactive fluid transport model requires that there are compositional fields
+# named bound_fluid and porosity
+subsection Compositional fields
+  set Names of fields  = bound_fluid, porosity
+  set Number of fields = 2
+end
+
+# set a bound_fluid of 1% everywhere, and a porosity of 0% everywhere. The bound_fluid
+# composition is what determines the water fugacity.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.01; 0
+  end
+end
+
+# Define an adiabatic conditions model, the temperature defined here is what will be used
+# during initialization. We set the adiabatic temperature to 1173 K, the adiabatic pressure
+# to 1 GPa, and the density to 3300 kg/m3.
+subsection Adiabatic conditions model
+  set Model name = function
+  subsection Function
+    set Function expression = 1173; 1e9; 3300
+  end
+end
+
+# Include melt transport.
+subsection Melt settings
+  set Include melt transport = true
+end
+
+subsection Material model
+  # Choose the reactive fluid transport model, which utilizes the melt framework.
+  set Model name =  reactive fluid transport
+
+  subsection Visco Plastic
+    # Composite creep, and choose the Hirth & Kohlstaedt 2004 olivine hydration
+    # viscosity prefactor scheme.
+    set Viscous flow law                               = composite
+    set Viscosity prefactor scheme                     = HK04 olivine hydration
+    set Reference strain rate                          = 1e-17
+    set Minimum strain rate                            = 1e-17
+
+    # Dislocation creep parameters
+    # The water fugacity exponent is 1.2, but we need to divide by
+    # the stress exponent, so we input r/n=0.34285714285714286.
+    set Prefactors for dislocation creep               = 1.0095317511683098e-25
+    set Stress exponents for dislocation creep         = 3.5
+    set Activation energies for dislocation creep      = 520e3
+    set Activation volumes for dislocation creep       = 22e-6
+    set Water fugacity exponents for dislocation creep = 0.34285714285714286
+
+    # Diffusion creep parameters
+    # The same approach is required as for the dislocation parameters,
+    # but the stress exponent for diffusion creep is 1.
+    set Prefactors for diffusion creep                 = 1.5773933612004842e-21
+    set Stress exponents for diffusion creep           = 1.0
+    set Activation energies for diffusion creep        = 375e3
+    set Activation volumes for diffusion creep         = 10e-6
+    set Grain size                                     = 1e-3
+    set Water fugacity exponents for diffusion creep   = 0.7
+  end
+end

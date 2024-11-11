@@ -102,24 +102,31 @@ subsection Material model
   set Model name = visco plastic
 
   subsection Visco Plastic
+    # Composite creep, and choose the Hirth & Kohlstaedt 2004 olivine hydration
+    # viscosity prefactor scheme.
+    set Viscous flow law                               = composite
+    set Viscosity prefactor scheme                     = HK04 olivine hydration
+    set Reference strain rate                          = 1e-17
+    set Minimum strain rate                            = 1e-17
+
     # Dislocation creep parameters
     # The water fugacity exponent is 1.2, but we need to divide by
     # the stress exponent, so we input r/n=0.34285714285714286.
-    set Reference strain rate                          = 1e-17
-    set Minimum strain rate                            = 1e-17
-    set Viscous flow law                               = composite
     set Prefactors for dislocation creep               = 1.0095317511683098e-25
     set Stress exponents for dislocation creep         = 3.5
     set Activation energies for dislocation creep      = 520e3
     set Activation volumes for dislocation creep       = 22e-6
     set Water fugacity exponents for dislocation creep = 0.34285714285714286
+
+    # Diffusion creep parameters
+    # The same approach is required as for the dislocation parameters,
+    # but the stress exponent for diffusion creep is 1.
     set Prefactors for diffusion creep                 = 1.5773933612004842e-21
     set Stress exponents for diffusion creep           = 1.0
     set Activation energies for diffusion creep        = 375e3
     set Activation volumes for diffusion creep         = 10e-6
     set Grain size                                     = 1e-3
     set Water fugacity exponents for diffusion creep   = 0.7
-    set Viscosity prefactor scheme                     = HK04 olivine hydration
   end
 end
 

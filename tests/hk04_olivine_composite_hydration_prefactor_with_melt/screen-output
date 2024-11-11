@@ -1,0 +1,27 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 3,629 (882+421+882+121+441+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving bound_fluid system ... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 5+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3198 kg/m^3, 2.628e+20 Pa s, 3.198e+13 kg
+     Writing graphical output:                          output-hk04_olivine_composite_hydration_prefactor_with_melt/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!
