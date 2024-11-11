@@ -1,0 +1,98 @@
+# This setup tests the compositional field boundary conditions
+# along a deforming boundary. To determine whether a part of the
+# boundary experiences in- or outflow, the mesh velocity is
+# subtracted from the material velocity. In this test, the
+# prescribed material velocity is zero, and only the erosion
+# or deposition (decrease or increase in height) by the diffusion
+# applied to the surface topography determines whether boundary
+# conditions should be applied (inflow/deposition),
+# or not (outflow/erosion).
+
+include $ASPECT_SOURCE_DIR/tests/hill_diffusion.prm
+
+set Dimension                              = 2
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+# 1x1 box with an initial hill topography
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+      set Function constants = A=0.150, L=1.
+      set Function expression = \
+                                if(x<0.5,A * sin((x+0.5)*pi),0)
+    end
+  end
+end
+
+# We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 4
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = layer_1, layer_2, layer_3
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names = x,z
+    set Coordinate system = cartesian #depth
+    #set Function expression = if(x<.05, 1, 0); if(x>=0.05 && x<0.1, 1, 0); 0
+    set Function expression = if(z>1.07, 1, 0); 0; 0
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top
+  set Allow fixed composition on outflow boundaries = false
+  set List of model names = function
+  subsection Function
+    set Variable names = x,z,t
+    set Function expression = if(t==0,1,0); 0; if(t==0,0,1)
+  end
+end
+
+# Free slip on all boundaries except the top boundary.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom
+  set Prescribed velocity boundary indicators = top: function
+  subsection Function
+    set Variable names = x,z,t
+    set Function expression = 0;0
+  end
+end
+
+# Vertical gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+# We output the computed topography
+# value to file.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, topography, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0.0001
+    set Output mesh velocity = true
+    set Interpolate output = false
+    set Output format = gnuplot
+  end
+end
