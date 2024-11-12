@@ -1248,7 +1248,7 @@ namespace aspect
                              "therefore saves disk space, but misrepresents discontinuous "
                              "output properties. Activating this function reduces the disk space "
                              "by about a factor of $2^{dim}$ for HDF5 output, and currently has no "
-                             "effect on other output formats. "
+                             "effect on other output formats.\n "
                              ":::{warning}\n"
                              "Setting this flag to true will result in "
                              "visualization output that does not accurately represent discontinuous "
