@@ -445,7 +445,7 @@ namespace aspect
     void
     Manager<dim>::local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
                                          small_vector<Point<dim>> &positions,
-                                         std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
+                                         const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
                                          SolutionEvaluator<dim> &evaluator)
     {
       const unsigned int n_particles = particle_handler->n_particles_in_cell(inputs.current_cell);
