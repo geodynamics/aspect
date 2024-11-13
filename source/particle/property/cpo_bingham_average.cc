@@ -87,7 +87,6 @@ namespace aspect
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
 
-        unsigned int p = 0;
         for (auto &particle: particles)
           {
             ArrayView<double> data = particle.get_properties();
@@ -109,7 +108,6 @@ namespace aspect
                       data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
                     }
               }
-            ++p;
           }
       }
 
