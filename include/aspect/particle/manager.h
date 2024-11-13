@@ -418,12 +418,13 @@ namespace aspect
          * function will fill this structure with the necessary data.
          * @param positions The reference positions of the particles in the cell.
          * This function will update these positions for the current cell.
+         * @param evaluation_flags The required evaluation flags for each component.
          * @param evaluator The solution evaluator that is used to update the particles.
          */
         void
         local_update_particles(Property::ParticleUpdateInputs<dim> &inputs,
                                small_vector<Point<dim>> &positions,
-                               std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
+                               const std::vector<EvaluationFlags::EvaluationFlags> &evaluation_flags,
                                SolutionEvaluator<dim> &evaluator);
 
         /**
