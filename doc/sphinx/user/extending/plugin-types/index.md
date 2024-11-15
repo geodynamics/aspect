@@ -9,6 +9,7 @@ gravity-models.md
 initial-conditions.md
 velocity-bc.md
 temp-bc.md
+boundary-heat-flux.md
 postprocessors.md
 vis-postprocessors.md
 mesh-refinement.md
