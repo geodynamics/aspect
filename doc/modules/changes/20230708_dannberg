@@ -1,5 +1,0 @@
-Fixed: The computation of the upper box origin in the 'box
-with lithosphere boundary indicators' geometry model did not 
-take into account a nonzero origin. This is fixed now.
-<br>
-(Juliane Dannberg, 2023/07/08)

@@ -1,6 +1,0 @@
-Changed: Melt fraction calculated by the Katz2003 model
-in the ReactionModels module was added to the reactive fluid transport model.
-A test was added compositing the reactive fluid transport and visco plastic models,
-benchmarking the melt fraction results with Katz et. al. 2003.
-<br>
-(Grant Block, 2024/06/01)

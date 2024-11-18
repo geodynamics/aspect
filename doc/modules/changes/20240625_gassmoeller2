@@ -1,7 +1,0 @@
-Changed: The particle interpolator plugin 'bilinear least squares'
-now activates a limiter by default, which prevents unwanted over-
-and undershoots by limiting the returned properties to the bounds
-of the particle properties in the cell. The limiter can be
-deactivated by the input parameter 'Use linear least squares limiter'.
-<br>
-(Rene Gassmoeller, 2024/06/25)

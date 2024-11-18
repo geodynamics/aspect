@@ -1,4 +1,0 @@
-New: There is now a postprocessor that computes statistics
-about how many iterations ARKode needs to solve ODEs.
-<br>
-(Juliane Dannberg, 2024/06/12)

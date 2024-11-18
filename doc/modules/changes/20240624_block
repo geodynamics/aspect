@@ -1,5 +1,0 @@
-Added: The Frank Kamenetskii module now has user inputs for reference
-temperature and reference pressure. Adiabatic surface temperature and pressure
-are used as the defaults for those values.
-<br>
-(Grant Block, 2024/06/24)

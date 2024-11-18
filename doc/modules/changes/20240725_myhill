@@ -1,7 +1,0 @@
-New: The CompositeViscoPlastic rheology in ASPECT now
-allows the user to select isostress (Reuss) or
-isostrain (Voigt) averaging of viscosities for
-multicomponent materials via the parameter
-"Viscosity averaging scheme".
-<br>
-(Bob Myhill, 2024/07/25)

@@ -1,7 +1,0 @@
- New: There is now an entropy table lookup model
- in the initial composition model.
- This model takes an initial temperature field and
- converts it to an initial entropy field using
- a lookup table.
- <br>
- (Haoyuan Li, 2023/08/11)

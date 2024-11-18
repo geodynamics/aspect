@@ -1,9 +1,0 @@
-Changed: The interface
-Postprocess::VisualizationPostprocessors::CellDataVectorCreator::execute()
-used to return an object of type
-`std::pair<std::string, Vector<float>*>` where the second part is just a
-raw pointer. This has been changed (incompatibly) to
-`std::pair<std::string, std::unique_ptr<Vector<float>>>` to avoid the use
-of raw pointers and ensure that memory de-allocation happens automatically.
-<br>
-(Wolfgang Bangerth, 2023/11/28)

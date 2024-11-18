@@ -1,5 +1,0 @@
-New: There is now a new visualization postprocessor called "surface
-elevation" that can be used to plot the initial topography or the
-effects of a free surface.
-<br>
-(Wolfgang Bangerth, 2024/02/04)

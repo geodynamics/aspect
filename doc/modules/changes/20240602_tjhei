@@ -1,6 +1,0 @@
-Changed: The QT based Parameter GUI has been removed from the ASPECT repository
-and the documentation as it was no longer maintained and no longer working
-correctly. Instead, use the parameter list linked from the website or edit
-directly in Visual Studio Code with the ASPECT plugin.
-<br>
-(Timo Heister, 2024/06/02)
