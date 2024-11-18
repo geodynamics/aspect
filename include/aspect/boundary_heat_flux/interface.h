@@ -59,7 +59,18 @@ namespace aspect
          * @param material_model_inputs The material property inputs.
          * @param material_model_outputs The material property outputs.
          * @param normal_vectors The normal vector at each quadrature point.
+         *
          * @return A vector of heat flux vectors at the evaluation points.
+         *   For historical reasons, the function is asked
+         *   to provide the heat flux as a vector, even though the place where the
+         *   heat flux is used only uses the component of this vector that is
+         *   to the boundary (which it computes by taking the dot product *normal*
+         *   between the returned vector and the normal vector). Because there are
+         *   situations where all you can do is compute the normal heat flux as a
+         *   scalar, the `heat_flux()` function also receives the normal vector as
+         *   an input argument. As a consequence, one way for the function to
+         *   compute the required heat flux vector is to compute the scalar heat
+         *   flux and multiply it by the normal vector.
          */
         virtual
         std::vector<Tensor<1,dim>>
