@@ -1,5 +1,0 @@
- Improved: The geometry function point_is_in_domain
- now also works for meshes that include initial topography
- and/or mesh deformation for box and chunk geometries.
- <br>
- (Anne Glerum, 2023/12/14)

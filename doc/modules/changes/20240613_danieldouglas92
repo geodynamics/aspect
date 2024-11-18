@@ -1,7 +1,0 @@
-Added: A postprocessor 'darcy velocity' that visualizes the fluid
-velocity in models with a compositional field named 'porosity'. 
-This postprocessor is independent of the method the porosity is actually 
-advected with, i.e. it could be static, advected with the Darcy velocity, 
-or advected according to the two-phase flow equations.
-<br>
-(Daniel Douglas, 2024/06/13)

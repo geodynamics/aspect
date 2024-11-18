@@ -1,5 +1,0 @@
-New: The maximum relative increase in the time step length is now
-bounded by a factor of 1.91, where before it was unbounded. This value
-is obtained from theoretical considerations about parabolic problems.
-<br>
-(Laila Busaleh, 2022/09/15)

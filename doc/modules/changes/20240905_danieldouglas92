@@ -1,6 +1,0 @@
-Added: A python script which uses Paraview's pvpython to extract velocities
-from a global model along user-specified boundaries and saves them to ASCII
-files which can then be applied as velocity boundary conditions in regional
-chunk models.
-<br>
-(Daniel Douglas, 2024/09/05)

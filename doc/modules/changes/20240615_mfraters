@@ -1,5 +1,0 @@
-Changed: The particle plugin functions declare_parameters and parse_parameters
-now assume that they are already in the particles subsection. User plugins will 
-have to change accordingly.
-<br>
-(Menno Fraters, 2024/06/15)

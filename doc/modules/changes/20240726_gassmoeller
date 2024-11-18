@@ -1,5 +1,0 @@
-New: The grain size evolution functionality has been extracted from the grain
-size material model into the new grain size evolution reaction model. This
-simplifies using the grain size evolution equations in other material models.
-<br>
-(Rene Gassmoeller, 2024/07/26)

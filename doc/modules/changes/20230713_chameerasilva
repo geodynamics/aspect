@@ -1,8 +1,0 @@
-Changed: Boundary traction models are now organized in
-a manager class that allows to assign multiple
-boundary traction plugins to each boundary. Existing
-user plugins that use the function
-this->get_boundary_traction() will need to be modified
-to use this->get_boundary_traction_manager().
-<br>
-(Chameera Silva, Rene Gassmoeller, 2023/07/13)
