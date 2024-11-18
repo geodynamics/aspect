@@ -31,7 +31,7 @@
  * (Rene Gassmoeller, Menno Fraters, 2024/11/08)
  *
  * <li> Added: When using the Geodynamic World Builder, ASPECT will create a file
- * called 'original.wb' in the output directory which contains the exact 
+ * called 'original.wb' in the output directory which contains the exact
  * worldbuilder file used to run the ASPECT model.
  * <br>
  * (Daniel Douglas, 2024/11/06)
@@ -58,7 +58,7 @@
  *
  * <li> Removed: A number of deprecated source code functions and input parameters
  * have been removed. In particular the deprecated option to specify
- * individual material properties in the parameter 
+ * individual material properties in the parameter
  * 'Postprocess/Visualization/List of output variables' has been removed.
  * Input files will be automatically fixed and updated
  * by the update scripts in the directory contrib/utilities.
@@ -84,7 +84,7 @@
  * (Rene Gassmoeller, 2024/10/08)
  *
  * <li> New: The interface for particle property plugins has been updated.
- * The new interface can update particles cell-wise and is more efficient. 
+ * The new interface can update particles cell-wise and is more efficient.
  * In addition, the interface is more extensible for future improvements.
  * All particle property plugins in ASPECT have been updated, user plugins
  * will have to be updated accordingly before the support for the now deprecated
@@ -176,7 +176,7 @@
  * (Timo Heister, 2024/06/18)
  *
  * <li> Changed: The particle plugin functions declare_parameters and parse_parameters
- * now assume that they are already in the particles subsection. User plugins will 
+ * now assume that they are already in the particles subsection. User plugins will
  * have to change accordingly.
  * <br>
  * (Menno Fraters, 2024/06/15)
@@ -190,9 +190,9 @@
  * (Juliane Dannberg, 2024/06/14)
  *
  * <li> Added: A postprocessor 'darcy velocity' that visualizes the fluid
- * velocity in models with a compositional field named 'porosity'. 
- * This postprocessor is independent of the method the porosity is actually 
- * advected with, i.e. it could be static, advected with the Darcy velocity, 
+ * velocity in models with a compositional field named 'porosity'.
+ * This postprocessor is independent of the method the porosity is actually
+ * advected with, i.e. it could be static, advected with the Darcy velocity,
  * or advected according to the two-phase flow equations.
  * <br>
  * (Daniel Douglas, 2024/06/13)
@@ -214,7 +214,7 @@
  * <br>
  * (Juliane Dannberg, 2024/06/10)
  *
- * <li> New: The CPO particle property plugin can now use the Geodynamic 
+ * <li> New: The CPO particle property plugin can now use the Geodynamic
  * World Builder to set initial grain-sizes and grain orientations
  * <br>
  * (Menno Fraters, 2024/06/09)
@@ -258,7 +258,7 @@
  *
  * <li> New: The CPO particle property plugin set now contains a plugin
  * which can compute the symmetry decompositions of the elastic
- * tensor. There are now also tests which test the whole CPO 
+ * tensor. There are now also tests which test the whole CPO
  * particle property plugin set.
  * <br>
  * (Menno Fraters, 2024/06/06)
@@ -266,7 +266,7 @@
  * <li> New: Added a Rayleigh Taylor instability benchmark with a free surface.
  * The benchmark was described by Kaus et al. (2010) and reproduced with
  * ASPECT with different stabilization schemes for the free surface by
- * Rose et al. (2017). It can be used to show that the stabilization 
+ * Rose et al. (2017). It can be used to show that the stabilization
  * scheme implemented by I. Rose allows for larger timesteps, and that
  * the projection of velocities onto the surface leads to significantly
  * different topography.
@@ -279,16 +279,16 @@
  * <br>
  * (Juliane Dannberg, 2024/06/06)
  *
- * <li> New: Added fluid reaction and properties calculations to the 
+ * <li> New: Added fluid reaction and properties calculations to the
  * Katz2003MantleMelting model in the ReactionModels module. These calculations
  * were taken from MeltSimple and the model now calls Katz2003MantleMelting. Additionally,
- * the katz 2003 option in ReactiveFluidTransport calls these calculations, allowing for 
- * melting and melt transport to be composited with any material model via ReactiveFluidTransport. 
+ * the katz 2003 option in ReactiveFluidTransport calls these calculations, allowing for
+ * melting and melt transport to be composited with any material model via ReactiveFluidTransport.
  * <br>
  * (Grant Block, 2024/06/06)
  *
  * <li> New: There is now a python script in the contrib folder that
- * creates netcdf files from an input ascii file 
+ * creates netcdf files from an input ascii file
  * formatted following structured ascii data file convention.
  * <br>
  * (Arushi Saxena, 2024/06/06)
@@ -298,8 +298,8 @@
  * <br>
  * (Timo Heister, 2024/06/05)
  *
- * <li> New: There is now a new cookbook based on the 
- * setup of Allken et al, G3, 2012 which models  
+ * <li> New: There is now a new cookbook based on the
+ * setup of Allken et al, G3, 2012 which models
  * rift interaction in 3D brittle-ductile coupled systems.
  * <br>
  * (Cedric Thieulot, 2024/06/05)
@@ -320,20 +320,20 @@
  * <br>
  * (Daniel Douglas, 2024/06/05)
  *
- * <li> Fixed: There was a bug in spherical harmonic data reading of S40RTS 
- * and SAVANI initial temperature models when a maximum degree lower 
- * than the maximum degree of the spherical harmonic coefficients of 
- * the data file is specified by users to set up temperature field 
+ * <li> Fixed: There was a bug in spherical harmonic data reading of S40RTS
+ * and SAVANI initial temperature models when a maximum degree lower
+ * than the maximum degree of the spherical harmonic coefficients of
+ * the data file is specified by users to set up temperature field
  * from spherical harmonic summation. This bug is now fixed.
  * <br>
  * (Shangxin Liu, 2024/06/04)
  *
  * <li> Changed: In S40RTS and SAVANI initial temperature models, the input parameter,
  * 'Specify a lower maximum order' is changed to 'Specify a lower maximum degree',
- * and the input parameter, 'Maximum order' is changed to 'Maximum degree'. 
+ * and the input parameter, 'Maximum order' is changed to 'Maximum degree'.
  * This avoids confusion because the function of these two parameters is to
  * allow users to specify a maximum degree lower than the maximum degree
- * of the spherical harmonic data file to calculate the temperature field. 
+ * of the spherical harmonic data file to calculate the temperature field.
  * <br>
  * (Shangxin Liu, 2024/06/04)
  *
@@ -370,7 +370,7 @@
  * (Rene Gassmoeller, 2024/06/01)
  *
  * <li> Added: Functionality for multiplying the dislocation and/or diffusion creep
- * viscosities by prefactors which depend on the model composition. Created a 
+ * viscosities by prefactors which depend on the model composition. Created a
  * specific use-case for multiplying the viscosity by a factor that accounts for
  * bound H2O from Hirth & Kohlstaedt 2004 10.1029/138GM06
  * <br>
@@ -432,8 +432,8 @@
  * (Bob Myhill, 2024/05/29)
  *
  * <li> Changed: A pressure term was added to the Frank Kamenetskii viscous flow law
- * in the Visco Plastic material model. The new FK function is given by 
- * viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)) + F * (P-ref_P)/(ref_rho*g*h)), 
+ * in the Visco Plastic material model. The new FK function is given by
+ * viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)) + F * (P-ref_P)/(ref_rho*g*h)),
  * where F * (P-ref_P)/(ref_rho*g*h) are the new terms added here.
  * <br>
  * (Grant Block, 2024/05/29)
@@ -585,7 +585,7 @@
  * <br>
  * (Juliane Dannberg, 2023/10/01)
  *
- * <li> Added: There is now a prescribed viscosity material model plugin, which can 
+ * <li> Added: There is now a prescribed viscosity material model plugin, which can
  * overwrite the viscosity of a specified location with a viscosity prescribed
  * by a function.
  * <br>
@@ -674,28 +674,28 @@
  * <br>
  * (Maaike Weerdesteijn, 2023/07/14)
  *
- * <li> New: There is now a new material model ('reactive fluid 
- * transport') that is designed to advect fluids and 
- * compute fluid release and absorption based on 
+ * <li> New: There is now a new material model ('reactive fluid
+ * transport') that is designed to advect fluids and
+ * compute fluid release and absorption based on
  * different models for fluid-rock interaction. The
- * properties of the solid are taken from a 
- * base material model. 
+ * properties of the solid are taken from a
+ * base material model.
  * <br>
  * (John Naliboff, 2023/07/14)
  *
  * <li> Fixed: The strain rheology now uses the correct 'old strain'
- * when computing the reaction term updates. 
+ * when computing the reaction term updates.
  * <br>
  * (John Naliboff 2023/07/14)
  *
- * <li> New: There is now a new cookbook which models 
+ * <li> New: There is now a new cookbook which models
  * the (Poiseuille) flow of the lower crust around a rigid obstacle.
  * <br>
  * (Cedric Thieulot, 2023/07/13)
  *
  * <li>  Improved: The initial lithostatic pressure plugin for
  *  boundary tractions now includes the initial topography
- *  of the reference point into its pressure profile 
+ *  of the reference point into its pressure profile
  *  instead of the maximum topography within the domain.
  *  <br>
  *  (Anne Glerum, 2023/07/13)
@@ -712,13 +712,13 @@
  * <li> New: Added a cookbook on how to set up global instantaneous models
  * based on recent geophysical constraints with a heterogeneous density and
  * viscosity distribution and weak plate boundaries prescribed using
- * different plate boundary configurations. 
+ * different plate boundary configurations.
  * <br>
  * (Arushi Saxena, Juliane Dannberg, and Rene Gassmoeller 2023/07/13)
  *
- * <li> New: There is now a new cookbook which is a very 
- * simple subduction initiation model as published 
- * by Matsumoto and Tomoda (1983). 
+ * <li> New: There is now a new cookbook which is a very
+ * simple subduction initiation model as published
+ * by Matsumoto and Tomoda (1983).
  * <br>
  * (Cedric Thieulot, 2023/07/12)
  *
@@ -735,12 +735,12 @@
  * <br>
  * (Rene Gassmoeller, 2023/07/12)
  *
- * <li> New: A cookbook which replicates the model setup of the 
+ * <li> New: A cookbook which replicates the model setup of the
  * van Keken et al., 2008 2D corner flow subduction benchmark.
  * <br>
  * (Daniel Douglas, Cedric Thieulot, Wolfgang Bangerth, Max Rudolph, 2023/07/12)
  *
- * <li> New: There is now a new cookbook which models 
+ * <li> New: There is now a new cookbook which models
  * the deformation of elliptical and rectangular inclusions
  * in simple shear and pure shear.
  * <br>
@@ -753,17 +753,17 @@
  * <br>
  * (Wolfgang Bangerth, 2023/07/10)
  *
- * <li> New: The base code for the computation and output of 
- * Crystal Preferred Orientation (CPO) has been added to 
- * ASPECT. 
+ * <li> New: The base code for the computation and output of
+ * Crystal Preferred Orientation (CPO) has been added to
+ * ASPECT.
  * <br>
  * (Menno Fraters, 2023/07/09)
  *
- * <li>  Changed: The input parameter 'Include viscoelasticity' has been 
+ * <li>  Changed: The input parameter 'Include viscoelasticity' has been
  * removed from the visco_plastic material model. When
  * 'Enable elasticity' in the Formulation subsection is
  * switched on, elasticity will automatically be included
- * in the visco_plastic material model. 
+ * in the visco_plastic material model.
  * <br>
  * (Anne Glerum, 2023/07/09)
  *
@@ -785,17 +785,17 @@
  * (Haoyuan Li, Bob Myhill, 2023/07/08)
  *
  * <li> Fixed: The computation of the upper box origin in the 'box
- * with lithosphere boundary indicators' geometry model did not 
+ * with lithosphere boundary indicators' geometry model did not
  * take into account a nonzero origin. This is fixed now.
  * <br>
  * (Juliane Dannberg, 2023/07/08)
  *
  * <li> Changed: Default field types are now defined by ASPECT
  * based on Field Names if the types are not defined by the user.
- * The logic is as follows: if the name contains the substring stress, 
- * it has type stress. If the name is equal to 
+ * The logic is as follows: if the name contains the substring stress,
+ * it has type stress. If the name is equal to
  * s11, s12, s22, s13, s23, s33, it has type strain.
- * If the name is equal to grain_size, porosity, density_field, 
+ * If the name is equal to grain_size, porosity, density_field,
  * or entropy it has the types grain size, porosity, density or entropy
  * respectively. Otherwise it has the type chemical composition.
  * <br>
@@ -825,12 +825,12 @@
  * <li> New: Mesh deformation plugin that uses the landscape
  * evolution code FastScape to deform the surface through
  * erosion and sediment deposition.
- * 
+ *
  * Citations:
  * Neuharth, D., Brune, S., Wrona, T., Glerum, A., Braun, J., & Yuan, X. (2022). Evolution of rift systems and their fault networks in response to surface processes. Tectonics, 41(3), e2021TC007166.
- * 
+ *
  * Neuharth, D., Brune, S., Glerum, A., Morley, C. K., Yuan, X., & Braun, J. (2022). Flexural strike-slip basins. Geology, 50(3), 361-365.
- * 
+ *
  * <br>
  * (Derek Neuharth, Anne Glerum, Sascha Brune, Esther Heckenbach 2023/03/01)
  *
