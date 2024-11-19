@@ -48,6 +48,8 @@ and the links are working
   git commit -a -m "doxygen formatting, update copyright years"
   ```
 
+- Make sure all CI workflows on the main branch pass: https://github.com/geodynamics/aspect/actions?query=branch%3Amain
+
 - Create a pull request with the pre release tasks
 
 ## Create a release pull-request
