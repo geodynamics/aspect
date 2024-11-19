@@ -60,10 +60,10 @@ and the links are working
   setup version numbers:
 
   ```
-  export OLDVER=2.4.0
-  export VER=2.5.0
-  export VERSHORT=2.5
-  export NEXTVER=2.6.0-pre
+  export OLDVER=3.0.0
+  export VER=3.1.0
+  export VERSHORT=3.1
+  export NEXTVER=3.2.0-pre
   # Make sure DEALSRCDIR is set to correct path
   export DEALSRCDIR=$DEAL_II_DIR
   ```
