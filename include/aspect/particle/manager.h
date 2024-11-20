@@ -97,7 +97,7 @@ namespace aspect
          * Move constructor. This is required to be able to put instances
          * of this class into a std::vector.
          */
-        Manager(Manager &&);
+        Manager(Manager &&) noexcept;
 
         /**
          * Initialize the particle manager.

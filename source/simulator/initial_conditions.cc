@@ -289,8 +289,8 @@ namespace aspect
       {
         const Particle::Property::Manager<dim> &particle_property_manager = particle_managers[particle_manager].get_property_manager();
 
-        particle_property_indices.push_back(std::vector<std::pair<unsigned int, unsigned int>>());
-        property_mask.push_back(ComponentMask(particle_property_manager.get_data_info().n_components(),false));
+        particle_property_indices.emplace_back();
+        property_mask.emplace_back(particle_property_manager.get_data_info().n_components(),false);
 
         for (unsigned int advection_field=0; advection_field<advection_fields.size(); ++advection_field)
           {
@@ -309,7 +309,7 @@ namespace aspect
                                                                  + particle_property_and_component.second;
 
                     advection_field_has_been_found[advection_field] = true;
-                    particle_property_indices[particle_manager].push_back({advection_field, particle_property_index});
+                    particle_property_indices[particle_manager].emplace_back(advection_field, particle_property_index);
                     property_mask[particle_manager].set(particle_property_index,true);
                   }
               }
@@ -327,7 +327,7 @@ namespace aspect
                                        "more fields that are marked as particle advected than particle properties"));
 
                 advection_field_has_been_found[advection_field] = true;
-                particle_property_indices[particle_manager].push_back({advection_field,particle_property_index});
+                particle_property_indices[particle_manager].emplace_back(advection_field,particle_property_index);
                 property_mask[particle_manager].set(particle_property_index,true);
               }
           }
@@ -411,14 +411,14 @@ namespace aspect
               // to the particle field interpolated at these points
               cell->get_dof_indices (local_dof_indices);
               const unsigned int n_dofs_per_cell = finite_element.base_element(base_element_index).dofs_per_cell;
-              for (unsigned int j=0; j<particle_property_indices[particle_manager].size(); ++j)
+              for (const std::pair<unsigned int, unsigned int> &field_and_particle_property: particle_property_indices[particle_manager])
                 for (unsigned int i=0; i<n_dofs_per_cell; ++i)
                   {
                     const unsigned int system_local_dof
-                      = finite_element.component_to_system_index(advection_fields[particle_property_indices[particle_manager][j].first].component_index(introspection),
+                      = finite_element.component_to_system_index(advection_fields[field_and_particle_property.first].component_index(introspection),
                                                                  /*dof index within component=*/i);
 
-                    particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][particle_property_indices[particle_manager][j].second];
+                    particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][field_and_particle_property.second];
                   }
             }
         }
