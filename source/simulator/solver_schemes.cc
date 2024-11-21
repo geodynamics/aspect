@@ -846,12 +846,7 @@ namespace aspect
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
-            postprocess ();
-          }
+          postprocess ();
 
         ++nonlinear_iteration;
       }
@@ -861,10 +856,6 @@ namespace aspect
 
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
-
-    // When we are finished iterating, we need to set the final solution to the current linearization point,
-    // because the solution vector is used in the postprocess.
-    solution = current_linearization_point;
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
@@ -1170,12 +1161,7 @@ namespace aspect
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
-            postprocess ();
-          }
+          postprocess ();
 
         ++nonlinear_iteration;
       }
@@ -1187,10 +1173,6 @@ namespace aspect
 
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
-
-    // When we are finished iterating, we need to set the final solution to the current linearization point,
-    // because the solution vector is used in the postprocess.
-    solution = current_linearization_point;
 
     AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
 
@@ -1279,12 +1261,7 @@ namespace aspect
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
-            postprocess ();
-          }
+          postprocess ();
 
         ++nonlinear_iteration;
       }
@@ -1296,10 +1273,6 @@ namespace aspect
 
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
-
-    // When we are finished iterating, we need to set the final solution to the current linearization point,
-    // because the solution vector is used in the postprocess.
-    solution = current_linearization_point;
 
     AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
 
