@@ -3,6 +3,12 @@
 
 *This section was contributed by Cedric Thieulot and Erik van der Wiel.*
 
+**UNDER CONSTRUCTION: This cookbook does currently not produce the results shown
+in the figures. The reason for that is that the original model of
+{cite:t}`vanderwiel:etal:2024a` used a more complicated parameter file and
+a different version of ASPECT. Do not rely on the results of this cookbook
+at the moment.**
+
 The setup for this experiment originates in {cite:t}`vanderwiel:etal:2024a`.
 The domain is an annulus with an inner radius of 3480 km and an outer radius of 6370 km.
 The Isentropic Compression Approximation (ICA) is used {cite}`gassmoller:etal:2020`, which is
