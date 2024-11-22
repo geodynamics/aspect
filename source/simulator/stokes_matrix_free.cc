@@ -1424,8 +1424,11 @@ namespace aspect
 
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
-                      const SymmetricTensor<2,dim> effective_strain_rate =
-                        elastic_out == nullptr ? deviator(in.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
+                      SymmetricTensor<2,dim> effective_strain_rate = in.strain_rate[q];
+                      if (elastic_out != nullptr)
+                        effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
+                      else if ((sim.newton_handler->parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
+                        effective_strain_rate = deviator(effective_strain_rate);
 
                       // use the spd factor when the stabilization is PD or SPD.
                       const double alpha =  (sim.newton_handler->parameters.velocity_block_stabilization
