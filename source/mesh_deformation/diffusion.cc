@@ -281,10 +281,10 @@ namespace aspect
                 cell_matrix = 0;
 
                 // Loop over the quadrature points of the current face
-                for (unsigned int point=0; point<n_fs_face_q_points; ++point)
+                for (unsigned int q=0; q<n_fs_face_q_points; ++q)
                   {
                     // Get the gravity vector to compute the outward direction of displacement
-                    Tensor<1,dim> direction = -(this->get_gravity_model().gravity_vector(fs_fe_face_values.quadrature_point(point)));
+                    Tensor<1,dim> direction = -(this->get_gravity_model().gravity_vector(fs_fe_face_values.quadrature_point(q)));
                     // Normalize direction vector
                     if (direction.norm() > 0.0)
                       direction *= 1./direction.norm();
@@ -299,15 +299,16 @@ namespace aspect
 
                     // Compute the total displacement in the gravity direction,
                     // i.e. the initial topography + any additional mesh displacement.
-                    const double displacement = direction * (displacement_values[point] + initial_topography_values[point]);
+                    const double displacement = direction * (displacement_values[q] + initial_topography_values[q]);
 
                     // To project onto the tangent space of the surface,
                     // we define the projection P:= I- n x n,
                     // with I the unit tensor and n the unit normal to the surface.
                     // The surface gradient then is P times the usual gradient of the shape functions.
                     const Tensor<2, dim, double> projection = unit_symmetric_tensor<dim>() -
-                                                              outer_product(fs_fe_face_values.normal_vector(point), fs_fe_face_values.normal_vector(point));
+                                                              outer_product(fs_fe_face_values.normal_vector(q), fs_fe_face_values.normal_vector(q));
 
+                    const double JxW = fs_fe_face_values.JxW(q);
 
                     // The shape values for the i-loop
                     std::vector<double> phi(dofs_per_cell);
@@ -327,12 +328,12 @@ namespace aspect
                         if (mesh_deformation_dof_handler.get_fe().system_to_component_index(i).first == dim-1)
                           {
                             // Precompute shape values and projected shape value gradients
-                            phi[i] = fs_fe_face_values.shape_value (i, point);
-                            projected_grad_phi[i] = projection * fs_fe_face_values.shape_grad(i, point);
+                            phi[i] = fs_fe_face_values.shape_value (i, q);
+                            projected_grad_phi[i] = projection * fs_fe_face_values.shape_grad(i, q);
 
                             // Assemble the RHS
                             // RHS = M*H_old
-                            cell_vector(i) += phi[i] * displacement * fs_fe_face_values.JxW(point);
+                            cell_vector(i) += phi[i] * displacement * JxW;
 
                             for (unsigned int j=0; j<dofs_per_cell; ++j)
                               {
@@ -344,12 +345,12 @@ namespace aspect
                                     // Matrix := (M+dt*K) = (M+dt*B^T*kappa*B)
                                     cell_matrix(i,j) +=
                                       (
-                                        phi[i] * fs_fe_face_values.shape_value (j, point) +
+                                        phi[i] * fs_fe_face_values.shape_value (j, q) +
                                         this->get_timestep() * diffusivity *
                                         projected_grad_phi[i] *
-                                        (projection * fs_fe_face_values.shape_grad(j, point))
+                                        (projection * fs_fe_face_values.shape_grad(j, q))
                                       )
-                                      * fs_fe_face_values.JxW(point);
+                                      * JxW;
                                   }
                               }
                           }

@@ -2891,26 +2891,29 @@ namespace aspect
 
             cell_vector = 0;
             local_mass_matrix = 0;
-            for (unsigned int point=0; point<n_q_points; ++point)
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
-                {
-                  if (dof_handler.get_fe().system_to_component_index(i).first == component_index)
-                    cell_vector(i) +=
-                      rhs_values[point] *
-                      fe_values[extractor].value(i,point) *
-                      fe_values.JxW(point);
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                const double JxW = fe_values.JxW(q);
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  {
+                    if (dof_handler.get_fe().system_to_component_index(i).first == component_index)
+                      cell_vector(i) +=
+                        rhs_values[q] *
+                        fe_values[extractor].value(i,q) *
+                        JxW;
 
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    if ((dof_handler.get_fe().system_to_component_index(i).first ==
-                         component_index)
-                        &&
-                        (dof_handler.get_fe().system_to_component_index(j).first ==
-                         component_index))
-                      local_mass_matrix(j,i) += (fe_values[extractor].value(i,point) * fe_values[extractor].value(j,point) *
-                                                 fe_values.JxW(point));
-                    else if (i == j)
-                      local_mass_matrix(i,j) = 1.;
-                }
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      if ((dof_handler.get_fe().system_to_component_index(i).first ==
+                           component_index)
+                          &&
+                          (dof_handler.get_fe().system_to_component_index(j).first ==
+                           component_index))
+                        local_mass_matrix(j,i) += (fe_values[extractor].value(i,q) * fe_values[extractor].value(j,q) *
+                                                   JxW);
+                      else if (i == j)
+                        local_mass_matrix(i,j) = 1.;
+                  }
+              }
 
             // now invert the local mass matrix and multiply it with the rhs
             local_mass_matrix.gauss_jordan();
