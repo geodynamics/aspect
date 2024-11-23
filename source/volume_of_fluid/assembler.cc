@@ -97,6 +97,8 @@ namespace aspect
 
       for (unsigned int q = 0; q< n_q_points; ++q)
         {
+          const double JxW = scratch.finite_element_values.JxW(q);
+
           // Init FE field vals
           for (unsigned int k=0; k<volume_of_fluid_dofs_per_cell; ++k)
             scratch.phi_field[k] = scratch.finite_element_values[solution_field].value(main_fe.component_to_system_index(solution_component, k), q);
@@ -104,13 +106,13 @@ namespace aspect
           for (unsigned int i = 0; i<volume_of_fluid_dofs_per_cell; ++i)
             {
               data.local_rhs[i] += scratch.old_field_values[q] *
-                                   scratch.finite_element_values.JxW(q);
+                                   JxW;
               for (unsigned int j=0; j<volume_of_fluid_dofs_per_cell; ++j)
                 data.local_matrix (i, j) += scratch.phi_field[i] *
                                             scratch.phi_field[j] *
-                                            scratch.finite_element_values.JxW(q);
+                                            JxW;
             }
-          scratch.volume += scratch.finite_element_values.JxW(q);
+          scratch.volume += JxW;
         }
 
       for (const unsigned int face_no : cell->face_indices())

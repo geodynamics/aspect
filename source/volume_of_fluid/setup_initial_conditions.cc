@@ -100,12 +100,13 @@ namespace aspect
         double volume_of_fluid_val = 0.0;
         double cell_vol = 0.0;
 
-        for (unsigned int i = 0; i < fe_init.n_quadrature_points; ++i)
+        for (unsigned int q = 0; q < fe_init.n_quadrature_points; ++q)
           {
-            const double fraction_at_point = this->get_initial_composition_manager().initial_composition(fe_init.quadrature_point(i),
+            const double fraction_at_point = this->get_initial_composition_manager().initial_composition(fe_init.quadrature_point(q),
                                              field.composition_index);
-            volume_of_fluid_val += fraction_at_point * fe_init.JxW (i);
-            cell_vol += fe_init.JxW(i);
+            const double JxW = fe_init.JxW(q);
+            volume_of_fluid_val += fraction_at_point * JxW;
+            cell_vol += JxW;
           }
 
         volume_of_fluid_val /= cell_vol;
@@ -184,11 +185,11 @@ namespace aspect
           {
 
             // For each quadrature point compute an approximation to the fluid fraction in the surrounding region
-            for (unsigned int i = 0; i < fe_init.n_quadrature_points; ++i)
+            for (unsigned int q = 0; q < fe_init.n_quadrature_points; ++q)
               {
                 double d = 0.0;
                 Tensor<1, dim, double> grad;
-                Point<dim> xU = quadrature.point (i);
+                Point<dim> xU = quadrature.point (q);
 
                 // Get an approximation to local normal at the closest interface (level set gradient)
                 // and the distance to the closest interface (value of level set function)
@@ -208,8 +209,9 @@ namespace aspect
                   }
                 // Use the basic fluid fraction formula to compute an approximation to the fluid fraction
                 const double fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction (grad, d);
-                volume_of_fluid_val += fraction_at_point * fe_init.JxW (i);
-                cell_vol += fe_init.JxW (i);
+                const double JxW = fe_init.JxW(q);
+                volume_of_fluid_val += fraction_at_point * JxW;
+                cell_vol += JxW;
               }
             volume_of_fluid_val /= cell_vol;
           }
