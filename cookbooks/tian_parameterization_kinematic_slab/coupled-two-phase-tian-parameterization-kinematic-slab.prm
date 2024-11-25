@@ -229,10 +229,12 @@ subsection Material model
     # values to encourage water to hydrate the overlying mantle. The polynomials defined
     # in Tian et al., 2019 also reach very large values at low P-T conditions, and so limiting
     # the weight percent to reasonable values is recommended.
-    set Maximum weight percent water in peridotite       = 2
-    set Maximum weight percent water in gabbro           = 1
-    set Maximum weight percent water in MORB             = 2
-    set Maximum weight percent water in sediment         = 3
+    subsection Tian 2019 model
+      set Maximum weight percent water in peridotite       = 2
+      set Maximum weight percent water in gabbro           = 1
+      set Maximum weight percent water in MORB             = 2
+      set Maximum weight percent water in sediment         = 3
+    end
   end
 
   subsection Visco Plastic

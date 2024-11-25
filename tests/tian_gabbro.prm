@@ -22,6 +22,8 @@ end
 
 subsection Material model
   subsection Reactive Fluid Transport Model
-    set Maximum weight percent water in gabbro                    = 5.1
+    subsection Tian 2019 model
+      set Maximum weight percent water in gabbro                    = 5.1
+    end
   end
 end

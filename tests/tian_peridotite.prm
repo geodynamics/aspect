@@ -99,7 +99,9 @@ subsection Material model
     set Reference fluid density                          = 3000
     set Fluid reaction time scale for operator splitting = 1e2
     set Fluid-solid reaction scheme                      = tian approximation
-    set Maximum weight percent water in peridotite       = 11
+    subsection Tian 2019 model
+      set Maximum weight percent water in peridotite       = 11
+    end
   end
 
   subsection Simpler model
