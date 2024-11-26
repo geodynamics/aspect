@@ -19,8 +19,8 @@
 */
 
 
-#ifndef __aspect__boundary_temperature_time_dep_box_h
-#define __aspect__boundary_temperature_time_dep_box_h
+#ifndef _aspect_boundary_temperature_time_dep_box_h
+#define _aspect_boundary_temperature_time_dep_box_h
 
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/simulator_access.h>
