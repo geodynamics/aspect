@@ -178,6 +178,10 @@ namespace aspect
               const typename Newton::Parameters::Stabilization
               preconditioner_stabilization = this->get_newton_handler().parameters.preconditioner_stabilization;
 
+              // use the correct strain rate for the Jacobian
+              // when elasticity is enabled use viscoelastic strain rate
+              // when stabilization is enabled, use the deviatoric strain rate because the SPD factor
+              // that is computed is only safe for the deviatoric strain rate (see PR #5580 and issue #5555)
               SymmetricTensor<2,dim> effective_strain_rate = scratch.material_model_inputs.strain_rate[q];
               if (elastic_out != nullptr)
                 effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
@@ -479,6 +483,10 @@ namespace aspect
                   const Newton::Parameters::Stabilization velocity_block_stabilization
                     = this->get_newton_handler().parameters.velocity_block_stabilization;
 
+                  // use the correct strain rate for the Jacobian
+                  // when elasticity is enabled use viscoelastic strain rate
+                  // when stabilization is enabled, use the deviatoric strain rate because the SPD factor
+                  // that is computed is only safe for the deviatoric strain rate (see PR #5580 and issue #5555)
                   SymmetricTensor<2,dim> effective_strain_rate = scratch.material_model_inputs.strain_rate[q];
                   if (elastic_out != nullptr)
                     effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];

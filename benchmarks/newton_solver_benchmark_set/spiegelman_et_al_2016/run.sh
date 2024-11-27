@@ -28,8 +28,8 @@ for case in 1 2 3; do
   mkdir -p $dirname
 
   sed  \
-    -e "s/set Function expression = if(x<60e3,.*/    set Function expression = if(x<60e3,$U,-$U);0/g" \
-    -e "s/set Reference viscosity .*/    set Reference viscosity = $background_viscosity/g" \
+    -e "s/set Function expression = if(x<60e3,.*/set Function expression = if(x<60e3,$U,-$U);0/g" \
+    -e "s/set Reference viscosity .*/set Reference viscosity = $background_viscosity/g" \
     -e "s/set Output directory .*/set Output directory = results\/$dirname_base/g" \
     -e "s/set Nonlinear solver scheme .*/set Nonlinear solver scheme = single Advection, iterated Stokes/g" \
     -e "s/set List of output variables .*/set List of output variables = material properties,strain rate/g" \
@@ -49,10 +49,10 @@ for case in 1 2 3; do
         mkdir -p $dirname
 
         sed  \
-          -e "s/set Function expression = if(x<60e3,.*/    set Function expression = if(x<60e3,$U,-$U);0/g" \
-          -e "s/set Reference viscosity .*/    set Reference viscosity = $background_viscosity/g" \
+          -e "s/set Function expression = if(x<60e3,.*/set Function expression = if(x<60e3,$U,-$U);0/g" \
+          -e "s/set Reference viscosity .*/set Reference viscosity = $background_viscosity/g" \
           -e "s/set Output directory .*/set Output directory = results\/$dirname_base/g" \
-          -e "s/set Max pre-Newton nonlinear iterations .*/    set Max pre-Newton nonlinear iterations = $picard_iterations/g" \
+          -e "s/set Max pre-Newton nonlinear iterations .*/set Max pre-Newton nonlinear iterations = $picard_iterations/g" \
           -e "s/set Stabilization preconditioner .*/set Stabilization preconditioner = $stabilization/g" \
           -e "s/set Stabilization velocity block .*/set Stabilization velocity block = $stabilization/g" \
           -e "s/set Maximum linear Stokes solver tolerance .*/set Maximum linear Stokes solver tolerance = $maximum_linear_tolerance/g" \
