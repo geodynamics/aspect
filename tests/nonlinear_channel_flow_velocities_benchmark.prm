@@ -1,0 +1,4 @@
+# Test the benchmark parameter file
+# benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_v.prm
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_v.prm
