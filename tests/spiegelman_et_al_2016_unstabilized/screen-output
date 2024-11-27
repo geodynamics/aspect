@@ -1,0 +1,79 @@
+
+Loading shared library <./libspiegelman_et_al_2016_unstabilized.debug.so>
+
+Number of active cells: 1,024 (on 5 levels)
+Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Initial Newton Stokes residual = 1.56e+14, v = 1.54916e+14, p = 1.83559e+13
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 73+0 iterations.
+      Newton system information: Norm of the rhs: 1.56e+14
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 73+0 iterations.
+      Newton system information: Norm of the rhs: 2.96687e+11, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00190184
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 75+0 iterations.
+      Newton system information: Norm of the rhs: 6.45169e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00041357
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 75+0 iterations.
+      Newton system information: Norm of the rhs: 1.68293e+10, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00010788
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 77+0 iterations.
+      Newton system information: Norm of the rhs: 5.77031e+09, Derivative scaling factor: 0
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 3.69892e-05
+
+   Switching from defect correction form of Picard to the Newton solver scheme.
+   The linear solver tolerance is set to 0.342872. Stabilization Preconditioner is none and A block is none.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 6+0 iterations.
+      Newton system information: Norm of the rhs: 1.84613e+09, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.18342e-05
+
+   The linear solver tolerance is set to 0.176941. Stabilization Preconditioner is none and A block is none.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 14+0 iterations.
+      Newton system information: Norm of the rhs: 3.08962e+08, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.98053e-06
+
+   The linear solver tolerance is set to 5.66517e-05. Stabilization Preconditioner is none and A block is none.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 51+0 iterations.
+      Newton system information: Norm of the rhs: 45303.2, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.90405e-10
+
+   The linear solver tolerance is set to 9.48821e-05. Stabilization Preconditioner is none and A block is none.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 53+0 iterations.
+      Newton system information: Norm of the rhs: 3.63378, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 2.32935e-14
+
+   The linear solver tolerance is set to 2.12357e-08. Stabilization Preconditioner is none and A block is none.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 93+0 iterations.
+      Newton system information: Norm of the rhs: 0.0775057, Derivative scaling factor: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 4.96832e-16
+
+
+   Postprocessing:
+     RMS, max velocity:                  5.21e-11 m/s, 8.72e-11 m/s
+     Pressure min/avg/max:               8.098e+07 Pa, 5.014e+08 Pa, 8.58e+08 Pa
+     Mass fluxes through boundary parts: -0.006483 kg/s, -0.006483 kg/s, 0 kg/s, 0.01297 kg/s
+     Compositions min/max/mass:          0/1/8.705e+08
+     Writing graphical output:           output-spiegelman_et_al_2016_unstabilized/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
