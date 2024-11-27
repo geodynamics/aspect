@@ -1,8 +1,0 @@
-Removed: A number of deprecated source code functions and input parameters
-have been removed. In particular the deprecated option to specify
-individual material properties in the parameter 
-'Postprocess/Visualization/List of output variables' has been removed.
-Input files will be automatically fixed and updated
-by the update scripts in the directory contrib/utilities.
-<br>
-(Rene Gassmoeller, 2024/10/16)

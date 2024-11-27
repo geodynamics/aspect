@@ -1,8 +1,0 @@
-Changed: In S40RTS and SAVANI initial temperature models, the input parameter,
-'Specify a lower maximum order' is changed to 'Specify a lower maximum degree',
-and the input parameter, 'Maximum order' is changed to 'Maximum degree'. 
-This avoids confusion because the function of these two parameters is to
-allow users to specify a maximum degree lower than the maximum degree
-of the spherical harmonic data file to calculate the temperature field. 
-<br>
-(Shangxin Liu, 2024/06/04)

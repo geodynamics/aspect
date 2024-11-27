@@ -1,9 +1,0 @@
-New: Added a Rayleigh Taylor instability benchmark with a free surface.
-The benchmark was described by Kaus et al. (2010) and reproduced with
-ASPECT with different stabilization schemes for the free surface by
-Rose et al. (2017). It can be used to show that the stabilization 
-scheme implemented by I. Rose allows for larger timesteps, and that
-the projection of velocities onto the surface leads to significantly
-different topography.
-<br>
-(Anne Glerum, 2024/06/06)

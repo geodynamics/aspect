@@ -1,8 +1,0 @@
-New: The interface for particle property plugins has been updated.
-The new interface can update particles cell-wise and is more efficient. 
-In addition, the interface is more extensible for future improvements.
-All particle property plugins in ASPECT have been updated, user plugins
-will have to be updated accordingly before the support for the now deprecated
-old interface is dropped.
-<br>
-(Rene Gassmoeller, 2024/09/25)

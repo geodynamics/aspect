@@ -1,5 +1,0 @@
-Removed: The input parameter 'Update ghost particles' has been deprecated.
-Ghost particles are now always updated. Existing parameter files can
-be updated by the script in 'contrib/utilities/update_prm_files.sh'.
-<br>
-(Rene Gassmoeller, 2024/06/25)

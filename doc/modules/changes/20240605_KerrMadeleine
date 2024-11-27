@@ -1,3 +1,0 @@
-Added: A cookbook using a model with simple 2D annulus convection to showcase the capabilities of the pyvista Python package in plotting and conducting simple mesh operations using numpy arrays. The cookbook contains a parameter file, documentation, and figures produces by manipulating data on pyvista and plotting new fields. The relevant script is located in [cookbooks/twoD_annulus_visualization/2D_annulus_example.prm].
-<br>
-(Madeleine Kerr, 2024/06/05)

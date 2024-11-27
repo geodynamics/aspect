@@ -1,5 +1,0 @@
-Added: There is now a prescribed viscosity material model plugin, which can 
-overwrite the viscosity of a specified location with a viscosity prescribed
-by a function.
-<br>
-(Menno Fraters, 2023/09/27)

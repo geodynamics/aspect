@@ -1,8 +1,0 @@
- Fixed: The function to determine whether a boundary is an inflow
-or outflow boundary (for the purpose of deciding whether to apply
-boundary conditions for compositional fields) did not take into
-account the mesh deformation. This caused incorrectly applied
-surface boundary conditions in models with free surface and is
-fixed now.
- <br>
- (Anne Glerum, 2024/11/11)

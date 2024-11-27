@@ -1,4 +1,0 @@
-Changed: We no longer support "make test" to run the
-testsuite. Please use "ctest" directly.
-<br>
-(Timo Heister, 2024/06/05)

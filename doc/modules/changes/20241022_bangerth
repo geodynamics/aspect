@@ -1,4 +1,0 @@
-New: The new input parameter "Output directory LFS stripe count" allows for configuring
-the ASPECT output directory for better performance on Lustre file systems.
-<br>
-(Wolfgang Bangerth, 2024/10/22)

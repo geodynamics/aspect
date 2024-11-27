@@ -1,4 +1,0 @@
-Changed: ASPECT now requires CMake 3.13.4 (just like deal.II v9.5.0)
-and no longer supports GeodynamicWorldBuilder older than 0.5.0.
-<br>
-(Rene Gassmoeller, 2023/09/09)

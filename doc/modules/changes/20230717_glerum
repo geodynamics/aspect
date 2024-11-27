@@ -1,5 +1,0 @@
- New: There is now a strain rate tensor postprocessor
- that is only outputted on the surface of the model
- domain.
- <br>
- (Anne Glerum, 2023/07/17)

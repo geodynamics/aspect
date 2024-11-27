@@ -1,5 +1,0 @@
-Changed: The CompositeViscoPlastic rheology in ASPECT
-now uses a log-stress Newton scheme, which requires
-fewer iterations to converge.
-<br>
-(Bob Myhill, 2024/07/17)

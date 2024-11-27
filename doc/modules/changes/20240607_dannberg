@@ -1,8 +1,0 @@
-Changed: The grain size material model no longer has the
-option to advect the logarithm of the grain size. This
-option used to be helpful for models with large gradients
-in grain size, but now that ASPECT has particles it is
-more accurate to advect the grain size on particles
-instead.
-<br>
-(Juliane Dannberg, 2024/06/07)
