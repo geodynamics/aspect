@@ -550,14 +550,15 @@ namespace aspect
       };
 
       /**
-       * A class that bundles functionality to compute the values and
-       * derivatives of phase functions. The class can handle arbitrary
-       * numbers of phase transitions, but the calling side has to determine
-       * how to use the return values of this object (e.g. in terms of
-       * density or viscosity).
-       */
+      * A class that bundles functionality to compute the values and
+      * derivatives of phase functions. The class can handle arbitrary
+      * numbers of phase transitions, but the calling side has to determine
+      * how to use the return values of this object (e.g. in terms of
+      * density or viscosity). This class acts as a base for more specific
+      * phase function implementations.
+      */
       template <int dim>
-      class PhaseFunction: public ::aspect::SimulatorAccess<dim>
+      class PhaseFunctionBase
       {
         public:
           /**
@@ -565,51 +566,135 @@ namespace aspect
            * transition to the higher-pressure material (this is done
            * individually for each transition and summed up in the end)
            */
-          double compute_value (const PhaseFunctionInputs<dim> &in) const;
+          virtual double compute_value (const PhaseFunctionInputs<dim> &in) const = 0;
 
           /**
            * Return the derivative of the phase function with respect to
            * pressure.
            */
-          double compute_derivative (const PhaseFunctionInputs<dim> &in) const;
+          virtual double compute_derivative (const PhaseFunctionInputs<dim> &in) const = 0;
 
           /**
            * Return the total number of phase transitions.
            */
-          unsigned int n_phase_transitions () const;
+          virtual unsigned int n_phase_transitions () const = 0;
 
           /**
            * Return the total number of phases.
            */
-          unsigned int n_phases () const;
+          virtual unsigned int n_phases () const = 0;
 
           /**
            * Return the total number of phases over all chemical compositions.
            */
-          unsigned int n_phases_over_all_chemical_compositions () const;
+          virtual unsigned int n_phases_over_all_chemical_compositions () const = 0;
 
           /**
            * Return the Clapeyron slope (dp/dT of the transition) for
            * phase transition number @p phase_index.
            */
-          double get_transition_slope (const unsigned int phase_index) const;
+          virtual double get_transition_slope (const unsigned int phase_index) const = 0;
 
           /**
            * Return the depth for phase transition number @p phase_index.
            */
-          double get_transition_depth (const unsigned int phase_index) const;
+          virtual double get_transition_depth (const unsigned int phase_index) const = 0;
+
+          /**
+           * Return how many phase transitions there are for each chemical composition.
+           */
+          virtual const std::vector<unsigned int> &
+          n_phase_transitions_for_each_chemical_composition () const = 0;
+
+          /**
+           * Return how many phases there are for each chemical composition.
+           */
+          virtual const std::vector<unsigned int> &
+          n_phases_for_each_chemical_composition () const = 0;
+
+          /**
+           * Return how many phase transitions there are for each composition.
+           * Note, that most likely you only need the number of phase transitions
+           * for each chemical composition, so use the function above instead.
+           * This function is only kept for backward compatibility.
+           */
+          virtual const std::vector<unsigned int> &
+          n_phase_transitions_for_each_composition () const = 0;
+
+          /**
+           * Return how many phases there are for each composition.
+           * Note, that most likely you only need the number of phase transitions
+           * for each chemical composition, so use the function above instead.
+           * This function is only kept for backward compatibility.
+           */
+          virtual const std::vector<unsigned int> &
+          n_phases_for_each_composition () const = 0;
+      };
+
+      /**
+       * A class that bundles functionality to compute the values and
+       * derivatives of phase functions. The class can handle arbitrary
+       * numbers of phase transitions, but the calling side has to determine
+       * how to use the return values of this object (e.g. in terms of
+       * density or viscosity). This class computes these values of phase functions
+       * using a combination of transition depths, temperatures, transition widths,
+       * and Clapeyron slopes, applying a gamma function to the given pressure (P) 
+       * and temperature (T) conditions.
+       */
+      template <int dim>
+      class PhaseFunction: PhaseFunctionBase<dim>, public ::aspect::SimulatorAccess<dim>
+      {
+        public:
+          /**
+           * Percentage of material that has already undergone the phase
+           * transition to the higher-pressure material (this is done
+           * individually for each transition and summed up in the end)
+           */
+          double compute_value (const PhaseFunctionInputs<dim> &in) const override;
+
+          /**
+           * Return the derivative of the phase function with respect to
+           * pressure.
+           */
+          double compute_derivative (const PhaseFunctionInputs<dim> &in) const override;
+
+          /**
+           * Return the total number of phase transitions.
+           */
+          unsigned int n_phase_transitions () const override;
+
+          /**
+           * Return the total number of phases.
+           */
+          unsigned int n_phases () const override;
+
+          /**
+           * Return the total number of phases over all chemical compositions.
+           */
+          unsigned int n_phases_over_all_chemical_compositions () const override;
+
+          /**
+           * Return the Clapeyron slope (dp/dT of the transition) for
+           * phase transition number @p phase_index.
+           */
+          double get_transition_slope (const unsigned int phase_index) const override;
+
+          /**
+           * Return the depth for phase transition number @p phase_index.
+           */
+          double get_transition_depth (const unsigned int phase_index) const override;
 
           /**
            * Return how many phase transitions there are for each chemical composition.
            */
           const std::vector<unsigned int> &
-          n_phase_transitions_for_each_chemical_composition () const;
+          n_phase_transitions_for_each_chemical_composition () const override;
 
           /**
            * Return how many phases there are for each chemical composition.
            */
           const std::vector<unsigned int> &
-          n_phases_for_each_chemical_composition () const;
+          n_phases_for_each_chemical_composition () const override;
 
           /**
            * Return how many phase transitions there are for each composition.
@@ -618,7 +703,7 @@ namespace aspect
            * This function is only kept for backward compatibility.
            */
           const std::vector<unsigned int> &
-          n_phase_transitions_for_each_composition () const;
+          n_phase_transitions_for_each_composition () const override;
 
           /**
            * Return how many phases there are for each composition.
@@ -627,7 +712,7 @@ namespace aspect
            * This function is only kept for backward compatibility.
            */
           const std::vector<unsigned int> &
-          n_phases_for_each_composition () const;
+          n_phases_for_each_composition () const override;
 
           /**
            * Declare the parameters this class takes through input files.
