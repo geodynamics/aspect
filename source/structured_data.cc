@@ -145,6 +145,13 @@ namespace aspect
       return maximum_component_value[component];
     }
 
+    template <int dim>
+    unsigned
+    StructuredDataLookup<dim>::get_number_of_coordinates(const unsigned int dimension) const
+    {
+      return table_points[dimension];
+    }
+
 
 
     namespace

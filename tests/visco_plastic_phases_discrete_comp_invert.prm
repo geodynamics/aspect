@@ -1,0 +1,147 @@
+# This prm file is used to generate a phase diagram.
+# and test the implementation of discrete phase functions
+# in the visco-plastic material model. Specifically, this test
+# inverts the indicator for phase transition lookup from 0 to 1
+# and checks the implementation for multiple compositions.
+# In the outputs, the material statistics are checked for
+# correct viscosity values.
+
+set Dimension                              = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Adiabatic surface temperature          = 1673.0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme = no Advection, no Stokes
+
+# Model geometry
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 50
+    set Y repetitions = 50
+    set X extent      = 800e3
+    set Y extent      = 800e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Temperature boundary and initial conditions
+# The initial temperature increases linearly from
+# the left to the right boundary.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = left, right
+  set List of model names = box
+
+  subsection Box
+    set Left temperature   = 273
+    set Right temperature  = 2273
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x, y
+    set Function constants = XMAX=800e3, Tl=273.0, Tr=2273
+    set Function expression = Tl * (x - XMAX)/(-XMAX) + Tr * x / XMAX
+  end
+end
+
+# Comment the following 3 sections for steinberg model and pyrolitic lookup table
+# Fields of composition
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = spharz
+  set Compositional field methods = field
+end
+
+# Initial composition model
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Function expression = 1.0
+  end
+end
+
+# Boundary composition model
+subsection Boundary composition model
+  set List of model names = box
+  set Fixed composition boundary indicators   = top, bottom, left, right
+
+  subsection Box
+    set Bottom composition = 1.0
+    set Left composition   = 1.0
+    set Right composition  = 1.0
+    set Top composition    = 1.0
+  end
+end
+
+# Value for material model
+# A set of parameters are assigned to the conventional
+# phase function interface. A single phase with index 1
+# is added to the background composition with a smaller
+# viscosity by using the discrete phase transition.
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference temperature = 273
+    set Maximum viscosity = 1e25
+    set Minimum viscosity = 1e13
+    set Phase transition depths = background:410e3|520e3|560e3|670e3|670e3|670e3|670e3, spharz: 410e3|520e3|560e3|670e3|670e3|670e3|670e3
+    set Phase transition widths = background:5e3|5e3|5e3|5e3|5e3|5e3|5e3, spharz: 5e3|5e3|5e3|5e3|5e3|5e3|5e3
+    set Phase transition temperatures = background:1662.0|1662.0|1662.0|1662.0|1662.0|1662.0|1662.0, spharz: 1662.0|1662.0|1662.0|1662.0|1662.0|1662.0|1662.0
+    set Phase transition Clapeyron slopes = background:4e6|4.1e6|4e6|-2e6|4e6|-3.1e6|1.3e6, spharz: 4e6|4.1e6|4e6|-2e6|4e6|-3.1e6|1.3e6
+    set Densities = background: 3300.0|3394.4|3442.1|3453.2|3617.6|3691.5|3774.7|3929.1, spharz: 3235.0|3372.3|3441.7|3441.7|3680.8|3717.8|3759.4|3836.6
+    set Heat capacities = 1250.0
+    set Thermal expansivities = 0.0
+    # The options to look up the dominant phase
+    set Use dominant phase for viscosity = true
+    set Material file names = material_table_temperature_pressure_small.txt,  material_table_temperature_pressure_small.txt
+    set Phase transition indicators = background:0, spharz:0
+    set Viscous flow law = diffusion
+    set Viscosity averaging scheme = harmonic
+    set Data directory = $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable/
+    set Prefactors for diffusion creep = background:5e-21|5e-19, spharz:5e-25|5e-15
+    set Grain size exponents for diffusion creep = 0.0
+    set Activation energies for diffusion creep = 0.0
+    set Activation volumes for diffusion creep = 0.0
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, material statistics
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = material properties
+    set Time between graphical output = 0e6
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, specific heat, viscosity
+    end
+  end
+end

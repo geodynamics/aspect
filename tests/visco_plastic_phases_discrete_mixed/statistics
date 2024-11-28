@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Visualization file name
+# 10: Average density (kg/m^3)
+# 11: Average viscosity (Pa s)
+# 12: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 2500 23003 10201 10201 0 output-visco_plastic_phases_discrete_mixed/solution/solution-00000 3.45280169e+03 1.50873851e+20 2.20979308e+15 

@@ -248,6 +248,15 @@ namespace aspect
          */
         double get_maximum_component_value(const unsigned int component) const;
 
+        /**
+         * Retrieve the number of table points for a given dimension.
+         * Equivalent to calling get_interpolation_point_coordinates().size().
+         *
+         * @param dimension The index of the dimension for which to get the number of table points.
+         * @return The number of points along the specified dimension.
+         */
+        unsigned int get_number_of_coordinates(const unsigned int dimension) const;
+
       private:
         /**
          * The number of data components read in (=columns in the data file).

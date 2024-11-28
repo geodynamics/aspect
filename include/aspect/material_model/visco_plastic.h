@@ -181,6 +181,12 @@ namespace aspect
     class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+         * Initialization function. Loads the material data and sets up
+         * pointers if it is required.
+         */
+        void
+        initialize () override;
 
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
@@ -260,6 +266,16 @@ namespace aspect
          * Object that handles phase transitions.
          */
         MaterialUtilities::PhaseFunction<dim> phase_function;
+
+        /**
+         * Determines whether to look up the dominant phases for each composition in its respective lookup table.
+         */
+        bool use_dominant_phase_for_viscosity;
+
+        /**
+         * Object that handles discrete phase transitions for the rheology if requested by the variable use_dominant_phase_for_viscosity.
+         */
+        std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
 
     };
 
