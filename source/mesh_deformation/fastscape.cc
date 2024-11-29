@@ -191,6 +191,8 @@ namespace aspect
     void
     FastScape<dim>::initialize ()
     {
+      CitationInfo::add("fastscape");
+
       AssertThrow(Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()),
                   ExcMessage("FastScape can only be run with a box geometry model."));
 

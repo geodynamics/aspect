@@ -76,7 +76,8 @@ want_groups = {"kronbichler:etal:2012": "main",
                "fraters_billen_2021_cpo" : "CPO",
                "dannberg:etal:2022" : "entropy",
                "dannberg:grain:size" : "grainsize",
-               "dannberg:etal:2021" : "boukaremelt"
+               "dannberg:etal:2021" : "boukaremelt",
+               "neuharth:etal:2022" : "fastscape"
 }
 
 want = []
@@ -112,7 +113,8 @@ bibformated = {
         "fraters_billen_2021_cpo" : "Fraters, M. R. T. and Billen, M. I. 2021. “On the Implementation and Usability of Crystal Preferred Orientation Evolution in Geodynamic Modeling” Geochemistry, Geophysics, Geosystems 22 (10): e2021GC009846. doi:10.1029/2021GC009846. https://doi.org/10.1029/2021GC009846.",
         "dannberg:etal:2022" : "Dannberg, J., Gassmöller, R., Li, R., Lithgow-Bertelloni, C. and Stixrude, L. 2022. An entropy method for geodynamic modelling of phase transitions: capturing sharp and broad transitions in a multiphase assemblage. Geophysical Journal International, 231(3), pp.1833-1849. doi:10.1093/gji/ggac293. https://doi.org/10.1093/gji/ggac293.",
         "dannberg:grain:size" : "Dannberg, J., Eilon, Z., Faul, U., Gassmöller, R., Moulik, P. and Myhill, R. 2017. The importance of grain size to mantle dynamics and seismological observations. Geochemistry, Geophysics, Geosystems, 18(8), pp.3034-3061. doi:10.1002/2017GC006944. https://doi.org/10.1002/2017GC006944.",
-        "dannberg:etal:2021" : "Dannberg, J., Myhill, R., Gassmöller, R. and Cottaar, S., 2021. The morphology, evolution and seismic visibility of partial melt at the core–mantle boundary: implications for ULVZs. Geophysical Journal International, 227(2), pp.1028-1059."
+        "dannberg:etal:2021" : "Dannberg, J., Myhill, R., Gassmöller, R. and Cottaar, S., 2021. The morphology, evolution and seismic visibility of partial melt at the core–mantle boundary: implications for ULVZs. Geophysical Journal International, 227(2), pp.1028-1059.",
+        "neuharth:etal:2022" : "Neuharth, D., Brune, S., Wrona, T., Glerum, A., Braun, J. and Yuan, X. 2022. Evolution of rift systems and their fault networks in response to surface processes. Tectonics, 41(3), e2021TC007166. doi:10.1029/2021TC007166. https://doi.org/10.1029/2021TC007166."
 }
 
 
