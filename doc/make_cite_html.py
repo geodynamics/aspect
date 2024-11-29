@@ -73,7 +73,8 @@ want_groups = {"kronbichler:etal:2012": "main",
                "fraters_menno_2020_3900603" : "GWB",
                "Fraters2019c" : "GWB",
                "fraters:etal:2019" : "NewtonSolver",
-               "fraters_billen_2021_cpo" : "CPO"
+               "fraters_billen_2021_cpo" : "CPO",
+               "dannberg:etal:2022" : "entropy"
 }
 
 want = []
@@ -106,7 +107,8 @@ bibformated = {
         "gassmoller:etal:2020" : "Rene Gassmöller, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and Robert Myhill. 2020. “On Formulations of Compressible Mantle Convection.” Geophysical Journal International 221 (2) (February 13): 1264–1280. doi:10.1093/gji/ggaa078. http://dx.doi.org/10.1093/gji/ggaa078.",
         "heister:etal:2017" : "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
         "rose_freesurface" : "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
-        "fraters_billen_2021_cpo" : "Fraters, M. R. T. and Billen, M. I. 2021. “On the Implementation and Usability of Crystal Preferred Orientation Evolution in Geodynamic Modeling” Geochemistry, Geophysics, Geosystems 22 (10): e2021GC009846. doi:10.1029/2021GC009846. https://doi.org/10.1029/2021GC009846."
+        "fraters_billen_2021_cpo" : "Fraters, M. R. T. and Billen, M. I. 2021. “On the Implementation and Usability of Crystal Preferred Orientation Evolution in Geodynamic Modeling” Geochemistry, Geophysics, Geosystems 22 (10): e2021GC009846. doi:10.1029/2021GC009846. https://doi.org/10.1029/2021GC009846.",
+        "dannberg:etal:2022" : "Dannberg, J., Gassmöller, R., Li, R., Lithgow-Bertelloni, C. and Stixrude, L. 2022. An entropy method for geodynamic modelling of phase transitions: capturing sharp and broad transitions in a multiphase assemblage. Geophysical Journal International, 231(3), pp.1833-1849. doi:10.1093/gji/ggac293. https://doi.org/10.1093/gji/ggac293."
 }
 
 

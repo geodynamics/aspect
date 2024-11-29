@@ -21,7 +21,6 @@
 #include <aspect/particle/manager.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <aspect/citation_info.h>
 #include <aspect/simulator.h>
 #include <aspect/melt.h>
 
