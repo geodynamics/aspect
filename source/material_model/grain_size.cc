@@ -83,6 +83,8 @@ namespace aspect
     void
     GrainSize<dim>::initialize()
     {
+      CitationInfo::add("grainsize");
+
       n_material_data = material_file_names.size();
       for (unsigned i = 0; i < n_material_data; ++i)
         {
