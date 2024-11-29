@@ -71,6 +71,8 @@ namespace aspect
     void
     MeltBoukare<dim>::initialize()
     {
+      CitationInfo::add("boukaremelt");
+
       // Compute parameters for the modified Tait equation of state for the different endmembers
       // derived from the isothermal bulk modulus and its two first pressure derivatives.
       // This corresponds to Equation 4 from Holland and Powell, 2011 (https://doi.org/10.1111/j.1525-1314.2010.00923.x).
