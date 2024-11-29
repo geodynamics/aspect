@@ -67,56 +67,61 @@ bibtexkey: "clevenger:heister:2021",
 bibtex: '@Article{clevenger:heister:2021,\n  Title                    = {Comparison Between Algebraic and Matrix-free Geometric Multigrid for a {S}tokes Problem on an Adaptive Mesh with Variable Viscosity},\n  Author                   = {Thomas C. Clevenger and Timo Heister},\n  Journal                  = {Numerical Linear Algebra with Applications},\n  Year                     = {2021},\n  Month                    = mar,\n  Doi                      = {10.1002/nla.2375},\n  Publisher                = {Wiley},\n  Url                      = {https://arxiv.org/abs/1907.06696}\n}',
 group: 'mf'},
 entry14:{
+text: "Dannberg, J., Myhill, R., Gassmöller, R. and Cottaar, S., 2021. The morphology, evolution and seismic visibility of partial melt at the core–mantle boundary: implications for ULVZs. Geophysical Journal International, 227(2), pp.1028-1059.",
+bibtexkey: "dannberg:etal:2021",
+bibtex: '@article{dannberg:etal:2021,\n    author = {Dannberg, Juliane and Myhill, Robert and Gassmöller, René and Cottaar, Sanne},\n    title = {The morphology, evolution and seismic visibility of partial melt at the core–mantle boundary: implications for ULVZs},\n    journal = {Geophysical Journal International},\n    volume = {227},\n    number = {2},\n    pages = {1028-1059},\n    year = {2021},\n    month = {06},\n    issn = {0956-540X},\n    doi = {10.1093/gji/ggab242},\n    url = {https://doi.org/10.1093/gji/ggab242},\n    eprint = {https://academic.oup.com/gji/article-pdf/227/2/1028/39556563/ggab242.pdf},\n}',
+group: 'boukaremelt'},
+entry15:{
 text: "Dannberg, J., Gassmöller, R., Li, R., Lithgow-Bertelloni, C. and Stixrude, L. 2022. An entropy method for geodynamic modelling of phase transitions: capturing sharp and broad transitions in a multiphase assemblage. Geophysical Journal International, 231(3), pp.1833-1849. doi:10.1093/gji/ggac293. https://doi.org/10.1093/gji/ggac293.",
 bibtexkey: "dannberg:etal:2022",
 bibtex: '@article{dannberg:etal:2022,\nauthor = {Dannberg, Juliane and Gassmöller, Rene and Li, Ranpeng and Lithgow-Bertelloni, Carolina and Stixrude, Lars},\ntitle = {An entropy method for geodynamic modelling of phase transitions: capturing sharp and broad transitions in a multiphase assemblage},\njournal = {Geophysical Journal International},\nvolume = {231},\nnumber = {3},\npages = {1833-1849},\nyear = {2022},\nmonth = {07},\nissn = {0956-540X},\ndoi = {10.1093/gji/ggac293},\nurl = {https://doi.org/10.1093/gji/ggac293},\neprint = {https://academic.oup.com/gji/article-pdf/231/3/1833/46842522/ggac293.pdf},\n}',
 group: 'entropy'},
-entry15:{
+entry16:{
 text: "Dannberg, J., Eilon, Z., Faul, U., Gassmöller, R., Moulik, P. and Myhill, R. 2017. The importance of grain size to mantle dynamics and seismological observations. Geochemistry, Geophysics, Geosystems, 18(8), pp.3034-3061. doi:10.1002/2017GC006944. https://doi.org/10.1002/2017GC006944.",
 bibtexkey: "dannberg:grain:size",
 bibtex: '@article{dannberg:grain:size,\n  title={The importance of grain size to mantle dynamics and seismological observations},\n  author={Dannberg, Juliane and Eilon, Zach and Faul, Ulrich and Gassm{\\&quot;o}ller, Rene and Moulik, Pritwiraj and Myhill, Robert},\n  journal={Geochemistry, Geophysics, Geosystems},\n  volume={18},\n  number={8},\n  pages={3034--3061},\n  year={2017},\n  publisher={Wiley Online Library},\n  doi = {https://doi.org/10.1002/2017GC006944},\n  url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1002/2017GC006944},\n  eprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1002/2017GC006944}\n}',
 group: 'grainsize'},
-entry16:{
+entry17:{
 text: "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
 bibtexkey: "dannberg:heister:2016",
 bibtex: '@Article{dannberg:heister:2016,\n  title={Compressible magma/mantle dynamics: {3D}, adaptive simulations in {ASPECT}},\n  author={Dannberg, J. and Heister, T.},\n  journal={Geophysical Journal International},\n  volume={207},\n  number={3},\n  pages={1343--1366},\n  year={2016},\n  publisher={Oxford University Press},\n  doi = {10.1093/gji/ggw329},\n  url = {https://dx.doi.org/10.1093/gji/ggw329}\n}',
 group: 'melt'},
-entry17:{
+entry18:{
 text: "Menno Fraters, Wolfgang Bangerth, Cedric Thieulot, Anne Glerum, and Wim Spakman. 2019. “Efficient and Practical Newton Solvers for Non-Linear Stokes Systems in Geodynamic Problems.” Geophysical Journal International 218 (2) (April 20): 873–894. doi:10.1093/gji/ggz183. http://dx.doi.org/10.1093/gji/ggz183",
 bibtexkey: "fraters:etal:2019",
 bibtex: '@Article{fraters:etal:2019,\n    author = {M. R. T. Fraters and W. Bangerth and C. Thieulot and A. C. Glerum and W. Spakman},\n    title = {Efficient and practical {N}ewton solvers for nonlinear {S}tokes systems in geodynamics problems},\n    journal = {Geophysics Journal International},\n    volume = {218},\n    number = {2},\n    pages = {873-894},\n    year = {2019},\n    month = {04},\n    issn = {0956-540X},\n    doi = {10.1093/gji/ggz183},\n    url = {https://doi.org/10.1093/gji/ggz183},\n    eprint = {http://oup.prod.sis.lan/gji/article-pdf/218/2/873/28693654/ggz183.pdf},\n}',
 group: 'NewtonSolver'},
-entry18:{
+entry19:{
 text: "Fraters, M. R. T. and Billen, M. I. 2021. “On the Implementation and Usability of Crystal Preferred Orientation Evolution in Geodynamic Modeling” Geochemistry, Geophysics, Geosystems 22 (10): e2021GC009846. doi:10.1029/2021GC009846. https://doi.org/10.1029/2021GC009846.",
 bibtexkey: "fraters_billen_2021_cpo",
 bibtex: '@article{fraters_billen_2021_cpo,\nauthor = {Fraters, M. R. T. and Billen, M. I.},\ntitle = {On the Implementation and Usability of Crystal Preferred Orientation Evolution in Geodynamic Modeling},\njournal = {Geochemistry, Geophysics, Geosystems},\nvolume = {22},\nnumber = {10},\npages = {e2021GC009846},\nkeywords = {crystal preferred orientation, CPO, LPO, D-Rex, ASPECT},\ndoi = {10.1029/2021GC009846},\nurl = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2021GC009846},\neprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/2021GC009846},\nnote = {e2021GC009846 2021GC009846},\nabstract = {Abstract Flow in the Earth&#x27;s mantle causes the preferred orientation of crystals called lattice/crystal preferred orientation (LPO or CPO). This preferred orientation is one of the main reasons why seismic anisotropy is observed. Seismic anisotropy observations could therefore be used to constrain the mantle flow in geodynamic models through tracking CPO evolution, and computing the resulting elastic tensor and the anisotropy predicted at the surface. Even though there are many types of CPO models, only a few studies include CPO calculations due to the complexity and computational cost. Here, we implemented an extended version of the CPO model D-Rex into the open-source community geodynamics code ASPECT. We show that the implementation is correct, how to use it, and that it is feasible and important to use in large 3D models. We also show that it is important to calculate CPO, especially for models focusing on plate boundary of smaller scale flow because the resulting fast axis directions can greatly deviate from the flow direction. The added infrastructure will also allow for future enhancement, testing, and even replacement of the CPO model.},\nyear = {2021}\n}',
 group: 'CPO'},
-entry19:{
+entry20:{
 text: "Menno Fraters. 2020. ”The Geodynamic World Builder” (version v0.3.0). Zenodo. https://doi.org/10.5281/ZENODO.3900603",
 bibtexkey: "fraters_menno_2020_3900603",
 bibtex: '@software{fraters_menno_2020_3900603,\n  author       = {Fraters, Menno},\n  title        = {The Geodynamic World Builder},\n  month        = jun,\n  year         = 2020,\n  publisher    = {Zenodo},\n  version      = {v0.3.0},\n  doi          = {10.5281/zenodo.3900603},\n  url          = {https://doi.org/10.5281/zenodo.3900603}\n}',
 group: 'GWB'},
-entry20:{
+entry21:{
 text: "Rene Gassmoeller, Eric Heien, Elbridge Gerry Puckett, and Wolfgang Bangerth. 2017. “Flexible and scalable particle-in-cell methods for massively parallel computations.” arXiv:1612.03369",
 bibtexkey: "gassmoller:etal:2018",
 bibtex: '@article{gassmoller:etal:2018,\n  title={Flexible and Scalable Particle-in-Cell Methods With Adaptive Mesh Refinement for Geodynamic Computations},\n  author={Gassm{\\&quot;o}ller, Rene and Lokavarapu, Harsha and Heien, Eric and Puckett, Elbridge Gerry and Bangerth, Wolfgang},\n  journal={Geochemistry, Geophysics, Geosystems},\n  volume={19},\n  number={9},\n  pages={3596--3604},\n  year={2018},\n  url={https://doi.org/10.1029/2018GC007508},\n  doi={10.1029/2018GC007508}\n}',
 group: 'particles'},
-entry21:{
+entry22:{
 text: "Rene Gassmöller, Juliane Dannberg, Wolfgang Bangerth, Timo Heister, and Robert Myhill. 2020. “On Formulations of Compressible Mantle Convection.” Geophysical Journal International 221 (2) (February 13): 1264–1280. doi:10.1093/gji/ggaa078. http://dx.doi.org/10.1093/gji/ggaa078.",
 bibtexkey: "gassmoller:etal:2020",
 bibtex: '@article{gassmoller:etal:2020,\n  title={On formulations of compressible mantle convection},\n  author={Gassm{\\&quot;o}ller, Rene and Dannberg, Juliane and Bangerth, Wolfgang and Heister, Timo and Myhill, Robert},\n  journal={Geophysical Journal International},\n  volume={221},\n  number={2},\n  pages={1264--1280},\n  year={2020},\n  publisher={Oxford University Press},\n  doi={10.1093/gji/ggaa078},\n  url={https://doi.org/10.1093/gji/ggaa078}\n}',
 group: 'pda'},
-entry22:{
+entry23:{
 text: "Timo Heister, Juliane Dannberg, Rene Gassmöller, and Wolfgang Bangerth. 2017. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods – II: Realistic Models and Problems.” Geophysical Journal International 210 (2) (May 9): 833–851. doi:10.1093/gji/ggx195. http://dx.doi.org/10.1093/gji/ggx195.",
 bibtexkey: "heister:etal:2017",
 bibtex: '@article{heister:etal:2017,\n  title                    = {High Accuracy Mantle Convection Simulation through Modern Numerical Methods.\n                              {II}: {R}ealistic Models and Problems},\n  author                   = {Heister, Timo and Dannberg, Juliane and\n                              Gassm{\\&quot;o}ller, Rene and Bangerth, Wolfgang},\n  journal                  = {Geophysical Journal International},\n  year                     = {2017},\n  number                   = {2},\n  pages                    = {833-851},\n  volume                   = {210},\n  DOI                      = {10.1093/gji/ggx195},\n  URL                      = {https://doi.org/10.1093/gji/ggx195}\n}',
 group: 'main'},
-entry23:{
+entry24:{
 text: "Martin Kronbichler, Timo Heister, and Wolfgang Bangerth. 2012. “High Accuracy Mantle Convection Simulation through Modern Numerical Methods.” Geophysical Journal International 191 (1) (August 21): 12–29. doi:10.1111/j.1365-246x.2012.05609.x. http://dx.doi.org/10.1111/j.1365-246X.2012.05609.x.",
 bibtexkey: "kronbichler:etal:2012",
 bibtex: '@Article{kronbichler:etal:2012,\n  Title   = {High Accuracy Mantle Convection Simulation through Modern Numerical Methods},\n  Author  = {M. Kronbichler and T. Heister and W. Bangerth},\n  Journal = {Geophysical Journal International},\n  Year    = {2012},\n  Pages   = {12-29},\n  Volume  = {191},\n  doi     = {10.1111/j.1365-246X.2012.05609.x},\n  url     = {http://dx.doi.org/10.1111/j.1365-246X.2012.05609.x}\n}',
 group: 'main'},
-entry24:{
+entry25:{
 text: "Ian Rose, Bruce Buffett, and Timo Heister. 2017. “Stability and Accuracy of Free Surface Time Integration in Viscous Flows.” Physics of the Earth and Planetary Interiors 262 (January): 90–100. doi:10.1016/j.pepi.2016.11.007. http://dx.doi.org/10.1016/j.pepi.2016.11.007.",
 bibtexkey: "rose_freesurface",
 bibtex: '@Article{rose_freesurface,\n  Title                    = {Stability and accuracy of free surface time integration in viscous flows},\n  Author                   = {Ian Rose and Bruce Buffett and Timo Heister},\n  Journal                  = {Physics of the Earth and Planetary Interiors},\n  Year                     = {2017},\n  Pages                    = {90 - 100},\n  Volume                   = {262},\n  Doi                      = {10.1016/j.pepi.2016.11.007},\n  ISSN                     = {0031-9201},\n  Url                      = {http://dx.doi.org/10.1016/j.pepi.2016.11.007}\n}',
