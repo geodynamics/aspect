@@ -74,7 +74,7 @@
           <script src="database.js?t=2022-07-26"></script>
 
           <script type="text/javascript">
-            var checkboxes = ["fs", "melt", "particles", "dg", "mf", "pda", "geoid", "NewtonSolver", "GWB", "entropy", "grainsize", "boukaremelt"];
+            var checkboxes = ["fs", "melt", "particles", "dg", "mf", "pda", "geoid", "NewtonSolver", "GWB", "entropy", "grainsize", "boukaremelt", "fastscape"];
 
             var intext = "Computations were done using the ASPECT code version <i>VERSION</i>, see \n\\cite{CITEKEYS}.";
 
@@ -116,6 +116,7 @@
               <label><input type="checkbox" id="entropy" onchange="update()">Entropy advection</label>
               <label><input type="checkbox" id="grainsize" onchange="update()">Grain-size evolution</label>
               <label><input type="checkbox" id="boukaremelt" onchange="update()">Boukare melt model</label>
+              <label><input type="checkbox" id="fastscape" onchange="update()">Fastscape surface evolution</label>
               &nbsp;&nbsp;&nbsp;
               <label><input type="checkbox" id="checkall" onchange="do_checkall()">(check all)</label>
               <br/>
