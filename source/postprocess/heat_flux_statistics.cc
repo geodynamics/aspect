@@ -34,6 +34,15 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
+    void
+    HeatFluxStatistics<dim>::initialize ()
+    {
+      CitationInfo::add("cbfheatflux");
+    }
+
+
+
+    template <int dim>
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {

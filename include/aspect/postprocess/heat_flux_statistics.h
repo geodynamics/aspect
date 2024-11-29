@@ -41,6 +41,12 @@ namespace aspect
     {
       public:
         /**
+         * Initialize the postprocessor.
+         */
+        void
+        initialize() override;
+
+        /**
          * Evaluate the solution for some heat_flux statistics.
          */
         std::pair<std::string,std::string>
