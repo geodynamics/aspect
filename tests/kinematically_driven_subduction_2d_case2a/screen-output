@@ -16,7 +16,7 @@ Number of degrees of freedom: 77,231 (15,058+1,941+7,529+7,529+7,529+7,529+7,529
    Solving thermal_OP system ... 0 iterations.
    Solving thermal_SP system ... 0 iterations.
    Solving WZ system ... 0 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      Writing graphical output:                                                    output-kinematically_driven_subduction_2d_case2a/solution/solution-00000
@@ -39,7 +39,7 @@ Number of degrees of freedom: 77,231 (15,058+1,941+7,529+7,529+7,529+7,529+7,529
    Solving thermal_OP system ... 10 iterations.
    Solving thermal_SP system ... 11 iterations.
    Solving WZ system ... 11 iterations.
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system (GMG)... 24+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                           0.0198 m/year, 0.0501 m/year

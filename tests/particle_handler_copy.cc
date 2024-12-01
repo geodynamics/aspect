@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,9 +19,9 @@
 */
 
 #include <aspect/simulator_signals.h>
-#include <aspect/particle/world.h>
 
-#include <deal.II/particles/particle_handler.h>
+// On purpose use the old file name here to test that backwards compatibility works.
+#include <aspect/particle/world.h>
 
 #include <iostream>
 
@@ -33,15 +33,16 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
                                 const unsigned int,
                                 const SolverControl &)
 {
-  const auto &particle_world = simulator_access.get_particle_world(0);
+  // On purpose use the old class name here to test that backwards compatibility works.
+  const Particle::World<dim> &particle_manager = simulator_access.get_particle_manager(0);
   dealii::Particles::ParticleHandler<dim> particle_handler;
   std::cout << "duplicating particle handler" << std::endl;
 
-  particle_world.copy_particle_handler(particle_world.get_particle_handler(),
-                                       particle_handler);
+  particle_manager.copy_particle_handler(particle_manager.get_particle_handler(),
+                                         particle_handler);
 
   auto copied_particle = particle_handler.begin();
-  for (const auto &particle: particle_world.get_particle_handler())
+  for (const auto &particle: particle_manager.get_particle_handler())
     {
       std::cout << "Original position: " << particle.get_location()
                 << ". Copied position: " << copied_particle->get_location() << std::endl;
@@ -54,13 +55,13 @@ void duplicate_particle_handler(const SimulatorAccess<dim> &simulator_access,
 
   std::cout << "resetting changed particle handler" << std::endl;
 
-  auto &non_const_particle_handler = const_cast<dealii::Particles::ParticleHandler<dim> &>(particle_world.get_particle_handler());
+  auto &non_const_particle_handler = const_cast<dealii::Particles::ParticleHandler<dim> &>(particle_manager.get_particle_handler());
 
-  particle_world.copy_particle_handler(particle_handler,
-                                       non_const_particle_handler);
+  particle_manager.copy_particle_handler(particle_handler,
+                                         non_const_particle_handler);
 
   copied_particle = particle_handler.begin();
-  for (const auto &particle: particle_world.get_particle_handler())
+  for (const auto &particle: particle_manager.get_particle_handler())
     {
       std::cout << "Original position: " << particle.get_location()
                 << ". Copied position: " << copied_particle->get_location() << std::endl;

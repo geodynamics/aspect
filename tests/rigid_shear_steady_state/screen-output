@@ -7,31 +7,31 @@ Number of degrees of freedom: 1,524 (578+81+289+576)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Writing graphical output:              output-rigid_shear_steady_state/solution/solution-00000
      Writing particle output:               output-rigid_shear_steady_state/particles/particles-00000
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.408097e-04, 1.860241e-02, 3.491164e-04, 2.600740e-02, 7.556693e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 5.046051e-04, 1.864370e-02, 4.322405e-04, 2.603603e-02, 1.386438e-02
 
-*** Timestep 1:  t=0.0624772 seconds, dt=0.0624772 seconds
+*** Timestep 1:  t=0.0624143 seconds, dt=0.0624143 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Number of advected particles:          5184
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.419294e-04, 1.860627e-02, 3.499498e-04, 2.600845e-02, 7.630330e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 5.018671e-04, 1.864425e-02, 4.281601e-04, 2.603495e-02, 1.369427e-02
 
-*** Timestep 2:  t=0.1 seconds, dt=0.0375228 seconds
+*** Timestep 2:  t=0.1 seconds, dt=0.0375857 seconds
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:              output-rigid_shear_steady_state/solution/solution-00001
      Writing particle output:               output-rigid_shear_steady_state/particles/particles-00001
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.407022e-04, 1.860216e-02, 3.489295e-04, 2.600826e-02, 7.595420e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 5.004608e-04, 1.863885e-02, 4.261366e-04, 2.603543e-02, 1.376658e-02
 
 Termination requested by criterion: end time
 

@@ -10,7 +10,7 @@ Number of mesh deformation degrees of freedom: 882
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system (GMG)... 30+0 iterations.
 
 Number of active cells: 547 (on 3 levels)
 Number of degrees of freedom: 12,904 (4,676+607+607+2,338+2,338+2,338)
@@ -23,7 +23,7 @@ Number of mesh deformation degrees of freedom: 1,214
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
@@ -46,7 +46,7 @@ Number of mesh deformation degrees of freedom: 1,162
    Solving ve_stress_xx system ... 16 iterations.
    Solving ve_stress_yy system ... 16 iterations.
    Solving ve_stress_xy system ... 16 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -1.533e+05/2.688e+05/6.213e+10 // -2.688e+05/1.533e+05/-6.213e+10 // -6.329e+04/3.277e+05/1.178e+16
@@ -67,7 +67,7 @@ Number of mesh deformation degrees of freedom: 1,138
    Solving ve_stress_xx system ... 15 iterations.
    Solving ve_stress_yy system ... 15 iterations.
    Solving ve_stress_xy system ... 15 iterations.
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system (GMG)... 43+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -2.875e+05/4.919e+05/-1.372e+12 // -4.919e+05/2.875e+05/1.372e+12 // -1.194e+05/6.098e+05/2.14e+16
@@ -88,7 +88,7 @@ Number of mesh deformation degrees of freedom: 1,120
    Solving ve_stress_xx system ... 14 iterations.
    Solving ve_stress_yy system ... 14 iterations.
    Solving ve_stress_xy system ... 15 iterations.
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system (GMG)... 42+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -4.082e+05/6.872e+05/-2.54e+12 // -6.872e+05/4.082e+05/2.54e+12 // -1.705e+05/8.613e+05/2.976e+16

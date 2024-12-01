@@ -401,10 +401,10 @@ Parameter files can be referenced like a link. You can leave the link name out t
 
 ```md
 [](parameters:CFL_20number)
-See all [particle interpolator parameters](parameters:Postprocess/Particles/Interpolator)
+See all [particle interpolator parameters](parameters:Particles/Interpolator)
 ```
 [](parameters:CFL_20number)
-See all [particle interpolator parameters](parameters:Postprocess/Particles/Interpolator)
+See all [particle interpolator parameters](parameters:Particles/Interpolator)
 
 ## Math
 

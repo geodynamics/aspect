@@ -38,7 +38,7 @@
  */
 
 /**
- * @defgroup InitialTopographyModels Describing the properties of the initial topography of the domain
+ * @defgroup InitialTopographyModels Describing the initial topography of the domain
  *
  * A module for the definition of properties related to initial topography of
  * the geometry. The goal of this module is to return the elevation at a
@@ -74,6 +74,13 @@
  * on the right hand side of the temperature equation. This includes, in
  * particular, terms such as shear and adiabatic heating, phase changes,
  * and radiogenic sources.
+ */
+
+/**
+ * @defgroup MeshDeformation Describing how to deform the mesh
+ *
+ * A module for the definition of algorithms and methods to deform the
+ * mesh during the computation, e.g. due to surface processes.
  */
 
 /**
@@ -119,9 +126,9 @@
 
 
 /**
- * @defgroup AdiabaticConditions Adiabatic conditions
+ * @defgroup AdiabaticConditions Describing Adiabatic conditions
  *
- * A group for all things that have to do with adiabatic conditions.
+ * A group for all things that have to do with adiabatic reference profiles.
  *
  * @ingroup InitialConditions
  */
@@ -151,6 +158,15 @@
  *
  * A module for the definition of functions and classes that have to do with
  * describing boundary values for the temperature.
+ *
+ * @ingroup BoundaryConditions
+ */
+
+/**
+ * @defgroup BoundaryHeatFlux Describing heat flux boundary conditions
+ *
+ * A module for the definition of functions and classes that have to do with
+ * describing heat flux boundary values for the temperature field.
  *
  * @ingroup BoundaryConditions
  */

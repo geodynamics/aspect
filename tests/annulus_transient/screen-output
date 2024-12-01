@@ -7,7 +7,7 @@ Number of degrees of freedom: 4,560 (1,728+240+864+1,728)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 0 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:                                                        output-annulus_transient/solution/solution-00000
@@ -20,7 +20,7 @@ Number of degrees of freedom: 4,560 (1,728+240+864+1,728)
 *** Timestep 1:  t=0.0196519 seconds, dt=0.0196519 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 4 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.94 m/s, 3.76 m/s
@@ -32,7 +32,7 @@ Number of degrees of freedom: 4,560 (1,728+240+864+1,728)
 *** Timestep 2:  t=0.0392301 seconds, dt=0.0195783 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 3 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.97 m/s, 3.79 m/s
@@ -44,7 +44,7 @@ Number of degrees of freedom: 4,560 (1,728+240+864+1,728)
 *** Timestep 3:  t=0.05 seconds, dt=0.0107699 seconds
    Skipping temperature solve because RHS is zero.
    Solving density_field system ... 3 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                                               1.98 m/s, 3.82 m/s

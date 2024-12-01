@@ -6,7 +6,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing graphical output:    output-viscoplastic_melt_fraction/solution/solution-00000
@@ -18,7 +18,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      Writing graphical output:    output-viscoplastic_melt_fraction/solution/solution-00001

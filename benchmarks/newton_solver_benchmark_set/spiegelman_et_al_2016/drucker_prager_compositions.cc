@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -26,8 +26,8 @@
  * general purpose models. For more details see that paper.
  */
 
-#ifndef __aspect__model_drucker_prager_compositions_h
-#define __aspect__model_drucker_prager_compositions_h
+#ifndef _aspect_model_drucker_prager_compositions_h
+#define _aspect_model_drucker_prager_compositions_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -319,17 +319,17 @@ namespace aspect
                           if (c == 0  && composition_viscosities[c] <= max_visc[c] && composition_viscosities[c] >= min_visc[c])
                             {
                               const double drucker_prager_viscosity = compute_viscosity(edot_ii,pressure,c,prefactor[c],false,min_visc[c],max_visc[c]);
-                              const double regulaization_adjustment = (ref_visc * ref_visc)
-                                                                      / (ref_visc * ref_visc + 2.0 * ref_visc * drucker_prager_viscosity
-                                                                         + drucker_prager_viscosity * drucker_prager_viscosity);
+                              const double regularization_adjustment = (ref_visc * ref_visc)
+                                                                       / (ref_visc * ref_visc + 2.0 * ref_visc * drucker_prager_viscosity
+                                                                          + drucker_prager_viscosity * drucker_prager_viscosity);
 
-                              composition_viscosities_derivatives[c] = -regulaization_adjustment *
+                              composition_viscosities_derivatives[c] = -regularization_adjustment *
                                                                        (drucker_prager_viscosity / (edot_ii * edot_ii)) * deviator_strain_rate;
 
                               if (use_deviator_of_strain_rate == true)
                                 composition_viscosities_derivatives[c]*deviator_tensor<dim>();
 
-                              composition_dviscosities_dpressure[c] = regulaization_adjustment *
+                              composition_dviscosities_dpressure[c] = regularization_adjustment *
                                                                       ((dim == 3)
                                                                        ?
                                                                        6 * sin_phi[c] / (sqrt_3 * (3.0 + sin_phi[c]) * 2.0 * sqrt_half * edot_ii)
@@ -407,11 +407,11 @@ namespace aspect
                   for (int x = 0; x < dim; x++)
                     for (int y = 0; y < dim; y++)
                       if (!dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_strain_rate[i][x][y]))
-                        std::cout << "Error: Averaged viscosity to strain-rate devrivative is not finite." << std::endl;
+                        std::cout << "Error: Averaged viscosity to strain-rate derivative is not finite." << std::endl;
 
                   if (!dealii::numbers::is_finite(derivatives->viscosity_derivative_wrt_pressure[i]))
                     {
-                      std::cout << "Error: Averaged viscosity to pressure devrivative is not finite. " << std::endl;
+                      std::cout << "Error: Averaged viscosity to pressure derivative is not finite. " << std::endl;
                       for (unsigned int c=0; c < volume_fractions.size(); ++c)
                         std::cout << composition_dviscosities_dpressure[c] << ',';
                       std::cout << std::endl;

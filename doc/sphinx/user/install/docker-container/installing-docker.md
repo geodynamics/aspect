@@ -16,6 +16,18 @@ image from Docker Hub is as simple as typing in a terminal:
 docker pull geodynamics/aspect
 ```
 
+The precompiled version of ASPECT downloaded through the command above
+will be from a recent commit on the main (development) branch of ASPECT.
+
+A list of Docker containers with precompiled versions of ASPECT from earlier
+releases and download instructions can also be found on Docker Hub
+((<https://hub.docker.com/r/geodynamics/aspect/tags>)).
+
+For example, the command to download the container for ASPECT v.2.5.0 is
+``` ksh
+docker pull geodynamics/aspect:v2.5.0
+```
+
 Note that the transfer size of the compressed image containing
 ASPECT and all its dependencies is a few GB.
 When extracted the image requires less than 10 GB of disk space.

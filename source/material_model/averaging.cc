@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -299,7 +299,7 @@ namespace aspect
                      */
                     if (values_out[j] != 0)
                       {
-                        sum_value += weight*log(values_out[j]);
+                        sum_value += weight*std::log(values_out[j]);
                       }
 
                     sum_weights += weight;

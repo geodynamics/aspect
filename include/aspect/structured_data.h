@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -247,6 +247,15 @@ namespace aspect
          * Return the maximum value of the component values.
          */
         double get_maximum_component_value(const unsigned int component) const;
+
+        /**
+         * Retrieve the number of table points for a given dimension.
+         * Equivalent to calling get_interpolation_point_coordinates().size().
+         *
+         * @param dimension The index of the dimension for which to get the number of table points.
+         * @return The number of points along the specified dimension.
+         */
+        unsigned int get_number_of_coordinates(const unsigned int dimension) const;
 
       private:
         /**
@@ -767,11 +776,6 @@ namespace aspect
          */
         std::unique_ptr<aspect::Utilities::StructuredDataLookup<1>> lookup;
     };
-
-
-
-    template <int dim>
-    using AsciiDataLookup DEAL_II_DEPRECATED = StructuredDataLookup<dim>;
   }
 }
 

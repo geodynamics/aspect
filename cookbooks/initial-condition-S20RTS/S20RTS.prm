@@ -130,7 +130,7 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set List of output variables      = geoid, dynamic topography, heat flux map, density,viscosity, gravity
+    set List of output variables      = geoid, dynamic topography, heat flux map, material properties, gravity
     set Time between graphical output = 0
     set Number of grouped files       = 1
 
@@ -139,6 +139,10 @@ subsection Postprocess
     # flux map' postprocessor.
     subsection Heat flux map
       set Output point wise heat flux = true
+    end
+
+    subsection Material properties
+      set List of material properties = density, viscosity
     end
   end
 

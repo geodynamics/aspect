@@ -141,7 +141,11 @@ subsection Postprocess
     set Output format                 = vtu
     set Number of grouped files       = 1
     set Time between graphical output = 0.0009817477042468104
-    set List of output variables      = density, gravity
+    set List of output variables      = material properties, gravity
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 
   subsection Particles
@@ -161,7 +165,6 @@ subsection Particles
   set Integration scheme = rk2 # or rk4
   set Interpolation scheme = bilinear least squares # or cell average
   set List of particle properties = function
-  set Update ghost particles = true
   set Particle generator name = reference cell
   set Load balancing strategy = none # not necessary for uniform mesh
 

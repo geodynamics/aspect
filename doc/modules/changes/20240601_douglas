@@ -1,6 +1,0 @@
-Added: Functionality for multiplying the dislocation and/or diffusion creep
-viscosities by prefactors which depend on the model composition. Created a 
-specific use-case for multiplying the viscosity by a factor that accounts for
-bound H2O from Hirth & Kohlstaedt 2004 10.1029/138GM06
-<br>
-(Daniel Douglas, 2024/06/01)

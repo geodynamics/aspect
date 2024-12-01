@@ -1,4 +1,5 @@
-!/bin/bash
+#!/bin/bash
+
 version="b1"
 declare -a grid=(4)
 declare -a NSP=("SPD") # "symmetric" "none")  #Use Newton stabilization preconditioner

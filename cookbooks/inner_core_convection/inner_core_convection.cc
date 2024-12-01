@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -175,7 +175,7 @@ namespace aspect
 
           // The gravity is zero in the center of the Earth, and we assume the density to be constant and equal to 1.
           // We fix the surface pressure to 0 (and we are only interested in pressure differences anyway).
-          return gravity_magnitude * 0.5 * (1.0 - std::pow(radius/max_radius,2));
+          return gravity_magnitude * 0.5 * (1.0 - Utilities::fixed_power<2>(radius/max_radius));
         }
       else
         return hydrostatic_pressure_profile.value(Point<1>(radius));

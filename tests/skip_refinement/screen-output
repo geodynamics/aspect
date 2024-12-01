@@ -14,7 +14,7 @@ Number of mesh deformation degrees of freedom: 306
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
 Number of active cells: 68 (on 4 levels)
 Number of degrees of freedom: 3,223 (674+95+95+337+337+337+337+337+337+337)
@@ -31,7 +31,7 @@ Number of mesh deformation degrees of freedom: 190
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
 Number of active cells: 116 (on 5 levels)
 Number of degrees of freedom: 5,531 (1,158+160+160+579+579+579+579+579+579+579)
@@ -48,7 +48,7 @@ Number of mesh deformation degrees of freedom: 320
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -62,7 +62,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving TZ system ... 0 iterations.
    Solving UM system ... 0 iterations.
    Solving Lith system ... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-skip_refinement/solution/solution-00000
@@ -83,7 +83,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving TZ system ... 9 iterations.
    Solving UM system ... 10 iterations.
    Solving Lith system ... 8 iterations.
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system (GMG)... 14+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -1.218e+09/1.361e+09/1.701e+20 // -1.361e+09/1.218e+09/-1.701e+20 // -42.83/42.83/6.551e+06 // -0.002961/1.001/3.341e+12 // -0.002178/0.9984/3.645e+11 // -0.002739/1.002/5.067e+11 // -0.0002238/1/1.242e+11
@@ -103,7 +103,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving TZ system ... 10 iterations.
    Solving UM system ... 10 iterations.
    Solving Lith system ... 9 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -2.365e+08/1.83e+08/-1.755e+18 // -1.83e+08/2.365e+08/1.755e+18 // -38.45/38.44/5.512e+09 // -0.002962/1.001/3.342e+12 // -0.001677/0.9947/3.624e+11 // -0.002603/1.001/5.077e+11 // -4.232e-05/1/1.242e+11

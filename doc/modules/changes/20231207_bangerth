@@ -1,6 +1,0 @@
-Removed: The GeometryModel::Chunk and GeometryModel::TwoMergedChunks
-classes had member functions `depth_wrt_topo()`, but these were not
-used anywhere and did not work with the mesh deformation
-framework. They have consequently been removed.
-<br>
-(Wolfgang Bangerth, 2023/12/07)

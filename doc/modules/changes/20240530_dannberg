@@ -1,6 +1,0 @@
-Changed: The reset of the grain size at phase transitions
-is now determined only by the velocity of the material
-moving through a transition rather than by a somewhat
-arbitrary 'transition width' parameter.
-<br>
-(Juliane Dannberg, 2024/05/30)

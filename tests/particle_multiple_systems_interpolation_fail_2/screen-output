@@ -1,0 +1,19 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Advecting particles...  done.
+
+An error occurred in file <initial_conditions.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    advection_field_has_been_found[advection_field] == false
+Additional information: 
+    The field composition 0 (anomaly) is mapped to particle properties in
+    more than one particle manager. This is not supported.
+
+Stacktrace:
+(rest of the output replaced by default.sh script)

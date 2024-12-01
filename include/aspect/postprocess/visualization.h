@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -518,9 +518,9 @@ namespace aspect
          * linear interpolation between vertices that ParaView and VisIt usually show.
          * Note that activating this option is safe and recommended, but requires that
          * (i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is
-         * set to true, (iii) you use a sufficiently new version of Paraview
+         * set to true, and (iii) you use a sufficiently new version of Paraview
          * or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version
-         * to be determined), and (iv) you use deal.II version 9.1.0 or newer.
+         * to be determined).
          */
         bool write_higher_order_output;
 

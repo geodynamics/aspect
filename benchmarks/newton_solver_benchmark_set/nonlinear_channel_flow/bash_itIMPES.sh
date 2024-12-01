@@ -45,7 +45,7 @@ fi
 SOLVER_SHORT="itAdandSt" #"NS" #NS"
 SOLVER="NS"
 if [ $SOLVER_SHORT == "NS" ]; then
- SOLVER="Newton Stokes"
+ SOLVER="iterated Advection and Newton Stokes"
 elif [ $SOLVER_SHORT == "itAdandSt" ]; then
  SOLVER="iterated Advection and Stokes"
 fi

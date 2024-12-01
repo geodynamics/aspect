@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -88,7 +88,7 @@ namespace aspect
           tait_parameters_b[i] = bulk_modulus_pressure_derivatives[i] / reference_bulk_moduli[i]
                                  - bulk_modulus_second_pressure_derivatives[i] / (1. + bulk_modulus_pressure_derivatives[i]);
           tait_parameters_c[i] = (1. + bulk_modulus_pressure_derivatives[i] + reference_bulk_moduli[i] * bulk_modulus_second_pressure_derivatives[i]) /
-                                 (std::pow(bulk_modulus_pressure_derivatives[i],2) + bulk_modulus_pressure_derivatives[i]
+                                 (Utilities::fixed_power<2>(bulk_modulus_pressure_derivatives[i]) + bulk_modulus_pressure_derivatives[i]
                                   - reference_bulk_moduli[i] * bulk_modulus_second_pressure_derivatives[i]);
         }
 
@@ -108,7 +108,7 @@ namespace aspect
     reference_darcy_coefficient () const
     {
       // 0.01 = 1% melt
-      return reference_permeability * std::pow(0.01,3.0) / eta_f;
+      return reference_permeability * Utilities::fixed_power<3>(0.01) / eta_f;
     }
 
     template <int dim>
@@ -191,7 +191,7 @@ namespace aspect
                                 + specific_heat_second_coefficients[i] * std::pow(in.temperature[q], -2.)
                                 + specific_heat_third_coefficients[i] * std::pow(in.temperature[q], -0.5);
 
-          const long double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * std::pow(heat_capacity_ratio * reference_thermal_expansivities[i], 2.0)
+          const long double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * Utilities::fixed_power<2>(heat_capacity_ratio * reference_thermal_expansivities[i])
                                     * (std::pow(1. + b * (pressure - Pth), -1.-c) - std::pow(1. + b * (reference_pressure - Pth), -1.- c));
 
           const double relative_T = Einstein_temperatures[i] / in.temperature[q];
@@ -232,8 +232,8 @@ namespace aspect
                   ExcMessage("The temperature has to be larger than 0!"));
 
       const double relative_T = Einstein_temperatures[endmember_index] / temperature;
-      const double heat_capacity = 3. * number_of_atoms[endmember_index] * constants::gas_constant * std::pow(relative_T, 2)
-                                   * std::exp(relative_T) / std::pow(std::exp(relative_T) - 1.0, 2);
+      const double heat_capacity = 3. * number_of_atoms[endmember_index] * constants::gas_constant * Utilities::fixed_power<2>(relative_T)
+                                   * std::exp(relative_T) / Utilities::fixed_power<2>(std::exp(relative_T) - 1.0);
 
       return heat_capacity;
     }
@@ -262,11 +262,11 @@ namespace aspect
                                          const unsigned int i) const
     {
       const double addition = reference_specific_heats[i] * temperature
-                              + 0.5 * specific_heat_linear_coefficients[i] * std::pow(temperature, 2.)
+                              + 0.5 * specific_heat_linear_coefficients[i] * Utilities::fixed_power<2>(temperature)
                               - specific_heat_second_coefficients[i] / temperature
                               + 2. * specific_heat_third_coefficients[i] * std::sqrt(temperature)
                               - (reference_specific_heats[i] * reference_temperature
-                                 + 0.5 * specific_heat_linear_coefficients[i] * std::pow(reference_temperature, 2.)
+                                 + 0.5 * specific_heat_linear_coefficients[i] * Utilities::fixed_power<2>(reference_temperature)
                                  - specific_heat_second_coefficients[i] / reference_temperature
                                  + 2.0 * specific_heat_third_coefficients[i] * std::sqrt(reference_temperature));
 
@@ -283,11 +283,11 @@ namespace aspect
     {
       const double addition = reference_specific_heats[i] * std::log(temperature)
                               + specific_heat_linear_coefficients[i] * temperature
-                              - 0.5 * specific_heat_second_coefficients[i] / std::pow(temperature, 2.)
+                              - 0.5 * specific_heat_second_coefficients[i] / Utilities::fixed_power<2>(temperature)
                               - 2.0 * specific_heat_third_coefficients[i] / std::sqrt(temperature)
                               - (reference_specific_heats[i] * std::log(reference_temperature)
                                  + specific_heat_linear_coefficients[i] * reference_temperature
-                                 - 0.5 * specific_heat_second_coefficients[i] / std::pow(reference_temperature, 2.)
+                                 - 0.5 * specific_heat_second_coefficients[i] / Utilities::fixed_power<2>(reference_temperature)
                                  - 2.0 * specific_heat_third_coefficients[i] / std::sqrt(reference_temperature));
 
       return addition;
@@ -321,7 +321,7 @@ namespace aspect
       // Solved using the definition of the distribution coefficient to define X_Fe_fp as a function of X_Fe_pv
 
       const double num_to_sqrt = -4. * molar_fraction_FeO * (partition_coefficient - 1.) * partition_coefficient * molar_fraction_SiO2
-                                 + std::pow(1. + (molar_fraction_FeO + molar_fraction_SiO2) * (partition_coefficient - 1.0), 2.);
+                                 + Utilities::fixed_power<2>(1. + (molar_fraction_FeO + molar_fraction_SiO2) * (partition_coefficient - 1.0));
 
       endmember_mole_fractions_per_phase[febdg_idx] = (-1. + molar_fraction_FeO - (molar_fraction_FeO * partition_coefficient) + molar_fraction_SiO2 - (molar_fraction_SiO2 * partition_coefficient) + std::sqrt(num_to_sqrt)) /
                                                       (2. * molar_fraction_SiO2 * (1. - partition_coefficient));
@@ -606,7 +606,7 @@ namespace aspect
                     {
                       const double porosity = std::max(in.composition[q][porosity_idx],0.0);
                       melt_out->fluid_viscosities[q] = eta_f;
-                      melt_out->permeabilities[q] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+                      melt_out->permeabilities[q] = reference_permeability * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
                     }
                 }
               return;
@@ -888,7 +888,7 @@ namespace aspect
               double porosity = std::max(in.composition[q][porosity_idx],0.0);
 
               melt_out->fluid_viscosities[q] = eta_f;
-              melt_out->permeabilities[q] = reference_permeability * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+              melt_out->permeabilities[q] = reference_permeability * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
 
               // limit porosity to disaggregation threshold
               porosity = std::min(0.3, porosity);
@@ -1170,75 +1170,48 @@ namespace aspect
                 AssertThrow (false, ExcNotImplemented());
             }
 
-          molar_masses = Utilities::parse_map_to_double_array (prm.get("Molar masses"),
-                                                               endmember_names,
-                                                               false,
-                                                               "Molar masses");
+          Utilities::MapParsing::Options options(endmember_names, "");
+          options.property_name = "Molar masses";
+          molar_masses = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          number_of_atoms = Utilities::parse_map_to_double_array (prm.get("Number of atoms"),
-                                                                  endmember_names,
-                                                                  false,
-                                                                  "Number of atoms");
+          options.property_name = "Number of atoms";
+          number_of_atoms = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_volumes = Utilities::parse_map_to_double_array (prm.get("Reference volumes"),
-                                                                    endmember_names,
-                                                                    false,
-                                                                    "Reference volumes");
+          options.property_name = "Reference volumes";
+          reference_volumes = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Reference thermal expansivities"),
-                                                                                  endmember_names,
-                                                                                  false,
-                                                                                  "Reference thermal expansivities");
+          options.property_name = "Reference thermal expansivities";
+          reference_thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_bulk_moduli = Utilities::parse_map_to_double_array (prm.get("Reference bulk moduli"),
-                                                                        endmember_names,
-                                                                        false,
-                                                                        "Reference bulk moduli");
+          options.property_name = "Reference bulk moduli";
+          reference_bulk_moduli = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          bulk_modulus_pressure_derivatives = Utilities::parse_map_to_double_array (prm.get("First derivatives of the bulk modulus"),
-                                                                                    endmember_names,
-                                                                                    false,
-                                                                                    "First derivatives of the bulk modulus");
+          options.property_name = "First derivatives of the bulk modulus";
+          bulk_modulus_pressure_derivatives = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          bulk_modulus_second_pressure_derivatives = Utilities::parse_map_to_double_array (prm.get("Second derivatives of the bulk modulus"),
-                                                     endmember_names,
-                                                     false,
-                                                     "Second derivatives of the bulk modulus");
+          options.property_name = "Second derivatives of the bulk modulus";
+          bulk_modulus_second_pressure_derivatives = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          Einstein_temperatures = Utilities::parse_map_to_double_array (prm.get("Einstein temperatures"),
-                                                                        endmember_names,
-                                                                        false,
-                                                                        "Einstein temperatures");
+          options.property_name = "Einstein temperatures";
+          Einstein_temperatures = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_enthalpies = Utilities::parse_map_to_double_array (prm.get("Reference enthalpies"),
-                                                                       endmember_names,
-                                                                       false,
-                                                                       "Reference enthalpies");
+          options.property_name = "Reference enthalpies";
+          reference_enthalpies = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_entropies = Utilities::parse_map_to_double_array (prm.get("Reference entropies"),
-                                                                      endmember_names,
-                                                                      false,
-                                                                      "Reference entropies");
+          options.property_name = "Reference entropies";
+          reference_entropies = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          reference_specific_heats = Utilities::parse_map_to_double_array (prm.get("Reference specific heat capacities"),
-                                                                           endmember_names,
-                                                                           false,
-                                                                           "Reference specific heat capacities");
+          options.property_name = "Reference specific heat capacities";
+          reference_specific_heats = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          specific_heat_linear_coefficients = Utilities::parse_map_to_double_array (prm.get("Linear coefficients for specific heat polynomial"),
-                                                                                    endmember_names,
-                                                                                    false,
-                                                                                    "Linear coefficients for specific heat polynomial");
+          options.property_name = "Linear coefficients for specific heat polynomial";
+          specific_heat_linear_coefficients = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          specific_heat_second_coefficients = Utilities::parse_map_to_double_array (prm.get("Second coefficients for specific heat polynomial"),
-                                                                                    endmember_names,
-                                                                                    false,
-                                                                                    "Second coefficients for specific heat polynomial");
+          options.property_name = "Second coefficients for specific heat polynomial";
+          specific_heat_second_coefficients = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
-          specific_heat_third_coefficients = Utilities::parse_map_to_double_array (prm.get("Third coefficients for specific heat polynomial"),
-                                                                                   endmember_names,
-                                                                                   false,
-                                                                                   "Third coefficients for specific heat polynomial");
+          options.property_name = "Third coefficients for specific heat polynomial";
+          specific_heat_third_coefficients = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           // Check all lists have the correct length.
           AssertThrow(endmember_names.size() == endmember_states.size(),

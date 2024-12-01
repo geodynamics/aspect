@@ -1,0 +1,38 @@
+
+Loading shared library <./libparticle_property_integrated_strain_simple_shear_mixed_dg.debug.so>
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 718 (162+25+81+81+81+144+144)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving strain_xx system ... 0 iterations.
+   Skipping strain_xy composition solve because RHS is zero.
+   Skipping strain_yx composition solve because RHS is zero.
+   Solving strain_yy system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+
+   Postprocessing:
+     Writing particle output:  output-particle_property_integrated_strain_simple_shear_mixed_dg/particles/particles-00000
+     Writing graphical output: output-particle_property_integrated_strain_simple_shear_mixed_dg/solution/solution-00000
+
+*** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving strain_xx system ... 0 iterations.
+   Solving strain_xy system ... 11 iterations.
+   Solving strain_yx system ... 3 iterations.
+   Solving strain_yy system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+
+   Postprocessing:
+     Writing particle output:  output-particle_property_integrated_strain_simple_shear_mixed_dg/particles/particles-00001
+     Writing graphical output: output-particle_property_integrated_strain_simple_shear_mixed_dg/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+

@@ -5,7 +5,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 139+0 iterations.
+   Solving Stokes system (GMG)... 139+0 iterations.
 
    Postprocessing:
      Writing graphical output:                          output-grain_size_phase_function/solution/solution-00000
@@ -16,7 +16,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 136+0 iterations.
+   Solving Stokes system (GMG)... 136+0 iterations.
 
    Postprocessing:
      Writing graphical output:                          output-grain_size_phase_function/solution/solution-00001

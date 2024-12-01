@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,7 +21,7 @@
 
 #include <aspect/postprocess/load_balance_statistics.h>
 
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -43,17 +43,20 @@ namespace aspect
       statistics.add_value ("Average cells per process",
                             cell_distribution.avg);
 
-      if (this->n_particle_worlds() > 0)
+      if (this->n_particle_managers() > 0)
         {
-          const unsigned int locally_owned_particles = this->get_particle_world(0).
-                                                       get_particle_handler().n_locally_owned_particles();
+          types::particle_index locally_owned_particles = 0;
+          for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+            locally_owned_particles += this->get_particle_manager(particle_manager_index).
+                                       get_particle_handler().n_locally_owned_particles();
+
           const dealii::Utilities::MPI::MinMaxAvg particles_per_process =
-            dealii::Utilities::MPI::min_max_avg(locally_owned_particles,this->get_mpi_communicator());
+            dealii::Utilities::MPI::min_max_avg(locally_owned_particles, this->get_mpi_communicator());
 
           statistics.add_value ("Minimal particles per process",
-                                static_cast<unsigned int>(particles_per_process.min));
+                                static_cast<types::particle_index>(particles_per_process.min));
           statistics.add_value ("Maximal particles per process",
-                                static_cast<unsigned int>(particles_per_process.max));
+                                static_cast<types::particle_index>(particles_per_process.max));
           statistics.add_value ("Average particles per process",
                                 particles_per_process.avg);
 

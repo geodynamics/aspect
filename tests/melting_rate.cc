@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -48,7 +48,7 @@ namespace aspect
 
       virtual double reference_darcy_coefficient () const
       {
-        return 1e-8 * std::pow(0.01, 3.0) / 10.0;
+        return 1e-8 * Utilities::fixed_power<3>(0.01) / 10.0;
       }
 
       virtual void evaluate(const typename MaterialModel::Interface<dim>::MaterialModelInputs &in,
@@ -102,7 +102,7 @@ namespace aspect
 
                 melt_out->compaction_viscosities[i] = 5e20;
                 melt_out->fluid_viscosities[i]= 10.0;
-                melt_out->permeabilities[i]= 1e-8 * std::pow(porosity,3) * std::pow(1.0-porosity,2);
+                melt_out->permeabilities[i]= 1e-8 * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
                 melt_out->fluid_densities[i]= 2500.0;
                 melt_out->fluid_density_gradients[i] = Tensor<1,dim>();
               }

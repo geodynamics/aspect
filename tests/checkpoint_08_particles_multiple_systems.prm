@@ -1,0 +1,113 @@
+# test checkpoint/resume.
+
+# This test is controlled via the plugin in checkpoint_08_particles_multiple_systems.cc.
+# The plugin will first execute ASPECT with this .prm and write the output into
+# output1.tmp/. This will generate a snapshot that is then resumed from. The
+# output for this second run will be written into output2.tmp/. Finally,
+# output files will be copied into the main output folder for comparison.
+
+# based on checkpoint_03.prm, but extended for multiple particle systems.
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 1e7
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Checkpointing
+  set Steps between checkpoint = 4
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.2
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = composition statistics, temperature statistics, velocity statistics, particles
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = ascii
+  end
+end
+
+subsection Termination criteria
+  set Checkpoint on termination = false
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Use direct solver for Stokes system = true
+  end
+end
+
+subsection Particles
+  set Number of particle systems              = 2
+  set List of particle properties = function, initial position, position, velocity
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 0 , 1 )
+  end
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 100
+    end
+  end
+end
+
+subsection Particles 2
+  set List of particle properties = function, initial position, position, velocity
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if( (z>0.2+0.02*cos(pi*x/0.9142)) , 1 , 0 )
+  end
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 100
+    end
+  end
+end

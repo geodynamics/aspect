@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -302,6 +302,10 @@ namespace aspect
                                    "set \"Use conduction timestep\" to true. Use the \"conduction time step\" "
                                    "instead"));
           }
+
+        if (this->get_parameters().nonlinear_solver_failure_strategy
+            == Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size)
+          this->plugin_names.insert(this->plugin_names.begin(), "repeat on nonlinear solver failure");
 
         prm.leave_subsection();
 

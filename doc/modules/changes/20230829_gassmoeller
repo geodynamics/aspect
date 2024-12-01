@@ -1,7 +1,0 @@
-Changed: The benchmarks 'blankenbach' and 'king2dcompressible' have been
-reworked and extended. Changes include: (1) higher resolution, (2) more
-reproducible convergence results, (3) additional figures, (4) a comparison
-between gradient based and CBF heat flux calculation, (5) reproducible
-Richardson extrapolation of ASPECT reference results.
-<br>
-(Rene Gassmoeller, 2023/08/29)

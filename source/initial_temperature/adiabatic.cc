@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -206,13 +206,13 @@ namespace aspect
           surface_cooling_temperature = age_top > 0.0 ?
                                         (T_surface - adiabatic_surface_temperature) *
                                         erfc(this->get_geometry_model().depth(position) /
-                                             (2 * sqrt(kappa * age_top)))
+                                             (2 * std::sqrt(kappa * age_top)))
                                         : 0.0;
           bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
                                        (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
                                        * erfc((this->get_geometry_model().maximal_depth()
                                                - this->get_geometry_model().depth(position)) /
-                                              (2 * sqrt(kappa * age_bottom)))
+                                              (2 * std::sqrt(kappa * age_bottom)))
                                        : 0.0;
         }
 
@@ -224,7 +224,7 @@ namespace aspect
             }
           else
             {
-              const double exponential = -kappa * std::pow(numbers::PI, 2) * age_top / std::pow(lithosphere_thickness, 2);
+              const double exponential = -kappa * Utilities::fixed_power<2>(numbers::PI) * age_top / Utilities::fixed_power<2>(lithosphere_thickness);
               double sum_terms = 0.;
               for (unsigned int n=1; n<11; ++n)
                 {

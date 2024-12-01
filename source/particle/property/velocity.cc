@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -37,13 +37,16 @@ namespace aspect
 
       template <int dim>
       void
-      Velocity<dim>::update_particle_property(const unsigned int data_position,
-                                              const Vector<double> &solution,
-                                              const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                              typename ParticleHandler<dim>::particle_iterator &particle) const
+      Velocity<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+                                                typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        for (unsigned int i = 0; i < dim; ++i)
-          particle->get_properties()[data_position+i] = solution[this->introspection().component_indices.velocities[i]];
+        unsigned int p = 0;
+        for (auto &particle: particles)
+          {
+            for (unsigned int i = 0; i < dim; ++i)
+              particle.get_properties()[this->data_position+i] = inputs.solution[p][this->introspection().component_indices.velocities[i]];
+            ++p;
+          }
       }
 
       template <int dim>
@@ -55,9 +58,12 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      Velocity<dim>::get_needed_update_flags () const
+      Velocity<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_values;
+        if (this->introspection().component_masks.velocities[component] == true)
+          return update_values;
+
+        return update_default;
       }
 
       template <int dim>

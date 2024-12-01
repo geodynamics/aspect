@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -85,6 +85,8 @@ namespace aspect
      * mesh vertices and store them in a AffineConstraints<double> object. The velocities
      * for all non-constrained vertices will be computed by solving a Laplace
      * problem with the given constraints.
+     *
+     * @ingroup MeshDeformation
      */
     template <int dim>
     class Interface : public Plugins::InterfaceBase

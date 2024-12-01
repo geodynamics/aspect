@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -141,7 +141,7 @@ namespace aspect
       std::pair<double, double>
       DruckerPrager<dim>::compute_strain_rate_and_derivative (const double stress,
                                                               const double pressure,
-                                                              const DruckerPragerParameters p) const
+                                                              const DruckerPragerParameters &p) const
       {
 
         const double yield_stress = compute_yield_stress(p.cohesion, p.angle_internal_friction, pressure, p.max_yield_stress);

@@ -26,23 +26,23 @@ namespace aspect
   namespace Particle
   {
     ParticleInterfaceBase::ParticleInterfaceBase()
-      : particle_world_index(dealii::numbers::invalid_unsigned_int)
+      : particle_manager_index(dealii::numbers::invalid_unsigned_int)
     {}
 
 
 
     void
-    ParticleInterfaceBase::set_particle_world_index(const unsigned int particle_world_index)
+    ParticleInterfaceBase::set_particle_manager_index(const unsigned int particle_manager_index)
     {
-      this->particle_world_index = particle_world_index;
+      this->particle_manager_index = particle_manager_index;
     }
 
 
 
     unsigned int
-    ParticleInterfaceBase::get_particle_world_index() const
+    ParticleInterfaceBase::get_particle_manager_index() const
     {
-      return particle_world_index;
+      return particle_manager_index;
     }
   }
 }

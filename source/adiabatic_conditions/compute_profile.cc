@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -47,7 +47,11 @@ namespace aspect
       if (use_surface_condition_function)
         {
           initialized = false;
-          surface_condition_function.set_time(this->get_time());
+          if (this->convert_output_to_years())
+            surface_condition_function.set_time(this->get_time() / year_in_seconds);
+
+          else
+            surface_condition_function.set_time(this->get_time());
           initialize();
         }
     }

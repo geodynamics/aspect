@@ -4,18 +4,18 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  2.03 m/s, 2.91 m/s
      Temperature min/avg/max:            0.091 K, 0.591 K, 1.091 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
      Writing depth average:              output-king_ala_nondim/depth_average
-     Heating rate (average/total):       -3.737e-09 W/kg, -4.246e-09 W
+     Heating rate (average/total):       -3.737e-09 W/kg, -4.245e-09 W
 
 *** Timestep 1:  t=0.107179 seconds, dt=0.107179 seconds
    Solving temperature system... 53 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  18.6 m/s, 26.6 m/s
@@ -25,7 +25,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 2:  t=0.118913 seconds, dt=0.0117331 seconds
    Solving temperature system... 62 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  47.6 m/s, 68.2 m/s
@@ -35,7 +35,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 3:  t=0.123495 seconds, dt=0.00458278 seconds
    Solving temperature system... 60 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  64.1 m/s, 94.5 m/s
@@ -45,7 +45,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 4:  t=0.126803 seconds, dt=0.00330719 seconds
    Solving temperature system... 53 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  66.7 m/s, 102 m/s
@@ -55,7 +55,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 5:  t=0.129864 seconds, dt=0.00306123 seconds
    Solving temperature system... 45 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  60 m/s, 95.2 m/s
@@ -65,7 +65,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 6:  t=0.133143 seconds, dt=0.00327895 seconds
    Solving temperature system... 41 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  49.6 m/s, 81.7 m/s
@@ -75,7 +75,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 7:  t=0.136969 seconds, dt=0.00382583 seconds
    Solving temperature system... 37 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  39.2 m/s, 67.5 m/s
@@ -85,7 +85,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 8:  t=0.141597 seconds, dt=0.00462858 seconds
    Solving temperature system... 34 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  31.1 m/s, 54.5 m/s
@@ -95,7 +95,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 9:  t=0.147324 seconds, dt=0.00572695 seconds
    Solving temperature system... 35 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  26.3 m/s, 46.1 m/s
@@ -105,7 +105,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
 
 *** Timestep 10:  t=0.15 seconds, dt=0.00267588 seconds
    Solving temperature system... 23 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
 
    Postprocessing:
      RMS, max velocity:                  25.7 m/s, 45.2 m/s

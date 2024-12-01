@@ -5,7 +5,7 @@ Number of degrees of freedom: 1,059 (578+192+289)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (AMG)... 15+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
@@ -15,7 +15,7 @@ Number of degrees of freedom: 1,059 (578+192+289)
 *** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (AMG)... 12+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
@@ -25,7 +25,7 @@ Number of degrees of freedom: 1,059 (578+192+289)
 *** Timestep 2:  t=0.1 seconds, dt=0.0375 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (AMG)... 15+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.5 K, 1 K

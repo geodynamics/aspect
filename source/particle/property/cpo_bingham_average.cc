@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2023 by the authors of the ASPECT code.
+  Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,7 +19,7 @@
  */
 
 #include <aspect/particle/property/cpo_bingham_average.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <aspect/utilities.h>
 
@@ -35,7 +35,7 @@ namespace aspect
       {
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
         this->random_number_generator.seed(random_number_seed+my_rank);
-        const auto &manager = this->get_particle_world(this->get_particle_world_index()).get_property_manager();
+        const auto &manager = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager();
         AssertThrow(manager.plugin_name_exists("crystal preferred orientation"),
                     ExcMessage("No crystal preferred orientation property plugin found."));
 
@@ -81,31 +81,33 @@ namespace aspect
 
       template <int dim>
       void
-      CpoBinghamAverage<dim>::update_particle_property(const unsigned int data_position,
-                                                       const Vector<double> &/*solution*/,
-                                                       const std::vector<Tensor<1,dim>> &/*gradients*/,
-                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
+      CpoBinghamAverage<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &/*inputs*/,
+                                                         typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         std::vector<double> volume_fractions_grains(n_grains);
         std::vector<Tensor<2,3>> rotation_matrices_grains(n_grains);
-        ArrayView<double> data = particle->get_properties();
-        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+
+        for (auto &particle: particles)
           {
-            // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
-            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+            ArrayView<double> data = particle.get_properties();
+            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
-                volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
-                rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
+                // create volume fractions and rotation matrix vectors in the order that it is stored in the data array
+                for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
+                  {
+                    volume_fractions_grains[grain_i] = cpo_particle_property->get_volume_fractions_grains(cpo_data_position,data,mineral_i,grain_i);
+                    rotation_matrices_grains[grain_i] = cpo_particle_property->get_rotation_matrix_grains(cpo_data_position,data,mineral_i,grain_i);
+                  }
+
+                const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
+                std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
+
+                for (unsigned int i = 0; i < 3; ++i)
+                  for (unsigned int j = 0; j < 6; ++j)
+                    {
+                      data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
+                    }
               }
-
-            const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
-            std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
-
-            for (unsigned int i = 0; i < 3; ++i)
-              for (unsigned int j = 0; j < 6; ++j)
-                {
-                  data[data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
-                }
           }
       }
 
@@ -192,7 +194,7 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      CpoBinghamAverage<dim>::get_needed_update_flags () const
+      CpoBinghamAverage<dim>::get_update_flags (const unsigned int /*component*/) const
       {
         return update_default;
       }
@@ -252,7 +254,7 @@ namespace aspect
         {
           // Get a pointer to the CPO particle property.
           cpo_particle_property = std::make_unique<const Particle::Property::CrystalPreferredOrientation<dim>> (
-                                    this->get_particle_world(this->get_particle_world_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>());
+                                    this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>());
 
           random_number_seed = prm.get_integer ("Random number seed");
           n_grains = cpo_particle_property->get_number_of_grains();

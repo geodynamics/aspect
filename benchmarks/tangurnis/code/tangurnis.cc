@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -90,10 +90,10 @@ namespace aspect
 
               const Point<dim> &pos = in.position[i];
               const double depth = 1.0 - pos[dim-1];
-              const double temperature = sin(numbers::PI*pos(dim-1))*cos(numbers::PI*wavenumber*pos(0));
+              const double temperature = std::sin(numbers::PI*pos(dim-1))*std::cos(numbers::PI*wavenumber*pos(0));
 
-              out.viscosities[i] = ( Di==0.0 ? 1.0 : Di ) * exp( a * depth );
-              out.densities[i] = ( Di==0.0 ? 1.0 : Di ) * (-1.0 * temperature ) * exp( Di/gamma * (depth) );
+              out.viscosities[i] = ( Di==0.0 ? 1.0 : Di ) * std::exp( a * depth );
+              out.densities[i] = ( Di==0.0 ? 1.0 : Di ) * (-1.0 * temperature ) * std::exp( Di/gamma * (depth) );
               out.specific_heat[i] = 1.0;
               out.thermal_conductivities[i] = 1.0;
               out.thermal_expansion_coefficients[i] = ( Di==0.0 ) ? 1.0 : Di;
@@ -293,7 +293,7 @@ namespace aspect
                                    const Point<dim> &position) const override
       {
         double wavenumber=1;
-        return sin(numbers::PI*position(dim-1))*cos(numbers::PI*wavenumber*position(0));
+        return std::sin(numbers::PI*position(dim-1))*std::cos(numbers::PI*wavenumber*position(0));
       }
 
       double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
@@ -359,7 +359,7 @@ namespace aspect
            << material_model.parameter_a();
 
     // pad the first line to the same number ooutputcolumns as the data below to make MATLAB happy
-    for (unsigned int i=4; i<7+this->get_heating_model_manager().get_active_heating_models().size(); ++i)
+    for (unsigned int i=4; i<7+this->get_heating_model_manager().get_active_plugin_names().size(); ++i)
       output<< " -1";
 
     output<< std::endl;
@@ -376,7 +376,7 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
     MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
-    const std::list<std::unique_ptr<HeatingModel::Interface<dim>>> &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
+    const std::list<std::unique_ptr<HeatingModel::Interface<dim>>> &heating_model_objects = this->get_heating_model_manager().get_active_plugins();
 
     std::vector<HeatingModel::HeatingModelOutputs> heating_model_outputs (heating_model_objects.size(),
                                                                           HeatingModel::HeatingModelOutputs (n_q_points, this->n_compositional_fields()));

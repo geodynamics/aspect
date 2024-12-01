@@ -5,55 +5,55 @@ Number of degrees of freedom: 45,732 (16,770+2,145+8,385+18,432)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 35+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 0.0039715
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0039715
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 0.000644398
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000644398
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 0.000169719
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000169719
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 7.81068e-05
       Relative nonlinear residual (total system) after nonlinear iteration 4: 7.81068e-05
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 4.78231e-05
       Relative nonlinear residual (total system) after nonlinear iteration 5: 4.78231e-05
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 3.18131e-05
       Relative nonlinear residual (total system) after nonlinear iteration 6: 3.18131e-05
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 2.14416e-05
       Relative nonlinear residual (total system) after nonlinear iteration 7: 2.14416e-05
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (GMG)... 37+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 1.4456e-05
       Relative nonlinear residual (total system) after nonlinear iteration 8: 1.4456e-05
 
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.6447e-16, 0, 9.7452e-06
       Relative nonlinear residual (total system) after nonlinear iteration 9: 9.7452e-06
 
@@ -67,7 +67,7 @@ Number of degrees of freedom: 45,732 (16,770+2,145+8,385+18,432)
 *** Timestep 1:  t=50 years, dt=50 years
    Solving temperature system... 7 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.72112e-06, 0, 6.6663e-06
       Relative nonlinear residual (total system) after nonlinear iteration 1: 6.72112e-06
 
@@ -81,7 +81,7 @@ Number of degrees of freedom: 45,732 (16,770+2,145+8,385+18,432)
 *** Timestep 2:  t=100 years, dt=50 years
    Solving temperature system... 5 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.03826e-08, 0, 2.74649e-06
       Relative nonlinear residual (total system) after nonlinear iteration 1: 2.74649e-06
 

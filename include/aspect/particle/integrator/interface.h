@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -81,7 +81,7 @@ namespace aspect
            * false, which is ok for single-step integration methods.
            *
            * @return This function returns true if the integrator requires
-           * another integration step. The particle world will continue
+           * another integration step. The particle manager will continue
            * to start new integration steps until this function returns false.
            */
           virtual bool new_integration_step();
@@ -108,7 +108,7 @@ namespace aspect
            * requires the solution vector at the old time (k), and the third entry
            * indicates if the particle integrator requires the solution vector
            * at the new time (k+1).
-          */
+           */
           virtual std::array<bool, 3> required_solution_vectors() const = 0;
 
           /**

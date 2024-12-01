@@ -487,6 +487,14 @@ namespace WorldBuilder
     std::vector<double>
     calculate_effective_trench_and_plate_ages(std::vector<double> ridge_parameters, double distance_along_plane);
 
+    /*
+     * Returns the result of the multiplication of two 3*3 matrix,
+     * used in applying the random uniform distribution rotation matrix
+     * to a given orientation (rotation matrix)
+     */
+    std::array<std::array<double,3>,3>
+    multiply_3x3_matrices(const std::array<std::array<double,3>,3> mat1, std::array<std::array<double,3>,3> const mat2);
+
   } // namespace Utilities
 } // namespace WorldBuilder
 

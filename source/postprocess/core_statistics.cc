@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -200,9 +200,15 @@ namespace aspect
     template <int dim>
     void CoreStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
       std::ostringstream os;
-      aspect::oarchive oa (os);
-      oa << (*this);
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
 
       status_strings["CoreStatistics"] = os.str();
     }

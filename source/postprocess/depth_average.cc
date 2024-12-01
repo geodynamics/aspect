@@ -174,7 +174,7 @@ namespace aspect
               else
                 {
                   const std::string filename (this->get_output_directory() + "depth_average.txt");
-                  std::ofstream f(filename, std::ofstream::out);
+                  std::ofstream f(filename);
 
                   // Write the header
                   f << "#       time" << "        depth";
@@ -449,9 +449,15 @@ namespace aspect
     void
     DepthAverage<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
       std::ostringstream os;
-      aspect::oarchive oa (os);
-      oa << (*this);
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
 
       status_strings["DepthAverage"] = os.str();
     }

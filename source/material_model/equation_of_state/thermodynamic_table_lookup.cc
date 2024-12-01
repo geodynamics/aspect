@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -196,8 +196,8 @@ namespace aspect
 
                 for (unsigned int j = 0; j < material_lookup.size(); ++j)
                   {
-                    const double mu = material_lookup[j]->density(in.temperature[i],in.pressure[i])*std::pow(material_lookup[j]->seismic_Vs(in.temperature[i],in.pressure[i]), 2.);
-                    const double k =  material_lookup[j]->density(in.temperature[i],in.pressure[i])*std::pow(material_lookup[j]->seismic_Vp(in.temperature[i],in.pressure[i]), 2.) - 4./3.*mu;
+                    const double mu = material_lookup[j]->density(in.temperature[i],in.pressure[i])*Utilities::fixed_power<2>(material_lookup[j]->seismic_Vs(in.temperature[i],in.pressure[i]));
+                    const double k =  material_lookup[j]->density(in.temperature[i],in.pressure[i])*Utilities::fixed_power<2>(material_lookup[j]->seismic_Vp(in.temperature[i],in.pressure[i])) - 4./3.*mu;
 
                     k_voigt += volume_fractions[i][j] * k;
                     mu_voigt += volume_fractions[i][j] * mu;

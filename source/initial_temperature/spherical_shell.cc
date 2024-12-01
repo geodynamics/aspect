@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -230,9 +230,9 @@ namespace aspect
       const double x = (scale - this->depth)*std::cos(angle);
       const double y = (scale - this->depth)*std::sin(angle);
       const double Perturbation = (sign * amplitude *
-                                   std::exp( -( std::pow((position(0)*scale/R1-x),2)
+                                   std::exp( -( Utilities::fixed_power<2>((position(0)*scale/R1-x))
                                                 +
-                                                std::pow((position(1)*scale/R1-y),2) ) / sigma));
+                                                Utilities::fixed_power<2>((position(1)*scale/R1-y)) ) / sigma));
 
       if (r > R1 - 1e-6*R1 || InterpolVal + Perturbation < T1)
         return T1*dT;

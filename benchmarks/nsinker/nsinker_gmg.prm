@@ -16,16 +16,16 @@ set Output directory = output-gmg
 
 # Follow as closely as possible the parameters from Rudi et al. (2017)
 subsection Solver parameters
-  subsection Matrix Free
-    set Output details = true
-  end
-
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
     set Number of cheap Stokes solver steps             = 200
     set Maximum number of expensive Stokes solver steps = 0
     set Linear solver tolerance                         = 1e-6
     set GMRES solver restart length                     = 100
+  end
+
+  subsection Matrix Free
+    set Output details = true
   end
 end
 
@@ -87,6 +87,10 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = viscosity
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end

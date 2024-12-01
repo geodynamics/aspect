@@ -4,7 +4,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 6
     Viscosity range: 1e+20 - 1e+20
@@ -18,7 +18,7 @@ Number of degrees of freedom: 15,480 (9,506+1,221+4,753)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
@@ -32,7 +32,7 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
@@ -46,7 +46,7 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 
 *** Timestep 1:  t=4926.45 years, dt=4926.45 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
@@ -60,7 +60,7 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 
 *** Timestep 2:  t=9796.69 years, dt=4870.24 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
@@ -74,7 +74,7 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 
 *** Timestep 3:  t=14611.9 years, dt=4815.25 years
    Solving temperature system... 15 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
@@ -88,7 +88,7 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 
 *** Timestep 4:  t=19376.6 years, dt=4764.69 years
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20
@@ -102,7 +102,7 @@ Number of degrees of freedom: 16,481 (10,122+1,298+5,061)
 
 *** Timestep 5:  t=20000 years, dt=623.378 years
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 
+   Solving Stokes system (GMG)... 
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 7
     Viscosity range: 1e+20 - 1e+20

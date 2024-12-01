@@ -1,6 +1,0 @@
-Added: Cookbook which showcases the use of the tian approximation
-in the Reactive Fluid Transport material model. The cookbook features
-a kinematically subducting slab with an initial hydration state
-dehydrating as it advects through a hot mantle wedge.
-<br>
-(Daniel Douglas, 2024/06/05)

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -39,6 +39,8 @@ namespace aspect
      * vertices according to the solution of the flow problem.
      * In particular this means if the surface of the domain is
      * left open to flow, this flow will carry the mesh with it.
+     *
+     * @ingroup MeshDeformation
      */
     template <int dim>
     class FreeSurface : public Interface<dim>, public SimulatorAccess<dim>

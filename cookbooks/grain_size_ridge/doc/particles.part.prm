@@ -14,7 +14,6 @@ subsection Particles
   set Minimum particles per cell = 40
   set Maximum particles per cell = 640
   set Integration scheme = rk2
-  set Update ghost particles = true
 
   subsection Interpolator
     subsection Bilinear least squares
@@ -23,7 +22,7 @@ subsection Particles
   end
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 500000
     end
   end

@@ -13,7 +13,7 @@ Number of degrees of freedom: 116,838 (37,358+4,764+18,679+18,679+18,679+18,679)
    Solving OP system ... 0 iterations.
    Solving ML_SP system ... 0 iterations.
    Solving crust_SP system ... 0 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system (GMG)... 41+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                        0.0194 m/year, 0.0512 m/year

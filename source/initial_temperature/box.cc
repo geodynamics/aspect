@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -68,7 +68,7 @@ namespace aspect
           temporary2[d]=geometry.get_extents()[d]*0.375+geometry.get_origin()[d];
         }
 
-      return 1+(1/exp(position.distance(temporary2)) - 1/exp(position.distance(temporary1)));
+      return 1+(1/std::exp(position.distance(temporary2)) - 1/std::exp(position.distance(temporary1)));
     }
 
     template <int dim>
@@ -129,7 +129,7 @@ namespace aspect
             {
               perturbation = inclusion_temperature - ambient_temperature;
               for (int d=0; d<dim; ++d)
-                perturbation *= exp(-8*pow(position.distance(center)/radius, 2));
+                perturbation *= std::exp(-8*std::pow(position.distance(center)/radius, 2));
             }
           else if (inclusion_gradient == "linear")
             {
@@ -150,7 +150,7 @@ namespace aspect
               perturbation = inclusion_temperature - ambient_temperature;
             }
           for (int d = 0; d < dim; ++d)
-            if (abs (center[d] - position[d]) > radius)
+            if (std::abs(center[d] - position[d]) > radius)
               perturbation = 0;
         }
       else if (inclusion_shape == "circle")
@@ -158,7 +158,7 @@ namespace aspect
           if (inclusion_gradient == "gaussian")
             {
               perturbation = inclusion_temperature - ambient_temperature;
-              perturbation *= exp(-pow(position.distance(center),2) / (2 * pow((radius / 4), 2))) / (2 * radius);
+              perturbation *= std::exp(-std::pow(position.distance(center),2) / (2 * std::pow((radius / 4), 2))) / (2 * radius);
             }
           else if (inclusion_gradient == "linear")
             {

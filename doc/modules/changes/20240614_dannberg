@@ -1,7 +1,0 @@
-Changed: The operator splitting scheme can now use SUNDIALs
-ARKode to compute the reactions (rather than a hand-written
-forward Euler scheme). ARKode is the new default, but the
-original scheme can still be used by setting the input
-parameter Reaction solver type to fixed step.
-<br>
-(Juliane Dannberg, 2024/06/14)

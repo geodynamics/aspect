@@ -1,0 +1,12 @@
+# Check that nonlinear solver strategy "abort" works
+#
+# EXPECT FAILURE
+#
+# Like iterated_advection_and_stokes_residual.prm
+
+include $ASPECT_SOURCE_DIR/tests/iterated_advection_and_stokes_residual.prm
+
+set Nonlinear solver failure strategy = abort program
+set Max nonlinear iterations = 4
+set Dimension = 2
+set End time = 20000

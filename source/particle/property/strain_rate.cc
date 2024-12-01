@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -41,22 +41,25 @@ namespace aspect
 
       template <int dim>
       void
-      StrainRate<dim>::update_particle_property(const unsigned int data_position,
-                                                const Vector<double> &/*solution*/,
-                                                const std::vector<Tensor<1,dim>> &gradients,
-                                                typename ParticleHandler<dim>::particle_iterator &particle) const
+      StrainRate<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+                                                  typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        const auto data = particle->get_properties();
-        // Velocity gradients
-        Tensor<2,dim> grad_u;
-        for (unsigned int d=0; d<dim; ++d)
-          grad_u[d] = gradients[d];
+        unsigned int p = 0;
+        for (auto &particle: particles)
+          {
+            const auto data = particle.get_properties();
+            // Velocity gradients
+            Tensor<2,dim> grad_u;
+            for (unsigned int d=0; d<dim; ++d)
+              grad_u[d] = inputs.gradients[p][d];
 
-        // Calculate strain rate from velocity gradients
-        const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
+            // Calculate strain rate from velocity gradients
+            const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
-        for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
-          data[data_position + i] = strain_rate[Tensor<2,dim>::unrolled_to_component_indices(i)];
+            for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i)
+              data[this->data_position + i] = strain_rate[Tensor<2,dim>::unrolled_to_component_indices(i)];
+            ++p;
+          }
 
       }
 
@@ -69,9 +72,12 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      StrainRate<dim>::get_needed_update_flags () const
+      StrainRate<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_gradients;
+        if (this->introspection().component_masks.velocities[component] == true)
+          return update_gradients;
+
+        return update_default;
       }
 
       template <int dim>

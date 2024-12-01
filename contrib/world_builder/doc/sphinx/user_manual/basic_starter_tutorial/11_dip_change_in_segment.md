@@ -2,9 +2,9 @@
 Dip change in segment
 =====================
 
-What we have achieved in the last section was already great, but slabs in the Earth are usually not thought of as straight lines.  For example, near the surface they start with a dip angle of zero and then increase their dip with depth to maybe 60 degrees. So, how do we do that in the world builder?
+What we have achieved in the last section was already great but slabs in the Earth are usually not thought of as straight lines.  For example, near the surface they start with a dip angle of zero and then may increase their dip with depth to maybe 60 degrees. So, how do we do this in the World Builder?
 
-This is where the array for the `angle` comes in. Last time we provided just one value, but we are also allowed to provide two values. If you provide two values, the first value is the dip angle at the top of the segment and the second value is the dip angle at the bottom of the segment. So to achieve this we only need to add a zero before the 60 in the `angle` array.
+This is where the array for the `angle` comes in. Last time we provided just one value but we are also allowed to provide two values. If you provide two values, the first value is the dip angle at the top of the segment and the second value is the dip angle at the bottom of the segment. To achieve this we only need to add a zero before the 60 in the `angle` array.
 
 
 ::::::{tab-set}
@@ -69,5 +69,5 @@ The explanation can be significantly improved by adding conceptual figures
 :alt: Basic Starter Tutorial section 11. 
 :align: center
 
-Basic Starter Tutorial section 11. The top part of the figure shows where the composition as been assigned as an object. Currently is shows composition 0 as green, composition 1 as yellow, composition 2 as purple and composition 3 as blue. Composition 4 is not shown to be able to see the slab. The front half of the overriding plate (composition 1) has also been removed to be able to better view the slab. The bottom part shows the temperature as seen slightly from below where only temperatures between 300K and 1600K are shown. 
+Basic Starter Tutorial section 11. The top part of the figure shows where the composition has been assigned as an object. Currently is shows composition 0 as green, composition 1 as yellow, composition 2 as purple and composition 3 as blue. Composition 4 is not shown to be able to see the slab. The front half of the overriding plate (composition 1) has also been removed to be able to better view the slab. The bottom part shows the temperature as seen slightly from below where only temperatures between 300K and 1600K are shown. 
 ```

@@ -9,7 +9,7 @@ Number of degrees of freedom: 535 (162+25+81+16+81+81+25+64)
    Solving C_3 system ... 0 iterations.
    Solving C_4 system ... 0 iterations.
    Solving C_5 system ... 0 iterations.
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system (GMG)... 10+0 iterations.
 
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,275 (386+55+193+40+193+193+55+160)
@@ -21,7 +21,7 @@ Number of degrees of freedom: 1,275 (386+55+193+40+193+193+55+160)
    Solving C_3 system ... 0 iterations.
    Solving C_4 system ... 0 iterations.
    Solving C_5 system ... 0 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
@@ -51,7 +51,7 @@ system preconditioner matrix nnz by block:
    Solving C_3 system ... 10 iterations.
    Solving C_4 system ... 6 iterations.
    Solving C_5 system ... 3 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
@@ -81,7 +81,7 @@ system preconditioner matrix nnz by block:
    Solving C_3 system ... 10 iterations.
    Solving C_4 system ... 6 iterations.
    Solving C_5 system ... 3 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:   0 K, 0.5 K, 1 K

@@ -6,10 +6,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 0 iterations.
    Solving viscous_strain system ... 0 iterations.
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.237034
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -22,10 +25,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 13 iterations.
    Solving viscous_strain system ... 12 iterations.
-   Solving Stokes system... 0+5 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000121775
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -37,10 +43,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
    Solving viscous_strain system ... 15 iterations.
-   Solving Stokes system... 0+5 iterations.
+   Solving Stokes system (GMG)... 0+5 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000108342
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -52,10 +61,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
    Solving viscous_strain system ... 14 iterations.
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.5092e-05
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -67,10 +79,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
    Solving viscous_strain system ... 14 iterations.
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.18718e-05
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -82,10 +97,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
    Solving viscous_strain system ... 15 iterations.
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.05226e-05
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -97,7 +115,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
    Solving viscous_strain system ... 14 iterations.
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.51517e-06
 
 
@@ -112,7 +130,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
    Solving viscous_strain system ... 13 iterations.
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.87897e-06
 
 
@@ -127,7 +145,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 13 iterations.
    Solving viscous_strain system ... 13 iterations.
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.16371e-06
 
 
@@ -143,3 +161,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 6 nonlinear solver failures occurred!

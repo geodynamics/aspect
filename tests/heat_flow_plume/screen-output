@@ -4,35 +4,35 @@ Number of degrees of freedom: 504 (306+45+153)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 18+0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
 Number of active cells: 128 (on 4 levels)
 Number of degrees of freedom: 1,836 (1,122+153+561)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
 
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 6,996 (4,290+561+2,145)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
 
 Number of active cells: 704 (on 6 levels)
 Number of degrees of freedom: 9,826 (6,026+787+3,013)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
 
 Number of active cells: 896 (on 7 levels)
 Number of degrees of freedom: 12,969 (7,950+1,044+3,975)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system (GMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-heat_flow_plume/solution/solution-00000

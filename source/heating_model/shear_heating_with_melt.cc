@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -61,7 +61,7 @@ namespace aspect
 
           if (is_melt_cell)
             heating_model_outputs.heating_source_terms[q] = melt_outputs->compaction_viscosities[q]
-                                                            * pow(trace(material_model_inputs.strain_rate[q]),2)
+                                                            * std::pow(trace(material_model_inputs.strain_rate[q]),2)
                                                             +
                                                             (melt_outputs->permeabilities[q] > 0
                                                              ?

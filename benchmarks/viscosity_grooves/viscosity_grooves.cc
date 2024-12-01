@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -62,7 +62,7 @@ namespace aspect
         const GeometryModel::Box<2> *geometry
           = dynamic_cast<const GeometryModel::Box<2>*> (&geometry_model);
         const double L=geometry->get_extents()[0];
-        return x*x*y*y+x*y+5. - pow(L,4.)/9.-pow(L,2.)/4.-5.;
+        return x*x*y*y+x*y+5. - std::pow(L,4.)/9.-std::pow(L,2.)/4.-5.;
       }
 
       double

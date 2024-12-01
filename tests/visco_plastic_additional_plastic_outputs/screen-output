@@ -5,10 +5,13 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 0 iterations.
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.439224
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
@@ -21,3 +24,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

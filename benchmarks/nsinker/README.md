@@ -3,10 +3,9 @@ The NSinker benchmark
 
 This is the "NSinker" benchmark defined in
 
-> Johann Rudi, Georg Stadler, Omar Ghattas.
-> Weighted BFBT Preconditioner for Stokes Flow Problems with Highly
-> Heterogeneous Viscosity
-> SIAM J. Sci. Comput., 39(5), S272–S297.
+> Weighted BFBT Preconditioner for Stokes Flow Problems with Highly Heterogeneous Viscosity,
+> Johann Rudi, Georg Stadler, Omar Ghattas,
+> SIAM Journal of Scientific Computing, Vol 39, Issue 5, 2017.
 > https://doi.org/10.1137/16M108450X
 
 It creates a number of spherical high-viscosity, high-density sinking

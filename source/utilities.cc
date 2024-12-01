@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -869,8 +869,8 @@ namespace aspect
         const double p      = std::sqrt(x(0) * x(0) + x(1) * x(1));
         const double th     = std::atan2(R * x(2), b * p);
         const double phi    = std::atan2(x(1), x(0));
-        const double theta  = std::atan2(x(2) + ep * ep * b * std::pow(std::sin(th),3),
-                                         (p - (eccentricity * eccentricity * R  * std::pow(std::cos(th),3))));
+        const double theta  = std::atan2(x(2) + ep * ep * b * Utilities::fixed_power<3>(std::sin(th)),
+                                         (p - (eccentricity * eccentricity * R  * Utilities::fixed_power<3>(std::cos(th)))));
         const double R_bar = R / (std::sqrt(1 - eccentricity * eccentricity * std::sin(theta) * std::sin(theta)));
         const double R_plus_d = p / std::cos(theta);
 
@@ -1658,7 +1658,6 @@ namespace aspect
           int mkdir_return_value;
           if ((mkdir_return_value = mkdir(subdir.c_str(),mode)) && (errno != EEXIST))
             return mkdir_return_value;
-
         }
 
       return 0;
@@ -1668,7 +1667,7 @@ namespace aspect
 
     void create_directory(const std::string &pathname,
                           const MPI_Comm comm,
-                          bool silent)
+                          const bool silent)
     {
       // verify that the output directory actually exists. if it doesn't, create
       // it on processor zero
@@ -1689,7 +1688,6 @@ namespace aspect
                           << std::endl;
 
               error = Utilities::mkdirp(pathname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-
             }
           else
             {
@@ -2471,7 +2469,7 @@ namespace aspect
             }
           const double sum_of_weights = std::accumulate(weights.begin(), weights.end(), 0.0);
           Assert (sum_of_weights > 0, ExcMessage ("The sum of the weights may not be smaller or equal to zero."));
-          return std::pow(averaged_parameter_derivative_part_1/sum_of_weights,-2) * averaged_parameter_derivative_part_2/sum_of_weights;
+          return Utilities::fixed_power<-2>(averaged_parameter_derivative_part_1/sum_of_weights) * averaged_parameter_derivative_part_2/sum_of_weights;
         }
       else if (p == 0)
         {
@@ -2893,26 +2891,29 @@ namespace aspect
 
             cell_vector = 0;
             local_mass_matrix = 0;
-            for (unsigned int point=0; point<n_q_points; ++point)
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
-                {
-                  if (dof_handler.get_fe().system_to_component_index(i).first == component_index)
-                    cell_vector(i) +=
-                      rhs_values[point] *
-                      fe_values[extractor].value(i,point) *
-                      fe_values.JxW(point);
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                const double JxW = fe_values.JxW(q);
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  {
+                    if (dof_handler.get_fe().system_to_component_index(i).first == component_index)
+                      cell_vector(i) +=
+                        rhs_values[q] *
+                        fe_values[extractor].value(i,q) *
+                        JxW;
 
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    if ((dof_handler.get_fe().system_to_component_index(i).first ==
-                         component_index)
-                        &&
-                        (dof_handler.get_fe().system_to_component_index(j).first ==
-                         component_index))
-                      local_mass_matrix(j,i) += (fe_values[extractor].value(i,point) * fe_values[extractor].value(j,point) *
-                                                 fe_values.JxW(point));
-                    else if (i == j)
-                      local_mass_matrix(i,j) = 1.;
-                }
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      if ((dof_handler.get_fe().system_to_component_index(i).first ==
+                           component_index)
+                          &&
+                          (dof_handler.get_fe().system_to_component_index(j).first ==
+                           component_index))
+                        local_mass_matrix(j,i) += (fe_values[extractor].value(i,q) * fe_values[extractor].value(j,q) *
+                                                   JxW);
+                      else if (i == j)
+                        local_mass_matrix(i,j) = 1.;
+                  }
+              }
 
             // now invert the local mass matrix and multiply it with the rhs
             local_mass_matrix.gauss_jordan();
@@ -3105,7 +3106,7 @@ namespace aspect
       std::array<double,3> euler_angles;
       for (size_t i = 0; i < 3; ++i)
         for (size_t j = 0; j < 3; ++j)
-          Assert(abs(rotation_matrix[i][j]) <= 1.0,
+          Assert(std::abs(rotation_matrix[i][j]) <= 1.0,
                  ExcMessage("rotation_matrix[" + std::to_string(i) + "][" + std::to_string(j) +
                             "] is larger than one: " + std::to_string(rotation_matrix[i][j]) + " (" + std::to_string(rotation_matrix[i][j]-1.0) + "). rotation_matrix = \n"
                             + std::to_string(rotation_matrix[0][0]) + " " + std::to_string(rotation_matrix[0][1]) + " " + std::to_string(rotation_matrix[0][2]) + "\n"

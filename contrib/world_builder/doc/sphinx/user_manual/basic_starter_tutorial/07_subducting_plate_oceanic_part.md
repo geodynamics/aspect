@@ -2,7 +2,7 @@
 Subducting plate oceanic part
 ========================
 
-Now that we have made the overriding (Caribbean) plate, it is time to add the oceanic part of the subducting plate (the Atlantic). To do this, we just need to add another object to the feature list. For this plate we will assume the oceanic lithosphere is really old, and the temperature gradient in the lithosphere is therefore linear between a top temperature of 293.15K and the adiabatic temperature at the max depth of the plate. Luckily for us, this is the default in the world builder, so we will only need to provide the `model` (`linear`) and the `max depth`, which we will set to 100km.
+Now that we have made the overriding (Caribbean) plate, it is time to add the oceanic part of the subducting plate (the Atlantic). To do this, we just need to add another object to the feature list. For this plate we will assume the oceanic lithosphere is really old, and the temperature gradient in the lithosphere is therefore linear between a top temperature of 293.15K and the adiabatic temperature at the max depth of the plate. Luckily for us, this is the default in the World Builder, so we will only need to provide the `model` (`linear`) and the `max depth`, which we will set to 100km.
 
 For the composition, we are going to do something a bit more special. A common thing you will probably want to do with compositional fields is have multiple layers of them within a feature. This is very easy to do in the GWB. If you remember from the last section, both the `temperature models` and `compositional models` are a list of objects. Making layers is thus as easy as adding multiple compositional models with each their own `min depth` and `max depth`. 
 

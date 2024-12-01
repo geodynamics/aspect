@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,7 +21,7 @@
 
 #include <aspect/mesh_refinement/particle_density.h>
 
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 namespace aspect
 {
@@ -31,12 +31,10 @@ namespace aspect
     void
     ParticleDensity<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow(this->n_particle_worlds() > 0,
+      AssertThrow(this->n_particle_managers() > 0,
                   ExcMessage("The mesh refinement plugin `particle density' requires the "
                              "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
-
-      const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_world(0).get_particle_handler();
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -45,7 +43,12 @@ namespace aspect
             // of particles per cell, therefore creating fine cells in regions
             // of high particle density and coarse cells in low particle
             // density regions.
-            indicators(cell->active_cell_index()) = static_cast<float>(particle_handler.n_particles_in_cell(cell));
+            indicators(cell->active_cell_index()) = 0.0;
+            for (unsigned int i=0; i<this->n_particle_managers(); ++i)
+              {
+                const Particle::ParticleHandler<dim> &particle_handler = this->get_particle_manager(i).get_particle_handler();
+                indicators(cell->active_cell_index()) += static_cast<float>(particle_handler.n_particles_in_cell(cell));
+              }
           }
     }
   }

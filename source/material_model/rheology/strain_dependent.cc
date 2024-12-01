@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -410,10 +410,13 @@ namespace aspect
           AssertThrow(false, ExcMessage("Not a valid Strain healing mechanism!"));
 
         // Currently this functionality only works in field composition
-        if (healing_mechanism != no_healing && this->n_particle_worlds() > 0)
+        if (healing_mechanism != no_healing && this->n_particle_managers() > 0)
           {
-            const Particle::Property::Manager<dim> &particle_property_manager = this->get_particle_world(0).get_property_manager();
-            AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
+            for (unsigned int i=0; i<this->n_particle_managers(); ++i)
+              {
+                const Particle::Property::Manager<dim> &particle_property_manager = this->get_particle_manager(i).get_property_manager();
+                AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
+              }
           }
 
         // Temperature dependent strain healing requires that adiabatic surface temperature is non zero
@@ -663,10 +666,8 @@ namespace aspect
             // Prepare the field function and extract the old solution values at the current cell.
             std::vector<Point<dim>> quadrature_positions(1,this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]));
 
-            // Use a boost::small_vector to avoid memory allocation if possible.
-            // Create 100 values by default, which should be enough for most cases.
-            // If there are more than 100 DoFs per cell, this will work like a normal vector.
-            boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+            // Use a small_vector to avoid memory allocation if possible.
+            small_vector<double> old_solution_values(this->get_fe().dofs_per_cell);
             in.current_cell->get_dof_values(this->get_old_solution(),
                                             old_solution_values.begin(),
                                             old_solution_values.end());

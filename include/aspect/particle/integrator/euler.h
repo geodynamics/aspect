@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -77,7 +77,7 @@ namespace aspect
            *
            * The forward Euler integrator only requires the solution vector at the
            * old time (k), and consequently returns `{false, true, false}`.
-          */
+           */
           std::array<bool, 3> required_solution_vectors() const override;
 
           /**
@@ -91,7 +91,7 @@ namespace aspect
            *
            * The forward Euler integrator does not need any intermediate storage space.
            */
-          static const unsigned int n_integrator_properties = 0;
+          static constexpr unsigned int n_integrator_properties = 0;
       };
 
     }

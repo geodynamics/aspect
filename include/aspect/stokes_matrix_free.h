@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -411,10 +411,15 @@ namespace aspect
       virtual ~StokesMatrixFreeHandler() = default;
 
       /**
-       * Solves the Stokes linear system matrix-free. This is called
-       * by Simulator<dim>::solve_stokes().
+       * Solves the Stokes linear system using the matrix-free
+       * solver.
+       *
+       * @param solution_vector The existing solution vector that will be
+       * updated with the new solution. This vector is expected to have the
+       * block structure of the full solution vector, and its velocity and
+       * pressure blocks will be updated with the new solution.
        */
-      virtual std::pair<double,double> solve()=0;
+      virtual std::pair<double,double> solve(LinearAlgebra::BlockVector &solution_vector) = 0;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This
@@ -528,10 +533,15 @@ namespace aspect
       ~StokesMatrixFreeHandlerImplementation() override = default;
 
       /**
-       * Solves the Stokes linear system matrix-free. This is called
-       * by Simulator<dim>::solve_stokes().
+       * Solves the Stokes linear system using the matrix-free
+       * solver.
+       *
+       * @param solution_vector The existing solution vector that will be
+       * updated with the new solution. This vector is expected to have the
+       * block structure of the full solution vector, and its velocity and
+       * pressure blocks will be updated with the new solution.
        */
-      std::pair<double,double> solve() override;
+      std::pair<double,double> solve(LinearAlgebra::BlockVector &solution_vector) override;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This

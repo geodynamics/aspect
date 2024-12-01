@@ -1,0 +1,11 @@
+
+Loading shared library <./libcheckpoint_08_particles_multiple_systems.debug.so>
+* starting from beginning:
+Executing the following command:
+cd output-checkpoint_08_particles_multiple_systems ; (cat ASPECT_DIR/tests/checkpoint_08_particles_multiple_systems.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
+Executing the following command:
+cd output-checkpoint_08_particles_multiple_systems ;  rm -rf output2.tmp ; mkdir output2.tmp ;  cp output1.tmp/restart* output2.tmp/
+* now resuming:
+Executing the following command:
+cd output-checkpoint_08_particles_multiple_systems ; (cat ASPECT_DIR/tests/checkpoint_08_particles_multiple_systems.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | ../../aspect -- > /dev/null
+* now comparing:

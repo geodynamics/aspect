@@ -1,5 +1,5 @@
 (cha:extending)=
-# Extending and contributing to ASPECT
+# Extending and contributing
 
 After you have familiarized yourself with
 ASPECT using the examples of

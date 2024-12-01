@@ -10,16 +10,19 @@ Number of degrees of freedom: 6,023 (2,178+289+289+1,089+1,089+1,089)
    Initial Newton Stokes residual = 2.74998e+13, v = 2.74768e+13, p = 1.12499e+12
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 72+0 iterations.
+   Solving Stokes system (AMG)... 72+0 iterations.
       Newton system information: Norm of the rhs: 2.74998e+13
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 77+0 iterations.
+   Solving Stokes system (AMG)... 77+0 iterations.
       Newton system information: Norm of the rhs: 2.59373e+12, Derivative scaling factor: 0
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0943178
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Compositions min/max/mass:                         0/1/4.579e+09 // 0/1/5.208e+09 // 0/1/2.127e+08
      Average density / Average viscosity / Total mass:  2700 kg/m^3, 1.098e+21 Pa s, 2.7e+13 kg
@@ -32,3 +35,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

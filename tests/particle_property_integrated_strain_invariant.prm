@@ -105,7 +105,7 @@ subsection Particles
   set Particle generator name = random uniform
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 100
     end
   end

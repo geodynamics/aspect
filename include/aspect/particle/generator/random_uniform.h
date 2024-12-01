@@ -21,7 +21,7 @@
 #ifndef _aspect_particle_generator_random_uniform_h
 #define _aspect_particle_generator_random_uniform_h
 
-#include <aspect/particle/generator/probability_density_function.h>
+#include <aspect/particle/generator/interface.h>
 
 namespace aspect
 {
@@ -48,12 +48,6 @@ namespace aspect
            */
           void
           generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
-
-          // avoid -Woverloaded-virtual
-          // TODO: remove this using directive once the following deprecated
-          // function in the interface class has been removed:
-          // generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
-          using Generator::Interface<dim>::generate_particles;
 
           /**
            * Declare the parameters this class takes through input files.

@@ -95,15 +95,24 @@ Units: \%.
 
 **Documentation:** Set a maximum time step size for the solver to use. Generally the time step based on the CFL number should be sufficient, but for complicated models or benchmarking it may be useful to limit the time step to some value. The default value is a value so that when converted from years into seconds it equals the largest number representable by a floating point number, implying an unlimited time step.Units: Years or seconds, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
 
+(parameters:Nonlinear_20solver_20failure_20strategy)=
+### __Parameter name:__ Nonlinear solver failure strategy
+**Default value:** continue with next timestep
+
+**Pattern:** [Selection continue with next timestep|cut timestep size|abort program ]
+
+**Documentation:** Select the strategy on what to do if the nonlinear solver scheme fails to converge. The options are:
+&lsquo;continue with next timestep&lsquo;: ignore error and continue to the next timestep
+&lsquo;cut timestep size&lsquo;: reduce the current timestep size by a specified factor and redo the timestep
+&lsquo;abort program&lsquo;: abort the program with an error message.
+
 (parameters:Nonlinear_20solver_20scheme)=
 ### __Parameter name:__ Nonlinear solver scheme
 **Default value:** single Advection, single Stokes
 
-**Pattern:** [Selection single Advection, single Stokes|iterated Advection and Stokes|single Advection, iterated Stokes|no Advection, iterated Stokes|no Advection, single Stokes|no Advection, iterated defect correction Stokes|single Advection, iterated defect correction Stokes|iterated Advection and defect correction Stokes|iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|single Advection, no Stokes|IMPES|iterated IMPES|iterated Stokes|Newton Stokes|Stokes only|Advection only|first timestep only, single Stokes|no Advection, no Stokes ]
+**Pattern:** [Selection single Advection, single Stokes|iterated Advection and Stokes|single Advection, iterated Stokes|no Advection, iterated Stokes|no Advection, single Stokes|no Advection, iterated defect correction Stokes|single Advection, iterated defect correction Stokes|iterated Advection and defect correction Stokes|iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|single Advection, no Stokes|first timestep only, single Stokes|no Advection, no Stokes ]
 
 **Documentation:** The kind of scheme used to resolve the nonlinearity in the system. &lsquo;single Advection, single Stokes&rsquo; means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The &lsquo;iterated Advection and Stokes&rsquo; scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The &lsquo;single Advection, iterated Stokes&rsquo; scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The &lsquo;no Advection, iterated Stokes&rsquo; scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks).  The &lsquo;no Advection, single Stokes&rsquo; scheme only solves the Stokes system once per timestep. This is also mostly useful for Stokes benchmarks. The &lsquo;single Advection, no Stokes&rsquo; scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The &lsquo;iterated Advection and Newton Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The &lsquo;single Advection, iterated Newton Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using Newton iterations for the Stokes system. The &lsquo;iterated Advection and defect correction Stokes&rsquo; scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and defect correction Picard iterations for the Stokes system. The &lsquo;single Advection, iterated defect correction Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system. The &lsquo;no Advection, iterated defect correction Stokes&rsquo; scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system. The &lsquo;first timestep only, single Stokes&rsquo; scheme solves the Stokes equations exactly once, at the first time step. No nonlinear iterations are done, and the temperature and composition systems are not solved.
-
-The &lsquo;IMPES&rsquo; scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as &lsquo;single Advection, single Stokes&rsquo; .The &lsquo;iterated IMPES&rsquo; scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as &lsquo;iterated Advection and Stokes&rsquo;. The &lsquo;iterated Stokes&rsquo; scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as &lsquo;single Advection, iterated Stokes&rsquo;. The &lsquo;Stokes only&rsquo; scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as &lsquo;no Advection, iterated Stokes&rsquo;. The &lsquo;Advection only&rsquo; scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as &lsquo;single Advection, no Stokes&rsquo;. The &lsquo;Newton Stokes&rsquo; scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as &lsquo;iterated Advection and Newton Stokes&rsquo;.
 
 (parameters:Nonlinear_20solver_20tolerance)=
 ### __Parameter name:__ Nonlinear solver tolerance
@@ -119,7 +128,19 @@ The &lsquo;IMPES&rsquo; scheme is deprecated and only allowed for reasons of bac
 
 **Pattern:** [DirectoryName]
 
-**Documentation:** The name of the directory into which all output files should be placed. This may be an absolute or a relative path.
+**Documentation:** The name of the directory into which all output files should be placed. This may be an absolute or a relative path. ASPECT will write output such as statistics files or visualization files into this directory or into directories further nested within.
+
+(parameters:Output_20directory_20LFS_20stripe_20count)=
+### __Parameter name:__ Output directory LFS stripe count
+**Default value:** 0
+
+**Pattern:** [Integer range 0...2147483647 (inclusive)]
+
+**Documentation:** Many large clusters use the Lustre file system (LFS) that allows to &rsquo;stripe&rsquo; files, i.e., to use multiple file servers to store a single file. This is useful when writing very large files from multiple MPI processes, such as when creating graphical output or creating checkpoints. In those cases, if all MPI processes try to route their data to a single file server, that file server and the disks it manages may be saturated by data and everything slows down. File striping instead ensures that the data is sent to several file servers, improving performance. A description of how Lustre manages file striping can be found at https://doc.lustre.org/lustre_manual.xhtml#managingstripingfreespace . How file striping can be configured is discussed at https://wiki.lustre.org/Configuring_Lustre_File_Striping .
+
+When this parameter is set to anything other than zero, ASPECT will call the Lustre support tool, &lsquo;lst&lsquo;, as follows: &lsquo;lst setstripe -c N OUTPUT_DIR&lsquo;, where &lsquo;N&lsquo; is the value of the input parameter discussed here, and &lsquo;OUTPUT_DIR&lsquo; is the directory into which ASPECT writes its output. The file striping so set on the output directory are also inherited by the sub-directories ASPECT creates within it.
+
+In order to use this parameter, your cluster must obviously be using the Lustre file system. What the correct value for the stripe count is is something you will have to find out from your cluster&rsquo;s local documentation, or your cluster administrator. It depends on the physical details and configuration of the file servers attached to a cluster.
 
 (parameters:Pressure_20normalization)=
 ### __Parameter name:__ Pressure normalization
@@ -190,6 +211,8 @@ For more information, see the section in the manual that discusses the general m
 **Documentation:** When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to &lsquo;true&rsquo; conversion to years happens; if it is &lsquo;false&rsquo;, no such conversion happens.
 
 Contrary to the word &ldquo;output&rdquo; in the name of this parameter, a number of plugins also use this parameter to determine how to interpret their *inputs*. For example, when &lsquo;true&rsquo;, several of the boundary velocity models described in {ref}`parameters:Boundary_20velocity_20model` interpret both specific times in years instead of seconds, and velocities in meters per year instead of meters per second.
+
+For the purposes of this parameter, a year consists of 60*60*24*365.2425 seconds. In other words, a year is taken to have 365.2425 days.
 
 (parameters:World_20builder_20file)=
 ### __Parameter name:__ World builder file

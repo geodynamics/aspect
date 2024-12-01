@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -209,20 +209,75 @@ namespace aspect
       DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
       template <int dim>
       void
-      Interface<dim>::update_particle_properties (const unsigned int data_position,
-                                                  const std::vector<Vector<double>> &solution,
-                                                  const std::vector<std::vector<Tensor<1,dim>>> &gradients,
+      Interface<dim>::update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
                                                   typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        unsigned int i = 0;
-        for (typename ParticleHandler<dim>::particle_iterator particle = particles.begin();
-             particle != particles.end(); ++particle, ++i)
+        Vector<double> solution;
+        std::vector<Tensor<1,dim>> gradient;
+
+        bool need_solution = false;
+        bool need_gradient = false;
+        unsigned int n_components = numbers::invalid_unsigned_int;
+
+        if (inputs.solution.size() > 0)
           {
+            n_components = inputs.solution[0].size();
+
+            for (unsigned int i=0; i<n_components; ++i)
+              if (get_update_flags(i) & update_values)
+                {
+                  need_solution = true;
+                  break;
+                }
+          }
+
+        if (inputs.gradients.size() > 0)
+          {
+            n_components = inputs.gradients[0].size();
+
+            for (unsigned int i=0; i<n_components; ++i)
+              if (get_update_flags(i) & update_gradients)
+                {
+                  need_gradient = true;
+                  break;
+                }
+          }
+
+        unsigned int i = 0;
+        for (auto particle = particles.begin(); particle != particles.end(); ++particle)
+          {
+            if (need_solution)
+              {
+                solution.reinit(inputs.solution[i].size());
+                for (unsigned int j=0; j<solution.size(); ++j)
+                  {
+                    if (get_update_flags(j) & update_values)
+                      solution[j] = inputs.solution[i][j];
+                    else
+                      solution[j] = numbers::signaling_nan<double>();
+                  }
+              }
+
+            if (need_gradient)
+              {
+                gradient.resize(inputs.gradients[i].size());
+
+                for (unsigned int j=0; j<gradient.size(); ++j)
+                  {
+                    if (get_update_flags(j) & update_gradients)
+                      gradient[j] = inputs.gradients[i][j];
+                    else
+                      gradient[j] = numbers::signaling_nan<Tensor<1,dim>>();
+                  }
+              }
+
             // call the deprecated version of this function
-            update_particle_property(data_position,
-                                     solution[i],
-                                     gradients[i],
+            update_particle_property(this->data_position,
+                                     solution,
+                                     gradient,
                                      particle);
+
+            ++i;
           }
       }
       DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
@@ -248,6 +303,19 @@ namespace aspect
 
 
 
+      DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
+      template <int dim>
+      UpdateFlags
+      Interface<dim>::get_update_flags (const unsigned int /*component*/) const
+      {
+        // If this function is not implemented by the derived class, we use
+        // the default implementation of the deprecated version of this class.
+        return get_needed_update_flags();
+      }
+      DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+
+
+
       template <int dim>
       UpdateFlags
       Interface<dim>::get_needed_update_flags () const
@@ -262,6 +330,24 @@ namespace aspect
       Interface<dim>::late_initialization_mode () const
       {
         return interpolate;
+      }
+
+
+
+      template <int dim>
+      void
+      Interface<dim>::set_data_position (const unsigned int index)
+      {
+        data_position = index;
+      }
+
+
+
+      template <int dim>
+      unsigned int
+      Interface<dim>::get_data_position () const
+      {
+        return data_position;
       }
 
 
@@ -320,9 +406,12 @@ namespace aspect
 
         // Initialize our property information
         property_information = ParticlePropertyInformation(info);
+        unsigned int plugin_index = 0;
         for (const auto &p : this->plugin_objects)
           {
+            p->set_data_position(property_information.get_position_by_plugin_index(plugin_index));
             p->initialize();
+            ++plugin_index;
           }
       }
 
@@ -513,18 +602,14 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::update_particles (typename ParticleHandler<dim>::particle_iterator_range &particles,
-                                      const std::vector<Vector<double>> &solution,
-                                      const std::vector<std::vector<Tensor<1,dim>>> &gradients) const
+      Manager<dim>::update_particles (ParticleUpdateInputs<dim> &inputs,
+                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         unsigned int plugin_index = 0;
         for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
              p = this->plugin_objects.begin(); p!=this->plugin_objects.end(); ++p,++plugin_index)
           {
-            (*p)->update_particle_properties(property_information.get_position_by_plugin_index(plugin_index),
-                                             solution,
-                                             gradients,
-                                             particles);
+            (*p)->update_particle_properties(inputs,particles);
           }
       }
 
@@ -545,16 +630,27 @@ namespace aspect
 
 
       template <int dim>
-      UpdateFlags
-      Manager<dim>::get_needed_update_flags () const
+      std::vector<UpdateFlags>
+      Manager<dim>::get_update_flags () const
       {
-        UpdateFlags update = update_default;
+        const unsigned int n_components = this->introspection().n_components;
+        std::vector<UpdateFlags> update (n_components , update_default);
         for (const auto &p : this->plugin_objects)
           {
-            update |= p->get_needed_update_flags();
+            for (unsigned int i=0; i<n_components; ++i)
+              {
+                update[i] |= p->get_update_flags(i);
+              }
           }
 
-        return (update & (update_default | update_values | update_gradients));
+        // Make sure only the flags are set that we can deal with at the moment
+        for (unsigned int i=0; i<n_components; ++i)
+          {
+            Assert ((update[i] & ~(update_gradients | update_values)) == false,
+                    ExcNotImplemented());
+          }
+
+        return update;
       }
 
 
@@ -626,15 +722,6 @@ namespace aspect
       Manager<dim>::get_data_info () const
       {
         return property_information;
-      }
-
-
-
-      template <int dim>
-      unsigned int
-      Manager<dim>::get_property_component_by_name(const std::string &name) const
-      {
-        return property_information.get_position_by_field_name(name);
       }
 
 
@@ -714,13 +801,13 @@ namespace aspect
             if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(this->plugin_objects.back().get()))
               sim->initialize_simulator (this->get_simulator());
 
-            this->plugin_objects.back()->set_particle_world_index(particle_world_index);
+            this->plugin_objects.back()->set_particle_manager_index(particle_manager_index);
             this->plugin_objects.back()->parse_parameters (prm);
           }
 
         // lastly store internal integrator properties:
         this->plugin_objects.emplace_back (std::make_unique<IntegratorProperties<dim>>());
-        this->plugin_objects.back()->set_particle_world_index(particle_world_index);
+        this->plugin_objects.back()->set_particle_manager_index(particle_manager_index);
         this->plugin_objects.back()->parse_parameters (prm);
         this->plugin_names.emplace_back("internal: integrator properties");
       }
@@ -729,11 +816,11 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::set_particle_world_index(unsigned int particle_world_index)
+      Manager<dim>::set_particle_manager_index(unsigned int particle_manager_index)
       {
         // Save this value. We will tell our plugins about this, once they
         // have been created in parse_parameters().
-        this->particle_world_index = particle_world_index;
+        this->particle_manager_index = particle_manager_index;
       }
 
 

@@ -107,7 +107,6 @@ end
 subsection Particles
   set List of particle properties = velocity, function, initial composition
   set Interpolation scheme = distance weighted average
-  set Update ghost particles = true
   set Particle generator name = random uniform
 
   subsection Function
@@ -116,9 +115,7 @@ subsection Particles
   end
 
   subsection Generator
-    subsection Probability density function
-      set Variable names      = x,z
-      set Function expression = x*x*z
+    subsection Random uniform
       set Number of particles = 100000
     end
   end

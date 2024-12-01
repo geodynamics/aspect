@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -281,6 +281,15 @@ namespace aspect
            * of zero.
            */
           bool use_adiabatic_pressure_in_creep;
+
+          /**
+           * Whether to use the adiabatic pressure instead of the full pressure
+           * when calculating the plastic yield stress.
+           * This may be helpful in models where the full pressure has
+           * large variations resulting in solver convergence issues.
+           * Be aware that this setting will change the plastic shear band angle.
+           */
+          bool use_adiabatic_pressure_in_plasticity;
 
           /**
            * List of exponents controlling the behavior of the stress limiter

@@ -10,7 +10,7 @@ Number of degrees of freedom: 47,115 (15,058+1,941+7,529+7,529+7,529+7,529)
    Solving OP system ... 0 iterations.
    Solving ML_SP system ... 0 iterations.
    Solving crust_SP system ... 0 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      Writing graphical output:                                   output-kinematically_driven_subduction_2d_case1/solution/solution-00000
@@ -25,7 +25,7 @@ Number of degrees of freedom: 47,115 (15,058+1,941+7,529+7,529+7,529+7,529)
    Solving OP system ... 10 iterations.
    Solving ML_SP system ... 11 iterations.
    Solving crust_SP system ... 11 iterations.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                                          0.0197 m/year, 0.0501 m/year

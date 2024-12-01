@@ -13,7 +13,7 @@
 # between the subducting and overriding plate, and consequently
 # 100 MPI processes are required.
 # We include a shared library for the initial temperature plugin and the isotherm depth, composition RMS temperature, and trench location postprocessors.
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
+set Additional shared libraries            = ./libsubduction_plate_cooling.so
 
 # 2D
 set Dimension                              = 2

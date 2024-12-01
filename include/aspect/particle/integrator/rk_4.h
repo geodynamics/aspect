@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -114,7 +114,7 @@ namespace aspect
            *
            * The Runge-Kutta 4 integrator requires 4 tensors with dim components each.
            */
-          static const unsigned int n_integrator_properties = 4*dim;
+          static constexpr unsigned int n_integrator_properties = 4*dim;
 
         private:
           /**

@@ -4,7 +4,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 20+0 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.111 m/s, 0.403 m/s

@@ -1,0 +1,15 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,444 (882+121+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-visco_plastic_adiabatic_pressure_in_plasticity/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

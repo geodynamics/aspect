@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -754,8 +754,18 @@ namespace aspect
                              const FullMatrix<double>      &projection_matrix,
                              const FullMatrix<double>      &expansion_matrix,
                              std::vector<double>           &values_out);
-    }
 
+      /**
+       * Parse an AveragingOperation and alias to an AveragingOperation
+       * that only averages viscosity. If the input to this function is an
+       * AveragingOperation that averages all properties
+       * (e.g. 'harmonic_average'), the function returns the corresponding
+       * AveragingOperation that only operates on the viscosity
+       * (e.g. 'harmonic_average_only_viscosity'). This is useful in places
+       * where averaging is performed on only the viscosity property.
+       */
+      AveragingOperation get_averaging_operation_for_viscosity(const AveragingOperation operation);
+    }
 
     /**
      * Some material and heating models need more than just the basic material

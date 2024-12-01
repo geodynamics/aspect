@@ -2,7 +2,7 @@
 Building documentation
 =========================
 
-To build the documentation locally, you first need to ensure you have the right Python packages installed. The list of packages required to build the documentation is located in `$WORLD_BUILDER_SOURCE_DIR/doc/requirements.txt`, and can be installed using 
+To build the documentation locally, you first need to ensure you have the right Python packages installed. The list of packages required to build the documentation is located in `$WORLD_BUILDER_SOURCE_DIR/doc/requirements.txt`, and can be installed using: 
 
 :::{code-block}
 pip install -r $WORLD_BUILDER_SOURCE_DIR/doc/requirements.txt
@@ -15,7 +15,9 @@ cd $WORLD_BUILDER_SOURCE_DIR/build \\
 cmake -D WB_BUILD_DOCUMENTATION=ON .
 :::
 
-This adds the target for the documentation in `$WORLD_BUILDER_SOURCE_DIR/build/doc`, to finish building the documentation run the final commands:
+This adds the target for the documentation in `$WORLD_BUILDER_SOURCE_DIR/build/doc`. 
+
+To finish building the documentation run the final commands:
 
 :::{code-block}
 cd $WORLD_BUILDER_SOURCE_DIR/build/doc \\

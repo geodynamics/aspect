@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -207,7 +207,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-                                        LinearAlgebra::BlockVector &tmp_distributed_stokes)
+                                        LinearAlgebra::BlockVector &tmp_distributed_stokes) const
   {
     if (parameters.nullspace_removal & NullspaceRemoval::angular_momentum)
       {
@@ -244,9 +244,9 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::remove_net_linear_momentum( const bool use_constant_density,
-                                                   LinearAlgebra::BlockVector &relevant_dst,
-                                                   LinearAlgebra::BlockVector &tmp_distributed_stokes )
+  void Simulator<dim>::remove_net_linear_momentum(const bool use_constant_density,
+                                                  LinearAlgebra::BlockVector &relevant_dst,
+                                                  LinearAlgebra::BlockVector &tmp_distributed_stokes) const
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
@@ -467,10 +467,10 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::remove_net_angular_momentum( const bool use_constant_density,
-                                                    LinearAlgebra::BlockVector &relevant_dst,
-                                                    LinearAlgebra::BlockVector &tmp_distributed_stokes,
-                                                    const bool limit_to_top_faces)
+  void Simulator<dim>::remove_net_angular_momentum(const bool use_constant_density,
+                                                   LinearAlgebra::BlockVector &relevant_dst,
+                                                   LinearAlgebra::BlockVector &tmp_distributed_stokes,
+                                                   const bool limit_to_top_faces) const
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
@@ -513,7 +513,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template struct RotationProperties<dim>; \
-  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector); \
+  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector) const; \
   template void Simulator<dim>::setup_nullspace_constraints (AffineConstraints<double> &);
 
   ASPECT_INSTANTIATE(INSTANTIATE)

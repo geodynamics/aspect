@@ -10,10 +10,10 @@ Number of mesh deformation degrees of freedom: 1,342
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 134+0 iterations.
+   Solving Stokes system (GMG)... 134+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0102488
 
-   Solving Stokes system... 118+0 iterations.
+   Solving Stokes system (GMG)... 118+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.52019e-07
 
 
@@ -28,10 +28,10 @@ Number of mesh deformation degrees of freedom: 2,910
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 128+0 iterations.
+   Solving Stokes system (GMG)... 128+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0102434
 
-   Solving Stokes system... 91+0 iterations.
+   Solving Stokes system (GMG)... 91+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.35338e-07
 
 
@@ -46,10 +46,10 @@ Number of mesh deformation degrees of freedom: 9,288
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving Stokes system... 126+0 iterations.
+   Solving Stokes system (GMG)... 126+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.010239
 
-   Solving Stokes system... 90+0 iterations.
+   Solving Stokes system (GMG)... 90+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.00678e-07
 
 
@@ -68,10 +68,10 @@ Number of mesh deformation degrees of freedom: 9,288
    Solving ve_stress_xx system ... 12 iterations.
    Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 12 iterations.
-   Solving Stokes system... 99+0 iterations.
+   Solving Stokes system (GMG)... 99+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.14989e-05
 
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.36895e-11
 
 
@@ -90,7 +90,7 @@ Number of mesh deformation degrees of freedom: 9,288
    Solving ve_stress_xx system ... 12 iterations.
    Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 11 iterations.
-   Solving Stokes system... 112+0 iterations.
+   Solving Stokes system (GMG)... 112+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.35477e-06
 
 

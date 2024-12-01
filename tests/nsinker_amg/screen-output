@@ -1,0 +1,17 @@
+
+Loading shared library <./libnsinker_amg.debug.so>
+
+Number of active cells: 8 (on 2 levels)
+Number of degrees of freedom: 527 (375+27+125)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 29+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-nsinker_amg/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

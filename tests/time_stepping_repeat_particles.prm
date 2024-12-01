@@ -111,7 +111,6 @@ subsection Particles
   set Maximum particles per cell  = 100
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, composition
-  set Update ghost particles      = true
   set Allow cells without particles = true
   set Particle generator name = uniform box
 

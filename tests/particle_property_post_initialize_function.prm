@@ -98,7 +98,7 @@ subsection Particles
   set List of particle properties = initial position, initial composition, PostInitializeParticleProperty, velocity
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles        = 100
     end
   end

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2020 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2020 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -38,6 +38,8 @@ namespace aspect
      * A plugin that computes the deformation of surface
      * vertices according to the solution of a dim-1 diffusion
      * problem.
+     *
+     * @ingroup MeshDeformation
      */
     template <int dim>
     class Diffusion : public Interface<dim>, public SimulatorAccess<dim>

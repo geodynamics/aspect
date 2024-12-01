@@ -1,5 +1,5 @@
 {
-  "version":"0.6",
+  "version":"1.0",
   "coordinate system":{"model":"cartesian"},
   "gravity model":{"model":"uniform", "magnitude":10},
   "cross section":[[0,0],[10000e3,0]],"surface temperature":273, "force surface temperature":true,
@@ -72,7 +72,7 @@
           "density": 3300,
           "thermal conductivity": 3.3,
           "adiabatic heating": true,
-          "plate velocity": 0.05,
+          "spreading velocity": 0.05,
           "subducting velocity": [[0.05, 0.05]],
           "ridge coordinates": [[[-100e3, 1000.0], [-100e3, -1000.0]]],
           "coupling depth": 50000.0,

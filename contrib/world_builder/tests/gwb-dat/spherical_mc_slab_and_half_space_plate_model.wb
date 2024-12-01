@@ -1,5 +1,5 @@
 {
-  "version": "0.6",
+  "version": "1.0",
   "coordinate system":{"model":"spherical","depth method":"begin at end segment", "radius":665e3},
   "cross section":[[0,0],[45,0]],"surface temperature":273, "force surface temperature":true,
   "potential mantle temperature":1673, "thermal expansion coefficient":3.1e-5,
@@ -21,7 +21,7 @@
           {"length":700e3, "thickness":[300e3], "top truncation":[-300e3], "angle":[50,50]},
           {"length":300e3, "thickness":[300e3], "top truncation":[-300e3], "angle":[50,10]}],
          "temperature models":[{"model":"mass conserving", "density":3300, "thermal conductivity":3.3,
-             "adiabatic heating":true, "plate velocity":0.03, "ridge coordinates": [[[45,-5],[45,5]]],
+             "adiabatic heating":true, "spreading velocity":0.03, "subducting velocity":0.03, "ridge coordinates": [[[45,-5],[45,5]]],
              "coupling depth":100e3, "taper distance":100e3,
              "min distance slab top":-300e3, "max distance slab top":300e3}]
          }

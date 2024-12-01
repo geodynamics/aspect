@@ -6,7 +6,7 @@ Number of degrees of freedom: 156 (50+9+25+36+36)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Skipping adv_field composition solve because RHS is zero.
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
                                    

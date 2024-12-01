@@ -6,7 +6,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00000
@@ -16,7 +16,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 1:  t=1.79907 seconds, dt=1.79907 seconds
    Solving temperature system... 50 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00001
@@ -26,7 +26,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 2:  t=5.2353 seconds, dt=3.43623 seconds
    Solving temperature system... 51 iterations.
-   Solving Stokes system... 39+0 iterations.
+   Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00002
@@ -36,7 +36,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 3:  t=11.7985 seconds, dt=6.5632 seconds
    Solving temperature system... 46 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00003
@@ -46,7 +46,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 4:  t=24.3342 seconds, dt=12.5357 seconds
    Solving temperature system... 44 iterations.
-   Solving Stokes system... 38+0 iterations.
+   Solving Stokes system (GMG)... 38+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00004
@@ -56,7 +56,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 5:  t=48.2774 seconds, dt=23.9432 seconds
    Solving temperature system... 40 iterations.
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (GMG)... 25+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00005
@@ -66,7 +66,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
 *** Timestep 6:  t=50 seconds, dt=1.72259 seconds
    Solving temperature system... 26 iterations.
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00006

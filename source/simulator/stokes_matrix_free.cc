@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -72,7 +72,7 @@ namespace aspect
       {
         dealii::LinearAlgebra::ReadWriteVector<double> rwv;
         rwv.reinit(in);
-        out.import(rwv, VectorOperation::insert);
+        out.import_elements(rwv, VectorOperation::insert);
       }
 
       void copy(TrilinosWrappers::MPI::BlockVector &out,
@@ -543,7 +543,11 @@ namespace aspect
         for (const unsigned int q : velocity.quadrature_point_indices())
           {
             const Tensor<1, dim, VectorizedArray<number>> phi_u_i = velocity.get_value(q);
+#if DEAL_II_VERSION_GTE(9,7,0)
+            const auto &normal_vector = velocity.normal_vector(q);
+#else
             const auto &normal_vector = velocity.get_normal_vector(q);
+#endif
             const auto stabilization_tensor = cell_data->free_surface_stabilization_term_table(face - n_faces_interior, q);
             const auto value_submit = -(stabilization_tensor * phi_u_i) * normal_vector;
 
@@ -1420,8 +1424,15 @@ namespace aspect
 
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
-                      const SymmetricTensor<2,dim> effective_strain_rate =
-                        elastic_out == nullptr ? deviator(in.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
+                      // use the correct strain rate for the Jacobian
+                      // when elasticity is enabled use viscoelastic strain rate
+                      // when stabilization is enabled, use the deviatoric strain rate because the SPD factor
+                      // that is computed is only safe for the deviatoric strain rate (see PR #5580 and issue #5555)
+                      SymmetricTensor<2,dim> effective_strain_rate = in.strain_rate[q];
+                      if (elastic_out != nullptr)
+                        effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
+                      else if ((sim.newton_handler->parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
+                        effective_strain_rate = deviator(effective_strain_rate);
 
                       // use the spd factor when the stabilization is PD or SPD.
                       const double alpha =  (sim.newton_handler->parameters.velocity_block_stabilization
@@ -1694,7 +1705,11 @@ namespace aspect
             for (const unsigned int q : velocity_boundary.quadrature_point_indices())
               {
                 const Tensor<1, dim, VectorizedArray<double>> phi_u_i = velocity_boundary.get_value(q);
+#if DEAL_II_VERSION_GTE(9, 7, 0)
+                const auto &normal_vector = velocity_boundary.normal_vector(q);
+#else
                 const auto &normal_vector = velocity_boundary.get_normal_vector(q);
+#endif
                 const auto stabilization_tensor = active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q);
                 const auto value_submit = (stabilization_tensor * phi_u_i) * normal_vector;
                 velocity_boundary.submit_value(value_submit, q);
@@ -1718,7 +1733,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  std::pair<double,double> StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve()
+  std::pair<double,double> StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve(LinearAlgebra::BlockVector &solution_vector)
   {
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
     double final_linear_residual      = numbers::signaling_nan<double>();
@@ -1911,8 +1926,7 @@ namespace aspect
         linearized_stokes_initial_guess.block (block_p) = sim.current_linearization_point.block (block_p);
 
         sim.denormalize_pressure (sim.last_pressure_normalization_adjustment,
-                                  linearized_stokes_initial_guess,
-                                  sim.current_linearization_point);
+                                  linearized_stokes_initial_guess);
       }
     else
       {
@@ -2334,8 +2348,8 @@ namespace aspect
 
     // then copy back the solution from the temporary (non-ghosted) vector
     // into the ghosted one with all solution components
-    sim.solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
-    sim.solution.block(block_p) = distributed_stokes_solution.block(block_p);
+    solution_vector.block(block_vel) = distributed_stokes_solution.block(block_vel);
+    solution_vector.block(block_p) = distributed_stokes_solution.block(block_p);
 
     if (print_details)
       {
@@ -2350,16 +2364,16 @@ namespace aspect
       }
 
     // do some cleanup now that we have the solution
-    sim.remove_nullspace(sim.solution, distributed_stokes_solution);
+    sim.remove_nullspace(solution_vector, distributed_stokes_solution);
     if (sim.assemble_newton_stokes_system == false)
-      sim.last_pressure_normalization_adjustment = sim.normalize_pressure(sim.solution);
+      sim.last_pressure_normalization_adjustment = sim.normalize_pressure(solution_vector);
 
 
     // convert melt pressures
     // TODO: We assert in the StokesMatrixFreeHandler constructor that we
     //       are not including melt transport.
     if (sim.parameters.include_melt_transport)
-      sim.melt_handler->compute_melt_variables(sim.system_matrix,sim.solution,sim.system_rhs);
+      sim.melt_handler->compute_melt_variables(sim.system_matrix,solution_vector,sim.system_rhs);
 
 
     return std::pair<double,double>(initial_nonlinear_residual,
@@ -2404,9 +2418,13 @@ namespace aspect
 
       DoFRenumbering::hierarchical(dof_handler_v);
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+      const IndexSet locally_relevant_dofs = DoFTools::extract_locally_relevant_dofs(dof_handler_v);
+#else
       IndexSet locally_relevant_dofs;
-      DoFTools::extract_locally_relevant_dofs (dof_handler_v,
-                                               locally_relevant_dofs);
+      DoFTools::extract_locally_relevant_dofs(dof_handler_v, locally_relevant_dofs);
+#endif
+
 #if DEAL_II_VERSION_GTE(9,6,0)
       constraints_v.reinit(dof_handler_v.locally_owned_dofs(), locally_relevant_dofs);
 #else
@@ -2446,9 +2464,14 @@ namespace aspect
 
       DoFRenumbering::hierarchical(dof_handler_p);
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+      const IndexSet locally_relevant_dofs = DoFTools::extract_locally_relevant_dofs(dof_handler_p);
+#else
       IndexSet locally_relevant_dofs;
-      DoFTools::extract_locally_relevant_dofs (dof_handler_p,
-                                               locally_relevant_dofs);
+      DoFTools::extract_locally_relevant_dofs(dof_handler_p,
+                                              locally_relevant_dofs);
+#endif
+
       constraints_p.reinit(
 #if DEAL_II_VERSION_GTE(9,6,0)
         dof_handler_p.locally_owned_dofs(),
@@ -2599,8 +2622,13 @@ namespace aspect
             (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
 
           {
+#if DEAL_II_VERSION_GTE(9,7,0)
+            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level);
+#else
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
+#endif
+
 #if DEAL_II_VERSION_GTE(9,6,0)
             level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
             for (const auto index : mg_constrained_dofs_A_block.get_boundary_indices(level))
@@ -2641,8 +2669,12 @@ namespace aspect
               }
           }
           {
+#if DEAL_II_VERSION_GTE(9,7,0)
+            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level);
+#else
             IndexSet relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
+#endif
 
 #if DEAL_II_VERSION_GTE(9,6,0)
             level_constraints_p.reinit(dof_handler_p.locally_owned_mg_dofs(level), relevant_dofs);

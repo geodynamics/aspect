@@ -2307,6 +2307,79 @@
 
 ::::::::::::::::
 
+::::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_1_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_1_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_1_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_1_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_1_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_1_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/1/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_1_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
 
 
 :::::::::::::::::
@@ -3524,6 +3597,79 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_2_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/2/segments/items/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_2_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/2/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_2_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::{dropdown} /features/items/oneOf/2/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_2_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_2_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/2/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_2_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/2/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_2_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
 
 
 :::::::::::::::
@@ -4401,6 +4547,79 @@
 - **default value**:1.0
 - **type**:number
 - **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_2_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/2/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_2_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/2/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_2_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/2/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_2_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/2/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_2_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/2/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_2_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/2/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_2_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
 :::::::::::::::
 
 ::::::::::::::::
@@ -5405,6 +5624,79 @@
 
 ::::::::::::
 
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_2_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::
+
+::::::::::
+
+:::::::::::
+
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_2_sections_items_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::{dropdown} /features/items/oneOf/2/sections/items/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::
+
+:::::::::::
+
+::::::::::::
+
 
 
 :::::::::::::
@@ -6282,6 +6574,79 @@
 - **default value**:1.0
 - **type**:number
 - **description**:
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_2_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/2/sections/items/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::{dropdown} /features/items/oneOf/2/sections/items/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/2/sections/items/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_2_sections_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/2/sections/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/2/sections/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_2_sections_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::
+
 :::::::::::::
 
 ::::::::::::::
@@ -8249,6 +8614,79 @@
 - **default value**:1.0
 - **type**:number
 - **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_3_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/3/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_3_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/3/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_3_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/3/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_3_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/3/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_3_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/3/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_3_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/3/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_3_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
 :::::::::::::::
 
 ::::::::::::::::
@@ -10485,7 +10923,7 @@
 :name: open_features_items_oneOf_4_composition-models_items_oneOf_1
 
 - **type**:object
-- **description**:Uniform compositional model. Sets constant compositional field.
+- **description**:TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
 - **additionalProperties**:false
 - **required**:[model, compositions]
 
@@ -10496,7 +10934,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the composition model.
-- **enum**:[uniform]
+- **enum**:[tian water content]
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/min depth
@@ -10693,18 +11131,281 @@
 
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/fractions
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/density
 :open:
-:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_fractions
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_density
+
+- **default value**:3000.0
+- **type**:number
+- **description**:The reference density used for determining the lithostatic pressure for calculating the bound water content.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/lithology
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_lithology
+
+- **default value**:peridotite
+- **type**:string
+- **description**:The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/initial water content
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_initial-water-content
+
+- **default value**:5.0
+- **type**:number
+- **description**:The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/cutoff pressure
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_cutoff-pressure
+
+- **default value**:10.0
+- **type**:number
+- **description**:The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/operation
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.
+- **enum**:[replace, replace defined only, add, subtract]
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2
+
+- **type**:object
+- **description**:Uniform compositional model. Sets constant compositional field.
+- **additionalProperties**:false
+- **required**:[model, compositions]
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/model
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the composition model.
+- **enum**:[uniform]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth
+
+- **description**:The depth in meters from which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/1
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_1
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2/items/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/1
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:0.0
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/min depth/oneOf/2/items/items/anyOf/2/items/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_min-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth
+
+- **description**:The depth in meters to which the composition of this feature is present.
+:::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf
+
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/1
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_1
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2_items
+
+- **type**:array
+- **additionalProperties**:false
+- **minItems**:1
+- **maxItems**:2
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2/items/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2_items_items
+
+:::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf
+
+::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/1
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_1
+
+- **type**:number
+- **default value**:1.7976931348623157e308
+::::::::::
+
+::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:4294967295
+:::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items
+
+- **type**:array
+- **minItems**:1
+- **maxItems**:2
+::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/max depth/oneOf/2/items/items/anyOf/2/items/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_max-depth_oneOf_2_items_items_anyOf_2_items_items
+
+- **type**:number
+::::::::
+
+:::::::::
+
+::::::::::
+
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/compositions
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_compositions
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the labels of the composition which are present there.
+:::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/compositions/items
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_compositions_items
+
+- **default value**:0
+- **type**:integer
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/fractions
+:open:
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_fractions
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:TA list of compositional fractions corresponding to the compositions list.
-:::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/fractions/items
+:::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/fractions/items
 :open:
-:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_fractions_items
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_fractions_items
 
 - **default value**:1.0
 - **type**:number
@@ -10713,9 +11414,9 @@
 
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/1/operation
+::::::::::::::::{dropdown} /features/items/oneOf/4/composition models/items/oneOf/2/operation
 :open:
-:name: open_features_items_oneOf_4_composition-models_items_oneOf_1_operation
+:name: open_features_items_oneOf_4_composition-models_items_oneOf_2_operation
 
 - **default value**:replace
 - **type**:string
@@ -11293,6 +11994,79 @@
 - **default value**:1.0
 - **type**:number
 - **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_4_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_4_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_4_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_4_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_4_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_4_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/4/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_4_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
 :::::::::::::::
 
 ::::::::::::::::
@@ -12106,7 +12880,7 @@
 :name: open_features_items_oneOf_5_grains-models_items_oneOf_1
 
 - **type**:object
-- **description**:Uniform grains model. All grains start exactly the same.
+- **description**:Random uniform distribution grains model. The size of the grains can be independently set to a single value or to a random distribution.
 - **additionalProperties**:false
 - **required**:[model, compositions]
 
@@ -12117,7 +12891,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the grains model.
-- **enum**:[uniform]
+- **enum**:[random uniform distribution deflected]
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/min depth
@@ -12158,79 +12932,6 @@
 
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/rotation matrices
-:open:
-:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_rotation-matrices
-
-- **type**:array
-- **minItems**:0
-- **maxItems**:4294967295
-- **uniqueItems**:false
-- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
-:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/rotation matrices/items
-:open:
-:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_rotation-matrices_items
-
-- **type**:array
-- **minItems**:3
-- **maxItems**:3
-- **uniqueItems**:false
-- **description**:
-::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/rotation matrices/items/items
-:open:
-:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_rotation-matrices_items_items
-
-- **type**:array
-- **minItems**:3
-- **maxItems**:3
-- **uniqueItems**:false
-- **description**:
-:::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/rotation matrices/items/items/items
-:open:
-:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_rotation-matrices_items_items_items
-
-- **default value**:0.0
-- **type**:number
-- **description**:
-:::::::::::::
-
-::::::::::::::
-
-:::::::::::::::
-
-::::::::::::::::
-
-::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/Euler angles z-x-z
-:open:
-:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_Euler-angles-z-x-z
-
-- **type**:array
-- **minItems**:0
-- **maxItems**:4294967295
-- **uniqueItems**:false
-- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
-:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/Euler angles z-x-z/items
-:open:
-:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_Euler-angles-z-x-z_items
-
-- **type**:array
-- **minItems**:3
-- **maxItems**:3
-- **uniqueItems**:false
-- **description**:
-::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/Euler angles z-x-z/items/items
-:open:
-:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_Euler-angles-z-x-z_items_items
-
-- **default value**:0.0
-- **type**:number
-- **description**:
-::::::::::::::
-
-:::::::::::::::
-
-::::::::::::::::
-
 ::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/orientation operation
 :open:
 :name: open_features_items_oneOf_5_grains-models_items_oneOf_1_orientation-operation
@@ -12249,10 +12950,287 @@
 - **minItems**:0
 - **maxItems**:4294967295
 - **uniqueItems**:false
-- **description**:A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+- **description**:A list of the size of all of the grains in each composition. If set to <0, the size will be randomized between 0 and 1.
 :::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/grain sizes/items
 :open:
 :name: open_features_items_oneOf_5_grains-models_items_oneOf_1_grain-sizes_items
+
+- **default value**:1.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/normalize grain sizes
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_normalize-grain-sizes
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list of whether the sizes of the grains should be normalized or not. If normalized, the total of the grains of a composition will be equal to 1.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/normalize grain sizes/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_normalize-grain-sizes_items
+
+- **default value**:true
+- **type**:boolean
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/deflections
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_deflections
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list of the deflections of all of the grains in each composition between 0 and 1.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/deflections/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_deflections_items
+
+- **default value**:1.0
+- **type**:number
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/1/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_1_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2
+
+- **type**:object
+- **description**:Uniform grains model. All grains start exactly the same.
+- **additionalProperties**:false
+- **required**:[model, compositions]
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/model
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the grains model.
+- **enum**:[uniform]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/min depth
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_min-depth
+
+- **default value**:0.0
+- **type**:number
+- **description**:The depth in meters from which the grains of this feature are present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/max depth
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_max-depth
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:The depth in meters to which the grains of this feature are present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/compositions
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_compositions
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the integer labels of the composition which are present there.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/compositions/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_compositions_items
+
+- **default value**:0
+- **type**:integer
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/orientation operation
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_orientation-operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value (add, not implemented). Replacing implies that all values not explicitly defined are set to zero.
+- **enum**:[replace, multiply]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/grain sizes
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_grain-sizes
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list of the size of all of the grains in each composition. If set to <0, the size will be set so that the total is equal to 1.
+:::::::::::::::{dropdown} /features/items/oneOf/5/grains models/items/oneOf/2/grain sizes/items
+:open:
+:name: open_features_items_oneOf_5_grains-models_items_oneOf_2_grain-sizes_items
 
 - **default value**:-1.0
 - **type**:number
@@ -12625,7 +13603,7 @@
 - **type**:object
 - **description**:Mass conserving temperature model. The temperature model uses the heat content (proportional to to thermal mass anomaly) to define a smooth temperature profile that conserves mass along the slab length. An empirical model, using error functions for smooth transitions, is used to  define how the minimum temperature increases with depth and how the location of the minimum temperature shifts into the slab interior. The slab is divided into top and bottom parts, which meet at the location where the minimum temperature occurs in the slab. For the bottom slab, the temperature is defined by a half-space cooling model. For the top of the slab the temperature is defined by one side of a 1D infinite space cooling model: this function was chosen to have a smoother temperature function across the minimum temperature position. The age of the overriding plate is used so the slab temperature at shallow depth smoothly transitions to the temperature of the overriding plate: this is not perfect, and is affected by the value of "top truncation" parameter subducting plate. Notes:1) the parameter "thickness" for the subducting plate segments needs to be defined but is not used. 2) because we use a negative truncation for distance above the slab, it is recommended to usedepth method:begin at end segment, in the main part of the world-builder file.Other methods may lead to gpas in temperatures at the segment boundaries.3)the empirical model used to define how Tmin increases with depth and how the position of Tmin shift with depth is expected to change somewhat after better calibrating with further tests.
 - **additionalProperties**:false
-- **required**:[model, plate velocity]
+- **required**:[model, spreading velocity, subducting velocity]
 
 ::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/model
 :open:
@@ -12674,75 +13652,75 @@
 - **description**:The reference density of the subducting plate in $kg/m^3$
 ::::::::::::::
 
-::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity
 
-- **description**:The velocity with which the plate subducts in meters per year. Default is 5 cm/yr
-:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf
+- **description**:The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr
+:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf
 
-::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/1
+::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/1
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_1
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_1
 
 - **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::::
 
-::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2
+::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2
 
 - **type**:array
 - **minItems**:0
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:
-:::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items
+:::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items
 
 - **type**:array
 - **additionalProperties**:false
 - **minItems**:1
 - **maxItems**:18446744073709551615
 - **description**:
-::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items
+::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items
 
-:::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf
+:::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf
 
-::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/1
+::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/1
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_1
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_1
 
 - **type**:number
 - **default value**:0.05
 ::::::::
 
-::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2
+::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
-:::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items
+:::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:18446744073709551615
-::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items/items
+::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items_items
+:name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items_items
 
 - **type**:number
 ::::::
@@ -12765,7 +13743,7 @@
 :open:
 :name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_subducting-velocity
 
-- **description**:The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]
+- **description**:The velocity with which the slab is subducting through time. Default is 5 cm/yr
 :::::::::::::{dropdown} /features/items/oneOf/6/segments/items/temperature models/items/oneOf/3/subducting velocity/oneOf
 :open:
 :name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf
@@ -12774,7 +13752,7 @@
 :open:
 :name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf_1
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::::
@@ -12801,7 +13779,7 @@
 :open:
 :name: open_features_items_oneOf_6_segments_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf_2_items_items
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::
@@ -13274,7 +14252,7 @@
 :name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2
 
 - **type**:object
-- **description**:Uniform compositional model. Sets constant compositional field.
+- **description**:TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
 - **additionalProperties**:false
 - **required**:[model, compositions]
 
@@ -13285,7 +14263,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the composition model.
-- **enum**:[uniform]
+- **enum**:[tian water content]
 ::::::::::::::
 
 ::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/min distance slab top
@@ -13304,6 +14282,15 @@
 - **default value**:1.7976931348623157e308
 - **type**:number
 - **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/density
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_density
+
+- **default value**:3000.0
+- **type**:number
+- **description**:The reference density used for determining the lithostatic pressure for calculating the bound water content.
 ::::::::::::::
 
 ::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/compositions
@@ -13326,18 +14313,116 @@
 
 ::::::::::::::
 
-::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/fractions
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/lithology
 :open:
-:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_fractions
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_lithology
+
+- **default value**:peridotite
+- **type**:string
+- **description**:The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/initial water content
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_initial-water-content
+
+- **default value**:5.0
+- **type**:number
+- **description**:The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/cutoff pressure
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_cutoff-pressure
+
+- **default value**:10.0
+- **type**:number
+- **description**:The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/operation
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.
+- **enum**:[replace, replace defined only, add, subtract]
+::::::::::::::
+
+
+
+:::::::::::::::
+
+:::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3
+
+- **type**:object
+- **description**:Uniform compositional model. Sets constant compositional field.
+- **additionalProperties**:false
+- **required**:[model, compositions]
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/model
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the composition model.
+- **enum**:[uniform]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/min distance slab top
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/max distance slab top
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/compositions
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_compositions
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the labels of the composition which are present there.
+:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/compositions/items
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_compositions_items
+
+- **default value**:0
+- **type**:integer
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/fractions
+:open:
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_fractions
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:TA list of compositional fractions corresponding to the compositions list.
-:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/fractions/items
+:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/fractions/items
 :open:
-:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_fractions_items
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_fractions_items
 
 - **default value**:1.0
 - **type**:number
@@ -13346,9 +14431,9 @@
 
 ::::::::::::::
 
-::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/2/operation
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/composition models/items/oneOf/3/operation
 :open:
-:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_2_operation
+:name: open_features_items_oneOf_6_segments_items_composition-models_items_oneOf_3_operation
 
 - **default value**:replace
 - **type**:string
@@ -13614,6 +14699,79 @@
 - **default value**:1.0
 - **type**:number
 - **description**:
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_6_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_6_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/6/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_6_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::{dropdown} /features/items/oneOf/6/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_6_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_6_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/6/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_6_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/6/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_6_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::
+
 :::::::::::::
 
 ::::::::::::::
@@ -13966,7 +15124,7 @@
 - **type**:object
 - **description**:Mass conserving temperature model. The temperature model uses the heat content (proportional to to thermal mass anomaly) to define a smooth temperature profile that conserves mass along the slab length. An empirical model, using error functions for smooth transitions, is used to  define how the minimum temperature increases with depth and how the location of the minimum temperature shifts into the slab interior. The slab is divided into top and bottom parts, which meet at the location where the minimum temperature occurs in the slab. For the bottom slab, the temperature is defined by a half-space cooling model. For the top of the slab the temperature is defined by one side of a 1D infinite space cooling model: this function was chosen to have a smoother temperature function across the minimum temperature position. The age of the overriding plate is used so the slab temperature at shallow depth smoothly transitions to the temperature of the overriding plate: this is not perfect, and is affected by the value of "top truncation" parameter subducting plate. Notes:1) the parameter "thickness" for the subducting plate segments needs to be defined but is not used. 2) because we use a negative truncation for distance above the slab, it is recommended to usedepth method:begin at end segment, in the main part of the world-builder file.Other methods may lead to gpas in temperatures at the segment boundaries.3)the empirical model used to define how Tmin increases with depth and how the position of Tmin shift with depth is expected to change somewhat after better calibrating with further tests.
 - **additionalProperties**:false
-- **required**:[model, plate velocity]
+- **required**:[model, spreading velocity, subducting velocity]
 
 ::::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/model
 :open:
@@ -14015,75 +15173,75 @@
 - **description**:The reference density of the subducting plate in $kg/m^3$
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity
+::::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity
 
-- **description**:The velocity with which the plate subducts in meters per year. Default is 5 cm/yr
-:::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf
+- **description**:The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr
+:::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf
 
-::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/1
+::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/1
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_1
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_1
 
 - **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::::::
 
-::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2
+::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2
 
 - **type**:array
 - **minItems**:0
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:
-:::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2/items
+:::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items
 
 - **type**:array
 - **additionalProperties**:false
 - **minItems**:1
 - **maxItems**:18446744073709551615
 - **description**:
-::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items
+::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items
 
-:::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf
+:::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf
 
-::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/1
+::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/1
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_1
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_1
 
 - **type**:number
 - **default value**:0.05
 ::::::::::
 
-::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2
+::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
-:::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items
+:::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:18446744073709551615
-::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items/items
+::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items_items
+:name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items_items
 
 - **type**:number
 ::::::::
@@ -14106,7 +15264,7 @@
 :open:
 :name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_subducting-velocity
 
-- **description**:The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]
+- **description**:The velocity with which the slab is subducting through time. Default is 5 cm/yr
 :::::::::::::::{dropdown} /features/items/oneOf/6/temperature models/items/oneOf/3/subducting velocity/oneOf
 :open:
 :name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_subducting-velocity_oneOf
@@ -14115,7 +15273,7 @@
 :open:
 :name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_subducting-velocity_oneOf_1
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::::::
@@ -14142,7 +15300,7 @@
 :open:
 :name: open_features_items_oneOf_6_temperature-models_items_oneOf_3_subducting-velocity_oneOf_2_items_items
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::::
@@ -14615,7 +15773,7 @@
 :name: open_features_items_oneOf_6_composition-models_items_oneOf_2
 
 - **type**:object
-- **description**:Uniform compositional model. Sets constant compositional field.
+- **description**:TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
 - **additionalProperties**:false
 - **required**:[model, compositions]
 
@@ -14626,7 +15784,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the composition model.
-- **enum**:[uniform]
+- **enum**:[tian water content]
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/min distance slab top
@@ -14645,6 +15803,15 @@
 - **default value**:1.7976931348623157e308
 - **type**:number
 - **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/density
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_density
+
+- **default value**:3000.0
+- **type**:number
+- **description**:The reference density used for determining the lithostatic pressure for calculating the bound water content.
 ::::::::::::::::
 
 ::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/compositions
@@ -14667,18 +15834,116 @@
 
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/fractions
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/lithology
 :open:
-:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_fractions
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_lithology
+
+- **default value**:peridotite
+- **type**:string
+- **description**:The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/initial water content
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_initial-water-content
+
+- **default value**:5.0
+- **type**:number
+- **description**:The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/cutoff pressure
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_cutoff-pressure
+
+- **default value**:10.0
+- **type**:number
+- **description**:The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/operation
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.
+- **enum**:[replace, replace defined only, add, subtract]
+::::::::::::::::
+
+
+
+:::::::::::::::::
+
+:::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3
+
+- **type**:object
+- **description**:Uniform compositional model. Sets constant compositional field.
+- **additionalProperties**:false
+- **required**:[model, compositions]
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/model
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the composition model.
+- **enum**:[uniform]
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/min distance slab top
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/max distance slab top
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/compositions
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_compositions
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the labels of the composition which are present there.
+:::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/compositions/items
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_compositions_items
+
+- **default value**:0
+- **type**:integer
+- **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/fractions
+:open:
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_fractions
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:TA list of compositional fractions corresponding to the compositions list.
-:::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/fractions/items
+:::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/fractions/items
 :open:
-:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_fractions_items
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_fractions_items
 
 - **default value**:1.0
 - **type**:number
@@ -14687,9 +15952,9 @@
 
 ::::::::::::::::
 
-::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/2/operation
+::::::::::::::::{dropdown} /features/items/oneOf/6/composition models/items/oneOf/3/operation
 :open:
-:name: open_features_items_oneOf_6_composition-models_items_oneOf_2_operation
+:name: open_features_items_oneOf_6_composition-models_items_oneOf_3_operation
 
 - **default value**:replace
 - **type**:string
@@ -14955,6 +16220,79 @@
 - **default value**:1.0
 - **type**:number
 - **description**:
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_6_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/6/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_6_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/6/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_6_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::::{dropdown} /features/items/oneOf/6/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_6_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+:::::::::::::::
+
+::::::::::::::::
+
+::::::::::::::::{dropdown} /features/items/oneOf/6/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_6_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::::{dropdown} /features/items/oneOf/6/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_6_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::::{dropdown} /features/items/oneOf/6/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_6_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::::
+
 :::::::::::::::
 
 ::::::::::::::::
@@ -15426,7 +16764,7 @@
 - **type**:object
 - **description**:Mass conserving temperature model. The temperature model uses the heat content (proportional to to thermal mass anomaly) to define a smooth temperature profile that conserves mass along the slab length. An empirical model, using error functions for smooth transitions, is used to  define how the minimum temperature increases with depth and how the location of the minimum temperature shifts into the slab interior. The slab is divided into top and bottom parts, which meet at the location where the minimum temperature occurs in the slab. For the bottom slab, the temperature is defined by a half-space cooling model. For the top of the slab the temperature is defined by one side of a 1D infinite space cooling model: this function was chosen to have a smoother temperature function across the minimum temperature position. The age of the overriding plate is used so the slab temperature at shallow depth smoothly transitions to the temperature of the overriding plate: this is not perfect, and is affected by the value of "top truncation" parameter subducting plate. Notes:1) the parameter "thickness" for the subducting plate segments needs to be defined but is not used. 2) because we use a negative truncation for distance above the slab, it is recommended to usedepth method:begin at end segment, in the main part of the world-builder file.Other methods may lead to gpas in temperatures at the segment boundaries.3)the empirical model used to define how Tmin increases with depth and how the position of Tmin shift with depth is expected to change somewhat after better calibrating with further tests.
 - **additionalProperties**:false
-- **required**:[model, plate velocity]
+- **required**:[model, spreading velocity, subducting velocity]
 
 ::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/model
 :open:
@@ -15475,75 +16813,75 @@
 - **description**:The reference density of the subducting plate in $kg/m^3$
 ::::::::::::
 
-::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity
 
-- **description**:The velocity with which the plate subducts in meters per year. Default is 5 cm/yr
-:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf
+- **description**:The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf
 
-::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/1
+::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/1
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_1
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_1
 
 - **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::
 
-::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2
+::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2
 
 - **type**:array
 - **minItems**:0
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:
-:::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items
+:::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items
 
 - **type**:array
 - **additionalProperties**:false
 - **minItems**:1
 - **maxItems**:18446744073709551615
 - **description**:
-::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items
+::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items
 
-:::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf
+:::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf
 
-::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/1
+::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/1
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_1
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_1
 
 - **type**:number
 - **default value**:0.05
 ::::::
 
-::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2
+::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
-:::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items
+:::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:18446744073709551615
-::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items/items
+::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items_items
+:name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items_items
 
 - **type**:number
 ::::
@@ -15566,7 +16904,7 @@
 :open:
 :name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_subducting-velocity
 
-- **description**:The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]
+- **description**:The velocity with which the slab is subducting through time. Default is 5 cm/yr
 :::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/temperature models/items/oneOf/3/subducting velocity/oneOf
 :open:
 :name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf
@@ -15575,7 +16913,7 @@
 :open:
 :name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf_1
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::
@@ -15602,7 +16940,7 @@
 :open:
 :name: open_features_items_oneOf_6_sections_items_segments_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf_2_items_items
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::
@@ -16075,7 +17413,7 @@
 :name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2
 
 - **type**:object
-- **description**:Uniform compositional model. Sets constant compositional field.
+- **description**:TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
 - **additionalProperties**:false
 - **required**:[model, compositions]
 
@@ -16086,7 +17424,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the composition model.
-- **enum**:[uniform]
+- **enum**:[tian water content]
 ::::::::::::
 
 ::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/min distance slab top
@@ -16105,6 +17443,15 @@
 - **default value**:1.7976931348623157e308
 - **type**:number
 - **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/density
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_density
+
+- **default value**:3000.0
+- **type**:number
+- **description**:The reference density used for determining the lithostatic pressure for calculating the bound water content.
 ::::::::::::
 
 ::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/compositions
@@ -16127,18 +17474,116 @@
 
 ::::::::::::
 
-::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/fractions
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/lithology
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_fractions
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_lithology
+
+- **default value**:peridotite
+- **type**:string
+- **description**:The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/initial water content
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_initial-water-content
+
+- **default value**:5.0
+- **type**:number
+- **description**:The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/cutoff pressure
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_cutoff-pressure
+
+- **default value**:10.0
+- **type**:number
+- **description**:The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/operation
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.
+- **enum**:[replace, replace defined only, add, subtract]
+::::::::::::
+
+
+
+:::::::::::::
+
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3
+
+- **type**:object
+- **description**:Uniform compositional model. Sets constant compositional field.
+- **additionalProperties**:false
+- **required**:[model, compositions]
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/model
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the composition model.
+- **enum**:[uniform]
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/min distance slab top
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/max distance slab top
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/compositions
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_compositions
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the labels of the composition which are present there.
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/compositions/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_compositions_items
+
+- **default value**:0
+- **type**:integer
+- **description**:
+:::::::::::
+
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/fractions
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_fractions
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:TA list of compositional fractions corresponding to the compositions list.
-:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/fractions/items
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/fractions/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_fractions_items
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_fractions_items
 
 - **default value**:1.0
 - **type**:number
@@ -16147,9 +17592,9 @@
 
 ::::::::::::
 
-::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/2/operation
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/composition models/items/oneOf/3/operation
 :open:
-:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_2_operation
+:name: open_features_items_oneOf_6_sections_items_segments_items_composition-models_items_oneOf_3_operation
 
 - **default value**:replace
 - **type**:string
@@ -16415,6 +17860,79 @@
 - **default value**:1.0
 - **type**:number
 - **description**:
+:::::::::::
+
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::
+
+::::::::::
+
+:::::::::::
+
+::::::::::::
+
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::{dropdown} /features/items/oneOf/6/sections/items/segments/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_segments_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::
+
 :::::::::::
 
 ::::::::::::
@@ -16767,7 +18285,7 @@
 - **type**:object
 - **description**:Mass conserving temperature model. The temperature model uses the heat content (proportional to to thermal mass anomaly) to define a smooth temperature profile that conserves mass along the slab length. An empirical model, using error functions for smooth transitions, is used to  define how the minimum temperature increases with depth and how the location of the minimum temperature shifts into the slab interior. The slab is divided into top and bottom parts, which meet at the location where the minimum temperature occurs in the slab. For the bottom slab, the temperature is defined by a half-space cooling model. For the top of the slab the temperature is defined by one side of a 1D infinite space cooling model: this function was chosen to have a smoother temperature function across the minimum temperature position. The age of the overriding plate is used so the slab temperature at shallow depth smoothly transitions to the temperature of the overriding plate: this is not perfect, and is affected by the value of "top truncation" parameter subducting plate. Notes:1) the parameter "thickness" for the subducting plate segments needs to be defined but is not used. 2) because we use a negative truncation for distance above the slab, it is recommended to usedepth method:begin at end segment, in the main part of the world-builder file.Other methods may lead to gpas in temperatures at the segment boundaries.3)the empirical model used to define how Tmin increases with depth and how the position of Tmin shift with depth is expected to change somewhat after better calibrating with further tests.
 - **additionalProperties**:false
-- **required**:[model, plate velocity]
+- **required**:[model, spreading velocity, subducting velocity]
 
 ::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/model
 :open:
@@ -16816,75 +18334,75 @@
 - **description**:The reference density of the subducting plate in $kg/m^3$
 ::::::::::::::
 
-::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity
 
-- **description**:The velocity with which the plate subducts in meters per year. Default is 5 cm/yr
-:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf
+- **description**:The velocity with which the ridge spreads and create the plate in meters per year. Default is 5 cm/yr
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf
 
-::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/1
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/1
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_1
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_1
 
 - **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::::
 
-::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2
 
 - **type**:array
 - **minItems**:0
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:
-:::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items
 
 - **type**:array
 - **additionalProperties**:false
 - **minItems**:1
 - **maxItems**:18446744073709551615
 - **description**:
-::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items
+::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items
 
-:::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf
+:::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf
 
-::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/1
+::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/1
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_1
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_1
 
 - **type**:number
 - **default value**:0.05
 ::::::::
 
-::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2
+::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
-:::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items
+:::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:18446744073709551615
-::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/plate velocity/oneOf/2/items/items/anyOf/2/items/items
+::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/spreading velocity/oneOf/2/items/items/anyOf/2/items/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_plate-velocity_oneOf_2_items_items_anyOf_2_items_items
+:name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_spreading-velocity_oneOf_2_items_items_anyOf_2_items_items
 
 - **type**:number
 ::::::
@@ -16907,7 +18425,7 @@
 :open:
 :name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_subducting-velocity
 
-- **description**:The velocity with which the ridge is moving through time, and how long the ridge has been moving. First value is the velocity, second is the time. Default is [0 cm/yr, 0 yr]
+- **description**:The velocity with which the slab is subducting through time. Default is 5 cm/yr
 :::::::::::::{dropdown} /features/items/oneOf/6/sections/items/temperature models/items/oneOf/3/subducting velocity/oneOf
 :open:
 :name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf
@@ -16916,7 +18434,7 @@
 :open:
 :name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf_1
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::::
@@ -16943,7 +18461,7 @@
 :open:
 :name: open_features_items_oneOf_6_sections_items_temperature-models_items_oneOf_3_subducting-velocity_oneOf_2_items_items
 
-- **default value**:-1.0
+- **default value**:0.05
 - **type**:number
 - **description**:
 ::::::::::
@@ -17416,7 +18934,7 @@
 :name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2
 
 - **type**:object
-- **description**:Uniform compositional model. Sets constant compositional field.
+- **description**:TianWaterContent compositional model. Sets bound water content as a compositional field. The returned water content is based on the the temperature and pressure at a point within the world. Currently, the bound water content can be determined for four different lithologies: 'sediment', mid-ocean ridge basalt ('MORB'), 'gabbro', and 'peridotite', using parameterized phase diagrams from Tian et al., 2019 (https://doi.org/10.1029/2019GC008488). The pressure is lithostatic, calculated with a constant user defined density, and is limited by a user defined cutoff pressure (in GPa) for each lithology. This is required because the parameterization breaks down at large pressures. Recommended cutoff pressures are 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
 - **additionalProperties**:false
 - **required**:[model, compositions]
 
@@ -17427,7 +18945,7 @@
 - **default value**:
 - **type**:string
 - **description**:The name of the composition model.
-- **enum**:[uniform]
+- **enum**:[tian water content]
 ::::::::::::::
 
 ::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/min distance slab top
@@ -17446,6 +18964,15 @@
 - **default value**:1.7976931348623157e308
 - **type**:number
 - **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/density
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_density
+
+- **default value**:3000.0
+- **type**:number
+- **description**:The reference density used for determining the lithostatic pressure for calculating the bound water content.
 ::::::::::::::
 
 ::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/compositions
@@ -17468,18 +18995,116 @@
 
 ::::::::::::::
 
-::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/fractions
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/lithology
 :open:
-:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_fractions
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_lithology
+
+- **default value**:peridotite
+- **type**:string
+- **description**:The lithology used to determine which polynomials to use for calculating the water content. Valid options are: 'sediment', 'MORB', 'gabbro', and 'peridotite'.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/initial water content
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_initial-water-content
+
+- **default value**:5.0
+- **type**:number
+- **description**:The value of the initial water content (in wt%) for the lithology at the trench. This represents the max value applied to this lithology.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/cutoff pressure
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_cutoff-pressure
+
+- **default value**:10.0
+- **type**:number
+- **description**:The upper bound for the pressure, in GPa, for the specified lithology in the Tian parameterization. This is necessary because the parameterization breaks down for high pressures. It is recommended that 10 GPa is used for 'peridotite', 26 GPa is used for 'gabbro', 16 GPa is used for 'MORB', and 1 GPa is used for 'sediment'.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/operation
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_operation
+
+- **default value**:replace
+- **type**:string
+- **description**:Whether the value should replace any value previously defined at this location (replace) or add the value to the previously define value. Replacing implies that all compositions not explicitly defined are set to zero. To only replace the defined compositions use the replace only defined option.
+- **enum**:[replace, replace defined only, add, subtract]
+::::::::::::::
+
+
+
+:::::::::::::::
+
+:::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3
+
+- **type**:object
+- **description**:Uniform compositional model. Sets constant compositional field.
+- **additionalProperties**:false
+- **required**:[model, compositions]
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/model
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_model
+
+- **default value**:
+- **type**:string
+- **description**:The name of the composition model.
+- **enum**:[uniform]
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/min distance slab top
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_min-distance-slab-top
+
+- **default value**:0.0
+- **type**:number
+- **description**:todo The depth in meters from which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/max distance slab top
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_max-distance-slab-top
+
+- **default value**:1.7976931348623157e308
+- **type**:number
+- **description**:todo The depth in meters to which the composition of this feature is present.
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/compositions
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_compositions
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the labels of the composition which are present there.
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/compositions/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_compositions_items
+
+- **default value**:0
+- **type**:integer
+- **description**:
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/fractions
+:open:
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_fractions
 
 - **type**:array
 - **minItems**:1
 - **maxItems**:4294967295
 - **uniqueItems**:false
 - **description**:TA list of compositional fractions corresponding to the compositions list.
-:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/fractions/items
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/fractions/items
 :open:
-:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_fractions_items
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_fractions_items
 
 - **default value**:1.0
 - **type**:number
@@ -17488,9 +19113,9 @@
 
 ::::::::::::::
 
-::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/2/operation
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/composition models/items/oneOf/3/operation
 :open:
-:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_2_operation
+:name: open_features_items_oneOf_6_sections_items_composition-models_items_oneOf_3_operation
 
 - **default value**:replace
 - **type**:string
@@ -17760,6 +19385,79 @@
 
 ::::::::::::::
 
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/grains models/items/oneOf/2/basis rotation matrices
+:open:
+:name: open_features_items_oneOf_6_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the rotation matrices of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/grains models/items/oneOf/2/basis rotation matrices/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/grains models/items/oneOf/2/basis rotation matrices/items/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+:::::::::::{dropdown} /features/items/oneOf/6/sections/items/grains models/items/oneOf/2/basis rotation matrices/items/items/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_grains-models_items_oneOf_2_basis-rotation-matrices_items_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+:::::::::::
+
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
+::::::::::::::{dropdown} /features/items/oneOf/6/sections/items/grains models/items/oneOf/2/basis Euler angles z-x-z
+:open:
+:name: open_features_items_oneOf_6_sections_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z
+
+- **type**:array
+- **minItems**:0
+- **maxItems**:4294967295
+- **uniqueItems**:false
+- **description**:A list with the z-x-z Euler angles of the grains which are present there for each compositions.
+:::::::::::::{dropdown} /features/items/oneOf/6/sections/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items
+
+- **type**:array
+- **minItems**:3
+- **maxItems**:3
+- **uniqueItems**:false
+- **description**:
+::::::::::::{dropdown} /features/items/oneOf/6/sections/items/grains models/items/oneOf/2/basis Euler angles z-x-z/items/items
+:open:
+:name: open_features_items_oneOf_6_sections_items_grains-models_items_oneOf_2_basis-Euler-angles-z-x-z_items_items
+
+- **default value**:0.0
+- **type**:number
+- **description**:
+::::::::::::
+
+:::::::::::::
+
+::::::::::::::
+
 
 
 :::::::::::::::
@@ -17961,7 +19659,7 @@
 :open:
 :name: open_random-number-seed
 
-- **default value**:4294967295
+- **default value**:-1
 - **type**:integer
 - **description**:This allows the input of a preferred random number seed to generate random numbers. If no input is given, this value is -1 and triggers the use of default seed = 1.
 ::::::::::::::::::::::::

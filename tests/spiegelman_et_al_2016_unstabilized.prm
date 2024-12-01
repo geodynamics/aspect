@@ -1,0 +1,15 @@
+# Like the test spiegelman_et_al_2016, but without SPD stabilization of
+# the Newton matrix or preconditioner. Because this is the simplest case
+# of the benchmark, convergence is still guaranteed and will be
+# faster than in the stabilized default case.
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/spiegelman_et_al_2016/input.prm
+
+subsection Solver parameters
+  subsection Newton solver parameters
+    set Stabilization preconditioner             = none
+    set Stabilization velocity block             = none
+  end
+end

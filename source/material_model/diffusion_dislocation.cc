@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -142,15 +142,13 @@ namespace aspect
           // Establish that a background field is required here
           chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-          Utilities::MapParsing::Options options(chemical_field_names, "Densities");
+          Utilities::MapParsing::Options options(chemical_field_names, "");
           options.list_of_allowed_keys = compositional_field_names;
-
-          densities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Densities"),
-                                                                        options);
+          options.property_name = "Densities";
+          densities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           options.property_name = "Thermal expansivities";
-          thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Thermal expansivities"),
-                                                                                    options);
+          thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           // Phenomenological parameters
           thermal_diffusivity = prm.get_double("Thermal diffusivity");

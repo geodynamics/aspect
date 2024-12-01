@@ -236,6 +236,10 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 1e5
-    set List of output variables = density, heat flux map, vertical heat flux
+    set List of output variables = material properties, heat flux map, vertical heat flux
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 end

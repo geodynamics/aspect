@@ -2,7 +2,7 @@
 Features
 ======================
 
-There are a number of different features that can be added to the world builder world: 
+There are a number of different features that can be added to the World Builder world: 
 
 ```{toctree}
 :caption: Features

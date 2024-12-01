@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -43,7 +43,7 @@ namespace aspect
     void move_file (const std::string &old_name,
                     const std::string &new_name)
     {
-      int error = system (("mv " + old_name + " " + new_name).c_str());
+      int error = std::system (("mv " + old_name + " " + new_name).c_str());
 
       // If the above call failed, e.g. because there is no command-line
       // available, try with internal functions.
@@ -97,6 +97,7 @@ namespace aspect
       oa << parameters.names_of_compositional_fields;
       oa << parameters.normalized_fields;
       oa << parameters.mesh_deformation_enabled;
+      oa << parameters.n_particle_managers;
     }
 
 
@@ -260,6 +261,14 @@ namespace aspect
                                "These need to be the same during restarting "
                                "from a checkpoint."));
 
+      unsigned int n_particle_managers;
+      ia >> n_particle_managers;
+      AssertThrow (n_particle_managers == parameters.n_particle_managers,
+                   ExcMessage ("The number of particle systems that were stored "
+                               "in the checkpoint file is not the same as the one "
+                               "you currently set in your input file. "
+                               "These need to be the same during restarting "
+                               "from a checkpoint."));
     }
   }
 
@@ -317,10 +326,15 @@ namespace aspect
     {
       std::ostringstream oss;
 
-      // serialize into a stringstream
-      aspect::oarchive oa (oss);
-      save_critical_parameters (this->parameters, oa);
-      oa << (*this);
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query its properties below.
+      {
+        aspect::oarchive oa (oss);
+        save_critical_parameters (this->parameters, oa);
+        oa << (*this);
+      }
 
       // compress with zlib and write to file on the root processor
 #ifdef DEAL_II_WITH_ZLIB

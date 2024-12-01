@@ -4,7 +4,7 @@ Number of degrees of freedom: 230 (50+21+50+9+25+25+25+25)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system (AMG)... 7+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:

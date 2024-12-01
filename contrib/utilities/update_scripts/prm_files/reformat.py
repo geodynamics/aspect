@@ -67,11 +67,57 @@ def reformat (parameters):
 
     return parameters
 
+def merge_deprecated_postprocessors_into_material_properties(parameters):
+    if "Postprocess" in parameters:
+        if "Visualization" in parameters["Postprocess"]["value"]:
+            if "List of output variables" in parameters["Postprocess"]["value"]["Visualization"]["value"]:
+                vis_parameters = parameters["Postprocess"]["value"]["Visualization"]["value"]
+                output_variables = vis_parameters["List of output variables"]["value"].split(",")
+                # variables to remove from the list of output variables and to add to material properties
+                deprecated_variables = ["density", "specific heat", "thermal conductivity", "thermal diffusivity", "thermal expansivity", "viscosity"]
+                # material properties that are active by default
+                default_variables = ["density","thermal expansivity","specific heat","viscosity"]
+                active_deprecated_variables = []
+                active_output_variables = []
+                active_material_properties = []
+
+                for variable in output_variables:
+                    if variable.strip() in deprecated_variables:
+                        active_deprecated_variables.append(variable.strip())
+                        # if subsection didnt exist before, create subsection
+                        if not "Material properties" in vis_parameters:
+                            vis_parameters["Material properties"] = {"comment": "", "value" : dict({}), "type": "subsection"}
+                        # if parameter didnt exist before, create parameter
+                        if not "List of material properties" in vis_parameters["Material properties"]["value"]:
+                            vis_parameters["Material properties"]["value"]["List of material properties"] = {"comment": "", "alignment spaces": 1, "value": "", "type": "parameter"}
+                            # if parameter was missing, but material properties is active, it used the default variables
+                            if "material properties" in output_variables:
+                                active_material_properties = default_variables
+                        # if material properties was not active before, add it
+                        if not "material properties" in output_variables and not "material properties" in active_output_variables:
+                            active_output_variables.append("material properties")
+                    else:
+                        active_output_variables.append(variable.strip())
+
+                if len(active_deprecated_variables) > 0:
+                    existing_material_properties = vis_parameters["Material properties"]["value"]["List of material properties"]["value"].split(",")
+                    for material_property in existing_material_properties:
+                        if material_property.strip() != "":
+                            active_material_properties.append(material_property.strip())
+                    for material_property in active_deprecated_variables:
+                        active_material_properties.append(material_property)
+
+                    vis_parameters["Material properties"]["value"]["List of material properties"]["value"] = ", ".join(active_material_properties)
+                    vis_parameters["List of output variables"]["value"] = ", ".join(active_output_variables)
+
+    return parameters
+
 
 def main(input_file, output_file):
     """Echo the input arguments to standard output"""
     parameters = aspect.read_parameter_file(input_file)
     parameters = reformat(parameters)
+    parameters = merge_deprecated_postprocessors_into_material_properties(parameters)
     aspect.write_parameter_file(parameters, output_file)
 
 

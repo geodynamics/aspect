@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -391,21 +391,21 @@ namespace aspect
           // solitary wave initial condition.
           const SolitaryWaveInitialCondition<dim> &initial_composition =
             initial_composition_manager->template
-            get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>>();
+            get_matching_active_plugin<SolitaryWaveInitialCondition<dim>>();
 
-          return reference_permeability * pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
+          return reference_permeability * std::pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
 
         }
 
         double length_scaling (const double porosity) const
         {
-          return std::sqrt(reference_permeability * std::pow(porosity,3) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
+          return std::sqrt(reference_permeability * Utilities::fixed_power<3>(porosity) * (xi_0 + 4.0/3.0 * eta_0) / eta_f);
         }
 
         double velocity_scaling (const double porosity) const
         {
           const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-          return reference_permeability * std::pow(porosity,2) * (reference_rho_s - reference_rho_f)
+          return reference_permeability * Utilities::fixed_power<2>(porosity) * (reference_rho_s - reference_rho_f)
                  * this->get_gravity_model().gravity_vector(surface_point).norm() / eta_f;
         }
 
@@ -451,7 +451,7 @@ namespace aspect
 
                 melt_out->compaction_viscosities[i] = xi_0 * (1.0 - porosity);
                 melt_out->fluid_viscosities[i]= eta_f;
-                melt_out->permeabilities[i]= reference_permeability * std::pow(porosity,3);
+                melt_out->permeabilities[i]= reference_permeability * Utilities::fixed_power<3>(porosity);
                 melt_out->fluid_densities[i]= reference_rho_f;
                 melt_out->fluid_density_gradients[i] = 0.0;
               }
@@ -706,7 +706,7 @@ namespace aspect
       // then get the parameters we need
 
       const SolitaryWaveInitialCondition<dim> &initial_composition
-        = this->get_initial_composition_manager().template get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>> ();
+        = this->get_initial_composition_manager().template get_matching_active_plugin<SolitaryWaveInitialCondition<dim>> ();
 
       amplitude           = initial_composition.get_amplitude();
       background_porosity = initial_composition.get_background_porosity();

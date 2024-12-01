@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -205,6 +205,19 @@ namespace aspect
   }
 
 
+
+  template <int dim>
+  std::string
+  Simulator<dim>::AdvectionField::name(const Introspection<dim> &introspection) const
+  {
+    if (this->is_temperature())
+      return "temperature";
+    else
+      return "composition " + std::to_string(compositional_variable) + " (" + introspection.name_for_compositional_index(compositional_variable) + ")";
+  }
+
+
+
   template <int dim>
   void Simulator<dim>::write_plugin_graph (std::ostream &out) const
   {
@@ -404,7 +417,7 @@ namespace aspect
     // of the viscosity. The order of magnitude is the logarithm of
     // the viscosity, so
     //
-    //   \eta_{ref} = exp ( 1/N * (log(eta_1) + log(eta_2) + ... + log(eta_N))
+    //   \eta_{ref} = exp( 1/N * (log(eta_1) + log(eta_2) + ... + log(eta_N))
     //
     // where the \eta_i are typical viscosities on the cells of the mesh.
     // For this, we just take the viscosity at the cell center.
@@ -538,7 +551,7 @@ namespace aspect
           {
             computing_timer.print_summary ();
             pcout << "-- Total wallclock time elapsed including restarts: "
-                  << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+                  << std::round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
                   << 's' << std::endl;
           }
 
@@ -653,7 +666,7 @@ namespace aspect
       {
         computing_timer.print_summary ();
         pcout << "-- Total wallclock time elapsed including restarts: "
-              << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+              << std::round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
               << 's' << std::endl;
       }
   }
@@ -810,7 +823,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-                                                        LinearAlgebra::Vector &vec)
+                                                        LinearAlgebra::Vector &vec) const
   {
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
 
@@ -837,7 +850,13 @@ namespace aspect
 
     vec.compress(VectorOperation::insert);
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+    AffineConstraints<double> hanging_node_constraints(introspection.index_sets.system_relevant_set,
+                                                       introspection.index_sets.system_relevant_set);
+#else
     AffineConstraints<double> hanging_node_constraints(introspection.index_sets.system_relevant_set);
+#endif
+
     DoFTools::make_hanging_node_constraints(dof_handler, hanging_node_constraints);
     hanging_node_constraints.close();
 
@@ -1066,8 +1085,7 @@ namespace aspect
   void
   Simulator<dim>::
   denormalize_pressure (const double                      pressure_adjustment,
-                        LinearAlgebra::BlockVector       &vector,
-                        const LinearAlgebra::BlockVector &relevant_vector) const
+                        LinearAlgebra::BlockVector       &vector) const
   {
     if (parameters.pressure_normalization == "no")
       return;
@@ -1087,6 +1105,17 @@ namespace aspect
                                                         finite_element.base_element(introspection.variable("fluid pressure").base_index).dofs_per_cell
                                                         : finite_element.base_element(introspection.base_elements.pressure).dofs_per_cell);
 
+            // We may touch the same DoF multiple times, so we need to copy the
+            // vector before modifying it to have access to the original value.
+            LinearAlgebra::BlockVector vector_backup;
+            vector_backup.reinit(vector, /* omit_zeroing_entries = */ true);
+            const unsigned int pressure_block_index =
+              parameters.include_melt_transport ?
+              introspection.variable("fluid pressure").block_index
+              :
+              introspection.block_indices.pressure;
+            vector_backup.block(pressure_block_index) = vector.block(pressure_block_index);
+
             std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
             for (const auto &cell : dof_handler.active_cell_iterators())
               if (cell->is_locally_owned())
@@ -1098,11 +1127,15 @@ namespace aspect
                         = finite_element.component_to_system_index(pressure_component,
                                                                    /*dof index within component=*/ j);
 
-                      // then adjust its value. Note that because we end up touching
+                      // Then adjust its value. vector could be a vector with ghost elements
+                      // or a fully distributed vector. In the latter case only access dofs that are
+                      // locally owned. Note that because we end up touching
                       // entries more than once, we are not simply incrementing
-                      // distributed_vector but copy from the unchanged vector.
-                      vector(local_dof_indices[local_dof_index])
-                        = relevant_vector(local_dof_indices[local_dof_index]) - pressure_adjustment;
+                      // vector but copy from the vector_backup copy.
+                      if (vector.has_ghost_elements() ||
+                          dof_handler.locally_owned_dofs().is_element(local_dof_indices[local_dof_index]))
+                        vector(local_dof_indices[local_dof_index])
+                          = vector_backup(local_dof_indices[local_dof_index]) - pressure_adjustment;
                     }
                 }
             vector.compress(VectorOperation::insert);
@@ -1125,7 +1158,20 @@ namespace aspect
                 ExcInternalError());
         Assert(!parameters.include_melt_transport, ExcNotImplemented());
         const unsigned int pressure_component = introspection.component_indices.pressure;
+
+        // We may touch the same DoF multiple times, so we need to copy the
+        // vector before modifying it to have access to the original value.
+        LinearAlgebra::BlockVector vector_backup;
+        vector_backup.reinit(vector, /* omit_zeroing_entries = */ true);
+        const unsigned int pressure_block_index =
+          parameters.include_melt_transport ?
+          introspection.variable("fluid pressure").block_index
+          :
+          introspection.block_indices.pressure;
+        vector_backup.block(pressure_block_index) = vector.block(pressure_block_index);
+
         std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+
         for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
@@ -1135,12 +1181,11 @@ namespace aspect
                 = finite_element.component_to_system_index (pressure_component, 0);
 
               // make sure that this DoF is really owned by the current processor
-              // and that it is in fact a pressure dof
               Assert (dof_handler.locally_owned_dofs().is_element(local_dof_indices[first_pressure_dof]),
                       ExcInternalError());
 
               // then adjust its value
-              vector (local_dof_indices[first_pressure_dof]) = relevant_vector(local_dof_indices[first_pressure_dof])
+              vector (local_dof_indices[first_pressure_dof]) = vector_backup(local_dof_indices[first_pressure_dof])
                                                                - pressure_adjustment;
             }
 
@@ -1297,7 +1342,7 @@ namespace aspect
   {
     LinearAlgebra::BlockVector linearized_stokes_variables (introspection.index_sets.stokes_partitioning, mpi_communicator);
     LinearAlgebra::BlockVector residual (introspection.index_sets.stokes_partitioning, mpi_communicator);
-    const unsigned int block_p =
+    const unsigned int pressure_block_index =
       parameters.include_melt_transport ?
       introspection.variable("fluid pressure").block_index
       :
@@ -1305,7 +1350,7 @@ namespace aspect
 
     // if velocity and pressure are in the same block, we have to copy the
     // pressure to the solution and RHS vector with a zero velocity
-    if (block_p == introspection.block_indices.velocities)
+    if (pressure_block_index == introspection.block_indices.velocities)
       {
         const IndexSet &idxset = (parameters.include_melt_transport) ?
                                  introspection.index_sets.locally_owned_fluid_pressure_dofs
@@ -1317,27 +1362,19 @@ namespace aspect
             types::global_dof_index idx = idxset.nth_index_in_set(i);
             linearized_stokes_variables(idx)        = current_linearization_point(idx);
           }
-        linearized_stokes_variables.block(block_p).compress(VectorOperation::insert);
+        linearized_stokes_variables.block(pressure_block_index).compress(VectorOperation::insert);
       }
     else
-      linearized_stokes_variables.block (block_p) = current_linearization_point.block (block_p);
+      linearized_stokes_variables.block (pressure_block_index) = current_linearization_point.block (pressure_block_index);
 
-    // TODO: we don't have .stokes_relevant_partitioning so I am creating a much
-    // bigger vector here, oh well.
-    LinearAlgebra::BlockVector ghosted (introspection.index_sets.system_partitioning,
-                                        introspection.index_sets.system_relevant_partitioning,
-                                        mpi_communicator);
-    // TODO for Timo: can we create the ghost vector inside of denormalize_pressure
-    // (only in cases where we need it)
-    ghosted.block(block_p) = linearized_stokes_variables.block(block_p);
-    denormalize_pressure (this->last_pressure_normalization_adjustment, linearized_stokes_variables, ghosted);
+    denormalize_pressure (this->last_pressure_normalization_adjustment, linearized_stokes_variables);
     current_constraints.set_zero (linearized_stokes_variables);
 
-    linearized_stokes_variables.block (block_p) /= pressure_scaling;
+    linearized_stokes_variables.block (pressure_block_index) /= pressure_scaling;
 
     // we calculate the velocity residual with a zero velocity,
     // computing only the part of the RHS not balanced by the static pressure
-    if (block_p == introspection.block_indices.velocities)
+    if (pressure_block_index == introspection.block_indices.velocities)
       {
         // we can use the whole block here because we set the velocity to zero above
         return system_matrix.block(0,0).residual (residual.block(0),
@@ -1349,7 +1386,7 @@ namespace aspect
         const double residual_u = system_matrix.block(0,1).residual (residual.block(0),
                                                                      linearized_stokes_variables.block(1),
                                                                      system_rhs.block(0));
-        const double residual_p = system_rhs.block(block_p).l2_norm();
+        const double residual_p = system_rhs.block(pressure_block_index).l2_norm();
         return std::sqrt(residual_u*residual_u+residual_p*residual_p);
       }
   }
@@ -1417,7 +1454,7 @@ namespace aspect
 
     const unsigned int n_q_points_1 = quadrature_formula_1.size();
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
-    const unsigned int n_q_points   = dim * n_q_points_2 * static_cast<unsigned int>(std::pow(n_q_points_1, dim-1));
+    const unsigned int n_q_points   = dim * n_q_points_2 * Utilities::fixed_power<dim-1>(n_q_points_1);
 
     std::vector<Point <dim>> quadrature_points;
     quadrature_points.reserve(n_q_points);
@@ -2269,6 +2306,7 @@ namespace aspect
                                       update_quadrature_points | update_JxW_values);
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_current_mesh_velocity_values (fe_face_values.n_quadrature_points);
 
     const auto &tangential_velocity_boundaries =
       boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
@@ -2298,6 +2336,10 @@ namespace aspect
                 fe_face_values.reinit (cell, face_number);
                 fe_face_values[introspection.extractors.velocities].get_function_values(current_linearization_point,
                                                                                         face_current_velocity_values);
+                // get the mesh velocity, as we need to subtract it off of the advection systems
+                if (parameters.mesh_deformation_enabled)
+                  fe_face_values[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
+                                                                                          face_current_mesh_velocity_values);
 
                 // ... check if the face is an outflow boundary by integrating the normal velocities
                 // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
@@ -2311,6 +2353,9 @@ namespace aspect
                     else
                       boundary_velocity = boundary_velocity_manager.boundary_velocity(face->boundary_id(),
                                                                                       fe_face_values.quadrature_point(q));
+
+                    if (parameters.mesh_deformation_enabled)
+                      boundary_velocity -= face_current_mesh_velocity_values[q];
 
                     integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
                                        fe_face_values.JxW(q);
@@ -2567,32 +2612,28 @@ namespace aspect
 
   template <int dim>
   double
-  Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess)
+  Simulator<dim>::compute_initial_newton_residual()
   {
-    // Store the values of the current_linearization_point and linearized_stokes_initial_guess so we can reset them again.
+    // Store the values of current_linearization_point to be able to restore it later.
     LinearAlgebra::BlockVector temp_linearization_point = current_linearization_point;
-    LinearAlgebra::BlockVector temp_linearized_stokes_initial_guess = linearized_stokes_initial_guess;
-    const unsigned int block_vel = introspection.block_indices.velocities;
 
-    // Set the velocity initial guess to zero, but we use the initial guess for the pressure.
+    // Set the velocity initial guess to zero.
     current_linearization_point.block(introspection.block_indices.velocities) = 0;
-    temp_linearized_stokes_initial_guess.block (block_vel) = 0;
 
-    denormalize_pressure (last_pressure_normalization_adjustment,
-                          temp_linearized_stokes_initial_guess,
-                          current_linearization_point);
-
-    // rebuild the whole system to compute the rhs.
+    // Rebuild the whole system to compute the rhs.
     assemble_newton_stokes_system = true;
     rebuild_stokes_preconditioner = false;
+
+    // Technically we only need the rhs, but we have asserts in place that check if
+    // the system is assembled correctly when boundary conditions are prescribed, so we assemble the whole system.
+    // TODO: This is a waste of time in the first nonlinear iteration. Check if we can modify the asserts in the
+    // assemble_stokes_system() function to only assemble the RHS.
     rebuild_stokes_matrix = boundary_velocity_manager.get_active_boundary_velocity_conditions().size()!=0;
     assemble_newton_stokes_matrix = boundary_velocity_manager.get_active_boundary_velocity_conditions().size()!=0;
 
     compute_current_constraints ();
 
     assemble_stokes_system();
-
-    last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
 
     const double initial_newton_residual_vel = system_rhs.block(introspection.block_indices.velocities).l2_norm();
     const double initial_newton_residual_p = system_rhs.block(introspection.block_indices.pressure).l2_norm();
@@ -2722,8 +2763,7 @@ namespace aspect
   template struct Simulator<dim>::AdvectionField; \
   template double Simulator<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector) const; \
   template void Simulator<dim>::denormalize_pressure(const double pressure_adjustment, \
-                                                     LinearAlgebra::BlockVector &vector, \
-                                                     const LinearAlgebra::BlockVector &relevant_vector) const; \
+                                                     LinearAlgebra::BlockVector &vector) const; \
   template double Simulator<dim>::compute_pressure_scaling_factor () const; \
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
@@ -2739,7 +2779,7 @@ namespace aspect
   template double Simulator<dim>::compute_initial_stokes_residual(); \
   template bool Simulator<dim>::stokes_matrix_depends_on_solution() const; \
   template bool Simulator<dim>::stokes_A_block_is_symmetric() const; \
-  template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec);\
+  template void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func, LinearAlgebra::Vector &vec) const;\
   template void Simulator<dim>::apply_limiter_to_dg_solutions(const AdvectionField &advection_field); \
   template void Simulator<dim>::compute_reactions(); \
   template void Simulator<dim>::initialize_current_linearization_point (); \
@@ -2748,7 +2788,7 @@ namespace aspect
   template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
-  template double Simulator<dim>::compute_initial_newton_residual(const LinearAlgebra::BlockVector &linearized_stokes_initial_guess); \
+  template double Simulator<dim>::compute_initial_newton_residual(); \
   template double Simulator<dim>::compute_Eisenstat_Walker_linear_tolerance(const bool EisenstatWalkerChoiceOne, \
                                                                             const double maximum_linear_stokes_solver_tolerance, \
                                                                             const double linear_stokes_solver_tolerance, \

@@ -7,7 +7,7 @@ Sum of compositional fields is not one, fields will be normalized
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 0.5/0.5/0.5 // 0.5/0.5/0.5

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -19,7 +19,7 @@
  */
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/grid/grid_tools.h>
@@ -250,7 +250,7 @@ namespace aspect
         {
           prm.enter_subsection("Bilinear least squares");
           {
-            prm.declare_entry("Use linear least squares limiter", "false",
+            prm.declare_entry("Use linear least squares limiter", "true",
                               Patterns::List(Patterns::Bool()),
                               "Limit the interpolation of particle properties onto the cell, so that "
                               "the value of each property is no smaller than its minimum and no "
@@ -281,7 +281,7 @@ namespace aspect
         {
           prm.enter_subsection("Bilinear least squares");
           {
-            const auto &particle_property_information = this->get_particle_world(this->get_particle_world_index()).get_property_manager().get_data_info();
+            const auto &particle_property_information = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
             const unsigned int n_property_components = particle_property_information.n_components();
             const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
 
@@ -333,9 +333,6 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
-        const bool limiter_enabled_for_at_least_one_property = (use_linear_least_squares_limiter.n_selected_components() != 0);
-        AssertThrow(limiter_enabled_for_at_least_one_property == false || prm.get_bool("Update ghost particles") == true,
-                    ExcMessage("If 'Use linear least squares limiter' is enabled for any particle property, then 'Update ghost particles' must be set to true"));
       }
     }
   }

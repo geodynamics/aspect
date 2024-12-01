@@ -33,10 +33,9 @@ subsection Particles
   set List of particle properties = grain size
   set Load balancing strategy = none
   set Integration scheme = rk2
-  set Update ghost particles = true
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 50000
     end
   end

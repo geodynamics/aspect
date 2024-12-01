@@ -30,11 +30,10 @@ subsection Particles
   set Load balancing strategy     = remove and add particles
   set List of particle properties = initial composition, elastic stress
   set Interpolation scheme        = nearest neighbor
-  set Update ghost particles      = true
   set Particle generator name     = random uniform
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 4e5
     end
   end

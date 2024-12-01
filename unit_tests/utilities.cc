@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2018 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -305,11 +305,11 @@ TEST_CASE("CPO elastic tensor transform functions")
       rotation_tensor[0][0] = std::cos(alpha) * std::cos(beta);
       rotation_tensor[0][1] = std::sin(alpha) * std::cos(beta);
       rotation_tensor[0][2] = -std::sin(beta);
-      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*cos(gamma);
-      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*cos(gamma);
+      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*std::cos(gamma);
+      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*std::cos(gamma);
       rotation_tensor[1][2] = std::cos(beta) * std::sin(gamma);
-      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*sin(gamma);
-      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*sin(gamma);
+      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*std::sin(gamma);
+      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*std::sin(gamma);
       rotation_tensor[2][2] = std::cos(beta) * std::cos(gamma);
     }
 
@@ -367,11 +367,11 @@ TEST_CASE("CPO elastic tensor transform functions")
       rotation_tensor[0][0] = std::cos(alpha) * std::cos(beta);
       rotation_tensor[0][1] = std::sin(alpha) * std::cos(beta);
       rotation_tensor[0][2] = -std::sin(beta);
-      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*cos(gamma);
-      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*cos(gamma);
+      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*std::cos(gamma);
+      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*std::cos(gamma);
       rotation_tensor[1][2] = std::cos(beta) * std::sin(gamma);
-      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*sin(gamma);
-      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*sin(gamma);
+      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*std::sin(gamma);
+      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*std::sin(gamma);
       rotation_tensor[2][2] = std::cos(beta) * std::cos(gamma);
     }
 
@@ -422,11 +422,11 @@ TEST_CASE("CPO elastic tensor transform functions")
       rotation_tensor[0][0] = std::cos(alpha) * std::cos(beta);
       rotation_tensor[0][1] = std::sin(alpha) * std::cos(beta);
       rotation_tensor[0][2] = -std::sin(beta);
-      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*cos(gamma);
-      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*cos(gamma);
+      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*std::cos(gamma);
+      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*std::cos(gamma);
       rotation_tensor[1][2] = std::cos(beta) * std::sin(gamma);
-      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*sin(gamma);
-      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*sin(gamma);
+      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*std::sin(gamma);
+      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*std::sin(gamma);
       rotation_tensor[2][2] = std::cos(beta) * std::cos(gamma);
     }
 
@@ -476,11 +476,11 @@ TEST_CASE("CPO elastic tensor transform functions")
       rotation_tensor[0][0] = std::cos(alpha) * std::cos(beta);
       rotation_tensor[0][1] = std::sin(alpha) * std::cos(beta);
       rotation_tensor[0][2] = -std::sin(beta);
-      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*cos(gamma);
-      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*cos(gamma);
+      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*std::cos(gamma);
+      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*std::cos(gamma);
       rotation_tensor[1][2] = std::cos(beta) * std::sin(gamma);
-      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*sin(gamma);
-      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*sin(gamma);
+      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*std::sin(gamma);
+      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*std::sin(gamma);
       rotation_tensor[2][2] = std::cos(beta) * std::cos(gamma);
     }
 
@@ -531,11 +531,11 @@ TEST_CASE("CPO elastic tensor transform functions")
       rotation_tensor[0][0] = std::cos(alpha) * std::cos(beta);
       rotation_tensor[0][1] = std::sin(alpha) * std::cos(beta);
       rotation_tensor[0][2] = -std::sin(beta);
-      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*cos(gamma);
-      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*cos(gamma);
+      rotation_tensor[1][0] = std::cos(alpha) * std::sin(beta) * std::sin(gamma) - std::sin(alpha)*std::cos(gamma);
+      rotation_tensor[1][1] = std::sin(alpha) * std::sin(beta) * std::sin(gamma) + std::cos(alpha)*std::cos(gamma);
       rotation_tensor[1][2] = std::cos(beta) * std::sin(gamma);
-      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*sin(gamma);
-      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*sin(gamma);
+      rotation_tensor[2][0] = std::cos(alpha) * std::sin(beta) * std::cos(gamma) + std::sin(alpha)*std::sin(gamma);
+      rotation_tensor[2][1] = std::sin(alpha) * std::sin(beta) * std::cos(gamma) - std::cos(alpha)*std::sin(gamma);
       rotation_tensor[2][2] = std::cos(beta) * std::cos(gamma);
     }
 

@@ -6,7 +6,7 @@ Number of degrees of freedom: 87 (50+12+25)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+11 iterations.
+   Solving Stokes system (AMG)... 0+11 iterations.
 
    Postprocessing:
      Writing graphical output: output-nsinker_2d/solution/solution-00000

@@ -1,4 +1,4 @@
-# Copyright (C) 2014 - 2023 by the authors of the ASPECT code.
+# Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -37,6 +37,10 @@ macro(ASPECT_SETUP_PLUGIN _target)
   message(STATUS "  name <${_target}>")
   message(STATUS "  using ASPECT_DIR ${Aspect_DIR}")
 
+  # deal.II versions >=9.5 disable deprecation warnings in user code. Enable
+  # the warnings again by removing the flag that disables them.
+  string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
+
   # We create lib${_target}.debug.so, lib${_target}.release.so, or both
   # depending on the compilation mode of ASPECT. Note that the user already
   # created the target under the name ${_target}, so we only need to create
@@ -54,11 +58,23 @@ macro(ASPECT_SETUP_PLUGIN _target)
 
   if(${ASPECT_BUILD_RELEASE} MATCHES "ON")
     message(STATUS "  setting up RELEASE variant")
-    add_library(${_target}.release SHARED $<TARGET_PROPERTY:${_target},SOURCES>)
-    deal_ii_setup_target(${_target}.release RELEASE)
-    set_target_properties(${_target}.release PROPERTIES SUFFIX ".so")
 
-    list(APPEND _target_libs ${_target}.release)
+    # If we also build a debug build we need to set up a
+    # new target. If we do not also build in debug mode
+    # reuse the target name the user already set. In
+    # both cases make sure the library ends in .release.so
+    if(${ASPECT_BUILD_DEBUG} MATCHES "ON")
+      set(_release_target_name ${_target}.release)
+      add_library(${_release_target_name} SHARED $<TARGET_PROPERTY:${_target},SOURCES>)
+      deal_ii_setup_target(${_release_target_name} RELEASE)
+      set_target_properties(${_release_target_name} PROPERTIES SUFFIX ".so")
+    else()
+      set(_release_target_name ${_target})
+      deal_ii_setup_target(${_release_target_name} RELEASE)
+      set_target_properties(${_release_target_name} PROPERTIES SUFFIX ".release.so")
+    endif()
+
+    list(APPEND _target_libs ${_release_target_name})
   endif()
 
   foreach(_T ${_target_libs})
@@ -83,5 +99,17 @@ macro(ASPECT_SETUP_PLUGIN _target)
   add_custom_command(
     TARGET ${_target} POST_BUILD
     COMMAND ln -sf ${Aspect_DIR}/aspect .)
+
+  if(${ASPECT_BUILD_DEBUG} MATCHES "ON")
+    add_custom_command(
+      TARGET ${_target} POST_BUILD
+      COMMAND ln -sf ${Aspect_DIR}/aspect-debug .)
+  endif()
+
+  if(${ASPECT_BUILD_RELEASE} MATCHES "ON")
+  add_custom_command(
+    TARGET ${_target} POST_BUILD
+    COMMAND ln -sf ${Aspect_DIR}/aspect-release .)
+  endif()
 
 endmacro()

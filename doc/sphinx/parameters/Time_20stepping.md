@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of model names
 **Default value:**
 
-**Pattern:** [MultipleSelection conduction time step|convection time step|function|repeat on cutback ]
+**Pattern:** [MultipleSelection conduction time step|convection time step|function|repeat on cutback|repeat on nonlinear solver failure ]
 
 **Documentation:** A comma separated list of time stepping plugins that will be used to calculate the time step size. The minimum of the  result of each plugin will be used.
 
@@ -23,6 +23,8 @@ The following plugins are available:
 
 &lsquo;repeat on cutback&rsquo;: This time stepping plugin will detect a situation where the computed time step shrinks by more than a user-controlled factor. In that situation, the previous time step will be repeated with a smaller step size.
 A large reduction in time step size typically happens when velocities change abruptly. Repeating the time step ensure properly resolving this event. It is useful to consider setting the "Maximum relative increase in time step" option to avoid repeatedly repeating every other time step.
+
+&lsquo;repeat on nonlinear solver failure&rsquo;: This time stepping plugin will react when the nonlinear solver does not converge in the specified maximum number of iterations and repeats the current timestep with a smaller step size. This plugin is enabled automatically if "Nonlinear solver failure strategy" is set to "cut timestep size".
 
 (parameters:Time_20stepping/Minimum_20time_20step_20size)=
 ### __Parameter name:__ Minimum time step size
@@ -77,3 +79,13 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** A factor that controls when a step is going to be repeated. If the newly computed step size is smaller than the last step size multiplied by this factor, the step is repeated.
+
+(parameters:Time_20stepping/Repeat_20on_20nonlinear_20solver_20failure)=
+## **Subsection:** Time stepping / Repeat on nonlinear solver failure
+(parameters:Time_20stepping/Repeat_20on_20nonlinear_20solver_20failure/Cut_20back_20factor)=
+### __Parameter name:__ Cut back factor
+**Default value:** 0.5
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** A factor that controls the size of the time step when repeating. The default of 0.5 corresponds to 50\% of the original step taken.

@@ -88,7 +88,11 @@ subsection Postprocess
     set Output format                 = vtu
     set Number of grouped files       = 1
     set Time between graphical output = 0
-    set List of output variables = density, viscosity
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 
   subsection Particles
@@ -102,7 +106,6 @@ subsection Particles
   set Integration scheme = rk2
   set Interpolation scheme = cell average
   set Maximum particles per cell = 16384
-  set Update ghost particles = true
   set Particle generator name = reference cell
 
   subsection Function

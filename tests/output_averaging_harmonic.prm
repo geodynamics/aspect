@@ -76,7 +76,11 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = gnuplot
-    set List of output variables      = viscosity
+    set List of output variables      = material properties
     set Interpolate output            = false
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
   end
 end

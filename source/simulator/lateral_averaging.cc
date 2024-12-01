@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -805,16 +805,6 @@ namespace aspect
   {
     values = compute_lateral_averages(values.size(),
                                       std::vector<std::string>(1,"vertical_mass_flux"))[0];
-  }
-
-
-
-  template <int dim>
-  std::vector<std::vector<double>>
-  LateralAveraging<dim>::get_averages(const unsigned int n_slices,
-                                      const std::vector<std::string> &property_names) const
-  {
-    return compute_lateral_averages(n_slices, property_names);
   }
 
 

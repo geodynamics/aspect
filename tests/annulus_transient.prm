@@ -60,8 +60,12 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = density, gravity, AnnulusVisualizationPostprocessor
+    set List of output variables = material properties, gravity, AnnulusVisualizationPostprocessor
     set Time between graphical output = 0.1
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 
   subsection Particles
@@ -83,13 +87,12 @@ subsection Particles
   set Integration scheme = rk2
   set Interpolation scheme = bilinear least squares
   set List of particle properties = particle density
-  set Update ghost particles = true
   set Particle generator name = random uniform
   set Load balancing strategy = add particles
   set Minimum particles per cell = 12
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 49152
     end
   end

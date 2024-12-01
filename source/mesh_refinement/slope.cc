@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -72,7 +72,7 @@ namespace aspect
                       const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(midpoint);
 
                       indicators(idx) = std::acos( std::abs ( normal * gravity / gravity.norm() ) ) // Don't care whether gravity is in the opposite direction
-                                        * std::pow( cell->diameter(), static_cast<double>(dim-1)); // scale with approximate surface area of the cell
+                                        * Utilities::fixed_power<dim-1>(cell->diameter()); // scale with approximate surface area of the cell
                       break;  // no need to loop over the rest of the faces
                     }
                 }

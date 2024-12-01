@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -109,30 +109,40 @@ namespace aspect
 
               this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
 
-              for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
+              for (unsigned int q = 0; q < n_face_q_points; ++q)
                 {
                   for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
                     {
                       if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                         {
-                          scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q_point);
+                          scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q);
                           ++i_stokes;
                         }
                       ++i;
                     }
 
                   const Tensor<1,dim>
-                  gravity = this->get_gravity_model().gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
+                  gravity = this->get_gravity_model().gravity_vector(scratch.face_finite_element_values.quadrature_point(q));
                   const double g_norm = gravity.norm();
 
                   // construct the relevant vectors
-                  const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
+                  const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q);
                   const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
 
-                  const double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
+                  small_vector<double> phi_u_times_g_hat(stokes_dofs_per_cell);
+                  small_vector<double> phi_u_times_n_hat(stokes_dofs_per_cell);
+                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                    {
+                      phi_u_times_g_hat[i] = scratch.phi_u[i] * g_hat;
+                      phi_u_times_n_hat[i] = scratch.phi_u[i] * n_hat;
+                    }
+
+                  const double pressure_perturbation = scratch.face_material_model_outputs.densities[q] *
                                                        this->get_timestep() *
                                                        free_surface_theta *
                                                        g_norm;
+
+                  const double JxW = scratch.face_finite_element_values.JxW(q);
 
                   // see Kaus et al 2010 for details of the stabilization term
                   for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
@@ -140,8 +150,8 @@ namespace aspect
                       {
                         // The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
                         const double stress_value = -pressure_perturbation*
-                                                    (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
-                                                    *scratch.face_finite_element_values.JxW(q_point);
+                                                    phi_u_times_g_hat[i] * phi_u_times_n_hat[j]
+                                                    * JxW;
 
                         data.local_matrix(i,j) += stress_value;
                       }
@@ -600,7 +610,12 @@ namespace aspect
       // For the moment add constraints from all plugins into one matrix, then
       // merge that matrix with the existing constraints (respecting the existing
       // constraints as more important)
+#if DEAL_II_VERSION_GTE(9,7,0)
+      AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                   mesh_vertex_constraints.get_local_lines());
+#else
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
       for (const auto &boundary_id : mesh_deformation_objects)
         {
@@ -609,7 +624,12 @@ namespace aspect
 
           for (const auto &model : boundary_id.second)
             {
+#if DEAL_II_VERSION_GTE(9,7,0)
+              AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                                   mesh_vertex_constraints.get_local_lines());
+#else
               AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
               model->compute_velocity_constraints_on_boundary(mesh_deformation_dof_handler,
                                                               current_plugin_constraints,
@@ -714,7 +734,12 @@ namespace aspect
       // For the moment add constraints from all plugins into one matrix, then
       // merge that matrix with the existing constraints (respecting the existing
       // constraints as more important)
+#if DEAL_II_VERSION_GTE(9,7,0)
+      AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                   mesh_vertex_constraints.get_local_lines());
+#else
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
       std::set<types::boundary_id> boundary_id_set;
 
@@ -722,7 +747,12 @@ namespace aspect
         {
           for (const auto &deformation_object : boundary_id_and_deformation_objects.second)
             {
+#if DEAL_II_VERSION_GTE(9,7,0)
+              AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines(),
+                                                                   mesh_vertex_constraints.get_local_lines());
+#else
               AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
+#endif
 
               Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
               (dim,
@@ -847,14 +877,17 @@ namespace aspect
 
             cell_vector = 0;
             cell_matrix = 0;
-            for (unsigned int point=0; point<n_q_points; ++point)
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
-                {
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    cell_matrix(i,j) += scalar_product( fe_values[extract_vel].gradient(i,point),
-                                                        fe_values[extract_vel].gradient(j,point) ) *
-                                        fe_values.JxW(point);
-                }
+            for (unsigned int q=0; q<n_q_points; ++q)
+              {
+                const double JxW = fe_values.JxW(q);
+                for (unsigned int i=0; i<dofs_per_cell; ++i)
+                  {
+                    for (unsigned int j=0; j<dofs_per_cell; ++j)
+                      cell_matrix(i,j) += scalar_product( fe_values[extract_vel].gradient(i,q),
+                                                          fe_values[extract_vel].gradient(j,q) ) *
+                                          JxW;
+                  }
+              }
 
             mesh_velocity_constraints.distribute_local_to_global (cell_matrix, cell_vector,
                                                                   cell_dof_indices, mesh_matrix, rhs, false);
@@ -1020,10 +1053,17 @@ namespace aspect
 
       for (unsigned int level = 0; level < n_levels; ++level)
         {
+#if DEAL_II_VERSION_GTE(9,7,0)
+          const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
+                                                                                       level);
+#else
           IndexSet relevant_dofs;
           DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
                                                         level,
                                                         relevant_dofs);
+#endif
+
+
           AffineConstraints<double> level_constraints;
 #if DEAL_II_VERSION_GTE(9,6,0)
           level_constraints.reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
@@ -1333,10 +1373,15 @@ namespace aspect
           // need to evaluate the mapping later.
           for (unsigned int level = 0; level < n_levels; ++level)
             {
+#if DEAL_II_VERSION_GTE(9,7,0)
+              const IndexSet relevant_mg_dofs = DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler, level);
+#else
               IndexSet relevant_mg_dofs;
               DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
                                                             level,
                                                             relevant_mg_dofs);
+#endif
+
               level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                                 relevant_mg_dofs,
                                                 sim.mpi_communicator);
@@ -1386,8 +1431,12 @@ namespace aspect
       }
 
       mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
+#if DEAL_II_VERSION_GTE(9,7,0)
+      mesh_locally_relevant = DoFTools::extract_locally_relevant_dofs(mesh_deformation_dof_handler);
+#else
       DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
                                                mesh_locally_relevant);
+#endif
 
       // This will initialize the mesh displacement and free surface
       // mesh velocity vectors with zero-valued entries.
@@ -1451,7 +1500,7 @@ namespace aspect
                                                                        this->get_triangulation().get_communicator());
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
       rwv.reinit(mesh_displacements);
-      displacements.import(rwv, VectorOperation::insert);
+      displacements.import_elements(rwv, VectorOperation::insert);
 
       const unsigned int n_levels = sim.triangulation.n_global_levels();
       for (unsigned int level = 0; level < n_levels; ++level)

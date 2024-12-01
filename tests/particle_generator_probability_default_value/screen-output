@@ -1,0 +1,26 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 349 (162+25+81+81)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+*** Timestep 1:  t=70 seconds, dt=70 seconds
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving C_1 system ... 9 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 10
+
+Termination requested by criterion: end time
+
+
+

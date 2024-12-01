@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -63,10 +63,10 @@ namespace aspect
           // The following Einstein energies and heat capacities are divided through by 3nR.
           // This doesn't matter, as the equation of state relies only on ratios of these quantities.
           const double E_th0 = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein0) - 1.0));
-          const double C_V0 = x_einstein0 * x_einstein0 * std::exp(x_einstein0) / std::pow(std::exp(x_einstein0) - 1.0, 2.0);
+          const double C_V0 = x_einstein0 * x_einstein0 * std::exp(x_einstein0) / Utilities::fixed_power<2>(std::exp(x_einstein0) - 1.0);
 
           const double E_th = einstein_temperature * (0.5 + 1. / (std::exp(x_einstein) - 1.0));
-          const double C_V = x_einstein * x_einstein * std::exp(x_einstein) / std::pow(std::exp(x_einstein) - 1.0, 2.0);
+          const double C_V = x_einstein * x_einstein * std::exp(x_einstein) / Utilities::fixed_power<2>(std::exp(x_einstein) - 1.0);
 
           // The relative thermal pressure
           const double Pth_rel = reference_thermal_expansivity * reference_isothermal_bulk_modulus * (E_th - E_th0) / C_V0;
@@ -86,7 +86,7 @@ namespace aspect
                                      std::pow((1. - tait_b * Pth_rel), - tait_c)));
 
           const double dSdT = (reference_isothermal_bulk_modulus / reference_rho *
-                               std::pow((xi * reference_thermal_expansivity), 2) *
+                               Utilities::fixed_power<2>((xi * reference_thermal_expansivity)) *
                                (std::pow((1. + tait_b * psubpth), -1. - tait_c) -
                                 std::pow((1. - tait_b * Pth_rel), -1. - tait_c)) +
                                dintVdpdT * (( 1 - 2./x_einstein + 2./(std::exp(x_einstein) - 1.))

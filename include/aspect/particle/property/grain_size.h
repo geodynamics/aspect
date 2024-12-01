@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2022 - 2023 by the authors of the ASPECT code.
+ Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -64,9 +64,7 @@ namespace aspect
            * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
           void
-          update_particle_properties (const unsigned int data_position,
-                                      const std::vector<Vector<double>> &solution,
-                                      const std::vector<std::vector<Tensor<1,dim>>> &gradients,
+          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
                                       typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
@@ -87,10 +85,10 @@ namespace aspect
           need_update () const override;
 
           /**
-           * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
+           * @copydoc aspect::Particle::Property::Interface::get_update_flags()
            */
           UpdateFlags
-          get_needed_update_flags () const override;
+          get_update_flags (const unsigned int component) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::get_property_information()

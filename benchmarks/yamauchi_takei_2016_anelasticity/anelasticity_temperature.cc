@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -290,7 +290,7 @@ namespace aspect
           isothermal_volume_change=r2.first;
           compressibility=isothermal_volume_change*std::exp((gruneisen_parameter+1)*(std::pow(isothermal_volume_change,-1)-1));
           pressure_dependent_density=reference_density*isothermal_volume_change;
-          integrated_thermal_expansivity=(2.832e-5*(temperature-273))+((0.758e-8/2)*(std::pow(temperature,2)-std::pow(273,2)));
+          integrated_thermal_expansivity=(2.832e-5*(temperature-273))+((0.758e-8/2)*(Utilities::fixed_power<2>(temperature)-Utilities::fixed_power<2>(273)));
           density=pressure_dependent_density*(1-(compressibility*integrated_thermal_expansivity));
         }
       // determine J1 term (real part of complex compliance)
@@ -299,8 +299,8 @@ namespace aspect
                                                                       std::erf((std::log(peak_period/normalized_period))/(std::sqrt(2)*peak_width)))));
       // determine J2 term (imaginary part of complex compliance)
       //double loss_compliance=unrelaxed_compliance*(M_PI/2)*(background_amplitude*(std::pow(normalized_period,background_slope))+
-      // (peak_amplitude*std::exp(-1*(std::pow(std::log(peak_period/normalized_period),2)/
-      // (2*std::pow(peak_width,2))))))+(unrelaxed_compliance*normalized_period);
+      // (peak_amplitude*std::exp(-1*(Utilities::fixed_power<2>(std::log(peak_period/normalized_period))/
+      // (2*Utilities::fixed_power<2>(peak_width))))))+(unrelaxed_compliance*normalized_period);
       // calculate anharmonic Vs
       // anharmonic_Vs=1/(std::sqrt(density*unrelaxed_compliance)*1e3);
       // calculate Vs

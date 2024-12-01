@@ -9,12 +9,11 @@
 # 9: Iterations for Stokes solver
 # 10: Velocity iterations in Stokes preconditioner
 # 11: Schur complement iterations in Stokes preconditioner
-# 12: Visualization file name
-# 13: RMS velocity (m/year)
-# 14: Max. velocity (m/year)
-# 15: Minimum topography (m)
-# 16: Maximum topography (m)
-# 17: Minimal pressure (Pa)
-# 18: Average pressure (Pa)
-# 19: Maximal pressure (Pa)
-0 0.000000000000e+00 0.000000000000e+00 192 6792 2145 2 0 197 377 2095 output-crustal_model_3D/solution/solution-00000 9.79706034e-03 2.64062996e-02 0.00000000e+00 0.00000000e+00 -4.72541266e+09 1.68159158e+08 2.52794342e+09 
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimum topography (m)
+# 15: Maximum topography (m)
+# 16: Minimal pressure (Pa)
+# 17: Average pressure (Pa)
+# 18: Maximal pressure (Pa)
+0 0.000000000000e+00 0.000000000000e+00 24 1143 357 28 0 336 392 392 9.03571254e-03 1.11375393e-02 0.00000000e+00 0.00000000e+00 -1.00459124e+08 1.86915989e+08 5.41826854e+08 

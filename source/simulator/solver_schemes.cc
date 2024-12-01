@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -226,17 +226,17 @@ namespace aspect
   {
     // Advect the particles before they are potentially used to
     // set up the compositional fields.
-    for (auto &particle_world : particle_worlds)
+    for (auto &particle_manager : particle_managers)
       {
         // Do not advect the particles in the initial refinement stage
         const bool in_initial_refinement = (timestep_number == 0)
                                            && (pre_refinement_step < parameters.initial_adaptive_refinement);
         if (!in_initial_refinement)
-          // Advance the particles in the world to the current time
-          particle_world->advance_timestep();
+          // Advance the particles in the manager to the current time
+          particle_manager.advance_timestep();
 
-        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
-          particle_world->update_particles();
+        if (particle_manager.get_property_manager().need_update() == Particle::Property::update_output_step)
+          particle_manager.update_particles();
       }
 
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
@@ -388,6 +388,8 @@ namespace aspect
           }
       }
 
+    // Re-compute the pressure scaling factor for the Stokes assembly
+    pressure_scaling = compute_pressure_scaling_factor();
     assemble_stokes_system ();
 
     // build the preconditioner
@@ -399,7 +401,7 @@ namespace aspect
     if (nonlinear_residual)
       *nonlinear_residual = compute_initial_stokes_residual();
 
-    const double current_nonlinear_residual = solve_stokes().first;
+    const double current_nonlinear_residual = solve_stokes(solution).first;
 
     current_linearization_point.block(introspection.block_indices.velocities)
       = solution.block(introspection.block_indices.velocities);
@@ -429,50 +431,36 @@ namespace aspect
   void Simulator<dim>::do_one_defect_correction_Stokes_step(DefectCorrectionResiduals &dcr,
                                                             const bool use_picard)
   {
-    /**
-     * copied from solver.cc
-     */
-
     // Many parts of the solver depend on the block layout (velocity = 0,
     // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
     // wrapper. Let us make sure that this holds (and shorten their names):
-    const unsigned int block_vel = introspection.block_indices.velocities;
-    const unsigned int block_p = (parameters.include_melt_transport) ?
-                                 introspection.variable("fluid pressure").block_index
-                                 : introspection.block_indices.pressure;
-    Assert(block_vel == 0, ExcNotImplemented());
-    Assert(block_p == 1, ExcNotImplemented());
+    const unsigned int pressure_block_index = (parameters.include_melt_transport) ?
+                                              introspection.variable("fluid pressure").block_index
+                                              : introspection.block_indices.pressure;
+    const unsigned int velocity_block_index = introspection.block_indices.velocities;
+    Assert(velocity_block_index == 0, ExcNotImplemented());
+    Assert(pressure_block_index == 1, ExcNotImplemented());
+    (void) pressure_block_index;
     Assert(!parameters.include_melt_transport
            || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
 
-    // create a completely distributed vector that will be used for
-    // the scaled and denormalized solution and later used as a
-    // starting guess for the linear solver
-    LinearAlgebra::BlockVector linearized_stokes_initial_guess(introspection.index_sets.stokes_partitioning, mpi_communicator);
-    linearized_stokes_initial_guess.block(block_vel) = current_linearization_point.block(block_vel);
-    linearized_stokes_initial_guess.block(block_p) = current_linearization_point.block(block_p);
+    // Re-compute the pressure scaling factor for the Stokes assembly
+    pressure_scaling = compute_pressure_scaling_factor();
 
     if (nonlinear_iteration == 0)
       {
-        dcr.initial_residual = compute_initial_newton_residual(linearized_stokes_initial_guess);
+        dcr.initial_residual = compute_initial_newton_residual();
         dcr.switch_initial_residual = dcr.initial_residual;
         dcr.residual_old = dcr.initial_residual;
         dcr.residual = dcr.initial_residual;
-      }
-
-    assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
-
-    if (nonlinear_iteration == 0)
-      {
         assemble_newton_stokes_system = assemble_newton_stokes_matrix = false;
       }
     else
-      {
-        denormalize_pressure (last_pressure_normalization_adjustment,
-                              linearized_stokes_initial_guess,
-                              current_linearization_point);
-      }
+      assemble_newton_stokes_system = assemble_newton_stokes_matrix = true;
 
+    // Make sure we use the correct assemblers for first and all other iterations
+    // We solve the normal system in the first iteration, and the defect correction
+    // system in all other iterations.
     if (nonlinear_iteration <= 1)
       {
         set_assemblers();
@@ -498,8 +486,8 @@ namespace aspect
     assemble_stokes_system();
 
     // recompute rhs
-    dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-    dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+    dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+    dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
     dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
 
     // Test whether the rhs has dropped so much that we can assume that the iteration is done.
@@ -508,12 +496,15 @@ namespace aspect
         pcout << "   Nonlinear residual reduction has been very large ("
               << dcr.residual/dcr.residual_old << "); skipping Stokes solve"
               << std::endl;
+
+        // Update old residual so that if the nonlinear solver is not done,
+        // next time we will not skip the Stokes solve.
+        dcr.residual_old = dcr.residual;
         return;
       }
 
-    /**
-     * Eisenstat Walker method for determining the tolerance
-     */
+
+    // Eisenstat Walker method for determining the linear solver tolerance
     if (nonlinear_iteration > 1)
       {
         if (!use_picard || newton_handler->parameters.use_Eisenstat_Walker_method_for_Picard_iterations)
@@ -546,137 +537,130 @@ namespace aspect
     else
       build_stokes_preconditioner();
 
-    if (newton_handler->parameters.use_Newton_failsafe == false)
+    // The solution of the defect correction solver is an update direction
+    LinearAlgebra::BlockVector search_direction;
+    search_direction.reinit(solution, /* omit_zeroing_entries = */ true);
+
+    try
       {
-        dcr.stokes_residuals = solve_stokes();
+        dcr.stokes_residuals = solve_stokes(search_direction);
       }
-    else
+    catch (const std::exception &exc)
       {
-        try
+        // Test that we are trying to handle exceptions and that
+        // the exception we got is one of the two documented by
+        // throw_linear_solver_failure_exception(). If not, we have a genuine
+        // problem here, and will need to get outta here right away:
+        if (newton_handler->parameters.use_Newton_failsafe == false ||
+            ((dynamic_cast<const ExcMessage *>(&exc)==nullptr) &&
+             (dynamic_cast<const QuietException *>(&exc)==nullptr)))
+          throw;
+
+        // start the solve over again and try with a stabilized version
+        pcout << "failed, trying again with stabilization" << std::endl;
+        newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
+        newton_handler->parameters.velocity_block_stabilization = Newton::Parameters::Stabilization::SPD;
+
+        // If the Stokes matrix depends on the solution, or we have active
+        // velocity boundary conditions, we need to re-assemble the system matrix
+        // (and preconditioner) every time. If we have active boundary conditions,
+        // they could a) depend on the solution, or b) be inhomogeneous. In both
+        // cases, just assembling the RHS will be incorrect.  If no active
+        // boundaries exist, we only have no-slip or free slip conditions, so we
+        // don't need to force assembly of the matrix.
+        if (stokes_matrix_depends_on_solution()
+            ||
+            (nonlinear_iteration == 0 && boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
+          rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+        else if (parameters.enable_prescribed_dilation)
+          // The dilation requires the Stokes matrix (which is on the rhs
+          // in the Newton solver) to be updated.
+          rebuild_stokes_matrix = true;
+
+        assemble_stokes_system();
+
+        /**
+         * Eisenstat Walker method for determining the tolerance
+         */
+        if (nonlinear_iteration > 1)
           {
-            dcr.stokes_residuals = solve_stokes();
-          }
-        catch (const std::exception &exc)
-          {
-            // Test that the exception we got is one of the two documented by
-            // throw_linear_solver_failure_exception(). If not, we have a genuine
-            // problem here, and will need to get outta here right away:
-            if ((dynamic_cast<const ExcMessage *>(&exc)==nullptr) &&
-                (dynamic_cast<const QuietException *>(&exc)==nullptr))
-              throw;
+            dcr.velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+            dcr.pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+            dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
 
-            // start the solve over again and try with a stabilized version
-            pcout << "failed, trying again with stabilization" << std::endl;
-            newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
-            newton_handler->parameters.velocity_block_stabilization = Newton::Parameters::Stabilization::SPD;
-
-            // If the Stokes matrix depends on the solution, or we have active
-            // velocity boundary conditions, we need to re-assemble the system matrix
-            // (and preconditioner) every time. If we have active boundary conditions,
-            // they could a) depend on the solution, or b) be inhomogeneous. In both
-            // cases, just assembling the RHS will be incorrect.  If no active
-            // boundaries exist, we only have no-slip or free slip conditions, so we
-            // don't need to force assembly of the matrix.
-            if (stokes_matrix_depends_on_solution()
-                ||
-                (nonlinear_iteration == 0 && boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
-              rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
-            else if (parameters.enable_prescribed_dilation)
-              // The dilation requires the Stokes matrix (which is on the rhs
-              // in the Newton solver) to be updated.
-              rebuild_stokes_matrix = true;
-
-            assemble_stokes_system();
-
-            /**
-             * Eisenstat Walker method for determining the tolerance
-             */
-            if (nonlinear_iteration > 1)
+            // Eisenstat Walker method for determining the linear solver tolerance
+            if (!use_picard)
               {
-                dcr.residual_old = dcr.residual;
-                dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-                dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-                dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
+                const bool EisenstatWalkerChoiceOne = true;
+                parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
+                                                            newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
+                                                            parameters.linear_stokes_solver_tolerance,
+                                                            dcr.stokes_residuals.second,
+                                                            dcr.residual,
+                                                            dcr.residual_old);
 
-                if (!use_picard)
-                  {
-                    const bool EisenstatWalkerChoiceOne = true;
-                    parameters.linear_stokes_solver_tolerance = compute_Eisenstat_Walker_linear_tolerance(EisenstatWalkerChoiceOne,
-                                                                newton_handler->parameters.maximum_linear_stokes_solver_tolerance,
-                                                                parameters.linear_stokes_solver_tolerance,
-                                                                dcr.stokes_residuals.second,
-                                                                dcr.residual,
-                                                                dcr.residual_old);
-
-                    pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
-                  }
+                pcout << "   The linear solver tolerance is set to " << parameters.linear_stokes_solver_tolerance << std::endl;
               }
-
-            if (stokes_matrix_free)
-              stokes_matrix_free->build_preconditioner();
-            else
-              build_stokes_preconditioner();
-
-            // Give this another try:
-            dcr.stokes_residuals = solve_stokes();
           }
+
+        if (stokes_matrix_free)
+          stokes_matrix_free->build_preconditioner();
+        else
+          build_stokes_preconditioner();
+
+        // Give this another try:
+        dcr.stokes_residuals = solve_stokes(search_direction);
       }
 
-    dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-    dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-    dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
-
-    double test_residual = dcr.residual;
+    // Apply the solution or the update of the solution
     if (nonlinear_iteration == 0)
       {
-        /**
-         * The first nonlinear iteration we are computing the whole system in a non-defect corrected Picard way,
-         * to make sure that the boundary conditions are correct in combination with correct initial guesses.
-         */
-        current_linearization_point.block(introspection.block_indices.velocities) = solution.block(introspection.block_indices.velocities);
-        current_linearization_point.block(introspection.block_indices.pressure) = solution.block(introspection.block_indices.pressure);
-
+        // In the first nonlinear iteration, the nonlinear residual and old
+        // residual should be the same, both depend on the accuracy of
+        // the initial guess.
         dcr.residual = dcr.stokes_residuals.first;
+        dcr.residual_old = dcr.residual;
+
+        // The first nonlinear iteration we are computing the whole system in a non-defect corrected Picard way,
+        // to make sure that the boundary conditions are correct in combination with correct initial guesses.
+        current_linearization_point.block(velocity_block_index) = search_direction.block(velocity_block_index);
+        current_linearization_point.block(pressure_block_index) = search_direction.block(pressure_block_index);
 
         pcout << "      Newton system information: Norm of the rhs: " << dcr.stokes_residuals.first << std::endl;
       }
     else
       {
-        /**
-         * We may need to do a line search if the solution update doesn't decrease the norm of the rhs enough.
-         * This is done by adding the solution update to the current linearization point and then assembling
-         * the Newton right hand side. If the Newton residual has decreased enough by using this update,
-         * then we continue, otherwise we reset the current linearization point with the help of the backup and
-         * add each iteration an increasingly smaller solution update until the decreasing residual condition
-         * is met, or the line search iteration limit is reached.
-         */
+        // Backup the residual of the previous iteration, before we compute the new residual.
+        dcr.residual_old = dcr.residual;
+
+        // We have computed an update. Prepare for a line search.
         LinearAlgebra::BlockVector backup_linearization_point(introspection.index_sets.stokes_partitioning, mpi_communicator);
-        backup_linearization_point.block(introspection.block_indices.pressure) = current_linearization_point.block(introspection.block_indices.pressure);
-        backup_linearization_point.block(introspection.block_indices.velocities) = current_linearization_point.block(introspection.block_indices.velocities);
 
-
-        double test_velocity_residual = 0;
-        double test_pressure_residual = 0;
-        double step_length_factor = 1;
-        double alpha = 1e-4;
+        double step_length_factor = 1.0;
         unsigned int line_search_iteration = 0;
 
-
-        /**
-         * Do the loop for the line search. Even when we
-         * don't do a line search we go into this loop
-         */
+        // Do the loop for the line search at least once with the full step length.
+        // If line search is disabled we will exit the loop in the first iteration.
         do
           {
-            // Reset the current linearization point and the search direction
-            current_linearization_point.block(introspection.block_indices.pressure) = backup_linearization_point.block(introspection.block_indices.pressure);
-            current_linearization_point.block(introspection.block_indices.velocities) = backup_linearization_point.block(introspection.block_indices.velocities);
+            if (line_search_iteration == 0)
+              {
+                // backup our starting point for the line search
+                backup_linearization_point.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
+                backup_linearization_point.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
+              }
+            else
+              {
+                // undo the last iteration and try again with smaller step length
+                current_linearization_point.block(pressure_block_index) = backup_linearization_point.block(pressure_block_index);
+                current_linearization_point.block(velocity_block_index) = backup_linearization_point.block(velocity_block_index);
+                search_direction.block(pressure_block_index) *= step_length_factor;
+                search_direction.block(velocity_block_index) *= step_length_factor;
+              }
 
-            LinearAlgebra::BlockVector search_direction = solution;
-            search_direction *= step_length_factor;
-
-            current_linearization_point.block(introspection.block_indices.pressure) += search_direction.block(introspection.block_indices.pressure);
-            current_linearization_point.block(introspection.block_indices.velocities) += search_direction.block(introspection.block_indices.velocities);
+            // Update the current linearization point with the search direction
+            current_linearization_point.block(pressure_block_index) += search_direction.block(pressure_block_index);
+            current_linearization_point.block(velocity_block_index) += search_direction.block(velocity_block_index);
 
             // Rebuild the rhs to determine the new residual.
             assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
@@ -685,12 +669,13 @@ namespace aspect
 
             assemble_stokes_system();
 
-            test_velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-            test_pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-            test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
-                                      + test_pressure_residual * test_pressure_residual);
+            const double test_velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+            const double test_pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
+            const double test_residual = std::sqrt(test_velocity_residual * test_velocity_residual
+                                                   + test_pressure_residual * test_pressure_residual);
 
-            // Determine if the decrease is sufficient.
+            // Determine if the residual has decreased sufficiently.
+            const double alpha = 1e-4;
             if (test_residual < (1.0 - alpha * step_length_factor) * dcr.residual
                 ||
                 line_search_iteration >= newton_handler->parameters.max_newton_line_search_iterations
@@ -704,23 +689,19 @@ namespace aspect
               }
             else
               {
-
                 pcout << "   Line search iteration " << line_search_iteration << ", with norm of the rhs "
                       << test_residual << " and going to " << (1.0 - alpha * step_length_factor) * dcr.residual
                       << ", relative residual: " << test_residual/dcr.initial_residual << std::endl;
 
-                /**
-                 * The line search step was not sufficient to decrease the residual
-                 * enough, so we take a smaller step to see if it improves the residual.
-                 */
-                step_length_factor *= (2.0/3.0);// TODO: make a parameter out of this.
+                // The current search direction has not decreased the residual
+                // enough, so we take a smaller step and try again.
+                // TODO: make a parameter out of this.
+                step_length_factor = 2.0/3.0;
               }
 
             ++line_search_iteration;
             Assert(line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations,
-                   ExcMessage ("This tests the while condition. This condition should "
-                               "actually never be false, because the break statement "
-                               "above should have caught it."));
+                   ExcInternalError());
           }
         while (true);
       }
@@ -737,21 +718,22 @@ namespace aspect
       }
     else
       {
-        /**
-         * This method allows to slowly introduce the derivatives based
-         * on the improvement of the residual. This method was suggested
-         * by Raid Hassani.
-         */
+        // This method allows to slowly introduce the derivatives based
+        // on the improvement of the residual. This method was suggested
+        // by Raid Hassani.
         if (newton_handler->parameters.use_newton_residual_scaling_method)
-          dcr.newton_residual_for_derivative_scaling_factor = test_residual;
+          dcr.newton_residual_for_derivative_scaling_factor = dcr.residual;
         else
           dcr.newton_residual_for_derivative_scaling_factor = 0;
       }
 
-    dcr.residual_old = dcr.residual;
-
     if (nonlinear_iteration != 0)
       last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
+
+    // The rest of ASPECT assumes 'solution' contains the solution values, not the update
+    // to the solution. Make sure the outside never sees the solution update we computed.
+    solution.block(pressure_block_index) = current_linearization_point.block(pressure_block_index);
+    solution.block(velocity_block_index) = current_linearization_point.block(velocity_block_index);
   }
 
 
@@ -811,6 +793,7 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -863,23 +846,16 @@ namespace aspect
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
-            postprocess ();
-          }
+          postprocess ();
 
         ++nonlinear_iteration;
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
+
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
-
-    // When we are finished iterating, we need to set the final solution to the current linearization point,
-    // because the solution vector is used in the postprocess.
-    solution = current_linearization_point;
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
@@ -960,8 +936,8 @@ namespace aspect
         // iteration (in the assemble_and_solve_composition call).
 
         if (nonlinear_iteration > 0)
-          for (auto &particle_world : particle_worlds)
-            particle_world->restore_particles();
+          for (auto &particle_manager : particle_managers)
+            particle_manager.restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1014,6 +990,7 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -1061,6 +1038,7 @@ namespace aspect
       }
     while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
@@ -1119,8 +1097,8 @@ namespace aspect
         // iteration (in the assemble_and_solve_composition call).
 
         if (nonlinear_iteration > 0)
-          for (auto &particle_world : particle_worlds)
-            particle_world->restore_particles();
+          for (auto &particle_manager : particle_managers)
+            particle_manager.restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1183,12 +1161,7 @@ namespace aspect
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
-            postprocess ();
-          }
+          postprocess ();
 
         ++nonlinear_iteration;
       }
@@ -1201,9 +1174,7 @@ namespace aspect
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
-    // When we are finished iterating, we need to set the final solution to the current linearization point,
-    // because the solution vector is used in the postprocess.
-    solution = current_linearization_point;
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
@@ -1290,12 +1261,7 @@ namespace aspect
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          {
-            // Before postprocessing, we need to copy the actual solution into the solution vector
-            // (which is used for postprocessing)
-            solution = current_linearization_point;
-            postprocess ();
-          }
+          postprocess ();
 
         ++nonlinear_iteration;
       }
@@ -1308,9 +1274,7 @@ namespace aspect
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
 
-    // When we are finished iterating, we need to set the final solution to the current linearization point,
-    // because the solution vector is used in the postprocess.
-    solution = current_linearization_point;
+    AssertThrow(nonlinear_solver_control.last_check() != SolverControl::failure, ExcNonlinearSolverNoConvergence());
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }

@@ -1,21 +1,25 @@
 set Additional shared libraries            = ./libdrucker_prager_compositions.so
 set Use years in output instead of seconds = false
-set Nonlinear solver scheme                = iterated Advection and Newton Stokes
+set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
 set Max nonlinear iterations               = 150
 set Nonlinear solver tolerance             = 1e-14
 set Pressure normalization                 = no
 
+# This is an instantaneous benchmark
+set End time                               = 0.0
+
+
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Number of cheap Stokes solver steps = 0
-    set Linear solver tolerance             = 1e-5
+    set Linear solver tolerance = 1e-8
+    set Stokes solver type =  block AMG
   end
 
   subsection Newton solver parameters
     set Max pre-Newton nonlinear iterations      = 5
     set SPD safety factor                        = 0.9
-    set Nonlinear Newton solver switch tolerance = 1e-20 #
-    set Max Newton line search iterations        = 0
+    set Nonlinear Newton solver switch tolerance = 1e-20
+    set Max Newton line search iterations        = 5
     set Maximum linear Stokes solver tolerance   = 9e-1
     set Use Newton residual scaling method       = false
     set Use Newton failsafe                      = false
@@ -94,19 +98,28 @@ subsection Material model
     set Viscosity averaging p       = -1
     set Use deviator of strain-rate = true
     set Use analytical derivative   = false
-    set Reference viscosity         = 5e24
+    set Reference viscosity         = 1e23
     set Reference compressibility   = 0
   end
 end
 
 subsection Mesh refinement
   set Initial adaptive refinement = 0
-  set Initial global refinement   = 5
+  set Initial global refinement   = 4
   set Strategy                    = strain rate
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   =
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = left, right, top
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0.0
+  end
 end
 
 subsection Boundary velocity model
@@ -128,7 +141,7 @@ subsection Boundary traction model
 end
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics, visualization
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics, composition statistics, visualization
 
   subsection Visualization
     set List of output variables = material properties,strain rate, spd factor

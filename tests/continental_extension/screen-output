@@ -12,32 +12,40 @@ Number of mesh deformation degrees of freedom: 462
    Solving upper_crust system ... 0 iterations.
    Solving lower_crust system ... 0 iterations.
    Solving lithospheric_mantle system ... 0 iterations.
-   Initial Newton Stokes residual = 2.88429e+14, v = 2.79119e+14, p = 7.26906e+13
+   Initial Newton Stokes residual = 3.04034e+14, v = 2.95216e+14, p = 7.26906e+13
 
-   Solving Stokes system... 0+56 iterations.
-      Newton system information: Norm of the rhs: 2.88429e+14
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+20 iterations.
+      Newton system information: Norm of the rhs: 3.04034e+14
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Temperature min/avg/max: 273 K, 1052 K, 1613 K
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving mesh surface diffusion
-   Solving mesh displacement system... 4 iterations.
+   Solving mesh displacement system... 1 iterations.
    Solving temperature system... 7 iterations.
    Solving noninitial_plastic_strain system ... 12 iterations.
    Solving plastic_strain system ... 9 iterations.
    Solving upper_crust system ... 9 iterations.
    Solving lower_crust system ... 9 iterations.
    Solving lithospheric_mantle system ... 9 iterations.
-   Initial Newton Stokes residual = 1.57637e+14, v = 1.57164e+14, p = 1.21967e+13
+   Initial Newton Stokes residual = 8.15787e+16, v = 8.15787e+16, p = 1.24975e+13
 
-   Solving Stokes system... 0+21 iterations.
-      Newton system information: Norm of the rhs: 2.35285e+13
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.149257
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+18 iterations.
+      Newton system information: Norm of the rhs: 2.11532e+13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000259297
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      Temperature min/avg/max: 273 K, 1052 K, 1613 K
 
@@ -45,3 +53,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 2 nonlinear solver failures occurred!

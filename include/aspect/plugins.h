@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -294,11 +294,16 @@ namespace aspect
     template <typename InterfaceType>
     ManagerBase<InterfaceType>::~ManagerBase()
     {
-      // Not all derived manager classes currently set the 'plugin_names'
-      // variable, but for those that do, they better have as many names
-      // as there are plugins.
-      if (plugin_names.size() > 0)
-        Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+      // only check and throw if we are not unwinding the stack due
+      // to an active exception
+#ifdef DEAL_II_HAVE_CXX17
+      if (std::uncaught_exceptions() == 0)
+#else
+      if (std::uncaught_exception() == false)
+#endif
+        {
+          Assert (plugin_names.size() == plugin_objects.size(), ExcInternalError());
+        }
     }
 
 
@@ -826,7 +831,7 @@ namespace aspect
         output_stream << std::string(typeid(InterfaceClass).name())
                       << " [label=\""
                       << plugin_system_name
-                      << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"green\"]"
+                      << "\", height=.8,width=.8,shape=\"rect\",fillcolor=\"lightgreen\"]"
                       << std::endl;
 
         // then output the graph nodes for each plugin, with links to the

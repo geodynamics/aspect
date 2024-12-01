@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -95,13 +95,17 @@ namespace aspect
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),
                            "A stabilization factor for the elastic stresses that influences how fast "
-                           "elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization "
-                           "and may lead to oscillatory motion. Setting the factor to 2 "
-                           "avoids oscillations, but still enables an immediate elastic response. "
-                           "However, in complex models this can lead to problems of convergence, in which "
-                           "case the factor needs to be increased slightly. Setting the factor to "
-                           "infinity is equivalent to not applying elastic stresses at all. The "
-                           "factor is multiplied with the computational time step to create a time scale. ");
+                           "elastic stresses adjust to deformation. This value is equal to the "
+                           "elastic time step divided by the computational time step. "
+                           "The default value of 1.0 may lead to oscillatory motion. "
+                           "Increasing this factor to 2.0 can reduce oscillations while "
+                           "preserving an immediate elastic response. In complex models the factor "
+                           "can be increased further to improve convergence behaviour. "
+                           "As the stabilization factor increases, the effective viscosity "
+                           "gets smaller, and is balanced by an increasing body force term. "
+                           "For composite rheologies that use this formulation of elasticity, "
+                           "setting an infinite shear modulus only recovers the nonelastic part of "
+                           "the rheology if this stabilization factor is equal to 1.0.");
         prm.declare_entry ("Elastic damper viscosity", "0.0",
                            Patterns::Double (0.),
                            "Viscosity of a viscous damper that acts in parallel with the elastic "
@@ -237,35 +241,6 @@ namespace aspect
             out.additional_outputs.push_back(
               std::make_unique<ElasticAdditionalOutputs<dim>> (n_points));
           }
-      }
-
-
-      namespace
-      {
-        MaterialAveraging::AveragingOperation
-        get_averaging_operation_for_viscosity(const MaterialAveraging::AveragingOperation operation)
-        {
-          MaterialAveraging::AveragingOperation operation_for_viscosity = operation;
-          switch (operation)
-            {
-              case MaterialAveraging::harmonic_average:
-                operation_for_viscosity = MaterialAveraging::harmonic_average_only_viscosity;
-                break;
-
-              case MaterialAveraging::geometric_average:
-                operation_for_viscosity = MaterialAveraging::geometric_average_only_viscosity;
-                break;
-
-              case MaterialAveraging::project_to_Q1:
-                operation_for_viscosity = MaterialAveraging::project_to_Q1_only_viscosity;
-                break;
-
-              default:
-                operation_for_viscosity = operation;
-            }
-
-          return operation_for_viscosity;
-        }
       }
 
 

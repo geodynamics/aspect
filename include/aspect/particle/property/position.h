@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -54,14 +54,11 @@ namespace aspect
                                             std::vector<double> &particle_properties) const override;
 
           /**
-           * @copydoc aspect::Particle::Property::Interface::update_particle_property()
+           * @copydoc aspect::Particle::Property::Interface::update_particle_properties()
            */
-          virtual
           void
-          update_particle_property (const unsigned int data_position,
-                                    const Vector<double> &solution,
-                                    const std::vector<Tensor<1,dim>> &gradients,
-                                    typename ParticleHandler<dim>::particle_iterator &particle) const override;
+          update_particle_properties (const ParticleUpdateInputs<dim> &inputs,
+                                      typename ParticleHandler<dim>::particle_iterator_range &particles) const override;
 
           /**
            * This implementation tells the particle manager that

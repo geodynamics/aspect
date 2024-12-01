@@ -4,7 +4,7 @@ Number of degrees of freedom: 84 (50+9+25)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-geometric_average_only_viscosity/solution/solution-00000

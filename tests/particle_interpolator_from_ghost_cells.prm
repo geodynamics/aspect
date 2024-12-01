@@ -92,10 +92,9 @@ subsection Particles
   set Minimum particles per cell = 2
   set Maximum particles per cell = 100
   set Load balancing strategy = none
-  set Update ghost particles = true
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 400
     end
   end

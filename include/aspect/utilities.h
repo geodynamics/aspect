@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -288,6 +288,7 @@ namespace aspect
      *   Utilities::MapParsing::parse_map_to_double_array() function. Please
      *   use the other function instead.
      */
+    DEAL_II_DEPRECATED
     std::vector<double>
     parse_map_to_double_array (const std::string &key_value_map,
                                const std::vector<std::string> &list_of_keys,
@@ -671,7 +672,7 @@ namespace aspect
      */
     void create_directory(const std::string &pathname,
                           const MPI_Comm comm,
-                          bool silent);
+                          const bool silent);
 
     /**
      * A namespace defining the cubic spline interpolation that can be used
@@ -1062,7 +1063,7 @@ namespace aspect
      * @p output_filename An optional file name into which (if present) the solver history will
      *   be written.
      *
-     * @return This function never returns normally. It always exits via an exception, either
+     * @note This function never returns normally. It always exits via an exception, either
      *   of type ExcMessage (on rank 0 of the parallel computation) or QuietException (on all
      *   other ranks).
      */
@@ -1170,8 +1171,8 @@ namespace aspect
                                                    std::mt19937 &random_number_generator);
 
     /**
-    * Wraps angle between 0 and 360 degrees.
-    */
+     * Wraps angle between 0 and 360 degrees.
+     */
     double wrap_angle(const double angle);
 
     /**

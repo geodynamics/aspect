@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2023 by the authors of the ASPECT code.
+  Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -52,8 +52,6 @@ namespace aspect
       public:
         /**
          * @copydoc MaterialModel::Interface::is_compressible()
-         *
-         * Returns value from material model providing compressibility.
          */
         bool is_compressible () const override;
 
@@ -61,7 +59,10 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_darcy_coefficient () const override;
+        double reference_darcy_coefficient () const override;
+        /**
+         * @}
+         */
 
 
         /**
@@ -84,8 +85,8 @@ namespace aspect
          * @param melt_fractions Vector of doubles that is filled with the
          * allowable free fluid fraction for each given input conditions.
          */
-        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const override;
+        void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                             std::vector<double> &melt_fractions) const override;
 
         /**
          * Initialize the base model at the beginning of the model run
@@ -122,7 +123,6 @@ namespace aspect
          * If this material model can produce additional named outputs
          * that are derived from NamedAdditionalOutputs, create them in here.
          */
-        virtual
         void
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
@@ -133,17 +133,21 @@ namespace aspect
          */
         std::unique_ptr<MaterialModel::Interface<dim>> base_model;
 
-        // Variables that describe the properties of the fluid, i.e. its density,
-        // viscosity, and compressibility.
-        // Properties of the solid are defined in the base model.
+        /**
+         * Variables that describe the properties of the fluid, i.e. its density,
+         * viscosity, and compressibility.
+         * Properties of the solid are defined in the base model.
+         */
         double reference_rho_f;
         double eta_f;
         double fluid_compressibility;
 
-        // Material properties governing the transport of the fluid with respect
-        // to the solid, i.e., the bulk viscosity (relative to the shear viscosity),
-        // the permeability, and how much the solid viscosity changes in the presence
-        // of fluids.
+        /**
+         * Material properties governing the transport of the fluid with respect
+         * to the solid, i.e., the bulk viscosity (relative to the shear viscosity),
+         * the permeability, and how much the solid viscosity changes in the presence
+         * of fluids.
+         */
         double shear_to_bulk_viscosity_ratio;
         double min_compaction_visc;
         double max_compaction_visc;
@@ -151,22 +155,29 @@ namespace aspect
         double alpha_phi;
         double reference_T;
 
-        // Time scale for fluid release and absorption.
+        /**
+         * Time scale for fluid release and absorption.
+         */
         double fluid_reaction_time_scale;
 
-        // The maximum water content for each of the 4 rock types in the tian approximation
-        // method. These are important for keeping the polynomial bounded within reasonable
-        // values.
+        /**
+         * The maximum water content for each of the 4 rock types in the tian approximation
+         * method. These are important for keeping the polynomial bounded within reasonable
+         * values.
+         */
         double tian_max_peridotite_water;
         double tian_max_gabbro_water;
         double tian_max_MORB_water;
         double tian_max_sediment_water;
 
-        // The following coefficients are taken from a publication from Tian et al., 2019, and can be found
-        // in Table 3 (Gabbro), Table B1 (MORB), Table B2 (Sediments) and Table B3 (peridotite).
-        // LR refers to the effective enthalpy change for devolatilization reactions,
-        // csat is the saturated mass fraction of water in the solid, and Td is the
-        // onset temperature of devolatilization for water.
+        /**
+         *
+         * The following coefficients are taken from a publication from Tian et al., 2019, and can be found
+         * in Table 3 (Gabbro), Table B1 (MORB), Table B2 (Sediments) and Table B3 (peridotite).
+         * LR refers to the effective enthalpy change for devolatilization reactions,
+         * csat is the saturated mass fraction of water in the solid, and Td is the
+         * onset temperature of devolatilization for water.
+         */
         std::vector<double> LR_peridotite_poly_coeffs {-19.0609, 168.983, -630.032, 1281.84, -1543.14, 1111.88, -459.142, 95.4143, 1.97246};
         std::vector<double> csat_peridotite_poly_coeffs {0.00115628, 2.42179};
         std::vector<double> Td_peridotite_poly_coeffs {-15.4627, 94.9716, 636.603};
@@ -183,9 +194,11 @@ namespace aspect
         std::vector<double> csat_sediment_poly_coeffs {-0.150662, 0.301807, 1.01867};
         std::vector<double> Td_sediment_poly_coeffs {2.83277, -24.7593, 85.9090, 524.898};
 
-        // The polynomials breakdown above certain pressures, 10 GPa for peridotite, 26 GPa for gabbro, 16 GPa for MORB,
-        // and 50 GPa for sediment. These cutoff pressures were determined by extending the pressure range in Tian et al. (2019)
-        // and observing where the maximum allowed water contents jump towards infinite values.
+        /**
+         * The polynomials breakdown above certain pressures, 10 GPa for peridotite, 26 GPa for gabbro, 16 GPa for MORB,
+         * and 50 GPa for sediment. These cutoff pressures were determined by extending the pressure range in Tian et al. (2019)
+         * and observing where the maximum allowed water contents jump towards infinite values.
+         */
         const std::vector<double> pressure_cutoffs {10, 26, 16, 50};
 
         std::vector<std::vector<double>> devolatilization_enthalpy_changes {LR_peridotite_poly_coeffs, LR_gabbro_poly_coeffs, \

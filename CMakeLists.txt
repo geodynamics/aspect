@@ -1,4 +1,4 @@
-# Copyright (C) 2013 - 2023 by the authors of the ASPECT code.
+# Copyright (C) 2013 - 2024 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -91,6 +91,8 @@ else()
   set(ASPECT_BUILD_RELEASE "OFF")
 endif()
 
+# Some other ASPECT configuration options:
+set(ASPECT_MAX_NUM_PARTICLE_SYSTEMS 2 CACHE STRING "The maximum number of particle systems supported at runtime.")
 
 
 
@@ -290,7 +292,8 @@ if(ASPECT_WITH_WORLD_BUILDER)
 
       set(WB_TARGET "WorldBuilderDebug")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder/)
-      target_compile_options(WorldBuilderDebug PRIVATE "-g" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+      separate_arguments(SEPARATED_FLAGS NATIVE_COMMAND ${ASPECT_ADDITIONAL_CXX_FLAGS})
+      target_compile_options(WorldBuilderDebug PRIVATE "-g" "${SEPARATED_FLAGS}")
 
       set(CMAKE_BUILD_TYPE ${_build_type})
     endif()
@@ -306,7 +309,9 @@ if(ASPECT_WITH_WORLD_BUILDER)
       set(WB_TARGET "WorldBuilderRelease")
       add_subdirectory("${WORLD_BUILDER_SOURCE_DIR}" ${CMAKE_BINARY_DIR}/world_builder_release/)
       target_compile_definitions(WorldBuilderRelease PUBLIC "NDEBUG")
-      target_compile_options(WorldBuilderRelease PRIVATE "-O3" "${ASPECT_ADDITIONAL_CXX_FLAGS}")
+
+      separate_arguments(SEPARATED_FLAGS NATIVE_COMMAND ${ASPECT_ADDITIONAL_CXX_FLAGS})
+      target_compile_options(WorldBuilderRelease PRIVATE "-O3" "${SEPARATED_FLAGS}")
 
       set(CMAKE_BUILD_TYPE ${_build_type})
     endif()
@@ -769,12 +774,17 @@ if (${FORCE_COLORED_OUTPUT})
   endif()
 endif()
 
+# deal.II versions >=9.5 disable deprecation warnings in user code. Enable
+# the warnings again by removing the flag that disables them.
+string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
+
 set(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
 
 if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   message(STATUS "Appending ASPECT_ADDITIONAL_CXX_FLAGS: '${ASPECT_ADDITIONAL_CXX_FLAGS}':")
   string(APPEND DEAL_II_CXX_FLAGS_DEBUG " ${ASPECT_ADDITIONAL_CXX_FLAGS}")
   string(APPEND DEAL_II_CXX_FLAGS_RELEASE " ${ASPECT_ADDITIONAL_CXX_FLAGS}")
+  message(STATUS "  DEAL_II_WARNING_FLAGS: ${DEAL_II_WARNING_FLAGS}")
   message(STATUS "  DEAL_II_CXX_FLAGS_DEBUG: ${DEAL_II_CXX_FLAGS_DEBUG}")
   message(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
 endif()
@@ -825,6 +835,11 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   if(DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
     target_compile_definitions(${TARGET_EXE_RELEASE} PUBLIC "NDEBUG")
   endif()
+endif()
+
+# turn on debug checks like invalid element access in c++ standard library:
+if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
+  target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
 endif()
 
 
@@ -998,51 +1013,6 @@ MESSAGE(STATUS "===== Configuring ASPECT documentation =============")
 # Start with the documentation
 
 add_subdirectory(doc)
-
-
-# Find the deal.II parameter GUI and install helper script
-find_program(PARAMETER_GUI_EXECUTABLE
-        parameter_gui
-        HINTS $ENV{PARAMETER_GUI_DIR} $ENV{PARAMETER_GUI_DIR}/bin ${PARAMETER_GUI_DIR} ${PARAMETER_GUI_DIR}/bin
-        PATH bin)
-mark_as_advanced(CLEAR PARAMETER_GUI_EXECUTABLE)
-
-# Did the user specify something that doesn't exist?
-if(PARAMETER_GUI_EXECUTABLE
-        AND
-    (NOT EXISTS ${PARAMETER_GUI_EXECUTABLE} OR IS_DIRECTORY ${PARAMETER_GUI_EXECUTABLE}))
-  message(STATUS "Warning: PARAMETER_GUI_EXECUTABLE '${PARAMETER_GUI_EXECUTABLE}' does not exist")
-  set(PARAMETER_GUI_EXECUTABLE "PARAMETER_GUI_EXECUTABLE-NOTFOUND" CACHE FILEPATH "" FORCE)
-endif()
-
-if(NOT PARAMETER_GUI_EXECUTABLE)
-  message(STATUS "Parameter GUI not found: install and provide a hint using -D PARAMETER_GUI_DIR or set -D PARAMETER_GUI_EXECUTABLE directly.")
-else()
-  message(STATUS "Found parameter GUI at: ${PARAMETER_GUI_EXECUTABLE}")
-  configure_file(
-    ${CMAKE_SOURCE_DIR}/doc/aspect-gui
-    ${CMAKE_BINARY_DIR}/aspect-gui
-    @ONLY
-  )
-install(FILES ${CMAKE_BINARY_DIR}/aspect-gui
-        DESTINATION bin
-        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-                GROUP_READ GROUP_EXECUTE
-                WORLD_READ WORLD_EXECUTE)
-endif()
-
-
-
-# A target to create parameters.json after building the ASPECT binary.
-
-add_custom_command(TARGET ${TARGET_EXE} POST_BUILD
-  COMMAND sh -c 'echo "" | ./$<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME> --output-json -- > parameters.json'
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-
-
-
-message(STATUS "")
-message(STATUS "===== Writing final configuration ==================")
 
 include(cmake/write_config)
 

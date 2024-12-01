@@ -2,6 +2,8 @@
 # flow benchmark. This is used to test the velocity boundary conditions
 # of the Newton Stokes solver.
 
+# MPI: 2
+
 set Dimension = 2
 
 include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm

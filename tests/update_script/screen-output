@@ -2,8 +2,6 @@
 Loading shared library <./libupdate_script.debug.so>
 Executing the update script:
 cp update_script.x.prm output-update_script/updated.prm &&sed -i.bak 's:set Additional shared libraries = ./libupdate_script.so::' output-update_script/updated.prm &&bash ASPECT_DIR/contrib/utilities/update_prm_files.sh output-update_script/updated.prm &&rm output-update_script/updated.prm.bak
-output-update_script/updated.prm
-output-update_script/updated.prm
 Running ASPECT with updated parameter file:
 ../aspect output-update_script/updated.prm
 
@@ -14,7 +12,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-update_script/solution/solution-00000
@@ -31,7 +29,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
    Solving temperature system... 14 iterations.
    Advecting particles...  done.
    Skipping C_1 composition solve because RHS is zero.
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-update_script/solution/solution-00001

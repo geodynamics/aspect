@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -104,17 +104,17 @@ namespace aspect
                            const Tensor<1,dim> &normal_vector) const;
 
         /**
-           * Return the names of all prescribed boundary traction models currently
-           * used in the computation as specified in the input file. The function
-           * returns a map between a boundary identifier and a pair. The
-           * first part of the pair is a string that represents the prescribed
-           * traction components on this boundary (e.g. y, xz, or xyz) and the
-           * second part is a vector of strings that represent the names of
-           * boundary traction plugins for this boundary.
-           * If there are no prescribed boundary traction plugins
-           * for a particular boundary, this boundary identifier will not appear
-           * in the map.
-           */
+         * Return the names of all prescribed boundary traction models currently
+         * used in the computation as specified in the input file. The function
+         * returns a map between a boundary identifier and a pair. The
+         * first part of the pair is a string that represents the prescribed
+         * traction components on this boundary (e.g. y, xz, or xyz) and the
+         * second part is a vector of strings that represent the names of
+         * boundary traction plugins for this boundary.
+         * If there are no prescribed boundary traction plugins
+         * for a particular boundary, this boundary identifier will not appear
+         * in the map.
+         */
         const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> &
         get_active_boundary_traction_names () const;
 
@@ -170,21 +170,21 @@ namespace aspect
                         << "> among the names of registered boundary traction objects.");
 
         /**
-        * Register a traction boundary conditions model so that it can be
-        * selected from the parameter file.
-        *
-        * @param name A string that identifies the traction boundary conditions
-        * model
-        * @param description A text description of what this model does and that
-        * will be listed in the documentation of the parameter file.
-        * @param declare_parameters_function A pointer to a function that can be
-        * used to declare the parameters that this traction boundary conditions
-        * model wants to read from input files.
-        * @param factory_function A pointer to a function that can create an
-        * object of this traction boundary conditions model.
-        *
-        * @ingroup BoundaryTractions
-        */
+         * Register a traction boundary conditions model so that it can be
+         * selected from the parameter file.
+         *
+         * @param name A string that identifies the traction boundary conditions
+         * model
+         * @param description A text description of what this model does and that
+         * will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that can be
+         * used to declare the parameters that this traction boundary conditions
+         * model wants to read from input files.
+         * @param factory_function A pointer to a function that can create an
+         * object of this traction boundary conditions model.
+         *
+         * @ingroup BoundaryTractions
+         */
         static
         void
         register_boundary_traction (const std::string &name,

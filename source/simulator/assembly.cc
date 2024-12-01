@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -726,9 +726,6 @@ namespace aspect
 
     TimerOutput::Scope timer (computing_timer,
                               timer_section_name);
-
-    // Re-compute the pressure scaling factor.
-    pressure_scaling = compute_pressure_scaling_factor();
 
     if (rebuild_stokes_matrix == true)
       system_matrix = 0;

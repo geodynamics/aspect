@@ -1,0 +1,32 @@
+# Test burstedde benchmark using BFBT preconditioner
+
+include $ASPECT_SOURCE_DIR/benchmarks/burstedde/burstedde.prm
+
+set Dimension=3
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Refinement fraction                = 0.2
+  set Strategy                           = velocity
+end
+
+
+subsection Solver parameters
+subsection Stokes solver parameters
+    set Stokes solver type= block AMG
+    set Use full A block as preconditioner              = true
+    set Number of cheap Stokes solver steps             = 500
+    set Maximum number of expensive Stokes solver steps = 0
+    set Linear solver tolerance                         = 1e-6
+    set GMRES solver restart length                     = 100
+    set Use weighted BFBT for Schur complement          = true
+    set Krylov method for cheap solver steps            = GMRES
+  end
+
+  subsection AMG parameters
+    set AMG aggregation threshold = 0.02
+  end
+
+
+end

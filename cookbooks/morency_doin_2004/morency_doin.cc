@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -70,7 +70,7 @@ namespace aspect
              */
             const double e2inv = std::sqrt((strain_rate[0][0]*strain_rate[0][0] + strain_rate[0][1]*strain_rate[0][1])/2.0);
 
-            const double edot = std::sqrt(std::pow(e2inv,2) + std::pow(min_strain_rate,2));
+            const double edot = std::sqrt(Utilities::fixed_power<2>(e2inv) + Utilities::fixed_power<2>(min_strain_rate));
 
             // Calculate 1/(v_eff^v) and 1/(v_eff^p)
             double one_over_veffv = 0.0;

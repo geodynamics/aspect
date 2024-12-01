@@ -23,7 +23,7 @@ subsection Adiabatic conditions model
     set Use surface condition function = true
 
     subsection Surface condition function
-      set Function expression = 1e-2*t; 1613.0+1e-13*t
+      set Function expression = 1e-2*(365.2425*24*60*60)*t; 1613.0+1e-13*(365.2425*24*60*60)*t
     end
   end
 end
@@ -112,8 +112,12 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Output format                 = vtu
-    set List of output variables      = density, heating
+    set List of output variables      = material properties, heating
     set Time between graphical output = 0
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 
   subsection Depth average
@@ -128,7 +132,7 @@ end
 
 subsection Particles
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 50
     end
   end

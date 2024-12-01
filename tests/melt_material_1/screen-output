@@ -8,7 +8,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving temperature system... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving porosity system ... 0 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -18,7 +18,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving temperature system... 18 iterations.
    Solving peridotite system ... 14 iterations.
    Solving porosity system ... 16 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -28,7 +28,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving temperature system... 17 iterations.
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -38,7 +38,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving temperature system... 16 iterations.
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -48,7 +48,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving temperature system... 16 iterations.
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -58,7 +58,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Solving temperature system... 7 iterations.
    Solving peridotite system ... 8 iterations.
    Solving porosity system ... 8 iterations.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:

@@ -169,7 +169,11 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = viscosity, strain rate, density, specific heat, thermal expansivity, gravity, heating
+    set List of output variables = material properties, strain rate, gravity, heating
     set Time between graphical output = 0.05
+
+    subsection Material properties
+      set List of material properties = viscosity, density, specific heat, thermal expansivity
+    end
   end
 end

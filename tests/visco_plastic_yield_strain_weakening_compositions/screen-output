@@ -6,10 +6,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
    Solving weak_layer system ... 0 iterations.
-   Solving Stokes system... 33+0 iterations.
+   Solving Stokes system (GMG)... 33+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.507e+05 kg/yr, 1.507e+05 kg/yr, -1.651e+05 kg/yr, -1.351e+05 kg/yr
@@ -22,10 +25,13 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 10 iterations.
    Solving weak_layer system ... 4 iterations.
-   Solving Stokes system... 27+0 iterations.
+   Solving Stokes system (GMG)... 27+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.061128
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
      Mass fluxes through boundary parts: 1.507e+05 kg/yr, 1.507e+05 kg/yr, -1.651e+05 kg/yr, -1.351e+05 kg/yr
@@ -37,3 +43,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 2 nonlinear solver failures occurred!

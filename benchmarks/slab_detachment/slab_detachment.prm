@@ -122,7 +122,11 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 1e6
-    set List of output variables      = strain rate, viscosity, density
+    set List of output variables      = strain rate, material properties
+
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
   end
 
   subsection Particles

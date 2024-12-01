@@ -75,6 +75,10 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Output format = gnuplot
-    set List of output variables = density, thermal conductivity, thermal diffusivity, specific heat
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = density, thermal conductivity, thermal diffusivity, specific heat
+    end
   end
 end

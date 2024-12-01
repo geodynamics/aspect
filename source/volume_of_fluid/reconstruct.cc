@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
+ Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -486,7 +486,7 @@ namespace aspect
                                    ?
                                    0.0
                                    :
-                                   2.0*(0.5-abs(cell_volume_of_fluid-0.5))/normal_l1_norm;
+                                   2.0*(0.5-std::abs(cell_volume_of_fluid-0.5))/normal_l1_norm;
         for (unsigned int i=0; i<system_fe.base_element(base_element).dofs_per_cell; ++i)
           {
             const unsigned int system_local_dof

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -127,7 +127,7 @@ namespace aspect
            *
            * The Runge-Kutta 2 integrator requires a single point with dim components.
            */
-          static const unsigned int n_integrator_properties = dim;
+          static constexpr unsigned int n_integrator_properties = dim;
 
         private:
           /**

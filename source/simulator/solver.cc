@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -761,14 +761,26 @@ namespace aspect
 
   template <int dim>
   std::pair<double,double>
-  Simulator<dim>::solve_stokes ()
+  Simulator<dim>::solve_stokes (LinearAlgebra::BlockVector &solution_vector)
   {
     TimerOutput::Scope timer (computing_timer, "Solve Stokes system");
-    pcout << "   Solving Stokes system... " << std::flush;
+
+    const std::string name = [&]() -> std::string
+    {
+      if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
+        return "GMG";
+      if (parameters.use_direct_stokes_solver)
+        return "direct";
+      if (parameters.use_bfbt)
+        return "AMG-BFBT";
+      return "AMG";
+    }();
+
+    pcout << "   Solving Stokes system (" << name << ")... " << std::flush;
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
-        return stokes_matrix_free->solve();
+        return stokes_matrix_free->solve(solution_vector);
       }
 
     // In the following, we will operate on a vector that contains only
@@ -778,6 +790,14 @@ namespace aspect
     // whereas for the iterative solvers, the result has two blocks.)
     LinearAlgebra::BlockVector distributed_stokes_solution (introspection.index_sets.stokes_partitioning,
                                                             mpi_communicator);
+
+    // We will need the Stokes block indices a lot below, shorten their names
+    const unsigned int velocity_block_index = introspection.block_indices.velocities;
+    const unsigned int pressure_block_index = (parameters.include_melt_transport) ?
+                                              introspection.variable("fluid pressure").block_index
+                                              : introspection.block_indices.pressure;
+    (void) velocity_block_index;
+    (void) pressure_block_index;
 
     // Create a view of all constraints that only pertains to the
     // Stokes subset of degrees of freedom. We can then use this later
@@ -791,18 +811,9 @@ namespace aspect
     // generalized if the Stokes block were not starting at zero.
 #if DEAL_II_VERSION_GTE(9,6,0)
     {
-      const unsigned int block_vel = introspection.block_indices.velocities;
-      (void) block_vel;
-
-      Assert (block_vel == 0, ExcNotImplemented());
+      Assert (velocity_block_index == 0, ExcNotImplemented());
       if (parameters.use_direct_stokes_solver == false)
-        {
-          const unsigned int block_p = (parameters.include_melt_transport) ?
-                                       introspection.variable("fluid pressure").block_index
-                                       : introspection.block_indices.pressure;
-          (void) block_p;
-          Assert (block_p == 1, ExcNotImplemented());
-        }
+        Assert (pressure_block_index == 1, ExcNotImplemented());
     }
 
     IndexSet stokes_dofs (dof_handler.n_dofs());
@@ -818,23 +829,19 @@ namespace aspect
 
     if (parameters.use_direct_stokes_solver)
       {
-        Assert (distributed_stokes_solution.n_blocks() == 1, ExcInternalError());
-
-        // Many parts of the solver depend on the block layout (typically,
-        // velocity = 0, pressure = 1, but differently for direct solver
-        // setups -- see the comment above).
-        const unsigned int block_vel_and_pres = introspection.block_indices.velocities;
-        Assert(block_vel_and_pres == 0, ExcNotImplemented());
-
         // We hard-code the blocks down below, so make sure block 0 is indeed
         // the block containing velocity and pressure:
-        Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
-        Assert(introspection.block_indices.pressure == 0
+        Assert(distributed_stokes_solution.n_blocks() == 1, ExcInternalError());
+        Assert(velocity_block_index == 0, ExcNotImplemented());
+        Assert(pressure_block_index == 0
                ||
                (parameters.include_melt_transport
                 && introspection.variable("fluid pressure").block_index == 0
                 && introspection.variable("compaction pressure").block_index == 0),
                ExcNotImplemented());
+
+        // Clarify that we only use one block for the direct solver
+        const unsigned int velocity_and_pressure_block = velocity_block_index;
 
         // Start with a reasonable guess.
         //
@@ -842,20 +849,19 @@ namespace aspect
         // (it will be ignored by the solver anyway), we need this if we are
         // using a nonlinear scheme, because we use this to compute the current
         // nonlinear residual (see initial_residual below).
-        solution.block(block_vel_and_pres) = current_linearization_point.block(block_vel_and_pres);
+        solution_vector.block(velocity_and_pressure_block) = current_linearization_point.block(velocity_and_pressure_block);
 
         // TODO: if there was an easy way to know if the caller needs the
         // initial residual we could skip all of this stuff.
-        distributed_stokes_solution.block(0) = solution.block(block_vel_and_pres);
+        distributed_stokes_solution.block(velocity_and_pressure_block) = solution_vector.block(velocity_and_pressure_block);
         denormalize_pressure (this->last_pressure_normalization_adjustment,
-                              distributed_stokes_solution,
-                              solution);
+                              distributed_stokes_solution);
         current_stokes_constraints.set_zero (distributed_stokes_solution);
 
         // Undo the pressure scaling:
-        IndexSet &pressure_idxset = parameters.include_melt_transport ?
-                                    introspection.index_sets.locally_owned_melt_pressure_dofs
-                                    : introspection.index_sets.locally_owned_pressure_dofs;
+        const IndexSet &pressure_idxset = parameters.include_melt_transport ?
+                                          introspection.index_sets.locally_owned_melt_pressure_dofs
+                                          : introspection.index_sets.locally_owned_pressure_dofs;
 
         for (unsigned int i=0; i< pressure_idxset.n_elements(); ++i)
           {
@@ -868,19 +874,19 @@ namespace aspect
         // we need a temporary vector for the residual (even if we don't care about it)
         LinearAlgebra::Vector residual (introspection.index_sets.stokes_partitioning[0], mpi_communicator);
 
-        initial_nonlinear_residual = system_matrix.block(block_vel_and_pres,block_vel_and_pres).residual(
+        initial_nonlinear_residual = system_matrix.block(velocity_and_pressure_block,velocity_and_pressure_block).residual(
                                        residual,
-                                       distributed_stokes_solution.block(0),
-                                       system_rhs.block(block_vel_and_pres));
+                                       distributed_stokes_solution.block(velocity_and_pressure_block),
+                                       system_rhs.block(velocity_and_pressure_block));
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
         TrilinosWrappers::SolverDirect solver(cn);
         try
           {
-            solver.solve(system_matrix.block(block_vel_and_pres,block_vel_and_pres),
-                         distributed_stokes_solution.block(0),
-                         system_rhs.block(block_vel_and_pres));
+            solver.solve(system_matrix.block(velocity_and_pressure_block,velocity_and_pressure_block),
+                         distributed_stokes_solution.block(velocity_and_pressure_block),
+                         system_rhs.block(velocity_and_pressure_block));
 
             // if we got here, we have successfully solved the linear system
             // with a direct solver, and the final linear residual should
@@ -921,14 +927,14 @@ namespace aspect
           for (const types::global_dof_index i : pressure_idxset)
             distributed_stokes_solution(i) *= pressure_scaling;
 
-          distributed_stokes_solution.block(0).compress(VectorOperation::insert);
+          distributed_stokes_solution.block(velocity_and_pressure_block).compress(VectorOperation::insert);
         }
 
         // Then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components. Note that
         // for a direct solver, we have only one block for velocity+pressure,
         // and so only one block needs to be copied.
-        solution.block(block_vel_and_pres) = distributed_stokes_solution.block(0);
+        solution_vector.block(velocity_and_pressure_block) = distributed_stokes_solution.block(velocity_and_pressure_block);
 
         pcout << "done." << std::endl;
       }
@@ -941,13 +947,9 @@ namespace aspect
 
         // Many parts of the solver depend on the block layout (velocity = 0,
         // pressure = 1). For example the linearized_stokes_initial_guess vector or the StokesBlock matrix
-        // wrapper. Let us make sure that this holds (and shorten their names):
-        const unsigned int block_vel = introspection.block_indices.velocities;
-        const unsigned int block_p = (parameters.include_melt_transport) ?
-                                     introspection.variable("fluid pressure").block_index
-                                     : introspection.block_indices.pressure;
-        Assert(block_vel == 0, ExcNotImplemented());
-        Assert(block_p == 1, ExcNotImplemented());
+        // wrapper. Let us make sure that this holds:
+        Assert(velocity_block_index == 0, ExcNotImplemented());
+        Assert(pressure_block_index == 1, ExcNotImplemented());
         Assert(!parameters.include_melt_transport
                || introspection.variable("compaction pressure").block_index == 1,
                ExcNotImplemented());
@@ -966,12 +968,11 @@ namespace aspect
         // other solution variables.
         if (assemble_newton_stokes_system == false)
           {
-            linearized_stokes_initial_guess.block (block_vel) = current_linearization_point.block (block_vel);
-            linearized_stokes_initial_guess.block (block_p) = current_linearization_point.block (block_p);
+            linearized_stokes_initial_guess.block (velocity_block_index) = current_linearization_point.block (velocity_block_index);
+            linearized_stokes_initial_guess.block (pressure_block_index) = current_linearization_point.block (pressure_block_index);
 
             denormalize_pressure (this->last_pressure_normalization_adjustment,
-                                  linearized_stokes_initial_guess,
-                                  current_linearization_point);
+                                  linearized_stokes_initial_guess);
           }
         else
           {
@@ -983,12 +984,12 @@ namespace aspect
             Assert(nonlinear_iteration != 0,
                    ExcMessage ("The Newton solver should not be active in the first nonlinear iteration."));
 
-            linearized_stokes_initial_guess.block (block_vel) = 0;
-            linearized_stokes_initial_guess.block (block_p) = 0;
+            linearized_stokes_initial_guess.block (velocity_block_index) = 0;
+            linearized_stokes_initial_guess.block (pressure_block_index) = 0;
           }
 
         current_stokes_constraints.set_zero (linearized_stokes_initial_guess);
-        linearized_stokes_initial_guess.block (block_p) /= pressure_scaling;
+        linearized_stokes_initial_guess.block (pressure_block_index) /= pressure_scaling;
 
         double solver_tolerance = 0;
         if (assemble_newton_stokes_system == false)
@@ -1014,28 +1015,29 @@ namespace aspect
             // are only interested in the part of the rhs not balanced by the static
             // pressure (the current pressure is a good approximation for the static
             // pressure).
-            const double residual_u = system_matrix.block(0,1).residual (distributed_stokes_solution.block(0),
-                                                                         linearized_stokes_initial_guess.block(1),
-                                                                         system_rhs.block(0));
-            const double residual_p = system_rhs.block(1).l2_norm();
+            const double velocity_residual = system_matrix.block(velocity_block_index,
+                                                                 pressure_block_index).residual (distributed_stokes_solution.block(velocity_block_index),
+                                                                     linearized_stokes_initial_guess.block(pressure_block_index),
+                                                                     system_rhs.block(velocity_block_index));
+            const double pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
 
             solver_tolerance = parameters.linear_stokes_solver_tolerance *
-                               std::sqrt(residual_u*residual_u+residual_p*residual_p);
+                               std::sqrt(velocity_residual*velocity_residual+pressure_residual*pressure_residual);
           }
         else
           {
             // if we are solving for the Newton update, then the initial guess of the solution
             // vector is the zero vector, and the starting (nonlinear) residual is simply
             // the norm of the (Newton) right hand side vector
-            const double residual_u = system_rhs.block(0).l2_norm();
-            const double residual_p = system_rhs.block(1).l2_norm();
+            const double velocity_residual = system_rhs.block(velocity_block_index).l2_norm();
+            const double pressure_residual = system_rhs.block(pressure_block_index).l2_norm();
             solver_tolerance = parameters.linear_stokes_solver_tolerance *
-                               std::sqrt(residual_u*residual_u+residual_p*residual_p);
+                               std::sqrt(velocity_residual*velocity_residual+pressure_residual*pressure_residual);
 
             // as described in the documentation of the function, the initial
             // nonlinear residual for the Newton method is computed by just
             // taking the norm of the right hand side
-            initial_nonlinear_residual = std::sqrt(residual_u*residual_u+residual_p*residual_p);
+            initial_nonlinear_residual = std::sqrt(velocity_residual*velocity_residual+pressure_residual*pressure_residual);
           }
         // Now overwrite the solution vector again with the current best guess
         // to solve the linear system
@@ -1044,8 +1046,8 @@ namespace aspect
         // extract Stokes parts of rhs vector
         LinearAlgebra::BlockVector distributed_stokes_rhs(introspection.index_sets.stokes_partitioning);
 
-        distributed_stokes_rhs.block(block_vel) = system_rhs.block(block_vel);
-        distributed_stokes_rhs.block(block_p) = system_rhs.block(block_p);
+        distributed_stokes_rhs.block(velocity_block_index) = system_rhs.block(velocity_block_index);
+        distributed_stokes_rhs.block(pressure_block_index) = system_rhs.block(pressure_block_index);
 
         PrimitiveVectorMemory<LinearAlgebra::BlockVector> mem;
 
@@ -1063,16 +1065,16 @@ namespace aspect
         if (parameters.use_bfbt)
           {
             schur = std::make_unique<internal::WeightedBFBT<TrilinosWrappers::PreconditionBase>>(
-                      system_preconditioner_matrix.block(1,1),
+                      system_preconditioner_matrix.block(pressure_block_index,pressure_block_index),
                       *Mp_preconditioner,
                       parameters.linear_solver_S_block_tolerance,
-                      inverse_lumped_mass_matrix.block(0),
+                      inverse_lumped_mass_matrix.block(velocity_block_index),
                       system_matrix);
           }
         else
           {
             schur = std::make_unique<internal::InverseWeightedMassMatrix<TrilinosWrappers::PreconditionBase>>(
-                      system_preconditioner_matrix.block(1,1),
+                      system_preconditioner_matrix.block(pressure_block_index,pressure_block_index),
                       *Mp_preconditioner,
                       parameters.linear_solver_S_block_tolerance);
 
@@ -1080,7 +1082,7 @@ namespace aspect
 
         // create a cheap preconditioner that consists of only a single V-cycle
         internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_cheap(
-          system_matrix.block(0,0),
+          system_matrix.block(velocity_block_index,velocity_block_index),
           *Amg_preconditioner,
           /* do_solve_A = */ false,
           stokes_A_block_is_symmetric(),
@@ -1094,7 +1096,7 @@ namespace aspect
 
         // create an expensive preconditioner that solves for the A block with CG
         internal::InverseVelocityBlock<LinearAlgebra::PreconditionAMG> inverse_velocity_block_expensive(
-          system_matrix.block(0,0),
+          system_matrix.block(velocity_block_index,velocity_block_index),
           *Amg_preconditioner,
           /* do_solve_A = */ true,
           stokes_A_block_is_symmetric(),
@@ -1212,12 +1214,12 @@ namespace aspect
         current_stokes_constraints.distribute (distributed_stokes_solution);
 
         // now rescale the pressure back to real physical units
-        distributed_stokes_solution.block(block_p) *= pressure_scaling;
+        distributed_stokes_solution.block(pressure_block_index) *= pressure_scaling;
 
         // then copy back the solution from the temporary (non-ghosted) vector
         // into the ghosted one with all solution components
-        solution.block(block_vel) = distributed_stokes_solution.block(0);
-        solution.block(block_p) = distributed_stokes_solution.block(1);
+        solution_vector.block(velocity_block_index) = distributed_stokes_solution.block(velocity_block_index);
+        solution_vector.block(pressure_block_index) = distributed_stokes_solution.block(pressure_block_index);
 
         // signal successful solver
         signals.post_stokes_solver(*this,
@@ -1228,13 +1230,13 @@ namespace aspect
       }
 
     // do some cleanup now that we have the solution
-    remove_nullspace(solution, distributed_stokes_solution);
+    remove_nullspace(solution_vector, distributed_stokes_solution);
     if (assemble_newton_stokes_system == false)
-      this->last_pressure_normalization_adjustment = normalize_pressure(solution);
+      this->last_pressure_normalization_adjustment = normalize_pressure(solution_vector);
 
     // convert melt pressures:
     if (parameters.include_melt_transport)
-      melt_handler->compute_melt_variables(system_matrix,solution,system_rhs);
+      melt_handler->compute_melt_variables(system_matrix,solution_vector,system_rhs);
 
     return std::pair<double,double>(initial_nonlinear_residual,
                                     final_linear_residual);
@@ -1249,7 +1251,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template double Simulator<dim>::solve_advection (const AdvectionField &); \
-  template std::pair<double,double> Simulator<dim>::solve_stokes ();
+  template std::pair<double,double> Simulator<dim>::solve_stokes (LinearAlgebra::BlockVector &solution_vector);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

@@ -4,7 +4,7 @@ Number of degrees of freedom: 5,388 (3,298+441+1,649)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system (GMG)... 22+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-symbolic_boundary_names_spherical_shell_2d_180_degrees/solution/solution-00000

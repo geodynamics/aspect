@@ -1,6 +1,0 @@
-New: The CPO particle property plugin set now contains a plugin
-which can compute the symmetry decompositions of the elastic
-tensor. There are now also tests which test the whole CPO 
-particle property plugin set.
-<br>
-(Menno Fraters, 2024/06/06)

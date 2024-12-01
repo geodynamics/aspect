@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -181,6 +181,12 @@ namespace aspect
     class ViscoPlastic : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
+        /**
+         * Initialization function. Loads the material data and sets up
+         * pointers if it is required.
+         */
+        void
+        initialize () override;
 
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override;
@@ -208,20 +214,6 @@ namespace aspect
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
         double get_min_strain_rate() const;
-
-        /**
-         * A function that returns whether the material is plastically yielding at
-         * the given pressure, temperature, composition, and strain rate.
-         *
-         * @deprecated: Use the other function with this name instead, which allows
-         * to pass in more general input variables.
-         */
-        DEAL_II_DEPRECATED
-        bool
-        is_yielding (const double pressure,
-                     const double temperature,
-                     const std::vector<double> &composition,
-                     const SymmetricTensor<2,dim> &strain_rate) const;
 
         /**
          * A function that returns whether the material is plastically
@@ -274,6 +266,16 @@ namespace aspect
          * Object that handles phase transitions.
          */
         MaterialUtilities::PhaseFunction<dim> phase_function;
+
+        /**
+         * Determines whether to look up the dominant phases for each composition in its respective lookup table.
+         */
+        bool use_dominant_phase_for_viscosity;
+
+        /**
+         * Object that handles discrete phase transitions for the rheology if requested by the variable use_dominant_phase_for_viscosity.
+         */
+        std::unique_ptr<MaterialUtilities::PhaseFunctionDiscrete<dim>> phase_function_discrete;
 
     };
 

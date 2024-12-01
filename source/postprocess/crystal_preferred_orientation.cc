@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
  This file is part of ASPECT.
  ASPECT is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -172,15 +172,29 @@ namespace aspect
     std::pair<std::string,std::string>
     CrystalPreferredOrientation<dim>::execute (TableHandler &statistics)
     {
+      unsigned int particle_manager_index = numbers::invalid_unsigned_int;
+      for (unsigned int i = 0; i < this->n_particle_managers(); ++i)
+        {
+          if (this->get_particle_manager(i).get_property_manager().template has_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>())
+            {
+              Assert(particle_manager_index == numbers::invalid_unsigned_int,
+                     ExcMessage("Multiple particle worlds with CPO data found. This is not supported."));
 
-      const Particle::Property::Manager<dim> &manager = this->get_particle_world(0).get_property_manager();
-      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_world(0).get_particle_handler();
+              particle_manager_index = i;
+            }
+        }
 
-      const bool cpo_elastic_decomposition_plugin_exists = manager.plugin_name_exists("elastic tensor decomposition");
+      AssertThrow(particle_manager_index != numbers::invalid_unsigned_int,
+                  ExcMessage("No CPO particle properties found. Make sure that the CPO particle property plugin is selected."));
 
-      // Get a reference to the CPO particle property.
+      // get particle data and a reference to the CPO particle property
+      const Particle::Property::Manager<dim> &manager = this->get_particle_manager(particle_manager_index).get_property_manager();
+      const Particle::Property::ParticleHandler<dim> &particle_handler = this->get_particle_manager(particle_manager_index).get_particle_handler();
+      const Particle::Property::ParticlePropertyInformation &property_information = manager.get_data_info();
       const Particle::Property::CrystalPreferredOrientation<dim> &cpo_particle_property =
         manager.template get_matching_active_plugin<Particle::Property::CrystalPreferredOrientation<dim>>();
+
+      const bool cpo_elastic_decomposition_plugin_exists = manager.plugin_name_exists("elastic tensor decomposition");
 
       const unsigned int n_grains = cpo_particle_property.get_number_of_grains();
       const unsigned int n_minerals = cpo_particle_property.get_number_of_minerals();
@@ -218,14 +232,6 @@ namespace aspect
                                                                         + "tetragonal_norm_square_p1 tetragonal_norm_square_p2 tetragonal_norm_square_p3 "
                                                                         + "hexagonal_norm_square_p1 hexagonal_norm_square_p2 hexagonal_norm_square_p3 "
                                                                         + "isotropic_norm_square") : "") << std::endl;
-
-      // get particle data
-      const Particle::Property::ParticlePropertyInformation &property_information = this->get_particle_world(0).get_property_manager().get_data_info();
-
-      AssertThrow(property_information.fieldname_exists("cpo mineral 0 type") ,
-                  ExcMessage("No CPO particle properties found. Make sure that the CPO particle property plugin is selected."));
-
-
 
       const unsigned int cpo_data_position = property_information.n_fields() == 0
                                              ?

@@ -1,0 +1,111 @@
+# A test for using the adiabatic pressure in plastic
+# viscosity calculation for the visco_plastic
+# material model. In this example, the adiabatic pressure is 3.3e9 Pa
+# (= rho * g * depth = 3300 * 10 * 100e3) at the bottom. So, the
+# predicted yield stress can be calculated by the
+# following equation:
+#
+#   eta_yield = cos(phi) * coh + sin(phi) * pressure
+#
+#  eta_yield         # yield stress (Pa)
+#  phi  = 10         # angle of internal friction (degrees)
+#  coh  = 1e6        # cohesion (Pa)
+#  p    = 3.3e9      # pressure (Pa)
+
+# Using these parameter we expect a yield stress of 5.7402e8 Pa at y=0 (P=3.3e9)
+# which is confirmed in the output. Note that the pressure in this model is
+# close to 0 (because there is no gravity), and we prescribe the adiabatic
+# pressure to the value above. So the fact that we match the correct yield
+# stress shows we are using the adiabatic pressure instead of actual pressure
+# to compute the yield stress.
+
+set Dimension                              = 2
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Max nonlinear iterations               = 1
+
+subsection Adiabatic conditions model
+  set Model name =  function
+
+  subsection Function
+    set Variable names = x
+    set Function expression = 1; 3.3e4*x; 3300
+  end
+end
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1573
+    set Left temperature   = 1573
+    set Right temperature  = 1573
+    set Top temperature    = 1573
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1573
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = composite
+    set Use adiabatic pressure in plasticity = true
+    set Angles of internal friction = 10
+    set Cohesions = 1e6
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = material properties, named additional outputs, adiabat
+    set Output format            = gnuplot
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+  end
+end

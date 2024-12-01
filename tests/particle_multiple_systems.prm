@@ -1,0 +1,107 @@
+# Test that we can activate multiple particle systems with
+# different particle properties and output directories.
+
+# MPI: 2
+
+set Dimension                              = 2
+set End time                               = 70
+set Use years in output instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 0.9142
+    set Y extent  = 1.0000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators       = bottom, top
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1010
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = -10
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = anomaly
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = composition
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, particles
+
+  subsection Particles
+    set Time between data output = 70
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+  set Number of particle systems = 2
+  set List of particle properties = initial composition
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 10
+    end
+  end
+end
+
+subsection Particles 2
+  set List of particle properties = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 10
+    end
+  end
+end

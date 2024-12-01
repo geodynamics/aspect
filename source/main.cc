@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -616,6 +616,20 @@ run_simulator(const std::string &raw_input_as_string,
 
           std::ofstream file(output_directory + "original.prm");
           file << raw_input_as_string;
+
+          // If using the Geodynamic World Builder, create output/original.wb
+          // containing the exact file used to create the world:
+          std::string world_builder_file = prm.get("World builder file");
+          if (world_builder_file != "")
+            {
+              // TODO: We just want to make a copy of the file, but to do this
+              // platform-independently we need the C++17 filesystem header.
+              // Update this when we require C++17
+              std::ifstream  wb_source(world_builder_file, std::ios::binary);
+              std::ofstream  wb_destination(output_directory + "original.wb",   std::ios::binary);
+
+              wb_destination << wb_source.rdbuf();
+            }
         }
 
       simulator.run();

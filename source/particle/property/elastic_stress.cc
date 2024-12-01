@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -89,36 +89,39 @@ namespace aspect
 
       template <int dim>
       void
-      ElasticStress<dim>::update_particle_property(const unsigned int data_position,
-                                                   const Vector<double> &solution,
-                                                   const std::vector<Tensor<1,dim>> &gradients,
-                                                   typename ParticleHandler<dim>::particle_iterator &particle) const
+      ElasticStress<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+                                                     typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        material_inputs.position[0] = particle->get_location();
+        unsigned int p = 0;
+        for (auto &particle: particles)
+          {
+            material_inputs.position[0] = particle.get_location();
 
 
-        material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(),
-                                                                                      &(this->get_dof_handler()));
+            material_inputs.current_cell = inputs.current_cell;
 
-        material_inputs.temperature[0] = solution[this->introspection().component_indices.temperature];
+            material_inputs.temperature[0] = inputs.solution[p][this->introspection().component_indices.temperature];
 
-        material_inputs.pressure[0] = solution[this->introspection().component_indices.pressure];
+            material_inputs.pressure[0] = inputs.solution[p][this->introspection().component_indices.pressure];
 
-        for (unsigned int d = 0; d < dim; ++d)
-          material_inputs.velocity[0][d] = solution[this->introspection().component_indices.velocities[d]];
+            for (unsigned int d = 0; d < dim; ++d)
+              material_inputs.velocity[0][d] = inputs.solution[p][this->introspection().component_indices.velocities[d]];
 
-        for (unsigned int n = 0; n < this->n_compositional_fields(); ++n)
-          material_inputs.composition[0][n] = solution[this->introspection().component_indices.compositional_fields[n]];
+            for (unsigned int n = 0; n < this->n_compositional_fields(); ++n)
+              material_inputs.composition[0][n] = inputs.solution[p][this->introspection().component_indices.compositional_fields[n]];
 
-        Tensor<2,dim> grad_u;
-        for (unsigned int d=0; d<dim; ++d)
-          grad_u[d] = gradients[d];
-        material_inputs.strain_rate[0] = symmetrize (grad_u);
+            Tensor<2,dim> grad_u;
+            for (unsigned int d=0; d<dim; ++d)
+              grad_u[d] = inputs.gradients[p][d];
+            material_inputs.strain_rate[0] = symmetrize (grad_u);
 
-        this->get_material_model().evaluate (material_inputs,material_outputs);
+            this->get_material_model().evaluate (material_inputs,material_outputs);
 
-        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][i];
+            for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
+              particle.get_properties()[this->data_position + i] += material_outputs.reaction_terms[0][i];
+
+            ++p;
+          }
       }
 
 
@@ -134,9 +137,12 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      ElasticStress<dim>::get_needed_update_flags () const
+      ElasticStress<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_values | update_gradients;
+        if (this->introspection().component_masks.velocities[component] == true)
+          return update_values | update_gradients;
+
+        return update_values;
       }
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -20,7 +20,7 @@
 
 
 #include <aspect/postprocess/particle_count_statistics.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -34,18 +34,21 @@ namespace aspect
     std::pair<std::string,std::string>
     ParticleCountStatistics<dim>::execute (TableHandler &statistics)
     {
-      const Particle::ParticleHandler<dim> &particle_handler =
-        this->get_particle_world(0).get_particle_handler();
-
       unsigned int local_min_particles = std::numeric_limits<unsigned int>::max();
       unsigned int local_max_particles = 0;
-      const Particle::types::particle_index global_particles = this->get_particle_world(0).n_global_particles();
+
+      Particle::types::particle_index global_particles = 0;
+      for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+        global_particles += this->get_particle_manager(particle_manager_index).n_global_particles();
 
       // compute local min/max
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            const unsigned int particles_in_cell = particle_handler.n_particles_in_cell(cell);
+            unsigned int particles_in_cell = 0;
+            for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
+              particles_in_cell += this->get_particle_manager(particle_manager_index).get_particle_handler().n_particles_in_cell(cell);
+
             local_min_particles = std::min(local_min_particles,particles_in_cell);
             local_max_particles = std::max(local_max_particles,particles_in_cell);
           }

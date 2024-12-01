@@ -5,7 +5,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system (AMG)... 10+0 iterations.
 
 Number of active cells: 264 (on 5 levels)
 Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
@@ -14,7 +14,7 @@ Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 31+0 iterations.
+   Solving Stokes system (AMG)... 31+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00000
@@ -25,7 +25,7 @@ Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (AMG)... 25+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00001
@@ -36,7 +36,7 @@ Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00002
@@ -47,7 +47,7 @@ Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+0 iterations.
+   Solving Stokes system (AMG)... 30+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00003
@@ -58,7 +58,7 @@ Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system (AMG)... 25+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00004

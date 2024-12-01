@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,44 +30,15 @@ namespace aspect
 {
   namespace MaterialModel
   {
-
     template <int dim>
-    bool
-    ViscoPlastic<dim>::
-    is_yielding (const double pressure,
-                 const double temperature,
-                 const std::vector<double> &composition,
-                 const SymmetricTensor<2,dim> &strain_rate) const
+    void
+    ViscoPlastic<dim>::initialize()
     {
-      /* The following returns whether or not the material is plastically yielding
-       * as documented in evaluate.
-       */
-      bool plastic_yielding = false;
-
-      MaterialModel::MaterialModelInputs <dim> in (/*n_evaluation_points=*/1,
-                                                                           this->n_compositional_fields());
-      unsigned int i = 0;
-
-      in.pressure[i] = pressure;
-      in.temperature[i] = temperature;
-      in.composition[i] = composition;
-      in.strain_rate[i] = strain_rate;
-
-      const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition,
-                                                   this->introspection().chemical_composition_field_indices());
-
-      const IsostrainViscosities isostrain_viscosities
-        = rheology->calculate_isostrain_viscosities(in, i, volume_fractions);
-
-      std::vector<double>::const_iterator max_composition
-        = std::max_element(volume_fractions.begin(),volume_fractions.end());
-
-      plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(),
-                                                                                  max_composition)];
-
-      return plastic_yielding;
+      if (use_dominant_phase_for_viscosity)
+        {
+          phase_function_discrete->initialize();
+        }
     }
-
 
 
     template <int dim>
@@ -141,6 +112,10 @@ namespace aspect
       // Store value of phase function for each phase and composition
       // While the number of phases is fixed, the value of the phase function is updated for every point
       std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
+
+      std::vector<double> phase_function_discrete_values = (use_dominant_phase_for_viscosity?
+                                                            std::vector<double>(phase_function_discrete->n_phase_transitions(), 0.0): std::vector<double>());
+
 
       // Loop through all requested points
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -220,14 +195,31 @@ namespace aspect
           // to compute the elastic force term.
           bool plastic_yielding = false;
           IsostrainViscosities isostrain_viscosities;
+
           if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             {
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
-              isostrain_viscosities =
-                rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, n_phase_transitions_for_each_chemical_composition);
+              // Methods for averaging among phases depend on whether the most dominant phases are looked up
+              // for each composition in its respective lookup table. A separate phase function class
+              // manages the averaging if the user chooses this option.
+              if (use_dominant_phase_for_viscosity)
+                {
+                  for (unsigned int j=0; j < phase_function_discrete->n_phase_transitions(); ++j)
+                    {
+                      phase_inputs.phase_index = j;
+                      phase_function_discrete_values[j] = phase_function_discrete->compute_value(phase_inputs);
+                    }
+                  isostrain_viscosities =
+                    rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_discrete_values,  phase_function_discrete->n_phase_transitions_for_each_chemical_composition());
+                }
+              else
+                {
+                  isostrain_viscosities =
+                    rheology->calculate_isostrain_viscosities(in, i, volume_fractions, phase_function_values, n_phase_transitions_for_each_chemical_composition);
+                }
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
@@ -338,7 +330,15 @@ namespace aspect
       {
         prm.enter_subsection ("Visco Plastic");
         {
+          prm.declare_entry ("Use dominant phase for viscosity","false",
+                             Patterns::Bool (),
+                             "Whether to look up the dominant phase for each composition in its respective "
+                             "material data file to calculate viscosity. This allows each phase to have distinct "
+                             "rheological parameterizations.");
+
           MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
+
+          MaterialUtilities::PhaseFunctionDiscrete<dim>::declare_parameters(prm);
 
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
 
@@ -384,21 +384,9 @@ namespace aspect
           phase_function.initialize_simulator (this->get_simulator());
           phase_function.parse_parameters (prm);
 
-          std::vector<unsigned int> n_phases_for_each_composition = phase_function.n_phases_for_each_composition();
-
-          // Currently, phase_function.n_phases_for_each_composition() returns a list of length
-          // equal to the total number of compositions, whether or not they are chemical compositions.
-          // The equation_of_state (multicomponent incompressible) requires a list only for
-          // chemical compositions.
-          std::vector<unsigned int> n_phases_for_each_chemical_composition = {n_phases_for_each_composition[0]};
-          n_phase_transitions_for_each_chemical_composition = {n_phases_for_each_composition[0] - 1};
-          n_phases = n_phases_for_each_composition[0];
-          for (auto i : this->introspection().chemical_composition_field_indices())
-            {
-              n_phases_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1]);
-              n_phase_transitions_for_each_chemical_composition.push_back(n_phases_for_each_composition[i+1] - 1);
-              n_phases += n_phases_for_each_composition[i+1];
-            }
+          const std::vector<unsigned int> n_phases_for_each_chemical_composition = phase_function.n_phases_for_each_chemical_composition();
+          n_phase_transitions_for_each_chemical_composition = phase_function.n_phase_transitions_for_each_chemical_composition();
+          n_phases = phase_function.n_phases_over_all_chemical_compositions();
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
@@ -427,7 +415,20 @@ namespace aspect
 
           rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
-          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+
+          use_dominant_phase_for_viscosity = prm.get_bool ("Use dominant phase for viscosity");
+          if (use_dominant_phase_for_viscosity)
+            {
+              phase_function_discrete = std::make_unique<MaterialUtilities::PhaseFunctionDiscrete<dim>>();
+              phase_function_discrete->initialize_simulator (this->get_simulator());
+              phase_function_discrete->parse_parameters (prm);
+              rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(phase_function_discrete->n_phases_for_each_chemical_composition()));
+            }
+          else
+            {
+              rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+            }
+
         }
         prm.leave_subsection();
       }

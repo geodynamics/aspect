@@ -11,7 +11,7 @@ Number of mesh deformation degrees of freedom: 1,394
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+18 iterations.
+   Solving Stokes system (AMG)... 0+18 iterations.
    Solving fluid velocity system... 11 iterations.
 
 Number of active cells: 760 (on 5 levels)
@@ -24,7 +24,7 @@ Number of mesh deformation degrees of freedom: 1,716
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+19 iterations.
+   Solving Stokes system (AMG)... 0+19 iterations.
    Solving fluid velocity system... 11 iterations.
 
 Number of active cells: 1,360 (on 6 levels)
@@ -37,7 +37,7 @@ Number of mesh deformation degrees of freedom: 3,082
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+18 iterations.
+   Solving Stokes system (AMG)... 0+18 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
@@ -51,7 +51,7 @@ Number of mesh deformation degrees of freedom: 3,082
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+16 iterations.
+   Solving Stokes system (AMG)... 0+16 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:
@@ -65,7 +65,7 @@ Number of mesh deformation degrees of freedom: 3,082
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system (AMG)... 0+15 iterations.
    Solving fluid velocity system... 12 iterations.
 
    Postprocessing:

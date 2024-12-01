@@ -90,6 +90,10 @@ subsection Postprocess
     set Output format = vtu
     set Number of grouped files = 1
     set Time between graphical output = 0
-    set List of output variables = density, viscosity
+    set List of output variables = material properties
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
   end
 end

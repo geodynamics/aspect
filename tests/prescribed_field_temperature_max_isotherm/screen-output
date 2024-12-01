@@ -8,7 +8,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 0 iterations.
    Solving Fixed system ... 0 iterations.
    Solving Not_fixed system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:  400 K, 694 K, 1000 K
@@ -18,7 +18,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving temperature system... 37 iterations.
    Solving Fixed system ... 0 iterations.
    Solving Not_fixed system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:  400 K, 670.2 K, 1000 K

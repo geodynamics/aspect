@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,7 +64,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/time_stepping/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -167,6 +167,14 @@ namespace aspect
     Tensor<1,dim> tensor_angular_momentum;
     Tensor<1,dim> tensor_rotation;
   };
+
+  /**
+   * Exception to be thrown when the nonlinear solver needs too many iterations to converge.
+   */
+  DeclExceptionMsg(ExcNonlinearSolverNoConvergence,
+                   "Nonlinear solver failed to converge in the prescribed number of steps. "
+                   "Consider changing `Max nonlinear iterations` or `Nonlinear solver failure "
+                   "strategy`.");
 
   /**
    * This is the main class of ASPECT. It implements the overall simulation
@@ -380,6 +388,13 @@ namespace aspect
          * field. See Introspection::polynomial_degree for more information.
          */
         unsigned int polynomial_degree(const Introspection<dim> &introspection) const;
+
+        /**
+         * Return a string that describes the field type and the compositional
+         * variable number and name, if applicable.
+         */
+        std::string
+        name(const Introspection<dim> &introspection) const;
       };
 
     private:
@@ -854,14 +869,6 @@ namespace aspect
       double solve_advection (const AdvectionField &advection_field);
 
       /**
-       * Interpolate a particular particle property to the solution field.
-       *
-       * @deprecated: Use interpolate_particle_property_vector() instead.
-       */
-      DEAL_II_DEPRECATED
-      void interpolate_particle_properties (const AdvectionField &advection_field);
-
-      /**
        * Interpolate the corresponding particle properties into the given
        * @p advection_fields solution fields.
        */
@@ -934,17 +941,17 @@ namespace aspect
        * first element of the pair, where $F_k=F(x_k)$ is the residual
        * vector for the previous solution $x_k$.
        *
+       * @param solution_vector The solution vector that is computed by this
+       * function. This vector is a block vector that has the same block
+       * structure as the full solution vector and its pressure and velocity
+       * blocks will be overwritten by the solution of the Stokes system.
+       *
+       *
        * This function is implemented in
        * <code>source/simulator/solver.cc</code>.
        */
       std::pair<double,double>
-      solve_stokes ();
-
-      /**
-       * Solve the Stokes system using a block preconditioner and GMG.
-       */
-      std::pair<double,double>
-      solve_stokes_block_gmg ();
+      solve_stokes (LinearAlgebra::BlockVector &solution_vector);
 
       /**
        * This function is called at the end of every time step. It runs all
@@ -1293,14 +1300,6 @@ namespace aspect
        * "physical" pressure so that all following postprocessing
        * steps can use the latter.
        *
-       * In the case of the surface average, whether a face is part of
-       * the surface is determined by asking whether its depth of its
-       * midpoint (as determined by the geometry model) is less than
-       * 1/3*1/sqrt(dim-1)*diameter of the face. For reasonably curved
-       * boundaries, this rules out side faces that are perpendicular
-       * to the surface boundary but includes those faces that are
-       * along the boundary even if the real boundary is curved.
-       *
        * Whether the pressure should be normalized based on the
        * surface or volume average is decided by a parameter in the
        * input file.
@@ -1345,12 +1344,7 @@ namespace aspect
        * come out of GMRES, namely the one on which we later called
        * normalize_pressure().
        *
-       * This function modifies @p vector in-place. In some cases, we need
-       * locally_relevant values of the pressure. To avoid creating a new vector
-       * and transferring data, this function uses a second vector with relevant
-       * dofs (@p relevant_vector) for accessing these pressure values. Both
-       * @p vector and @p relevant_vector are expected to already contain
-       * the correct pressure values.
+       * This function modifies @p vector in-place.
        *
        * @note The adjustment made in this function is done using the
        * negative of the @p pressure_adjustment function argument that
@@ -1364,8 +1358,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void denormalize_pressure(const double                      pressure_adjustment,
-                                LinearAlgebra::BlockVector       &vector,
-                                const LinearAlgebra::BlockVector &relevant_vector) const;
+                                LinearAlgebra::BlockVector       &vector) const;
 
       /**
        * Apply the bound preserving limiter to the discontinuous Galerkin solutions:
@@ -1457,7 +1450,7 @@ namespace aspect
        * <code>source/simulator/helper_functions.cc</code>.
        */
       void interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
-                                            LinearAlgebra::Vector &vec);
+                                            LinearAlgebra::Vector &vec) const;
 
 
       /**
@@ -1489,7 +1482,7 @@ namespace aspect
        * <code>source/simulator/nullspace.cc</code>.
        */
       void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-                            LinearAlgebra::BlockVector &tmp_distributed_stokes);
+                            LinearAlgebra::BlockVector &tmp_distributed_stokes) const;
 
       /**
        * Compute the angular momentum and other rotation properties
@@ -1526,10 +1519,10 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_net_angular_momentum( const bool use_constant_density,
-                                        LinearAlgebra::BlockVector &relevant_dst,
-                                        LinearAlgebra::BlockVector &tmp_distributed_stokes,
-                                        const bool limit_to_top_faces = false);
+      void remove_net_angular_momentum(const bool use_constant_density,
+                                       LinearAlgebra::BlockVector &relevant_dst,
+                                       LinearAlgebra::BlockVector &tmp_distributed_stokes,
+                                       const bool limit_to_top_faces = false) const;
 
       /**
        * Offset the boundary id of all faces located on an outflow boundary
@@ -1562,9 +1555,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_net_linear_momentum( const bool use_constant_density,
-                                       LinearAlgebra::BlockVector &relevant_dst,
-                                       LinearAlgebra::BlockVector &tmp_distributed_stokes);
+      void remove_net_linear_momentum(const bool use_constant_density,
+                                      LinearAlgebra::BlockVector &relevant_dst,
+                                      LinearAlgebra::BlockVector &tmp_distributed_stokes) const;
 
       /**
        * Compute the maximal velocity throughout the domain. This is needed to
@@ -1729,7 +1722,7 @@ namespace aspect
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
-      */
+       */
       bool
       stokes_A_block_is_symmetric () const;
 
@@ -1749,10 +1742,10 @@ namespace aspect
       check_consistency_of_formulation ();
 
       /**
-      * This function checks if the default solver and/or material
-      * averaging were selected and if so, determines the appropriate
-      * solver and/or averaging option.
-      */
+       * This function checks if the default solver and/or material
+       * averaging were selected and if so, determines the appropriate
+       * solver and/or averaging option.
+       */
       void
       select_default_solver_and_averaging ();
 
@@ -1773,7 +1766,7 @@ namespace aspect
        * Computes the initial Newton residual.
        */
       double
-      compute_initial_newton_residual (const LinearAlgebra::BlockVector &linearized_stokes_initial_guess);
+      compute_initial_newton_residual ();
 
       /**
        * This function computes the Eisenstat Walker linear tolerance used for the Newton iterations
@@ -1978,9 +1971,9 @@ namespace aspect
       const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
 
       /**
-       * The world holding the particles
+       * The managers holding different sets of particles
        */
-      std::vector<std::unique_ptr<Particle::World<dim>>> particle_worlds;
+      std::vector<Particle::Manager<dim>> particle_managers;
 
       /**
        * @}
@@ -1995,6 +1988,7 @@ namespace aspect
       unsigned int                                              timestep_number;
       unsigned int                                              pre_refinement_step;
       unsigned int                                              nonlinear_iteration;
+      unsigned int                                              nonlinear_solver_failures;
       /**
        * @}
        */
@@ -2102,7 +2096,7 @@ namespace aspect
       /**
        * This vector is used for the weighted BFBT preconditioner. It
        * stores the inverted lumped velocity mass matrix.
-      */
+       */
       LinearAlgebra::BlockVector                                inverse_lumped_mass_matrix;
 
       /**

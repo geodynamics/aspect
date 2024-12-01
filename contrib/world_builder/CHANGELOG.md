@@ -9,6 +9,17 @@ Add new entries a the bottom of the current list in the subheading. Item format:
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0]
+### Added
+- Added the ability to calculate the water content within the oceanic plate feature and the subducting plate feature. The implementation samples the temperature within the feature, calculates a lithostatic pressure, and determines the water content using parameterized phase diagrams for 4 different lithologies: sediment, mid ocean ridge basalt (MORB), gabbro, and peridotite from [Tian et al., 2019](https://doi.org/10.1029/2019GC008488). \[Daniel Douglas; 2024-08-20; [#661](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/661)\]
+- Added a `random uniform distribution deflected` grains model for all features that allows an initial texture computed from a random uniform distribution of rotation matrices applied to a given orientation specified as a set of Euler angles or a rotation matrix. \[Yijun Wang; 2024-06-06; [#713](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/713)\]
+### Changed
+- In the "mass conserving" model, change the name of the entry "plate velocity" to "spreading velocity" \[Haoyuan Li; 2024-03-11; [#694](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/694)\]
+- The Windows MinGW/CYGWIN install options are no longer supported. You are recommended to use Linux subsystems for Windows or the visual studio compiler instead on Windows. \[Menno Fraters; 2024-08-01; [#743](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/743), [#744](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/744)\]
+
+### Fixed
+
+
 ## [0.6.0]
 ### Added
 - Implemented the framework that will allow the mass conserving temperature model to account for the the movement of a spreading center through time. \[Daniel Douglas; Haoyuan Li; 2024-02-29; [#654](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/654)\]
@@ -50,7 +61,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - A new input parameter and associated functions which define the maximum depth of a model. This allows the world builder to create a complete picture of the world. \[Menno Fraters; 2021-11-08; [#367](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/367) and [#331](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/331)\]
 - A one of type which can create a JSON schema entry where one of several types can be chosen. \[Menno Fraters; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
 - A value at points type which can read in an array containing a value and a list of points from the input. \[Menno Fraters; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
-- A surface object which can take an array of value at points and create an interpolation through delaunay triangulation (with the delaunator library which was added) and a KD-Tree and barycentric linear interplation. \[Menno Fraters, KD-Tree with help of Oliver Kreylos; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
+- A surface object which can take an array of value at points and create an interpolation through delaunay triangulation (with the delaunator library which was added) and a KD-Tree and barycentric linear interpolation. \[Menno Fraters, KD-Tree with help of Oliver Kreylos; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
 - The option to make min and max depth into variable surfaces for all area features (continental plate, oceanic plate and mantle layer) and their temperature, composition and grain plugins. \[Menno Fraters; 2022-03-26; [#366](https://github.com/GeodynamicWorldBuilder/WorldBuilder/issues/366) and [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
 - The option to the WordBuilderApp to input 3D spherical coordinates \[Menno Fraters; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]
 - An equal operator (operator==) for the point class, which compares two points with an espilon. \[Menno Fraters; 2022-03-26; [#396](https://github.com/GeodynamicWorldBuilder/WorldBuilder/pull/396)\]

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -57,7 +57,7 @@ namespace aspect
             const double p = in.pressure[i];
             const double T = in.temperature[i];
             out.viscosities[i] = 1.0;
-            out.densities[i] = exp(alpha*T)*p;
+            out.densities[i] = std::exp(alpha*T)*p;
             out.thermal_expansion_coefficients[i] = -alpha;
             out.specific_heat[i] = 1.0;
             out.thermal_conductivities[i] = 1.0;
@@ -81,8 +81,8 @@ namespace aspect
         const double alpha = -0.2;
 
         Tensor<1,dim> gravity;
-        gravity[0] = -(0.1e1 + 0.2e1 * alpha * (double) pi * cos((double) (2 * pi * x)) * cos((double) (pi * z))) / exp(alpha * (T0 + sin((double) (2 * pi * x)) * cos((double) (pi * z))));
-        gravity[1] = -(0.1e1 - alpha * sin((double) (2 * pi * x)) * (double) pi * sin((double) (pi * z))) / exp(alpha * (T0 + sin((double) (2 * pi * x)) * cos((double) (pi * z))));
+        gravity[0] = -(0.1e1 + 0.2e1 * alpha * (double) pi * std::cos((double) (2 * pi * x)) * std::cos((double) (pi * z))) / std::exp(alpha * (T0 + std::sin((double) (2 * pi * x)) * std::cos((double) (pi * z))));
+        gravity[1] = -(0.1e1 - alpha * std::sin((double) (2 * pi * x)) * (double) pi * std::sin((double) (pi * z))) / std::exp(alpha * (T0 + std::sin((double) (2 * pi * x)) * std::cos((double) (pi * z))));
 
 
         return gravity;
@@ -104,8 +104,8 @@ namespace aspect
         const double u1 = 1.0;
         const double w1 = 0.5;
 
-        values[0] = -2.0*u1*pi*sin((double) (2*pi*x)) + u1*cos((double) (2*pi*x)) - w1*(pi*pi+1.0)*cos((double) (pi*z));
-        values[1] = -w1*pi*sin(pi*z)+w1*cos(pi*z)-u1*(4*pi*pi+1)*cos(2*pi*x);
+        values[0] = -2.0*u1*pi*std::sin((double) (2*pi*x)) + u1*std::cos((double) (2*pi*x)) - w1*(pi*pi+1.0)*std::cos((double) (pi*z));
+        values[1] = -w1*pi*std::sin(pi*z)+w1*std::cos(pi*z)-u1*(4*pi*pi+1)*std::cos(2*pi*x);
         values[2] = 0.5-z;
       }
   };
@@ -223,15 +223,15 @@ namespace aspect
             Tensor<1,dim> force_u;
             const double force_p = 0.0;
 
-            force_u[0]= -0.32e2 / 0.3e1 * u1 * pow(pi, 0.3e1) * sin(0.2e1 * pi * x)
-                        + 0.16e2 / 0.3e1 * u1 * pi * pi * cos(0.2e1 * pi * x)
-                        - w1 * (pi * pi + 0.1e1) * pi * pi * cos(pi * z)
-                        + (0.5e0 - z) * (0.1e1 + 0.2e1 * alpha * pi * cos(0.2e1 * pi * x) * cos(pi * z));
+            force_u[0]= -0.32e2 / 0.3e1 * u1 * std::pow(pi, 0.3e1) * std::sin(0.2e1 * pi * x)
+                        + 0.16e2 / 0.3e1 * u1 * pi * pi * std::cos(0.2e1 * pi * x)
+                        - w1 * (pi * pi + 0.1e1) * pi * pi * std::cos(pi * z)
+                        + (0.5e0 - z) * (0.1e1 + 0.2e1 * alpha * pi * std::cos(0.2e1 * pi * x) * std::cos(pi * z));
 
-            force_u[1]= -0.4e1 / 0.3e1 * w1 * pow(pi, 0.3e1) * sin(pi * z)
-                        + 0.4e1 / 0.3e1 * w1 * pi * pi * cos(pi * z)
-                        - 0.4e1 * u1 * (0.4e1 * pi * pi + 0.1e1) * pi * pi * cos(0.2e1 * pi * x)
-                        - 0.1e1 + (0.5e0 - z) * (0.1e1 - alpha * sin(0.2e1 * pi * x) * pi * sin(pi * z));
+            force_u[1]= -0.4e1 / 0.3e1 * w1 * std::pow(pi, 0.3e1) * std::sin(pi * z)
+                        + 0.4e1 / 0.3e1 * w1 * pi * pi * std::cos(pi * z)
+                        - 0.4e1 * u1 * (0.4e1 * pi * pi + 0.1e1) * pi * pi * std::cos(0.2e1 * pi * x)
+                        - 0.1e1 + (0.5e0 - z) * (0.1e1 - alpha * std::sin(0.2e1 * pi * x) * pi * std::sin(pi * z));
 
 
             for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)

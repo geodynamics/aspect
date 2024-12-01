@@ -6,7 +6,7 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving temperature system... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -18,7 +18,7 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving temperature system... 23 iterations.
    Solving peridotite system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -30,7 +30,7 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving temperature system... 18 iterations.
    Solving peridotite system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:
@@ -42,7 +42,7 @@ Number of degrees of freedom: 28,553 (12,611+8,450+1,089+4,225+1,089+1,089)
    Solving temperature system... 17 iterations.
    Solving peridotite system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
-   Solving Stokes system... done.
+   Solving Stokes system (direct)... done.
    Solving fluid velocity system... 11 iterations.
 
    Postprocessing:

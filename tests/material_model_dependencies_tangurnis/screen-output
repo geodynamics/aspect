@@ -5,37 +5,40 @@ Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 10.2208
 
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.15498
 
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.67052
 
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.42138
 
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.775144
 
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.431241
 
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.243622
 
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.139193
 
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0801765
 
 
+WARNING: The nonlinear solver in the current timestep failed to converge.
+Acting according to the parameter 'Nonlinear solver failure strategy'...
+Continuing to the next timestep even though solution is not fully converged.
    Postprocessing:
 viscosity depends on
 density depends on
@@ -48,3 +51,5 @@ Termination requested by criterion: end time
 
 
 
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00000
@@ -18,7 +18,7 @@ Number of degrees of freedom: 678 (316+46+158+158)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 10 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00001
@@ -29,7 +29,7 @@ Skipping mesh refinement, because the mesh did not change.
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 14 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
@@ -41,7 +41,7 @@ Number of degrees of freedom: 400 (186+28+93+93)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 9 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00002
@@ -53,7 +53,7 @@ Number of degrees of freedom: 451 (210+31+105+105)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
@@ -65,7 +65,7 @@ Number of degrees of freedom: 400 (186+28+93+93)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 10 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00003
@@ -77,7 +77,7 @@ Number of degrees of freedom: 511 (238+35+119+119)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
@@ -88,7 +88,7 @@ Skipping mesh refinement, because the mesh did not change.
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00004
@@ -99,7 +99,7 @@ Skipping mesh refinement, because the mesh did not change.
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 13 iterations.
-   Solving Stokes system... 28+0 iterations.
+   Solving Stokes system (GMG)... 28+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
@@ -111,7 +111,7 @@ Number of degrees of freedom: 631 (294+43+147+147)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 12 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
@@ -123,7 +123,7 @@ Number of degrees of freedom: 614 (286+42+143+143)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 12 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Number of advected particles: 10
@@ -135,7 +135,7 @@ Number of degrees of freedom: 567 (264+39+132+132)
    Skipping temperature solve because RHS is zero.
    Advecting particles...  done.
    Solving C_1 system ... 11 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement_02/particles/particles-00005

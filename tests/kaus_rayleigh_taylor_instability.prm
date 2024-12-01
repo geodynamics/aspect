@@ -29,9 +29,13 @@ subsection Postprocess
 
   subsection Visualization
     set Time between graphical output = 0
-    set List of output variables      = viscosity, density
+    set List of output variables      = material properties
     set Output mesh velocity          = true
     set Output format = gnuplot
+
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
   end
 
   subsection Topography

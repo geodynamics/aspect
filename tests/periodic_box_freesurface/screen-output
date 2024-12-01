@@ -8,7 +8,7 @@ Number of mesh deformation degrees of freedom: 8,450
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 80+0 iterations.
+   Solving Stokes system (AMG)... 80+0 iterations.
 
 Number of active cells: 1,444 (on 8 levels)
 Number of degrees of freedom: 20,706 (12,722+1,623+6,361)
@@ -19,7 +19,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 67+0 iterations.
+   Solving Stokes system (AMG)... 67+0 iterations.
 
    Postprocessing:
 
@@ -44,7 +44,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving mesh displacement system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 60+0 iterations.
+   Solving Stokes system (AMG)... 60+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.438 m/year, 1 m/year
@@ -54,7 +54,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving mesh displacement system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 61+0 iterations.
+   Solving Stokes system (AMG)... 61+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.405 m/year, 0.954 m/year
@@ -64,7 +64,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving mesh displacement system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 53+0 iterations.
+   Solving Stokes system (AMG)... 53+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.393 m/year, 0.935 m/year
@@ -74,7 +74,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving mesh displacement system... 11 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 50+0 iterations.
+   Solving Stokes system (AMG)... 50+0 iterations.
 
    Postprocessing:
      RMS, max velocity:  0.387 m/year, 0.925 m/year

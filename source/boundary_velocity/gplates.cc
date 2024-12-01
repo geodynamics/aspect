@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -379,7 +379,7 @@ namespace aspect
         const double y3 = rotation_matrix[1][1];
         const double z3 = rotation_matrix[1][2];
 
-        double d1 = sqrt(x2*x2 + z2*z2);
+        double d1 = std::sqrt(x2*x2 + z2*z2);
 
         double cosTheta, sinTheta;
         if (d1 < std::numeric_limits<double>::min())
@@ -397,7 +397,7 @@ namespace aspect
         orientation[1] = - theta * constants::radians_to_degree;
 
         // now rotate about x axis
-        double d = sqrt(x2*x2 + y2*y2 + z2*z2);
+        double d = std::sqrt(x2*x2 + y2*y2 + z2*z2);
 
         double sinPhi, cosPhi;
         if (d < std::numeric_limits<double>::min())
@@ -422,7 +422,7 @@ namespace aspect
         // finally, rotate about z
         double x3p = x3*cosTheta - z3*sinTheta;
         double y3p = - sinPhi*sinTheta*x3 + cosPhi*y3 - sinPhi*cosTheta*z3;
-        double d2 = sqrt(x3p*x3p + y3p*y3p);
+        double d2 = std::sqrt(x3p*x3p + y3p*y3p);
 
         double cosAlpha, sinAlpha;
         if (d2 < std::numeric_limits<double>::min())

@@ -27,9 +27,11 @@ ASPECT is published under the GNU GPL v2 or newer license.
 ## Table of Contents
 ```{toctree}
 ---
-maxdepth: 2
+maxdepth: 1
 ---
 user/index.md
 parameters/index.md
+user/developer_documentation.md
+user/authors.md
 references.md
 ```

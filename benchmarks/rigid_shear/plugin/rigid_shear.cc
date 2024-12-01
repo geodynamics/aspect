@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2019 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,7 +22,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/postprocess/particles.h>
 #include <aspect/particle/property/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <aspect/boundary_velocity/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>

@@ -5,10 +5,10 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 53+0 iterations.
+   Solving Stokes system (GMG)... 53+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 4+0 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.40927e-08
 
 
@@ -22,12 +22,12 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 *** Timestep 1:  t=1000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.12022e-08
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.11911e-08
 
 
    Postprocessing:
-     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -0.7775/1.023/8.104e+07
+     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -0.6921/0.7358/8.366e+07
      Number of advected particles: 11974
 
 
@@ -36,12 +36,12 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 *** Timestep 2:  t=2000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.12307e-08
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.1212e-08
 
 
    Postprocessing:
-     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -0.8803/1.531/7.631e+07
+     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -0.8409/1.117/5.99e+07
      Number of advected particles: 11971
 
 

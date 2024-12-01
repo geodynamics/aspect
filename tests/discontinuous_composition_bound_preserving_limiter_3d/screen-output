@@ -5,7 +5,7 @@ Number of degrees of freedom: 4,769 (2,187+125+729+1,728)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
 
 Number of active cells: 120 (on 4 levels)
 Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
@@ -13,7 +13,7 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0348 m/year, 0.127 m/year
@@ -22,7 +22,7 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
 *** Timestep 1:  t=123162 years, dt=123162 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0234 m/year, 0.0846 m/year
@@ -31,7 +31,7 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
 *** Timestep 2:  t=307638 years, dt=184476 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0245 m/year, 0.086 m/year
@@ -43,7 +43,7 @@ Number of degrees of freedom: 16,911 (7,695+387+2,565+6,264)
 *** Timestep 3:  t=489391 years, dt=181753 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
-   Solving Stokes system... 23+0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0244 m/year, 0.0854 m/year
@@ -52,7 +52,7 @@ Number of degrees of freedom: 16,911 (7,695+387+2,565+6,264)
 *** Timestep 4:  t=500000 years, dt=10608.9 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
-   Solving Stokes system... 22+0 iterations.
+   Solving Stokes system (GMG)... 22+0 iterations.
 
    Postprocessing:
      RMS, max velocity:         0.0243 m/year, 0.0853 m/year

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -73,8 +73,8 @@ namespace aspect
             if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
               {
                 // geometric interpolation
-                out.viscosities[i] = (pow(10, ((1-composition[0]) * log10(eta*visc_temperature_dependence)
-                                               + composition[0] * log10(eta*composition_viscosity_prefactor*visc_temperature_dependence))));
+                out.viscosities[i] = (std::pow(10, ((1-composition[0]) * std::log10(eta*visc_temperature_dependence)
+                                                    + composition[0] * std::log10(eta*composition_viscosity_prefactor*visc_temperature_dependence))));
               }
             else
               out.viscosities[i] = visc_composition_dependence * visc_temperature_dependence * eta;

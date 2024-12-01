@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -38,32 +38,36 @@ namespace aspect
 
       template <int dim>
       void
-      IntegratedStrainInvariant<dim>::update_particle_property(const unsigned int data_position,
-                                                               const Vector<double> &/*solution*/,
-                                                               const std::vector<Tensor<1,dim>> &gradients,
-                                                               typename ParticleHandler<dim>::particle_iterator &particle) const
+      IntegratedStrainInvariant<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
+                                                                 typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        // Integrated strain invariant from prior time step
-        const auto data = particle->get_properties();
-        double old_strain = data[data_position];
 
-        // Current timestep
-        const double dt = this->get_timestep();
+        unsigned int p = 0;
+        for (auto &particle: particles)
+          {
+            // Integrated strain invariant from prior time step
+            const auto data = particle.get_properties();
+            const double old_strain = data[this->data_position];
 
-        // Velocity gradients
-        Tensor<2,dim> grad_u;
-        for (unsigned int d=0; d<dim; ++d)
-          grad_u[d] = gradients[d];
+            // Current timestep
+            const double dt = this->get_timestep();
 
-        // Calculate strain rate from velocity gradients
-        const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
+            // Velocity gradients
+            Tensor<2,dim> grad_u;
+            for (unsigned int d=0; d<dim; ++d)
+              grad_u[d] = inputs.gradients[p][this->introspection().component_indices.velocities[d]];
 
-        // Calculate strain rate second invariant
-        const double edot_ii = std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.));
+            // Calculate strain rate from velocity gradients
+            const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
 
-        // New strain is the old strain plus dt*edot_ii
-        const double new_strain = old_strain + dt*edot_ii;
-        data[data_position] = new_strain;
+            // Calculate strain rate second invariant
+            const double edot_ii = std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.));
+
+            // New strain is the old strain plus dt*edot_ii
+            const double new_strain = old_strain + dt*edot_ii;
+            data[this->data_position] = new_strain;
+            ++p;
+          }
       }
 
 
@@ -79,9 +83,12 @@ namespace aspect
 
       template <int dim>
       UpdateFlags
-      IntegratedStrainInvariant<dim>::get_needed_update_flags () const
+      IntegratedStrainInvariant<dim>::get_update_flags (const unsigned int component) const
       {
-        return update_gradients;
+        if (this->introspection().component_masks.velocities[component] == true)
+          return update_gradients;
+
+        return update_default;
       }
 
 

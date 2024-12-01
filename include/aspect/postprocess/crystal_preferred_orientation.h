@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2023 by the authors of the ASPECT code.
+ Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -22,7 +22,7 @@
 #define _aspect_postprocess_crystal_preferred_orientation_h
 
 #include <aspect/postprocess/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 
 #include <aspect/simulator_access.h>
 
@@ -78,8 +78,8 @@ namespace aspect
         required_other_postprocessors () const override;
 
         /**
-        * Declare the parameters this class takes through input files.
-        */
+         * Declare the parameters this class takes through input files.
+         */
         static
         void
         declare_parameters (ParameterHandler &prm);

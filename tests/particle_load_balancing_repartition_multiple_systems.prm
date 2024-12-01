@@ -1,0 +1,149 @@
+# A test for the particle load balancing strategy 'repartition'
+# when multiple particle worlds are active.
+# The test is balanced to show that the cell weight used for
+# the repartition algorithm is exactly 1000 and only added once
+# from the first particle world. The test domain is split into
+# two particle worlds, one containing particles in the upper
+# right quarter of the domain, the other covering the rest of
+# the domain. The particle weights are chosen so that
+# for a cell weight of 1000 the integrated weight from the
+# upper right quarter of the domain equals the integrated
+# weight from the other three quarters, which leads to a
+# cell distribution between the two processes of 16:48,
+# which can be seen in the output.
+
+# MPI: 2
+
+set Dimension                              = 2
+set End time                               = 0
+set Use years in output instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1.0000
+    set Y extent  = 1.0000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right
+  set Zero velocity boundary indicators       = bottom, top
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1010
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = -10
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Strategy                           = maximum refinement function,  minimum refinement function
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 1
+  set Coarsening fraction                = 0.05
+  set Refinement fraction                = 0.3
+
+  subsection Maximum refinement function
+    set Function expression = 3
+  end
+
+  subsection Minimum refinement function
+    set Function expression = 3
+  end
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = particles, particle count statistics, load balance statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+    set Output format = gnuplot
+    set List of output variables =  partition,  particle count
+  end
+
+  subsection Particles
+    set Time between data output = 100
+    set Data output format = gnuplot
+  end
+end
+
+subsection Particles
+  set Number of particle systems = 2
+  set Load balancing strategy = repartition
+  set Integration scheme = euler
+  set Particle weight = 5000
+  set Particle generator name = probability density function
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 16
+      set Function expression = x > 0.5 ? (y > 0.5 ? 1.0 : 1e-3) : 1e-3
+      set Random cell selection = false
+    end
+  end
+end
+
+subsection Particles 2
+  set Load balancing strategy = repartition
+  set Integration scheme = euler
+  set Particle weight = 1000
+  set Particle generator name = probability density function
+
+  subsection Generator
+    subsection Probability density function
+      set Number of particles = 48
+      set Function expression = x > 0.5 ? (y > 0.5 ? 1e-3 : 1.0) : 1.0
+      set Random cell selection = false
+    end
+  end
+end

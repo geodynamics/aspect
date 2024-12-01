@@ -5,7 +5,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00000
@@ -14,7 +14,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 1.019e-12/1/0.5
@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00001
@@ -31,7 +31,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 4.142e-11/1/0.5001
@@ -39,7 +39,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00002
@@ -48,7 +48,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00003
@@ -57,7 +57,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 1.93e-09/0.9999/0.5002
@@ -65,7 +65,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00004
@@ -74,7 +74,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00005
@@ -83,7 +83,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 2.425e-08/0.9998/0.5002
@@ -91,7 +91,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 11+0 iterations.
+   Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00006
@@ -100,7 +100,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 8.979e-08/0.9995/0.5002
@@ -108,7 +108,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00007
@@ -117,7 +117,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00008
@@ -126,7 +126,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: 4.393e-07/0.9984/0.5002
@@ -134,7 +134,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00009
@@ -143,7 +143,7 @@ Number of degrees of freedom: 1,012 (578+81+289+64)
 *** Timestep 16:  t=1 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 3 iterations.
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-composition_passive_discontinuous_constant/solution/solution-00010

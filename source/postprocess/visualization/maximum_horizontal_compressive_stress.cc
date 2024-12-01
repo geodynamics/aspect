@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -134,14 +134,14 @@ namespace aspect
                   // then check the sign of f''(alpha) to determine
                   // which of the two stationary points is the maximum
                   const double f_double_prime_1 = 2*(b-a)*std::cos(2*alpha_1)
-                                                  - 2*c*sin(2*alpha_1);
+                                                  - 2*c*std::sin(2*alpha_1);
                   double alpha;
                   if (f_double_prime_1 < 0)
                     alpha = alpha_1;
                   else
                     {
                       Assert (/* f_double_prime_2 = */
-                        2*(b-a)*std::cos(2*alpha_2) - 2*c*sin(2*alpha_2) <= 0,
+                        2*(b-a)*std::cos(2*alpha_2) - 2*c*std::sin(2*alpha_2) <= 0,
                         ExcInternalError());
                       alpha = alpha_2;
                     }

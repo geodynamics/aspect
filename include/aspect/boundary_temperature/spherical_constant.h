@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -43,8 +43,8 @@ namespace aspect
     {
       public:
         /**
-        * Initialize some variables.
-        */
+         * Initialize some variables.
+         */
         void
         initialize() override;
 

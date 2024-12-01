@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -1225,9 +1225,9 @@ namespace aspect
                              "linear interpolation between vertices that ParaView and VisIt usually show. "
                              "Note that activating this option is safe and recommended, but requires that "
                              "(i) ``Output format'' is set to ``vtu'', (ii) ``Interpolate output'' is "
-                             "set to true, (iii) you use a sufficiently new version of Paraview "
+                             "set to true, and (iii) you use a sufficiently new version of Paraview "
                              "or VisIt to read the files (Paraview version 5.5 or newer, and VisIt version "
-                             "to be determined), and (iv) you use deal.II version 9.1.0 or newer. "
+                             "to be determined). "
                              "\n"
                              "The effect of using this option can be seen in the following "
                              "picture:"
@@ -1248,7 +1248,7 @@ namespace aspect
                              "therefore saves disk space, but misrepresents discontinuous "
                              "output properties. Activating this function reduces the disk space "
                              "by about a factor of $2^{dim}$ for HDF5 output, and currently has no "
-                             "effect on other output formats. "
+                             "effect on other output formats.\n "
                              ":::{warning}\n"
                              "Setting this flag to true will result in "
                              "visualization output that does not accurately represent discontinuous "
@@ -1335,7 +1335,7 @@ namespace aspect
               ExcMessage ("No postprocessors registered!?"));
       std::vector<std::string> viz_names;
 
-      std::string visualization_subdirectory = this->get_output_directory() + "solution/";
+      const std::string visualization_subdirectory = this->get_output_directory() + "solution/";
       Utilities::create_directory (visualization_subdirectory,
                                    this->get_mpi_communicator(),
                                    true);
@@ -1420,53 +1420,22 @@ namespace aspect
                 viz_names.push_back (std::get<0>(*p));
             }
 
-          // Unify material property visualization plugins into the 'material properties'
-          // plugin to avoid duplicated code and multiple calls to the material model
-          prm.enter_subsection("Material properties");
-          {
-            bool material_properties_enabled = std::find(viz_names.begin(),
-                                                         viz_names.end(),
-                                                         "material properties") != viz_names.end() ;
+          // TODO: Remove deprecated options
+          const std::set<std::string> deprecated_postprocessors = {"density",
+                                                                   "specific heat",
+                                                                   "thermal conductivity",
+                                                                   "thermal diffusivity",
+                                                                   "thermal expansivity",
+                                                                   "viscosity"
+                                                                  };
 
-            std::set<std::string> deprecated_postprocessors = {"density",
-                                                               "specific heat",
-                                                               "thermal conductivity",
-                                                               "thermal diffusivity",
-                                                               "thermal expansivity",
-                                                               "viscosity"
-                                                              };
-
-            // For all selected visualization plugins
-            auto plugin_name = viz_names.begin();
-            while (plugin_name != viz_names.end())
-              {
-                // Check if the current name is in the set of the deprecated names
-                if (deprecated_postprocessors.count(*plugin_name) != 0)
-                  {
-                    // If there is no 'material properties' yet
-                    if (material_properties_enabled == false)
-                      {
-                        // Set the current property name as the parameter for 'material properties'
-                        prm.set("List of material properties",*plugin_name);
-                        // Then replace the currently selected plugin with 'material properties'
-                        *plugin_name = "material properties";
-                        material_properties_enabled = true;
-                        ++plugin_name;
-                      }
-                    else
-                      {
-                        // Add the current property name to the parameter of 'material properties'
-                        std::string new_property_names = prm.get("List of material properties") + ", " + *plugin_name;
-                        prm.set("List of material properties",new_property_names);
-                        // Then delete the current plugin
-                        plugin_name = viz_names.erase(plugin_name);
-                      }
-                  }
-                else
-                  ++plugin_name;
-              }
-          }
-          prm.leave_subsection();
+          for (const auto &viz_name: viz_names)
+            {
+              // Check if the current name is in the set of the deprecated names
+              AssertThrow(deprecated_postprocessors.count(viz_name) == 0,
+                          ExcMessage("The visualization postprocessor '" + viz_name + "' has been removed. "
+                                     "Please use the 'material properties' postprocessor instead."));
+            }
         }
         prm.leave_subsection();
       }
@@ -1532,9 +1501,15 @@ namespace aspect
     void
     Visualization<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
       std::ostringstream os;
-      aspect::oarchive oa (os);
-      oa << (*this);
+      {
+        aspect::oarchive oa (os);
+        oa << (*this);
+      }
 
       status_strings["Visualization"] = os.str();
 

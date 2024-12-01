@@ -8,7 +8,7 @@
 # u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)
 # u_f = fluid velocity # m/yr
 # u_s = solid velocity # m/yr
-# K_D = Darcy Coefficient = k / eta_f
+# K_D = Darcy Coefficient # m3 s / kg
 # k = permeability # m2 / s
 # eta_f = fluid viscosity # Pa s
 # phi = porosity
@@ -23,12 +23,14 @@
 # Where k_0 is the reference permeability. The test is a 10 km x 10 km 2D
 # box with a uniform porosity of 0.02 (2%) everywhere. The fluid has a
 # density of 1000 kg/m3, and a viscosity of 10 Pa s, and the solid has a
-# density of 3000 kg/m3 and a uniform velocity of 0 m/yr. The reference
-# pemeability is 1e-6, and gravity is set to -10. This results in a fluid
-# velocity of 24.25 m/yr. The mesh is 2.5 km x 2.5 km, and with CFL = 1,
-# this means that the time step should be 2500 m / 24.25 m/yr = 103.11
+# density of 3000 kg/m3 with an x velocity of 0.001 m/yr and a y velocity of
+# 0.75 m/yr. The reference pemeability is 1e-6, and gravity is set to -10.
+# This results in a fluid velocity of ~24.9958 m/yr in the y direction, and
+# 0.001 m/yr in the x direction The mesh is 2.5 km x 2.5 km, and with CFL = 1,
+# this means that the first time step should be 2500 m / 24.9958 m/yr = 100.017 yr.
 # This also serves as a test for the 'darcy velocity' postprocessor, by
-# confirming that the darcy velocity is 24.25 m/yr.
+# confirming that the darcy velocity is 24.9958 m/yr in the y direction, and
+# 0.001 m/yr in the x direction.
 ############### Global parameters
 
 set Dimension                              = 2
@@ -75,9 +77,13 @@ subsection Boundary temperature model
   end
 end
 
-# Free slip boundary on all sides
+# Prescribe a solid x velocity of 0.001 m/yr and a solid
+# y velocity of 0.75 m/yr.
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right, top, bottom
+  set Prescribed velocity boundary indicators = top: function, bottom: function, left: function, right: function
+  subsection Function
+    set Function expression = 0.001;0.75
+  end
 end
 
 # porosity and bound_fluid are required compositional fields when
@@ -132,7 +138,6 @@ subsection Material model
   # Set the solid density to 3000 kg/m3, and set the minimum/maximum viscosity
   # to 1e21 Pa s for an isoviscous model.
   subsection Visco Plastic
-    set Reference temperature                   = 1600
     set Prefactors for diffusion creep          = 5e-21
     set Viscous flow law                        = diffusion
     set Densities                               = 3000
@@ -158,6 +163,7 @@ end
 # Output the darcy velocity
 subsection Postprocess
   set List of postprocessors = visualization
+
   subsection Visualization
     set List of output variables = darcy velocity
     set Output format            = gnuplot

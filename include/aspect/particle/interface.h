@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -43,22 +43,22 @@ namespace aspect
         ParticleInterfaceBase();
 
         /**
-         * @brief Set which particle world the plugin belongs to.
+         * @brief Set which particle manager the plugin belongs to.
          *
-         * @param particle_world_index The index of the particle world this plugin belongs to.
+         * @param particle_manager_index The index of the particle manager this plugin belongs to.
          */
-        void set_particle_world_index(unsigned int particle_world_index);
+        void set_particle_manager_index(unsigned int particle_manager_index);
 
         /**
-         * @brief Gets which particle world the plugin belong to.
+         * @brief Gets which particle manager the plugin belong to.
          */
-        unsigned int get_particle_world_index() const;
+        unsigned int get_particle_manager_index() const;
 
       private:
         /**
-         * Stores the index to the particle world, to which the plugin belongs.
+         * Stores the index to the particle manager, to which the plugin belongs.
          */
-        unsigned int particle_world_index;
+        unsigned int particle_manager_index;
     };
 
   }

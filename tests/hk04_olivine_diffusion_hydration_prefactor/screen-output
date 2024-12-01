@@ -6,7 +6,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Solving temperature system... 0 iterations.
    Solving solid_2 system ... 0 iterations.
    Solving bound_fluid system ... 0 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0
 
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -181,10 +181,6 @@ namespace aspect
         Tensor<1,dim>
         boundary_velocity (const types::boundary_id boundary_indicator,
                            const Point<dim> &position) const override;
-
-        // avoid -Woverloaded-virtual warning until the deprecated function
-        // is removed from the interface:
-        using Interface<dim>::boundary_velocity;
 
         /**
          * Initialization function. This function is called once at the

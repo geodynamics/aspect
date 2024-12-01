@@ -10,10 +10,10 @@ Number of degrees of freedom: 4,090 (882+121+441+441+441+441+441+441+441)
    Solving plastic_strain system ... 0 iterations.
    Solving viscous_strain system ... 0 iterations.
    Solving test system ... 0 iterations.
-   Solving Stokes system... 0+7 iterations.
+   Solving Stokes system (GMG)... 0+7 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0177072
 
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.3668e-10
 
 
@@ -33,7 +33,7 @@ Number of degrees of freedom: 4,090 (882+121+441+441+441+441+441+441+441)
    Solving plastic_strain system ... 10 iterations.
    Solving viscous_strain system ... 8 iterations.
    Solving test system ... 0 iterations.
-   Solving Stokes system... 0+4 iterations.
+   Solving Stokes system (GMG)... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.01491e-06
 
 

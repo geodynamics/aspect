@@ -37,7 +37,7 @@ namespace aspect
      * A class that implements initial topography determined
      * from an AsciiData input file.
      *
-     * @ingroup InitialTopographyModel
+     * @ingroup MeshDeformation
      */
     template <int dim>
     class AsciiData : public Utilities::AsciiDataBoundary<dim>, public Interface<dim>

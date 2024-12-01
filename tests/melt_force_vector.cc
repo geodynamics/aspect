@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -114,10 +114,10 @@ namespace aspect
 // copy and paste here
             if (force)
               {
-                force->rhs_u[i][0] = cos(z) - cos(x + z) + cos(x * z) * z;
-                force->rhs_u[i][1] = sin(x) - cos(x + z) + cos(x * z) * x;
-                force->rhs_p[i] = 0.4e1 * sin(x + z) - sin(x * z) * z * z - sin(x * z) * x * x;
-                force->rhs_melt_pc[i] = -0.10e2 * sin(x + z) / (0.1e1 + exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1));
+                force->rhs_u[i][0] = std::cos(z) - std::cos(x + z) + std::cos(x * z) * z;
+                force->rhs_u[i][1] = std::sin(x) - std::cos(x + z) + std::cos(x * z) * x;
+                force->rhs_p[i] = 0.4e1 * std::sin(x + z) - std::sin(x * z) * z * z - std::sin(x * z) * x * x;
+                force->rhs_melt_pc[i] = -0.10e2 * std::sin(x + z) / (0.1e1 + std::exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1));
               }
 //***********
           }
@@ -132,7 +132,7 @@ namespace aspect
               // porosity = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.2e1 * z, 0.2e1));
               const double x = in.position[i](0);
               const double z = in.position[i](1);
-              melt_out->compaction_viscosities[i] = 0.1e0 + 0.1e0 * exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1); // xi
+              melt_out->compaction_viscosities[i] = 0.1e0 + 0.1e0 * std::exp(-0.20e2 * x * x - 0.20e2 * z * z + 0.1e1); // xi
               melt_out->fluid_viscosities[i] = 1.0;
               melt_out->permeabilities[i] = 1.0; // K_D
               melt_out->fluid_density_gradients[i] = 0.0;
@@ -157,14 +157,14 @@ namespace aspect
         double z = p(1);
 //**********
 // copy and paste here (add "out.")
-        const double phi = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));
+        const double phi = 0.1000000000e-1 + 0.2000000000e0 * std::exp(-0.200e2 * std::pow(x + 0.20e1 * z, 0.2e1));
 
-        values[0] = cos(z);                                                 //ux
-        values[1] = sin(x);                                                 //uz
-        values[2] = -0.2e1 * sin(x + z) + sin(x * z);                       //p_f
-        values[3] = sin(x + z);                                             //p_c
-        values[4] = values[0] - 1.0/phi * (-2.0 * cos(x+z) + cos(x*z)*z);   //u_f_x
-        values[5] = values[1] - 1.0/phi * (-2.0 * cos(x+z) + cos(x*z)*x);   //u_f_z
+        values[0] = std::cos(z);                                                 //ux
+        values[1] = std::sin(x);                                                 //uz
+        values[2] = -0.2e1 * std::sin(x + z) + std::sin(x * z);                       //p_f
+        values[3] = std::sin(x + z);                                             //p_c
+        values[4] = values[0] - 1.0/phi * (-2.0 * std::cos(x+z) + std::cos(x*z)*z);   //u_f_x
+        values[5] = values[1] - 1.0/phi * (-2.0 * std::cos(x+z) + std::cos(x*z)*x);   //u_f_z
         values[6] = values[2] + values[3] / (1.0 - phi);                    //p_s = p_f + p_c / (1-phi)
         values[7] = 0;
         values[8] = phi;                                                    //porosity
@@ -305,8 +305,8 @@ namespace aspect
             Tensor<1,dim> gradient;
 //**********
 // copy and paste here (add "out.")
-            gradient[0] = -0.2e1 * cos(x + z) + cos(x * z) * z;
-            gradient[1] = -0.2e1 * cos(x + z) + cos(x * z) * x;
+            gradient[0] = -0.2e1 * std::cos(x + z) + std::cos(x * z) * z;
+            gradient[1] = -0.2e1 * std::cos(x + z) + std::cos(x * z) * x;
 //**********
             output[q] = gradient * normal_vectors[q];
           }

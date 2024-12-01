@@ -82,8 +82,12 @@ subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, composition statistics,particles
 
   subsection Visualization
-    set List of output variables = density
+    set List of output variables = material properties
     set Time between graphical output = 0.1
+
+    subsection Material properties
+      set List of material properties = density
+    end
   end
 
   subsection Particles
@@ -116,11 +120,10 @@ end
 subsection Particles
   set List of particle properties = velocity, initial composition
   set Interpolation scheme = cell average
-  set Update ghost particles = true
   set Particle generator name = random uniform
 
   subsection Generator
-    subsection Probability density function
+    subsection Random uniform
       set Number of particles = 100000
     end
   end

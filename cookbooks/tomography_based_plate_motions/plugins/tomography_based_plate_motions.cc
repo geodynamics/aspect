@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2023 by the authors of the ASPECT code.
+  Copyright (C) 2023 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -306,7 +306,7 @@ namespace aspect
         out.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
+        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
 
       const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
 
@@ -725,8 +725,8 @@ namespace aspect
       if (this->get_adiabatic_conditions().is_initialized())
         {
           const double adiabatic_energy_term
-            = exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * pressure)
-                  / (dislocation_creep_exponent[phase_index] * constants::gas_constant * this->get_adiabatic_conditions().temperature(position)));
+            = std::exp((dislocation_activation_energy[phase_index] + dislocation_activation_volume[phase_index] * pressure)
+                       / (dislocation_creep_exponent[phase_index] * constants::gas_constant * this->get_adiabatic_conditions().temperature(position)));
 
           Assert(adiabatic_energy_term > 0.0,
                  ExcMessage("Adiabatic energy term has to be positive for dislocation creep. Instead it is: " + std::to_string(adiabatic_energy_term)));
@@ -897,7 +897,7 @@ namespace aspect
           = this->get_initial_temperature_manager_pointer();
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
-        initial_temperature_manager->template get_matching_initial_temperature_model<InitialTemperature::AdiabaticBoundary<dim>>();
+        initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
 
       // This function will fill the outputs for grain size, viscosity, and dislocation viscosity
       if (in.requests_property(MaterialProperties::viscosity))

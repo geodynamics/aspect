@@ -108,18 +108,12 @@ end
 subsection Particles
   set List of particle properties = initial composition
   set Interpolation scheme = nearest neighbor
-  set Update ghost particles = true
   set Maximum particles per cell = 10
   set Minimum particles per cell = 10
   set Particle generator name = uniform box
   set Load balancing strategy = add particles
 
   subsection Generator
-    subsection Probability density function
-      set Variable names      = x,z
-      set Function expression = 1 #x*x*z
-    end
-
     subsection Uniform box
       set Number of particles = 1000
     end

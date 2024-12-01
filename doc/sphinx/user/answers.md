@@ -1,5 +1,5 @@
 (cha:answers)=
-# Finding answers to more questions
+# Finding answers to questions
 
 If you have questions that go beyond this manual, there are a number of
 resources:

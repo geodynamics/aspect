@@ -7,7 +7,7 @@
 # of the mantle.
 # We define plate boundaries and cratons using WorldBuilder.
 
-set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/plugins/libtomography_based_plate_motions.release.so
+set Additional shared libraries            = ./plugins/libtomography_based_plate_motions.so
 set Dimension                              = 2
 set Use years in output instead of seconds = true
 set Output directory                       = 2D-slice-with-faults-cratons

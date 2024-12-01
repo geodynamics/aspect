@@ -671,7 +671,7 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+**Documentation:** This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Smoothing_20length_20scale)=
 ### __Parameter name:__ Smoothing length scale
@@ -751,13 +751,13 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The file name of the spherical harmonics coefficients from Ritsema et al.
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Maximum_20order)=
-### __Parameter name:__ Maximum order
+(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Maximum_20degree)=
+### __Parameter name:__ Maximum degree
 **Default value:** 20
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** The maximum order the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum order the data file stored. This parameter will be used only if &rsquo;Specify a lower maximum order&rsquo; is set to true.
+**Documentation:** The maximum degree the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum degree the data file stored. This parameter will be used only if &rsquo;Specify a lower maximum degree&rsquo; is set to true.
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation/Reference_20temperature)=
 ### __Parameter name:__ Reference temperature
@@ -781,15 +781,15 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+**Documentation:** This will set the heterogeneity prescribed by S20RTS or S40RTS to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 
-(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Specify_20a_20lower_20maximum_20order)=
-### __Parameter name:__ Specify a lower maximum order
+(parameters:Initial_20temperature_20model/S40RTS_20perturbation/Specify_20a_20lower_20maximum_20degree)=
+### __Parameter name:__ Specify a lower maximum degree
 **Default value:** false
 
 **Pattern:** [Bool]
 
-**Documentation:** Option to use a lower maximum order when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain order.
+**Documentation:** Option to use a lower maximum degree when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain degree.
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation/Spline_20knots_20depth_20file_20name)=
 ### __Parameter name:__ Spline knots depth file name
@@ -875,13 +875,13 @@ If the function you are describing represents a vector-valued function with mult
 
 **Documentation:** The file name of the spherical harmonics coefficients from Auer et al.
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Maximum_20order)=
-### __Parameter name:__ Maximum order
+(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Maximum_20degree)=
+### __Parameter name:__ Maximum degree
 **Default value:** 20
 
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
-**Documentation:** The maximum order the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum order the data file stored. This parameter will be used only if &rsquo;Specify a lower maximum order&rsquo; is set to true.
+**Documentation:** The maximum degree the users specify when reading the data file of spherical harmonic coefficients, which must be smaller than the maximum degree the data file stored. This parameter will be used only if &rsquo;Specify a lower maximum degree&rsquo; is set to true.
 
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation/Reference_20temperature)=
 ### __Parameter name:__ Reference temperature
@@ -905,15 +905,15 @@ If the function you are describing represents a vector-valued function with mult
 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
-**Documentation:** This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660km, but your closest spherical depth layers are only at 500km and 750km (due to a coarse resolution) it will only zero out heterogeneities down to 500km. Similar caution has to be taken when using adaptive meshing.
+**Documentation:** This will set the heterogeneity prescribed by SAVANI to zero down to the specified depth (in meters). Note that your resolution has to be adequate to capture this cutoff. For example if you specify a depth of 660 km, but your closest spherical depth layers are only at 500 km and 750 km (due to a coarse resolution) it will only zero out heterogeneities down to 500 km. Similar caution has to be taken when using adaptive meshing.
 
-(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Specify_20a_20lower_20maximum_20order)=
-### __Parameter name:__ Specify a lower maximum order
+(parameters:Initial_20temperature_20model/SAVANI_20perturbation/Specify_20a_20lower_20maximum_20degree)=
+### __Parameter name:__ Specify a lower maximum degree
 **Default value:** false
 
 **Pattern:** [Bool]
 
-**Documentation:** Option to use a lower maximum order when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain order.
+**Documentation:** Option to use a lower maximum degree when reading the data file of spherical harmonic coefficients. This is probably used for the faster tests or when the users only want to see the spherical harmonic pattern up to a certain degree.
 
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation/Spline_20knots_20depth_20file_20name)=
 ### __Parameter name:__ Spline knots depth file name

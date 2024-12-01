@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -49,7 +49,7 @@ namespace aspect
       {
         prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Probability density function");
+          prm.enter_subsection("Random uniform");
           {
             prm.declare_entry ("Number of particles", "1000",
                                Patterns::Double (0.),
@@ -92,7 +92,7 @@ namespace aspect
       {
         prm.enter_subsection("Generator");
         {
-          prm.enter_subsection("Probability density function");
+          prm.enter_subsection("Random uniform");
           {
             n_particles = static_cast<types::particle_index>(prm.get_double ("Number of particles"));
             random_cell_selection = prm.get_bool("Random cell selection");
@@ -117,7 +117,10 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_GENERATOR(RandomUniform,
                                          "random uniform",
                                          "Generates a random uniform distribution of "
-                                         "particles over the entire simulation domain.")
+                                         "particles over the entire simulation domain. "
+                                         "This generator can be understood as the special case "
+                                         "of the 'probability density function' generator where "
+                                         "the probability density is constant over the domain.")
     }
   }
 }

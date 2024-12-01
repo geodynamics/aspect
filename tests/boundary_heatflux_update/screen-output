@@ -9,7 +9,7 @@ Updating boundary heat flux to time step 0!
 *** Timestep 0:  t=0 seconds, dt=0 seconds
 Updating boundary heat flux to time step 0!
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 19+0 iterations.
+   Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 90 K, 90 K
@@ -19,7 +19,7 @@ Updating boundary heat flux to time step 0!
 *** Timestep 1:  t=1e+12 seconds, dt=1e+12 seconds
 Updating boundary heat flux to time step 1!
    Solving temperature system... 12 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 90 K, 90.07 K
@@ -29,7 +29,7 @@ Updating boundary heat flux to time step 1!
 *** Timestep 2:  t=2e+12 seconds, dt=1e+12 seconds
 Updating boundary heat flux to time step 2!
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 17+0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 90 K, 90.16 K

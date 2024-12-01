@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -156,31 +156,37 @@ namespace aspect
 
                 cell_vector = 0;
                 cell_matrix = 0;
-                for (unsigned int point=0; point<n_face_q_points; ++point)
+                for (unsigned int q=0; q<n_face_q_points; ++q)
                   {
                     // Select the direction onto which to project the velocity solution
                     Tensor<1,dim> direction;
                     if ( advection_direction == SurfaceAdvection::normal ) // project onto normal vector
-                      direction = fs_fe_face_values.normal_vector(point);
+                      direction = fs_fe_face_values.normal_vector(q);
                     else if ( advection_direction == SurfaceAdvection::vertical ) // project onto local gravity
-                      direction = this->get_gravity_model().gravity_vector(fs_fe_face_values.quadrature_point(point));
+                      direction = this->get_gravity_model().gravity_vector(fs_fe_face_values.quadrature_point(q));
                     else
                       AssertThrow(false, ExcInternalError());
 
                     direction *= ( direction.norm() > 0.0 ? 1./direction.norm() : 0.0 );
 
+                    const double JxW = fs_fe_face_values.JxW(q);
+
+                    small_vector<Tensor<1,dim>> phi_u(dofs_per_cell);
+                    for (unsigned int i=0; i<dofs_per_cell; ++i)
+                      phi_u[i] = fs_fe_face_values[extract_vel].value(i,q);
+
                     for (unsigned int i=0; i<dofs_per_cell; ++i)
                       {
                         for (unsigned int j=0; j<dofs_per_cell; ++j)
                           {
-                            cell_matrix(i,j) += (fs_fe_face_values[extract_vel].value(j,point) *
-                                                 fs_fe_face_values[extract_vel].value(i,point) ) *
-                                                fs_fe_face_values.JxW(point);
+                            cell_matrix(i,j) += (phi_u[j] *
+                                                 phi_u[i]) *
+                                                JxW;
                           }
 
-                        cell_vector(i) += (fs_fe_face_values[extract_vel].value(i,point) * direction)
-                                          * (velocity_values[point] * direction)
-                                          * fs_fe_face_values.JxW(point);
+                        cell_vector(i) += (phi_u[i] * direction)
+                                          * (velocity_values[q] * direction)
+                                          * JxW;
                       }
                   }
 
@@ -222,9 +228,7 @@ namespace aspect
       LinearAlgebra::Vector boundary_velocity;
 
       const IndexSet &mesh_locally_owned = mesh_deformation_dof_handler.locally_owned_dofs();
-      IndexSet mesh_locally_relevant;
-      DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
-                                               mesh_locally_relevant);
+      const IndexSet mesh_locally_relevant = DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler);
       boundary_velocity.reinit(mesh_locally_owned, mesh_locally_relevant,
                                this->get_mpi_communicator());
       project_velocity_onto_boundary(mesh_deformation_dof_handler, mesh_locally_owned,

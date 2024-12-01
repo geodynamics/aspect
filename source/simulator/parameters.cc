@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -126,7 +126,11 @@ namespace aspect
                        "several of the boundary velocity models described in Section~"
                        "\\ref{parameters:Boundary_20velocity_20model} interpret both "
                        "specific times in years instead of seconds, and velocities in "
-                       "meters per year instead of meters per second.");
+                       "meters per year instead of meters per second."
+                       "\n\n"
+                       "For the purposes of this parameter, a year consists of "
+                       "60*60*24*365.2425 seconds. In other words, a year is taken "
+                       "to have 365.2425 days.");
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0.),
@@ -206,8 +210,7 @@ namespace aspect
                                                "single Advection, iterated defect correction Stokes|"
                                                "iterated Advection and defect correction Stokes|"
                                                "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
-                                               "single Advection, no Stokes|IMPES|iterated IMPES|"
-                                               "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
+                                               "single Advection, no Stokes|"
                                                "first timestep only, single Stokes|no Advection, no Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
@@ -250,20 +253,16 @@ namespace aspect
                        "iterations for the Stokes system. "
                        "The `first timestep only, single Stokes' scheme solves the Stokes equations exactly "
                        "once, at the first time step. No nonlinear iterations are done, and the temperature and "
-                       "composition systems are not solved. "
-                       "\n\n"
-                       "The `IMPES' scheme is deprecated and only allowed for reasons of backwards "
-                       "compatibility. It is the same as `single Advection, single Stokes' ."
-                       "The `iterated IMPES' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility. It is the same as `iterated Advection and Stokes'. "
-                       "The `iterated Stokes' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility. It is the same as `single Advection, iterated Stokes'. "
-                       "The `Stokes only' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility. It is the same as `no Advection, iterated Stokes'. "
-                       "The `Advection only' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility. It is the same as `single Advection, no Stokes'. "
-                       "The `Newton Stokes' scheme is deprecated and only allowed for reasons of "
-                       "backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.");
+                       "composition systems are not solved.");
+
+    prm.declare_entry ("Nonlinear solver failure strategy", "continue with next timestep",
+                       Patterns::Selection("continue with next timestep|cut timestep size|abort program"),
+                       "Select the strategy on what to do if the nonlinear solver scheme fails to "
+                       "converge. The options are:\n"
+                       "`continue with next timestep`: ignore error and continue to the next timestep\n"
+                       "`cut timestep size`: reduce the current timestep size by a specified factor and redo "
+                       "the timestep\n"
+                       "`abort program`: abort the program with an error message.");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0., 1.),
@@ -331,7 +330,39 @@ namespace aspect
     prm.declare_entry ("Output directory", "output",
                        Patterns::DirectoryName(),
                        "The name of the directory into which all output files should be "
-                       "placed. This may be an absolute or a relative path.");
+                       "placed. This may be an absolute or a relative path. ASPECT will "
+                       "write output such as statistics files or visualization files "
+                       "into this directory or into directories further nested within.");
+
+    prm.declare_entry ("Output directory LFS stripe count", "0",
+                       Patterns::Integer(0),
+                       "Many large clusters use the Lustre file system (LFS) that allows to 'stripe' "
+                       "files, i.e., to use multiple file servers to store a single file. This is "
+                       "useful when writing very large files from multiple MPI processes, such "
+                       "as when creating graphical output or creating checkpoints. In those "
+                       "cases, if all MPI processes try to route their data to a single file "
+                       "server, that file server and the disks it manages may be saturated by "
+                       "data and everything slows down. File striping instead ensures that the "
+                       "data is sent to several file servers, improving performance. A "
+                       "description of how Lustre manages file striping can be found at "
+                       "https://doc.lustre.org/lustre_manual.xhtml#managingstripingfreespace . "
+                       "How file striping can be configured is discussed at "
+                       "https://wiki.lustre.org/Configuring_Lustre_File_Striping ."
+                       "\n\n"
+                       "When this parameter is set to anything other than zero, "
+                       "ASPECT will call the Lustre support tool, `lst`, as follows: "
+                       "`lst setstripe -c N OUTPUT_DIR`, where `N` is the value of the "
+                       "input parameter discussed here, and `OUTPUT_DIR` is the directory "
+                       "into which ASPECT writes its output. The file striping so set on "
+                       "the output directory are also inherited by the sub-directories "
+                       "ASPECT creates within it."
+                       "\n\n"
+                       "In order to use this parameter, your cluster must obviously be "
+                       "using the Lustre file system. What the correct value for the stripe "
+                       "count is is something you will have to find out from your cluster's "
+                       "local documentation, or your cluster administrator. It depends on "
+                       "the physical details and configuration of the file servers attached "
+                       "to a cluster.");
 
     prm.declare_entry ("Use operator splitting", "false",
                        Patterns::Bool(),
@@ -344,6 +375,15 @@ namespace aspect
     prm.declare_entry ("World builder file", "",
                        Patterns::FileName(),
                        "Name of the world builder file. If empty, the world builder is not initialized.");
+
+    prm.enter_subsection ("Particles");
+    {
+      prm.declare_entry ("Number of particle systems", "1",
+                         Patterns::Integer(0, ASPECT_MAX_NUM_PARTICLE_SYSTEMS),
+                         "The number of particle systems to be created. The maximum number of particle systems "
+                         "is set by the CMake variable `ASPECT_MAX_NUM_PARTICLE_SYSTEMS` and is by default 2.");
+    }
+    prm.leave_subsection();
 
     prm.enter_subsection ("Solver parameters");
     {
@@ -1429,6 +1469,15 @@ namespace aspect
     timing_output_frequency = prm.get_integer ("Timing output frequency");
     world_builder_file      = prm.get("World builder file");
 
+    prm.enter_subsection("Particles");
+    {
+      n_particle_managers       = prm.get_integer("Number of particle systems");
+      Assert(n_particle_managers <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
+             ExcMessage("You have specified more particle managers (" + Utilities::int_to_string(n_particle_managers) +
+                        ") than the maximum amount of particle managers set in CMake (" + Utilities::int_to_string(ASPECT_MAX_NUM_PARTICLE_SYSTEMS) + ")."));
+    }
+    prm.leave_subsection();
+
     maximum_time_step       = prm.get_double("Maximum time step");
     if (convert_to_years == true)
       maximum_time_step *= year_in_seconds;
@@ -1440,13 +1489,13 @@ namespace aspect
 
     {
       const std::string solver_scheme = prm.get ("Nonlinear solver scheme");
-      if (solver_scheme == "single Advection, single Stokes" || solver_scheme == "IMPES")
+      if (solver_scheme == "single Advection, single Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_single_Stokes;
-      else if (solver_scheme == "iterated Advection and Stokes" || solver_scheme == "iterated IMPES")
+      else if (solver_scheme == "iterated Advection and Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Stokes;
-      else if (solver_scheme == "single Advection, iterated Stokes" || solver_scheme == "iterated Stokes")
+      else if (solver_scheme == "single Advection, iterated Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_Stokes;
-      else if (solver_scheme == "no Advection, iterated Stokes" || solver_scheme == "Stokes only")
+      else if (solver_scheme == "no Advection, iterated Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_iterated_Stokes;
       else if (solver_scheme == "no Advection, single Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_single_Stokes;
@@ -1456,11 +1505,11 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_defect_correction_Stokes;
       else if (solver_scheme == "iterated Advection and defect correction Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_defect_correction_Stokes;
-      else if (solver_scheme == "iterated Advection and Newton Stokes" || solver_scheme == "Newton Stokes")
+      else if (solver_scheme == "iterated Advection and Newton Stokes")
         nonlinear_solver = NonlinearSolver::iterated_Advection_and_Newton_Stokes;
       else if (solver_scheme == "single Advection, iterated Newton Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_iterated_Newton_Stokes;
-      else if (solver_scheme == "single Advection, no Stokes" || solver_scheme == "Advection only")
+      else if (solver_scheme == "single Advection, no Stokes")
         nonlinear_solver = NonlinearSolver::single_Advection_no_Stokes;
       else if (solver_scheme == "first timestep only, single Stokes")
         nonlinear_solver = NonlinearSolver::first_timestep_only_single_Stokes;
@@ -1469,6 +1518,8 @@ namespace aspect
       else
         AssertThrow (false, ExcNotImplemented());
     }
+    nonlinear_solver_failure_strategy = NonlinearSolverFailureStrategy::parse(
+                                          prm.get("Nonlinear solver failure strategy"));
 
     prm.enter_subsection ("Solver parameters");
     {
@@ -1549,9 +1600,40 @@ namespace aspect
     else if (output_directory[output_directory.size()-1] != '/')
       output_directory += "/";
 
+    // Ensure that the output directory exists. If asked for in the input file,
+    // set LFS striping as well to improve performance.
     Utilities::create_directory (output_directory,
                                  mpi_communicator,
                                  false);
+    {
+      const unsigned int lfs_stripe_count = prm.get_integer("Output directory LFS stripe count");
+      if (lfs_stripe_count != 0)
+        {
+          if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+            {
+              const std::string command = "lst setstripe -c " + std::to_string(lfs_stripe_count)
+                                          + ' ' + output_directory;
+
+              int error_code = system (command.c_str());
+              Utilities::MPI::broadcast(&error_code, 1, 0, mpi_communicator);
+
+              AssertThrow (error_code == 0,
+                           ExcMessage ("Could not successfully execute the LFS file striping "
+                                       "command '" + command + "'. The error code of the "
+                                       "system() command was " +
+                                       std::to_string(error_code)));
+            }
+          else
+            {
+              int error_code;
+              Utilities::MPI::broadcast(&error_code, 1, 0, mpi_communicator);
+
+              if (error_code != 0)
+                throw QuietException();
+            }
+        }
+    }
+
 
     if (prm.get ("Resume computation") == "true")
       resume_computation = true;

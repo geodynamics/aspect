@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2016 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -392,7 +392,7 @@ namespace aspect
       prm.leave_subsection();
 
       // Check that we have enough integration points for this mesh.
-      AssertThrow(std::pow(2.0,refinement) <= n_points, ExcMessage("Not enough integration points for this resolution."));
+      AssertThrow(Utilities::pow(2u,refinement) <= n_points, ExcMessage("Not enough integration points for this resolution."));
 
       pressure.resize(n_points,-1);
     }

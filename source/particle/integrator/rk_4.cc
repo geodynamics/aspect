@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -20,7 +20,7 @@
 
 #include <aspect/particle/integrator/rk_4.h>
 #include <aspect/particle/property/interface.h>
-#include <aspect/particle/world.h>
+#include <aspect/particle/manager.h>
 #include <aspect/geometry_model/interface.h>
 
 namespace aspect
@@ -41,7 +41,7 @@ namespace aspect
       void
       RK4<dim>::initialize ()
       {
-        const auto &property_information = this->get_particle_world(this->get_particle_world_index()).get_property_manager().get_data_info();
+        const auto &property_information = this->get_particle_manager(this->get_particle_manager_index()).get_property_manager().get_data_info();
 
         property_indices[0] = property_information.get_position_by_field_name("internal: integrator properties");
         property_indices[1] = property_indices[0] + dim;

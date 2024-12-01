@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2023 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,6 +37,7 @@
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/time_stepping/repeat_on_nonlinear_fail.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -189,12 +190,12 @@ namespace aspect
                    nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
-    particle_worlds(),
     time (numbers::signaling_nan<double>()),
     time_step (numbers::signaling_nan<double>()),
     old_time_step (numbers::signaling_nan<double>()),
     timestep_number (numbers::invalid_unsigned_int),
     nonlinear_iteration (numbers::invalid_unsigned_int),
+    nonlinear_solver_failures (0),
 
     // We need to disable eliminate_refined_boundary_islands as this leads to
     // a deadlock for deal.II <= 9.2.0 as described in
@@ -448,15 +449,21 @@ namespace aspect
 
     if (postprocess_manager.template has_matching_active_plugin<Postprocess::Particles<dim>>())
       {
-        particle_worlds.emplace_back(std::move(std::make_unique<Particle::World<dim>>()));
-        for (unsigned int particle_world_index = 0 ; particle_world_index < particle_worlds.size(); ++particle_world_index)
+        particle_managers.resize(parameters.n_particle_managers);
+
+        AssertThrow(particle_managers.size() <= ASPECT_MAX_NUM_PARTICLE_SYSTEMS,
+                    ExcMessage("You have selected " + std::to_string(particle_managers.size()) + " particle managers, but ASPECT "
+                               "has been compiled with a maximum of " + std::to_string(ASPECT_MAX_NUM_PARTICLE_SYSTEMS) + ". "
+                               "Please recompile ASPECT with a higher value for ASPECT_MAX_NUM_PARTICLE_SYSTEMS. You can set a higher number "
+                               "specifying the CMake variable -DASPECT_MAX_NUM_PARTICLE_SYSTEMS=<number>"));
+
+        for (unsigned int particle_manager_index = 0 ; particle_manager_index < particle_managers.size(); ++particle_manager_index)
           {
-            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_worlds[particle_world_index].get()))
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&particle_managers[particle_manager_index]))
               sim->initialize_simulator (*this);
 
-            particle_worlds.back()->parse_parameters(prm,particle_world_index);
-            particle_worlds.back()->initialize();
-
+            particle_managers[particle_manager_index].parse_parameters(prm,particle_manager_index);
+            particle_managers[particle_manager_index].initialize();
           }
       }
 
@@ -538,7 +545,7 @@ namespace aspect
         AssertThrow (prm_out,
                      ExcMessage (std::string("Could not open file <") +
                                  parameters.output_directory + "parameters.prm>."));
-        prm.print_parameters(prm_out, ParameterHandler::Text);
+        prm.print_parameters(prm_out, ParameterHandler::PRM);
 
         std::ofstream json_out ((parameters.output_directory + "parameters.json"));
         AssertThrow (json_out,
@@ -568,13 +575,11 @@ namespace aspect
   template <int dim>
   Simulator<dim>::~Simulator ()
   {
-    // The particle_world object is declared before the triangulation, and so
+    // The particle_manager object is declared before the triangulation, and so
     // is destroyed after the latter. But it stores a pointer to the
     // triangulation and uses it during destruction. This results in
     // trouble. So destroy it first.
-
-    for (auto &particle_world : particle_worlds)
-      particle_world.reset();
+    particle_managers.clear();
 
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
@@ -614,8 +619,8 @@ namespace aspect
 
     // Copy particle handler to restore particle location and properties
     // before repeating a timestep
-    for (auto &particle_world : particle_worlds)
-      particle_world->backup_particles();
+    for (auto &particle_manager : particle_managers)
+      particle_manager.backup_particles();
 
 
     // then interpolate the current boundary velocities. copy constraints
@@ -649,8 +654,8 @@ namespace aspect
     if (prescribed_stokes_solution.get())
       prescribed_stokes_solution->update();
 
-    for (auto &particle_world : particle_worlds)
-      particle_world->update();
+    for (auto &particle_manager : particle_managers)
+      particle_manager.update();
 
     // do the same for the traction boundary conditions and other things
     // that end up in the bilinear form. we update those that end up in
@@ -1567,8 +1572,12 @@ namespace aspect
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
       introspection.index_sets.system_partitioning = system_index_set.split_by_block(introspection.system_dofs_per_block);
 
+#if DEAL_II_VERSION_GTE(9,7,0)
+      introspection.index_sets.system_relevant_set = DoFTools::extract_locally_relevant_dofs (dof_handler);
+#else
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);
+#endif
       introspection.index_sets.system_relevant_partitioning =
         introspection.index_sets.system_relevant_set.split_by_block(introspection.system_dofs_per_block);
 
@@ -1889,91 +1898,128 @@ namespace aspect
     if (parameters.use_operator_splitting)
       compute_reactions ();
 
-    switch (parameters.nonlinear_solver)
+    try
       {
-        case NonlinearSolver::single_Advection_single_Stokes:
-        {
-          solve_single_advection_single_stokes();
-          break;
-        }
+        switch (parameters.nonlinear_solver)
+          {
+            case NonlinearSolver::single_Advection_single_Stokes:
+            {
+              solve_single_advection_single_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_iterated_Stokes:
-        {
-          solve_no_advection_iterated_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_iterated_Stokes:
+            {
+              solve_no_advection_iterated_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_single_Stokes:
-        {
-          solve_no_advection_single_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_single_Stokes:
+            {
+              solve_no_advection_single_stokes();
+              break;
+            }
 
-        case NonlinearSolver::iterated_Advection_and_Stokes:
-        {
-          solve_iterated_advection_and_stokes();
-          break;
-        }
+            case NonlinearSolver::iterated_Advection_and_Stokes:
+            {
+              solve_iterated_advection_and_stokes();
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_iterated_Stokes:
-        {
-          solve_single_advection_iterated_stokes();
-          break;
-        }
+            case NonlinearSolver::single_Advection_iterated_Stokes:
+            {
+              solve_single_advection_iterated_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_iterated_defect_correction_Stokes:
-        {
-          solve_no_advection_iterated_defect_correction_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_iterated_defect_correction_Stokes:
+            {
+              solve_no_advection_iterated_defect_correction_stokes();
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
-        {
-          solve_single_advection_iterated_defect_correction_stokes();
-          break;
-        }
+            case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
+            {
+              solve_single_advection_iterated_defect_correction_stokes();
+              break;
+            }
 
-        case NonlinearSolver::iterated_Advection_and_defect_correction_Stokes:
-        {
-          solve_iterated_advection_and_defect_correction_stokes();
-          break;
-        }
+            case NonlinearSolver::iterated_Advection_and_defect_correction_Stokes:
+            {
+              solve_iterated_advection_and_defect_correction_stokes();
+              break;
+            }
 
-        case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
-        {
-          solve_iterated_advection_and_newton_stokes(/*use_newton_iterations =*/ true);
-          break;
-        }
+            case NonlinearSolver::iterated_Advection_and_Newton_Stokes:
+            {
+              solve_iterated_advection_and_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
-        {
-          solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations =*/ true);
-          break;
-        }
+            case NonlinearSolver::single_Advection_iterated_Newton_Stokes:
+            {
+              solve_single_advection_and_iterated_newton_stokes(/*use_newton_iterations =*/ true);
+              break;
+            }
 
-        case NonlinearSolver::single_Advection_no_Stokes:
-        {
-          solve_single_advection_no_stokes();
-          break;
-        }
+            case NonlinearSolver::single_Advection_no_Stokes:
+            {
+              solve_single_advection_no_stokes();
+              break;
+            }
 
-        case NonlinearSolver::first_timestep_only_single_Stokes:
-        {
-          solve_first_timestep_only_single_stokes();
-          break;
-        }
+            case NonlinearSolver::first_timestep_only_single_Stokes:
+            {
+              solve_first_timestep_only_single_stokes();
+              break;
+            }
 
-        case NonlinearSolver::no_Advection_no_Stokes:
-        {
-          solve_no_advection_no_stokes();
-          break;
-        }
+            case NonlinearSolver::no_Advection_no_Stokes:
+            {
+              solve_no_advection_no_stokes();
+              break;
+            }
 
-        default:
-          Assert (false, ExcNotImplemented());
+            default:
+              Assert (false, ExcNotImplemented());
+          }
+        pcout << std::endl;
       }
+    catch (ExcNonlinearSolverNoConvergence &)
+      {
+        pcout << "\nWARNING: The nonlinear solver in the current timestep failed to converge." << std::endl
+              << "Acting according to the parameter 'Nonlinear solver failure strategy'..." << std::endl;
+        ++nonlinear_solver_failures;
 
-    pcout << std::endl;
+        switch (parameters.nonlinear_solver_failure_strategy)
+          {
+            case Parameters<dim>::NonlinearSolverFailureStrategy::continue_with_next_timestep:
+            {
+              pcout << "Continuing to the next timestep even though solution is not fully converged." << std::endl;
+              // do nothing and continue
+              break;
+            }
+            case Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size:
+            {
+              if (timestep_number == 0)
+                {
+                  pcout << "Error: We can not cut the timestep in step 0, so we are aborting."
+                        << std::endl;
+                  throw;
+                }
+              time_stepping_manager.template get_matching_active_plugin<TimeStepping::RepeatOnNonlinearFail<dim>>().nonlinear_solver_has_failed();
+              break;
+            }
+            case Parameters<dim>::NonlinearSolverFailureStrategy::abort_program:
+            {
+              pcout << "Aborting simulation as requested." << std::endl;
+              // rethrow the current exception
+              throw;
+            }
+            default:
+              AssertThrow(false, ExcNotImplemented());
+          }
+      }
   }
 
 
@@ -2070,8 +2116,7 @@ namespace aspect
     simulator_is_past_initialization = true;
     do
       {
-        // Only solve if we are not in pre-refinement, or we do not want to skip
-        // solving in pre-refinement.
+        // During pre-refinement, do not solve if we are asked to skip it:
         if (! (parameters.skip_solvers_on_initial_refinement
                && pre_refinement_step < parameters.initial_adaptive_refinement))
           {
@@ -2140,8 +2185,8 @@ namespace aspect
             // Restore particles through stored copy of particle handler,
             // created in start_timestep(),
             // but only if this timestep is to be repeated.
-            for (auto &particle_world : particle_worlds)
-              particle_world->restore_particles();
+            for (auto &particle_manager : particle_managers)
+              particle_manager.restore_particles();
 
             continue; // repeat time step loop
           }
@@ -2173,8 +2218,11 @@ namespace aspect
     // throwing an exception. Therefore, we have to do this manually here:
     computing_timer.print_summary ();
 
+    if (nonlinear_solver_failures > 0)
+      pcout << "\nWARNING: During this computation " << nonlinear_solver_failures << " nonlinear solver failures occurred!" << std::endl;
+
     pcout << "-- Total wallclock time elapsed including restarts: "
-          << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+          << std::round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
           << 's' << std::endl;
 
     CitationInfo::print_info_block (pcout);

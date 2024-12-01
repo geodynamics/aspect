@@ -6,7 +6,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -2.315e-16/10/0.2083 // 1/10/1.187
@@ -15,7 +15,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 16 iterations.
    Solving C_2 system ... 15 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.5062/10/0.5022 // 0.5444/10/1.452
@@ -24,7 +24,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.6935/10/0.8058 // 0.3758/10/1.725
@@ -33,7 +33,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.7221/10/1.115 // 0.3501/10/2.004
@@ -42,7 +42,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.8014/10.15/1.427 // 0.2788/10.13/2.285
@@ -51,7 +51,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.7952/10.51/1.739 // 0.2843/10.46/2.565
@@ -60,7 +60,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.7147/10.47/2.051 // 0.3567/10.42/2.846
@@ -69,7 +69,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.5699/10.38/2.363 // 0.4871/10.34/3.127
@@ -78,7 +78,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.3717/10.58/2.675 // 0.6654/10.52/3.407
@@ -87,7 +87,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.3209/10.52/2.986 // 0.7111/10.47/3.688
@@ -96,7 +96,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.3146/10.66/3.298 // 0.7169/10.59/3.968
@@ -107,7 +107,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.3002/10.67/3.609 // 0.7298/10.6/4.248
@@ -116,7 +116,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.274/10.63/3.919 // 0.7534/10.57/4.527
@@ -125,7 +125,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.2303/10.76/4.227 // 0.7927/10.69/4.804
@@ -134,7 +134,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.1643/10.71/4.531 // 0.8521/10.64/5.078
@@ -143,7 +143,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.08664/10.84/4.829 // 0.922/10.76/5.346
@@ -152,7 +152,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -0.1016/10.81/5.118 // 0.9086/10.73/5.607
