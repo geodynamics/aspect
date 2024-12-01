@@ -576,7 +576,7 @@ namespace aspect
 
                   for (unsigned int k=0; k<n_phase_transitions; ++k)
                     {
-                      phase_inputs.phase_index = k;
+                      phase_inputs.phase_transition_index = k;
                       phase_function_values[k] = phase_function->compute_value(phase_inputs);
                     }
 

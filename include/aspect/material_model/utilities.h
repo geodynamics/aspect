@@ -528,7 +528,7 @@ namespace aspect
                             const double pressure,
                             const double depth,
                             const double pressure_depth_derivative,
-                            const unsigned int phase_index);
+                            const unsigned int phase_transition_index);
 
         double temperature;
         double pressure;
@@ -546,7 +546,7 @@ namespace aspect
          * which only has information that there are two phase functions
          * and what their properties are.
          */
-        unsigned int phase_index;
+        unsigned int phase_transition_index;
       };
 
       /**
@@ -775,14 +775,14 @@ namespace aspect
 
           /**
            * Return the Clapeyron slope (dp/dT of the transition) for
-           * phase transition number @p phase_index.
+           * phase transition number @p phase_transition_index.
            */
-          double get_transition_slope (const unsigned int phase_index) const;
+          double get_transition_slope (const unsigned int phase_transition_index) const;
 
           /**
-           * Return the depth for phase transition number @p phase_index.
+           * Return the depth for phase transition number @p phase_transition_index.
            */
-          double get_transition_depth (const unsigned int phase_index) const;
+          double get_transition_depth (const unsigned int phase_transition_index) const;
 
           /**
            * Return how many phase transitions there are for each chemical composition.

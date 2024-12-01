@@ -1149,14 +1149,14 @@ namespace aspect
                                                     const double pressure_,
                                                     const double depth_,
                                                     const double pressure_depth_derivative_,
-                                                    const unsigned int phase_index_)
+                                                    const unsigned int phase_transition_index_)
 
         :
         temperature(temperature_),
         pressure(pressure_),
         depth(depth_),
         pressure_depth_derivative(pressure_depth_derivative_),
-        phase_index(phase_index_)
+        phase_transition_index(phase_transition_index_)
       {}
 
 
@@ -1208,7 +1208,7 @@ namespace aspect
         unsigned int n_comp = 0;
         for (unsigned int n_relevant_fields  = 0 ; n_relevant_fields  < this->introspection().n_chemical_composition_fields() + 1 ; n_relevant_fields ++)
           {
-            if (in.phase_index < start_phase_transition_index + n_phase_transitions_per_chemical_composition[n_relevant_fields])
+            if (in.phase_transition_index < start_phase_transition_index + n_phase_transitions_per_chemical_composition[n_relevant_fields])
               {
                 n_comp = n_relevant_fields ;
                 break;
@@ -1246,7 +1246,7 @@ namespace aspect
           }
 
         // determine the value of phase function to facilitate the exact transition
-        if ((matched_phase_transition_index != numbers::invalid_unsigned_int) && in.phase_index <= matched_phase_transition_index)
+        if ((matched_phase_transition_index != numbers::invalid_unsigned_int) && in.phase_transition_index <= matched_phase_transition_index)
           function_value = 1.0;
         else
           function_value = 0.0;
@@ -1424,13 +1424,13 @@ namespace aspect
       double
       PhaseFunction<dim>::compute_value (const PhaseFunctionInputs<dim> &in) const
       {
-        AssertIndexRange (in.phase_index, transition_temperature_lower_limits.size());
-        AssertIndexRange (in.phase_index, transition_temperature_upper_limits.size());
+        AssertIndexRange (in.phase_transition_index, transition_temperature_lower_limits.size());
+        AssertIndexRange (in.phase_transition_index, transition_temperature_upper_limits.size());
 
         // the percentage of material that has undergone the transition
         double function_value;
-        if (in.temperature < transition_temperature_lower_limits[in.phase_index] ||
-            in.temperature >= transition_temperature_upper_limits[in.phase_index])
+        if (in.temperature < transition_temperature_lower_limits[in.phase_transition_index] ||
+            in.temperature >= transition_temperature_upper_limits[in.phase_transition_index])
           {
             // assign 0.0 if temperature is out of range
             function_value = 0.0;
@@ -1439,40 +1439,40 @@ namespace aspect
           {
             if (use_depth_instead_of_pressure)
               {
-                AssertIndexRange (in.phase_index, transition_depths.size());
+                AssertIndexRange (in.phase_transition_index, transition_depths.size());
 
                 // calculate the deviation from the transition point (convert temperature to depth)
-                double depth_deviation = in.depth - transition_depths[in.phase_index];
+                double depth_deviation = in.depth - transition_depths[in.phase_transition_index];
 
                 if (in.pressure_depth_derivative != 0.0)
                   {
-                    AssertIndexRange (in.phase_index, transition_slopes.size());
-                    AssertIndexRange (in.phase_index, transition_temperatures.size());
+                    AssertIndexRange (in.phase_transition_index, transition_slopes.size());
+                    AssertIndexRange (in.phase_transition_index, transition_temperatures.size());
 
-                    depth_deviation -= transition_slopes[in.phase_index] / in.pressure_depth_derivative
-                                       * (in.temperature - transition_temperatures[in.phase_index]);
+                    depth_deviation -= transition_slopes[in.phase_transition_index] / in.pressure_depth_derivative
+                                       * (in.temperature - transition_temperatures[in.phase_transition_index]);
                   }
 
                 // use delta function for width = 0
-                AssertIndexRange (in.phase_index, transition_widths.size());
-                if (transition_widths[in.phase_index] == 0)
+                AssertIndexRange (in.phase_transition_index, transition_widths.size());
+                if (transition_widths[in.phase_transition_index] == 0)
                   function_value = (depth_deviation > 0) ? 1. : 0.;
                 else
-                  function_value = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[in.phase_index]));
+                  function_value = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[in.phase_transition_index]));
               }
             else
               {
                 // calculate the deviation from the transition point (convert temperature to pressure)
-                AssertIndexRange (in.phase_index, transition_pressures.size());
-                const double pressure_deviation = in.pressure - transition_pressures[in.phase_index]
-                                                  - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
+                AssertIndexRange (in.phase_transition_index, transition_pressures.size());
+                const double pressure_deviation = in.pressure - transition_pressures[in.phase_transition_index]
+                                                  - transition_slopes[in.phase_transition_index] * (in.temperature - transition_temperatures[in.phase_transition_index]);
 
                 // use delta function for width = 0
-                AssertIndexRange (in.phase_index, transition_pressure_widths.size());
-                if (transition_pressure_widths[in.phase_index] == 0)
+                AssertIndexRange (in.phase_transition_index, transition_pressure_widths.size());
+                if (transition_pressure_widths[in.phase_transition_index] == 0)
                   function_value = (pressure_deviation > 0) ? 1. : 0.;
                 else
-                  function_value = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[in.phase_index]));
+                  function_value = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[in.phase_transition_index]));
               }
           }
 
@@ -1499,30 +1499,30 @@ namespace aspect
         // phase transition based on depth
         if (use_depth_instead_of_pressure)
           {
-            const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[in.phase_index]);
-            const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(transition_depths[in.phase_index] + transition_widths[in.phase_index]);
-            const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(transition_depths[in.phase_index] - transition_widths[in.phase_index]);
+            const Point<dim,double> transition_point = this->get_geometry_model().representative_point(transition_depths[in.phase_transition_index]);
+            const Point<dim,double> transition_plus_width = this->get_geometry_model().representative_point(transition_depths[in.phase_transition_index] + transition_widths[in.phase_transition_index]);
+            const Point<dim,double> transition_minus_width = this->get_geometry_model().representative_point(transition_depths[in.phase_transition_index] - transition_widths[in.phase_transition_index]);
             transition_pressure = this->get_adiabatic_conditions().pressure(transition_point);
             pressure_width = 0.5 * (this->get_adiabatic_conditions().pressure(transition_plus_width)
                                     - this->get_adiabatic_conditions().pressure(transition_minus_width));
-            width_temp = transition_widths[in.phase_index];
+            width_temp = transition_widths[in.phase_transition_index];
           }
         // using pressure instead of depth to define the phase transition
         else
           {
-            transition_pressure = transition_pressures[in.phase_index];
-            pressure_width = transition_pressure_widths[in.phase_index];
-            width_temp = transition_pressure_widths[in.phase_index];
+            transition_pressure = transition_pressures[in.phase_transition_index];
+            pressure_width = transition_pressure_widths[in.phase_transition_index];
+            width_temp = transition_pressure_widths[in.phase_transition_index];
           }
 
         // calculate the deviation from the transition point
         const double pressure_deviation = in.pressure - transition_pressure
-                                          - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
+                                          - transition_slopes[in.phase_transition_index] * (in.temperature - transition_temperatures[in.phase_transition_index]);
 
         // calculate the analytical derivative of the phase function
         if (
-          (in.temperature < transition_temperature_lower_limits[in.phase_index]) ||
-          (in.temperature >= transition_temperature_upper_limits[in.phase_index])
+          (in.temperature < transition_temperature_lower_limits[in.phase_transition_index]) ||
+          (in.temperature >= transition_temperature_upper_limits[in.phase_transition_index])
         )
           {
             // return 0 if temperature is out of range
@@ -1609,9 +1609,9 @@ namespace aspect
       template <int dim>
       double
       PhaseFunction<dim>::
-      get_transition_slope (const unsigned int phase_index) const
+      get_transition_slope (const unsigned int phase_transition_index) const
       {
-        return transition_slopes[phase_index];
+        return transition_slopes[phase_transition_index];
       }
 
 
@@ -1619,9 +1619,9 @@ namespace aspect
       template <int dim>
       double
       PhaseFunction<dim>::
-      get_transition_depth (const unsigned int phase_index) const
+      get_transition_depth (const unsigned int phase_transition_index) const
       {
-        return transition_depths[phase_index];
+        return transition_depths[phase_transition_index];
       }
 
 

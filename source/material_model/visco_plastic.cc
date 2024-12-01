@@ -80,7 +80,7 @@ namespace aspect
 
           for (unsigned int j=0; j < phase_function.n_phase_transitions(); ++j)
             {
-              phase_inputs.phase_index = j;
+              phase_inputs.phase_transition_index = j;
               phase_function_values[j] = phase_function.compute_value(phase_inputs);
             }
         }
@@ -141,7 +141,7 @@ namespace aspect
           // Compute value of phase functions
           for (unsigned int j=0; j < phase_function.n_phase_transitions(); ++j)
             {
-              phase_inputs.phase_index = j;
+              phase_inputs.phase_transition_index = j;
               phase_function_values[j] = phase_function.compute_value(phase_inputs);
             }
 
@@ -209,7 +209,7 @@ namespace aspect
                 {
                   for (unsigned int j=0; j < phase_function_discrete->n_phase_transitions(); ++j)
                     {
-                      phase_inputs.phase_index = j;
+                      phase_inputs.phase_transition_index = j;
                       phase_function_discrete_values[j] = phase_function_discrete->compute_value(phase_inputs);
                     }
                   isostrain_viscosities =
