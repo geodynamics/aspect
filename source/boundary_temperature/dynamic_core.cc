@@ -399,6 +399,7 @@ namespace aspect
       return (r0+r1)/2.;
     }
 
+
     template <int dim>
     bool
     DynamicCore<dim>::solve_time_step(double &X, double &T, double &R)
@@ -435,40 +436,40 @@ namespace aspect
           // Fully molten core
           R_1 = R_0;
           dT1 = 0;
-        }
-      else if (dT2 <= 0. && dT0 <= 0. )
-        {
-          // Completely solid core
-          R_1 = R_2;
-          dT1 = 0;
-        }
-      else
-        while (!(dT1==0 || steps>max_steps))
-          {
-            // If solution is out of the interval, then something is wrong.
-            if (dT0*dT2>0)
-              {
-                this->get_pcout()<<"Step: "<<steps<<std::endl
-                                 <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
-                                 <<" dT0="<<dT0<<", dT2="<<dT2<<std::endl
-                                 <<"Q_CMB="<<core_data.Q<<std::endl
-                                 <<"Warning: Solution for inner core radius can not be found! Mid-point is used."<<std::endl;
-                AssertThrow(dT0*dT2<=0,ExcMessage("No single solution for inner core!"));
-              }
-            else if (dT0*dT1<0.)
-              {
+        
+          } else if (dT2 <= 0. && dT0 <= 0.) {
+        // Core fully solid
+        R_1 = R_2;
+        dT1 = 0;
+    } else {
+        // Using the bisection method to find R_1 such that dT1 = 0
+        while (!(dT1 == 0 || steps > max_steps)) {
+            if (dT0 * dT2 > 0) {
+                // If the solution is out of the interval, the inner core is not still formed.
+                this->get_pcout() << "Step: " << steps << std::endl
+                                  << " R=[" << R_0 / 1e3 << "," << R_2 / 1e3 << "] (km)"
+                                  << " dT0=" << dT0 << ", dT2=" << dT2 << std::endl
+                                  << "Q_CMB=" << core_data.Q << std::endl
+                                  << "The inner core is not formed yet or the core is solidus." << std::endl;
+
+                // Set R_1 to zero (inner core not formed) and break the loop
+                R_1 = R_0;
+                dT1 = 0;
+                break;
+            } else if (dT0 * dT1 < 0.) {
                 R_2 = R_1;
                 dT2 = dT1;
-              }
-            else if (dT2*dT1<0.)
-              {
+            } else if (dT2 * dT1 < 0.) {
                 R_0 = R_1;
                 dT0 = dT1;
-              }
+            }
+
+            // Update R_1 and calculate dT1
             R_1 = (R_0 + R_2) / 2.;
             dT1 = get_dT(R_1);
             ++steps;
-          }
+        }
+    }
 
       // Calculate new R,T,X
       R = R_1;
@@ -488,12 +489,14 @@ namespace aspect
       else
         {
           // No solution found.
-          this->get_pcout() << "[Dynamic core] Step: " << steps << std::endl
-                            << " R=[" << R_0/1e3 << "," << R_2/1e3 << "]" << "(km)"
-                            << " dT0=" << dT0 << ", dT2=" << dT2 << std::endl
-                            << "Q_CMB=" << core_data.Q << std::endl;
-          AssertThrow(false, ExcMessage("[Dynamic core] No inner core radius solution found!"));
-        }
+                  this->get_pcout() << "[Dynamic core] The inner core has not yet formed. I proceed with R=0." << std::endl;
+
+        // Ensure that R, T and X are set correctly
+        R = R_0;
+        T = get_Tc(R);
+        X = get_X(R);
+        return true; // Continua la simulazione
+    }
 
       return false;
     }
