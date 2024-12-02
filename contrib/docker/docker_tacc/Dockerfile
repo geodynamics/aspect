@@ -19,7 +19,7 @@ RUN cd /opt && \
     git clone https://github.com/dealii/candi.git && \
     cd candi && \
     echo "NATIVE_OPTIMIZATIONS=ON" >> local.cfg && \
-    echo "DEAL_II_VERSION=v9.5.2" >> local.cfg && \
+    echo "DEAL_II_VERSION=v9.6.0" >> local.cfg && \
     echo "BUILD_EXAMPLES=OFF" >> local.cfg && \
     echo "USE_64_BIT_INDICES=ON" >> local.cfg && \
     echo "DEAL_CONFOPTS='-DDEAL_II_WITH_COMPLEX_VALUES=OFF -DDEAL_II_WITH_LAPACK=ON'" >> local.cfg && \
