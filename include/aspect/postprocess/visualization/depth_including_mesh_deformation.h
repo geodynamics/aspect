@@ -36,7 +36,7 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that outputs the depth
-       * according to the geometry model.
+       * including mesh deformation according to the geometry model.
        */
       template <int dim>
       class DepthIncludingMeshDeformation
