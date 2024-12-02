@@ -20,7 +20,6 @@
 
 
 #include <aspect/stokes_matrix_free.h>
-#include <aspect/citation_info.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/melt.h>

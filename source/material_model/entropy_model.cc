@@ -71,6 +71,8 @@ namespace aspect
     void
     EntropyModel<dim>::initialize()
     {
+      CitationInfo::add("entropy");
+
       AssertThrow (this->get_parameters().formulation_mass_conservation ==
                    Parameters<dim>::Formulation::MassConservation::projected_density_field,
                    ExcMessage("The 'entropy model' material model was only tested with the "

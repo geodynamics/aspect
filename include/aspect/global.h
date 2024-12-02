@@ -23,6 +23,7 @@
 #define _aspect_global_h
 
 #include <aspect/config.h>
+#include <aspect/citation_info.h>
 
 #include <deal.II/base/mpi.h>
 

@@ -24,7 +24,6 @@
 #include <aspect/simulator/assemblers/stokes.h>
 
 #include <aspect/simulator.h>
-#include <aspect/citation_info.h>
 
 namespace aspect
 {

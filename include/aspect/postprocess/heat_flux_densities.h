@@ -42,6 +42,12 @@ namespace aspect
     {
       public:
         /**
+         * Initialize the postprocessor.
+         */
+        void
+        initialize() override;
+
+        /**
          * Evaluate.
          */
         std::pair<std::string,std::string>

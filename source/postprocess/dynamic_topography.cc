@@ -497,6 +497,8 @@ namespace aspect
     void
     DynamicTopography<dim>::parse_parameters (ParameterHandler &prm)
     {
+      CitationInfo::add("geoid");
+
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Dynamic topography");

@@ -44,7 +44,16 @@ namespace aspect
           public Interface<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
           HeatFluxMap();
+
+          /**
+           * Initialize the postprocessor.
+           */
+          void
+          initialize() override;
 
           /**
            * Fill the temporary storage variables with the
