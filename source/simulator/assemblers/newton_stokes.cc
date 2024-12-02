@@ -175,11 +175,14 @@ namespace aspect
           else
             {
               const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
-              const SymmetricTensor<2,dim> effective_strain_rate =
-                elastic_out == nullptr ? deviator(scratch.material_model_inputs.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
-
               const typename Newton::Parameters::Stabilization
               preconditioner_stabilization = this->get_newton_handler().parameters.preconditioner_stabilization;
+
+              SymmetricTensor<2,dim> effective_strain_rate = scratch.material_model_inputs.strain_rate[q];
+              if (elastic_out != nullptr)
+                effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
+              else if ((preconditioner_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
+                effective_strain_rate = deviator(effective_strain_rate);
 
               // use the spd factor when the stabilization is PD or SPD
               const double alpha = (preconditioner_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
@@ -400,9 +403,6 @@ namespace aspect
           const double pressure = scratch.material_model_inputs.pressure[q];
           const double velocity_divergence = scratch.velocity_divergence[q];
 
-          const SymmetricTensor<2,dim> effective_strain_rate =
-            elastic_out == nullptr ? deviator(scratch.material_model_inputs.strain_rate[q]) : elastic_out->viscoelastic_strain_rate[q];
-
           const Tensor<1,dim>
           gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
@@ -478,6 +478,12 @@ namespace aspect
                   const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
                   const Newton::Parameters::Stabilization velocity_block_stabilization
                     = this->get_newton_handler().parameters.velocity_block_stabilization;
+
+                  SymmetricTensor<2,dim> effective_strain_rate = scratch.material_model_inputs.strain_rate[q];
+                  if (elastic_out != nullptr)
+                    effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
+                  else if ((velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
+                    effective_strain_rate = deviator(effective_strain_rate);
 
                   // use the spd factor when the stabilization is PD or SPD
                   const double alpha =  (velocity_block_stabilization & Newton::Parameters::Stabilization::PD)
