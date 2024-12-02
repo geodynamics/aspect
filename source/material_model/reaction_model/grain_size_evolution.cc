@@ -85,6 +85,8 @@ namespace aspect
       void
       GrainSizeEvolution<dim>::initialize_phase_function(std::shared_ptr<MaterialUtilities::PhaseFunction<dim>> &phase_function_)
       {
+        CitationInfo::add("grainsize");
+
         phase_function = phase_function_;
         n_phase_transitions = phase_function->n_phases_for_each_composition()[0] - 1;
       }

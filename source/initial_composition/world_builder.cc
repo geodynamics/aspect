@@ -23,7 +23,6 @@
 #ifdef ASPECT_WITH_WORLD_BUILDER
 #include <aspect/initial_composition/world_builder.h>
 #include <aspect/geometry_model/interface.h>
-#include <aspect/citation_info.h>
 
 #include <world_builder/world.h>
 

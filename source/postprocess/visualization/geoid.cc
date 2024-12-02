@@ -23,7 +23,6 @@
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/postprocess/visualization/geoid.h>
-#include <aspect/citation_info.h>
 
 
 

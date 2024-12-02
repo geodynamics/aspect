@@ -27,7 +27,6 @@
 #include <aspect/newton.h>
 #include <aspect/stokes_matrix_free.h>
 #include <aspect/mesh_deformation/interface.h>
-#include <aspect/citation_info.h>
 #include <aspect/postprocess/particles.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER

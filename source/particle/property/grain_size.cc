@@ -41,6 +41,8 @@ namespace aspect
       void
       GrainSize<dim>::initialize ()
       {
+        CitationInfo::add("grainsize");
+
         material_inputs  = MaterialModel::MaterialModelInputs<dim>(1, this->n_compositional_fields());
         material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
 

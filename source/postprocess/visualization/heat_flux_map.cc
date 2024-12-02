@@ -46,6 +46,15 @@ namespace aspect
 
       template <int dim>
       void
+      HeatFluxMap<dim>::initialize ()
+      {
+        CitationInfo::add("cbfheatflux");
+      }
+
+
+
+      template <int dim>
+      void
       HeatFluxMap<dim>::update ()
       {
         if (output_point_wise_heat_flux)
