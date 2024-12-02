@@ -349,7 +349,7 @@ namespace aspect
             }
         }
 
-      //Fill the coordinates with the x-values used for the data table.
+      // Fill the coordinates with the x-values used for the data table.
       std::array<std::vector<double>, dim-1> coordinates;
       for (unsigned int i=0; i<temp_surface.size(); ++i)
         coordinates[0].push_back(temp_surface[i][0]);

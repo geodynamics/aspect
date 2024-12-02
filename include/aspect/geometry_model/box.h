@@ -261,7 +261,7 @@ namespace aspect
         std::array<unsigned int, dim> repetitions;
 
         /**
-         * Function to interpolate surface topography.
+         * Function to store and interpolate surface topography.
          */
         Functions::InterpolatedTensorProductGridData<dim-1> *surface_function;
     };
