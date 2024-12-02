@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_reaction_grain_size_evolution_h
-#define _aspect_material_model_reaction_grain_size_evolution_h
+#ifndef _aspect_material_model_reaction_model_grain_size_evolution_h
+#define _aspect_material_model_reaction_model_grain_size_evolution_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_reaction_melt_katz2003_mantle_melting_h
-#define _aspect_material_reaction_melt_katz2003_mantle_melting_h
+#ifndef _aspect_material_model_reaction_model_katz2003_mantle_melting_h
+#define _aspect_material_model_reaction_model_katz2003_mantle_melting_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
