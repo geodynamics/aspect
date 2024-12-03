@@ -1,0 +1,6 @@
+Changed: Renamed the variable 'PhaseFunctionInputs::phase_index' to
+PhaseFunctionInputs::phase_transition_index'. The new variable name
+is more precise since it is used to index phase transitions rather than phases.
+Material models that make use of the old name will have to be adjusted.
+<br>
+(Haoyuan Li, 2024/12/01)
