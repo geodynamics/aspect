@@ -1,0 +1,8 @@
+Added: ASPECT can now use the 'include' keyword in parameter
+files to include other parameter files, even if those other
+parameter files include parameter files themselves. ASPECT now
+also respects the parameters 'Dimension' and 'Additional shared
+libraries' in the included parameter files, which was not the
+case before.
+<br>
+(Rene Gassmoeller, 2024/12/04)

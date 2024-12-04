@@ -1,0 +1,3 @@
+# Test for including prm files. This is simply including the simpler_box.prm test.
+
+include $ASPECT_SOURCE_DIR/tests/simpler_box.prm # This is an include, and this comments tests if this line is correctly replaced.

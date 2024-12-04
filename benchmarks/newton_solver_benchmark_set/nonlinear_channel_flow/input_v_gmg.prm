@@ -3,7 +3,6 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/input_v.prm
 
-set Additional shared libraries = libsimple_nonlinear.so
 set Output directory = results/output-v-gmg
 
 subsection Material model

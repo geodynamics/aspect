@@ -1,0 +1,18 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-include_prm_file/solution/solution-00000
+     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
+     Heat fluxes through boundary parts: 1.667e-07 W, 6.239e-05 W, 0 W, 0 W
+
+Termination requested by criterion: end time
+
+
+
