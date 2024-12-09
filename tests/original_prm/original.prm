@@ -1,6 +1,8 @@
 # test that output/original.prm is written correctly
 
 # based on no_flow.prm:
+# Included content from $ASPECT_SOURCE_DIR/tests/no_flow.prm:
+
 # A test that deals with the problem that if there is no flow then the
 # convection time step is infinite. in that case, we need to limit the
 # time step size to something related to the conduction time step

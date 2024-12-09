@@ -1,5 +1,7 @@
 # Test for including prm files. This is simply including the simpler_box.prm test.
 
+# Included content from $ASPECT_SOURCE_DIR/tests/simpler_box.prm:
+
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 0

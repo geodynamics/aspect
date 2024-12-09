@@ -69,7 +69,7 @@ occurrence will overwrite the earlier occurrence(s). Thus, in the example above 
 `Some parameter` and `Some other parameter`, then the final file will use the value of
 `Some parameter` from `file_b.prm`, but the value of `Some other parameter` from `file_a.prm`.
 
-Also note, that the include statement can include the file path as relative or absolute path,
+Also note, that the include statement can include the file path as a relative or absolute path,
 and you can also reference the original ASPECT source directory using the string `$ASPECT_SOURCE_DIR`.
 Thus the three include statements
 ```
