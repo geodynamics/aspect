@@ -1,0 +1,5 @@
+# Test for recursively including prm files.
+# This is including the include_prm_file.prm test, which
+# itself is including simpler_box.prm.
+
+include $ASPECT_SOURCE_DIR/tests/include_prm_file.prm

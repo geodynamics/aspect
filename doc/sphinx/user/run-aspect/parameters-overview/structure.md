@@ -39,7 +39,7 @@ end in backslashes. The underlying implementation always eats whitespace at the 
 each continuing line, but not before the backslash. This means that the parameter file
 ```
 set Some parameter = abc\
-def
+  def
 ```
 is equivalent to
 ```
@@ -48,3 +48,35 @@ set Some parameter = abcdef
 that is, with no space between `abc` and `def` despite the leading whitespace at the beginning of
 the second line. If you do want space between these two parts, you need to add it before the
 backslash in the first of the two lines.
+:::
+
+:::{note}
+If you want to run several models that are all small modifications of a base model you can
+`include` the base model in the modified model parameter files to include its parameters.
+This means that in a parameter file `file_a.prm` that contains
+```
+set Some parameter = abc
+include file_b.prm
+set Some other parameter = def
+```
+the content of file `file_b.prm` will be inserted at the position of the
+include statement. If `file_b.prm` includes further include statements, these will
+be recursively substituted until no statements remain or you reach the maximum number
+of supported include statements, in which case ASPECT will stop and output an error message.
+
+Note, that if the same parameter is set twice in parameter files, the last
+occurrence will overwrite the earlier occurrence(s). Thus, in the example above if `file_b.prm` contains both
+`Some parameter` and `Some other parameter`, then the final file will use the value of
+`Some parameter` from `file_b.prm`, but the value of `Some other parameter` from `file_a.prm`.
+
+Also note, that the include statement can include the file path as a relative or absolute path,
+and you can also reference the original ASPECT source directory using the string `$ASPECT_SOURCE_DIR`.
+Thus the three include statements
+```
+include file_a.prm
+include /home/user/aspect/file_a.prm
+include $ASPECT_SOURCE_DIR/file_a.prm
+```
+could all include the same file, but the second and third statement are independent from
+your current working directory, while the first one depends on where you execute ASPECT.
+:::
