@@ -71,10 +71,10 @@
         <div class="well">
 
 	  <!-- append the current date to avoid the browser caching the file -->
-          <script src="database.js?t=2022-07-26"></script>
+          <script src="database.js?t=2024-12-03"></script>
 
           <script type="text/javascript">
-            var checkboxes = ["fs", "melt", "particles", "dg", "mf", "pda", "geoid", "NewtonSolver", "GWB"];
+            var checkboxes = ["fs", "melt", "particles", "dg", "mf", "pda", "geoid", "NewtonSolver", "GWB", "entropy", "grainsize", "boukaremelt", "fastscape", "cbfheatflux"];
 
             var intext = "Computations were done using the ASPECT code version <i>VERSION</i>, see \n\\cite{CITEKEYS}.";
 
@@ -113,6 +113,11 @@
               <label><input type="checkbox" id="geoid" onchange="update()">Geoid</label>
               <label><input type="checkbox" id="NewtonSolver" onchange="update()">Newton solver</label>
               <label><input type="checkbox" id="GWB" onchange="update()">WorldBuilder</label>
+              <label><input type="checkbox" id="entropy" onchange="update()">Entropy advection</label>
+              <label><input type="checkbox" id="grainsize" onchange="update()">Grain-size evolution</label>
+              <label><input type="checkbox" id="boukaremelt" onchange="update()">Boukare melt model</label>
+              <label><input type="checkbox" id="fastscape" onchange="update()">Fastscape surface evolution</label>
+              <label><input type="checkbox" id="cbfheatflux" onchange="update()">CBF heat flux</label>
               &nbsp;&nbsp;&nbsp;
               <label><input type="checkbox" id="checkall" onchange="do_checkall()">(check all)</label>
               <br/>
