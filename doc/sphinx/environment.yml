@@ -9,3 +9,4 @@ dependencies:
   - pip>=20.1
   - pip:
     - sphinxcontrib-tikz
+    - sphinxcontrib-svg2pdfconverter[CairoSVG]

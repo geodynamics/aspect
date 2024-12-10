@@ -33,7 +33,8 @@ with open('../../VERSION', 'r') as file:
 extensions = [
     "myst_parser",
     "sphinxcontrib.bibtex",
-    "sphinxcontrib.tikz"
+    "sphinxcontrib.tikz",
+    "sphinxcontrib.cairosvgconverter"
 ]
 myst_enable_extensions = [
     "colon_fence",
