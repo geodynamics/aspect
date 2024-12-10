@@ -91,11 +91,11 @@ information.
 ```{figure-md} fig:grav_mantle4
 <img src="grav.*" style="width:48.0%" />
 
- Mantle gravity: gravitational acceleration |g| computed at radius 6621&#xA0;km.
+ Mantle gravity: gravitational acceleration |g| computed at radius $6621~\text{ km}$.
 ```
 
 ```{figure-md} fig:grav_mantle5
 <img src="pot.*" style="width:48.0%" />
 
- Mantle gravity: gravitational potential computed at radius 6621&#xA0;km.
+ Mantle gravity: gravitational potential computed at radius $6621~\text{ km}$.
 ```

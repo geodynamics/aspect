@@ -17,13 +17,13 @@ the patterns one can then observe in these do-it-yourself models are shown in
 ```{figure-md} fig:sandbox-images1
 <img src="real-sandbox-1.jpg" style="width:45.0%" />
 
- Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University.
+ Examples of deformation patterns of sand box experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University.
 ```
 
 ```{figure-md} fig:sandbox-images2
 <img src="real-sandbox-2.jpg" style="width:45.0%" />
 
- Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University.
+ Examples of deformation patterns of sand box experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University.
 ```
 
 {cite}`buiter:etal:2016` organized new comparison experiments
