@@ -72,12 +72,6 @@ namespace aspect
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const;
 
-
-        /**
-         * Returns whether or not the plugin requires surface stabilization
-         */
-        bool needs_surface_stabilization () const override;
-
         /**
          * Declare parameters for the FastScape plugin.
          */
@@ -121,10 +115,8 @@ namespace aspect
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
          */
-        // Table<dim,double> fill_data_table(std::vector<double> &values,
-        //                                   TableIndices<dim> &size_idx,
-        //                                   const int &array_size) const;
-        Table<dim, double> fill_data_table(std::vector<double> &values,
+        Table<dim,double> fill_data_table(std::vector<double> &values,
+                                          TableIndices<dim> &size_idx,
                                           const int &array_size) const;
 
 
@@ -201,6 +193,9 @@ namespace aspect
          */
         int nsides;
 
+        // double radial_intervals;
+        // double latitude_intervals;
+        // double longitude_intervals;
         /**
          * How many levels FastScape should be refined above the maximum ASPECT surface resolution.
          */

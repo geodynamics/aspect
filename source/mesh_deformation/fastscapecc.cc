@@ -25,6 +25,7 @@
 #include <aspect/mesh_deformation/fastscapecc.h>
 #include <aspect/geometry_model/box.h>
 #include <deal.II/numerics/vector_tools.h>
+
 #include <aspect/postprocess/visualization.h>
 #include <ctime>
 #include <aspect/simulator.h>
@@ -36,7 +37,8 @@
 
 #include <aspect/geometry_model/spherical_shell.h>
 #include <fastscapelib/grid/healpix_grid.hpp>
-#include <aspect/mesh_deformation/interface.h>
+
+#include <cmath> 
 
 // namespace fs = fastscapelib;
 
@@ -77,293 +79,493 @@ namespace aspect
         {
             this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-            nsides = static_cast<int>(sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference + maximum_surface_refinement_level) * 2) / 12));
+          nsides =(int) sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference+maximum_surface_refinement_level) * 2) / 12);
+          // array_size = 12*nsides;
+          // Calculate intervals
+          // radial_intervals = std::pow(2, maximum_surface_refinement_level + additional_refinement_levels);
+          // latitude_intervals = 2 * nsides;    // Based on Healpix rings
+          // longitude_intervals = 4 * nsides;  // Approximate maximum resolution in longitude
         }
         else
         {
             AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
         }
-    }
+  }
 
-    template <int dim>
-    void
-    FastScapecc<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                               AffineConstraints<double> &mesh_velocity_constraints,
-                                                               const std::set<types::boundary_id> &boundary_ids) const
-    {
+  template <int dim>
+  void FastScapecc<dim>::compute_velocity_constraints_on_boundary(
+      const DoFHandler<dim> &mesh_deformation_dof_handler,
+      AffineConstraints<double> &mesh_velocity_constraints,
+      const std::set<types::boundary_id> &boundary_ids) const
+  {
       if (this->get_timestep_number() == 0)
-        return;
+          return;
 
       TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
 
-      const unsigned int current_timestep = this->get_timestep_number ();
+      const unsigned int current_timestep = this->get_timestep_number();
 
-      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
 
-      // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
-      const QIterated<dim-1> face_corners (QTrapezoid<1>(),
-                                           static_cast<unsigned int>(std::pow(2, additional_refinement_levels + surface_refinement_difference)));
+      // Add a separate vector to store radial velocity for spherical geometry
+      std::vector<double> radial_velocity_temp;
 
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        face_corners,
-                                        update_values |
-                                        update_quadrature_points |
-                                        update_normal_vectors);
+      const QIterated<dim - 1> face_corners(QTrapezoid<1>(),
+                                            static_cast<unsigned int>(std::pow(2, additional_refinement_levels + surface_refinement_difference)));
+
+      FEFaceValues<dim> fe_face_values(this->get_mapping(),
+                                      this->get_fe(),
+                                      face_corners,
+                                      update_values | update_quadrature_points);
 
       auto healpix_grid = T_Healpix_Base<int>(nsides, Healpix_Ordering_Scheme::RING, SET_NSIDE);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned() && cell->at_boundary())
-          for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-            if (cell->face(face_no)->at_boundary())
+      {
+          if (cell->is_locally_owned() && cell->at_boundary())
+          {
+              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
               {
-                if (cell->face(face_no)->boundary_id() != relevant_boundary)
-                  continue;
-
-                std::vector<Tensor<1,dim>> vel(face_corners.size());
-                fe_face_values.reinit(cell, face_no);
-                fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
-
-                for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
+                  if (cell->face(face_no)->at_boundary())
                   {
-                    const Point<dim> vertex = fe_face_values.quadrature_point(corner);
+                      if (cell->face(face_no)->boundary_id() != relevant_boundary)
+                          continue;
 
-                    // Find the healpix index for the current point.
-                    int index = healpix_grid.vec2pix({vertex(0), vertex(1), vertex(2)});
+                      std::vector<Tensor<1, dim>> vel(face_corners.size());
+                      fe_face_values.reinit(cell, face_no);
+                      fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
 
-                    // Convert Cartesian velocity to radial velocity.
-                    double radial_velocity = (vertex(0) * vel[corner][0] + vertex(1) * vel[corner][1] + vertex(2) * vel[corner][2])
-                                             / vertex.norm();
+                      for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
+                      {
+                          const Point<dim> vertex = fe_face_values.quadrature_point(corner);
 
-                    temporary_variables[0].push_back(vertex(dim-1) - outer_radius);   // z component
-                    temporary_variables[1].push_back(index);
-                    temporary_variables[2].push_back(radial_velocity * year_in_seconds);
+                          // Healpix index calculation
+                          int index = healpix_grid.vec2pix({vertex(0), vertex(1), vertex(2)});
+
+                          temporary_variables[0].push_back(vertex(dim - 1) - outer_radius); // z component
+                          temporary_variables[1].push_back(index);
+
+                          // Radial velocity calculation for spherical geometry
+                          double radial_velocity = 0.0;
+                          if (geometry_type == GeometryType::SphericalShell)
+                          {
+                              // Calculate radial velocity
+                              const double r = vertex.norm();
+                              radial_velocity = (vertex(0) * vel[corner][0] +
+                                                vertex(1) * vel[corner][1] +
+                                                vertex(2) * vel[corner][2]) /
+                                                r;
+                              radial_velocity_temp.push_back(radial_velocity * year_in_seconds);
+                          }
+
+                          // Add Cartesian velocity components to temporary variables
+                          for (unsigned int i = 0; i < dim; ++i)
+                          {
+                              temporary_variables[i + 2].push_back(vel[corner][i] * year_in_seconds);
+                          }
+                      }
                   }
               }
+          }
+      }
 
-      int array_size = healpix_grid.Npix();
-      std::vector<double> V(array_size);
+    // Vector to hold the velocities that represent the change to the surface
+    int array_size = healpix_grid.Npix();
+    std::vector<double> V(array_size);    // General velocity field
+    std::vector<double> Vrad(array_size); // Radial velocity (for spherical geometry)
 
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+    if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+    {
+        // Initialize the variables that will be sent to FastScape
+        std::vector<double> h(array_size, std::numeric_limits<double>::max());
+        std::vector<double> vx(array_size);
+        std::vector<double> vy(array_size);
+        std::vector<double> vz(array_size); // Retain z-component of velocity
+        std::vector<double> kf(array_size);
+        std::vector<double> kd(array_size);
+        std::vector<double> h_old(array_size);
+
+        for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
         {
-          // Initialize the variables that will be sent to FastScape.
-          std::vector<double> h(array_size, std::numeric_limits<double>::max());
-          std::vector<double> vz(array_size);
-          std::vector<double> h_old(array_size);
-
-          for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-          {
             int index = static_cast<int>(temporary_variables[1][i]);
             h[index] = temporary_variables[0][i];
-            vz[index] = temporary_variables[2][i];
-          }
+            vx[index] = temporary_variables[2][i];
+            vy[index] = temporary_variables[3][i];
+            vz[index] = temporary_variables[dim + 1][i]; // Keep z-component for Cartesian cases
 
-          for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-          {
+            // Use radial velocity for spherical geometry
+            if (geometry_type == GeometryType::SphericalShell)
+            {
+                Vrad[index] = radial_velocity_temp[i]; // Store radial velocity
+            }
+        }
+
+        for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
+        {
+            // First, find out the size of the array a process wants to send
             MPI_Status status;
             MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
             int incoming_size = 0;
             MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
 
+            // Resize the array so it fits whatever the process sends
             for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-              {
+            {
                 temporary_variables[i].resize(incoming_size);
-              }
+            }
 
             for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-              MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+            {
+                MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+            }
 
+            // Place the numbers into the correct positions based on the index
             for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-              {
+            {
                 int index = static_cast<int>(temporary_variables[1][i]);
                 h[index] = temporary_variables[0][i];
-                vz[index] = temporary_variables[2][i];
-              }
-          }
+                vx[index] = temporary_variables[2][i];
+                vy[index] = temporary_variables[3][i];
+                vz[index] = temporary_variables[dim + 1][i];
 
-          for (unsigned int i = 0; i < array_size; ++i)
-          {
-            h_old[i] = h[i];
-          }
-
-          const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
-
-          unsigned int fastscape_iterations = fastscape_steps_per_aspect_step;
-          double fastscape_timestep_in_years = aspect_timestep_in_years / fastscape_iterations;
-          while (fastscape_timestep_in_years > maximum_fastscape_timestep)
-            {
-              fastscape_iterations *= 2;
-              fastscape_timestep_in_years *= 0.5;
-            }
-
-          xt::xarray<fastscapelib::node_status> node_status_array = xt::zeros<fastscapelib::node_status>({ array_size });
-          auto grid = fastscapelib::healpix_grid<>(nsides, node_status_array, 6.371e6);
-          auto flow_graph = fastscapelib::flow_graph<fastscapelib::healpix_grid<>>(
-              grid, {
-              fastscapelib::single_flow_router()}
-          );
-          auto spl_eroder = fastscapelib::make_spl_eroder(flow_graph, 2e-4, 0.4, 1, 1e-5);
-
-          xt::xarray<double> uplifted_elevation = xt::zeros<double>(grid.shape());
-          xt::xarray<double> drainage_area = xt::zeros<double>(grid.shape());
-          xt::xarray<double> sediment_flux = xt::zeros<double>(grid.shape());
-
-          std::vector<std::size_t> shape = { static_cast<unsigned long>(array_size) };
-          auto uplift_rate = xt::adapt(vz, shape);
-          auto elevation = xt::adapt(h, shape);
-          auto elevation_old = xt::adapt(h_old, shape);
-
-          for (unsigned int fastscape_iteration = 0; fastscape_iteration < fastscape_iterations; ++fastscape_iteration)
-            {
-              uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
-              flow_graph.update_routes(uplifted_elevation);
-              flow_graph.accumulate(drainage_area, 1.0);
-              auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
-              sediment_flux = flow_graph.accumulate(spl_erosion);
-              elevation = uplifted_elevation - spl_erosion;
-            }
-
-          std::vector<double> elevation_std(elevation.begin(), elevation.end());
-          std::vector<double> elevation_old_std(elevation_old.begin(), elevation.end());
-
-          for (unsigned int i = 0; i < array_size; ++i)
-          {
-            V[i] = (elevation_std[i] - elevation_old_std[i]) / (this->get_timestep() / year_in_seconds);
-          }
-          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
-        }
-      else
-      {
-          for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-            MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
-          
-          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator()); 
-      }  
-
-      auto healpix_velocity_function = [&](const Point<dim> &p) -> double
-      {
-          // Normalize the point to ensure it's on the unit sphere
-          Point<dim> normalized_p = p / p.norm();
-
-          // Find the index of the closest Healpix pixel
-          int main_index = healpix_grid.vec2pix({normalized_p(0), normalized_p(1), normalized_p(2)});
-
-          // Create a fixed array to hold up to 8 neighbors
-          fix_arr<int, 8> neighbor_indices;
-
-          // Retrieve neighboring indices of the closest Healpix pixel
-          healpix_grid.neighbors(main_index, neighbor_indices);
-
-          // Add the main pixel to the list of neighbors to consider
-          std::vector<int> neighbors;
-          neighbors.push_back(main_index);
-
-          // Append neighbors from the fixed array
-          for (int i = 0; i < 8; ++i)
-          {
-              if (neighbor_indices[i] >= 0) // Assuming negative values indicate invalid entries
-                  neighbors.push_back(neighbor_indices[i]);
-          }
-
-          double interpolated_velocity = 0.0;
-          double total_weight = 0.0;
-
-          // Compute weighted average velocity
-          for (int neighbor_index : neighbors)
-          {
-              // Get the vec3 object representing the center of the Healpix pixel
-              auto healpix_center_vec3 = healpix_grid.pix2vec(neighbor_index);
-
-              // Convert vec3 to Point<dim>
-              Point<dim> healpix_center(healpix_center_vec3.x, healpix_center_vec3.y, healpix_center_vec3.z);
-
-              // Calculate distance between normalized point and Healpix center
-              double distance = (normalized_p - healpix_center).norm();
-              double weight = 1.0 / (distance + 1e-6); // Inverse distance weighting, small value to avoid division by zero
-
-              interpolated_velocity += V[neighbor_index] * weight;
-              total_weight += weight;
-          }
-
-          // Return the weighted average velocity
-          return interpolated_velocity / total_weight;
-      };
-
-
-
-      VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-          healpix_velocity_function,
-          dim - 1,
-          dim);
-
-      VectorTools::interpolate_boundary_values(
-          mesh_deformation_dof_handler,
-          *boundary_ids.begin(),
-          vector_function_object,
-          mesh_velocity_constraints);
-    }
-
-    template <int dim>
-    Table<dim, double> FastScapecc<dim>::fill_data_table(std::vector<double> &values,
-                                                        const int &array_size) const
-    {
-        // Define the size index based on the array size.
-        TableIndices<dim> size_idx;
-        for (unsigned int i = 0; i < dim; ++i)
-        {
-            size_idx[i] = array_size; // or set different values depending on the specific problem dimensions.
-        }
-
-        // Create data table based off of the given size.
-        Table<dim, double> data_table;
-        data_table.TableBase<dim, double>::reinit(size_idx);
-        TableIndices<dim> idx;
-
-        // Loop through the data table and fill it with the velocities from FastScape.
-        // Indexes through z, y, and then x.
-        for (unsigned int k = 0; k < data_table.size()[2]; ++k)
-        {
-            idx[2] = k;
-
-            for (unsigned int i = 0; i < data_table.size()[1]; ++i)
-            {
-                idx[1] = i;
-
-                for (unsigned int j = 0; j < data_table.size()[0]; ++j)
+                if (geometry_type == GeometryType::SphericalShell)
                 {
-                    idx[0] = j;
-
-                    // Convert back to m/s.
-                    double velocity = values[array_size * i + j] / year_in_seconds;
-
-                    // Debug output to verify the value
-                    // if (std::isnan(velocity) || std::isinf(velocity))
-                    // {
-                        std::cout << "Invalid velocity value detected at idx (" << k << ", " << i << ", " << j << "): " << velocity << std::endl;
-                    // }
-                    // else if (velocity > 1e6 || velocity < -1e6) // Adjust threshold as needed
-                    // {
-                        // std::cout << "Unusually large velocity value detected at idx (" << k << ", " << i << ", " << j << "): " << velocity << std::endl;
-                    // }
-
-                    data_table(idx) = velocity;
+                    Vrad[index] = radial_velocity_temp[i]; // Store radial velocity
                 }
             }
         }
-        return data_table;
+
+        // Initialize kf and kd, and check for empty mesh points
+        for (unsigned int i = 0; i < array_size; ++i)
+        {
+            kf[i] = kff;
+            kd[i] = kdd;
+        }
+
+
+
+      //Execute Fastscape
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
+          return;
+
+      this->get_pcout() << "   Initializing FastScape... " << (1 + maximum_surface_refinement_level + additional_refinement_levels) <<
+                          " levels, cell size: " << dx << " m." << std::endl;
+
+      // Keep initial h values so we can calculate velocity later
+      // In the first timestep, h will be given from other processes
+      // In later timesteps, we copy h directly from FastScape
+      std::mt19937 random_number_generator(fs_seed);
+      std::uniform_real_distribution<double> random_distribution(-noise_h, noise_h);
+      for (unsigned int i = 0; i < array_size; ++i)
+      {
+          h_old[i] = h[i];
+
+          // Initialize random noise after h_old is set, so ASPECT sees this initial topography change
+          if (current_timestep == 1)
+          {
+              // + or - topography based on the initial noise magnitude
+              const double h_seed = random_distribution(random_number_generator);
+              h[i] = h[i] + h_seed;
+          }
+      }
+
+      const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
+
+      // Find a FastScape timestep that is below our maximum timestep
+      unsigned int fastscape_iterations = fastscape_steps_per_aspect_step;
+      double fastscape_timestep_in_years = aspect_timestep_in_years / fastscape_iterations;
+      while (fastscape_timestep_in_years > maximum_fastscape_timestep)
+      {
+          fastscape_iterations *= 2;
+          fastscape_timestep_in_years *= 0.5;
+      }
+
+      // Raster grid and boundary conditions
+      xt::xarray<fastscapelib::node_status> node_status_array = xt::zeros<fastscapelib::node_status>({ array_size });
+      auto grid = fastscapelib::healpix_grid<>(nsides, node_status_array, 6.371e6);
+      auto flow_graph = fastscapelib::flow_graph<fastscapelib::healpix_grid<>>(
+          grid, { fastscapelib::single_flow_router() }
+      );
+      auto spl_eroder = fastscapelib::make_spl_eroder(flow_graph, 2e-4, 0.4, 1, 1e-5);
+
+      xt::xarray<double> uplifted_elevation = xt::zeros<double>(grid.shape());
+      xt::xarray<double> drainage_area = xt::zeros<double>(grid.shape());
+      xt::xarray<double> sediment_flux = xt::zeros<double>(grid.shape());
+
+      // Adjust uplift_rate to use Vrad for spherical geometries
+      std::vector<double> uplift_rate_in_m_year(array_size);
+      for (size_t i = 0; i < array_size; ++i) 
+      {
+          if (geometry_type == GeometryType::SphericalShell)
+          {
+              uplift_rate_in_m_year[i] = Vrad[i]; // Use radial velocity
+          }
+          else
+          {
+              uplift_rate_in_m_year[i] = vz[i]; // Use z-component for other geometries
+          }
+      }
+
+      // Adapt uplift_rate for use in FastScape
+      std::vector<std::size_t> shape = { static_cast<unsigned long>(array_size) };
+      auto uplift_rate = xt::adapt(uplift_rate_in_m_year, shape);
+
+      auto elevation = xt::adapt(h, shape);
+      auto elevation_old = xt::adapt(h_old, shape);
+
+
+      // xt::xarray<double> elevation(vec_shape.shape(), h);
+      // xt::xarray<double> elevation_old(vec_shape.shape(), h_old);
+
+
+      // std::vector<double> uplift_rate_in_m_year(vz.size());
+      // for (size_t i = 0; i < vz.size(); ++i) {
+      //     uplift_rate_in_m_year[i] = vz[i] / year_in_seconds;
+      // }
+
+      // run model
+      //
+      //double dt = 2e4;
+      
+      for (unsigned int fastscape_iteration = 0; fastscape_iteration < fastscape_iterations; ++fastscape_iteration)
+      {
+          std::cout << "Fastscape iteration " << fastscape_iteration << std::endl;
+
+          // Apply uplift using the radial velocity for spherical geometries or z-velocity for Cartesian geometries
+          uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
+
+          // Perform flow routing
+          flow_graph.update_routes(uplifted_elevation);
+
+          // Perform flow accumulation (calculate drainage area)
+          flow_graph.accumulate(drainage_area, 1.0);
+
+          // Apply channel erosion
+          auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
+
+          // Calculate the cumulative sediment flux
+          sediment_flux = flow_graph.accumulate(spl_erosion);
+
+          // Update elevation by subtracting erosion
+          elevation = uplifted_elevation - spl_erosion;
+      }
+
+      // Convert updated elevation to standard vectors for further processing
+      std::vector<double> uplifted_erosion_std(uplifted_elevation.begin(), uplifted_elevation.end());
+      std::vector<double> elevation_std(elevation.begin(), elevation.end());
+      std::vector<double> elevation_old_std(elevation_old.begin(), elevation_old.end());
+      std::vector<double> uplift_rate_std(uplift_rate.begin(), uplift_rate.end());
+
+      // Compute velocities from elevation changes
+      std::cout << "Timestep: " << this->get_timestep() / year_in_seconds << " years" << std::endl;
+
+      for (unsigned int i = 0; i < array_size; ++i)
+      {
+          V[i] = (elevation_std[i] - elevation_old_std[i]) / (this->get_timestep() / year_in_seconds);
+      }
+
+      // Broadcast the updated velocities to all processes
+      MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
+      }
+      else
+      {
+          // Non-root processes send temporary variables to the root process
+          for (unsigned int i = 0; i < temporary_variables.size(); ++i)
+              MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+
+          // Receive the updated velocities from the root process
+          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
+      }
+
+      // if (geometry_type == GeometryType::Box)
+      // {
+      //     // Get the sizes needed for a data table of the mesh velocities
+      //     TableIndices<dim> size_idx;
+      //     for (unsigned int d = 0; d < dim; ++d)
+      //     {
+      //         size_idx[d] = table_intervals[d] + 1;
+      //     }
+
+      //     // Initialize a table to hold all velocity values that will be interpolated back to ASPECT
+      //     Table<dim, double> velocity_table = fill_data_table(V, size_idx, array_size);
+
+      //     // As our grid_extent variable end points do not account for the change related to an origin
+      //     // not at 0, adjust this into an interpolation extent
+      //     std::array<std::pair<double, double>, dim> interpolation_extent;
+      //     for (unsigned int i = 0; i < dim; ++i)
+      //     {
+      //         interpolation_extent[i].first = grid_extent[i].first;
+      //         interpolation_extent[i].second = grid_extent[i].first + grid_extent[i].second;
+      //     }
+
+      //     // Create the interpolator for Cartesian grid
+      //     Functions::InterpolatedUniformGridData<dim> velocities(
+      //         interpolation_extent,
+      //         table_intervals,
+      //         velocity_table);
+
+      //     // Define a vector function for interpolating boundary values
+      //     VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+      //         [&](const Point<dim> &p) -> double {
+      //             return velocities.value(p); // Interpolate velocity at point p
+      //         },
+      //         dim - 1,
+      //         dim);
+
+      //     // Interpolate boundary values
+      //     VectorTools::interpolate_boundary_values(mesh_deformation_dof_handler,
+      //                                             *boundary_ids.begin(),
+      //                                             vector_function_object,
+      //                                             mesh_velocity_constraints);
+      // }
+
+ if (geometry_type == GeometryType::SphericalShell)
+{
+    unsigned int latitude_intervals = 2 * nsides;
+    unsigned int longitude_intervals = (dim == 3) ? 4 * nsides : 0; // Longitude is only relevant in 3D
+    unsigned int radial_intervals = std::pow(2, maximum_surface_refinement_level + additional_refinement_levels);
+
+    // Define interpolation_extent explicitly
+    std::array<std::pair<double, double>, 3> interpolation_extent_3d = {
+        std::make_pair(inner_radius, outer_radius),
+        std::make_pair(-M_PI_2, M_PI_2),
+        std::make_pair(-M_PI, M_PI)
+    };
+
+    std::array<std::pair<double, double>, 2> interpolation_extent_2d = {
+        std::make_pair(inner_radius, outer_radius),
+        std::make_pair(-M_PI_2, M_PI_2)
+    };
+
+    std::array<std::pair<double, double>, dim> interpolation_extent;
+    if (dim == 3)
+    {
+        interpolation_extent = {
+            std::make_pair(inner_radius, outer_radius),
+            std::make_pair(-M_PI_2, M_PI_2),
+            std::make_pair(-M_PI, M_PI)
+        };
     }
+    else if (dim == 2)
+    {
+        interpolation_extent = {
+            std::make_pair(inner_radius, outer_radius),
+            std::make_pair(-M_PI_2, M_PI_2)
+        };
+    }
+    std::array<unsigned int, dim> n_subintervals;
+    if (dim == 3)
+    {
+        n_subintervals = {radial_intervals, latitude_intervals, longitude_intervals};
+    }
+    else if (dim == 2)
+    {
+        n_subintervals = {radial_intervals, latitude_intervals};
+    }
+    // Define the velocity table
+    if (dim == 3)
+    {
+        Table<3, double> velocity_table;
+        velocity_table.reinit(radial_intervals, latitude_intervals, longitude_intervals);
+
+        for (unsigned int i = 0; i < radial_intervals; ++i)
+        {
+            double r = inner_radius + i * (outer_radius - inner_radius) / (radial_intervals - 1);
+
+            for (unsigned int j = 0; j < latitude_intervals; ++j)
+            {
+                double latitude = -M_PI_2 + j * M_PI / (latitude_intervals - 1);
+
+                for (unsigned int k = 0; k < longitude_intervals; ++k)
+                {
+                    double longitude = -M_PI + k * (2 * M_PI) / (longitude_intervals - 1);
+
+                    // Convert latitude and longitude to Cartesian
+                    double theta = M_PI_2 - latitude; // Co-latitude
+                    double phi = longitude;
+                    double x = r * std::sin(theta) * std::cos(phi);
+                    double y = r * std::sin(theta) * std::sin(phi);
+                    double z = r * std::cos(theta);
+
+                    // Get Healpix index and assign velocity
+                    int index_pix = healpix_grid.vec2pix({x, y, z});
+                    velocity_table(k, j, i) = Vrad[index_pix];
+                }
+            }
+        }
+    }
+    else if (dim == 2)
+    {
+        Table<2, double> velocity_table;
+        velocity_table.reinit(radial_intervals, latitude_intervals);
+
+        for (unsigned int i = 0; i < radial_intervals; ++i)
+        {
+            double r = inner_radius + i * (outer_radius - inner_radius) / (radial_intervals - 1);
+
+            for (unsigned int j = 0; j < latitude_intervals; ++j)
+            {
+                double latitude = -M_PI_2 + j * M_PI / (latitude_intervals - 1);
+
+                // Simplify to 2D
+                double theta = M_PI_2 - latitude; // Co-latitude
+                double x = r * std::cos(theta);
+                double z = r * std::sin(theta);
+
+                // Get Healpix index and assign velocity
+                int index_pix = healpix_grid.vec2pix({x, 0.0, z}); // Use a dummy y-coordinate
+                velocity_table(j, i) = Vrad[index_pix];
+            }
+        }
+    }
+}
+
+
+  }
+
 
 
 
     template <int dim>
-    bool
-    FastScapecc<dim>::
-    needs_surface_stabilization () const
+    Table<dim,double>
+    FastScapecc<dim>::fill_data_table(std::vector<double> &values,
+                                      TableIndices<dim> &size_idx,
+                                      const int &array_size) const
     {
-      return true;
+      // Create data table based off of the given size.
+      Table<dim,double> data_table;
+      data_table.TableBase<dim,double>::reinit(size_idx);
+      TableIndices<dim> idx;
+//      Assert(values.size() == data_table.size()[0]*data_table.size()[1]*data_table.size()[2],
+//                     ExcMessage("The size of the data table does not match the size of the values.");
+
+      // Loop through the data table and fill it with the velocities from FastScape.
+
+      // Indexes through z, y, and then x.
+      for (unsigned int k=0; k<data_table.size()[2]; ++k)
+        {
+          idx[2] = k;
+
+          for (unsigned int i=0; i<data_table.size()[1]; ++i)
+            {
+              idx[1] = i;
+
+              for (unsigned int j=0; j<data_table.size()[0]; ++j)
+                {
+                  idx[0] = j;
+
+                  // Convert back to m/s.
+                  data_table(idx) = values[array_size*i+j] / year_in_seconds;
+                    
+
+                }
+            }
+        }
+      return data_table;
     }
+
+
 
     template <int dim>
     void FastScapecc<dim>::declare_parameters(ParameterHandler &prm)
@@ -400,6 +602,9 @@ namespace aspect
           }
       }
       prm.leave_subsection();  
+
+
+
 
       prm.enter_subsection ("Mesh deformation");
       {
