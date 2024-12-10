@@ -65,7 +65,7 @@ planned, or that conflicts with other plans.
 To make a change to ASPECT you should:
 
 - Create a
-[fork](https://guides.github.com/activities/forking/#fork) (through GitHub) of
+[fork](https://guides.github.com/activities/forking) (through GitHub) of
 the code base.
 - Create a separate
 [branch](https://guides.github.com/introduction/flow/) (sometimes called a
@@ -124,7 +124,7 @@ When you add the bin directory to to your path, the indent command should find a
 
 If your new pull request creates a change that is noticeable to ASPECT users,
 please add an entry to our
-[changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html). To
+[changelog](https://aspect.geodynamics.org/doc/doxygen/changes_current.html). To
 add such an entry, make a copy of one of the files in the
 [doc/modules/changes/](https://github.com/geodynamics/aspect/tree/main/doc/modules/changes)
 folder and modify it to explain
@@ -147,7 +147,7 @@ ways in which your contribution will be acknowledged by the ASPECT community:
   and merged pull requests, including an acknowledgment of the author of the
   issue/pull request.
 - For every release the most significant entries of our
-  [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html)
+  [changelog](https://aspect.geodynamics.org/doc/doxygen/changes_current.html)
   are selected to generate our release announcements. Additionally, all entries
   remain available for all previous releases of ASPECT inside the
   [repository](https://github.com/geodynamics/aspect/tree/main/doc/modules)

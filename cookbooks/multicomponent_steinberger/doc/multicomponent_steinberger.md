@@ -122,7 +122,7 @@ You may also notice that there is a `subsection Function` under `subsection Adia
 
 
 The complete input file can be found in
-[cookbooks/multicomponent_steinberger/doc/steinberger_thermochemical_plume.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/multicomponent_steinberger/doc/steinberger_thermochemical_plume.prm).
+[cookbooks/multicomponent_steinberger/doc/steinberger_thermochemical_plume.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/multicomponent_steinberger/steinberger_thermochemical_plume.prm).
 
 ## Results
 

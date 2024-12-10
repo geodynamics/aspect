@@ -16,7 +16,7 @@ generate the initial geometries of the materials as a drawing instead of by
 writing code. The MATLAB-based library geomIO
 (<https://bitbucket.org/geomio/geomio>, {cite}`bauville:baumann:2019` provides
 a convenient tool to convert a drawing generated with the vector graphics
-editor Inkscape (<https://inkscape.org/en/>) to a data file that can be read
+editor Inkscape (<https://inkscape.org>) to a data file that can be read
 into ASPECT. Here, we will demonstrate how this can be done for a 2D setup for a
 model with one compositional field, but geomIO also has the capability to
 create 3D volumes based on a series of 2D vector drawings using any number of
@@ -65,7 +65,7 @@ that you later want to use in your model (in m).
 :::
 
 After geomIO is initialized in MATLAB, we [run geomIO as described in the
-documentation](https://bitbucket.org/#assigning-phase-to-markers), loading the
+documentation](https://bitbucket.org/geomio/geomio/wiki/Basic2Dtutorial#markdown-header-assigning-phase-information-to-markers), loading the
 default options and then specifying all the
 option we want to change, such as the path to the input file, or the
 resolution:

@@ -337,7 +337,7 @@ provides the values that should be interpolated onto the field.
 ```
 
 The complete input file can be found in
-[cookbooks/steinberger/doc/steinberger.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/steinberger/doc/steinberger.prm).
+[cookbooks/steinberger/doc/steinberger.prm](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/steinberger/steinberger.prm).
 
 ## Results
 
