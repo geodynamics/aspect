@@ -562,7 +562,7 @@ namespace aspect
     DynamicCore<dim>::
     get_mass(const double r) const
     {
-      return 4.*numbers::PI*Rho_cen*(-std::pow(L,2)/2.*r*std::exp(-std::pow(r/L,2))+std::pow(L,3)/4.*std::sqrt(numbers::PI)*std::erf(r/L));
+      return 4.*numbers::PI*Rho_cen*(-Utilities::fixed_power<2>(L)/2.*r*std::exp(-Utilities::fixed_power<2>(r/L))+Utilities::fixed_power<3>(L)/4.*std::sqrt(numbers::PI)*std::erf(r/L));
     }
 
 
@@ -591,9 +591,9 @@ namespace aspect
     DynamicCore<dim>::
     get_pressure(const double r) const
     {
-      return P_CMB-(4*numbers::PI*constants::big_g*std::pow(Rho_cen,2))/3
-             *((3*std::pow(r,2)/10.-std::pow(L,2)/5)*std::exp(-std::pow(r/L,2))
-               -(3*std::pow(Rc,2)/10-std::pow(L,2)/5)*std::exp(-std::pow(Rc/L,2)));
+      return P_CMB-(4*numbers::PI*constants::big_g*Utilities::fixed_power<2>(Rho_cen))/3
+             *((3*Utilities::fixed_power<2>(r)/10.-Utilities::fixed_power<2>(L)/5)*std::exp(-Utilities::fixed_power<2>(r/L))
+               -(3*Utilities::fixed_power<2>(Rc)/10-Utilities::fixed_power<2>(L)/5)*std::exp(-Utilities::fixed_power<2>(Rc/L)));
     }
 
 
@@ -603,7 +603,7 @@ namespace aspect
     DynamicCore<dim>::
     get_rho(const double r) const
     {
-      return Rho_cen*std::exp(-std::pow(r/L,2));
+      return Rho_cen*std::exp(-Utilities::fixed_power<2>(r/L));
     }
 
 
@@ -613,7 +613,7 @@ namespace aspect
     DynamicCore<dim>::
     get_g(const double r) const
     {
-      return (4*numbers::PI/3)*constants::big_g*Rho_cen*r*(1-3*std::pow(r,2)/(5*std::pow(L,2)));
+      return (4*numbers::PI/3)*constants::big_g*Rho_cen*r*(1-3*Utilities::fixed_power<2>(r)/(5*Utilities::fixed_power<2>(L)));
     }
 
 
@@ -623,7 +623,7 @@ namespace aspect
     DynamicCore<dim>::
     get_T(const double Tc, const double r) const
     {
-      return Tc*std::exp((std::pow(Rc,2)-std::pow(r,2))/std::pow(D,2));
+      return Tc*std::exp((Utilities::fixed_power<2>(Rc)-Utilities::fixed_power<2>(r))/Utilities::fixed_power<2>(D));
     }
 
 
@@ -633,8 +633,8 @@ namespace aspect
     DynamicCore<dim>::
     get_gravity_potential(const double r) const
     {
-      return 2./3.*numbers::PI*constants::big_g*Rho_cen*(std::pow(r,2)*(1.-3.*std::pow(r,2)
-                                                                        /(10.*std::pow(L,2)))-std::pow(Rc,2)*(1.-3.*std::pow(Rc,2)/(10.*std::pow(L,2))));
+      return 2./3.*numbers::PI*constants::big_g*Rho_cen*(Utilities::fixed_power<2>(r)*(1.-3.*Utilities::fixed_power<2>(r)
+                                                         /(10.*Utilities::fixed_power<2>(L)))-Utilities::fixed_power<2>(Rc)*(1.-3.*Utilities::fixed_power<2>(Rc)/(10.*Utilities::fixed_power<2>(L))));
     }
 
 
@@ -644,8 +644,8 @@ namespace aspect
     DynamicCore<dim>::
     get_specific_heating(const double Tc, double &Qs,double &Es) const
     {
-      const double A = std::sqrt(1./(std::pow(L,-2)+std::pow(D,-2)));
-      const double Is = 4.*numbers::PI*get_T(Tc,0.)*Rho_cen*(-std::pow(A,2)*Rc/2.*std::exp(-std::pow(Rc/A,2))+std::pow(A,3)*std::sqrt(numbers::PI)/4.*std::erf(Rc/A));
+      const double A = std::sqrt(1./(Utilities::fixed_power<-2>(L)+Utilities::fixed_power<-2>(D)));
+      const double Is = 4.*numbers::PI*get_T(Tc,0.)*Rho_cen*(-Utilities::fixed_power<2>(A)*Rc/2.*std::exp(-Utilities::fixed_power<2>(Rc/A))+Utilities::fixed_power<3>(A)*std::sqrt(numbers::PI)/4.*std::erf(Rc/A));
 
       Qs = -Cp/Tc*Is;
       Es = Cp/Tc*(Mc-Is/Tc);
@@ -661,13 +661,13 @@ namespace aspect
       double It = numbers::signaling_nan<double>();
       if (D>L)
         {
-          const double B = std::sqrt(1/(1/std::pow(L,2)-1/std::pow(D,2)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+          const double B = std::sqrt(1/(1/Utilities::fixed_power<2>(L)-1/Utilities::fixed_power<2>(D)));
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
         }
       else
         {
-          const double B = std::sqrt(1/(std::pow(D,-2)-std::pow(L,-2)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
+          const double B = std::sqrt(1/(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
         }
 
       Qr = Mc*core_data.H;
@@ -684,17 +684,17 @@ namespace aspect
       double It = numbers::signaling_nan<double>();
       if (D>L)
         {
-          const double B = std::sqrt(1./(1./std::pow(L,2)-1./std::pow(D,2)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
-          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*r/2*std::exp(-std::pow(r/B,2))+std::pow(B,3)/std::sqrt(numbers::PI)/4*std::erf(r/B));
+          const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*r/2*std::exp(-Utilities::fixed_power<2>(r/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(r/B));
         }
       else
         {
-          const double B = std::sqrt(1./(std::pow(D,-2)-std::pow(L,-2)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
-          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*r/2*std::exp(std::pow(r/B,2))-std::pow(B,2)*fun_Sn(B,r,100)/2);
+          const double B = std::sqrt(1./(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
+          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*r/2*std::exp(Utilities::fixed_power<2>(r/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,r,100)/2);
         }
-      const double Cc = 4*numbers::PI*std::pow(r,2)*get_rho(r)*X/(Mc-get_mass(r));
+      const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
       Eh = Rh*(It-(Mc-get_mass(r))/get_T(Tc,r))*Cc;
     }
 
@@ -705,17 +705,17 @@ namespace aspect
     DynamicCore<dim>::
     get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const
     {
-      const double Cc = 4*numbers::PI*std::pow(r,2)*get_rho(r)*X/(Mc-get_mass(r));
-      const double C_2 = 3./16.*std::pow(L,2) - 0.5*std::pow(Rc,2)*(1.-3./10.*std::pow(Rc/L,2));
+      const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
+      const double C_2 = 3./16.*Utilities::fixed_power<2>(L) - 0.5*Utilities::fixed_power<2>(Rc)*(1.-3./10.*Utilities::fixed_power<2>(Rc/L));
       if (r==Rc)
         Qg = 0.;
       else
         {
-          Qg = (8./3.*std::pow(numbers::PI*Rho_cen,2)*constants::big_g*(
-                  ((3./20.*std::pow(Rc,5)-std::pow(L,2)*std::pow(Rc,3)/8.-C_2*std::pow(L,2)*Rc)*std::exp(-std::pow(Rc/L,2))
-                   +C_2/2.*std::pow(L,3)*std::sqrt(numbers::PI)*std::erf(Rc/L))
-                  -((3./20.*std::pow(r,5)-std::pow(L,2)*std::pow(r,3)/8.-C_2*std::pow(L,2)*r)*std::exp(-std::pow(r/L,2))
-                    +C_2/2.*std::pow(L,3)*std::sqrt(numbers::PI)*std::erf(r/L)))
+          Qg = (8./3.*Utilities::fixed_power<2>(numbers::PI*Rho_cen)*constants::big_g*(
+                  ((3./20.*Utilities::fixed_power<5>(Rc)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(Rc)/8.-C_2*Utilities::fixed_power<2>(L)*Rc)*std::exp(-Utilities::fixed_power<2>(Rc/L))
+                   +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(Rc/L))
+                  -((3./20.*Utilities::fixed_power<5>(r)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(r)/8.-C_2*Utilities::fixed_power<2>(L)*r)*std::exp(-Utilities::fixed_power<2>(r/L))
+                    +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(r/L)))
                 -(Mc-get_mass(r))*get_gravity_potential(r))*Beta_c*Cc;
         }
 
@@ -729,8 +729,8 @@ namespace aspect
     DynamicCore<dim>::
     get_adiabatic_heating(const double Tc, double &Ek, double &Qk) const
     {
-      Ek = 16*numbers::PI*k_c*std::pow(Rc,5)/5/std::pow(D,4);
-      Qk = 8*numbers::PI*std::pow(Rc,3)*k_c*Tc/std::pow(D,2);
+      Ek = 16*numbers::PI*k_c*Utilities::fixed_power<5>(Rc)/5/Utilities::fixed_power<4>(D);
+      Qk = 8*numbers::PI*Utilities::fixed_power<3>(Rc)*k_c*Tc/Utilities::fixed_power<2>(D);
     }
 
 
@@ -740,7 +740,7 @@ namespace aspect
     DynamicCore<dim>::
     get_latent_heating(const double Tc, const double r, double &El, double &Ql) const
     {
-      Ql = 4.*numbers::PI*std::pow(r,2)*Lh*get_rho(r);
+      Ql = 4.*numbers::PI*Utilities::fixed_power<2>(r)*Lh*get_rho(r);
       El = Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
     }
 
