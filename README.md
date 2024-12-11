@@ -3,10 +3,10 @@ ASPECT - the Advanced Solver for Planetary Evolution, Convection, and Tectonics
 
 [![License GPL2+:](https://img.shields.io/badge/License-GPL%202%2B-red)](https://github.com/geodynamics/aspect/blob/main/LICENSE)
 [![Online Documentation](https://readthedocs.org/projects/aspect-documentation/badge/?version=latest)](https://aspect-documentation.readthedocs.io/en/latest/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6903424.svg)](https://doi.org/10.5281/zenodo.6903424)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14371679.svg)](https://doi.org/10.5281/zenodo.14371679)
 [![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
 [![Docker image:](https://github.com/geodynamics/aspect/actions/workflows/docker.yml/badge.svg)](https://hub.docker.com/r/geodynamics/aspect)
-[![Tester image:](https://github.com/geodynamics/aspect/actions/workflows/build_tester_base_image.yml/badge.svg)](https://github.com/geodynamics/aspect/actions/workflows/build_tester_base_image.yml)
+[![Tester image:](https://github.com/geodynamics/aspect/actions/workflows/build_dealii_master.yml/badge.svg)](https://github.com/geodynamics/aspect/actions/workflows/build_dealii_master.yml)
 
 About
 -----
