@@ -102,7 +102,7 @@ CFL number and mesh resolution. The results are shown in {numref}`fig:crameri-be
 ```{figure-md} fig:crameri-benchmark-convergence
 <img src="crameri_2_convergence.svg" style="width:100.0%" />
 
-Convergence for case two. Left: Logarithm of the error with decreasing CFL number. As the CFL number decreases, the error gets smaller. However, once it reaches a value of <span class="math inline">&#x2004;&#x223C;&#x2004;0.1</span>, there stops being much improvement in accuracy. Right: Logarithm of the error with increasing maximum mesh resolution. As the resolution increases, so does the accuracy.
+Convergence for case two. Left: Logarithm of the error with decreasing CFL number. As the CFL number decreases, the error gets smaller. However, once it reaches a value of $\sim 0.1$, there stops being much improvement in accuracy. Right: Logarithm of the error with increasing maximum mesh resolution. As the resolution increases, so does the accuracy.
 ```
 
 We find that at 3 Ma converges to a maximum topography of $\sim 396$

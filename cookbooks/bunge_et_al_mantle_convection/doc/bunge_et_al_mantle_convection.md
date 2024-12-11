@@ -21,10 +21,8 @@ $T{_{cmb}} = 3450$ K. The gravity vector is radial and its
 magnitude is $g = 10 \text{m s}^{-2}$.
 
 There is a single incompressible fluid in the domain, characterized by
-$\rho_0 = 4500$ kg&nbsp;m<sup>&minus;3</sup>, $\alpha = 2.5\cdot10^{-5}$
-&nbsp;K, $k = 4$ W&nbsp;m<sup>&minus;1</sup>&nbsp;K<sup>&minus;1</sup>, $C_p = 1000$
-J&nbsp;kg<sup>&minus;1</sup>&nbsp;K<sup>&minus;1</sup> and its internal heating rate is
-$Q{_{int}} = 1\cdot10^{-12}$ W&nbsp;kg<sup>&minus;1</sup>. The
+$\rho_0 = 4500\text{ kg m}^{-3}$, $\alpha = 2.5\cdot10^{-5}\text{ K}$, $k = 4\text{ W m}^{-1}\text{K}^{-1}$, $C_p = 1000 \text{ J kg}^{-1}\text{K}^{-1}$ and its internal heating rate is
+$Q{_{int}} = 1\cdot10^{-12}\text{ W kg}^{-1}$. The
 interface between the upper mantle (viscosity $\eta_{um}$) and
 the lower mantle (viscosity $\eta_{lm}$) is fixed at 670 km
 depth. As in the article we consider four time-independent radial viscosity
@@ -56,5 +54,5 @@ movie of how the temperature evolves over this time period at
 ```{figure-md} fig:bunge_et_al
 <img src="temps.png" style="width:90.0%" />
 
- Bunge et al.&#xA0;benchmark. From left to right: temperature field at time $t=5\cdot 10^9$ years obtained with viscosity profiles a, b, c and d.
+ Bunge et al. benchmark. From left to right: temperature field at time $t=5\cdot 10^9$ years obtained with viscosity profiles a, b, c and d.
 ```

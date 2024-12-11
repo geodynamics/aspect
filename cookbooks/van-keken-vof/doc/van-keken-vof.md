@@ -176,7 +176,7 @@ the cosine function in the initial conditions, as shown below.
 ```{figure-md} fig:vof-vk-3
 <img src="init_diff_rms_vel_comparison.png" style="width:50.0%" />
 
- Computations of the van Keken problem made with the VOF interface tracking algorithm showing the evolution of the RMS velocity as a function of time for small changes in the amplitude a of the cosine function in the initial condition at 7 levels of refinement. Compare to Figures&#xA0;[fig:vk-6] and&#xA0;1.
+ Computations of the van Keken problem made with the VOF interface tracking algorithm showing the evolution of the RMS velocity as a function of time for small changes in the amplitude a of the cosine function in the initial condition at 7 levels of refinement. Compare to {numref}`fig:vk-6` and {numref}`fig:vk-9`.
 ```
 
 In these computations we vary the value of $a$ from its usual value of

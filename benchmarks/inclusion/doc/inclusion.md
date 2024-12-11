@@ -13,15 +13,17 @@ numerical solution. This can be seen in the visualizations shown in
 analytic solution against which we compare is given in {cite:t}`schmid:podladchikov:2003`. An extensive discussion of convergence properties is given in {cite:t}`kronbichler:etal:2012`.
 
 ```{figure-md} fig:inclusion1
-<img src="inclusion-solution.*" alt="The viscosity field when interpolated onto the mesh (internally, the &#x201C;exact&#x201D; viscosity field &#x2013; large inside a circle, small outside &#x2013; is used), and overlaid to it some velocity vectors." />
+<img src="inclusion-solution.*" />
 
-The viscosity field when interpolated onto the mesh (internally, the &#x201C;exact&#x201D; viscosity field &#x2013; large inside a circle, small outside &#x2013; is used), and overlaid to it some velocity vectors.
+The viscosity field when interpolated onto the mesh (internally, the exact viscosity field is used): large inside a circle and small outside it. Overlaid to it a vector field showing the velocity.
 ```
+
 ```{figure-md} fig:inclusion2
-<img src="inclusion-solution-pressure.*"  alt="The pressure with its oscillations along the interface. The oscillations become more localized as the mesh is refined." />
+<img src="inclusion-solution-pressure.*" />
 
 The pressure with its oscillations along the interface. The oscillations become more localized as the mesh is refined.
 ```
+
 The benchmark can be run using the parameter files in
 [benchmarks/inclusion/](https://github.com/geodynamics/aspect/blob/main/benchmarks/inclusion). The material model, boundary condition, and
 postprocessor are defined in [benchmarks/inclusion/inclusion.cc](https://github.com/geodynamics/aspect/blob/main/benchmarks/inclusion/inclusion.cc).

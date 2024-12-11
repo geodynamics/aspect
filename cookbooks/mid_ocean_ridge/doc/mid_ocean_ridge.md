@@ -21,7 +21,7 @@ previous cookbook {ref}`sec:cookbooks:global-melt`.
 
 As the flow at mid-ocean ridges can be assumed to be roughly symmetric with
 respect to the ridge axis in the center, we only model one half of the ridge
-in a 2d Cartesian box with dimensions of $105 \times 70$&#8198;km. Solid
+in a 2d Cartesian box with dimensions of $105 \times 70$ km. Solid
 material is flowing in from the bottom with a prescribed temperature and
 melting due to decompression as is rises. The model is cooled from the top so
 that melt freezes again as it approaches this boundary. In addition, a fixed
