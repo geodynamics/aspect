@@ -104,56 +104,11 @@ namespace aspect
         DynamicCore();
 
         /**
-         * Return the temperature that is to hold at a particular location on the
-         * boundary of the domain. This function returns the temperatures
-         * at the inner and outer boundaries.
-         *
-         * @param boundary_indicator The boundary indicator of the part of the boundary
-         *   of the domain on which the point is located at which we are requesting the
-         *   temperature.
-         * @param location The location of the point at which we ask for the temperature.
-         */
-        double  boundary_temperature (const types::boundary_id            boundary_indicator,
-                                      const Point<dim>                    &location) const override;
-
-        /**
-         * Return the minimal temperature on that part of the boundary
-         * on which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
-         */
-        double minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
-
-        /**
-         * Return the maximal temperature on that part of the boundary
-         * on which Dirichlet conditions are posed.
-         *
-         * This value is used in computing dimensionless numbers such as the
-         * Nusselt number indicating heat flux.
-         */
-        double maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
-
-        /**
-         * Declare the parameters this class takes through input files.
-         * This class declares the inner and outer boundary temperatures.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter
-         * file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm) override;
-
-        /**
          * This function update the core-mantle boundary (CMB) temperature by
          * the core energy balance solver using the core-mantle boundary heat flux.
          */
-        void update() override;
+        void
+        update() override;
 
         /**
          * Pass core data to other modules
@@ -169,6 +124,54 @@ namespace aspect
         bool
         is_OES_used() const;
 
+        /**
+         * Return the temperature that is to hold at a particular location on the
+         * boundary of the domain. This function returns the temperatures
+         * at the inner and outer boundaries.
+         *
+         * @param boundary_indicator The boundary indicator of the part of the boundary
+         *   of the domain on which the point is located at which we are requesting the
+         *   temperature.
+         * @param location The location of the point at which we ask for the temperature.
+         */
+        double
+        boundary_temperature (const types::boundary_id boundary_indicator,
+                              const Point<dim> &location) const override;
+
+        /**
+         * Return the minimal temperature on that part of the boundary
+         * on which Dirichlet conditions are posed.
+         *
+         * This value is used in computing dimensionless numbers such as the
+         * Nusselt number indicating heat flux.
+         */
+        double
+        minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
+
+        /**
+         * Return the maximal temperature on that part of the boundary
+         * on which Dirichlet conditions are posed.
+         *
+         * This value is used in computing dimensionless numbers such as the
+         * Nusselt number indicating heat flux.
+         */
+        double
+        maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const override;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         * This class declares the inner and outer boundary temperatures.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter
+         * file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm) override;
 
       private:
 
@@ -361,14 +364,12 @@ namespace aspect
         void read_data_OES();
         double get_OES(double t) const;
 
-
-
         /**
          * Solve core energy balance for each time step.
-         * When solving the change in core-mantle boundary temperature T, inner core radius R, and
-         *    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
+         * When solving the change in core-mantle boundary temperature @p T, inner core radius @p R, and
+         *    light element (e.g. S, O, Si) composition @p X, the following relations have to be respected:
          * 1. At the inner core boundary the adiabatic temperature should be equal to solidus temperature
-         * 2. The following energy production rate should be balanced in core:
+         * 2. The following energy production rates should be balanced in the core:
          *    Heat flux at core-mantle boundary         Q
          *    Specific heat                             Qs*dT/dt
          *    Radioactive heating                       Qr
@@ -378,134 +379,137 @@ namespace aspect
          * 3. The light component composition X depends on inner core radius (See function get_X() ),
          *    and core solidus may dependent on X as well.
          *    This becomes a small nonlinear problem. Directly iterate through the above three equations doesn't
-         *    converge well. Alternatively we solve the inner core radius by bisection method.
-         *    A single solution between fully liquid and fully solid core is expected. Otherwise this function will throw exception and terminate.
+         *    converge well. Alternatively we solve the inner core radius using the bisection method.
          *
-         *    At Earth core condition, a inner core is forming at the center of the Earth and surrounded by a liquid outer core.
-         *    However, the core solidus is influenced by light components (e.g. S) and its slope is very closed to core adiabatic. So there is an alternative
+         *    At the conditions of the Earth's core, an inner core is forming at the center of the Earth and surrounded by a liquid outer core.
+         *    However, the core solidus is influenced by light components (e.g. S) and its slope is very close to an adiabat. So there is an alternative
          *    scenario that the crystallization happens first at the core mantle boundary instead of at the center, which is called a 'snowing core'
          *    (Stewart, A. J., et al. (2007). "Mars: a new core-crystallization regime." Science 316(5829): 1323-1325.). This also
-         *    provides a valid solution for the solver. So the returning bool is set to true for normal core, and false for 'snowing core'.
-         *    TODO: The current code is only able to treat normal core scenario, treating 'snowing core' scenario may be possible and could be added.
+         *    provides a valid solution for the solver. The return value of the function is true for a 'normal core', and false for 'snowing core'.
+         *    TODO: The current code is only able to treat the normal core scenario, treating 'snowing core' scenario may be possible and could be added.
          */
-        bool solve_time_step(double &X, double &T, double &R);
+        bool solve_time_step(double &X, double &T, double &R) const;
 
         /**
-         * Compute the difference between solidus and adiabatic at inner
-         * core boundary for a given inner core radius.
+         * Compute the difference between solidus and adiabatic temperature at inner
+         * core boundary for a given inner core radius @p r.
          */
-        double get_dT(double r) const;
+        double get_dT(const double r) const;
 
         /**
          * Use energy balance to calculate core mantle boundary temperature
-         * with a given inner core radius.
+         * with a given inner core radius @p r.
          */
-        double get_Tc(double r) const;
+        double get_Tc(const double r) const;
 
         /**
          * Get the solidus temperature at inner core boundary
-         * with a given inner core radius.
+         * with a given inner core radius @p r.
          */
-        double get_Ts(double r) const;
+        double get_Ts(const double r) const;
 
         /**
-         * Compute the core solidus at certain pressure
+         * Compute the core solidus at certain pressure @p pressure
+         * and light element concentration @p X (in wt.%).
          */
-        double get_solidus(double X,double p) const;
+        double get_solidus(const double X, const double pressure) const;
 
         /**
-         * Get initial inner core radius with given initial core mantle temperature.
+         * Get initial inner core radius with given initial core mantle temperature
+         * @p T.
          */
-        double get_initial_Ri(double T);
+        double get_initial_Ri(const double T) const;
 
         /**
-         * Get the light composition concentration in the outer core from given
-         * inner core radius r
+         * Get the light element concentration (in wt.%) in the outer core from given
+         * inner core radius @p r.
          */
-        double get_X(double r) const;
+        double get_X(const double r) const;
 
         /**
-         * Compute the mass inside certain radius within the core_data.
+         * Compute the core mass inside a certain radius @p r.
          */
-        double get_Mass(double r) const;
+        double get_mass(const double r) const;
 
         /**
          * Calculate Sn(B,R), referring to \cite NPB+04 .
          */
-        double fun_Sn(double B,double R,double n) const;
+        double fun_Sn(const double B, const double R, const double n) const;
 
         /**
-         * Calculate density at given r
+         * Calculate density at given radius @p r.
          */
-        double get_Rho(double r) const;
+        double get_rho(const double r) const;
 
         /**
-         * Calculate gravitational acceleration at given r
+         * Calculate gravitational acceleration at given radius @p r.
          */
-        double get_g(double r) const;
+        double get_g(const double r) const;
 
         /**
-         * Calculate the core temperature at given r
-         * Tc is the temperature at CMB
+         * Calculate the core temperature at given radius @p r and
+         * temperature at CMB @p Tc.
          */
-        double get_T(double Tc, double r) const;
+        double get_T(const double Tc, const double r) const;
 
         /**
-         * Calculate pressure at given r
+         * Calculate pressure at given radius @p r
          */
-        double get_Pressure(double r) const;
+        double get_pressure(const double r) const;
 
         /**
-         * Calculate the gravitational potential at given r
+         * Calculate the gravitational potential at given radius @p r
          */
-        double get_gravity_potential(double r) const;
+        double get_gravity_potential(const double r) const;
 
         /**
-         * Calculate energy and entropy change rate factor (regarding the core
-         * cooling rated Tc/dt) Qs and Es with given core-mantle boundary (CMB)
-         * temperature Tc
+         * Calculate energy (@p Qs) and entropy (@p Es) change rate factor
+         * (regarding the core cooling rated Tc/dt) for a given core-mantle boundary (CMB)
+         * temperature @p Tc
          */
-        void get_specific_heating(double Tc, double &Qs,double &Es);
+        void get_specific_heating(const double Tc, double &Qs, double &Es) const;
 
         /**
-         * Calculate energy and entropy change rate factor (regarding the
-         * radioactive heating rate H) Qr and Er with given CMB temperature Tc
+         * Calculate energy (@p Qr) and entropy (@p Er) change rate factor (regarding the
+         * radioactive heating rate H) for a given CMB temperature @p Tc
          */
-        void get_radio_heating(double Tc, double &Qr, double &Er);
+        void get_radio_heating(const double Tc, double &Qr, double &Er) const;
 
         /**
-         * Calculate energy and entropy change rate factor (regarding the inner core
-         * growth rate dR/dt) Qg and Eg with given Tc(CMB temperature), r(inner core
-         * radius), X(light composition concentration)
+         * Calculate energy (@p Qg) and entropy (@p Eg) change rate factor
+         * (regarding the inner core growth rate dR/dt) for a given
+         * @p Tc (CMB temperature), @p r (inner core radius), and @p X
+         * (light element concentration)
          */
-        void get_gravity_heating(double Tc, double r,double X,double &Qg,double &Eg);
+        void get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const;
 
         /**
-         * Calculate energy and entropy change rate factor (regarding the core
-         * cooling rate Tc/dt) Qk and Ek with given Tc(CMB temperature)
+         * Calculate energy (@p Qk) and entropy (@p Ek) change rate factor
+         * (regarding the core cooling rate Tc/dt) for a given @p Tc (CMB temperature)
          */
-        void get_adiabatic_heating(double Tc, double &Ek, double &Qk);
+        void get_adiabatic_heating(const double Tc, double &Ek, double &Qk) const;
 
         /**
-         * Calculate energy and entropy change rate factor (regarding the inner core
-         * growth rate dR/dt) Ql and El with given Tc(CMB temperature), r(inner core
-         * radius)
+         * Calculate energy (@p Ql) and entropy (@p El) change rate factor
+         * (regarding the inner core growth rate dR/dt) for a given @p Tc (CMB temperature)
+         * and @p r (inner core radius)
          */
-        void get_latent_heating(double Tc, double r, double &El, double &Ql);
+        void get_latent_heating(const double Tc, const double r, double &El, double &Ql) const;
 
         /**
-         * Calculate entropy of heat of solution Eh
+         * Calculate entropy of heat of solution @p Eh for a given @p Tc (CMB temperature),
+         * @p r (inner core radius), and @p X (light element concentration)
          */
-        void get_heat_solution(double Tc, double r, double X, double &Eh);
+        void get_heat_solution(const double Tc, const double r, const double X, double &Eh) const;
 
         /**
-         * return radio heating rate at certain time
+         * return radiogenic heating rate at the current time
          */
         double get_radioheating_rate() const;
 
         /**
-         * Update the data for core dynamic simulation, the data will be used
-         * in the next timestep and for postprocess.
+         * Update the data of the core dynamic simulation, the data will be used
+         * in the next timestep and for postprocessing.
          */
         void update_core_data();
 

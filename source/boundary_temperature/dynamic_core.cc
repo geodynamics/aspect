@@ -23,14 +23,14 @@
 #include <aspect/boundary_temperature/dynamic_core.h>
 #include <aspect/postprocess/core_statistics.h>
 #include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/simulator_access.h>
-#include <aspect/simulator.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/introspection.h>
 
 #include <deal.II/fe/fe_values.h>
-#include <deal.II/base/mpi.h>
-#include <deal.II/base/exceptions.h>
+#include <deal.II/base/quadrature.h>
+#include <deal.II/base/utilities.h>
 
-#include <utility>
 #include <limits>
 
 
@@ -42,8 +42,8 @@ namespace aspect
     template <int dim>
     double
     DynamicCore<dim>::
-    boundary_temperature (const types::boundary_id            boundary_indicator,
-                          const Point<dim>                    &/*location*/) const
+    boundary_temperature (const types::boundary_id boundary_indicator,
+                          const Point<dim> &/*location*/) const
     {
       switch (boundary_indicator)
         {
@@ -56,6 +56,7 @@ namespace aspect
             return std::numeric_limits<double>::quiet_NaN();
         }
     }
+
 
 
     template <int dim>
@@ -218,6 +219,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     DynamicCore<dim>::parse_parameters (ParameterHandler &prm)
@@ -298,14 +300,16 @@ namespace aspect
           }
           prm.leave_subsection ();
 
-          L=std::sqrt(3*K0*(std::log(Rho_cen/Rho_0)+1)/(2*M_PI*constants::big_g*Rho_0*Rho_cen));
-          D=std::sqrt(3*Cp/(2*M_PI*Alpha*Rho_cen*constants::big_g));
+          L=std::sqrt(3*K0*(std::log(Rho_cen/Rho_0)+1)/(2*numbers::PI*constants::big_g*Rho_0*Rho_cen));
+          D=std::sqrt(3*Cp/(2*numbers::PI*Alpha*Rho_cen*constants::big_g));
 
         }
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
     }
+
+
 
     template <int dim>
     void
@@ -334,12 +338,14 @@ namespace aspect
                           << std::endl;
     }
 
+
+
     template <int dim>
     double
-    DynamicCore<dim>::get_OES(double t) const
+    DynamicCore<dim>::get_OES(const double time) const
     {
       // The core evolution is quite slow, so the time units used here is billion years.
-      t/=1.e9*year_in_seconds;
+      const double t = time / (1.e9*year_in_seconds);
       double w=0.;
       for (unsigned i=1; i<data_OES.size(); ++i)
         {
@@ -354,6 +360,8 @@ namespace aspect
       return w;
     }
 
+
+
     template <int dim>
     DynamicCore<dim>::DynamicCore()
     {
@@ -361,33 +369,34 @@ namespace aspect
       core_data.is_initialized = false;
     }
 
+
+
     template <int dim>
     double
-    DynamicCore<dim>::get_initial_Ri(double T)
+    DynamicCore<dim>::get_initial_Ri(const double T) const
     {
-      double r0=0.,
-             r1=Rc;
-      double dT0=get_T(T,r0)-get_solidus(get_X(r0),get_Pressure(r0)),
-             dT1=get_T(T,r1)-get_solidus(get_X(r1),get_Pressure(r1));
+      double r0 = 0.;
+      double r1 = Rc;
+      const double dT0 = get_T(T,r0) - get_solidus(get_X(r0),get_pressure(r0));
+      const double dT1 = get_T(T,r1) - get_solidus(get_X(r1),get_pressure(r1));
+
       if (dT0<=0. && dT1<=0.)
         return Rc;
       if (dT0>=0. && dT1>=0.)
         return 0.;
       for (int i=0; i<max_steps; ++i)
         {
-          double rm=(r0+r1)/2.,
-                 dTm=get_T(T,rm)-get_solidus(get_X(rm),get_Pressure(rm));
+          const double rm = (r0+r1)/2.;
+          const double dTm = get_T(T,rm) - get_solidus(get_X(rm),get_pressure(rm));
           if (dTm==0.)
             return rm;
           if (dTm*dT0<0.)
             {
               r1=rm;
-              continue;
             }
-          if (dTm*dT1<0.)
+          else if (dTm*dT1<0.)
             {
               r0=rm;
-              continue;
             }
         }
       if (dT0>0 && dT1<0)
@@ -401,7 +410,7 @@ namespace aspect
 
     template <int dim>
     bool
-    DynamicCore<dim>::solve_time_step(double &X, double &T, double &R)
+    DynamicCore<dim>::solve_time_step(double &X, double &T, double &R) const
     {
       // When solving the change in core-mantle boundary temperature T, inner core radius R, and
       //    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
@@ -419,16 +428,15 @@ namespace aspect
       // converge well. Instead, we solve the inner core radius by bisection method.
 
       int steps=1;
-      double R_0,R_1,R_2;
-      // dT is the temperature difference between adiabatic and solidus at
+
+      // dT is the temperature difference between adiabatic temperature and solidus at
       // inner-outer core boundary. If dT=0 then we found our solution.
-      double dT0,dT1,dT2;
-      R_0 = 0.;
-      R_1 = core_data.Ri;
-      R_2 = Rc;
-      dT0 = get_dT(R_0);
-      dT1 = get_dT(R_1);
-      dT2 = get_dT(R_2);
+      double R_0 = 0.;
+      double R_1 = core_data.Ri;
+      double R_2 = Rc;
+      double dT0 = get_dT(R_0);
+      double dT1 = get_dT(R_1);
+      double dT2 = get_dT(R_2);
 
       if (dT0 >= 0. && dT2 >= 0.)
         {
@@ -498,9 +506,11 @@ namespace aspect
       return false;
     }
 
+
+
     template <int dim>
     double
-    DynamicCore<dim>::get_Tc(double r) const
+    DynamicCore<dim>::get_Tc(const double r) const
     {
       // Using all Q values from last step.
       // Qs & Qr is constant, while Qg & Ql depends on inner core radius Ri
@@ -510,20 +520,25 @@ namespace aspect
                             ) / core_data.Qs;
     }
 
+
+
     template <int dim>
     double
-    DynamicCore<dim>::get_Ts(double r) const
+    DynamicCore<dim>::get_Ts(const double r) const
     {
-      return get_solidus(get_X(r),get_Pressure(r));
+      return get_solidus(get_X(r),get_pressure(r));
     }
 
 
+
     template <int dim>
     double
-    DynamicCore<dim>::get_dT(double r) const
+    DynamicCore<dim>::get_dT(const double r) const
     {
       return get_T(get_Tc(r),r) - get_Ts(r);
     }
+
+
 
     template <int dim>
     void
@@ -537,6 +552,8 @@ namespace aspect
       get_heat_solution(core_data.Ti,core_data.Ri,core_data.Xi,core_data.Eh);
     }
 
+
+
     template <int dim>
     const internal::CoreData &
     DynamicCore<dim>::get_core_data() const
@@ -544,42 +561,49 @@ namespace aspect
       return core_data;
     }
 
+
+
     template <int dim>
     double
-    DynamicCore<dim>::get_solidus(double X,double p) const
+    DynamicCore<dim>::get_solidus(const double X, const double pressure) const
     {
       if (use_bw11)
         {
-          // Change from weight percent to mole percent.
-          double x,x0=32./88.;
-          if (X<x0)
-            x=56.*X/(32.*(1.-X));
-          else
-            x=1.;
-          // Change from Pa to GPa
-          p*=1e-9;
+          // Change X from weight percent to mole percent.
+          constexpr double x0 = 32./88.;
+          const double x = (X<x0) ? 56.*X/(32.*(1.-X)) : 1.;
+
+          // Change p from Pa to GPa
+          const double p = pressure * 1e-9;
+          const double p_square = p*p;
+          const double p_cube = p_square*p;
+          const double p_fourth = p_cube*p;
+
           // Fe-FeS system solidus by Buono & Walker (2011)
-          return (-2.4724*p*p*p*p + 28.025*p*p*p + 9.1404*p*p + 581.71*p + 3394.8) * x*x*x*x
-                 +( 1.7978*p*p*p*p - 6.7881*p*p*p - 197.69*p*p - 271.69*p - 8219.5) * x*x*x
-                 +(-0.1702*p*p*p*p - 9.3959*p*p*p + 163.53*p*p - 319.35*p + 5698.6) * x*x
-                 +(-0.2308*p*p*p*p + 7.1000*p*p*p - 64.118*p*p + 105.98*p - 1621.9) * x
-                 +( 0.2302*p*p*p*p - 5.3688*p*p*p + 38.124*p*p - 46.681*p + 1813.8);
+          return (-2.4724*p_fourth  + 28.025*p_cube + 9.1404*p_square + 581.71*p + 3394.8) * x*x*x*x
+                 +( 1.7978*p_fourth - 6.7881*p_cube - 197.69*p_square - 271.69*p - 8219.5) * x*x*x
+                 +(-0.1702*p_fourth - 9.3959*p_cube + 163.53*p_square - 319.35*p + 5698.6) * x*x
+                 +(-0.2308*p_fourth + 7.1000*p_cube - 64.118*p_square + 105.98*p - 1621.9) * x
+                 +( 0.2302*p_fourth - 5.3688*p_cube + 38.124*p_square - 46.681*p + 1813.8);
 
         }
       else
         {
+          const double pressure_squared = pressure*pressure;
           if (composition_dependency)
-            return (Tm0*(1-Theta*X)*(1+Tm1*p+Tm2*std::pow(p,2)));
+            return (Tm0*(1-Theta*X) * (1 + Tm1*pressure + Tm2*pressure_squared));
           else
-            return (Tm0*(1-Theta)*(1+Tm1*p+Tm2*std::pow(p,2)));
+            return (Tm0*(1-Theta)   * (1 + Tm1*pressure + Tm2*pressure_squared));
         }
     }
 
+
+
     template <int dim>
     double
-    DynamicCore<dim>::get_X(double r) const
+    DynamicCore<dim>::get_X(const double r) const
     {
-      double xi_3=std::pow(r/Rc,3);
+      const double xi_3 = Utilities::fixed_power<3>(r/Rc);
       return X_init/(1-xi_3+Delta*xi_3);
     }
 
@@ -587,8 +611,8 @@ namespace aspect
     void
     DynamicCore<dim>::update()
     {
-      core_data.dt    = this->get_timestep();
-      core_data.H     = get_radioheating_rate();
+      core_data.dt = this->get_timestep();
+      core_data.H  = get_radioheating_rate();
 
       // It's a bit tricky here.
       // Didn't use the initialize() function instead because the postprocess is initialized after boundary temperature.
@@ -611,8 +635,8 @@ namespace aspect
             Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
 
           Rc=spherical_shell_geometry.inner_radius();
-          Mc=get_Mass(Rc);
-          P_Core=get_Pressure(0);
+          Mc=get_mass(Rc);
+          P_Core=get_pressure(0);
 
           // If the material model is incompressible, we have to get correction for the real core temperature
           if (this->get_adiabatic_conditions().is_initialized() && !this->get_material_model().is_compressible())
@@ -734,15 +758,13 @@ namespace aspect
                     local_CMB_area += local_face_area;
                   }
         // now communicate to get the global values
-        double global_CMB_flux;
-        double global_CMB_area;
-        global_CMB_flux = Utilities::MPI::sum (local_CMB_flux, this->get_mpi_communicator());
-        global_CMB_area = Utilities::MPI::sum (local_CMB_area, this->get_mpi_communicator());
+        const double global_CMB_flux = Utilities::MPI::sum (local_CMB_flux, this->get_mpi_communicator());
+        const double global_CMB_area = Utilities::MPI::sum (local_CMB_area, this->get_mpi_communicator());
 
         // Using area averaged heat-flux density times core mantle boundary area to calculate total heat-flux on the 3d sphere.
         // By doing this, using dynamic core evolution with geometry other than 3d spherical shell becomes possible.
-        double average_CMB_heatflux_density = global_CMB_flux / global_CMB_area;
-        core_data.Q = average_CMB_heatflux_density * 4. * M_PI * Rc * Rc;
+        const double average_CMB_heatflux_density = global_CMB_flux / global_CMB_area;
+        core_data.Q = average_CMB_heatflux_density * 4. * numbers::PI * Rc * Rc;
       }
 
       core_data.Q_OES = get_OES(this->get_time());
@@ -784,171 +806,206 @@ namespace aspect
         }
     }
 
-    template <int dim>
-    double
-    DynamicCore<dim>::
-    get_Mass(double r) const
-    {
-      return 4.*M_PI*Rho_cen*(-std::pow(L,2)/2.*r*std::exp(-std::pow(r/L,2))+std::pow(L,3)/4.*std::sqrt(M_PI)*std::erf(r/L));
-    }
+
 
     template <int dim>
     double
     DynamicCore<dim>::
-    fun_Sn(double B,double R,double n) const
+    get_mass(const double r) const
     {
-      double S=R/(2.*std::sqrt(M_PI));
-      for (unsigned i=1; i<=n; ++i)
-        S+=B/std::sqrt(M_PI)*std::exp(-std::pow(i,2)/4.)/i*std::sinh(i*R/B);
+      return 4.*numbers::PI*Rho_cen*(-std::pow(L,2)/2.*r*std::exp(-std::pow(r/L,2))+std::pow(L,3)/4.*std::sqrt(numbers::PI)*std::erf(r/L));
+    }
+
+
+
+    template <int dim>
+    double
+    DynamicCore<dim>::
+    fun_Sn(const double B, const double R, const double n) const
+    {
+      double S=R/(2.*std::sqrt(numbers::PI));
+      for (unsigned int i=1; i<=n; ++i)
+        S+=B/std::sqrt(numbers::PI)*std::exp(-std::pow(i,2)/4.)/i*std::sinh(i*R/B);
       return S;
     }
 
+
+
     template <int dim>
     double
     DynamicCore<dim>::
-    get_Pressure(double r) const
+    get_pressure(const double r) const
     {
-      return P_CMB-(4*M_PI*constants::big_g*std::pow(Rho_cen,2))/3
+      return P_CMB-(4*numbers::PI*constants::big_g*std::pow(Rho_cen,2))/3
              *((3*std::pow(r,2)/10.-std::pow(L,2)/5)*std::exp(-std::pow(r/L,2))
                -(3*std::pow(Rc,2)/10-std::pow(L,2)/5)*std::exp(-std::pow(Rc/L,2)));
     }
 
+
+
     template <int dim>
     double
     DynamicCore<dim>::
-    get_Rho(double r) const
+    get_rho(const double r) const
     {
       return Rho_cen*std::exp(-std::pow(r/L,2));
     }
 
-    template <int dim>
-    double
-    DynamicCore<dim>::
-    get_g(double r) const
-    {
-      return (4*M_PI/3)*constants::big_g*Rho_cen*r*(1-3*std::pow(r,2)/(5*std::pow(L,2)));
-    }
+
 
     template <int dim>
     double
     DynamicCore<dim>::
-    get_T(double Tc,double r) const
+    get_g(const double r) const
+    {
+      return (4*numbers::PI/3)*constants::big_g*Rho_cen*r*(1-3*std::pow(r,2)/(5*std::pow(L,2)));
+    }
+
+
+
+    template <int dim>
+    double
+    DynamicCore<dim>::
+    get_T(const double Tc, const double r) const
     {
       return Tc*std::exp((std::pow(Rc,2)-std::pow(r,2))/std::pow(D,2));
     }
 
+
+
     template <int dim>
     double
     DynamicCore<dim>::
-    get_gravity_potential(double r) const
+    get_gravity_potential(const double r) const
     {
-      return 2./3.*M_PI*constants::big_g*Rho_cen*(std::pow(r,2)*(1.-3.*std::pow(r,2)
-                                                                 /(10.*std::pow(L,2)))-std::pow(Rc,2)*(1.-3.*std::pow(Rc,2)/(10.*std::pow(L,2))));
+      return 2./3.*numbers::PI*constants::big_g*Rho_cen*(std::pow(r,2)*(1.-3.*std::pow(r,2)
+                                                                        /(10.*std::pow(L,2)))-std::pow(Rc,2)*(1.-3.*std::pow(Rc,2)/(10.*std::pow(L,2))));
     }
+
+
 
     template <int dim>
     void
     DynamicCore<dim>::
-    get_specific_heating(double Tc, double &Qs,double &Es)
+    get_specific_heating(const double Tc, double &Qs,double &Es) const
     {
-      double A=std::sqrt(1./(std::pow(L,-2)+std::pow(D,-2)));
-      double Is=4.*M_PI*get_T(Tc,0.)*Rho_cen*(-std::pow(A,2)*Rc/2.*std::exp(-std::pow(Rc/A,2))+std::pow(A,3)*std::sqrt(M_PI)/4.*std::erf(Rc/A));
+      const double A = std::sqrt(1./(std::pow(L,-2)+std::pow(D,-2)));
+      const double Is = 4.*numbers::PI*get_T(Tc,0.)*Rho_cen*(-std::pow(A,2)*Rc/2.*std::exp(-std::pow(Rc/A,2))+std::pow(A,3)*std::sqrt(numbers::PI)/4.*std::erf(Rc/A));
 
       Qs=-Cp/Tc*Is;
       Es=Cp/Tc*(Mc-Is/Tc);
     }
 
+
+
     template <int dim>
     void
     DynamicCore<dim>::
-    get_radio_heating(double Tc, double &Qr, double &Er)
+    get_radio_heating(const double Tc, double &Qr, double &Er) const
     {
       double B,It;
       if (D>L)
         {
           B=std::sqrt(1/(1/std::pow(L,2)-1/std::pow(D,2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(M_PI)/4*std::erf(Rc/B));
+          It=4*numbers::PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
         }
       else
         {
           B=std::sqrt(1/(std::pow(D,-2)-std::pow(L,-2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
+          It=4*numbers::PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
         }
+
       Qr=Mc*core_data.H;
       Er=(Mc/Tc-It)*core_data.H;
-
     }
+
+
 
     template <int dim>
     void
     DynamicCore<dim>::
-    get_heat_solution(double Tc, double r, double X,double &Eh)
+    get_heat_solution(const double Tc, const double r, const double X, double &Eh) const
     {
       double B,It;
       if (D>L)
         {
           B=std::sqrt(1/(1/std::pow(L,2)-1/std::pow(D,2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(M_PI)/4*std::erf(Rc/B));
-          It-=4*M_PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*r/2*std::exp(-std::pow(r/B,2))+std::pow(B,3)/std::sqrt(M_PI)/4*std::erf(r/B));
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*Rc/2*std::exp(-std::pow(Rc/B,2))+std::pow(B,3)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-std::pow(B,2)*r/2*std::exp(-std::pow(r/B,2))+std::pow(B,3)/std::sqrt(numbers::PI)/4*std::erf(r/B));
         }
       else
         {
-          B=std::sqrt(1/(std::pow(D,-2)-std::pow(L,-2)));
-          It=4*M_PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
-          It-=4*M_PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*r/2*std::exp(std::pow(r/B,2))-std::pow(B,2)*fun_Sn(B,r,100)/2);
+          B = std::sqrt(1/(std::pow(D,-2)-std::pow(L,-2)));
+          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*Rc/2*std::exp(std::pow(Rc/B,2))-std::pow(B,2)*fun_Sn(B,Rc,100)/2);
+          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(std::pow(B,2)*r/2*std::exp(std::pow(r/B,2))-std::pow(B,2)*fun_Sn(B,r,100)/2);
         }
-      double Cc=4*M_PI*std::pow(r,2)*get_Rho(r)*X/(Mc-get_Mass(r));
-      Eh=Rh*(It-(Mc-get_Mass(r))/get_T(Tc,r))*Cc;
+      const double Cc = 4*numbers::PI*std::pow(r,2)*get_rho(r)*X/(Mc-get_mass(r));
+      Eh = Rh*(It-(Mc-get_mass(r))/get_T(Tc,r))*Cc;
     }
+
+
 
     template <int dim>
     void
     DynamicCore<dim>::
-    get_gravity_heating(double Tc, double r,double X,double &Qg,double &Eg)
+    get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const
     {
-      double Cc=4*M_PI*std::pow(r,2)*get_Rho(r)*X/(Mc-get_Mass(r));
-      double C_2=3./16.*std::pow(L,2)-0.5*std::pow(Rc,2)*(1.-3./10.*std::pow(Rc/L,2));
+      const double Cc = 4*numbers::PI*std::pow(r,2)*get_rho(r)*X/(Mc-get_mass(r));
+      const double C_2 = 3./16.*std::pow(L,2) - 0.5*std::pow(Rc,2)*(1.-3./10.*std::pow(Rc/L,2));
       if (r==Rc)
         Qg=0.;
       else
-        Qg=(8./3.*std::pow(M_PI*Rho_cen,2)*constants::big_g*(
-              ((3./20.*std::pow(Rc,5)-std::pow(L,2)*std::pow(Rc,3)/8.-C_2*std::pow(L,2)*Rc)*std::exp(-std::pow(Rc/L,2))
-               +C_2/2.*std::pow(L,3)*std::sqrt(M_PI)*std::erf(Rc/L))
-              -((3./20.*std::pow(r,5)-std::pow(L,2)*std::pow(r,3)/8.-C_2*std::pow(L,2)*r)*std::exp(-std::pow(r/L,2))
-                +C_2/2.*std::pow(L,3)*std::sqrt(M_PI)*std::erf(r/L)))
-            -(Mc-get_Mass(r))*get_gravity_potential(r))*Beta_c*Cc;
-      Eg=Qg/Tc;
+        {
+          Qg=(8./3.*std::pow(numbers::PI*Rho_cen,2)*constants::big_g*(
+                ((3./20.*std::pow(Rc,5)-std::pow(L,2)*std::pow(Rc,3)/8.-C_2*std::pow(L,2)*Rc)*std::exp(-std::pow(Rc/L,2))
+                 +C_2/2.*std::pow(L,3)*std::sqrt(numbers::PI)*std::erf(Rc/L))
+                -((3./20.*std::pow(r,5)-std::pow(L,2)*std::pow(r,3)/8.-C_2*std::pow(L,2)*r)*std::exp(-std::pow(r/L,2))
+                  +C_2/2.*std::pow(L,3)*std::sqrt(numbers::PI)*std::erf(r/L)))
+              -(Mc-get_mass(r))*get_gravity_potential(r))*Beta_c*Cc;
+        }
 
+      Eg = Qg/Tc;
     }
+
+
 
     template <int dim>
     void
     DynamicCore<dim>::
-    get_adiabatic_heating(double Tc, double &Ek, double &Qk)
+    get_adiabatic_heating(const double Tc, double &Ek, double &Qk) const
     {
-      Ek=16*M_PI*k_c*std::pow(Rc,5)/5/std::pow(D,4);
-      Qk=8*M_PI*std::pow(Rc,3)*k_c*Tc/std::pow(D,2);
+      Ek = 16*numbers::PI*k_c*std::pow(Rc,5)/5/std::pow(D,4);
+      Qk = 8*numbers::PI*std::pow(Rc,3)*k_c*Tc/std::pow(D,2);
     }
+
+
+
     template <int dim>
     void
     DynamicCore<dim>::
-    get_latent_heating(double Tc, double r, double &El, double &Ql)
+    get_latent_heating(const double Tc, const double r, double &El, double &Ql) const
     {
-      Ql=4.*M_PI*std::pow(r,2)*Lh*get_Rho(r);
-      El=Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
+      Ql = 4.*numbers::PI*std::pow(r,2)*Lh*get_rho(r);
+      El = Ql*(get_T(Tc,r)-Tc)/(Tc*get_T(Tc,r));
     }
+
+
 
     template <int dim>
     double
     DynamicCore<dim>::
     get_radioheating_rate() const
     {
-      double time=this->get_time()+0.5*this->get_timestep();
+      const double time=this->get_time()+0.5*this->get_timestep();
+
       double Ht=0;
       for (unsigned i=0; i<n_radioheating_elements; ++i)
         Ht+=heating_rate[i]*initial_concentration[i]*1e-6*std::pow(0.5,time/half_life[i]/year_in_seconds/1e9);
+
       return Ht;
     }
+
+
 
     template <int dim>
     bool
@@ -961,7 +1018,6 @@ namespace aspect
         return false;
     }
   }
-
 }
 
 
