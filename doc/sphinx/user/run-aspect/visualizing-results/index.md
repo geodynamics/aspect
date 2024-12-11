@@ -10,10 +10,10 @@ latter, see {ref}`sec:extending:vis-postprocessors`).
 
 By default, the files that are generated are in VTU format, i.e., the
 XML-based, compressed format defined by the VTK library, see
-<http://vtk.org/>. This file format has become a broadly
+<https://vtk.org>. This file format has become a broadly
 accepted pseudo-standard that many visualization program support, including
 two of the visualization programs used most widely in computational science:
-VisIt (see <https://visit.llnl.gov/>) and ParaView (see
+VisIt (see <https://visit-dav.github.io/visit-website/>) and ParaView (see
 <http://www.paraview.org/>). The VTU format has a number of advantages beyond
 being widely distributed:
 

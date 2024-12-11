@@ -106,3 +106,7 @@ html_context = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_last_updated_fmt = ""
+
+linkcheck_allowed_redirects = {r'https://doi.org/*': r'https://*',
+                               r'https://youtu.be/*': r'https://youtube.com/*',
+                               r'https://www.github.com/*': r'https://github.com/*'}

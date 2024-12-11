@@ -95,7 +95,7 @@ which there is an extensive amount of documentation:
     deal.II does.
 
 -   A collection of modules at
-    <https://www.dealii.org/developer/doxygen/deal.II/modules.html> that give
+    <https://www.dealii.org/developer/doxygen/deal.II/topics.html> that give
     an overview of whole groups of classes and functions and how they work
     together to achieve their goal.
 
