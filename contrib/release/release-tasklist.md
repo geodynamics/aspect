@@ -82,7 +82,7 @@ and the links are working
   ```
   git checkout post-release-$VER && \
   git checkout -b aspect-$VERSHORT && \
-  cd contrib/release && ./bump_version.sh $VER && cd ../.. && \
+  cd contrib/release && ./bump_version.sh $VER-rc0 && cd ../.. && \
   git commit -m "release task: update version info"
   ```
 
@@ -117,17 +117,16 @@ and the links are working
 
 - create a tar file:
   ```
-  cd doc/sphinx && make html && cd ..
   export PREFIX=aspect-$TAG && rm -rf $PREFIX.tar.gz && \
-  git archive --format=tar.gz --prefix=$PREFIX/ HEAD >temp.tar.gz && \
-  rm -fr $PREFIX/ && \
-  tar xf temp.tar.gz && \
-  cd contrib/WorldBuilder/ && \
-  git archive --format=tar.gz --prefix=$PREFIX/contrib/WorldBuilder/ HEAD >temp.tar.gz && \
-  cd ../.. && \
-  tar xf contrib/WorldBuilder/temp.tar.gz && \
-  tar czf $PREFIX.tar.gz $PREFIX/ && \
-  rm -rf contrib/WorldBuilder/temp.tar.gz
+  git archive --format=tar.gz --prefix=$PREFIX/ HEAD >$PREFIX.tar.gz
+  ```
+
+- build pdf doc (temporary by building html one page and print to pdf until
+  we fix the sphinx pdf):
+  ```
+  cd doc/sphinx && make singlehtml && cd ../..
+  firefox ./doc/sphinx/_build/singlehtml/index.html
+  # print to pdf
   ```
 
 - final testing by extracting tarball, compiling, and running:
