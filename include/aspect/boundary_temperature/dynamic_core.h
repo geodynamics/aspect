@@ -344,7 +344,7 @@ namespace aspect
         /**
          * Max iterations for the core energy balance solver.
          */
-        int max_steps;
+        unsigned int max_steps;
 
         /**
          * Temperature correction value for adiabatic
@@ -409,8 +409,8 @@ namespace aspect
         double get_Ts(const double r) const;
 
         /**
-         * Compute the core solidus at certain pressure @p pressure
-         * and light element concentration @p X (in wt.%).
+         * Compute the core solidus at a given light element concentration @p X (in wt.%)
+         * and pressure @p pressure.
          */
         double get_solidus(const double X, const double pressure) const;
 
@@ -434,7 +434,7 @@ namespace aspect
         /**
          * Calculate Sn(B,R), referring to \cite NPB+04 .
          */
-        double fun_Sn(const double B, const double R, const double n) const;
+        double fun_Sn(const double B, const double R, const unsigned int n) const;
 
         /**
          * Calculate density at given radius @p r.
