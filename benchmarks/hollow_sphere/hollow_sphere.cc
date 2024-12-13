@@ -73,17 +73,17 @@ namespace aspect
 
         if (mmm == -1)
           {
-            alpha=-gammma*(std::pow(R2,3)-std::pow(R1,3))/(std::pow(R2,3)*std::log(R1)-std::pow(R1,3)*std::log(R2));
-            beta=-3*gammma*(std::log(R2)-std::log(R1))/(std::pow(R1,3)*std::log(R2)-std::pow(R2,3)*std::log(R1)) ;
+            alpha=-gammma*(Utilities::fixed_power<3>(R2)-Utilities::fixed_power<3>(R1))/(Utilities::fixed_power<3>(R2)*std::log(R1)-Utilities::fixed_power<3>(R1)*std::log(R2));
+            beta=-3*gammma*(std::log(R2)-std::log(R1))/(Utilities::fixed_power<3>(R1)*std::log(R2)-Utilities::fixed_power<3>(R2)*std::log(R1)) ;
             fr=alpha/(r*r)+beta*r;
-            gr=-2/(r*r)*(alpha*std::log(r)+beta/3*std::pow(r,3)+gammma);
+            gr=-2/(r*r)*(alpha*std::log(r)+beta/3*Utilities::fixed_power<3>(r)+gammma);
           }
         else
           {
-            alpha=gammma*(mmm+1)*(std::pow(R1,-3)-std::pow(R2,-3))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
+            alpha=gammma*(mmm+1)*(Utilities::fixed_power<-3>(R1)-Utilities::fixed_power<-3>(R2))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
             beta=-3*gammma*(std::pow(R1,mmm+1)-std::pow(R2,mmm+1))/(std::pow(R1,mmm+4)-std::pow(R2,mmm+4));
             fr=alpha/std::pow(r,mmm+3)+beta*r;
-            gr=-2/(r*r)*(-alpha/(mmm+1)*std::pow(r,-mmm-1)+beta/3*std::pow(r,3)+gammma);
+            gr=-2/(r*r)*(-alpha/(mmm+1)*std::pow(r,-mmm-1)+beta/3*Utilities::fixed_power<3>(r)+gammma);
           }
 
         const double v_r    =gr*std::cos(theta);
@@ -115,17 +115,17 @@ namespace aspect
         if (mmm == -1)
           {
             mur=mu0;
-            alpha=-gammma*(std::pow(R2,3)-std::pow(R1,3))/(std::pow(R2,3)*std::log(R1)-std::pow(R1,3)*std::log(R2));
-            beta=-3*gammma*(std::log(R2)-std::log(R1))/(std::pow(R1,3)*std::log(R2)-std::pow(R2,3)*std::log(R1)) ;
-            gr=-2/(r*r)*(alpha*std::log(r)+beta/3*std::pow(r,3)+gammma);
+            alpha=-gammma*(Utilities::fixed_power<3>(R2)-Utilities::fixed_power<3>(R1))/(Utilities::fixed_power<3>(R2)*std::log(R1)-Utilities::fixed_power<3>(R1)*std::log(R2));
+            beta=-3*gammma*(std::log(R2)-std::log(R1))/(Utilities::fixed_power<3>(R1)*std::log(R2)-Utilities::fixed_power<3>(R2)*std::log(R1)) ;
+            gr=-2/(r*r)*(alpha*std::log(r)+beta/3*Utilities::fixed_power<3>(r)+gammma);
             hr=2/r*gr*mur;
           }
         else
           {
             mur=mu0*std::pow(r,mmm+1);
-            alpha=gammma*(mmm+1)*(std::pow(R1,-3)-std::pow(R2,-3))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
+            alpha=gammma*(mmm+1)*(Utilities::fixed_power<-3>(R1)-Utilities::fixed_power<-3>(R2))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
             beta=-3*gammma*(std::pow(R1,mmm+1)-std::pow(R2,mmm+1))/(std::pow(R1,mmm+4)-std::pow(R2,mmm+4));
-            gr=-2/(r*r)*(-alpha/(mmm+1)*std::pow(r,-mmm-1)+beta/3*std::pow(r,3)+gammma);
+            gr=-2/(r*r)*(-alpha/(mmm+1)*std::pow(r,-mmm-1)+beta/3*Utilities::fixed_power<3>(r)+gammma);
             hr=(mmm+3)/r*gr*mur;
           }
 
@@ -147,17 +147,17 @@ namespace aspect
 
         if (mmm == -1)
           {
-            alpha=-gammma*(std::pow(R2,3)-std::pow(R1,3))/(std::pow(R2,3)*std::log(R1)-std::pow(R1,3)*std::log(R2));
-            beta=-3*gammma*(std::log(R2)-std::log(R1))/(std::pow(R1,3)*std::log(R2)-std::pow(R2,3)*std::log(R1)) ;
+            alpha=-gammma*(Utilities::fixed_power<3>(R2)-Utilities::fixed_power<3>(R1))/(Utilities::fixed_power<3>(R2)*std::log(R1)-Utilities::fixed_power<3>(R1)*std::log(R2));
+            beta=-3*gammma*(std::log(R2)-std::log(R1))/(Utilities::fixed_power<3>(R1)*std::log(R2)-Utilities::fixed_power<3>(R2)*std::log(R1)) ;
             fr=alpha/(r*r)+beta*r;
-            gr=-2/(r*r)*(alpha*std::log(r)+beta/3*std::pow(r,3)+gammma);
+            gr=-2/(r*r)*(alpha*std::log(r)+beta/3*Utilities::fixed_power<3>(r)+gammma);
           }
         else
           {
-            alpha=gammma*(mmm+1)*(std::pow(R1,-3)-std::pow(R2,-3))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
+            alpha=gammma*(mmm+1)*(Utilities::fixed_power<-3>(R1)-Utilities::fixed_power<-3>(R2))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
             beta=-3*gammma*(std::pow(R1,mmm+1)-std::pow(R2,mmm+1))/(std::pow(R1,mmm+4)-std::pow(R2,mmm+4));
             fr=alpha/std::pow(r,mmm+3)+beta*r;
-            gr=-2/(r*r)*(-alpha/(mmm+1)*std::pow(r,-mmm-1)+beta/3*std::pow(r,3)+gammma);
+            gr=-2/(r*r)*(-alpha/(mmm+1)*std::pow(r,-mmm-1)+beta/3*Utilities::fixed_power<3>(r)+gammma);
           }
 
         return -(6.*gr + 4.*fr) * std::cos(theta) * mu0 / r;
@@ -380,15 +380,15 @@ namespace aspect
 
           if (mmm == -1)
             {
-              alpha = -gammma*(std::pow(R2,3)-std::pow(R1,3))/(std::pow(R2,3)*std::log(R1)-std::pow(R1,3)*std::log(R2));
-              beta  = -3*gammma*(std::log(R2)-std::log(R1))/(std::pow(R1,3)*std::log(R2)-std::pow(R2,3)*std::log(R1)) ;
-              rho = -(alpha/std::pow(r,4)*(8*std::log(r)-6) + 8./3.*beta/r+8*gammma/std::pow(r,4))*std::cos(theta) + rho_0;
+              alpha = -gammma*(Utilities::fixed_power<3>(R2)-Utilities::fixed_power<3>(R1))/(Utilities::fixed_power<3>(R2)*std::log(R1)-Utilities::fixed_power<3>(R1)*std::log(R2));
+              beta  = -3*gammma*(std::log(R2)-std::log(R1))/(Utilities::fixed_power<3>(R1)*std::log(R2)-Utilities::fixed_power<3>(R2)*std::log(R1)) ;
+              rho = -(alpha/Utilities::fixed_power<4>(r)*(8*std::log(r)-6) + 8./3.*beta/r+8*gammma/Utilities::fixed_power<4>(r))*std::cos(theta) + rho_0;
             }
           else
             {
-              alpha=gammma*(mmm+1)*(std::pow(R1,-3)-std::pow(R2,-3))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
+              alpha=gammma*(mmm+1)*(Utilities::fixed_power<-3>(R1)-Utilities::fixed_power<-3>(R2))/(std::pow(R1,-mmm-4)-std::pow(R2,-mmm-4));
               beta=-3*gammma*(std::pow(R1,mmm+1)-std::pow(R2,mmm+1))/(std::pow(R1,mmm+4)-std::pow(R2,mmm+4));
-              rho= -(2*alpha*std::pow(r,-4)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*std::pow(r,mmm)-mmm*(mmm+5)*2*gammma*std::pow(r,mmm-3) )*std::cos(theta) + rho_0;
+              rho= -(2*alpha*Utilities::fixed_power<-4>(r)*(mmm+3)/(mmm+1)*(mmm-1)-2*beta/3*(mmm-1)*(mmm+3)*std::pow(r,mmm)-mmm*(mmm+5)*2*gammma*std::pow(r,mmm-3) )*std::cos(theta) + rho_0;
             }
 
           out.densities[i] = rho;

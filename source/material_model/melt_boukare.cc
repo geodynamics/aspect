@@ -190,7 +190,7 @@ namespace aspect
                                                       (a + (1. - a) * std::pow(1 + b * (pressure - Pth), c)));
 
           const double Cp_ref = reference_specific_heats[i] + specific_heat_linear_coefficients[i] * in.temperature[q]
-                                + specific_heat_second_coefficients[i] * std::pow(in.temperature[q], -2.)
+                                + specific_heat_second_coefficients[i] * Utilities::fixed_power<-2>(in.temperature[q])
                                 + specific_heat_third_coefficients[i] * std::pow(in.temperature[q], -0.5);
 
           const long double dSdT0 = reference_volumes[i] * reference_bulk_moduli[i] * Utilities::fixed_power<2>(heat_capacity_ratio * reference_thermal_expansivities[i])

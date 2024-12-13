@@ -129,7 +129,7 @@ namespace aspect
               = beta * std::pow((temperature - T_solidus)/(T_lherz_liquidus - T_solidus),beta-1)
                 * (dT_solidus_dp * (temperature - T_lherz_liquidus)
                    + dT_lherz_liquidus_dp * (T_solidus - temperature))
-                / std::pow(T_lherz_liquidus - T_solidus,2);
+                / Utilities::fixed_power<2>(T_lherz_liquidus - T_solidus);
 
             // melt fraction after melting of all clinopyroxene
             const double R_cpx = r1 + r2 * std::max(0.0, pressure);
@@ -138,7 +138,7 @@ namespace aspect
             if (melt_fraction(temperature, pressure) > F_max)
               {
                 const double T_max = std::pow(F_max,1.0/beta) * (T_lherz_liquidus - T_solidus) + T_solidus;
-                const double dF_max_dp = - M_cpx * std::pow(r1 + r2 * pressure,-2) * r2;
+                const double dF_max_dp = - M_cpx * Utilities::fixed_power<-2>(r1 + r2 * pressure) * r2;
                 const double dT_max_dp = dT_solidus_dp
                                          + 1.0/beta * std::pow(F_max,1.0/beta - 1.0) * dF_max_dp * (T_lherz_liquidus - T_solidus)
                                          + std::pow(F_max,1.0/beta) * (dT_lherz_liquidus_dp - dT_solidus_dp);

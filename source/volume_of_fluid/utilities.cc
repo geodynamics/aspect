@@ -404,7 +404,7 @@ namespace aspect
             //Trapezoid Y
             coeffs[0]=(d + 0.5*n_xp)/n_xp; // 1
             coeffs[1]=-0.5*n_yp/n_xp*sign_n_y; // 2*y - 1
-            coeffs[2]=0.25*(12.0*std::pow(d, 2) - 3.0*n_xp*n_xp + n_yp*n_yp)/(n_xp*n_xp)*sign_n_x; // 2*x - 1
+            coeffs[2]=0.25*(12.0*dealii::Utilities::fixed_power<2>(d) - 3.0*n_xp*n_xp + n_yp*n_yp)/(n_xp*n_xp)*sign_n_x; // 2*x - 1
             coeffs[3]=-3.0*d*n_yp/(n_xp*n_xp)*sign_n_x*sign_n_y; // (2*x - 1)*(2*y - 1)
           }
         else

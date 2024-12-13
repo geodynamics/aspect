@@ -50,8 +50,8 @@ namespace aspect
         const double yplus=(1.+y0)/beta;
         const double yminus=(1.-y0)/beta;
         const double C1 = 2.*numbers::PI /
-                          ( beta*std::log(beta*beta+std::pow(1.+y0,2.0))-2.*(1.+y0)*std::atan(yplus)
-                            - beta*std::log(beta*beta+std::pow(1.-y0,2.0))+2.*(1.-y0)*std::atan(yminus)
+                          ( beta*std::log(beta*beta+Utilities::fixed_power<2>(1.+y0))-2.*(1.+y0)*std::atan(yplus)
+                            - beta*std::log(beta*beta+Utilities::fixed_power<2>(1.-y0))+2.*(1.-y0)*std::atan(yminus)
                             + 2.*numbers::PI*(1.+2.*epsilon) );
 
         const double C2 = ( beta*std::log( beta*beta+Utilities::fixed_power<2>(1+y0) )- 2.*(1.+y0)*std::atan(yplus)
