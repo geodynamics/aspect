@@ -470,7 +470,7 @@ namespace aspect
                            "dependencies. Units: \\si{\\pascal\\second}.");
         prm.declare_entry ("Reference melt viscosity", "10.",
                            Patterns::Double (0.),
-                           "The value of the constant melt viscosity $\\viscosity_fluid$. Units: \\si{\\pascal\\second}.");
+                           "The value of the constant melt viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
         prm.declare_entry ("Exponential melt weakening factor", "27.",
                            Patterns::Double (0.),
                            "The porosity dependence of the viscosity. Units: dimensionless.");

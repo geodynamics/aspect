@@ -89,6 +89,18 @@ html_theme_options = {
     "primary_sidebar_end": "navbar_end.html"
 }
 
+latex_engine = 'xelatex'
+latex_elements = {
+# Additional stuff for the LaTeX preamble.
+'preamble': r'''
+% to allow for the degree symbol
+\usepackage{gensymb}
+\usepackage{siunitx}
+\usepackage{etoolbox}
+\pretocmd{\hyperlink}{\protect}{}{}
+'''
+}
+
 bibtex_bibfiles = ["references.bib"]
 bibtex_default_style = "alpha"
 bibtex_reference_style = "author_year"

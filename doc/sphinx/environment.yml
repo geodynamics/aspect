@@ -6,6 +6,7 @@ dependencies:
   - myst-parser
   - sphinx-book-theme
   - sphinxcontrib-bibtex
+  - cairosvg
   - pip>=20.1
   - pip:
     - sphinxcontrib-tikz

@@ -106,7 +106,7 @@ def escape_doc_string(text) :
 
     # Finally escape some characters that have special meaning in markdown:
     tmp = re.sub(r'\[(.*)\]\(',
-                 r'\[\1\](',
+                 r'{\1}(',
                  tmp)
 
     return tmp;
