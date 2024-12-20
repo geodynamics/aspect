@@ -2682,7 +2682,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant melt viscosity $\viscosity_fluid$. Units: \si{\pascal\second}.
+**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Melt_20simple/Reference_20permeability)=
 ### __Parameter name:__ Reference permeability
@@ -3542,7 +3542,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the constant melt viscosity $\viscosity_fluid$. Units: \si{\pascal\second}.
+**Documentation:** The value of the constant melt viscosity $\eta_f$. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Katz_202003_20model/Reference_20permeability)=
 ### __Parameter name:__ Reference permeability
@@ -4150,6 +4150,14 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Documentation:** List of the Stress thresholds below which the strain rate is solved for as a quadratic function of stress to aid with convergence when stress exponent n=0. Units: \si{\pascal}
 
+(parameters:Material_20model/Visco_20Plastic/Data_20directory)=
+### __Parameter name:__ Data directory
+**Default value:** $ASPECT_SOURCE_DIR/data/material-model/entropy-table/pyrtable
+
+**Pattern:** [DirectoryName]
+
+**Documentation:** The path to the model data. The path may also include the special text &rsquo;$ASPECT_SOURCE_DIR&rsquo; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the &lsquo;data/&rsquo; subdirectory of ASPECT.
+
 (parameters:Material_20model/Visco_20Plastic/Define_20thermal_20conductivities)=
 ### __Parameter name:__ Define thermal conductivities
 **Default value:** false
@@ -4308,6 +4316,14 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Documentation:** List of lower temperature for onset of strain weakening for background material and compositional fields, for a total of N+1 values, where N is the number of all compositional fields or only those corresponding to chemical compositions. If only one value is given, then all use the same value. Units: \si{\kelvin}.
 
+(parameters:Material_20model/Visco_20Plastic/Material_20file_20names)=
+### __Parameter name:__ Material file names
+**Default value:** material_table_temperature_pressure_small.txt
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** The file names of the material data (material data is assumed to be in order with the ordering of the compositional fields). Note that there are two options on how many files need to be listed here: 1. If only one file is provided, it is used for the whole model domain, and compositional fields are ignored. 2. If there is one more file name than the number of compositional fields, then the first file is assumed to define a &lsquo;background composition&rsquo; that is modified by the compositional fields. These data files need to have the same structure as the one necessary for equation of state plus a new column for the phase indexes, which amounts to 8 columns in total.
+
 (parameters:Material_20model/Visco_20Plastic/Maximum_20Peierls_20strain_20rate_20iterations)=
 ### __Parameter name:__ Maximum Peierls strain rate iterations
 **Default value:** 40
@@ -4419,6 +4435,14 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [Anything]
 
 **Documentation:** A list of depths where phase transitions occur. Values must monotonically increase. Units: \si{\meter}.
+
+(parameters:Material_20model/Visco_20Plastic/Phase_20transition_20indicators)=
+### __Parameter name:__ Phase transition indicators
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** A list of phase indicators in a look-up table for each phase transition. This parameter selectively assign different rheologies to specific phases, rather than having a unique rheology for each phase in the table. For example, if the table has phases 0, 1, and 2, and one only want a distinct rheology for phase 2, then only phase 2 is needed in the list of indicator. And phases 0, 1 will just be assigned the rheology of the base phase.
 
 (parameters:Material_20model/Visco_20Plastic/Phase_20transition_20pressure_20widths)=
 ### __Parameter name:__ Phase transition pressure widths
@@ -4727,6 +4751,14 @@ If a compositional field named &rsquo;noninitial\_plastic\_strain&rsquo; is incl
 **Pattern:** [Bool]
 
 **Documentation:** Whether to use the adiabatic pressure instead of the full pressure when calculating plastic yield stress. This may be helpful in models where the full pressure has unusually large variations, resulting in solver convergence issues. Be aware that this setting will change the plastic shear band angle.
+
+(parameters:Material_20model/Visco_20Plastic/Use_20dominant_20phase_20for_20viscosity)=
+### __Parameter name:__ Use dominant phase for viscosity
+**Default value:** false
+
+**Pattern:** [Bool]
+
+**Documentation:** Whether to look up the dominant phase for each composition in its respective material data file to calculate viscosity. This allows each phase to have distinct rheological parameterizations.
 
 (parameters:Material_20model/Visco_20Plastic/Use_20fixed_20elastic_20time_20step)=
 ### __Parameter name:__ Use fixed elastic time step

@@ -147,7 +147,7 @@ The following properties are available:
 
 &lsquo;quadrature points&rsquo;: Generates particles at the quadrature points of each active cell of the triangulation. Here, Gauss quadrature of degree (velocity\_degree + 1), is used similarly to the assembly of Stokes matrix.
 
-&lsquo;random uniform&rsquo;: Generates a random uniform distribution of particles over the entire simulation domain.
+&lsquo;random uniform&rsquo;: Generates a random uniform distribution of particles over the entire simulation domain. This generator can be understood as the special case of the &rsquo;probability density function&rsquo; generator where the probability density is constant over the domain.
 
 &lsquo;reference cell&rsquo;: Generates a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension.
 
@@ -387,13 +387,11 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 (parameters:Particles/Generator/Probability_20density_20function/Function_20expression)=
 ### __Parameter name:__ Function expression
-**Default value:** 0
+**Default value:** 1.0
 
 **Pattern:** [Anything]
 
-**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
-
-If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+**Documentation:** The formula that denotes the spatially variable probability density function. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, 0)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise; this example would result in no particles at all in that part of the domain where $x==0$, and a constant particle density in the rest of the domain. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/. Note that the function has to be non-negative everywhere in the domain, and needs to be positive in at least some parts of the domain.
 
 (parameters:Particles/Generator/Probability_20density_20function/Number_20of_20particles)=
 ### __Parameter name:__ Number of particles
