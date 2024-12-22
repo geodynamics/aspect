@@ -419,87 +419,91 @@ namespace aspect
       // This becomes a small nonlinear problem. Directly iterating through the above three system doesn't
       // converge well. Instead, we solve the inner core radius by bisection method.
 
-      int steps=1;
-      double R_0,R_1,R_2;
-      // dT is the temperature difference between adiabatic and solidus at
-      // inner-outer core boundary. If dT=0 then we found our solution.
-      double dT0,dT1,dT2;
-      R_0 = 0.;
-      R_1 = core_data.Ri;
-      R_2 = Rc;
-      dT0 = get_dT(R_0);
+       int steps = 1;
+  double R_0, R_1, R_2;
+  double dT0, dT1, dT2;
+
+  R_0 = 0.;
+  R_1 = core_data.Ri;
+  R_2 = Rc;
+
+  dT0 = get_dT(R_0);
+  dT1 = get_dT(R_1);
+  dT2 = get_dT(R_2);
+
+  // If both ends have the same sign, we might have a fully molten or fully solid core.
+  if (dT0 >= 0. && dT2 >= 0.)
+  {
+    // Fully molten core
+    R_1 = R_0;
+    dT1 = 0;
+  }
+  else if (dT2 <= 0. && dT0 <= 0.)
+  {
+    // Completely solid core
+    R_1 = R_2;
+    dT1 = 0;
+  }
+  else
+  {
+    // Use bisection method to find R_1 such that dT1 = 0
+    while (!(dT1 == 0 || steps > max_steps))
+    {
+      // If the solution is out of the interval, print a warning
+      if (dT0 * dT2 > 0)
+      {
+        R_1 = (R_0 + R_2) / 2.;
+        dT1 = get_dT(R_1);
+        break;
+      }
+      else if (dT0 * dT1 < 0.)
+      {
+        R_2 = R_1;
+        dT2 = dT1;
+      }
+      else if (dT2 * dT1 < 0.)
+      {
+        R_0 = R_1;
+        dT0 = dT1;
+      }
+
+      // Update R_1 and recalculate dT1
+      R_1 = (R_0 + R_2) / 2.;
       dT1 = get_dT(R_1);
-      dT2 = get_dT(R_2);
-
-      if (dT0 >= 0. && dT2 >= 0.)
-        {
-          // Fully molten core
-          R_1 = R_0;
-          dT1 = 0;
-        
-          } else if (dT2 <= 0. && dT0 <= 0.) {
-        // Core fully solid
-        R_1 = R_2;
-        dT1 = 0;
-    } else {
-        // Using the bisection method to find R_1 such that dT1 = 0
-        while (!(dT1 == 0 || steps > max_steps)) {
-            if (dT0 * dT2 > 0) {
-                // If the solution is out of the interval, the inner core is not still formed.
-                this->get_pcout() << "Step: " << steps << std::endl
-                                  << " R=[" << R_0 / 1e3 << "," << R_2 / 1e3 << "] (km)"
-                                  << " dT0=" << dT0 << ", dT2=" << dT2 << std::endl
-                                  << "Q_CMB=" << core_data.Q << std::endl
-                                  << "The inner core is not formed yet or the core is solidus." << std::endl;
-
-                // Set R_1 to zero (inner core not formed) and break the loop
-                R_1 = R_0;
-                dT1 = 0;
-                break;
-            } else if (dT0 * dT1 < 0.) {
-                R_2 = R_1;
-                dT2 = dT1;
-            } else if (dT2 * dT1 < 0.) {
-                R_0 = R_1;
-                dT0 = dT1;
-            }
-
-            // Update R_1 and calculate dT1
-            R_1 = (R_0 + R_2) / 2.;
-            dT1 = get_dT(R_1);
-            ++steps;
-        }
+      ++steps;
     }
+  }
 
-      // Calculate new R,T,X
-      R = R_1;
-      T = get_Tc(R);
-      X = get_X(R);
+  // Calculate new R, T, X
+  R = R_1;
+  T = get_Tc(R);
+  X = get_X(R); 
 
-      if (dT0<0. && dT2>0.)
-        {
-          // Normal solution
-          return true;
-        }
-      else if (dT0>0. && dT2<0.)
-        {
-          // Snowing core solution
-          return false;
-        }
-      else
-        {
-          // No solution found.
-                  this->get_pcout() << "[Dynamic core] The inner core has not yet formed. I proceed with R=0." << std::endl;
+  // Check the signs of dT at the boundaries to classify the solution
+  if (dT0 < 0. && dT2 > 0.)
+  {
+    // Core partially molten, freezing from the inside, normal solution
+    return true;
+  }
+  else if (dT0 > 0. && dT2 < 0.)
+  {
+    // Core partially molten, snowing core solution
+    return false;
+  }
+  else if (dT0 >= 0. && dT2 >= 0.)
+  {
+    // Core fully molten, normal solution
+    return true;
+  }
+  else if (dT0 <= 0. && dT2 <= 0.)
+  {
+    // Core fully solid, normal solution
+    return true;
+  }
 
-        // Ensure that R, T and X are set correctly
-        R = R_0;
-        T = get_Tc(R);
-        X = get_X(R);
-        return true; // Continua la simulazione
-    }
-
-      return false;
-    }
+ 
+  return true; 
+}
 
     template <int dim>
     double
