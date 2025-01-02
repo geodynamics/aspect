@@ -61,7 +61,7 @@ namespace aspect
           /**
            * Evaluate the velocity residual for the current cell.
            *
-           * @copydoc DataPostprocessorVector<dim>::evaluate_vector_field()
+           * @copydoc dealii::DataPostprocessor<dim>::evaluate_vector_field()
            */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
