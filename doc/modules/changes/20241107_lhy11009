@@ -1,4 +1,4 @@
-Added: there is now a new class of phase function that handles discrete phase transitions 
+Added: there is now a new class of phase function that handles discrete phase transitions
 by looking up the most dominant phases in a lookup table. This function can be used
 to make the rheology of the visco-plastic material model dependent on the dominant
 mineral phase.
