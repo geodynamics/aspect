@@ -5,8 +5,8 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving composition system ... 0 iterations.
-   Copying properties into prescribed compositional field density_field... done.
    Solving another_field system ... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
@@ -19,8 +19,8 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
 *** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 13 iterations.
    Solving composition system ... 11 iterations.
-   Copying properties into prescribed compositional field density_field... done.
    Solving another_field system ... 11 iterations.
+   Copying properties into prescribed compositional field density_field... done.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:

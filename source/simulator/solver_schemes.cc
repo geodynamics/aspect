@@ -157,7 +157,7 @@ namespace aspect
             {
               TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
 
-              interpolate_material_output_into_advection_field(adv_field);
+              interpolate_material_output_into_advection_field({adv_field});
 
               // Also set the old_solution block to the prescribed field. The old
               // solution is the one that is used to assemble the diffusion system in
@@ -180,7 +180,7 @@ namespace aspect
 
           TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
 
-          interpolate_material_output_into_advection_field(adv_field);
+          interpolate_material_output_into_advection_field({adv_field});
 
           // Call the signal in case the user wants to do something with the variable:
           SolverControl dummy;
@@ -188,6 +188,7 @@ namespace aspect
                                         adv_field.is_temperature(),
                                         adv_field.compositional_variable,
                                         dummy);
+
           break;
         }
 
@@ -245,6 +246,7 @@ namespace aspect
       Assert(residual->size() == introspection.n_compositional_fields, ExcInternalError());
 
     std::vector<AdvectionField> fields_advected_by_particles;
+    std::vector<AdvectionField> fields_interpolated_from_material_output;
 
     for (unsigned int c=0; c < introspection.n_compositional_fields; ++c)
       {
@@ -263,7 +265,7 @@ namespace aspect
                 {
                   TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
 
-                  interpolate_material_output_into_advection_field(adv_field);
+                  interpolate_material_output_into_advection_field({adv_field});
 
                   // Also set the old_solution block to the prescribed field. The old
                   // solution is the one that is used to assemble the diffusion system in
@@ -298,16 +300,8 @@ namespace aspect
 
             case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
             {
-              TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
-
-              interpolate_material_output_into_advection_field(adv_field);
-
-              // Call the signal in case the user wants to do something with the variable:
-              SolverControl dummy;
-              signals.post_advection_solver(*this,
-                                            adv_field.is_temperature(),
-                                            adv_field.compositional_variable,
-                                            dummy);
+              // handle all prescribed fields together to increase efficiency
+              fields_interpolated_from_material_output.push_back(adv_field);
               break;
             }
 
@@ -331,6 +325,23 @@ namespace aspect
 
             default:
               AssertThrow(false,ExcNotImplemented());
+          }
+      }
+
+    if (fields_interpolated_from_material_output.size() > 0)
+      {
+        TimerOutput::Scope timer (computing_timer, "Interpolate prescribed composition");
+
+        interpolate_material_output_into_advection_field(fields_interpolated_from_material_output);
+
+        for (const auto &adv_field: fields_interpolated_from_material_output)
+          {
+            // Call the signal in case the user wants to do something with the variable:
+            SolverControl dummy;
+            signals.post_advection_solver(*this,
+                                          adv_field.is_temperature(),
+                                          adv_field.compositional_variable,
+                                          dummy);
           }
       }
 
