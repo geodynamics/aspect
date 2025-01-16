@@ -208,8 +208,8 @@ namespace aspect
          */
         unsigned int array_size;
 
-         /**Make 2D spherical Mesh .
-         */
+        /**Make 2D spherical Mesh .
+        */
         Triangulation<2, 3> surface_mesh; // Surface mesh
         DoFHandler<2, 3> surface_mesh_dof_handler; // DoFHandler for the surface mesh
         LinearAlgebra::Vector surface_solution; // Solution vector for the surface mesh
