@@ -380,15 +380,6 @@ if(ASPECT_WITH_WORLD_BUILDER)
 endif()
 message(STATUS "")
 
-# include Fastscape and Xtensor files 
-find_package(healpix REQUIRED)
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/fastscape/include/")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/xtensor/")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtl/include/")
-# INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/healpix_cxx/include/healpix_cxx/")
-INCLUDE_DIRECTORIES("${healpix_INCLUDE_DIRS}")
-
 #include "datatypes.h"
 
 #
