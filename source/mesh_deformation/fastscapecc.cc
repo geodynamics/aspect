@@ -25,6 +25,7 @@
 #include <aspect/mesh_deformation/fastscapecc.h>
 #include <aspect/geometry_model/box.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <deal.II/numerics/vector_tools_interpolate.h>
 #include <aspect/postprocess/visualization.h>
 #include <ctime>
 #include <aspect/simulator.h>
@@ -38,6 +39,13 @@
 #include <fastscapelib/grid/healpix_grid.hpp>
 #include <aspect/mesh_deformation/interface.h>
 
+#include <deal.II/grid/tria.h>
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/lac/vector.h>
+#include <deal.II/numerics/fe_field_function.h>
+
+
+
 // namespace fs = fastscapelib;
 
 
@@ -46,13 +54,18 @@ namespace aspect
   namespace MeshDeformation
   {
     template <int dim>
-    void FastScapecc<dim>::initialize ()
+    FastScapecc<dim>::FastScapecc()
+        : surface_mesh_dof_handler(surface_mesh) // Link DoFHandler to surface_mesh
+    {}
+
+    template <int dim>
+    void FastScapecc<dim>::initialize()
     {
         const GeometryModel::Box<dim> *box_geometry
-          = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
+            = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
 
         const GeometryModel::SphericalShell<dim> *spherical_geometry
-          = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
+            = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
 
         if (geometry_type == GeometryType::Box)
         {
@@ -77,7 +90,18 @@ namespace aspect
         {
             this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-            nsides = static_cast<int>(sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference + maximum_surface_refinement_level) * 2) / 12));
+            // Define the center and radius of the sphere
+            const Point<3> center(0, 0, 0); // Center at the origin
+            const double radius = 6371e3;   // Earth's radius in meters
+
+            // Create the spherical surface mesh
+            GridGenerator::hyper_sphere(surface_mesh, center, radius);
+            surface_mesh.refine_global(3);
+            
+            DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+            surface_constraints.close();
+
+
         }
         else
         {
@@ -86,64 +110,131 @@ namespace aspect
     }
 
     template <int dim>
-    void
-    FastScapecc<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                               AffineConstraints<double> &mesh_velocity_constraints,
-                                                               const std::set<types::boundary_id> &boundary_ids) const
+    void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &boundary_ids)
     {
-      if (this->get_timestep_number() == 0)
-        return;
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+        // Define the quadrature rule for projection
+        QGauss<2> quadrature(surface_mesh_dof_handler.get_fe().degree + 1);
 
-      const unsigned int current_timestep = this->get_timestep_number ();
+        // Initialize the surface solution vector
+        IndexSet locally_relevant_dofs_surface;
+        DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs_surface);
+        surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                                locally_relevant_dofs_surface,
+                                this->get_mpi_communicator());
 
-      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-      std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
+        // Initialize the boundary solution vector
+        IndexSet locally_relevant_dofs_main;
+        DoFTools::extract_locally_relevant_dofs(this->get_dof_handler(), locally_relevant_dofs_main);
+        boundary_solution.reinit(this->get_dof_handler().locally_owned_dofs(),
+                                locally_relevant_dofs_main,
+                                this->get_mpi_communicator());
 
-      // Get a quadrature rule that exists only on the corners, and increase the refinement if specified.
-      const QIterated<dim-1> face_corners (QTrapezoid<1>(),
-                                           static_cast<unsigned int>(std::pow(2, additional_refinement_levels + surface_refinement_difference)));
+        const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-      FEFaceValues<dim> fe_face_values (this->get_mapping(),
-                                        this->get_fe(),
-                                        face_corners,
-                                        update_values |
-                                        update_quadrature_points |
-                                        update_normal_vectors);
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        {
+            if (cell->is_locally_owned())
+            {
+                for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
+                {
+                    if (cell->face(face)->at_boundary() &&
+                        cell->face(face)->boundary_id() == relevant_boundary)
+                    {
+                        for (unsigned int vertex = 0; vertex < GeometryInfo<dim - 1>::vertices_per_face; ++vertex)
+                        {
+                            const unsigned int dof_index = cell->face(face)->vertex_dof_index(vertex, 0);
+                            boundary_solution[dof_index] = this->get_solution()[dof_index];
+                        }
+                    }
+                }
+            }
+        }
 
-      auto healpix_grid = T_Healpix_Base<int>(nsides, Healpix_Ordering_Scheme::RING, SET_NSIDE);
+      boundary_solution.compress(VectorOperation::insert);
 
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned() && cell->at_boundary())
-          for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
-            if (cell->face(face_no)->at_boundary())
-              {
-                if (cell->face(face_no)->boundary_id() != relevant_boundary)
-                  continue;
+      // dealii::Functions::FEFieldFunction<2, dealii::LinearAlgebra::distributed::Vector<double>,3> 
+      //       fe_function(this->get_dof_handler(), boundary_solution, this->get_mapping());
 
-                std::vector<Tensor<1,dim>> vel(face_corners.size());
-                fe_face_values.reinit(cell, face_no);
-                fe_face_values[this->introspection().extractors.velocities].get_function_values(this->get_solution(), vel);
+      VectorTools::interpolate_boundary_values (surface_mesh_dof_handler,
+                                                *boundary_ids.begin(),
+                                                boundary_solution,
+                                                surface_constraints);
 
-                for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
-                  {
-                    const Point<dim> vertex = fe_face_values.quadrature_point(corner);
+      VectorTools::interpolate_to_different_mesh(
+          this->get_dof_handler(),         // Source DoFHandler
+          this->get_solution(),            // Source solution vector
+          surface_mesh_dof_handler,        // Target DoFHandler
+          surface_solution                 // Target solution vector
+      );
 
-                    // Find the healpix index for the current point.
-                    int index = healpix_grid.vec2pix({vertex(0), vertex(1), vertex(2)});
+      // Project the boundary solution onto the 2D surface mesh
+      // VectorTools::project(
+      //     this->template get_mapping<2,3>(), 
+      //     surface_mesh_dof_handler,
+      //     surface_constraints,
+      //     quadrature,
+      //     fe_function, 
+      //     surface_solution);
+  }
 
-                    // Convert Cartesian velocity to radial velocity.
-                    double radial_velocity = (vertex(0) * vel[corner][0] + vertex(1) * vel[corner][1] + vertex(2) * vel[corner][2])
-                                             / vertex.norm();
 
-                    temporary_variables[0].push_back(vertex(dim-1) - outer_radius);   // z component
-                    temporary_variables[1].push_back(index);
-                    temporary_variables[2].push_back(radial_velocity * year_in_seconds);
-                  }
-              }
 
-      int array_size = healpix_grid.Npix();
+    template <int dim>
+    void FastScapecc<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+                                                                    AffineConstraints<double> &mesh_velocity_constraints,
+                                                                    const std::set<types::boundary_id> &boundary_ids) const
+    {
+        if (this->get_timestep_number() == 0)
+            return;
+
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+
+        const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
+
+        // VectorTools::interpolate_to_different_mesh(
+        //     this->get_dof_handler(),         // Source DoFHandler
+        //     this->get_solution(),            // Source solution vector
+        //     surface_mesh_dof_handler,        // Target DoFHandler
+        //     surface_solution                 // Target solution vector
+        // );
+
+        // Apply hanging node constraints to ensure continuity
+        surface_constraints.distribute(surface_solution);
+
+        // Temporary storage for computation
+        std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
+
+        // Iterate over active cells of the surface mesh
+        for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
+        {
+            for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<2>::vertices_per_cell; ++vertex_index)
+            {
+                const Point<3> vertex = cell->vertex(vertex_index); // Access the vertex
+
+                // Access the DoF index for the current vertex
+                unsigned int vertex_dof_index = cell->vertex_dof_index(vertex_index, 0); // Assume component 0
+
+                // Retrieve the solution value at the DoF index
+                double interpolated_value = surface_solution[vertex_dof_index];
+
+                // Compute radial velocity
+                double radial_velocity = (vertex(0) * interpolated_value +
+                                          vertex(1) * interpolated_value +
+                                          vertex(2) * interpolated_value) /
+                                        vertex.norm();
+
+                // Store results
+                temporary_variables[0].push_back(vertex(2) - outer_radius);
+                temporary_variables[2].push_back(radial_velocity * year_in_seconds);
+            }
+        }
+
+
+
+   
+      // int array_size = healpix_grid.Npix();
       std::vector<double> V(array_size);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -242,21 +333,21 @@ namespace aspect
           MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator()); 
       }  
 
-      auto healpix_velocity_function = [&](const Point<dim> &p) -> double
-      {
-        int index = healpix_grid.vec2pix({p(0), p(1), p(2)});
-        return V[index];
-      };
+      // auto healpix_velocity_function = [&](const Point<dim> &p) -> double
+      // {
+      //   int index = healpix_grid.vec2pix({p(0), p(1), p(2)});
+      //   return V[index];
+      // };
 
-      VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-        healpix_velocity_function,
-        dim - 1,
-        dim);
+      // VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+      //   healpix_velocity_function,
+      //   dim - 1,
+      //   dim);
 
-      VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
-                                                *boundary_ids.begin(),
-                                                vector_function_object,
-                                                mesh_velocity_constraints);
+      // VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
+      //                                           *boundary_ids.begin(),
+      //                                           vector_function_object,
+      //                                           mesh_velocity_constraints);
     }
 
 
