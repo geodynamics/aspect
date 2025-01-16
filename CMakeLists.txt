@@ -237,6 +237,7 @@ message(STATUS "Using ASPECT_WITH_FASTSCAPELIB = '${ASPECT_WITH_FASTSCAPE}'")
 if(ASPECT_WITH_FASTSCAPELIB)
   find_package(fastscapelib CONFIG)
   if(${fastscapelib_FOUND})
+    set(FS_WITH_HEALPIX OFF CACHE BOOL "Turn off Fastscapelib support of Healpix grid" FORCE)
     message(STATUS "Using ASPECT_WITH_FASTSCAPELIB = '${ASPECT_WITH_FASTSCAPELIB}'")
     message(STATUS "  fastscapelib_INCLUDE_DIR: ${fastscapelib_INCLUDE_DIRS}")
     message(STATUS "  fastscapelib_VERSION: ${fastscapelib_VERSION}")
@@ -936,9 +937,6 @@ if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILD
     target_link_libraries(${TARGET_EXE_RELEASE} WorldBuilderRelease)
   endif()
 endif()
-
-target_link_libraries(${TARGET_EXE_RELEASE} healpix)
-target_link_libraries(${TARGET_EXE_DEBUG} healpix)
 
 # Some systems need to explicitly link to some libraries to use dlopen
 if(ASPECT_USE_SHARED_LIBS)
