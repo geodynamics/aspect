@@ -28,13 +28,9 @@
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/numerics/vector_tools_interpolate.h>
 #include <aspect/postprocess/visualization.h>
-#include <ctime>
 #include <aspect/simulator.h>
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_signals.h>
-
-#include <memory>
-#include <algorithm> // For std::copy
 
 #include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/mesh_deformation/interface.h>
@@ -55,7 +51,7 @@ namespace aspect
   {
     template <int dim>
     FastScapecc<dim>::FastScapecc()
-        : surface_mesh_dof_handler(surface_mesh) // Link DoFHandler to surface_mesh
+      : surface_mesh_dof_handler(surface_mesh) // Link DoFHandler to surface_mesh
     {}
 
     template <int dim>
@@ -88,18 +84,18 @@ namespace aspect
         }
       else if (geometry_type == GeometryType::SphericalShell)
         {
-            this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
+          this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-            // Define the center and radius of the sphere
-            const Point<3> center(0, 0, 0); // Center at the origin
-            const double radius = 6371e3;   // Earth's radius in meters
+          // Define the center and radius of the sphere
+          const Point<3> center(0, 0, 0); // Center at the origin
+          const double radius = 6371e3;   // Earth's radius in meters
 
-            // Create the spherical surface mesh
-            GridGenerator::hyper_sphere(surface_mesh, center, radius);
-            surface_mesh.refine_global(3);
+          // Create the spherical surface mesh
+          GridGenerator::hyper_sphere(surface_mesh, center, radius);
+          surface_mesh.refine_global(3);
 
-            DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-            surface_constraints.close();
+          DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+          surface_constraints.close();
 
 
         }
@@ -112,40 +108,40 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &boundary_ids)
     {
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
 
-        // Define the quadrature rule for projection
-        QGauss<2> quadrature(surface_mesh_dof_handler.get_fe().degree + 1);
+      // Define the quadrature rule for projection
+      QGauss<2> quadrature(surface_mesh_dof_handler.get_fe().degree + 1);
 
-        // Initialize the surface solution vector
-        IndexSet locally_relevant_dofs_surface;
-        DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs_surface);
-        surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-                                locally_relevant_dofs_surface,
-                                this->get_mpi_communicator());
+      // Initialize the surface solution vector
+      IndexSet locally_relevant_dofs_surface;
+      DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs_surface);
+      surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                              locally_relevant_dofs_surface,
+                              this->get_mpi_communicator());
 
-        // Initialize the boundary solution vector
-        IndexSet locally_relevant_dofs_main;
-        DoFTools::extract_locally_relevant_dofs(this->get_dof_handler(), locally_relevant_dofs_main);
-        boundary_solution.reinit(this->get_dof_handler().locally_owned_dofs(),
-                                locally_relevant_dofs_main,
-                                this->get_mpi_communicator());
+      // Initialize the boundary solution vector
+      IndexSet locally_relevant_dofs_main;
+      DoFTools::extract_locally_relevant_dofs(this->get_dof_handler(), locally_relevant_dofs_main);
+      boundary_solution.reinit(this->get_dof_handler().locally_owned_dofs(),
+                               locally_relevant_dofs_main,
+                               this->get_mpi_communicator());
 
-        const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
-            if (cell->is_locally_owned())
+          if (cell->is_locally_owned())
             {
-                for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
+              for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
                 {
-                    if (cell->face(face)->at_boundary() &&
-                        cell->face(face)->boundary_id() == relevant_boundary)
+                  if (cell->face(face)->at_boundary() &&
+                      cell->face(face)->boundary_id() == relevant_boundary)
                     {
-                        for (unsigned int vertex = 0; vertex < GeometryInfo<dim - 1>::vertices_per_face; ++vertex)
+                      for (unsigned int vertex = 0; vertex < GeometryInfo<dim - 1>::vertices_per_face; ++vertex)
                         {
-                            const unsigned int dof_index = cell->face(face)->vertex_dof_index(vertex, 0);
-                            boundary_solution[dof_index] = this->get_solution()[dof_index];
+                          const unsigned int dof_index = cell->face(face)->vertex_dof_index(vertex, 0);
+                          boundary_solution[dof_index] = this->get_solution()[dof_index];
                         }
                     }
                 }
@@ -157,17 +153,17 @@ namespace aspect
       // dealii::Functions::FEFieldFunction<2, dealii::LinearAlgebra::distributed::Vector<double>,3>
       //       fe_function(this->get_dof_handler(), boundary_solution, this->get_mapping());
 
-      VectorTools::interpolate_boundary_values (surface_mesh_dof_handler,
-                                                *boundary_ids.begin(),
-                                                boundary_solution,
-                                                surface_constraints);
+      // VectorTools::interpolate_boundary_values (surface_mesh_dof_handler,
+      //                                           *boundary_ids.begin(),
+      //                                           boundary_solution,
+      //                                           surface_constraints);
 
-      VectorTools::interpolate_to_different_mesh(
-          this->get_dof_handler(),         // Source DoFHandler
-          this->get_solution(),            // Source solution vector
-          surface_mesh_dof_handler,        // Target DoFHandler
-          surface_solution                 // Target solution vector
-      );
+      // VectorTools::interpolate_to_different_mesh(
+      //     this->get_dof_handler(),         // Source DoFHandler
+      //     this->get_solution(),            // Source solution vector
+      //     surface_mesh_dof_handler,        // Target DoFHandler
+      //     surface_solution                 // Target solution vector
+      // );
 
       // Project the boundary solution onto the 2D surface mesh
       // VectorTools::project(
@@ -177,7 +173,7 @@ namespace aspect
       //     quadrature,
       //     fe_function,
       //     surface_solution);
-  }
+    }
 
 
 
@@ -186,48 +182,48 @@ namespace aspect
                                                                     AffineConstraints<double> &mesh_velocity_constraints,
                                                                     const std::set<types::boundary_id> &boundary_ids) const
     {
-        if (this->get_timestep_number() == 0)
-            return;
+      if (this->get_timestep_number() == 0)
+        return;
 
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
 
-        const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
+      const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
 
-        // VectorTools::interpolate_to_different_mesh(
-        //     this->get_dof_handler(),         // Source DoFHandler
-        //     this->get_solution(),            // Source solution vector
-        //     surface_mesh_dof_handler,        // Target DoFHandler
-        //     surface_solution                 // Target solution vector
-        // );
+      // VectorTools::interpolate_to_different_mesh(
+      //     this->get_dof_handler(),         // Source DoFHandler
+      //     this->get_solution(),            // Source solution vector
+      //     surface_mesh_dof_handler,        // Target DoFHandler
+      //     surface_solution                 // Target solution vector
+      // );
 
-        // Apply hanging node constraints to ensure continuity
-        surface_constraints.distribute(surface_solution);
+      // Apply hanging node constraints to ensure continuity
+      surface_constraints.distribute(surface_solution);
 
-        // Temporary storage for computation
-        std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
+      // Temporary storage for computation
+      std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
 
-        // Iterate over active cells of the surface mesh
-        for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
+      // Iterate over active cells of the surface mesh
+      for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
         {
-            for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<2>::vertices_per_cell; ++vertex_index)
+          for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<2>::vertices_per_cell; ++vertex_index)
             {
-                const Point<3> vertex = cell->vertex(vertex_index); // Access the vertex
+              const Point<3> vertex = cell->vertex(vertex_index); // Access the vertex
 
-                // Access the DoF index for the current vertex
-                unsigned int vertex_dof_index = cell->vertex_dof_index(vertex_index, 0); // Assume component 0
+              // Access the DoF index for the current vertex
+              unsigned int vertex_dof_index = cell->vertex_dof_index(vertex_index, 0); // Assume component 0
 
-                // Retrieve the solution value at the DoF index
-                double interpolated_value = surface_solution[vertex_dof_index];
+              // Retrieve the solution value at the DoF index
+              double interpolated_value = surface_solution[vertex_dof_index];
 
-                // Compute radial velocity
-                double radial_velocity = (vertex(0) * interpolated_value +
-                                          vertex(1) * interpolated_value +
-                                          vertex(2) * interpolated_value) /
-                                        vertex.norm();
+              // Compute radial velocity
+              double radial_velocity = (vertex(0) * interpolated_value +
+                                        vertex(1) * interpolated_value +
+                                        vertex(2) * interpolated_value) /
+                                       vertex.norm();
 
-                // Store results
-                temporary_variables[0].push_back(vertex(2) - outer_radius);
-                temporary_variables[2].push_back(radial_velocity * year_in_seconds);
+              // Store results
+              temporary_variables[0].push_back(vertex(2) - outer_radius);
+              temporary_variables[2].push_back(radial_velocity * year_in_seconds);
             }
         }
 
