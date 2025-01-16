@@ -34,6 +34,11 @@
 #include <fastscapelib/eroders/diffusion_adi.hpp>
 #include <fastscapelib/eroders/spl.hpp>
 
+//for dealii grid
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/tria.h>
+//#include <deal.II/numerics/fe_field_function.h>
+
 namespace aspect
 {
   using namespace dealii;
@@ -52,10 +57,7 @@ namespace aspect
     class FastScapecc : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        enum class GeometryType
-        {
-          Box, SphericalShell, Undefined
-        };
+        FastScapecc();
         /**
          * Initialize variables for FastScape.
          */
@@ -101,6 +103,17 @@ namespace aspect
 
         // // Unique pointer for fastscapelib spl_eroder with flow_graph as template parameter.
         // std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>>> spl_eroder;
+
+        void project_surface_solution(const std::set<types::boundary_id> &boundary_ids);
+
+        /**
+         * Project the Stokes velocity solution onto the
+         * free surface. Called by make_constraints()
+         */
+        // void project_velocity_onto_boundary (const DoFHandler<dim> &free_surface_dof_handler,
+        //                                      const IndexSet &mesh_locally_owned,
+        //                                      const IndexSet &mesh_locally_relevant,
+        //                                      LinearAlgebra::Vector &output) const;
 
 
 
@@ -194,6 +207,15 @@ namespace aspect
          * Size of the FastScape array (nx*ny).
          */
         unsigned int array_size;
+
+         /**Make 2D spherical Mesh .
+         */
+        Triangulation<2, 3> surface_mesh; // Surface mesh
+        DoFHandler<2, 3> surface_mesh_dof_handler; // DoFHandler for the surface mesh
+        LinearAlgebra::Vector surface_solution; // Solution vector for the surface mesh
+        mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
+        dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
+
 
         /**
          * Number of faces for the healpix grid.
