@@ -27,6 +27,7 @@
 #include <aspect/geometry_model/box.h>
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/numerics/vector_tools_interpolate.h>
+#include <deal.II/lac/affine_constraints.h>
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator.h>
 #include <aspect/simulator/assemblers/interface.h>
@@ -197,7 +198,8 @@ namespace aspect
       // );
 
       // Apply hanging node constraints to ensure continuity
-      surface_constraints.distribute(surface_solution);
+      // TODO: this yields a link error
+      // surface_constraints.distribute(surface_solution);
 
       // Temporary storage for computation
       std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());

@@ -37,7 +37,9 @@
 //for dealii grid
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria.h>
-//#include <deal.II/numerics/fe_field_function.h>
+
+#include <deal.II/lac/affine_constraints.h>
+#include <deal.II/numerics/fe_field_function.h>
 
 namespace aspect
 {
