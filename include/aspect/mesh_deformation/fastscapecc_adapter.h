@@ -1,22 +1,14 @@
 #ifndef FASTSCAPELIB_DEALII_GRID_H_
 #define FASTSCAPELIB_DEALII_GRID_H_
 
-#include "dealii_cxx/dealii_base.h"
-#include "dealii_cxx/dealii_tables.h"
-#include "dealii_cxx/vec3.h"
 #include <unordered_map>
 
-// conflict between dealii xcomplex macro and xtl xcomplex
-#undef xcomplex
 #include <xtensor/xbroadcast.hpp>
 #include <xtensor/xmath.hpp>
 
 #include "fastscapelib/grid/base.hpp"
-#include "fastscapelib/utils/consts.hpp"
-#include "fastscapelib/utils/xtensor_containers.hpp"
+#include "fastscapelib/utils/xtensor_utils.hpp"
 
-#include <math.h>
-#include <memory>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -24,16 +16,6 @@
 
 namespace fastscapelib
 {
-  namespace detail
-  {
-    inline double vec3_distance(vec3 a, vec3 b)
-    {
-      return std::sqrt(std::pow(a.x - b.x, 2) + std::pow(a.y - b.y, 2)
-                       + std::pow(a.z - b.z, 2));
-    }
-
-  }
-
   template <class S, class T>
   class dealii_grid;
 
@@ -75,7 +57,7 @@ namespace fastscapelib
       using grid_data_type = typename base_type::grid_data_type;
 
       using container_selector = typename base_type::container_selector;
-      using container_type = fixed_shape_container_t<container_selector,
+      using container_type = xt_tensor_t<container_selector,
             grid_data_type,
             inner_types::container_ndims>;
 
@@ -84,16 +66,14 @@ namespace fastscapelib
       using neighbors_distances_type = typename base_type::neighbors_distances_type;
 
       using nodes_status_type = typename base_type::nodes_status_type;
-      using nodes_status_array_type = fixed_shape_container_t<container_selector, node_status, 1>;
+      using nodes_status_array_type = xt_tensor_t<container_selector, node_status, 1>;
 
       using size_type = typename base_type::size_type;
       using shape_type = typename base_type::shape_type;
 
-      dealii_grid(T nside,
+      dealii_grid(T &triangulation,
                   const nodes_status_array_type &nodes_status,
-                  double radius = numeric_constants<>::EARTH_RADIUS_METERS);
-
-      // TODO: factory calculating nside from a given approx. cell area.
+                  double radius = 6378137.0);
 
       void set_nodes_status(const nodes_status_array_type &nodes_status);
 
@@ -106,8 +86,7 @@ namespace fastscapelib
       double radius() const;
 
     protected:
-      using dealii_type = T_Dealii_Base<T>;
-      std::unique_ptr<dealii_type> m_dealii_obj_ptr;
+      T &m_triangulation;
 
       shape_type m_shape;
       size_type m_size;
@@ -146,22 +125,22 @@ namespace fastscapelib
    * @name Constructors
    */
   /**
-   * Creates a new Dealii grid
+   * Creates a new Dealii grid adapter for fastscapelib
    *
-   * @param nside The number of divisions along the side of a base-resolution Dealii pixel.
+   * @param triangulation The Dealii triangulation object.
    * @param radius The radius of the sphere (default: Earth radius in meters).
    */
   template <class S, class T>
   dealii_grid<S, T>::dealii_grid(T &triangulation,
                                  const nodes_status_array_type &nodes_status,
                                  double radius)
-    : base_type(0).
-    m_triangulation(triangulation),
+    : base_type(0)
+    , m_triangulation(triangulation)
     , m_radius(radius)
   {
 
-    m_size = triangulation.n_global_active_cells()
-             m_shape = { static_cast<typename shape_type::value_type>(m_size) };
+    m_size = triangulation.n_global_active_cells();
+    m_shape = { static_cast<typename shape_type::value_type>(m_size) };
     m_node_area = 4.0 * M_PI * m_radius * m_radius / m_size;
 
     // will also compute grid node neighbors
@@ -183,102 +162,19 @@ namespace fastscapelib
     set_neighbors();
   }
 
-  /**
-   * @name Dealii specific methods
-   */
-  /**
-   * Returns the longitude and latitude of a given grid node (Dealii cell centroid), in radians.
-   *
-   * @param idx The grid node indice.
-   */
-  template <class S, class T>
-  std::pair<double, double> dealii_grid<S, T>::nodes_lonlat(const size_type &idx) const
-  {
-    auto ang = m_dealii_obj_ptr->pix2ang(static_cast<int>(idx));
-
-    return std::make_pair<double, double>(double(ang.phi),
-                                          xt::numeric_constants<double>::PI_2 - ang.theta);
-  }
-
-  /**
-   * Returns the longitude and latitude of all grid nodes (Dealii cell centroids), in radians.
-   */
-  template <class S, class T>
-  auto dealii_grid<S, T>::nodes_lonlat() const -> std::pair<container_type, container_type>
-  {
-    container_type lon(m_shape);
-    container_type lat(m_shape);
-
-    for (size_type idx = 0; idx < m_size; ++idx)
-      {
-        auto ang = m_dealii_obj_ptr->pix2ang(static_cast<int>(idx));
-        lon(idx) = ang.phi;
-        lat(idx) = xt::numeric_constants<double>::PI_2 - ang.theta;
-      }
-
-    return std::make_pair<container_type, container_type>(std::move(lon), std::move(lat));
-  }
-
-  /**
-   * Returns the x, y, z cartesian coordinates of a given grid node (Dealii cell centroid).
-   *
-   * @param idx The grid node indice.
-   */
-  template <class S, class T>
-  std::tuple<double, double, double> dealii_grid<S, T>::nodes_xyz(const size_type &idx) const
-  {
-    auto vec = m_dealii_obj_ptr->pix2vec(static_cast<int>(idx));
-
-    return std::make_tuple<double, double, double>(
-             vec.x * m_radius, vec.y * m_radius, vec.z * m_radius);
-  }
-
-  /**
-   * Returns the x, y, z cartesian coordinates of all grid nodes (Dealii cell centroids).
-   */
-  template <class S, class T>
-  auto dealii_grid<S, T>::nodes_xyz() const
-  -> std::tuple<container_type, container_type, container_type>
-  {
-    container_type x(m_shape);
-    container_type y(m_shape);
-    container_type z(m_shape);
-
-    for (size_type idx = 0; idx < m_size; ++idx)
-      {
-        auto vec = m_dealii_obj_ptr->pix2vec(static_cast<int>(idx));
-        x(idx) = vec.x * m_radius;
-        y(idx) = vec.y * m_radius;
-        z(idx) = vec.z * m_radius;
-      }
-
-    return std::make_tuple<container_type, container_type, container_type>(
-      std::move(x), std::move(y), std::move(z));
-  }
-  //@}
-
   template <class S, class T>
   void dealii_grid<S, T>::set_neighbors()
   {
     m_neighbors_count.resize(m_size);
     m_neighbors_indices.resize(m_size);
     m_neighbors_distances.resize(m_size);
-    vector<Point<3> centers;
-    centers.resize(m_size);
     unsigned int counter = 0;
-    std::unordered_map<unsigned int, unsigned int> m_global_to_local_index;
-    for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+    std::unordered_map<unsigned int, unsigned int> global_to_local_index;
+    for (const auto &cell : m_triangulation->get_dof_handler().active_cell_iterators())
       {
-        // to fill:
-        // m_global_to_local_index
-        // m_neighbors_count
-        // m_neighbors_indices
-        // m_neighbors_distances
-        // m_node_area
-
         m_neighbors_count[counter] = cell->n_faces();
-        Point<3> center = cell.center();
-        for (face_i = 0; face_i < m_neighbors_count[counter]; ++face_i)
+        auto center = cell.center();
+        for (auto face_i = 0; face_i < m_neighbors_count[counter]; ++face_i)
           {
             unsigned int global_neighbor_index = 0;
             for (const auto &neighbor_cell :cell.neighbor(face_i))
@@ -288,8 +184,7 @@ namespace fastscapelib
                 // TODO: I assume we only have one neighbor per face, since we start with a uniform grid, we will only have one, but cwe could generatlize this
               }
             // TODO: add assert to check if neighbor_index is correclty set
-            m_global_to_local_index.emplace(std::make_pair(global_neighbor_index,counter));
-
+            global_to_local_index.emplace(global_neighbor_index, counter);
           }
 
         counter++;
@@ -297,17 +192,14 @@ namespace fastscapelib
     counter = 0;
     for (const auto &cell : this->get_dof_handler().active_cell_iterators())
       {
-        for (const auto &neighbor_cell :cell.neighbor(face_i))
+        for (auto k = 0; k <= m_neighbors_count[counter]; k++)
           {
-            m_neighbors_indices[counter][face_i] = global_to_local.at(neighbor_cell.global_active_cell_index());
+            auto global_nb_index = m_neighbors_indices[counter][k];
+            m_neighbors_indices[counter][k] = global_to_local_index.at(global_nb_index);
           }
         counter++;
       }
   }
-
-  /**
-   * @name Dealii specific properties
-   */
 
   template <class S, class T>
   inline auto dealii_grid<S, T>::nodes_areas_impl() const -> container_type
