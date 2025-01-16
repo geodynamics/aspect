@@ -48,40 +48,40 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::initialize ()
     {
-        const GeometryModel::Box<dim> *box_geometry
-          = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
+      const GeometryModel::Box<dim> *box_geometry
+        = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
 
-        const GeometryModel::SphericalShell<dim> *spherical_geometry
-          = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
+      const GeometryModel::SphericalShell<dim> *spherical_geometry
+        = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
 
-        if (geometry_type == GeometryType::Box)
+      if (geometry_type == GeometryType::Box)
         {
-            this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
+          this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
 
-            grid_extent[0].first = box_geometry->get_origin()[0];
-            grid_extent[0].second = box_geometry->get_extents()[0];
-            grid_extent[1].first = box_geometry->get_origin()[1];
-            grid_extent[1].second = box_geometry->get_extents()[1];
+          grid_extent[0].first = box_geometry->get_origin()[0];
+          grid_extent[0].second = box_geometry->get_extents()[0];
+          grid_extent[1].first = box_geometry->get_origin()[1];
+          grid_extent[1].second = box_geometry->get_extents()[1];
 
-            nx = repetitions[0] + 1;
-            dx = (grid_extent[0].second) / repetitions[0];
+          nx = repetitions[0] + 1;
+          dx = (grid_extent[0].second) / repetitions[0];
 
-            ny = repetitions[1] + 1;
-            dy = (grid_extent[1].second) / repetitions[1];
+          ny = repetitions[1] + 1;
+          dy = (grid_extent[1].second) / repetitions[1];
 
-            x_extent = grid_extent[0].second;
-            y_extent = grid_extent[1].second;
-            array_size = nx * ny;
+          x_extent = grid_extent[0].second;
+          y_extent = grid_extent[1].second;
+          array_size = nx * ny;
         }
-        else if (geometry_type == GeometryType::SphericalShell)
+      else if (geometry_type == GeometryType::SphericalShell)
         {
-            this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
+          this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-            nsides = static_cast<int>(sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference + maximum_surface_refinement_level) * 2) / 12));
+          nsides = static_cast<int>(sqrt(48 * std::pow(2, (additional_refinement_levels + surface_refinement_difference + maximum_surface_refinement_level) * 2) / 12));
         }
-        else
+      else
         {
-            AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
+          AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
         }
     }
 
@@ -154,39 +154,39 @@ namespace aspect
           std::vector<double> h_old(array_size);
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-          {
-            int index = static_cast<int>(temporary_variables[1][i]);
-            h[index] = temporary_variables[0][i];
-            vz[index] = temporary_variables[2][i];
-          }
+            {
+              int index = static_cast<int>(temporary_variables[1][i]);
+              h[index] = temporary_variables[0][i];
+              vz[index] = temporary_variables[2][i];
+            }
 
           for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-          {
-            MPI_Status status;
-            MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
-            int incoming_size = 0;
-            MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
+            {
+              MPI_Status status;
+              MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
+              int incoming_size = 0;
+              MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
 
-            for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-              {
-                temporary_variables[i].resize(incoming_size);
-              }
+              for (unsigned int i = 0; i < temporary_variables.size(); ++i)
+                {
+                  temporary_variables[i].resize(incoming_size);
+                }
 
-            for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-              MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
+              for (unsigned int i = 0; i < temporary_variables.size(); ++i)
+                MPI_Recv(&temporary_variables[i][0], incoming_size, MPI_DOUBLE, p, 42, this->get_mpi_communicator(), &status);
 
-            for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
-              {
-                int index = static_cast<int>(temporary_variables[1][i]);
-                h[index] = temporary_variables[0][i];
-                vz[index] = temporary_variables[2][i];
-              }
-          }
+              for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
+                {
+                  int index = static_cast<int>(temporary_variables[1][i]);
+                  h[index] = temporary_variables[0][i];
+                  vz[index] = temporary_variables[2][i];
+                }
+            }
 
           for (unsigned int i = 0; i < array_size; ++i)
-          {
-            h_old[i] = h[i];
-          }
+            {
+              h_old[i] = h[i];
+            }
 
           const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
 
@@ -201,9 +201,11 @@ namespace aspect
           xt::xarray<fastscapelib::node_status> node_status_array = xt::zeros<fastscapelib::node_status>({ array_size });
           auto grid = fastscapelib::healpix_grid<>(nsides, node_status_array, 6.371e6);
           auto flow_graph = fastscapelib::flow_graph<fastscapelib::healpix_grid<>>(
-              grid, {
-              fastscapelib::single_flow_router()}
-          );
+                              grid,
+          {
+            fastscapelib::single_flow_router()
+          }
+                            );
           auto spl_eroder = fastscapelib::make_spl_eroder(flow_graph, 2e-4, 0.4, 1, 1e-5);
 
           xt::xarray<double> uplifted_elevation = xt::zeros<double>(grid.shape());
@@ -229,18 +231,18 @@ namespace aspect
           std::vector<double> elevation_old_std(elevation_old.begin(), elevation.end());
 
           for (unsigned int i = 0; i < array_size; ++i)
-          {
-            V[i] = (elevation_std[i] - elevation_old_std[i]) / (this->get_timestep() / year_in_seconds);
-          }
+            {
+              V[i] = (elevation_std[i] - elevation_old_std[i]) / (this->get_timestep() / year_in_seconds);
+            }
           MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
       else
-      {
+        {
           for (unsigned int i = 0; i < temporary_variables.size(); ++i)
             MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
-          
-          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator()); 
-      }  
+
+          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
+        }
 
       auto healpix_velocity_function = [&](const Point<dim> &p) -> double
       {
@@ -309,36 +311,36 @@ namespace aspect
     {
       prm.enter_subsection("Geometry model");
       {
-          // Declare parameters for the Box geometry
-          // if (prm.get("Model name") == "box")
-          // {
-          //     prm.enter_subsection("Box");
-          //     {
-          //         prm.declare_entry("X repetitions", "1", Patterns::Integer(1),
-          //                           "Number of cells in the X direction.");
-          //         prm.declare_entry("Y repetitions", "1", Patterns::Integer(1),
-          //                           "Number of cells in the Y direction.");
-          //         prm.declare_entry("Z repetitions", "1", Patterns::Integer(1),
-          //                           "Number of cells in the Z direction.");
-          //     }
-          //     prm.leave_subsection();  // End of Box
-          // }
-          // Declare parameters for the Spherical shell geometry
-          // else if (prm.get("Model name") == "spherical shell")
+        // Declare parameters for the Box geometry
+        // if (prm.get("Model name") == "box")
+        // {
+        //     prm.enter_subsection("Box");
+        //     {
+        //         prm.declare_entry("X repetitions", "1", Patterns::Integer(1),
+        //                           "Number of cells in the X direction.");
+        //         prm.declare_entry("Y repetitions", "1", Patterns::Integer(1),
+        //                           "Number of cells in the Y direction.");
+        //         prm.declare_entry("Z repetitions", "1", Patterns::Integer(1),
+        //                           "Number of cells in the Z direction.");
+        //     }
+        //     prm.leave_subsection();  // End of Box
+        // }
+        // Declare parameters for the Spherical shell geometry
+        // else if (prm.get("Model name") == "spherical shell")
+        {
+          prm.enter_subsection("Spherical shell");
           {
-              prm.enter_subsection("Spherical shell");
-              {
-                  prm.declare_entry("Inner radius", "3481000", Patterns::Double(0),
-                                    "The inner radius of the spherical shell.");
-                  prm.declare_entry("Outer radius", "6336000", Patterns::Double(0),
-                                    "The outer radius of the spherical shell.");
-                  prm.declare_entry("Opening angle", "360", Patterns::Double(0, 360),
-                                    "The opening angle of the spherical shell in degrees.");
-              }
-              prm.leave_subsection();  
+            prm.declare_entry("Inner radius", "3481000", Patterns::Double(0),
+                              "The inner radius of the spherical shell.");
+            prm.declare_entry("Outer radius", "6336000", Patterns::Double(0),
+                              "The outer radius of the spherical shell.");
+            prm.declare_entry("Opening angle", "360", Patterns::Double(0, 360),
+                              "The opening angle of the spherical shell in degrees.");
           }
+          prm.leave_subsection();
+        }
       }
-      prm.leave_subsection();  
+      prm.leave_subsection();
 
       prm.enter_subsection ("Mesh deformation");
       {
@@ -435,12 +437,16 @@ namespace aspect
     {
       prm.enter_subsection("Geometry model");
       {
-      if (prm.get("Model name") == "box"){
-        geometry_type = GeometryType::Box;
-    }else if (prm.get("Model name") == "spherical shell"){
-      geometry_type = GeometryType::SphericalShell;
-    }
-      }prm.leave_subsection();
+        if (prm.get("Model name") == "box")
+          {
+            geometry_type = GeometryType::Box;
+          }
+        else if (prm.get("Model name") == "spherical shell")
+          {
+            geometry_type = GeometryType::SphericalShell;
+          }
+      }
+      prm.leave_subsection();
 
 
       end_time = prm.get_double ("End time");
@@ -469,31 +475,31 @@ namespace aspect
 
       prm.enter_subsection("Geometry model");
       {
-          // Parse parameters for the Box geometry
-          if (prm.get("Model name") == "box")
+        // Parse parameters for the Box geometry
+        if (prm.get("Model name") == "box")
           {
-              prm.enter_subsection("Box");
-              {
-                  repetitions[0] = prm.get_integer("X repetitions");
-                  repetitions[1] = prm.get_integer("Y repetitions");
-                  if (dim == 3)
-                      repetitions[2] = prm.get_integer("Z repetitions");
-              }
-              prm.leave_subsection();  // End of Box
+            prm.enter_subsection("Box");
+            {
+              repetitions[0] = prm.get_integer("X repetitions");
+              repetitions[1] = prm.get_integer("Y repetitions");
+              if (dim == 3)
+                repetitions[2] = prm.get_integer("Z repetitions");
+            }
+            prm.leave_subsection();  // End of Box
           }
-          // Parse parameters for the Spherical shell geometry
-          else if (prm.get("Model name") == "spherical shell")
+        // Parse parameters for the Spherical shell geometry
+        else if (prm.get("Model name") == "spherical shell")
           {
-              prm.enter_subsection("Spherical shell");
-              {
-                  inner_radius = prm.get_double("Inner radius");
-                  outer_radius = prm.get_double("Outer radius");
-                  opening_angle = prm.get_double("Opening angle");
-              }
-              prm.leave_subsection();  
+            prm.enter_subsection("Spherical shell");
+            {
+              inner_radius = prm.get_double("Inner radius");
+              outer_radius = prm.get_double("Outer radius");
+              opening_angle = prm.get_double("Opening angle");
+            }
+            prm.leave_subsection();
           }
       }
-      prm.leave_subsection();  
+      prm.leave_subsection();
 
       prm.enter_subsection ("Mesh deformation");
       {

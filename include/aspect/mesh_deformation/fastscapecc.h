@@ -12,7 +12,7 @@
   You should have received a copy of the GNU General Public License
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
-*/ 
+*/
 
 #ifndef _aspect_mesh_deformation_fastscapecc_h
 #define _aspect_mesh_deformation_fastscapecc_h
@@ -54,12 +54,15 @@ namespace aspect
     class FastScapecc : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        enum class GeometryType { Box, SphericalShell, Undefined };
+        enum class GeometryType
+        {
+          Box, SphericalShell, Undefined
+        };
         /**
          * Initialize variables for FastScape.
          */
         virtual void initialize ();
- 
+
         /**
           * A function that creates constraints for the velocity of certain mesh
           * vertices (e.g. the surface vertices) for a specific boundary.
@@ -77,7 +80,7 @@ namespace aspect
          * Returns whether or not the plugin requires surface stabilization
          */
         bool needs_surface_stabilization () const override;
-        
+
         /**
          * Declare parameters for the FastScape plugin.
          */
@@ -143,7 +146,7 @@ namespace aspect
          * Maximum timestep allowed for FastScape, if the suggested timestep exceeds this
          * limit it is repeatedly divided by 2 until the final timestep is smaller than this parameter.
          */
-        
+
         /**
          * Check whether FastScape needs to be restarted.
          */
@@ -193,7 +196,7 @@ namespace aspect
          * Size of the FastScape array (nx*ny).
          */
         unsigned int array_size;
-        
+
         /**
          * Number of faces for the healpix grid.
          */
@@ -363,4 +366,4 @@ namespace aspect
   }
 }
 
-#endif
+#endiff
