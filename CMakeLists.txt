@@ -380,6 +380,16 @@ if(ASPECT_WITH_WORLD_BUILDER)
 endif()
 message(STATUS "")
 
+# include Fastscape and Xtensor files 
+find_package(healpix REQUIRED)
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/fastscape/include/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtensor/include/xtensor/")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/xtl/include/")
+# INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/healpix_cxx/include/healpix_cxx/")
+INCLUDE_DIRECTORIES("${healpix_INCLUDE_DIRS}")
+
+#include "datatypes.h"
 
 #
 # Other stuff about external tools and how we interact with the system:
@@ -935,6 +945,9 @@ if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILD
     target_link_libraries(${TARGET_EXE_RELEASE} WorldBuilderRelease)
   endif()
 endif()
+
+target_link_libraries(${TARGET_EXE_RELEASE} healpix)
+target_link_libraries(${TARGET_EXE_DEBUG} healpix)
 
 # Some systems need to explicitly link to some libraries to use dlopen
 if(ASPECT_USE_SHARED_LIBS)
