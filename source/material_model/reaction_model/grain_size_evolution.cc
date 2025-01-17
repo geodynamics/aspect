@@ -538,9 +538,6 @@ namespace aspect
             prm.leave_subsection();
           }
 
-        // scale recrystallized grain size, diffusion creep and grain growth prefactor accordingly
-        grain_growth_rate_constant[grain_growth_rate_constant.size()-1] *= std::pow(1.0,grain_growth_exponent[grain_growth_exponent.size()-1]);
-
         // TODO: Remove deprecated parameters in next release.
         const double pv_grain_size_scaling         = prm.get_double ("Lower mantle grain size scaling");
         AssertThrow(pv_grain_size_scaling == 1.0,
