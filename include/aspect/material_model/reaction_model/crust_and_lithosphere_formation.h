@@ -34,7 +34,13 @@ namespace aspect
     {
 
       /**
-      * TODO
+      * A simplified model to calculate the change in composition upon melting
+      * of average mantle as it approaches the surface to produce a basaltic crust
+      * and a harzburgitic lithosphere. The model assumes that the crust is
+      * generated at a constant depth, and that the lithosphere is generated
+      * below the crust at a constant depth. The reaction producing crust and
+      * lithosphere only occurs in material that is upwelling, but does not take
+      * into account the temperature of the upwelling material.
       *
       * @ingroup ReactionModel
       */
@@ -60,7 +66,12 @@ namespace aspect
 
 
           /**
-           * TODO
+           * Compute the change in composition for the basalt and harzburgite chemical
+           * fields upon melting as mantle material reaches the surface. We assume that
+           * all upwelling material is converted to basalt or harzburgite as it reaches
+           * the crustal and lithospheric depths, respectively. The reaction terms are
+           * computed for as many points as are provided in @p in and they are stored
+           * in the material model outputs object @p out.
            */
           void
           calculate_reaction_terms (const typename Interface<dim>::MaterialModelInputs  &in,

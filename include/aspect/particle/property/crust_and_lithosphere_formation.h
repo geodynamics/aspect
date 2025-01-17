@@ -129,7 +129,7 @@ namespace aspect
           unsigned int harzburgite_index;
 
           /**
-           * The reaction model that calculates the rcust and lithosphere formation.
+           * The reaction model that calculates the crust and lithosphere formation.
            */
           std::unique_ptr<MaterialModel::ReactionModel::CrustLithosphereFormation<dim>> crust_lithosphere_formation;
       };

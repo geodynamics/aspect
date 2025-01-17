@@ -46,43 +46,60 @@ namespace aspect
                                                                 typename Interface<dim>::MaterialModelOutputs       &out) const
       {
         for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-        {
-          const double depth = this->get_geometry_model().depth(in.position[i]);
+          {
+            const double depth = this->get_geometry_model().depth(in.position[i]);
 
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            {
-              const std::string field_name = this->introspection().name_for_compositional_index(c);
-
-              // Crust amd lithosphere are only generated when material approaches the surface,
-              // i.e. above the reaction depth and when the velocity is predominantly upwards.
-              const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
-              Tensor<1,dim> vertically_up = -this->get_gravity_model().gravity_vector(in.position[i]);
-              if (gravity_norm > 0.0)
-                vertically_up /= gravity_norm;
-
-              const bool upward_flow = in.velocity[i] * vertically_up > in.velocity[i].norm() * 0.5 * std::sqrt(2.);
-              const bool within_crust = depth < crustal_thickness && upward_flow;
-              const bool within_lithosphere = depth < crustal_thickness + lithosphere_thickness && upward_flow;
-
-              if (within_crust)
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               {
-                if (field_name == "basalt")
-                  out.reaction_terms[i][c] = 1. - in.composition[i][c];
-                else if (field_name == "harzburgite")
-                  out.reaction_terms[i][c] = - in.composition[i][c];
+                const std::string field_name = this->introspection().name_for_compositional_index(c);
+
+                // Crust and lithosphere are only generated when material approaches the surface,
+                // i.e. above the reaction depth and when the velocity is predominantly upwards.
+                const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+                Tensor<1,dim> vertically_up = -this->get_gravity_model().gravity_vector(in.position[i]);
+                if (gravity_norm > 0.0)
+                  vertically_up /= gravity_norm;
+
+                // angle of 30 degrees upward
+                const bool upward_flow = in.velocity[i] * vertically_up > in.velocity[i].norm() * 0.5;
+                const bool within_crust = depth < crustal_thickness && upward_flow;
+                const bool within_lithosphere = depth < crustal_thickness + lithosphere_thickness && upward_flow;
+
+                const unsigned int basalt_idx = this->introspection().compositional_index_for_name("basalt");
+
+                // In the crust, we convert every material to basalt.
+                if (within_crust)
+                  {
+                    if (field_name == "basalt")
+                      out.reaction_terms[i][c] = 1. - in.composition[i][c];
+                    else if (field_name == "harzburgite")
+                      out.reaction_terms[i][c] = - in.composition[i][c];
+                  }
+                // In the lithosphere, we convert pyrolite to harzburgite.
+                // If basalt (recycled crust) reaches lithospheric depth, it is not affected.
+                // TODO: Think about what should happen to basalt when it reaches depth of melting again.
+                else if (within_lithosphere)
+                  {
+                    if (field_name == "basalt")
+                      out.reaction_terms[i][c] = 0.0;
+                    else if (field_name == "harzburgite")
+                      {
+                        // Lithosphere composition changes linearly with depth, but only background mantle
+                        // is converted (whereas basalt is not).
+                        const double harzburgite_change = (crustal_thickness + lithosphere_thickness - depth) / lithosphere_thickness
+                                                          * (1.0 - in.composition[i][basalt_idx]);
+                        // If we already have more harzburgite than the change, we do not change it.
+                        if (in.composition[i][c] >= harzburgite_change)
+                          out.reaction_terms[i][c] = 0.0;
+                        else
+                          out.reaction_terms[i][c] = harzburgite_change - in.composition[i][c];
+                      }
+                  }
+                // Do not change other reaction terms.
+                // There might be other reactions computed in the material model
+                // (including for the basalt and harzburgite fields).
               }
-              else if (within_lithosphere)
-              {
-                if (field_name == "basalt")
-                  out.reaction_terms[i][c] = - in.composition[i][c];
-                else if (field_name == "harzburgite")
-                  out.reaction_terms[i][c] = (crustal_thickness + lithosphere_thickness - depth) / lithosphere_thickness - in.composition[i][c];
-              }
-              // Do not change other reaction terms. 
-              // There might be other reactions computed in the material model
-              // (including for the basalt and harzburgite fields). 
-            }
-        }
+          }
       }
 
 
@@ -91,19 +108,19 @@ namespace aspect
       void
       CrustLithosphereFormation<dim>::declare_parameters (ParameterHandler &prm)
       {
+        // TODO: In the future, we could make these depths depend on the solidus
+        // and the temperature. However, note that technically this would affect
+        // the composition of the generated melt and residual as well.
         prm.declare_entry ("Crustal thickness", "7000",
                            Patterns::Double (),
                            "Thickness of the crustal layer generated "
                            "at the surface."
                            "Units: \\si{\\meter}.");
-        // TODO: figure out right ratio basalt to harzburgite
         prm.declare_entry ("Lithosphere thickness", "63000",
                            Patterns::Double (),
                            "Thickness of the lithosphere layer generated "
                            "below the crust."
                            "Units: \\si{\\meter}.");
-
-        // TODO: Could make this depend on solidus depth (simply split column above) 
       }
 
 
@@ -115,7 +132,11 @@ namespace aspect
         crustal_thickness     = prm.get_double ("Crustal thickness");
         lithosphere_thickness = prm.get_double ("Lithosphere thickness");
 
-        // TODO: make sure the model actually has fields called balat and harzburgite
+        AssertThrow(this->introspection().compositional_name_exists("basalt") &&
+                    this->introspection().compositional_name_exists("harzburgite"),
+                    ExcMessage("The reaction model <crust and lithosphere formation> "
+                               "can only be used if there are compositional fields named "
+                               "'basalt' and 'harzburgite'."));
       }
     }
   }

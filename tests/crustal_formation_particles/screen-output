@@ -1,16 +1,11 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 768 (on 5 levels)
 Number of degrees of freedom: 16,838 (6,402+833+3,201+3,201+3,201)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system (AMG)... 37+0 iterations.
 
 Number of active cells: 1,488 (on 6 levels)
 Number of degrees of freedom: 33,549 (12,758+1,654+6,379+6,379+6,379)
@@ -19,29 +14,24 @@ Number of degrees of freedom: 33,549 (12,758+1,654+6,379+6,379+6,379)
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 40+0 iterations.
+   Solving Stokes system (AMG)... 40+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-crustal_formation_particles/solution/solution-00000
-     Compositions min/max/mass: 0/0/0 // 0/0/0
+     Compositions min/max/mass: 0/0.25/1.976e+11 // 0/0.5412/3.053e+11
      Writing particle output:   output-crustal_formation_particles/particles/particles-00000
 
 *** Timestep 1:  t=1e+06 years, dt=1e+06 years
    Solving temperature system... 8 iterations.
    Advecting particles...  done.
-   Solving Stokes system... 29+0 iterations.
+   Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-crustal_formation_particles/solution/solution-00001
-     Compositions min/max/mass: 0/0.6768/1.5e+10 // 0/0.9581/6.867e+11
+     Compositions min/max/mass: 0/0.814/2.217e+11 // 0/0.9645/1.127e+12
      Writing particle output:   output-crustal_formation_particles/particles/particles-00001
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

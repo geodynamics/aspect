@@ -46,9 +46,9 @@ namespace aspect
 
         AssertThrow(this->introspection().compositional_name_exists("basalt") &&
                     this->introspection().compositional_name_exists("harzburgite"),
-                    ExcMessage("This particle property only makes sense if "
-                               "there are compositional fields named 'basalt' "
-                               "and 'harzburgite'."));
+                    ExcMessage("The particle property <crust and lithosphere formation> "
+                               "can only be used if there are compositional fields named "
+                               "'basalt' and 'harzburgite'."));
 
         basalt_index = this->introspection().compositional_index_for_name("basalt");
         harzburgite_index = this->introspection().compositional_index_for_name("harzburgite");
@@ -59,7 +59,7 @@ namespace aspect
       template <int dim>
       void
       CrustLithosphereFormation<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                       std::vector<double> &data) const
+                                                                       std::vector<double> &data) const
       {
         // Set the initial composition to the initial basalt and harzburgite fractions.
         data.push_back(this->get_initial_composition_manager().initial_composition(position,basalt_index));
@@ -71,7 +71,7 @@ namespace aspect
       template <int dim>
       void
       CrustLithosphereFormation<dim>::update_particle_properties(const ParticleUpdateInputs<dim> &inputs,
-                                                 typename ParticleHandler<dim>::particle_iterator_range &particles) const
+                                                                 typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
         material_inputs  = MaterialModel::MaterialModelInputs<dim>(inputs.solution.size(), this->n_compositional_fields());
         material_outputs = MaterialModel::MaterialModelOutputs<dim>(inputs.solution.size(), this->n_compositional_fields());
@@ -104,7 +104,7 @@ namespace aspect
 
             material_inputs.strain_rate[p] = symmetrize (grad_u);
 
-            // We assume that the only reactions come from the 
+            // We assume that the only reactions come from the
             // crust and lithosphere formation reaction model.
             material_outputs.reaction_terms[p][basalt_index] = 0.0;
             material_outputs.reaction_terms[p][harzburgite_index] = 0.0;
@@ -204,7 +204,10 @@ namespace aspect
                                         "A plugin in which the particle property is "
                                         "defined as the evolving chemical composition "
                                         "that results from the formation of oceanic crust "
-                                        "and lithosphere. "
+                                        "and lithosphere as mantle material approaches the "
+                                        "surface and melts. Note that this does not necessarily "
+                                        "conserves the bulk chemical composition of the mantle, "
+                                        "since the conversion only depends on the mantle flow. "
                                         "See the crust and lithosphere formation reaction model "
                                         "documentation for more detailed information.")
 

@@ -1,7 +1,7 @@
 # This is a test for the crust and lithosphere formation particle property
 # and reaction model. It starts with the compositional fields being set to
-# zero, and crust and lithosphere are generated over time where the mantle
-# is upwelling.
+# zero and horizontal stripes of basalt and harzburgite, and crust and
+# lithosphere are generated over time where the mantle is upwelling.
 
 set Dimension                              = 2
 set End time                               = 1e6
@@ -92,7 +92,9 @@ subsection Initial composition model
     set Coordinate system   = depth
     set Variable names      = depth, phi
     set Function constants  = h_crust=7000, h_lith=70000
-    set Function expression = 0; 0
+
+    # Add a layer with some basalt so we can make sure that the basalt does not react
+    set Function expression = if(depth>500000 && depth<550000, 0.5, 0); if(depth>400000 && depth<450000, 0.8, 0)
   end
 end
 
@@ -120,7 +122,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, composition statistics, particles
-  
+
   subsection Particles
     set Time between data output = 1e6
   end
@@ -136,12 +138,12 @@ subsection Particles
     set Load balancing strategy = remove and add particles
     set Minimum particles per cell = 25
     set Maximum particles per cell = 400
-    
+
     set List of particle properties = crust and lithosphere formation
     set Interpolation scheme    = quadratic least squares
     set Particle generator name = reference cell
     set Update ghost particles = true
-    
+
     subsection Crust and lithosphere formation
       set Crustal thickness                             = 70000
       set Lithosphere thickness                         = 700000
