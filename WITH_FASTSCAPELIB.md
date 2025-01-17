@@ -113,5 +113,5 @@ to set additional arguments or run extra commands in order to find the other
 dependencies of `aspect`, we skipped it here):
 
 ```
-cmake -S. -Bbuild/temp -DASPECT_WITH_FASTSCAPELIB=ON
+cmake -S. -Bbuild -DASPECT_WITH_FASTSCAPELIB=ON
 ```
