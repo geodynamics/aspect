@@ -91,8 +91,8 @@ namespace aspect
           prm.declare_entry("Compositional field thresholds",
                             "",
                             Patterns::List (Patterns::Double()),
-                            "A list of thresholds that every individual compositional "
-                            "field will be evaluated against.");
+                            "A list of thresholds, one for each compositional field "
+                            "to be evaluated against.");
         }
         prm.leave_subsection();
       }
@@ -113,7 +113,7 @@ namespace aspect
 
           AssertThrow (composition_thresholds.size() == this->n_compositional_fields(),
                        ExcMessage ("The number of thresholds given here must be "
-                                   "equal to the number of chosen refinement criteria."));
+                                   "equal to the number of compositional fields."));
         }
         prm.leave_subsection();
       }
@@ -130,8 +130,9 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(CompositionThreshold,
                                               "composition threshold",
                                               "A mesh refinement criterion that computes refinement "
-                                              "indicators from the compositional fields. If any field "
-                                              "exceeds the threshold given in the input file, the cell "
-                                              "is marked for refinement.")
+                                              "indicators from the compositional fields. One threshold "
+                                              "per compositional is given in the input file, and if any "
+                                              "field exceeds its threshold, the cell is marked for "
+                                              "refinement.")
   }
 }
