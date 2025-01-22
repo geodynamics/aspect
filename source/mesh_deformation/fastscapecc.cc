@@ -58,52 +58,47 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::initialize()
     {
-        const GeometryModel::Box<dim> *box_geometry
-            = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
-
-        const GeometryModel::SphericalShell<dim> *spherical_geometry
-            = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-
       if (geometry_type == GeometryType::Box)
         {
-          this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
+          this->get_pcout() << "Box geometry detected. Initializing FastScape "
+                            "for Box geometry..."
+                            << std::endl;
 
-          grid_extent[0].first = box_geometry->get_origin()[0];
-          grid_extent[0].second = box_geometry->get_extents()[0];
-          grid_extent[1].first = box_geometry->get_origin()[1];
-          grid_extent[1].second = box_geometry->get_extents()[1];
+          auto geom_model = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
 
-          nx = repetitions[0] + 1;
-          dx = (grid_extent[0].second) / repetitions[0];
+          // Create the rectangle surface mesh
+          const auto origin = geom_model->get_origin();
+          const auto extent = geom_model->get_extents();
 
-          ny = repetitions[1] + 1;
-          dy = (grid_extent[1].second) / repetitions[1];
+          const Point<2> p1(origin[0], origin[1]);
+          const Point<2> p2(origin[0] + extent[0], origin[1] + extent[1]);
 
-          x_extent = grid_extent[0].second;
-          y_extent = grid_extent[1].second;
-          array_size = nx * ny;
+          auto rep = geom_model->get_repetitions();
+          std::vector<unsigned int> repetitions(rep.begin(), rep.end());
+
+          GridGenerator::subdivided_hyper_rectangle(surface_mesh, repetitions, p1, p2);
         }
       else if (geometry_type == GeometryType::SphericalShell)
         {
           this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-          // Define the center and radius of the sphere
-          const Point<3> center(0, 0, 0); // Center at the origin
-          const double radius = 6371e3;   // Earth's radius in meters
+          auto geom_model = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
 
 
           // Create the spherical surface mesh
-          GridGenerator::hyper_sphere(surface_mesh, center, radius);
+          const Point<3> center(0, 0, 0); // Center at the origin
+          GridGenerator::hyper_sphere(surface_mesh, center, geom_model->outer_radius());
           surface_mesh.refine_global(3);
 
           DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
           surface_constraints.close();
-
         }
       else
         {
           AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
         }
+
+      n_grid_nodes = surface_mesh.n_active_cells();
     }
 
     template <int dim>
@@ -223,25 +218,37 @@ namespace aspect
                                         vertex(2) * interpolated_value) /
                                        vertex.norm();
 
+              // Surface elevation
+              double elevation = vertex(2);
+
+              if (geometry_type == GeometryType::Box)
+                {
+                  auto geom_model = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
+                  elevation -= geom_model->outer_radius();
+                }
+
               // Store results
-              temporary_variables[0].push_back(vertex(2) - outer_radius);
+              temporary_variables[0].push_back(elevation);
               temporary_variables[2].push_back(radial_velocity * year_in_seconds);
             }
         }
 
+<<<<<<< HEAD
 
 
    
 >>>>>>> 04498182a (tried ito interpolate to higher resolution)
+=======
+>>>>>>> 0601980b2 (clean-up)
       // int array_size = healpix_grid.Npix();
-      std::vector<double> V(array_size);
+      std::vector<double> V(n_grid_nodes);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           // Initialize the variables that will be sent to FastScape.
-          std::vector<double> h(array_size, std::numeric_limits<double>::max());
-          std::vector<double> vz(array_size);
-          std::vector<double> h_old(array_size);
+          std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
+          std::vector<double> vz(n_grid_nodes);
+          std::vector<double> h_old(n_grid_nodes);
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
             {
@@ -273,7 +280,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int i = 0; i < array_size; ++i)
+          for (unsigned int i = 0; i < n_grid_nodes; ++i)
             {
               h_old[i] = h[i];
             }
@@ -332,7 +339,7 @@ namespace aspect
           for (unsigned int i = 0; i < temporary_variables.size(); ++i)
             MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
 
-          MPI_Bcast(&V[0], array_size, MPI_DOUBLE, 0, this->get_mpi_communicator());
+          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
 
 
@@ -396,42 +403,10 @@ namespace aspect
       return true;
     }
 
+
     template <int dim>
     void FastScapecc<dim>::declare_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection("Geometry model");
-      {
-        // Declare parameters for the Box geometry
-        // if (prm.get("Model name") == "box")
-        // {
-        //     prm.enter_subsection("Box");
-        //     {
-        //         prm.declare_entry("X repetitions", "1", Patterns::Integer(1),
-        //                           "Number of cells in the X direction.");
-        //         prm.declare_entry("Y repetitions", "1", Patterns::Integer(1),
-        //                           "Number of cells in the Y direction.");
-        //         prm.declare_entry("Z repetitions", "1", Patterns::Integer(1),
-        //                           "Number of cells in the Z direction.");
-        //     }
-        //     prm.leave_subsection();  // End of Box
-        // }
-        // Declare parameters for the Spherical shell geometry
-        // else if (prm.get("Model name") == "spherical shell")
-        {
-          prm.enter_subsection("Spherical shell");
-          {
-            prm.declare_entry("Inner radius", "3481000", Patterns::Double(0),
-                              "The inner radius of the spherical shell.");
-            prm.declare_entry("Outer radius", "6336000", Patterns::Double(0),
-                              "The outer radius of the spherical shell.");
-            prm.declare_entry("Opening angle", "360", Patterns::Double(0, 360),
-                              "The opening angle of the spherical shell in degrees.");
-          }
-          prm.leave_subsection();
-        }
-      }
-      prm.leave_subsection();
-
       prm.enter_subsection ("Mesh deformation");
       {
         prm.enter_subsection ("Fastscapecc");
@@ -445,11 +420,6 @@ namespace aspect
           prm.declare_entry("Additional fastscape refinement levels", "0",
                             Patterns::Integer(),
                             "How many levels above ASPECT FastScape should be refined.");
-          prm.declare_entry ("Use center slice for 2d", "false",
-                             Patterns::Bool (),
-                             "If this is set to true, then a 2D model will only consider the "
-                             "center slice FastScape gives. If set to false, then aspect will"
-                             "average the mesh along Y excluding the ghost nodes.");
           prm.declare_entry("Fastscape seed", "1000",
                             Patterns::Integer(),
                             "Seed used for adding an initial noise to FastScape topography based on the initial noise magnitude.");
@@ -460,9 +430,6 @@ namespace aspect
                             Patterns::Integer(),
                             "The difference between the lowest and highest refinement level at the surface. E.g., if three resolution "
                             "levels are expected, this would be set to 2.");
-          prm.declare_entry("Y extent in 2d", "100000",
-                            Patterns::Double(),
-                            "FastScape Y extent when using a 2D ASPECT model. Units: $\\{m}$");
           prm.declare_entry ("Use velocities", "true",
                              Patterns::Bool (),
                              "Flag to use FastScape advection and uplift.");
@@ -472,23 +439,6 @@ namespace aspect
           prm.declare_entry("Initial noise magnitude", "5",
                             Patterns::Double(),
                             "Maximum topography change from the initial noise. Units: $\\{m}$");
-
-          prm.enter_subsection ("Boundary conditions");
-          {
-            prm.declare_entry ("Front", "1",
-                               Patterns::Integer (0, 1),
-                               "Front (bottom) boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry ("Right", "1",
-                               Patterns::Integer (0, 1),
-                               "Right boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry ("Back", "1",
-                               Patterns::Integer (0, 1),
-                               "Back (top) boundary condition, where 1 is fixed and 0 is reflective.");
-            prm.declare_entry ("Left", "1",
-                               Patterns::Integer (0, 1),
-                               "Left boundary condition, where 1 is fixed and 0 is reflective.");
-          }
-          prm.leave_subsection();
 
           prm.enter_subsection ("Erosional parameters");
           {
@@ -538,58 +488,9 @@ namespace aspect
       }
       prm.leave_subsection();
 
-
       end_time = prm.get_double ("End time");
       if (prm.get_bool ("Use years in output instead of seconds") == true)
         end_time *= year_in_seconds;
-
-      // prm.enter_subsection("Geometry model");
-      // {
-      //   prm.enter_subsection("Box");
-      //   {
-      //     repetitions[0] = prm.get_integer ("X repetitions");
-      //     if (dim >= 2)
-      //       {
-      //         repetitions[1] = prm.get_integer ("Y repetitions");
-      //       }
-      //     if (dim >= 3)
-      //       {
-      //         repetitions[dim-1] = prm.get_integer ("Z repetitions");
-      //       }
-      //   }
-      //   prm.leave_subsection();
-      // }
-      // prm.leave_subsection();
-
-
-
-      prm.enter_subsection("Geometry model");
-      {
-        // Parse parameters for the Box geometry
-        if (prm.get("Model name") == "box")
-          {
-            prm.enter_subsection("Box");
-            {
-              repetitions[0] = prm.get_integer("X repetitions");
-              repetitions[1] = prm.get_integer("Y repetitions");
-              if (dim == 3)
-                repetitions[2] = prm.get_integer("Z repetitions");
-            }
-            prm.leave_subsection();  // End of Box
-          }
-        // Parse parameters for the Spherical shell geometry
-        else if (prm.get("Model name") == "spherical shell")
-          {
-            prm.enter_subsection("Spherical shell");
-            {
-              inner_radius = prm.get_double("Inner radius");
-              outer_radius = prm.get_double("Outer radius");
-              opening_angle = prm.get_double("Opening angle");
-            }
-            prm.leave_subsection();
-          }
-      }
-      prm.leave_subsection();
 
       prm.enter_subsection ("Mesh deformation");
       {
@@ -598,11 +499,9 @@ namespace aspect
           fastscape_steps_per_aspect_step = prm.get_integer("Number of steps");
           maximum_fastscape_timestep = prm.get_double("Maximum timestep");
           additional_refinement_levels = prm.get_integer("Additional fastscape refinement levels");
-          center_slice = prm.get_bool("Use center slice for 2d");
           fs_seed = prm.get_integer("Fastscape seed");
           maximum_surface_refinement_level = prm.get_integer("Maximum surface refinement level");
           surface_refinement_difference = prm.get_integer("Surface refinement difference");
-          y_extent_2d = prm.get_double("Y extent in 2d");
           precision = prm.get_double("Precision");
           noise_h = prm.get_double("Initial noise magnitude");
 
@@ -610,15 +509,6 @@ namespace aspect
             {
               maximum_fastscape_timestep /= year_in_seconds;
             }
-
-          prm.enter_subsection("Boundary conditions");
-          {
-            bottom = prm.get_integer("Front");
-            right = prm.get_integer("Right");
-            top = prm.get_integer("Back");
-            left = prm.get_integer("Left");
-          }
-          prm.leave_subsection();
 
           prm.enter_subsection("Erosional parameters");
           {
