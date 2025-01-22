@@ -20,6 +20,7 @@
 #include <aspect/global.h>
 
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/mesh_deformation/fastscapecc_adapter.h>
 #include <aspect/simulator_access.h>
 
 #include <xtensor/xarray.hpp>
@@ -48,10 +49,8 @@ namespace aspect
   {
 
     /**
-     * A plugin that utilizes the landscape evolution code FastScape
-     * to deform the ASPECT boundary through advection, uplift,
-     * hillslope diffusion, sediment deposition, marine diffusion,
-     * and the stream power law, which describes river incision.
+     * A plugin that utilizes the landscape evolution code Fastscapelib (C++)
+     * to deform the ASPECT boundary through erosion.
      *
      */
     template<int dim>
@@ -62,7 +61,9 @@ namespace aspect
         {
           Box, SphericalShell, Undefined
         };
+
         FastScapecc();
+
         /**
          * Initialize variables for FastScape.
          */
@@ -100,14 +101,27 @@ namespace aspect
       private:
         GeometryType geometry_type;
 
-        // // Add unique pointers for FastScape components
-        // std::unique_ptr<fastscapelib::healpix_grid<>> grid; // Healpix grid pointer
+        /**
+         * Surface mesh and solution.
+         */
+        // TODO: reuse Fastscapecc's ``dim`` template parameter here?
+        // (in theory Fastscapelib C++ may support both 1D and 2D surface domains)
+        using SurfaceMeshType = Triangulation<2, 3>;
 
-        // // Unique pointer for fastscapelib flow_graph with healpix_grid as template parameter.
-        // std::unique_ptr<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>> flow_graph;
+        SurfaceMeshType surface_mesh;
+        DoFHandler<SurfaceMeshType::dimension, SurfaceMeshType::space_dimension> surface_mesh_dof_handler;
+        LinearAlgebra::Vector surface_solution;
+        mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
+        dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
-        // // Unique pointer for fastscapelib spl_eroder with flow_graph as template parameter.
-        // std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::healpix_grid<>>>> spl_eroder;
+        /**
+         * Pointers to Fastscapelib objects
+         */
+        using GridAdapterType = typename fastscapelib::dealii_grid<SurfaceMeshType>;
+        using FlowGraphType = typename fastscapelib::flow_graph<GridAdapterType>;
+        std::unique_ptr<GridAdapterType> grid;
+        std::unique_ptr<FlowGraphType> flow_graph;
+        std::unique_ptr<fastscapelib::spl_eroder<FlowGraphType>> spl_eroder;
 
         void project_surface_solution(const std::set<types::boundary_id> &boundary_ids);
 
@@ -121,29 +135,12 @@ namespace aspect
         //                                      LinearAlgebra::Vector &output) const;
 
 
-
-        // Unique pointer for fastscapelib raster_boundary_status.
-        std::unique_ptr<fastscapelib::raster_boundary_status> bs;
-
-        // Unique pointer for fastscapelib raster_grid.
-        std::unique_ptr<fastscapelib::raster_grid> grid_box;
-
-        // Unique pointer for fastscapelib flow_graph with raster_grid as template parameter.
-        std::unique_ptr<fastscapelib::flow_graph<fastscapelib::raster_grid>> flow_graph_box;
-
-        // Unique pointer for fastscapelib spl_eroder with flow_graph<raster_grid> as template parameter.
-        std::unique_ptr<fastscapelib::spl_eroder<fastscapelib::flow_graph<fastscapelib::raster_grid>>> spl_eroder_box;
-
-        // Unique pointer for fastscapelib diffusion_adi_eroder with raster_grid as template parameter.
-        std::unique_ptr<fastscapelib::diffusion_adi_eroder<fastscapelib::raster_grid>> diffusion_eroder_box;
-
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
          */
         Table<dim,double> fill_data_table(std::vector<double> &values,
                                           TableIndices<dim> &size_idx,
                                           const int &array_size) const;
-
 
         /**
          * Suggestion for the number of FastScape steps to run for every ASPECT timestep,
@@ -174,58 +171,9 @@ namespace aspect
         double end_time;
 
         /**
-         * FastScape cell size in X, dx should always equal dy.
+         * Total number of Fastscapelib grid nodes.
          */
-        double dx;
-
-        /**
-         * FastScape cell size in Y, dy should always equal dx.
-         */
-        double dy;
-
-        /**
-         * FastScape X extent (ASPECT X extent + 2*dx for ghost nodes).
-         */
-        double x_extent;
-
-        /**
-         * Fastscape Y extent (ASPECT Y extent + 2*dy for ghost nodes).
-         */
-        double y_extent;
-
-        /**
-         * User set FastScape Y extent for a 2D ASPECT model.
-         */
-        double y_extent_2d;
-
-        /**
-         * Number of x points in FastScape array.
-         */
-        int nx;
-
-        /**
-         * Number of y points in FastScape array.
-         */
-        int ny;
-
-        /**
-         * Size of the FastScape array (nx*ny).
-         */
-        unsigned int array_size;
-
-        /**Make 2D spherical Mesh .
-        */
-        Triangulation<2, 3> surface_mesh; // Surface mesh
-        DoFHandler<2, 3> surface_mesh_dof_handler; // DoFHandler for the surface mesh
-        LinearAlgebra::Vector surface_solution; // Solution vector for the surface mesh
-        mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
-        dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
-
-
-        /**
-         * Number of faces for the healpix grid.
-         */
-        int nsides;
+        unsigned int n_grid_nodes;
 
         /**
          * How many levels FastScape should be refined above the maximum ASPECT surface resolution.
@@ -253,29 +201,14 @@ namespace aspect
         int surface_refinement_difference;
 
         /**
-         * If set to false, the FastScape surface is averaged along Y and returned
-         * to ASPECT. If set to true, the center slice of the FastScape model is
-         * returned to ASPECT.
-         *
-         * TODO: Do we average the ghost nodes or remove them? Need to double check.
-         */
-        bool center_slice;
-
-        /**
          * Seed number for initial topography noise in FastScape.
          */
         int fs_seed;
 
         /**
-         * Variable to hold ASPECT domain extents.
-         */
-        std::array<std::pair<double,double>,dim> grid_extent;
-
-        /**
          * Table for interpolating FastScape surface velocities back to ASPECT.
          */
         std::array< unsigned int, dim > table_intervals;
-
 
         /**
          * Magnitude (m) of the initial noise applied to FastScape.
@@ -283,45 +216,6 @@ namespace aspect
          * such that the total difference can be up to 2*noise_h.
          */
         double noise_h;
-
-
-        // FastScape boundary condition variables //
-        /**
-         * FastScape bottom boundary condition that determines topography at the FastScape bottom boundary.
-         * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
-         * reflective boundary. When two opposing boundaries are reflective (e.g., top and bottom are both zero), then the boundaries
-         * become cyclic.
-         */
-        unsigned int bottom;
-
-        /**
-         * FastScape top boundary condition that determines topography at the FastScape top boundary.
-         * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
-         * reflective boundary. When two opposing boundaries are reflective (e.g., top and bottom are both zero), then the boundaries
-         * become cyclic.
-         */
-        unsigned int top;
-
-        /**
-         * FastScape right boundary condition that determines topography at the FastScape right boundary.
-         * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
-         * reflective boundary. When two opposing boundaries are reflective (e.g., left and right are both zero), then the boundaries
-         * become cyclic.
-         */
-        unsigned int right;
-
-        /**
-         * FastScape left boundary condition that determines topography at the FastScape left boundary.
-         * Where 1 represents a fixed height boundary (though this can still be uplifted through uplift velocities), and 0 a
-         * reflective boundary. When two opposing boundaries are reflective (e.g., left and right are both zero), then the boundaries
-         * become cyclic.
-         */
-        unsigned int left;
-
-        /**
-         * Integer that holds the full boundary conditions sent to FastScape (e.g., 1111).
-         */
-        int bc;
 
         // FastScape erosional parameters //
         /**
@@ -339,7 +233,6 @@ namespace aspect
          * (p variable in FastScape surface equation).
          */
         double p;
-
 
         /**
          * Bedrock river incision rate for the stream power law
@@ -374,19 +267,9 @@ namespace aspect
         double node_tolerance;
 
         /**
-         * The number of cells in each coordinate direction.
-         */
-        std::array<unsigned int, dim> repetitions;
-
-
-        /**
          * FastScape X extent (ASPECT X extent + 2*dx for ghost nodes).
          */
         double precision;
-
-        double inner_radius;
-        double outer_radius;
-        double opening_angle;
     };
   }
 }
