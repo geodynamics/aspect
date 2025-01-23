@@ -34,22 +34,59 @@ namespace aspect
         const unsigned int n_points = in.n_evaluation_points();
         for (unsigned int i = 0; i < n_points; ++i)
 
-        // Coefficients for Dry Olivine
-          OlivineDry_a0 =  -4.124100000;
-          OlivineDry_b1 =   2.146900000;
-          OlivineDry_ymin = 1.280933845;
-          OlivineDry_ymax = 2.607263820;
-
-        // Compute natural logarithm of pressure
+        // COMPUTE NATURAL LOGARITHM OF PRESSURE AND TEMPERATURE
+        // ==========================================================================
           P_log = std::log(in.pressures[i]);
+          T_log = std::log(in.temperatures[i]);
+        // ==========================================================================
 
-        // Compute thermal conductivity
-          OlivineDry_zSimpl = OlivineDry_a0 + OlivineDry_b1*P_log;
-          OlivineDry_ySimpl = std::exp(OlivineDry_zSimpl);
-          OlivineDry_yPrime = OlivineDry_ySimpl/(1+OlivineDry_ySimpl);
-          OlivineDry_yTCLat = OlivineDry_ymin+(OlivineDry_ymax-OlivineDry_ymin)*OlivineDry_yPrime;
-        
-          out.thermal_conductivities[i] = std::exp(OlivineDry_yTCLat);
+        // DEFINE COEFFICIENTS FOR LATTICE THERMAL CONDUCTIVITY OF DIFFERENT MINERALS
+        // ==========================================================================
+        // Coefficients for Dry Olivine
+          OlivineDry_LatTC_a0 =  -4.124100000;
+          OlivineDry_LatTC_b1 =   2.146900000;
+          OlivineDry_LatTC_ymin = 1.280933845;
+          OlivineDry_LatTC_ymax = 2.607263820;
+        // ==========================================================================
+        // Coefficients for Orthopyroxene (Enstatite)
+          OpxEnstati_LatTC_a0 =   -3.004700000;
+          OpxEnstati_LatTC_b1 =    2.600000000;
+          OpxEnstati_LatTC_ymin =  1.760865151; 
+          OpxEnstati_LatTC_ymax =  2.096937429;
+        // ==========================================================================
+        // Coefficients for Garnet (Pyrope)
+          GrtPyropes_LatTC_a0 =   -4.363700000;
+          GrtPyropes_LatTC_b1 =    2.036800000;
+          GrtPyropes_LatTC_ymin =  1.481604541; 
+          GrtPyropes_LatTC_ymax =  2.443131606;
+        // ==========================================================================
+
+        // COMPUTE LATTICE THERMAL CONDUCTIVITIES IN REAL AND SIMPLEX SPACE
+        // ==========================================================================
+        // Latice Thermal Conductivity of Dry Olivine
+          OlivineDry_LatTC_zSimpl = OlivineDry_LatTC_a0 + OlivineDry_LatTC_b1*P_log;
+          OlivineDry_LatTC_ySimpl = std::exp(OlivineDry_LatTC_zSimpl);
+          OlivineDry_LatTC_yPrime = OlivineDry_LatTC_ySimpl/(1+OlivineDry_LatTC_ySimpl);
+          OlivineDry_LatTC_yTCLat = OlivineDry_LatTC_ymin+(OlivineDry_LatTC_ymax-OlivineDry_LatTC_ymin)*OlivineDry_LatTC_yPrime;
+          OlivineDry_Lattice_TCon = std::exp(OlivineDry_LatTC_yTCLat);
+        // ==========================================================================
+        // Latice Thermal Conductivity of Orthopyroxene (Enstatite)
+          OpxEnstati_LatTC_zSimpl = OpxEnstati_LatTC_a0 + OpxEnstati_LatTC_b1*P_log;
+          OpxEnstati_LatTC_ySimpl = std::exp(OpxEnstati_LatTC_zSimpl);
+          OpxEnstati_LatTC_yPrime = OpxEnstati_LatTC_ySimpl/(1+OpxEnstati_LatTC_ySimpl);
+          OpxEnstati_LatTC_yTCLat = OpxEnstati_LatTC_ymin+(OpxEnstati_LatTC_ymax-OpxEnstati_LatTC_ymin)*OpxEnstati_LatTC_yPrime;
+          OpxEnstati_Lattice_TCon = std::exp(OpxEnstati_LatTC_yTCLat);
+          // ==========================================================================
+        // Latice Thermal Conductivity of Garnet (Pyrope)
+          GrtPyropes_LatTC_zSimpl = GrtPyropes_LatTC_a0 + GrtPyropes_LatTC_b1*P_log;
+          GrtPyropes_LatTC_ySimpl = std::exp(GrtPyropes_LatTC_zSimpl);
+          GrtPyropes_LatTC_yPrime = GrtPyropes_LatTC_ySimpl/(1+GrtPyropes_LatTC_ySimpl);
+          GrtPyropes_LatTC_yTCLat = GrtPyropes_LatTC_ymin+(GrtPyropes_LatTC_ymax-GrtPyropes_LatTC_ymin)*GrtPyropes_LatTC_yPrime;
+          GrtPyropes_Lattice_TCon = std::exp(GrtPyropes_LatTC_yTCLat);
+          // ==========================================================================
+
+          out.thermal_conductivities[i] = OlivineDry_Lattice_TCon;
+
       }
 
     }
