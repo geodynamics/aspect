@@ -24,6 +24,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/rheology/constant_viscosity.h>
 #include <aspect/material_model/equation_of_state/linearized_incompressible.h>
+#include <aspect/material_model/thermal_conductivity/constant.h>
 
 namespace aspect
 {
@@ -74,10 +75,9 @@ namespace aspect
          */
 
       private:
-        double k_value;
-
         Rheology::ConstantViscosity constant_rheology;
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
+        ThermalConductivity::Constant<dim> thermal_conductivity;
     };
 
   }

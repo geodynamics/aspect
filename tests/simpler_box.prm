@@ -33,11 +33,16 @@ end
 subsection Material model
   set Model name = simpler
 
+  subsection Thermal conductivity
+    subsection Constant
+      set Thermal conductivity          = 1e-6
+    end
+  end
+
   subsection Simpler model
     set Reference density             = 1
     set Reference specific heat       = 1250
     set Reference temperature         = 1
-    set Thermal conductivity          = 1e-6
     set Thermal expansion coefficient = 2e-5
     set Viscosity                     = 1
   end
