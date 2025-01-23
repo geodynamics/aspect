@@ -229,12 +229,6 @@ namespace fastscapelib
   {
     return m_neighbors_distances[idx];
   }
-
-  template <class T, class S>
-  constexpr std::size_t dealii_grid<T, S>::dimension_impl() noexcept
-  {
-    return 2;
-  }
 }
 
 #endif  // FASTSCAPELIB_DEALII_GRID_H__

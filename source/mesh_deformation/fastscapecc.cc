@@ -20,30 +20,23 @@
 
 
 #include <iostream>
-#include <aspect/global.h>
 
+#include <aspect/global.h>
 #include <aspect/mesh_deformation/fastscapecc.h>
 #include <aspect/mesh_deformation/fastscapecc_adapter.h>
 #include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/numerics/vector_tools_interpolate.h>
 #include <deal.II/lac/affine_constraints.h>
-#include <aspect/postprocess/visualization.h>
 #include <aspect/simulator.h>
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_signals.h>
-
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/mesh_deformation/interface.h>
 
 #include <deal.II/grid/tria.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/lac/vector.h>
 #include <deal.II/numerics/fe_field_function.h>
-
-
-
-// namespace fs = fastscapelib;
 
 
 namespace aspect
@@ -58,46 +51,53 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::initialize()
     {
-      if (geometry_type == GeometryType::Box)
-        {
-          this->get_pcout() << "Box geometry detected. Initializing FastScape "
-                            "for Box geometry..."
-                            << std::endl;
-
-          auto geom_model = dynamic_cast<const GeometryModel::Box<dim>*>(&this->get_geometry_model());
-
-          // Create the rectangle surface mesh
-          const auto origin = geom_model->get_origin();
-          const auto extent = geom_model->get_extents();
-
-          const Point<2> p1(origin[0], origin[1]);
-          const Point<2> p2(origin[0] + extent[0], origin[1] + extent[1]);
-
-          auto rep = geom_model->get_repetitions();
-          std::vector<unsigned int> repetitions(rep.begin(), rep.end());
-
-          GridGenerator::subdivided_hyper_rectangle(surface_mesh, repetitions, p1, p2);
-        }
-      else if (geometry_type == GeometryType::SphericalShell)
-        {
-          this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
-
-          auto geom_model = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
-
-          // Create the spherical surface mesh
-          const Point<3> center(0, 0, 0); // Center at the origin
-          GridGenerator::hyper_sphere(surface_mesh, center, geom_model->outer_radius());
-          surface_mesh.refine_global(3);
-
-          DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-          surface_constraints.close();
-        }
-      else
-        {
-          AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
-        }
-
+      init_surface_mesh(this->get_geometry_model());
       n_grid_nodes = surface_mesh.n_active_cells();
+    }
+
+    template <int dim>
+    template <class M>
+    void FastScapecc<dim>::init_surface_mesh(M & /*geom_model*/)
+    {
+      AssertThrow(false, ExcMessage("FastScapecc plugin only supports 3D Box or Spherical Shell geometries."));
+    }
+
+    template <int dim>
+    template <class M, typename std::enable_if_t<
+                std::is_same_v<M, GeometryModel::Box<3>>>>
+    void FastScapecc<dim>::init_surface_mesh(M &geom_model)
+    {
+
+      this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
+
+      // Create the rectangle surface mesh
+      const auto origin = geom_model->get_origin();
+      const auto extent = geom_model->get_extents();
+
+      const Point<2> p1(origin[0], origin[1]);
+      const Point<2> p2(origin[0] + extent[0], origin[1] + extent[1]);
+
+      auto rep = geom_model->get_repetitions();
+      std::vector<unsigned int> repetitions(rep.begin(), rep.end());
+
+      GridGenerator::subdivided_hyper_rectangle(surface_mesh, repetitions, p1, p2);
+    }
+
+    template <int dim>
+    template <class M, typename std::enable_if_t<
+                std::is_same_v<M, GeometryModel::SphericalShell<3>>>>
+    void FastScapecc<dim>::init_surface_mesh(M &geom_model)
+    {
+
+      this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
+
+      // Create the spherical surface mesh
+      const Point<3> center(0, 0, 0); // Center at the origin
+      GridGenerator::hyper_sphere(surface_mesh, center, geom_model->outer_radius());
+      surface_mesh.refine_global(3);
+
+      DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+      surface_constraints.close();
     }
 
     template <int dim>
@@ -203,7 +203,7 @@ namespace aspect
         {
           for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<2>::vertices_per_cell; ++vertex_index)
             {
-              const Point<3> vertex = cell->vertex(vertex_index); // Access the vertex
+              const Point<dim> vertex = cell->vertex(vertex_index); // Access the vertex
 
               // Access the DoF index for the current vertex
               unsigned int vertex_dof_index = cell->vertex_dof_index(vertex_index, 0); // Assume component 0
