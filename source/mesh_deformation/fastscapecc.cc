@@ -220,10 +220,10 @@ namespace aspect
               // Surface elevation
               double elevation = vertex(2);
 
-              if (geometry_type == GeometryType::Box)
+              auto spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
+              if (spherical_model != nullptr)
                 {
-                  auto geom_model = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
-                  elevation -= geom_model->outer_radius();
+                elevation -= spherical_model->outer_radius();
                 }
 
               // Store results
@@ -466,19 +466,6 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::parse_parameters(ParameterHandler &prm)
     {
-      prm.enter_subsection("Geometry model");
-      {
-        if (prm.get("Model name") == "box")
-          {
-            geometry_type = GeometryType::Box;
-          }
-        else if (prm.get("Model name") == "spherical shell")
-          {
-            geometry_type = GeometryType::SphericalShell;
-          }
-      }
-      prm.leave_subsection();
-
       end_time = prm.get_double ("End time");
       if (prm.get_bool ("Use years in output instead of seconds") == true)
         end_time *= year_in_seconds;

@@ -48,11 +48,6 @@ namespace aspect
     class FastScapecc : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
-        enum class GeometryType
-        {
-          Box, SphericalShell, Undefined
-        };
-
         FastScapecc();
 
         /**
@@ -89,8 +84,6 @@ namespace aspect
         void parse_parameters (ParameterHandler &prm) override;
 
       private:
-        GeometryType geometry_type;
-
         /**
          * Surface mesh and solution.
          */
