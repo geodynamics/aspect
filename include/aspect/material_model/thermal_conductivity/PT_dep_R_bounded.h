@@ -48,7 +48,7 @@ namespace aspect
        * @ingroup MaterialModels
        */
       template <int dim>
-      class Constant : public Interface<dim>
+      class PTdepRbounded : public Interface<dim>
       {
         public:
           /**
@@ -58,24 +58,6 @@ namespace aspect
           void evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
                          MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
-          /**
-           * Declare the parameters this plugin takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters from the parameter file.
-           */
-          void
-          parse_parameters (ParameterHandler &prm) override;
-
-        private:
-          /**
-           * The thermal conductivity.
-           */
-          double k;
       };
     }
   }
