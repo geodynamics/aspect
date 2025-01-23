@@ -75,9 +75,9 @@ namespace aspect
          */
 
       private:
+        ThermalConductivity::Constant<dim> thermal_conductivity;
         Rheology::ConstantViscosity constant_rheology;
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;
-        ThermalConductivity::Constant<dim> thermal_conductivity;
     };
 
   }

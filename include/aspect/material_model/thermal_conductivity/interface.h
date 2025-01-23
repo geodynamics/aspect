@@ -23,7 +23,6 @@
 
 #include <aspect/global.h>
 #include <aspect/plugins.h>
-#include <aspect/material_model/utilities.h>
 #include <aspect/material_model/interface.h>
 
 
@@ -36,17 +35,11 @@ namespace aspect
       using namespace dealii;
 
       /**
-       * A base class for parameterizations of material models. Classes derived
-       * from this class will need to implement functions that provide material
-       * parameters such as the viscosity, density, etc, typically as a function
-       * of position, temperature and pressure at that location.
-       *
-       * Implementing a material model requires you to override evaluate() and fill the output
-       * argument struct instead of implementing the functions viscosity(),
-       * density(), etc.. In this case, all other functions are being ignored.
-       *
-       * In all cases, model_dependence values, is_compressible()
-       * need to be implemented.
+       * A base class for parametrizations of the thermal conductivity. Classes derived
+       * from this class will need to implement a function that computes the thermal
+       * conductivities in @p out given the inputs in @p in. Derived classes can in addition
+       * implement the functions of the base class Plugins::InterfaceBase as needed (e.g.
+       * to read in input parameters or update the parametrization at the beginning of time steps).
        *
        * @ingroup MaterialModels
        */

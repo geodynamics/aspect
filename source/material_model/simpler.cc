@@ -67,13 +67,12 @@ namespace aspect
     void
     Simpler<dim>::declare_parameters (ParameterHandler &prm)
     {
-      ThermalConductivity::Constant<dim>::declare_parameters (prm);
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Simpler model");
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
+          ThermalConductivity::Constant<dim>::declare_parameters (prm);
           Rheology::ConstantViscosity::declare_parameters(prm,5e24);
         }
         prm.leave_subsection();
@@ -87,13 +86,12 @@ namespace aspect
     void
     Simpler<dim>::parse_parameters (ParameterHandler &prm)
     {
-      thermal_conductivity.parse_parameters (prm);
-
       prm.enter_subsection("Material model");
       {
         prm.enter_subsection("Simpler model");
         {
           equation_of_state.parse_parameters (prm);
+          thermal_conductivity.parse_parameters (prm);
           constant_rheology.parse_parameters(prm);
         }
         prm.leave_subsection();
