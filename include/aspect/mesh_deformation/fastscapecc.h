@@ -17,30 +17,21 @@
 #ifndef _aspect_mesh_deformation_fastscapecc_h
 #define _aspect_mesh_deformation_fastscapecc_h
 
-#include <aspect/global.h>
+#include <type_traits>
 
+#include <aspect/global.h>
+#include <aspect/geometry_model/box.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/mesh_deformation/fastscapecc_adapter.h>
 #include <aspect/simulator_access.h>
 
-#include <xtensor/xarray.hpp>
-#include <xtensor/xmath.hpp>
-#include <xtensor/xview.hpp>
-#include <xtensor/xadapt.hpp>
-
 #include <fastscapelib/flow/flow_graph.hpp>
-#include <fastscapelib/flow/sink_resolver.hpp>
-#include <fastscapelib/flow/flow_router.hpp>
-#include <fastscapelib/grid/raster_grid.hpp>
-#include <fastscapelib/eroders/diffusion_adi.hpp>
 #include <fastscapelib/eroders/spl.hpp>
 
-//for dealii grid
-#include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria.h>
 
 #include <deal.II/lac/affine_constraints.h>
-#include <deal.II/numerics/fe_field_function.h>
 
 namespace aspect
 {
@@ -67,7 +58,7 @@ namespace aspect
         /**
          * Initialize variables for FastScape.
          */
-        virtual void initialize ();
+        void initialize () override;
 
         /**
           * A function that creates constraints for the velocity of certain mesh
@@ -75,11 +66,10 @@ namespace aspect
           * The calling class will respect
           * these constraints when computing the new vertex positions.
           */
-        virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
-                                                 const std::set<types::boundary_id> &boundary_id) const;
+                                                 const std::set<types::boundary_id> &boundary_id) const override;
 
 
         /**
@@ -96,7 +86,7 @@ namespace aspect
         /**
          * Parse parameters for the FastScape plugin.
          */
-        void parse_parameters (ParameterHandler &prm);
+        void parse_parameters (ParameterHandler &prm) override;
 
       private:
         GeometryType geometry_type;
@@ -104,15 +94,22 @@ namespace aspect
         /**
          * Surface mesh and solution.
          */
-        // TODO: reuse Fastscapecc's ``dim`` template parameter here?
-        // (in theory Fastscapelib C++ may support both 1D and 2D surface domains)
-        using SurfaceMeshType = Triangulation<2, 3>;
+        using SurfaceMeshType = Triangulation<dim-1, dim>;
 
         SurfaceMeshType surface_mesh;
         DoFHandler<SurfaceMeshType::dimension, SurfaceMeshType::space_dimension> surface_mesh_dof_handler;
         LinearAlgebra::Vector surface_solution;
         mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
         dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
+
+        template <class M>
+        void init_surface_mesh(M &geom_model);
+
+        template <class M, typename std::enable_if_t<std::is_same_v<M, GeometryModel::Box<3>>>>
+        void init_surface_mesh(M &geom_model);
+
+        template <class M, typename std::enable_if_t<std::is_same_v<M, GeometryModel::SphericalShell<3>>>>
+        void init_surface_mesh(M &geom_model);
 
         /**
          * Pointers to Fastscapelib objects
