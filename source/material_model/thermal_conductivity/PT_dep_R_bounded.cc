@@ -92,7 +92,7 @@ namespace aspect
 
         for (unsigned int i = 0; i < n_points; ++i) 
         {
-
+        
         // COMPUTE NATURAL LOGARITHM OF PRESSURE AND TEMPERATURE
         // ==========================================================================
           double P_log = std::log(in.pressures[i]);
@@ -155,9 +155,49 @@ namespace aspect
           double GrtPyropes_PTDep_LatTCo = GrtPyropes_TDep_LatTCon;
         // ==========================================================================
 
+        // ==========================================================================
+        // ==========================================================================
 
-          
+        // COMPUTE THE RADIATIVE THERMAL CONDUCTIVITY BOUNDARIES IN REAL (+,-) AND SIMPLEX (0->1) SPACE
+        // ==========================================================================
+          // Dry Olivine
+          double OlivineDry_RadTC_zSimpl = OlivineDry_RadTC_a0 + OlivineDry_RadTC_b1*T_log;
+          double OlivineDry_RadTC_ySimpl = std::exp(OlivineDry_RadTC_zSimpl);
+          double OlivineDry_RadTC_yPrime = OlivineDry_RadTC_ySimpl/(1+OlivineDry_RadTC_ySimpl);
+          double OlivineDry_RadTC_yTCRad = OlivineDry_RadTC_ymin+(OlivineDry_RadTC_ymax-OlivineDry_RadTC_ymin)*OlivineDry_RadTC_yPrime;
+        // ==========================================================================
+          // Orthopyroxene (Enstatite)
+          double OpxEnstati_RadTC_zSimpl = OpxEnstati_RadTC_a0 + OpxEnstati_RadTC_b1*T_log;
+          double OpxEnstati_RadTC_ySimpl = std::exp(OpxEnstati_RadTC_zSimpl);
+          double OpxEnstati_RadTC_yPrime = OpxEnstati_RadTC_ySimpl/(1+OpxEnstati_RadTC_ySimpl);
+          double OpxEnstati_RadTC_yTCRad = OpxEnstati_RadTC_ymin+(OpxEnstati_RadTC_ymax-OpxEnstati_RadTC_ymin)*OpxEnstati_RadTC_yPrime;
+        // ==========================================================================
+          // Garnet (Pyrope)
+          double GrtPyropes_RadTC_zSimpl = GrtPyropes_RadTC_a0 + GrtPyropes_RadTC_b1*T_log;
+          double GrtPyropes_RadTC_ySimpl = std::exp(GrtPyropes_RadTC_zSimpl);
+          double GrtPyropes_RadTC_yPrime = GrtPyropes_RadTC_ySimpl/(1+GrtPyropes_RadTC_ySimpl);
+          double GrtPyropes_RadTC_yTCRad = GrtPyropes_RadTC_ymin+(GrtPyropes_RadTC_ymax-GrtPyropes_RadTC_ymin)*GrtPyropes_RadTC_yPrime;
+        // ==========================================================================
+
+        // COMPUTE T-DEPENDENT LATTICE THERMAL CONDUCTIVITY OF MINERALS
+        // ==========================================================================
+          // Dry Olivine
+          double OlivineDry_TDep_RadTCon = std::exp(OlivineDry_RadTC_yTCRad);
+          // Orthopyroxene (Enstatite)
+          double OpxEnstati_TDep_RadTCon = std::exp(OpxEnstati_RadTC_yTCRad);
+          // Garnet (Pyrope)
+          double GrtPyropes_TDep_RadTCon = std::exp(GrtPyropes_RadTC_yTCRad);
+        // ==========================================================================
   
+        // COMPUTE P,T-DEPENDENT TOTAL THERMAL CONDUCTIVITY OF MINERALS
+        // ==========================================================================
+          // Dry Olivine
+          double OlivineDry_PTDep_TotTCo = OlivineDry_PTDep_LatTCo+OlivineDry_TDep_RadTCon;
+          // Orthopyroxene (Enstatite)
+          double OpxEnstati_PTDep_TotTCo = OpxEnstati_PTDep_LatTCo+OpxEnstati_TDep_RadTCon;
+          // Garnet (Pyrope)
+          double GrtPyropes_PTDep_TotTCo = GrtPyropes_PTDep_LatTCo+GrtPyropes_TDep_RadTCon;
+        // ==========================================================================
 
             out.thermal_conductivities[i] = OlivineDry_PTDep_LatTCo;
           }
