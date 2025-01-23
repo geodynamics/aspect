@@ -33,7 +33,23 @@ namespace aspect
       {
         const unsigned int n_points = in.n_evaluation_points();
         for (unsigned int i = 0; i < n_points; ++i)
-          out.thermal_conductivities[i] = k;
+
+        // Coefficients for Dry Olivine
+          OlivineDry_a0 =  -4.124100000;
+          OlivineDry_b1 =   2.146900000;
+          OlivineDry_ymin = 1.280933845;
+          OlivineDry_ymax = 2.607263820;
+
+        // Compute natural logarithm of pressure
+          P_log = std::log(in.pressures[i]);
+
+        // Compute thermal conductivity
+          OlivineDry_zSimpl = OlivineDry_a0 + OlivineDry_b1*P_log;
+          OlivineDry_ySimpl = std::exp(OlivineDry_zSimpl);
+          OlivineDry_yPrime = OlivineDry_ySimpl/(1+OlivineDry_ySimpl);
+          OlivineDry_yTCLat = OlivineDry_ymin+(OlivineDry_ymax-OlivineDry_ymin)*OlivineDry_yPrime;
+        
+          out.thermal_conductivities[i] = std::exp(OlivineDry_yTCLat);
       }
 
     }
