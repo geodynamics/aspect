@@ -76,6 +76,13 @@ namespace aspect
                                  const unsigned int N,
                                  const std::string &id_text);
 
+    /**
+     * A namespace that contains options and functions able to parse
+     * a map of double values from a string representation of the form
+     * "key1 : value1, key2 : value2, etc". The parsing and output
+     * is controlled by the Options struct and the parse_map_to_double_array()
+     * function.
+     */
     namespace MapParsing
     {
       /**
@@ -84,7 +91,8 @@ namespace aspect
        */
       struct Options
       {
-        /* A list of valid key names that are allowed
+        /**
+         * A list of valid key names that are allowed
          * to appear in the map. If this list is empty
          * it is assumed to be equal to the list of
          * required keys. If this list is longer than
@@ -94,7 +102,8 @@ namespace aspect
          */
         std::vector<std::string> list_of_allowed_keys;
 
-        /* A list of valid key names that are required
+        /**
+         * A list of valid key names that are required
          * to appear in the map. Only these keys will be
          * parsed into the map structure and the order of
          * these keys determines the order of entries
@@ -102,14 +111,14 @@ namespace aspect
          */
         std::vector<std::string> list_of_required_keys;
 
-        /*
+        /**
          * A name that identifies the type of input property (e.g. 'density', 'viscosity')
          * that is being parsed by this function. This name is used in generating
          * error messages if the map does not conform to the expected format.
          */
         std::string property_name;
 
-        /*
+        /**
          * If true, allow multiple values
          * for each key. If false only allow a single value per key. In either
          * case each key is only allowed to appear once. Multiple values
@@ -125,7 +134,7 @@ namespace aspect
          */
         bool allow_missing_keys;
 
-        /*
+        /**
          * Whether to store the number of values
          * per key in n_values_per_key while creating
          * the map. This vector can be later accessed
@@ -135,7 +144,7 @@ namespace aspect
          */
         bool store_values_per_key;
 
-        /*
+        /**
          * Whether to check the number of values
          * per key in the map against values stored
          * in n_values_per_key. This allows to
@@ -145,7 +154,7 @@ namespace aspect
          */
         bool check_values_per_key;
 
-        /*
+        /**
          * A vector of unsigned
          * integers that is used by store_values_per_key and
          * check_values_per_key to either store the current map
