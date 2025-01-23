@@ -64,7 +64,7 @@ namespace aspect
 
     template <int dim>
     template <class M, typename std::enable_if_t<
-                std::is_same_v<M, GeometryModel::Box<3>>>>
+                std::is_same<M, GeometryModel::Box<3>>::value>>
     void FastScapecc<dim>::init_surface_mesh(M &geom_model)
     {
 
@@ -85,7 +85,7 @@ namespace aspect
 
     template <int dim>
     template <class M, typename std::enable_if_t<
-                std::is_same_v<M, GeometryModel::SphericalShell<3>>>>
+                std::is_same<M, GeometryModel::SphericalShell<3>>::value>>
     void FastScapecc<dim>::init_surface_mesh(M &geom_model)
     {
 
