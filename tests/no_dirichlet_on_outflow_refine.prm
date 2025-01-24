@@ -86,7 +86,6 @@ subsection Material model
     set Phase transition widths                        = 0
     set Phase transition temperatures                  = 1600
     set Phase transition Clapeyron slopes              = 0
-    set Viscosity prefactors                           = 1,1
   end
 end
 

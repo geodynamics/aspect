@@ -116,7 +116,6 @@ subsection Material model
     set Phase transition Clapeyron slopes = -4050000
     set Phase transition density jumps = 200
     set Corresponding phase for density jump = 0
-    set Viscosity prefactors = 1,1
     set Minimum viscosity = 1e20
     set Maximum viscosity = 1e20
   end

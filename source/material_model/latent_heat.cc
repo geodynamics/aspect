@@ -105,10 +105,15 @@ namespace aspect
             // this means, that there are no actual density or viscosity "jumps", but
             // gradual transitions between the materials
             double phase_dependence = 0.0;
-            double viscosity_phase_dependence = 1.0;
+            std::vector<double> viscosity_phase_prefactors (this->n_compositional_fields()+1);
+
+            // Scale viscosity for shallowest phase for each chemical composition
+            viscosity_phase_prefactors[0] = phase_prefactors[0];
+            if (composition.size()>0)
+              viscosity_phase_prefactors[1] = phase_prefactors[phase_function.n_phases_for_each_composition()[0]];
 
             // Loop through phase transitions
-            for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
+            for (unsigned int transition_index=0; transition_index<phase_function.n_phase_transitions(); ++transition_index)
               {
                 const double depth = this->get_geometry_model().depth(position);
                 const double pressure_depth_derivative = (depth > 0.0)
@@ -121,7 +126,7 @@ namespace aspect
                                                                            pressure,
                                                                            depth,
                                                                            pressure_depth_derivative,
-                                                                           phase);
+                                                                           transition_index);
 
                 const double phaseFunction = phase_function.compute_value(phase_in);
 
@@ -131,18 +136,27 @@ namespace aspect
                 // for the first layer, so we have to use phase+1 as the index.
                 if (composition.size()==0)
                   {
-                    phase_dependence += phaseFunction * density_jumps[phase];
-                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase+1]-1.);
+                    phase_dependence += phaseFunction * density_jumps[transition_index];
                   }
                 else if (composition.size()>0)
                   {
-                    if (transition_phases[phase] == 0)     // 1st compositional field
-                      phase_dependence += phaseFunction * density_jumps[phase] * (1.0 - composition[0]);
-                    else if (transition_phases[phase] == 1) // 2nd compositional field
-                      phase_dependence += phaseFunction * density_jumps[phase] * composition[0];
-
-                    viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase]-1.);
+                    if (transition_phases[transition_index] == 0)     // 1st compositional field
+                      phase_dependence += phaseFunction * density_jumps[transition_index] * (1.0 - composition[0]);
+                    else if (transition_phases[transition_index] == 1) // 2nd compositional field
+                      phase_dependence += phaseFunction * density_jumps[transition_index] * composition[0];
                   }
+
+                // Viscosities
+                if (transition_index+1 < phase_function.n_phases_for_each_composition()[0])      // 1st compositional field
+                  viscosity_phase_prefactors[0] = std::pow(10,
+                                                           phaseFunction * std::log10(viscosity_phase_prefactors[0] * phase_prefactors[transition_index+1])
+                                                           + (1. - phaseFunction) * std::log10(viscosity_phase_prefactors[0]));
+                else if (transition_index+2 < phase_function.n_phases_for_each_composition()[0]
+                         + phase_function.n_phases_for_each_composition()[1])                  // 2nd compositional field
+                  viscosity_phase_prefactors[1] = std::pow(10,
+                                                           phaseFunction * composition[0] * std::log10(viscosity_phase_prefactors[1] * phase_prefactors[transition_index+2])
+                                                           + (1. - phaseFunction) * std::log10(viscosity_phase_prefactors[1]));
+
               }
 
             // fourth, pressure dependence of density
@@ -164,7 +178,12 @@ namespace aspect
             if (this->get_parameters().formulation == Parameters<dim>::Formulation::boussinesq_approximation)
               out.densities[i] = (reference_rho * density_temperature_dependence + density_composition_dependence + phase_dependence);
 
-            out.viscosities[i] = std::max(minimum_viscosity, std::min(maximum_viscosity, out.viscosities[i] * viscosity_phase_dependence));
+            if (composition.size()==0)
+              out.viscosities[i] = out.viscosities[i]*viscosity_phase_prefactors[0];
+            else
+              out.viscosities[i] = (std::pow(10, ((1-composition[0]) * std::log10(out.viscosities[i]*viscosity_phase_prefactors[0])
+                                                  + composition[0] * std::log10(out.viscosities[i]*viscosity_phase_prefactors[1]))));
+            out.viscosities[i] = std::max(minimum_viscosity, std::min(maximum_viscosity, out.viscosities[i]));
           }
 
           // Calculate entropy derivative
@@ -302,12 +321,14 @@ namespace aspect
                              "and -1 for none of them. "
                              "List must have the same number of entries as Phase transition depths. "
                              "Units: \\si{\\pascal\\per\\kelvin}.");
-          prm.declare_entry ("Viscosity prefactors", "",
-                             Patterns::List (Patterns::Double (0.)),
+          prm.declare_entry ("Viscosity prefactors", "all:1",
+                             Patterns::Anything(),
                              "A list of prefactors for the viscosity for each phase. The reference "
-                             "viscosity will be multiplied by this factor to get the corresponding "
-                             "viscosity for each phase. "
-                             "List must have one more entry than Phase transition depths. "
+                             "viscosity (modified by any compositional prefactors) will be multiplied "
+                             "by this factor to get the corresponding viscosity for each phase. "
+                             "List must have the same number of entries as there are phases, that is one "
+                             "more than Phase transition depths for each composition that is used in the "
+                             "model. "
                              "Units: non-dimensional.");
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double (0.),
@@ -355,26 +376,42 @@ namespace aspect
                           (Utilities::split_string_list(prm.get ("Phase transition density jumps")));
           transition_phases = Utilities::string_to_int
                               (Utilities::split_string_list(prm.get ("Corresponding phase for density jump")));
-          phase_prefactors = Utilities::string_to_double
-                             (Utilities::split_string_list(prm.get ("Viscosity prefactors")));
+
+          // Use the same syntax as in the PhaseFunction utilities to read in the viscosity prefactors
+          std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+          // Establish that a background field is required here
+          compositional_field_names.insert(compositional_field_names.begin(),"background");
+          Utilities::MapParsing::Options options(compositional_field_names, "Viscosity prefactors");
+          options.allow_missing_keys = true;
+          options.allow_multiple_values_per_key = true;
+          options.check_values_per_key = true;
+          options.n_values_per_key = phase_function.n_phases_for_each_chemical_composition();
+
+          phase_prefactors = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
 
           const unsigned int n_transitions = phase_function.n_phase_transitions();
           if (density_jumps.size() != n_transitions ||
-              transition_phases.size() != n_transitions ||
-              phase_prefactors.size() != n_transitions+1)
+              transition_phases.size() != n_transitions)
             AssertThrow(false, ExcMessage("Error: At least one list that provides input parameters for phase "
                                           "transitions has the wrong size. The phase function object reports that "
                                           "there are " + std::to_string(n_transitions) + " transitions, "
                                           "therefore the material model expects " + std::to_string(n_transitions) +
-                                          " density jumps and corresponding phases, and "
-                                          + std::to_string(n_transitions+1) + " viscosity prefactors."));
+                                          " density jumps, corresponding phases, and viscosity prefactors."));
 
           // as the phase viscosity prefactors are all applied multiplicatively on top of each other,
           // we have to scale them here so that they are relative factors in comparison to the product
-          // of the prefactors of all phase above the current one
-          for (unsigned int phase=1; phase<phase_prefactors.size(); ++phase)
+          // of the prefactors of all phases above the current one
+          unsigned int index = 0;
+          for (unsigned int c=0; c<options.n_values_per_key.size(); ++c)
             {
-              phase_prefactors[phase] /= phase_prefactors[phase-1];
+              double product = 1.;
+              for (unsigned int phase=0; phase<options.n_values_per_key[c]; ++phase)
+                {
+                  if (phase>0)
+                    phase_prefactors[index] /= product;
+                  product *= phase_prefactors[index];
+                  index += 1;
+                }
             }
 
           if (thermal_viscosity_exponent!=0.0 && reference_T == 0.0)

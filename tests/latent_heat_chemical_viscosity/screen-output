@@ -4,19 +4,16 @@
 
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
-Number of active cells: 3,072 (on 6 levels)
-Number of degrees of freedom: 40,836 (25,090+3,201+12,545)
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
-*** Timestep 0:  t=0 years, dt=0 years
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 144+0 iterations.
+   Solving field1 system ... 0 iterations.
+   Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           output-latent_heat_viscosity_adiabatic/solution/solution-00000
-     RMS, max velocity:                  0.000151 m/year, 0.000823 m/year
-     Temperature min/avg/max:            273 K, 2486 K, 3931 K
-     Heat fluxes through boundary parts: 4.633e+05 W, 7.868e+05 W, 0 W, 0 W
-     Writing depth average:              output-latent_heat_viscosity_adiabatic/depth_average
+     Writing graphical output: output-latent_heat_chemical_viscosity/solution/solution-00000
 
 Termination requested by criterion: end time
 

@@ -1,0 +1,9 @@
+Fixed: The latent heat material model now correctly reads in
+the Viscosity prefactors that change the viscosities of
+individual phases for each compositional field. To make this
+work in a consistent way, the format of this input parameter
+is now the same as for other phase transition inputs (it is
+parsed as a map with keywords rather than a comma-separated
+list), which is an incompatible change in the input file.
+<br>
+(Juliane Dannberg, 2024/01/24)
