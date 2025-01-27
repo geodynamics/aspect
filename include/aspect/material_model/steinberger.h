@@ -23,6 +23,7 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
+#include <aspect/material_model/thermal_conductivity/interface.h>
 
 #include <aspect/simulator_access.h>
 #include <deal.II/fe/component_mask.h>
@@ -116,7 +117,8 @@ namespace aspect
      * The viscosity of this model is based on the paper
      * Steinberger & Calderwood 2006: "Models of large-scale viscous flow in the
      * Earth's mantle with constraints from mineral physics and surface
-     * observations". The thermal conductivity is constant and the other
+     * observations". The thermal conductivity is constant or follows a
+     * pressure-temperature dependent approximation and the other
      * parameters are provided via lookup tables from the software PERPLEX.
      *
      * @ingroup MaterialModels
@@ -203,19 +205,6 @@ namespace aspect
 
       private:
         /**
-         * Compute the pressure- and temperature-dependent thermal
-         * conductivity either as a constant value, or based on the
-         * equation given in Stackhouse et al., 2015: First-principles
-         * calculations of the lattice thermal conductivity of the
-         * lower mantle, or based on the equation given in Tosi et al.,
-         * 2013: Mantle dynamics with pressure- and temperature-dependent
-         * thermal expansivity and conductivity.
-         */
-        double thermal_conductivity (const double temperature,
-                                     const double pressure,
-                                     const Point<dim> &position) const;
-
-        /**
          * Whether the compositional fields representing mass fractions
          * should be normalized to one when computing their fractions
          * (if false), or whether there is an additional composition
@@ -248,31 +237,11 @@ namespace aspect
         bool use_lateral_average_temperature;
 
         /**
-         * The value of the thermal conductivity if a constant thermal
-         * conductivity is used for the whole domain.
+         * The thermal conductivity parametrization to use. This material
+         * model supports either a constant thermal conductivity or a
+         * pressure- and temperature-dependent thermal conductivity.
          */
-        double thermal_conductivity_value;
-
-        /**
-         * Enumeration for selecting which type of conductivity law to use.
-         */
-        enum ConductivityFormulation
-        {
-          constant,
-          p_T_dependent
-        } conductivity_formulation;
-
-        /**
-         * Parameters for the temperature- and pressure dependence of the
-         * thermal conductivity.
-         */
-        std::vector<double> conductivity_transition_depths;
-        std::vector<double> reference_thermal_conductivities;
-        std::vector<double> conductivity_pressure_dependencies;
-        std::vector<double> conductivity_reference_temperatures;
-        std::vector<double> conductivity_exponents;
-        std::vector<double> saturation_scaling;
-        double maximum_conductivity;
+        std::unique_ptr<ThermalConductivity::Interface<dim>> thermal_conductivity;
 
         /**
          * Compositional prefactors with which to multiply the reference viscosity.

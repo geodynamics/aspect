@@ -25,6 +25,7 @@
 
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/thermal_conductivity/interface.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/steinberger.h>
@@ -124,31 +125,11 @@ namespace aspect
         double max_lateral_eta_variation;
 
         /**
-         * The value for thermal conductivity. It can be a constant
-         * for the whole domain, or P-T dependent.
+         * The thermal conductivity parametrization to use. This material
+         * model supports either a constant thermal conductivity or a
+         * pressure- and temperature-dependent thermal conductivity.
          */
-        double thermal_conductivity_value;
-        double thermal_conductivity (const double temperature,
-                                     const double pressure,
-                                     const Point<dim> &position) const;
-
-        enum ConductivityFormulation
-        {
-          constant,
-          p_T_dependent
-        } conductivity_formulation;
-
-        /**
-         * Parameters for the temperature- and pressure dependence of the
-         * thermal conductivity.
-         */
-        std::vector<double> conductivity_transition_depths;
-        std::vector<double> reference_thermal_conductivities;
-        std::vector<double> conductivity_pressure_dependencies;
-        std::vector<double> conductivity_reference_temperatures;
-        std::vector<double> conductivity_exponents;
-        std::vector<double> saturation_scaling;
-        double maximum_conductivity;
+        std::unique_ptr<ThermalConductivity::Interface<dim>> thermal_conductivity;
 
         /**
          * Information about the location of data files.
