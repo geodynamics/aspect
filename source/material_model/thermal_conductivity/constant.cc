@@ -28,7 +28,7 @@ namespace aspect
     {
       template <int dim>
       void
-      Constant<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &in,
+      Constant<dim>::evaluate (const MaterialModel::MaterialModelInputs<dim> &/*in*/,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         for (auto &thermal_conductivity: out.thermal_conductivities)

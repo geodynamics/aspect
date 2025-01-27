@@ -1,0 +1,6 @@
+New: ASPECT now has an interface for plugins that describe thermal
+conductivity. This is useful to share functionality to compute
+thermal conductivity across material models. Material models can,
+but do not have to make use of these plugins.
+<br>
+(Rene Gassmoeller, 2025/01/27)
