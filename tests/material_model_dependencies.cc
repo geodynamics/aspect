@@ -34,7 +34,7 @@ namespace aspect
       public:
         virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics)
+        execute (TableHandler & /*statistics*/) override
         {
           using namespace MaterialModel;
           using namespace NonlinearDependence;

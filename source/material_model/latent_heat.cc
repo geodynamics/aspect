@@ -129,7 +129,7 @@ namespace aspect
             // Loop through phase transitions
             for (unsigned int transition_index=0; transition_index<phase_function.n_phase_transitions(); ++transition_index)
               {
-                phase_in.phase_index = transition_index;
+                phase_in.phase_transition_index = transition_index;
                 const double phaseFunction = phase_function.compute_value(phase_in);
 
                 // For the densities we have a list of jumps, so the index used
@@ -197,7 +197,7 @@ namespace aspect
             if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
               for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
                 {
-                  phase_in.phase_index = phase;
+                  phase_in.phase_transition_index = phase;
                   const double PhaseFunctionDerivative = phase_function.compute_derivative(phase_in);
                   const double clapeyron_slope = phase_function.get_transition_slope(phase);
 
