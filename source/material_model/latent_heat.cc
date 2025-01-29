@@ -73,8 +73,8 @@ namespace aspect
             if ((composition_viscosity_prefactor != 1.0) && (composition.size() > 0))
               {
                 // geometric interpolation
-                out.viscosities[i] = (std::pow(10, ((1-composition[0]) * std::log10(eta*visc_temperature_dependence)
-                                                    + composition[0] * std::log10(eta*composition_viscosity_prefactor*visc_temperature_dependence))));
+                out.viscosities[i] = (std::pow(10., ((1-composition[0]) * std::log10(eta*visc_temperature_dependence)
+                                                     + composition[0] * std::log10(eta*composition_viscosity_prefactor*visc_temperature_dependence))));
               }
             else
               out.viscosities[i] = visc_composition_dependence * visc_temperature_dependence * eta;
@@ -130,10 +130,8 @@ namespace aspect
 
                 const double phaseFunction = phase_function.compute_value(phase_in);
 
-                // Note that for the densities we have a list of jumps, so the index used
-                // in the loop corresponds to the index of the phase transition. For the
-                // viscosities we have a list of prefactors, which has one more entry
-                // for the first layer, so we have to use phase+1 as the index.
+                // For the densities we have a list of jumps, so the index used
+                // in the loop corresponds to the index of the phase transition.
                 if (composition.size()==0)
                   {
                     phase_dependence += phaseFunction * density_jumps[transition_index];
@@ -146,14 +144,16 @@ namespace aspect
                       phase_dependence += phaseFunction * density_jumps[transition_index] * composition[0];
                   }
 
-                // Viscosities
+                // For the viscosities we have a list of prefactors, which has one more entry
+                // for the first layer for each composition. Consequently, we have to use
+                // transition_index + 1 (+1 for additional compositions) as the index.
                 if (transition_index+1 < phase_function.n_phases_for_each_composition()[0])      // 1st compositional field
-                  viscosity_phase_prefactors[0] = std::pow(10,
+                  viscosity_phase_prefactors[0] = std::pow(10.,
                                                            phaseFunction * std::log10(viscosity_phase_prefactors[0] * phase_prefactors[transition_index+1])
                                                            + (1. - phaseFunction) * std::log10(viscosity_phase_prefactors[0]));
                 else if (transition_index+2 < phase_function.n_phases_for_each_composition()[0]
                          + phase_function.n_phases_for_each_composition()[1])                  // 2nd compositional field
-                  viscosity_phase_prefactors[1] = std::pow(10,
+                  viscosity_phase_prefactors[1] = std::pow(10.,
                                                            phaseFunction * composition[0] * std::log10(viscosity_phase_prefactors[1] * phase_prefactors[transition_index+2])
                                                            + (1. - phaseFunction) * std::log10(viscosity_phase_prefactors[1]));
 
@@ -181,8 +181,8 @@ namespace aspect
             if (composition.size()==0)
               out.viscosities[i] = out.viscosities[i]*viscosity_phase_prefactors[0];
             else
-              out.viscosities[i] = (std::pow(10, ((1-composition[0]) * std::log10(out.viscosities[i]*viscosity_phase_prefactors[0])
-                                                  + composition[0] * std::log10(out.viscosities[i]*viscosity_phase_prefactors[1]))));
+              out.viscosities[i] = (std::pow(10., ((1-composition[0]) * std::log10(out.viscosities[i]*viscosity_phase_prefactors[0])
+                                                   + composition[0] * std::log10(out.viscosities[i]*viscosity_phase_prefactors[1]))));
             out.viscosities[i] = std::max(minimum_viscosity, std::min(maximum_viscosity, out.viscosities[i]));
           }
 
@@ -323,11 +323,12 @@ namespace aspect
                              "Units: \\si{\\pascal\\per\\kelvin}.");
           prm.declare_entry ("Viscosity prefactors", "all:1",
                              Patterns::Anything(),
-                             "A list of prefactors for the viscosity for each phase. The reference "
-                             "viscosity (modified by any compositional prefactors) will be multiplied "
-                             "by this factor to get the corresponding viscosity for each phase. "
+                             "A list of prefactors for the viscosity for each phase. The ``Viscosity'' "
+                             "parameter (modified by the ``Composition viscosity prefactor'', depending on "
+                             "composition) will be multiplied by this factor to get the corresponding "
+                             "viscosity for each phase. "
                              "List must have the same number of entries as there are phases, that is one "
-                             "more than Phase transition depths for each composition that is used in the "
+                             "more than ``Phase transition depths'' for each composition that is used in the "
                              "model. "
                              "Units: non-dimensional.");
           prm.declare_entry ("Minimum viscosity", "1e19",
