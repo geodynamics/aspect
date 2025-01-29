@@ -36,8 +36,6 @@ namespace aspect
    */
   namespace GravityModel
   {
-    using namespace dealii;
-
     /**
      * A base class for parameterizations of gravity models.
      *

@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class IteratedReaction : public MaterialModel::CompositionReaction<dim>
     {

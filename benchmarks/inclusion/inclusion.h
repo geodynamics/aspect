@@ -36,8 +36,6 @@ namespace aspect
    */
   namespace InclusionBenchmark
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
       // based on http://geodynamics.org/hg/cs/AMR/Discontinuous_Stokes with permission

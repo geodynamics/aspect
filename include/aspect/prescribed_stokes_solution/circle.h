@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    using namespace dealii;
-
     /**
      * A class that implements a circular, divergence-free flow field
      * around the origin of the coordinate system.

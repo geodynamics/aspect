@@ -31,8 +31,6 @@ namespace aspect
   {
     namespace Utilities
     {
-      using namespace dealii;
-
       /**
        * Function to calculate volume fraction contained by indicator function
        * H(d-normal*(x'-x_{cen}')) on the [0, 1]^dim unit cell where x_{cen} is

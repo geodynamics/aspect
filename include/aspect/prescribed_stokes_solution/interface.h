@@ -40,8 +40,6 @@ namespace aspect
    */
   namespace PrescribedStokesSolution
   {
-    using namespace dealii;
-
     /**
      * This plugin allows the user to prescribe a Stokes solution and can be
      * thought of as velocity and pressure's equivalent of the initial

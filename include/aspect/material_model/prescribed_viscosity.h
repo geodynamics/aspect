@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that applies a viscosity to a ''base model'' chosen from any of
      * the other available material models. This prescribed viscosity material model

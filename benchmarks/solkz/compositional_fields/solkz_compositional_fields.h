@@ -10,8 +10,6 @@ namespace aspect
 {
   namespace InclusionBenchmark
   {
-    using namespace dealii;
-
     template <int dim>
     class SolKzCompositionalMaterial : public SolKzMaterial<dim>
     {

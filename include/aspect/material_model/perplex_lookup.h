@@ -27,8 +27,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that calls the thermodynamic software PerpleX
      * in order to evaluate material properties at a given point, namely

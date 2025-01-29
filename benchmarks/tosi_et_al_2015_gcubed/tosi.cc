@@ -60,9 +60,6 @@ namespace aspect
    */
   namespace TosiBenchmark
   {
-    using namespace dealii;
-
-
     /**
      * @ingroup MaterialModels
      */

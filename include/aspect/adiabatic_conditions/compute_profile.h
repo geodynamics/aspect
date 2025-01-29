@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    using namespace dealii;
-
     /**
      * A model in which the adiabatic profile is calculated by solving the
      * hydrostatic equations for pressure and temperature in depth. The

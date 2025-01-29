@@ -51,8 +51,6 @@ namespace aspect
    */
   namespace BursteddeBenchmark
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
       Tensor<1,3>

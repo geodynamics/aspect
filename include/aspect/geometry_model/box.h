@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    using namespace dealii;
-
     /**
      * A class that describes a box geometry of certain width, height, and
      * depth (in 3d), and, possibly, topography.

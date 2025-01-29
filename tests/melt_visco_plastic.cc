@@ -37,8 +37,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * Additional output fields for the plastic parameters weakened (or hardened)
      * by strain to be added to the MaterialModel::MaterialModelOutputs structure
@@ -252,8 +250,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-
-    using namespace dealii;
 
     namespace
     {

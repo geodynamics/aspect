@@ -27,8 +27,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class InnerCore : public MaterialModel::Simple<dim>
     {
@@ -357,8 +355,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements a constant radiogenic heating rate.
      *

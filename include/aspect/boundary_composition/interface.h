@@ -44,8 +44,6 @@ namespace aspect
    */
   namespace BoundaryComposition
   {
-    using namespace dealii;
-
     /**
      * Base class for classes that describe composition boundary values.
      *

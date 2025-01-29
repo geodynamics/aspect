@@ -43,8 +43,6 @@ namespace aspect
    */
   namespace HollowSphereBenchmark
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
       const double gammma = 1.0;

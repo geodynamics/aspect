@@ -41,8 +41,6 @@ namespace aspect
    */
   namespace InitialTopographyModel
   {
-    using namespace dealii;
-
     /**
      * Base class for classes that describe particular initial topographies
      * for the domain.

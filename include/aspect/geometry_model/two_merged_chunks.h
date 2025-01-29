@@ -34,9 +34,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    using namespace dealii;
-
-
     /**
      * A geometry model class that describes a chunk of a spherical shell,
      * but with two boundary indicators per side boundary. This allows

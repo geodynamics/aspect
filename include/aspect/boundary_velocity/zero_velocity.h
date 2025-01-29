@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace BoundaryVelocity
   {
-    using namespace dealii;
-
     /**
      * A class that implements zero velocity (stick) boundary conditions.
      *

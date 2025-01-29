@@ -36,8 +36,6 @@ namespace aspect
    */
   namespace BoundaryFluidPressure
   {
-    using namespace dealii;
-
     /**
      * Base class
      *

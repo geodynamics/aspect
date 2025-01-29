@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements a constant radiogenic heating rate.
      *

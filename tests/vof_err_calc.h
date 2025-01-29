@@ -35,8 +35,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-    using namespace dealii;
-
     template <int dim>
     class VolumeOfFluidSpecifiedSolutionDiff : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {

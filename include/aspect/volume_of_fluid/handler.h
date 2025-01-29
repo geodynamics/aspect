@@ -28,8 +28,6 @@
 
 #include <boost/serialization/map.hpp>
 
-using namespace dealii;
-
 namespace aspect
 {
   /**

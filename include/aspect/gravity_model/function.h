@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace GravityModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements gravity based on a functional description
      * provided in the input file.

@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements a standard shear heating rate for dissipation
      * heating of partially molten material.

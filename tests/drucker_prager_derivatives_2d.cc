@@ -236,7 +236,6 @@ void f(const aspect::SimulatorAccess<3> &,
 template <int dim>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)
 {
-  using namespace dealii;
   std::cout << "* Connecting signals" << std::endl;
   signals.set_assemblers.connect (std::bind(&f<dim>,
                                             std::placeholders::_1,

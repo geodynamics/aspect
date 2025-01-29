@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements a heating model where each compositional field
      * is assigned a user-defined internal heating value.

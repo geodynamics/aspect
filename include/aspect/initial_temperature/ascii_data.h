@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that implements a prescribed temperature field determined from
      * a AsciiData input file.

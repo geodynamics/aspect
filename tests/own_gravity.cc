@@ -22,9 +22,6 @@
 #include <aspect/global.h>
 #include <aspect/gravity_model/interface.h>
 
-using namespace dealii;
-
-
 template <int dim>
 class MyGravity :
   public aspect::GravityModel::Interface<dim>

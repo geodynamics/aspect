@@ -25,8 +25,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class Compressibility : public MaterialModel::Simple<dim>
     {

@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace BoundaryTraction
   {
-    using namespace dealii;
-
     /**
      * A class that implements prescribed traction boundary conditions determined
      * from pressures given in an AsciiData input file.

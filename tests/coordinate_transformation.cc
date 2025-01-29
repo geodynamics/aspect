@@ -23,7 +23,6 @@
 
 #include <iostream>
 
-using namespace dealii;
 using namespace aspect::Utilities;
 // Check various conversions between cartesian and spherical coordinates
 

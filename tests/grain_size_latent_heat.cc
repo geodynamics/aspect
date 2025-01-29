@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that behaves in the same way as the grain size model, but is modified to
      * resemble the latent heat benchmark. Due to the nature of the benchmark the model needs to be

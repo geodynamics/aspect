@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements subducted slab geometries as a compositional
      * field determined from an input file. The file defines the depth to

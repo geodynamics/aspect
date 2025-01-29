@@ -53,7 +53,6 @@ namespace aspect
    */
   namespace Utilities
   {
-    using namespace dealii;
     using namespace dealii::Utilities;
 
 

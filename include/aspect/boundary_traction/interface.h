@@ -38,8 +38,6 @@ namespace aspect
    */
   namespace BoundaryTraction
   {
-    using namespace dealii;
-
     /**
      * A base class for parameterizations of traction boundary conditions.
      *

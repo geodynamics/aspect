@@ -27,8 +27,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class Compression : public MaterialModel::MeltGlobal<dim>
     {

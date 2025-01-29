@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A namespace for selecting how to determine the age of a
      * boundary layer. Current options are:

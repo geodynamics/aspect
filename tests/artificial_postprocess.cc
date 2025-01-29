@@ -34,8 +34,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   template <int dim>
   class EVPostprocessor : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
   {

@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that implements a simple formulation of the
      * material parameters required for the modeling of melt transport,

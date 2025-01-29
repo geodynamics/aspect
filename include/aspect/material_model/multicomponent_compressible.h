@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model which is intended for use with multiple compositional
      * fields. Each compositional field is meant to be a single rock type,

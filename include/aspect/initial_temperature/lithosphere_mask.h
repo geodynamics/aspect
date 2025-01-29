@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     namespace LABDepth
     {
       template <int dim>

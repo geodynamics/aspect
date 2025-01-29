@@ -52,7 +52,6 @@ namespace aspect
 
   namespace Particle
   {
-    using namespace dealii;
     using namespace dealii::Particles;
 
     namespace Generator

@@ -31,8 +31,6 @@ namespace aspect
   {
     namespace Generator
     {
-      using namespace dealii;
-
       /**
        * Generate a uniform radial distribution of particles over the entire
        * simulation domain. Uniform here means

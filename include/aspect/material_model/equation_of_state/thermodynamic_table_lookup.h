@@ -32,8 +32,6 @@ namespace aspect
   {
     namespace EquationOfState
     {
-      using namespace dealii;
-
       /**
        * An equation of state class that reads thermodynamic properties
        * from pressure-temperature tables in input files. These input files

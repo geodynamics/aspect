@@ -46,8 +46,6 @@ namespace aspect
    */
   namespace GeometryModel
   {
-    using namespace dealii;
-
     /**
      * Base class for classes that describe particular geometries for the
      * domain. These classes must also be able to create coarse meshes and

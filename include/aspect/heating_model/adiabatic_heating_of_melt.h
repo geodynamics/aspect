@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements a standard adiabatic heating rate
      * for partially molten material.

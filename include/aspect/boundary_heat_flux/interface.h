@@ -35,8 +35,6 @@ namespace aspect
    */
   namespace BoundaryHeatFlux
   {
-    using namespace dealii;
-
     /**
      * Base class
      *

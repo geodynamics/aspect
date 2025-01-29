@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that describes an initial temperature field for a 2D or 3D shear wave velocity (Vs) model.
      * Vs values are converted to temperature using the anelasticity parameterization of Yamauchi & Takei (2016).

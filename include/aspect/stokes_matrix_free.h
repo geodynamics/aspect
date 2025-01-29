@@ -51,8 +51,6 @@ using GMGNumberType = double;
 
 namespace aspect
 {
-  using namespace dealii;
-
   namespace internal
   {
     /**

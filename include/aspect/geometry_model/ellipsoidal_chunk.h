@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    using namespace dealii;
-
     namespace internal
     {
       /**

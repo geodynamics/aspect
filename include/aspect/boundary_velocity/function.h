@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace BoundaryVelocity
   {
-    using namespace dealii;
-
     /**
      * A class that implements velocity boundary conditions based on a
      * functional description provided in the input file.

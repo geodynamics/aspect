@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    using namespace dealii;
-
     /**
      * A class that implements velocity and pressure solutions based on a
      * functional description provided in the input file.

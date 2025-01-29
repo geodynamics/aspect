@@ -35,7 +35,6 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      using namespace dealii;
       /**
        * A class derived from DataPostprocessor that takes an output vector
        * and computes a variable that represents the residual between

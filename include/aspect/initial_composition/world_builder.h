@@ -38,8 +38,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements initial conditions for the compositional fields
      * based on a functional description provided in the input file through the

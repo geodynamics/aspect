@@ -37,7 +37,6 @@ namespace aspect
   {
     namespace Interpolator
     {
-      using namespace dealii;
       using namespace dealii::Particles;
 
       /**

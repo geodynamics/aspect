@@ -37,8 +37,6 @@ namespace aspect
 {
   namespace ViscosityGroovesBenchmark
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
 

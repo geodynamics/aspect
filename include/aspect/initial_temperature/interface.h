@@ -45,8 +45,6 @@ namespace aspect
    */
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A base class for parameterizations of initial conditions.
      *

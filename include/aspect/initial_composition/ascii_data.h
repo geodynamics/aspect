@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements the prescribed compositional fields determined
      * from a AsciiData input file.

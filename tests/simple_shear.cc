@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class FiniteStrain : public MaterialModel::Simple<dim>
     {

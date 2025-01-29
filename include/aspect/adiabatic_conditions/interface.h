@@ -39,8 +39,6 @@ namespace aspect
    */
   namespace AdiabaticConditions
   {
-    using namespace dealii;
-
     /**
      * Base class for classes that describe adiabatic conditions,
      * i.e. that starts at the top of the domain and integrate

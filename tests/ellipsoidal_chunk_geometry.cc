@@ -26,8 +26,6 @@
 #include <iostream>
 
 using namespace aspect;
-using namespace dealii;
-
 bool test_point(const GeometryModel::internal::EllipsoidalChunkGeometry<3> ellipsoidal_manifold,
                 const Point<3> &test_point)
 {

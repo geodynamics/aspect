@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    using namespace dealii;
-
     /**
      * A simple class that sets the adiabatic conditions based on given
      * a given function with three components: temperature, pressure, density.

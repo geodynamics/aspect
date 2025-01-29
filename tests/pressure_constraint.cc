@@ -26,8 +26,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   template <int dim>
   void modify_constraints (const SimulatorAccess<dim> &simulator_access,
                            AffineConstraints<double> &current_constraints)

@@ -27,8 +27,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   /**
    * This benchmark is from the article
    * @code

@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model for incompressible (using the Boussinesq approximation)
      * and compressible computations (with ALA or TALA) for a nondimensionalized

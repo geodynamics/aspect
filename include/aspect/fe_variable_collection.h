@@ -28,8 +28,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   /**
    * A structure to describe everything necessary to define a single variable
    * of the finite element system in isolation. It groups the FiniteElement<dim> with other

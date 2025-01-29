@@ -28,8 +28,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   namespace internal
   {
     /**

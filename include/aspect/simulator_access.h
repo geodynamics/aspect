@@ -42,8 +42,6 @@ namespace WorldBuilder
 
 namespace aspect
 {
-  using namespace dealii;
-
   // forward declarations:
   template <int dim> class Simulator;
   template <int dim> struct SimulatorSignals;

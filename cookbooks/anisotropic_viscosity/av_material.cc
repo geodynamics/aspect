@@ -63,8 +63,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * Additional output fields for anisotropic viscosities to be added to
      * the MaterialModel::MaterialModelOutputs structure and filled in the

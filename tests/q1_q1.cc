@@ -39,8 +39,6 @@ namespace aspect
 {
   namespace DoneaHuertaBenchmark
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
 

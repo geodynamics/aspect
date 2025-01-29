@@ -37,8 +37,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * The same material model as Drucker Prager, but this one supports multiple
      * compositions. Designed to run the Spiegelman et al. 2016 benchmark.
@@ -170,8 +168,6 @@ namespace aspect
 
 #include <aspect/utilities.h>
 #include <aspect/parameters.h>
-
-using namespace dealii;
 
 namespace aspect
 {

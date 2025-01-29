@@ -25,8 +25,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   namespace MeshDeformation
   {
     template <int dim>

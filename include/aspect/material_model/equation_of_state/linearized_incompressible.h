@@ -32,8 +32,6 @@ namespace aspect
   {
     namespace EquationOfState
     {
-      using namespace dealii;
-
       /**
        * A simplified, incompressible equation of state where the density depends linearly
        * on temperature and composition, using the equation

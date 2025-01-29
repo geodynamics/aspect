@@ -35,8 +35,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   /**
    * Helper function to construct the default list of variables to use
    * based on the given set of @p parameters.
