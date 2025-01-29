@@ -53,6 +53,20 @@ namespace aspect
    */
   namespace Utilities
   {
+    /**
+    * Because many places in ASPECT assume that all functions in the namespace
+    * <code>dealii::Utilities</code> are available without qualification as
+    * <code>Utilities::function</code>, just as all the function in the
+    * namespace <code>aspect::Utilities</code>, we make sure all these functions
+    * are available inside <code>aspect::Utilities</code>. This is maybe not
+    * the cleanest solution, but it is most compatible with a lot of existing
+    * code, and also allows to migrate ASPECT functions into deal.II when
+    * useful without introducing incompatibilities.
+    *
+    * We need to do this in every header that introduces something into the
+    * namespace <code>aspect::Utilities</code>, because it needs to happen
+    * no matter which header files of ASPECT are included.
+    */
     using namespace dealii::Utilities;
 
 
