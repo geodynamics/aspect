@@ -1,0 +1,6 @@
+Changed: ASPECT now re-generates particles in each adaptive
+refinement cycle instead of only once after global refinement.
+This means that particle locations during adaptive refinement
+are chosen according to the generator instead of randomly.
+<br>
+(Juliane Dannberg, 2025/01/29)

@@ -1,0 +1,21 @@
+# Like particle_generator_reference_cell.prm but with initial adaptive
+# refinement to test correct particle initialization.
+# There should be 4 particles per direction within each cell.
+
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/tests/particle_generator_reference_cell.prm
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Strategy                           = composition gradient
+  set Initial global refinement          = 3
+  set Coarsening fraction                = 0.6
+  set Refinement fraction                = 0.15
+  set Adapt by fraction of cells         = true
+end
+
+subsection Particles
+  set Load balancing strategy = remove and add particles
+  set Minimum particles per cell = 16
+end
