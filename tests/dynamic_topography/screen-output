@@ -16,7 +16,7 @@ Number of degrees of freedom: 1,390 (650+90+325+325)
    Solving Stokes system (GMG)... 26+0 iterations.
 
    Postprocessing:
-     Pressure at top/bottom of domain: -1.356e-10 Pa, 2.31e+10 Pa
+     Pressure at top/bottom of domain: 3.56e-10 Pa, 2.31e+10 Pa
      Computing dynamic topography      
      Writing graphical output:         output-dynamic_topography/solution/solution-00000
 

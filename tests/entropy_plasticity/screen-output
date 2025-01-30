@@ -42,7 +42,7 @@ Number of degrees of freedom: 17,184 (6,528+864+3,264+3,264+3,264)
      Writing graphical output:           output-entropy_plasticity/solution/solution-00000
      RMS, max velocity:                  0.039 m/year, 0.467 m/year
      Temperature min/avg/max:            321 K, 2008 K, 3448 K
-     Mass fluxes through boundary parts: -1.598e-06 kg/yr, 9.92e-07 kg/yr
+     Mass fluxes through boundary parts: -1.545e-06 kg/yr, 9.844e-07 kg/yr
      Compositions min/max/mass:          600/2976/2.237e+17 // 3514/5130/3.852e+17
 
 *** Timestep 1:  t=199658 years, dt=199658 years
@@ -98,7 +98,7 @@ Number of degrees of freedom: 17,184 (6,528+864+3,264+3,264+3,264)
    Postprocessing:
      RMS, max velocity:                  0.0442 m/year, 0.57 m/year
      Temperature min/avg/max:            321 K, 2007 K, 3448 K
-     Mass fluxes through boundary parts: -1.621e-06 kg/yr, 1.003e-06 kg/yr
+     Mass fluxes through boundary parts: -1.65e-06 kg/yr, 1.007e-06 kg/yr
      Compositions min/max/mass:          600/2986/2.237e+17 // 3514/5130/3.852e+17
 
 *** Timestep 2:  t=384366 years, dt=184708 years
@@ -146,7 +146,7 @@ Number of degrees of freedom: 17,184 (6,528+864+3,264+3,264+3,264)
    Postprocessing:
      RMS, max velocity:                  0.0502 m/year, 0.818 m/year
      Temperature min/avg/max:            321 K, 2006 K, 3448 K
-     Mass fluxes through boundary parts: -1.637e-06 kg/yr, 1.046e-06 kg/yr
+     Mass fluxes through boundary parts: -1.668e-06 kg/yr, 1.067e-06 kg/yr
      Compositions min/max/mass:          600/2986/2.236e+17 // 3513/5130/3.852e+17
 
 *** Timestep 3:  t=400000 years, dt=15634.2 years
@@ -178,7 +178,7 @@ Number of degrees of freedom: 17,184 (6,528+864+3,264+3,264+3,264)
    Postprocessing:
      RMS, max velocity:                  0.0507 m/year, 0.841 m/year
      Temperature min/avg/max:            321 K, 2006 K, 3448 K
-     Mass fluxes through boundary parts: -1.722e-06 kg/yr, 1.055e-06 kg/yr
+     Mass fluxes through boundary parts: -1.625e-06 kg/yr, 1.076e-06 kg/yr
      Compositions min/max/mass:          600/2989/2.236e+17 // 3513/5130/3.852e+17
 
 Termination requested by criterion: end time
