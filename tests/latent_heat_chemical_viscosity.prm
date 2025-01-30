@@ -1,0 +1,110 @@
+# This is a model setup to test if the viscosity stratification
+# in the latent heat material model works correctly with
+# compositional fields. The test has a different number and depth
+# of phase transitions for the two compositions.
+
+set Dimension = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 500000
+    set Y extent = 1000000
+    set Y repetitions = 2
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+############### Boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+  set List of model names = initial temperature
+end
+
+# We prescribe a constant downward flow.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1600.0
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(x>=250000, 1, 0);
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = field1
+end
+
+subsection Material model
+  set Model name = latent heat
+
+  subsection Latent heat
+    set Phase transition density jumps                 = 100, 100, 100, 100, 100
+    set Corresponding phase for density jump           = 0, 0, 1, 1, 1
+    set Density differential for compositional field 1 = 0
+
+    set Phase transition depths                        = background:400000|600000, field1:300000|500000|700000
+    set Phase transition temperatures                  = background:1600|1600, field1:1600|1600|1600
+    set Phase transition Clapeyron slopes              = all:0
+
+    set Phase transition widths                        = all:50000
+    set Reference density                              = 3400
+    set Reference specific heat                        = 1000
+    set Reference temperature                          = 1600
+    set Thermal conductivity                           = 2.38
+
+    set Thermal expansion coefficient                  = 0.0
+    set Compressibility                                = 0.0
+
+    # Viscosity is constant.
+    set Thermal viscosity exponent                     = 0.0
+    set Viscosity                                      = 1e22
+    set Viscosity prefactors                           = background:1|10|1, field1:3.333|1|10|3.333
+    set Composition viscosity prefactor                = 1.0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  
+    subsection Visualization
+    set List of output variables      = material properties
+    subsection Material properties
+      set List of material properties = viscosity, density
+    end
+
+    set Number of grouped files       = 1
+    set Output format                 = gnuplot
+  end
+end

@@ -129,7 +129,6 @@ subsection Material model
     # Viscosity is constant.
     set Thermal viscosity exponent                     = 0.0
     set Viscosity                                      = 8.44e21
-    set Viscosity prefactors                           = 1.0, 1.0, 1.0
     set Composition viscosity prefactor                = 1.0
   end
 end
