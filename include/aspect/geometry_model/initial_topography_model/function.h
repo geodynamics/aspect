@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace InitialTopographyModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements initial topography based
      * on a user-defined function..

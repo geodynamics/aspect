@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace TimeStepping
   {
-    using namespace dealii;
-
     /**
      * A class that implements a time stepping plugin on a function
      * description provided in the input file.

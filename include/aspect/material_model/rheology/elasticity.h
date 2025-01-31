@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * Additional output fields for the elastic shear modulus to be added to
      * the MaterialModel::MaterialModelOutputs structure and filled in the

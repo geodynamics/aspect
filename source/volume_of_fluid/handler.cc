@@ -31,8 +31,6 @@
 #include <deal.II/fe/fe_dgq.h>
 #include <deal.II/fe/mapping_cartesian.h>
 
-using namespace dealii;
-
 namespace aspect
 {
   namespace internal

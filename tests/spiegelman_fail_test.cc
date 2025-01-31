@@ -34,8 +34,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * The same material model as Drucker Prager, but this one supports multiple
      * compositions in a way to reproduce the Spiegelman 2016 paper.

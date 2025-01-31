@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model based on the rheology described in (Morency and Doin,
      * 2004): Brittle-ductile rheology with a viscosity strongly depending on

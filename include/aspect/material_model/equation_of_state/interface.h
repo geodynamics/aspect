@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A data structure containing output fields that can be filled by the
      * evaluate() function of an EquationOfState model. It contains those

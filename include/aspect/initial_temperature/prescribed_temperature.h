@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class sets the initial temperature to the precribed temperature
      * outputs computed by the material model.

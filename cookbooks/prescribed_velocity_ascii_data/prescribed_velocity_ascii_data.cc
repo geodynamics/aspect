@@ -29,8 +29,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   // Global variables (to be set by parameters)
   bool prescribe_internal_velocities;
   bool prescribed_velocity_ascii_file_loaded;

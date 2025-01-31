@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace InitialTopographyModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements topography determined
      * from an AsciiData input file.

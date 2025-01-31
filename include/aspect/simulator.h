@@ -75,8 +75,6 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 namespace aspect
 {
-  using namespace dealii;
-
   template <int dim>
   class MeltHandler;
 

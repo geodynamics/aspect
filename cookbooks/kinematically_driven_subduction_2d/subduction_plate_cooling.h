@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that prescribes the initial temperature field according to the plate cooling model
      * and plate geometries implemented in Quinquis (2014).

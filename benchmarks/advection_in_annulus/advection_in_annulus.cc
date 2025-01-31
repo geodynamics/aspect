@@ -45,8 +45,6 @@ namespace aspect
    */
   namespace AdvectionInAnnulus
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
       const double A=2.0, B=-3.0/std::log(2.0), C=-1;
@@ -109,8 +107,6 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    using namespace dealii;
-
     /**
      * A class that implements the flow field of the annulus benchmark.
      *

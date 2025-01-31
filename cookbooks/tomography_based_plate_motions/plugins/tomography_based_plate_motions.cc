@@ -33,8 +33,6 @@
 
 #include <iostream>
 
-using namespace dealii;
-
 namespace aspect
 {
   namespace MaterialModel

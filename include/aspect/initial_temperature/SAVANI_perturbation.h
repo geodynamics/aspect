@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     namespace internal
     {
       namespace SAVANI

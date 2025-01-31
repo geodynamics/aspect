@@ -53,7 +53,6 @@ namespace aspect
    */
   namespace AnnulusBenchmark
   {
-    using namespace dealii;
     using namespace aspect::Utilities::Coordinates;
 
     /**

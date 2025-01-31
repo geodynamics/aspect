@@ -60,8 +60,6 @@ namespace aspect
 
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class Advection : public MaterialModel::MeltGlobal<dim>
     {

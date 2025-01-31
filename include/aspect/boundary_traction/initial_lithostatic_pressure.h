@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace BoundaryTraction
   {
-    using namespace dealii;
-
     /**
      * A class that implements traction boundary conditions by prescribing
      * the lithostatic pressure as the normal traction component.

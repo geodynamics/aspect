@@ -52,8 +52,6 @@ namespace aspect
    */
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A namespace whose enum members are used in querying the nonlinear
      * dependence of physical parameters on other solution variables.

@@ -27,8 +27,6 @@
 #include <deal.II/fe/fe_dgq.h>
 #include <iostream>
 
-using namespace dealii;
-
 namespace aspect
 {
 

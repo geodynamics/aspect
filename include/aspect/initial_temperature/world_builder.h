@@ -39,8 +39,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that implements temperature initial conditions based on a
      * functional description provided in the input file through the

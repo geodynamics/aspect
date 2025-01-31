@@ -29,8 +29,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   namespace MeshDeformation
   {
     /**

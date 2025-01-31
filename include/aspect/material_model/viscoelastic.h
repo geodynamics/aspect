@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * An implementation of a simple linear viscoelastic rheology that only
      * includes the deviatoric components of elasticity. Specifically, the

@@ -27,9 +27,6 @@
 #include <cmath>
 
 
-using namespace dealii;
-
-
 namespace aspect
 {
   namespace MaterialModel

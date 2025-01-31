@@ -33,9 +33,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
-
     /**
      * A material model to set up mantle flow models based on
      * an input tomography model and a temperature model.

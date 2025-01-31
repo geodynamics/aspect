@@ -38,7 +38,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
     /**
      * A material model that simulates both fluid-rock interactions
      * and the advection of fluids. It is designed to be composited with another material

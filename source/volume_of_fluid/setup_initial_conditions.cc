@@ -28,8 +28,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   template <int dim>
   void VolumeOfFluidHandler<dim>::set_initial_volume_fractions ()
   {

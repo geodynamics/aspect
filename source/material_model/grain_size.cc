@@ -28,8 +28,6 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/signaling_nan.h>
 
-using namespace dealii;
-
 namespace aspect
 {
   namespace MaterialModel

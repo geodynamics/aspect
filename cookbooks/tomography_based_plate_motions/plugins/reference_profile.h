@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    using namespace dealii;
-
     /**
      * A model similar to the compute profile model
      * in which the adiabatic profile is

@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that computes an initial temperature field based
      * on a user-defined adiabatic boundary. It discretizes the model domain into

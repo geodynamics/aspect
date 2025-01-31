@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    using namespace dealii;
-
     /**
      * A geometry model based on the 2D Cartesian van Keken 2008 subduction
      * benchmark. A custom mesh that is better suited to deal with

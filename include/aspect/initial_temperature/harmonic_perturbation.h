@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that describes a perturbed initially constant temperature field
      * for any geometry model or dimension in shape of a harmonic function.

@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace MeshDeformation
   {
-    using namespace dealii;
-
     /**
      * A class that implements initial topography determined
      * from an AsciiData input file.

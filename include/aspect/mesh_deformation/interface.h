@@ -40,8 +40,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   namespace Assemblers
   {
     /**

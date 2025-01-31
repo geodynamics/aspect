@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     namespace Rheology
     {
       /**

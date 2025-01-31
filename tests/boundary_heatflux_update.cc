@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace BoundaryHeatFlux
   {
-    using namespace dealii;
-
     /**
      * A class that implements heat flux boundary conditions based on a
      * functional description provided in the input file.

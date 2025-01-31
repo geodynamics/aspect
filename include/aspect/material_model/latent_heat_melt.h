@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that implements latent heat of melting for two
      * materials: peridotite and pyroxenite. The density and thermal

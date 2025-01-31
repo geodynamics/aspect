@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that reads in a reference profile from an ascii file
      * and computes properties based on this profile.

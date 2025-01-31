@@ -37,7 +37,7 @@ namespace aspect
       unsigned int local_min_particles = std::numeric_limits<unsigned int>::max();
       unsigned int local_max_particles = 0;
 
-      Particle::types::particle_index global_particles = 0;
+      types::particle_index global_particles = 0;
       for (unsigned int particle_manager_index = 0; particle_manager_index < this->n_particle_managers(); ++particle_manager_index)
         global_particles += this->get_particle_manager(particle_manager_index).n_global_particles();
 

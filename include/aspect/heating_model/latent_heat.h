@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements a standard formulation of latent heat.
      * This includes a left hand side and a right hand side term:

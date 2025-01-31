@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements prescribed compositional fields determined from
      * AsciiData input files. Each file defines a layer boundary as a grid of points.

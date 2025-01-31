@@ -45,8 +45,6 @@ namespace aspect
    */
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A data structure with the output field of the
      * HeatingModel::Interface::evaluate() function. The vectors are the

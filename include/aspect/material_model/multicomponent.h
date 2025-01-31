@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * An incompressible material model which is intended for use with multiple
      * compositional fields. Each compositional field is meant to be a single

@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace Utilities
   {
-    using namespace dealii;
-
     /**
      * StructuredDataLookup (formerly AsciiDataLookup) represents structured
      * data that can be read from files including in ascii format.

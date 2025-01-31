@@ -25,8 +25,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   template <>
   void VolumeOfFluidHandler<2>::update_volume_of_fluid_normals (const VolumeOfFluidField<2> &field,
                                                                 LinearAlgebra::BlockVector &solution)

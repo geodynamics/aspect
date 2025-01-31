@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace PrescribedStokesSolution
   {
-    using namespace dealii;
-
     /**
      * A class that implements a prescribed velocity field determined from
      * a AsciiData input file.

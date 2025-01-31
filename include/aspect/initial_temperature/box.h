@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that describes a perturbed initial temperature field for a box
      * geometry.

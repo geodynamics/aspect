@@ -25,9 +25,6 @@
 #include <math.h>
 
 
-using namespace dealii;
-
-
 namespace aspect
 {
   template <int dim>

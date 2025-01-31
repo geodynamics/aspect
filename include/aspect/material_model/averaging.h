@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * An enum to define what kind of averaging operations are implemented.
      * These are:

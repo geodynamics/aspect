@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model similar to the "simpler" material model, but where the
      * viscosity has two different values dependent on whether we are above or

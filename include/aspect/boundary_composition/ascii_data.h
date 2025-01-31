@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements prescribed boundary conditions determined from
      * a AsciiData input file.

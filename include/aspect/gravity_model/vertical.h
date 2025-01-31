@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace GravityModel
   {
-    using namespace dealii;
-
     /**
      * A class that describes gravity as a vector of constant magnitude
      * pointing vertically down.

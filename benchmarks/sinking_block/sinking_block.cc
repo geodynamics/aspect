@@ -35,8 +35,6 @@ namespace aspect
 {
   namespace SinkingBlockBenchmark
   {
-    using namespace dealii;
-
     /**
      * @note This benchmark only talks about the flow field, not about a
      * temperature field. All quantities related to the temperature are

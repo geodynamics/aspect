@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that consists of globally constant values for all
      * material parameters except the density, which depends linearly on the

@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A compressible material model that implements the thermal modified Tait
      * equation of state as written in the paper of Holland and Powell, 2011

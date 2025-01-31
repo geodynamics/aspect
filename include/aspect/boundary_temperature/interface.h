@@ -46,8 +46,6 @@ namespace aspect
    */
   namespace BoundaryTemperature
   {
-    using namespace dealii;
-
     /**
      * Base class for classes that describe temperature boundary values.
      *

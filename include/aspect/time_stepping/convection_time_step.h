@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace TimeStepping
   {
-    using namespace dealii;
-
     /**
      * Compute the convection time step based on the current solution and
      * return it.

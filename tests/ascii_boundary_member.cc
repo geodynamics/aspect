@@ -34,7 +34,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
   /**
    * A boundary velocity plugin that uses an AsciiDataBoundary object as member
    */

@@ -46,8 +46,6 @@ namespace aspect
 
   namespace Plugins
   {
-    using namespace dealii;
-
     /**
      * This function returns if a given plugin (e.g. a material model returned
      * from SimulatorAccess::get_material_model() ) matches a certain plugin
@@ -114,9 +112,6 @@ namespace aspect
 
   namespace Plugins
   {
-    using namespace dealii;
-
-
     /**
      * A base class for all plugin systems. The class ensures that a
      * common set of functions is declared as `virtual` (namely, the
@@ -426,10 +421,6 @@ namespace aspect
      */
     namespace Plugins
     {
-      using namespace dealii;
-
-
-
       /**
        * An internal class that is used in the definition of the
        * ASPECT_REGISTER_* macros. Given a registration function, a classname,

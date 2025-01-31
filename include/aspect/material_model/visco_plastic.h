@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model combining viscous and plastic deformation, with
      * the option to also include viscoelastic deformation.

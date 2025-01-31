@@ -34,8 +34,6 @@ namespace aspect
 {
   namespace Benchmark
   {
-    using namespace dealii;
-
     /**
      * u = cos(y), sin(x)+xy
      * p = 2/3 eta x

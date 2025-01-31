@@ -34,7 +34,6 @@ namespace aspect
   {
     namespace Integrator
     {
-      using namespace dealii;
       using namespace dealii::Particles;
 
       /**

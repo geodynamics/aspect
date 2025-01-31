@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that implements prescribed data boundary conditions determined
      * from a AsciiData input file.

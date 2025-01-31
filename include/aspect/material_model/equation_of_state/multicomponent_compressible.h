@@ -32,8 +32,6 @@ namespace aspect
   {
     namespace EquationOfState
     {
-      using namespace dealii;
-
       /**
        * A compressible equation of state that is intended for use with multiple compositional
        * fields. For each material property, the user supplies a comma delimited list of

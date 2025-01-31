@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements initial conditions for the entropy field
      * Note that this plugin only

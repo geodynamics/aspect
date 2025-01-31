@@ -32,9 +32,6 @@
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/vector_tools.h>
 
-using namespace dealii;
-
-
 namespace aspect
 {
   template <int dim>

@@ -36,8 +36,6 @@ namespace aspect
 {
   namespace LayeredFlowBenchmark
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
 

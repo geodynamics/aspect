@@ -23,8 +23,6 @@
 
 #include <aspect/fe_variable_collection.h>
 
-using namespace dealii;
-
 namespace aspect
 {
   namespace VolumeOfFluid

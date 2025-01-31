@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class ExponentialDecay : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -64,8 +62,6 @@ namespace aspect
 
   namespace HeatingModel
   {
-    using namespace dealii;
-
     template <int dim>
     class ExponentialDecayHeating : public HeatingModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {

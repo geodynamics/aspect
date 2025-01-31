@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace BoundaryVelocity
   {
-    using namespace dealii;
-
     namespace internal
     {
       /**

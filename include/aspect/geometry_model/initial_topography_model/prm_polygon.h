@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace InitialTopographyModel
   {
-    using namespace dealii;
-
     /**
      * A class that describes an initial topography for the geometry model,
      * by defining a set of polygons on the surface from the prm file. It

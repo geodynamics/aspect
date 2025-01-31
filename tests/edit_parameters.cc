@@ -25,8 +25,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   // Global variables (to be set by parameters)
   unsigned int switch_step;
   bool switched;

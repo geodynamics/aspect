@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace AdiabaticConditions
   {
-    using namespace dealii;
-
     /**
      * A simple class that reads adiabatic conditions from a file.
      */

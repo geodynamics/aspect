@@ -26,9 +26,6 @@ namespace aspect
   {
     namespace Utilities
     {
-      using namespace dealii;
-
-
       double compute_fluid_fraction (const Tensor<1, 2> normal,
                                      const double d)
       {

@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace BoundaryTraction
   {
-    using namespace dealii;
-
     /**
      * A class that implements zero traction boundary conditions. This
      * is equivalent to an open boundary condition in domains where

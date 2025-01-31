@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements initial conditions for the porosity field
      * by computing the equilibrium melt fraction for the given initial

@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace BoundaryTraction
   {
-    using namespace dealii;
-
     /**
      * A class that implements traction boundary conditions based on a
      * functional description provided in the input file.

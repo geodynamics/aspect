@@ -32,8 +32,6 @@ namespace aspect
   {
     namespace ThermalConductivity
     {
-      using namespace dealii;
-
       /**
        * A base class for parametrizations of the thermal conductivity. Classes derived
        * from this class will need to implement a function that computes the thermal

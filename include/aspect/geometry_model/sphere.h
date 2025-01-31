@@ -27,8 +27,6 @@ namespace aspect
 {
   namespace GeometryModel
   {
-    using namespace dealii;
-
     template <int dim>
     class Sphere : public Interface<dim>, public SimulatorAccess<dim>
     {

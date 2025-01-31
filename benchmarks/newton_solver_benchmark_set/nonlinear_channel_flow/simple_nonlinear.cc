@@ -31,8 +31,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model based on a simple power law rheology and
      * implementing the derivatives needed for the Newton method.
@@ -109,8 +107,6 @@ namespace aspect
 }
 
 
-
-using namespace dealii;
 
 namespace aspect
 {

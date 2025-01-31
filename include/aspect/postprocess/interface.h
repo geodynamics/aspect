@@ -38,8 +38,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   template <int dim> class Simulator;
   template <int dim> class SimulatorAccess;
 

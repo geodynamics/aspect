@@ -28,8 +28,6 @@
 
 namespace aspect
 {
-  using namespace dealii;
-
   // Declare and parse additional parameters
   bool prescribe_internal_temperature;
   std::vector <std::string> fixed_compositional_fields;

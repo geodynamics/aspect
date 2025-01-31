@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace HeatingModel
   {
-    using namespace dealii;
-
     /**
      * A class that implements a standard formulation of latent heat
      * of melting. This assumes that there is a compositional field

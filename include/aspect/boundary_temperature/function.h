@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace BoundaryTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that implements boundary temperature based on a functional
      * description provided in the input file.

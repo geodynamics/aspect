@@ -29,8 +29,6 @@ namespace aspect
 {
   namespace InitialTemperature
   {
-    using namespace dealii;
-
     /**
      * A class that describes a perturbation to a zero temperature field
      * by placing several Gaussians with a given magnitude and width at

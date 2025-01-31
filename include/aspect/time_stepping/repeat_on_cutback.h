@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace TimeStepping
   {
-    using namespace dealii;
-
     /**
      * A class that implements a time stepping plugin to repeat a time step if the
      * next time step is significantly smaller than the last step.

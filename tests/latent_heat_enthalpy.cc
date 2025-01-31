@@ -33,8 +33,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     template <int dim>
     class LatentHeatEnthalpy : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {

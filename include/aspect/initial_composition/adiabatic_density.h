@@ -30,8 +30,6 @@ namespace aspect
 {
   namespace InitialComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements initial conditions for the compositional fields
      * based on the adiabatic density profile. Note that only the field

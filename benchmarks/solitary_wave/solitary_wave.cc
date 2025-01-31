@@ -117,8 +117,6 @@ namespace aspect
    */
   namespace SolitaryWaveBenchmark
   {
-    using namespace dealii;
-
     namespace AnalyticSolutions
     {
       // vectors to store the porosity field and the corresponding coordinate in

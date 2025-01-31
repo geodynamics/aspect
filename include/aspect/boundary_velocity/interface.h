@@ -44,8 +44,6 @@ namespace aspect
    */
   namespace BoundaryVelocity
   {
-    using namespace dealii;
-
     /**
      * A base class for parameterizations of velocity boundary conditions.
      *

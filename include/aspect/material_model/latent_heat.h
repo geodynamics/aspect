@@ -28,8 +28,6 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    using namespace dealii;
-
     /**
      * A material model that implements a standard approximation of the latent
      * heat terms following Christensen \& Yuen, 1986. The change of entropy

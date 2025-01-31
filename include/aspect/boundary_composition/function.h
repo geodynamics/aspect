@@ -32,8 +32,6 @@ namespace aspect
 {
   namespace BoundaryComposition
   {
-    using namespace dealii;
-
     /**
      * A class that implements boundary composition based on a functional
      * description provided in the input file.
