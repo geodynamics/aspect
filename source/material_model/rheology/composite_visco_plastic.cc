@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/rheology/composite_visco_plastic.h>
+#include <aspect/heating_model/shear_heating.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
 
@@ -42,7 +43,8 @@ namespace aspect
       // The composite visco plastic rheology calculates the decomposed strain
       // rates for each of the following deformation mechanisms:
       // diffusion creep, dislocation creep, Peierls creep,
-      // Drucker-Prager plasticity and a constant (high) viscosity limiter.
+      // Drucker-Prager plasticity, Kelvin (damped) elasticity
+      // and a constant (high) viscosity limiter.
       // The values are provided in this order as a vector of additional
       // outputs. If the user declares one or more mechanisms inactive
       // (by assigning use_mechanism = False) then the corresponding
@@ -56,6 +58,7 @@ namespace aspect
       //    names.emplace_back("edot_dislocation");
       //    names.emplace_back("edot_peierls");
       //    names.emplace_back("edot_drucker_prager");
+      //    names.emplace_back("edot_kelvin");
       //    names.emplace_back("edot_limiter");
       //    return names;
       //  }
@@ -93,11 +96,41 @@ namespace aspect
 
       template <int dim>
       double
+      CompositeViscoPlastic<dim>::compute_inverse_kelvin_viscosity(const std::vector<double> &volume_fractions) const
+      {
+        double inverse_kelvin_viscosity = 0.;
+        if (this->get_parameters().enable_elasticity)
+          {
+            // Take the volume-weighted harmonic average of the individual component
+            // shear moduli, as required for isostress (Reuss) material averaging.
+            const std::vector<double> &elastic_shear_moduli = elasticity->get_elastic_shear_moduli();
+            const double elastic_shear_modulus = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, MaterialUtilities::harmonic);
+            inverse_kelvin_viscosity = 1./elasticity->calculate_elastic_viscosity(elastic_shear_modulus);
+          }
+        return inverse_kelvin_viscosity;
+      }
+
+
+
+      template <int dim>
+      SymmetricTensor<2,dim>
+      CompositeViscoPlastic<dim>::compute_effective_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
+                                                                const SymmetricTensor<2,dim> &elastic_stress,
+                                                                const double inverse_kelvin_viscosity) const
+      {
+        return strain_rate + (0.5 * elastic_stress * inverse_kelvin_viscosity);
+      }
+
+
+
+      template <int dim>
+      double
       CompositeViscoPlastic<dim>::compute_viscosity (const double pressure,
                                                      const double temperature,
                                                      const double grain_size,
                                                      const std::vector<double> &volume_fractions,
-                                                     const SymmetricTensor<2,dim> &strain_rate,
+                                                     const SymmetricTensor<2,dim> &effective_strain_rate,
+                                                     const double inverse_kelvin_viscosity,
                                                      std::vector<double> &partial_strain_rates,
                                                      const std::vector<double> &phase_function_values,
                                                      const std::vector<unsigned int> &n_phase_transitions_per_composition) const
@@ -118,7 +151,8 @@ namespace aspect
                                                        temperature,
                                                        grain_size,
                                                        volume_fractions,
-                                                       strain_rate,
+                                                       effective_strain_rate,
+                                                       inverse_kelvin_viscosity,
                                                        partial_strain_rates,
                                                        phase_function_values,
                                                        n_phase_transitions_per_composition);
@@ -130,7 +164,7 @@ namespace aspect
                                                        temperature,
                                                        grain_size,
                                                        volume_fractions,
-                                                       strain_rate,
+                                                       effective_strain_rate,
                                                        partial_strain_rates,
                                                        phase_function_values,
                                                        n_phase_transitions_per_composition);
@@ -152,7 +186,8 @@ namespace aspect
                                                                const double temperature,
                                                                const double grain_size,
                                                                const std::vector<double> &volume_fractions,
-                                                               const SymmetricTensor<2,dim> &strain_rate,
+                                                               const SymmetricTensor<2,dim> &effective_strain_rate,
+                                                               const double inverse_kelvin_viscosity,
                                                                std::vector<double> &partial_strain_rates,
                                                                const std::vector<double> &phase_function_values,
                                                                const std::vector<unsigned int> &n_phase_transitions_per_composition) const
@@ -161,7 +196,7 @@ namespace aspect
         // to prevent a division-by-zero, and a floating point exception.
         // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
         // strain rate (often simplified as epsilondot_ii)
-        const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(strain_rate)), 0.)),
+        const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(effective_strain_rate)), 0.)),
                                         minimum_strain_rate);
         const double log_edot_ii = std::log(edot_ii);
 
@@ -285,6 +320,7 @@ namespace aspect
         // accommodate strain at that creep stress.
         std::pair<double, double> log_edot_ii_and_deriv_iterate = calculate_isostress_log_strain_rate_and_derivative(log_edot_and_deriv,
                                                                   viscoplastic_stress,
+                                                                  inverse_kelvin_viscosity,
                                                                   partial_strain_rates);
         double log_strain_rate_residual = log_edot_ii_and_deriv_iterate.first - log_edot_ii;
 
@@ -315,6 +351,7 @@ namespace aspect
             // Compute the new log strain rate residual and log stress derivative
             log_edot_ii_and_deriv_iterate = calculate_isostress_log_strain_rate_and_derivative(log_edot_and_deriv,
                                             viscoplastic_stress,
+                                            inverse_kelvin_viscosity,
                                             partial_strain_rates);
             log_strain_rate_residual = log_edot_ii - log_edot_ii_and_deriv_iterate.first;
 
@@ -342,8 +379,12 @@ namespace aspect
         // because this material model also includes a viscosity damper
         // arranged in parallel with the viscoplastic elements.
         // The total stress is equal to the sum of the viscoplastic stress and
-        // minimum stress.
-        const double damper_stress = 2. * damper_viscosity * (edot_ii - partial_strain_rates[4]);
+        // damper stress.
+        double viscoplastic_strain_rate = 0.;
+        for (auto &i : active_flow_mechanisms)
+          viscoplastic_strain_rate += partial_strain_rates[i];
+
+        const double damper_stress = 2. * damper_viscosity * viscoplastic_strain_rate;
         const double total_stress = viscoplastic_stress + damper_stress;
 
         // 6) Return the effective creep viscosity using the total stress
@@ -356,6 +397,7 @@ namespace aspect
       std::pair<double, double>
       CompositeViscoPlastic<dim>::calculate_isostress_log_strain_rate_and_derivative(const std::vector<std::array<std::pair<double, double>, 4>> &logarithmic_strain_rates_and_stress_derivatives,
                                                                                      const double viscoplastic_stress,
+                                                                                     const double inverse_kelvin_viscosity,
                                                                                      std::vector<double> &partial_strain_rates) const
       {
         // The total strain rate
@@ -396,12 +438,21 @@ namespace aspect
         const double log_viscoplastic_strain_rate_derivative = weighted_stress_derivative_sum / viscoplastic_strain_rate_sum;
 
         // Some opaque mathematics converts the viscoplastic strain rate to the total strain rate.
-        const double f = viscoplastic_stress / (2. * maximum_viscosity);
-        const double strain_rate = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum) + f;
-        partial_strain_rates[4] = strain_rate - viscoplastic_strain_rate_sum;
+        const double inverse_hard_and_elastic_viscosity = (inverse_maximum_viscosity + inverse_kelvin_viscosity);
+        const double f = 0.5 * inverse_hard_and_elastic_viscosity * viscoplastic_stress;
+        const double g = 1. + minimum_viscosity * inverse_kelvin_viscosity;
+        const double strain_rate = (strain_rate_scaling_factor * g * viscoplastic_strain_rate_sum) + f;
+        const double strain_rate_hard_and_elastic = strain_rate - viscoplastic_strain_rate_sum;
+
+        // Elastic strain rate
+        partial_strain_rates[elastic_strain_rate_index] = strain_rate_hard_and_elastic * (inverse_kelvin_viscosity / inverse_hard_and_elastic_viscosity);
+
+        // Hard damper strain rate
+        partial_strain_rates[damper_strain_rate_index] = strain_rate_hard_and_elastic - partial_strain_rates[elastic_strain_rate_index];
+
         // And the partial derivative of the log *total* strain rate
         // with respect to log *viscoplastic* stress follows as
-        const double log_strain_rate_derivative = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum * log_viscoplastic_strain_rate_derivative + f) / strain_rate;
+        const double log_strain_rate_derivative = (strain_rate_scaling_factor * g * viscoplastic_strain_rate_sum * log_viscoplastic_strain_rate_derivative + f) / strain_rate;
 
         return std::make_pair(std::log(strain_rate), log_strain_rate_derivative);
       }
@@ -430,7 +481,10 @@ namespace aspect
             // a certain (small) fraction.
             if (volume_fractions[composition] > 2. * std::numeric_limits<double>::epsilon())
               {
-                std::vector<double> partial_strain_rates_composition(n_decomposed_strain_rates, 0.);
+                // There is no elastic component allowed in isostrain models,
+                // so the size of vector partial_strain_rates_composition is
+                // one smaller than partial_strain_rates.
+                std::vector<double> partial_strain_rates_composition(n_decomposed_strain_rates-1, 0.);
                 viscosity += (volume_fractions[composition]
                               * compute_composition_viscosity (pressure,
                                                                temperature,
@@ -440,8 +494,11 @@ namespace aspect
                                                                partial_strain_rates_composition,
                                                                phase_function_values,
                                                                n_phase_transitions_per_composition));
-                for (unsigned int j=0; j < n_decomposed_strain_rates; ++j)
+                for (auto &j : active_flow_mechanisms)
                   partial_strain_rates[j] += volume_fractions[composition] * partial_strain_rates_composition[j];
+
+                // Shift the strain rate for the hard viscosity damper into the last position in partial_strain_rates.
+                partial_strain_rates[damper_strain_rate_index] += volume_fractions[composition] * partial_strain_rates_composition[isostrain_damper_strain_rate_index];
               }
             else
               {
@@ -451,7 +508,7 @@ namespace aspect
 
         viscosity /= total_volume_fraction;
 
-        for (unsigned int j=0; j < n_decomposed_strain_rates; ++j)
+        for (auto &j : active_flow_mechanisms)
           partial_strain_rates[j] /= total_volume_fraction;
 
         return viscosity;
@@ -599,8 +656,8 @@ namespace aspect
         // because this material model also includes a viscosity damper
         // arranged in parallel with the viscoplastic elements.
         // The total stress is equal to the sum of the viscoplastic stress and
-        // minimum stress.
-        const double damper_stress = 2. * damper_viscosity * (edot_ii - partial_strain_rates[4]);
+        // damper stress.
+        const double damper_stress = 2. * damper_viscosity * (edot_ii - partial_strain_rates[isostrain_damper_strain_rate_index]);
         const double total_stress = viscoplastic_stress + damper_stress;
 
         // 6) Return the effective creep viscosity using the total stress
@@ -649,12 +706,298 @@ namespace aspect
         // Some opaque mathematics converts the viscoplastic strain rate to the total strain rate.
         const double f = viscoplastic_stress / (2. * maximum_viscosity);
         const double strain_rate = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum) + f;
-        partial_strain_rates[4] = strain_rate - viscoplastic_strain_rate_sum;
+        partial_strain_rates[isostrain_damper_strain_rate_index] = strain_rate - viscoplastic_strain_rate_sum;
         // And the partial derivative of the log *total* strain rate
         // with respect to log *viscoplastic* stress follows as
         const double log_strain_rate_derivative = (strain_rate_scaling_factor * viscoplastic_strain_rate_sum * log_viscoplastic_strain_rate_derivative + f) / strain_rate;
 
         return std::make_pair(std::log(strain_rate), log_strain_rate_derivative);
+      }
+
+
+
+      // TODO: UNCOMMENT
+      /*
+      template <int dim>
+      void
+      CompositeViscoPlastic<dim>::create_elastic_additional_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        // Create the ElasticAdditionalOutputs that include the average shear modulus, elastic
+        // viscosity, timestep ratio and total deviatoric stress of the current timestep.
+        if (out.template get_additional_output<ElasticAdditionalOutputs<dim>>() == nullptr)
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<ElasticAdditionalOutputs<dim>> (n_points));
+          }
+
+        // We need to modify the shear heating outputs to correctly account for elastic stresses.
+        if (out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>() == nullptr)
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<HeatingModel::PrescribedShearHeatingOutputs<dim>> (n_points));
+          }
+
+        // Create the ReactionRateOutputs that are necessary for the operator splitting
+        // step (either on the fields or directly on the particles)
+        // that sets both sets of stresses to the total stress of the
+        // previous timestep.
+        if (out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr &&
+            (this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std::make_unique<MaterialModel::ReactionRateOutputs<dim>>(n_points, this->n_compositional_fields()));
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      CompositeViscoPlastic<dim>::fill_elastic_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                        const std::vector<double> &inverse_kelvin_viscosities,
+                                                        MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        // Create a reference to the structure for the elastic outputs.
+        // The structure is created during the Stokes assembly.
+        MaterialModel::ElasticOutputs<dim>
+        *elastic_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+
+        // Create a reference to the structure for the prescribed shear heating outputs.
+        // The structure is created during the advection assembly.
+        HeatingModel::PrescribedShearHeatingOutputs<dim>
+        *heating_out = out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>();
+
+        if (elastic_out == nullptr && heating_out == nullptr)
+          return;
+
+        // TODO should a RHS term be a separate MaterialProperties?
+        if (in.requests_property(MaterialProperties::additional_outputs))
+          {
+            // The viscosity should be averaged if material averaging is applied.
+            std::vector<double> effective_creep_viscosities;
+            if (this->get_parameters().material_averaging != MaterialAveraging::none)
+              {
+                MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
+                                                   this->introspection().n_compositional_fields);
+                out_copy.viscosities = out.viscosities;
+
+                const MaterialAveraging::AveragingOperation averaging_operation_for_viscosity =
+                  get_averaging_operation_for_viscosity(this->get_parameters().material_averaging);
+                MaterialAveraging::average(averaging_operation_for_viscosity,
+                                           in.current_cell,
+                                           this->introspection().quadratures.velocities,
+                                           this->get_mapping(),
+                                           in.requested_properties,
+                                           out_copy);
+
+                effective_creep_viscosities = out_copy.viscosities;
+              }
+            else
+              effective_creep_viscosities = out.viscosities;
+
+            const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
+
+            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+              {
+                const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+
+                // Get stress from timestep $t$ rotated and advected into the current
+                // timestep $t+\Delta t_c$ from the compositional fields.
+                // This function is only evaluated during the assembly of the Stokes equations
+                // (the force term goes into the rhs of the momentum equation).
+                // This happens after the advection equations have been solved, and hence in.composition
+                // contains the rotated and advected stresses $tau^{0adv}$.
+                // Only at the beginning of the next timestep do we add the stress update of the
+                // current timestep to the stress stored in the compositional fields, giving
+                // $\tau{t+\Delta t_c}$ with $t+\Delta t_c$ being the current timestep.
+                const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
+                                                                &in.composition[i][stress_start_index]+n_independent_components));
+
+                // Average effective creep viscosity
+                // Use the viscosity corresponding to the stresses selected above.
+                // out.viscosities is computed during the assembly of the Stokes equations
+                // based on the current_linearization_point. This means that it will be updated after every
+                // nonlinear Stokes iteration.
+                // The effective creep viscosity has already been scaled with the timestep ratio dtc/dte.
+                const double effective_creep_viscosity = effective_creep_viscosities[i];
+
+                // The force term is computed as:
+                // $\frac{-\eta_{effcreep} \tau_{0adv}}{\eta_{e}}$, where $\eta_{effcreep}$ is the
+                // current harmonic average of the viscous and elastic viscosity, or the yield stress
+                // divided by two times the second invariant of the deviatoric strain rate.
+                // In case the computational timestep differs from the elastic timestep,
+                // linearly interpolate between the two.
+                // The elastic viscosity has also already been scaled with the timestep ratio.
+                const double viscosity_ratio = effective_creep_viscosity * inverse_kelvin_viscosities[i];
+
+                if (elastic_out != nullptr)
+                  {
+                    elastic_out->elastic_force[i] = -1. * viscosity_ratio * stress_0_advected;
+
+                    // The viscoelastic strain rate is needed only when the Newton method is selected.
+                    const typename Parameters<dim>::NonlinearSolver::Kind nonlinear_solver = this->get_parameters().nonlinear_solver;
+                    if ((nonlinear_solver == Parameters<dim>::NonlinearSolver::iterated_Advection_and_Newton_Stokes) ||
+                        (nonlinear_solver == Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes))
+                      elastic_out->viscoelastic_strain_rate[i] = compute_effective_strain_rate(in.strain_rate[i], stress_0_advected, inverse_kelvin_viscosities[i]);
+                  }
+
+                // The shear heating rate (used by the heating model) depends not only
+                // on the stress and strain rates from the viscous flow laws, but also from
+                // the three viscous dampers. Usually, the heating from the dampers will be
+                // minor, but for consistency they should be included.
+
+                // 1) The total stress
+                const SymmetricTensor<2, dim> stress = 2. * effective_creep_viscosity * deviatoric_strain_rate + viscosity_ratio * stress_0_advected;
+
+                // 2) The elastic damper
+                const SymmetricTensor<2, dim> kelvin_strain_rate = 0.5 * (stress - stress_0_advected) * inverse_kelvin_viscosities[i];
+                const double damper_viscosity = elasticity->get_damper_viscosity();
+                const double damper_power_density = 2. * damper_viscosity * kelvin_strain_rate * kelvin_strain_rate;
+
+                // 3) Total other work (assuming incompressibility)
+                // This includes the power density from the other two dampers
+                const SymmetricTensor<2, dim> visco_plastic_strain_rate = deviatoric_strain_rate - kelvin_strain_rate;
+                const double viscoplastic_power_density = stress * visco_plastic_strain_rate;
+                // If compressible,
+                // visco_plastic_strain_rate = visco_plastic_strain_rate -
+                //                             1. / 3. * trace(visco_plastic_strain_rate) * unit_symmetric_tensor<dim>();
+
+                // The shear heating term needs to account for the elastic stress, but only the visco_plastic strain rate.
+                // This is best computed here, and stored for later use by the heating model.
+                if (heating_out != nullptr)
+                  heating_out->prescribed_shear_heating_rates[i] = viscoplastic_power_density + damper_power_density;
+              }
+
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      CompositeViscoPlastic<dim>::fill_elastic_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                                   const std::vector<double> &inverse_kelvin_viscosities,
+                                                                   MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        // Create a reference to the structure for the elastic additional outputs
+        MaterialModel::ElasticAdditionalOutputs<dim>
+        *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+
+        if (elastic_additional_out == nullptr || !in.requests_property(MaterialProperties::additional_outputs))
+          return;
+
+        const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
+        const double dtc = this->get_timestep();
+        const double elastic_damper_viscosity = elasticity->get_damper_viscosity();
+
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          {
+            const double effective_viscosity = out.viscosities[i];
+            const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+            const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
+                                                            &in.composition[i][stress_start_index]+n_independent_components));
+
+            // Apply the stress update to get the total deviatoric stress of timestep t.
+            // This is not the stress passing through the elastic element, because of the elastic damper.
+            elastic_additional_out->deviatoric_stress[i] = 2. * effective_viscosity * deviatoric_strain_rate + effective_viscosity * inverse_kelvin_viscosities[i] * stress_0_advected;
+            elastic_additional_out->elastic_viscosity[i] = 1. / inverse_kelvin_viscosities[i];
+            elastic_additional_out->elastic_shear_moduli[i] = (elastic_additional_out->elastic_viscosity[i] - elastic_damper_viscosity)/dtc;
+          }
+      }
+      */
+
+
+      // Rotate the elastic stresses of the previous timestep $t$ into the current timestep $t+dtc$.
+      template <int dim>
+      void
+      CompositeViscoPlastic<dim>::fill_reaction_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                         const std::vector<double> &,
+                                                         MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        elasticity->fill_reaction_outputs(in, std::vector<double>(), out);
+      }
+
+
+
+      // The following function computes the reaction rates for the operator
+      // splitting step that at the beginning of the new timestep $t+dtc$ updates the
+      // stored compositions $tau^{0\mathrm{adv}}$ at time $t$ to $tau^{t}$.
+      // This update consists of the stress change resulting from system evolution,
+      // but does not advect or rotate the elastic stress tensor. Advection is done by
+      // solving the advection equation and the elastic stress tensor is rotated through
+      // the source term (reaction_terms) of that same equation.
+      template <int dim>
+      void
+      CompositeViscoPlastic<dim>::fill_reaction_rates (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                       const std::vector<double> &inverse_kelvin_viscosities,
+                                                       MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+
+        if (reaction_rate_out == nullptr)
+          return;
+
+        // At the moment when the reaction rates are required (at the beginning of the timestep),
+        // the solution vector 'solution' holds the stress from the previous timestep,
+        // advected into the new position of the previous timestep, so $\tau^{t}_{0adv}$.
+        // This is the same as the vector 'old_solution' holds. At later moments during the current timestep,
+        // 'solution' will hold the current_linearization_point instead of the solution of the previous timestep.
+        //
+        // In case fields are used to track the stresses, MaterialModelInputs are based on 'solution'
+        // when calling the MaterialModel for the reaction rates. When particles are used, MaterialModelInputs
+        // for this function are filled with the old_solution (including for the strain rate), except for the
+        // compositions that represent the stress tensor components, these are taken directly from the
+        // particles. As the particles are restored to their pre-advection location at the beginning of
+        // each nonlinear iteration, their values and positions correspond to the old solution.
+        // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
+        // previous timestep.
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_rates))
+          {
+            const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
+            const double elastic_damper_viscosity = elasticity->get_damper_viscosity();
+            for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+              {
+                // Set all reaction rates to zero
+                for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+                  reaction_rate_out->reaction_rates[i][c] = 0.0;
+
+                // Get $\tau^{0adv}$ of the previous timestep t from the compositional fields.
+                // This stress includes the rotation and advection of the previous timestep,
+                // i.e., the reaction term (which prescribes the change in stress due to rotation
+                // over the previous timestep) has already been applied during the previous timestep.
+                const SymmetricTensor<2, dim> stress_0_t (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
+                                                          &in.composition[i][stress_start_index]+n_independent_components));
+
+                // $\eta^{t}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
+                const double effective_creep_viscosity = out.viscosities[i];
+
+                // Compute the total stress at time t.
+                const SymmetricTensor<2, dim>
+                stress_t = 2. * effective_creep_viscosity * deviator(in.strain_rate[i])
+                           + effective_creep_viscosity * inverse_kelvin_viscosities[i] * stress_0_t;
+
+                // Fill reaction rates.
+                // During this timestep, the reaction rates will be multiplied
+                // with the current timestep size to turn the rate of change into a change.
+                // However, this update belongs
+                // to the previous timestep. Therefore we divide by the
+                // current timestep and multiply with the previous one.
+                // When multiplied with the current timestep, this will give
+                // (rate * previous_dt / current_dt) * current_dt = rate * previous_dt = previous_change.
+                // previous_change = (1 - eta_d/eta_kel)*(stress_t - stress_0_t).
+                // To compute the rate we should return to the operator splitting scheme,
+                // we therefore divide the change in stress by the current timestep current_dt (= dtc).
+
+                const SymmetricTensor<2, dim> stress_update = (1. - (elastic_damper_viscosity*inverse_kelvin_viscosities[i])) * (stress_t - stress_0_t) / this->get_timestep();
+
+                Utilities::Tensors::unroll_symmetric_tensor_into_array(stress_update,
+                                                                       &reaction_rate_out->reaction_rates[i][stress_start_index],
+                                                                       &reaction_rate_out->reaction_rates[i][stress_start_index]+n_independent_components);
+              }
+          }
       }
 
 
@@ -694,6 +1037,10 @@ namespace aspect
                            Patterns::Bool (),
                            "Whether to include Drucker-Prager plasticity in the composite rheology formulation.");
 
+        prm.declare_entry ("Include elasticity in composite rheology", "false",
+                           Patterns::Bool (),
+                           "Whether to include elasticity in the composite rheology formulation.");
+
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
 
@@ -705,6 +1052,9 @@ namespace aspect
 
         // Drucker Prager parameters
         Rheology::DruckerPragerPower<dim>::declare_parameters(prm);
+
+        // Elastic parameters
+        Rheology::Elasticity<dim>::declare_parameters(prm);
 
         // Some of the parameters below are shared with the subordinate
         // rheology models (diffusion, dislocation, ...),
@@ -754,6 +1104,7 @@ namespace aspect
 
         // Read maximum viscosity parameter
         maximum_viscosity = prm.get_double ("Maximum viscosity");
+        inverse_maximum_viscosity = 1. / maximum_viscosity;
 
         // Process minimum viscosity parameter
         // In this rheology model, there are two viscous dampers designed
@@ -771,7 +1122,7 @@ namespace aspect
         // When scaling the viscoplastic strain up to the total strain,
         // eta_max / (eta_max - eta_min) becomes a useful value,
         // which we here call the "strain_rate_scaling_factor".
-        const double minimum_viscosity = prm.get_double("Minimum viscosity");
+        minimum_viscosity = prm.get_double("Minimum viscosity");
 
         AssertThrow(minimum_viscosity > 0,
                     ExcMessage("Minimum viscosity needs to be larger than zero."));
@@ -832,7 +1183,30 @@ namespace aspect
           }
 
         AssertThrow(active_flow_mechanisms.size() > 0,
-                    ExcMessage("You need to include at least one deformation mechanism."));
+                    ExcMessage("You need to include at least one non-elastic deformation mechanism."));
+
+        // Elastic parameters
+        // Elasticity is not treated as a flow mechanism,
+        // so we do not push back the active_flow_mechanisms vector.
+        use_elasticity = prm.get_bool ("Include elasticity in composite rheology");
+        if (use_elasticity)
+          {
+            elasticity = std::make_unique<Rheology::Elasticity<dim>>();
+            elasticity->initialize_simulator (this->get_simulator());
+            elasticity->parse_parameters(prm);
+            AssertThrow(viscosity_averaging_scheme == ViscosityAveraging::isostress,
+                        ExcMessage("Elasticity in the CompositeViscoPlastic rheology "
+                                   "requires that the 'Viscosity averaging scheme' be "
+                                   "set to isostress."));
+            AssertThrow(prm.get ("Use fixed elastic time step") == "false",
+                        ExcMessage("Elasticity in the CompositeViscoPlastic rheology "
+                                   "requires that 'Use fixed elastic time step' be "
+                                   "set to false."));
+            AssertThrow(std::abs(prm.get_double ("Stabilization time scale factor") - 1.) < std::numeric_limits<double>::min(),
+                        ExcMessage("Elasticity in the CompositeViscoPlastic rheology "
+                                   "requires that the 'Stabilization time scale factor' be "
+                                   "set to 1."));
+          }
 
       }
     }

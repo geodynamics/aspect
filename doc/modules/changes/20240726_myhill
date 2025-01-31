@@ -1,0 +1,4 @@
+New: The CompositeViscoPlastic rheology in ASPECT now
+includes an implementation of elasticity.
+<br>
+(Bob Myhill, 2024/07/26)

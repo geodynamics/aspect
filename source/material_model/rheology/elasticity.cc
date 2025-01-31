@@ -443,6 +443,15 @@ namespace aspect
 
       template <int dim>
       double
+      Elasticity<dim>::get_damper_viscosity () const
+      {
+        return elastic_damper_viscosity;
+      }
+
+
+
+      template <int dim>
+      double
       Elasticity<dim>::
       calculate_elastic_viscosity (const double shear_modulus) const
       {

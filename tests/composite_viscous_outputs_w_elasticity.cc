@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2022 - 2023 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -21,6 +21,7 @@
 #include <aspect/simulator.h>
 #include <aspect/material_model/rheology/composite_visco_plastic.h>
 #include <aspect/simulator_signals.h>
+#include <iostream>
 
 template <int dim>
 void f(const aspect::SimulatorAccess<dim> &simulator_access,
@@ -35,10 +36,11 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   // First, we set up a few objects which are used by the rheology model.
   aspect::ParameterHandler prm;
+
   const std::vector<std::string> list_of_composition_names = simulator_access.introspection().get_composition_names();
   auto n_phases = std::make_unique<std::vector<unsigned int>>(1); // 1 phase per composition
   const unsigned int composition = 0;
-  const std::vector<double> volume_fractions = {1.};
+  const std::vector<double> volume_fractions = {0.6, 0.4};
   const std::vector<double> phase_function_values = std::vector<double>();
   const std::vector<unsigned int> n_phase_transitions_per_composition = std::vector<unsigned int>(1);
 
@@ -48,13 +50,15 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
-  prm.set("Viscosity averaging scheme", "isostrain");
+  prm.set("Viscosity averaging scheme", "isostress");
   prm.set("Include diffusion creep in composite rheology", "true");
   prm.set("Include dislocation creep in composite rheology", "true");
   prm.set("Include Peierls creep in composite rheology", "true");
   prm.set("Include Drucker Prager plasticity in composite rheology", "true");
+  prm.set("Include elasticity in composite rheology", "true");
   prm.set("Peierls creep flow law", "viscosity approximation");
   prm.set("Maximum yield stress", "5e8");
+  prm.set("Use fixed elastic time step", "false");
   composite_creep->parse_parameters(prm);
 
   std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
@@ -98,14 +102,25 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double temperature;
   const double pressure = 1.e9;
   const double grain_size = 1.e-3;
-  const double inverse_kelvin_viscosity = 0.;
+  const double inverse_kelvin_viscosity = composite_creep->compute_inverse_kelvin_viscosity(volume_fractions);
   SymmetricTensor<2,dim> strain_rate;
-  strain_rate[0][0] = -1e-11;
+  strain_rate[0][0] = -2e-11;
   strain_rate[0][1] = 0.;
-  strain_rate[1][1] = 1e-11;
+  strain_rate[1][1] = 2e-11;
   strain_rate[2][0] = 0.;
   strain_rate[2][1] = 0.;
   strain_rate[2][2] = 0.;
+
+  SymmetricTensor<2,dim> elastic_stress;
+  elastic_stress[0][0] = 2e-11 / inverse_kelvin_viscosity;
+  elastic_stress[0][1] = 0.;
+  elastic_stress[1][1] = -2e-11 / inverse_kelvin_viscosity;
+  elastic_stress[2][0] = 0.;
+  elastic_stress[2][1] = 0.;
+  elastic_stress[2][2] = 0.;
+
+  SymmetricTensor<2,dim> effective_strain_rate = composite_creep->compute_effective_strain_rate(strain_rate, elastic_stress, inverse_kelvin_viscosity);
+
 
   std::cout << "temperature (K)   eta (Pas)   creep stress (Pa)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, drpr, kel, max)" << std::endl;
 
@@ -127,7 +142,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       temperature = 1000. + i*100.;
 
       // Compute the viscosity
-      viscosity = composite_creep->compute_viscosity(pressure, temperature, grain_size, volume_fractions, strain_rate, inverse_kelvin_viscosity, partial_strain_rates);
+      viscosity = composite_creep->compute_viscosity(pressure, temperature, grain_size, volume_fractions, effective_strain_rate, inverse_kelvin_viscosity, partial_strain_rates);
       total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
 
       // The creep strain rate is calculated by subtracting the strain rate
@@ -208,5 +223,45 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
                                             std::placeholders::_2));
 }
 
+
+using namespace aspect;
+
+
+void declare_parameters(const unsigned int dim,
+                        ParameterHandler &prm)
+{
+  prm.enter_subsection("Formulation");
+  {
+    prm.declare_entry("Enable elasticity", "true", Patterns::Bool());
+  }
+  prm.leave_subsection();
+
+  prm.enter_subsection("Compositional fields");
+  {
+    if (dim==2)
+      {
+        prm.declare_entry("Number of fields","4", Patterns::Integer());
+        prm.declare_entry("Names of fields","ve_stress_xx, ve_stress_yy, ve_stress_xy, foreground", Patterns::Anything());
+      }
+    else
+      {
+        prm.declare_entry("Number of fields","7", Patterns::Integer());
+        prm.declare_entry("Names of fields","ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz, foreground", Patterns::Anything());
+      }
+  }
+  prm.leave_subsection();
+}
+
+
+
+void parameter_connector ()
+{
+  SimulatorSignals<2>::declare_additional_parameters.connect (&declare_parameters);
+  SimulatorSignals<3>::declare_additional_parameters.connect (&declare_parameters);
+}
+
+
+
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
                                   signal_connector<3>)
+ASPECT_REGISTER_SIGNALS_PARAMETER_CONNECTOR(parameter_connector)
