@@ -1,0 +1,3 @@
+Fixed: Constant modes are now used in the melt solver.
+<br>
+(Quang Hoang, Timo Heister, 2025/01/31)

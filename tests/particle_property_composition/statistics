@@ -23,4 +23,4 @@
 # 23: Global mass for composition peridotite
 # 24: RMS velocity (m/year)
 # 25: Max. velocity (m/year)
-0 0.000000000000e+00 0.000000000000e+00 640 6583 2889 5778 2 0 0 0 9 54 241 5 output-particle_property_composition/particles/particles-00000 output-particle_property_composition/solution/solution-00000 1.00000000e-03 1.00000000e-02 1.32970963e+01 1.00000000e-03 1.00000000e-02 1.32970963e+01 1.66058237e-04 1.67158942e-04 
+0 0.000000000000e+00 0.000000000000e+00 640 6583 2889 5778 2 0 0 0 9 54 244 5 output-particle_property_composition/particles/particles-00000 output-particle_property_composition/solution/solution-00000 1.00000000e-03 1.00000000e-02 1.32970963e+01 1.00000000e-03 1.00000000e-02 1.32970963e+01 1.66058237e-04 1.67158942e-04 
