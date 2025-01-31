@@ -12,7 +12,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
 
    Postprocessing:
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
-     Pressure at top/bottom of domain: -1.025e-10 Pa, 1.96e+06 Pa
+     Pressure at top/bottom of domain: -1.523e-12 Pa, 1.96e+06 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-geoid_visualization/geoid_anomaly.00000
      Writing graphical output:         output-geoid_visualization/solution/solution-00000

@@ -299,14 +299,14 @@ namespace aspect
                           const dealii::LinearAlgebra::distributed::Vector<number> &src,
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
-
         /**
-         * Computes the diagonal contribution from a cell matrix.
+         * This function contains the inner-most operation done on a single cell
          */
-        void local_compute_diagonal (const MatrixFree<dim,number>                     &data,
-                                     dealii::LinearAlgebra::distributed::Vector<number>  &dst,
-                                     const unsigned int                               &dummy,
-                                     const std::pair<unsigned int,unsigned int>       &cell_range) const;
+        void inner_cell_operation(FEEvaluation<dim,
+                                  degree_p,
+                                  degree_p+2,
+                                  1,
+                                  number> &pressure) const;
 
         /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.

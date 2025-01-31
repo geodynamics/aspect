@@ -23,7 +23,7 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
      Rayleigh number:                               0
 
      Density at top/bottom of domain:  3301 kg/m^3, 3301 kg/m^3
-     Pressure at top/bottom of domain: -1.006e-05 Pa, 9.538e+10 Pa
+     Pressure at top/bottom of domain: -1.573e-05 Pa, 9.538e+10 Pa
      Computing dynamic topography      
      Writing geoid anomaly:            output-spectral_comparison/geoid_anomaly.00000
      Writing graphical output:         output-spectral_comparison/solution/solution-00000

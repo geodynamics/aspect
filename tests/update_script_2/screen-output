@@ -22,7 +22,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing depth average:              output-update_script_2/depth_average
      Writing particle output:            output-update_script_2/particles/particles-00000
      Heating rate (average/total):       -3.807e-10 W/kg, -3.214e+07 W
-     Pressure at top/bottom of domain:   -6.245e-09 Pa, 1.136e+11 Pa
+     Pressure at top/bottom of domain:   -8.197e-09 Pa, 1.136e+11 Pa
      Computing dynamic topography        
 
 *** Timestep 1:  t=100000 years, dt=100000 years
@@ -39,7 +39,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Writing depth average:              output-update_script_2/depth_average
      Number of advected particles:       50
      Heating rate (average/total):       -3.727e-10 W/kg, -3.147e+07 W
-     Pressure at top/bottom of domain:   2.342e-09 Pa, 1.136e+11 Pa
+     Pressure at top/bottom of domain:   3.123e-09 Pa, 1.136e+11 Pa
      Computing dynamic topography        
 
 Termination requested by criterion: end time

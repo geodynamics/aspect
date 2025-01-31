@@ -23,7 +23,7 @@ Additional information:
     StokesMatrixFreeHandlerImplementation::solve did not converge.
     
     The initial residual was: 1.169088e+14
-    The final residual is: 6.633145e+03
+    The final residual is: 6.633148e+03
     The required residual for convergence is: 1.169088e-21
     See output-stokes_solver_fail_gmg/solver_history.txt for the full
     convergence history.

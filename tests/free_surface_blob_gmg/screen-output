@@ -77,7 +77,7 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 5:  t=4.86019e+06 years, dt=1.51884e+06 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 20 iterations.
-   Solving Stokes system (GMG)... 0+53 iterations.
+   Solving Stokes system (GMG)... 0+52 iterations.
 
    Postprocessing:
      Topography min/max: -1475 m, 746.6 m
@@ -98,7 +98,7 @@ Number of mesh deformation degrees of freedom: 1,466
 *** Timestep 7:  t=6.85683e+06 years, dt=1.2505e+06 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 17 iterations.
-   Solving Stokes system (GMG)... 0+47 iterations.
+   Solving Stokes system (GMG)... 0+48 iterations.
 
    Postprocessing:
      Topography min/max: -100.1 m, 245 m

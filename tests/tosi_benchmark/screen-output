@@ -58,7 +58,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 27 iterations.
    Solving Stokes system (GMG)... 45+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.217424, 8.85483e-08
+      Relative nonlinear residuals (temperature, Stokes system): 0.217424, 8.85485e-08
       Relative nonlinear residual (total system) after nonlinear iteration 8: 0.217424
 
    Solving temperature system... 20 iterations.
@@ -68,7 +68,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 27 iterations.
    Solving Stokes system (GMG)... 49+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.285143, 2.67423e-07
+      Relative nonlinear residuals (temperature, Stokes system): 0.285143, 2.67422e-07
       Relative nonlinear residual (total system) after nonlinear iteration 10: 0.285143
 
    Solving temperature system... 20 iterations.
@@ -83,8 +83,8 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 22 iterations.
    Solving Stokes system (GMG)... 48+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.287894, 5.04515e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.287894
+      Relative nonlinear residuals (temperature, Stokes system): 0.287893, 5.04514e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 0.287893
 
    Solving temperature system... 24 iterations.
    Solving Stokes system (GMG)... 47+0 iterations.
@@ -93,8 +93,8 @@ Number of degrees of freedom: 268 (162+25+81)
 
    Solving temperature system... 27 iterations.
    Solving Stokes system (GMG)... 46+0 iterations.
-      Relative nonlinear residuals (temperature, Stokes system): 0.457178, 1.34928e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.457178
+      Relative nonlinear residuals (temperature, Stokes system): 0.457179, 1.34927e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 0.457179
 
 
 WARNING: The nonlinear solver in the current timestep failed to converge.

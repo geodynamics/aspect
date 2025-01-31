@@ -622,42 +622,53 @@ namespace aspect
   {
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, /*dofh*/1);
 
+    for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
+      {
+        pressure.reinit (cell);
+        pressure.gather_evaluate (src, EvaluationFlags::values);
+        this->inner_cell_operation(pressure);
+        pressure.integrate_scatter (EvaluationFlags::values, dst);
+      }
+
+  }
+
+
+  template <int dim, int degree_p, typename number>
+  void
+  MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
+  ::inner_cell_operation(FEEvaluation<dim,
+                         degree_p,
+                         degree_p+2,
+                         1,
+                         number> &pressure) const
+  {
     const bool use_viscosity_at_quadrature_points
       = (cell_data->viscosity.size(1) == pressure.n_q_points);
 
-    for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
+    const unsigned int cell = pressure.get_current_cell_index();
+    const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
+
+    VectorizedArray<number> prefactor;
+
+    // The /= operator for VectorizedArray results in a floating point operation
+    // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
+    // Therefore, we need to divide each entry manually.
+    if (!use_viscosity_at_quadrature_points)
       {
-        VectorizedArray<number> one_over_viscosity = cell_data->viscosity(cell, 0);
-
-        const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-
-        // The /= operator for VectorizedArray results in a floating point operation
-        // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
-        // Therefore, we need to divide each entry manually.
         for (unsigned int c=0; c<n_components_filled; ++c)
-          one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
+          prefactor[c] = cell_data->pressure_scaling*cell_data->pressure_scaling / cell_data->viscosity(cell, 0)[c];
+      }
 
-        pressure.reinit (cell);
-        pressure.gather_evaluate (src, EvaluationFlags::values);
-
-        for (const unsigned int q : pressure.quadrature_point_indices())
+    for (const unsigned int q : pressure.quadrature_point_indices())
+      {
+        // Only update the viscosity if a Q1 projection is used.
+        if (use_viscosity_at_quadrature_points)
           {
-            // Only update the viscosity if a Q1 projection is used.
-            if (use_viscosity_at_quadrature_points)
-              {
-                one_over_viscosity = cell_data->viscosity(cell, q);
-
-                const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-
-                for (unsigned int c=0; c<n_components_filled; ++c)
-                  one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
-              }
-
-            pressure.submit_value(one_over_viscosity*
-                                  pressure.get_value(q),q);
+            for (unsigned int c=0; c<n_components_filled; ++c)
+              prefactor[c] = cell_data->pressure_scaling*cell_data->pressure_scaling / cell_data->viscosity(cell, q)[c];
           }
 
-        pressure.integrate_scatter (EvaluationFlags::values, dst);
+        pressure.submit_value(prefactor*pressure.get_value(q), q);
       }
   }
 
@@ -690,12 +701,23 @@ namespace aspect
     dealii::LinearAlgebra::distributed::Vector<number> &diagonal =
       this->diagonal_entries->get_vector();
 
-    unsigned int dummy = 0;
     this->data->initialize_dof_vector(inverse_diagonal, /*dofh*/1);
     this->data->initialize_dof_vector(diagonal, /*dofh*/1);
 
-    this->data->cell_loop (&MassMatrixOperator::local_compute_diagonal, this,
-                           diagonal, dummy);
+    MatrixFreeTools::compute_diagonal<dim,degree_p,degree_p+2,1,number,VectorizedArray<number>,dealii::LinearAlgebra::distributed::Vector<number>>(
+      *(this->get_matrix_free()),
+      diagonal,
+      [&](FEEvaluation<dim,
+          degree_p,
+          degree_p+2,
+          1,
+          number> &pressure)
+    {
+      pressure.evaluate(EvaluationFlags::values);
+      this->inner_cell_operation(pressure);
+      pressure.integrate(EvaluationFlags::values);
+    },
+    1 /* dofhandler */);
 
     this->set_constrained_entries_to_one(diagonal);
     inverse_diagonal = diagonal;
@@ -710,72 +732,6 @@ namespace aspect
                ExcMessage("No diagonal entry in a positive definite operator "
                           "should be zero or negative."));
         local_element = 1./local_element;
-      }
-  }
-
-
-
-  template <int dim, int degree_p, typename number>
-  void
-  MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
-  ::local_compute_diagonal (const MatrixFree<dim,number>                     &data,
-                            dealii::LinearAlgebra::distributed::Vector<number>  &dst,
-                            const unsigned int &,
-                            const std::pair<unsigned int,unsigned int>       &cell_range) const
-  {
-    FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, 1);
-
-    AlignedVector<VectorizedArray<number>> diagonal(pressure.dofs_per_cell);
-
-    const bool use_viscosity_at_quadrature_points
-      = (cell_data->viscosity.size(1) == pressure.n_q_points);
-
-    for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
-      {
-        VectorizedArray<number> one_over_viscosity = cell_data->viscosity(cell, 0);
-
-        const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-
-        // The /= operator for VectorizedArray results in a floating point operation
-        // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
-        // Therefore, we need to divide each entry manually.
-        for (unsigned int c=0; c<n_components_filled; ++c)
-          one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
-
-        pressure.reinit (cell);
-        for (unsigned int i=0; i<pressure.dofs_per_cell; ++i)
-          {
-            for (unsigned int j=0; j<pressure.dofs_per_cell; ++j)
-              pressure.begin_dof_values()[j] = VectorizedArray<number>();
-            pressure.begin_dof_values()[i] = make_vectorized_array<number> (1.);
-
-            pressure.evaluate (EvaluationFlags::values);
-
-            for (const unsigned int q : pressure.quadrature_point_indices())
-              {
-                // Only update the viscosity if a Q1 projection is used.
-                if (use_viscosity_at_quadrature_points)
-                  {
-                    one_over_viscosity = cell_data->viscosity(cell, q);
-
-                    const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-
-                    for (unsigned int c=0; c<n_components_filled; ++c)
-                      one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
-                  }
-
-                pressure.submit_value(one_over_viscosity*
-                                      pressure.get_value(q),q);
-              }
-
-            pressure.integrate (EvaluationFlags::values);
-
-            diagonal[i] = pressure.begin_dof_values()[i];
-          }
-
-        for (unsigned int i=0; i<pressure.dofs_per_cell; ++i)
-          pressure.begin_dof_values()[i] = diagonal[i];
-        pressure.distribute_local_to_global (dst);
       }
   }
 
