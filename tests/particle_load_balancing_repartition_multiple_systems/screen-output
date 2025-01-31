@@ -19,7 +19,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 
    Postprocessing:
      Writing particle output:             output-particle_load_balancing_repartition_multiple_systems/particles/particles-00000
-     Particle count per cell min/avg/max: 0, 1, 3
+     Particle count per cell min/avg/max: 1, 1, 1
      Cells per process min/max/avg:       16/48/32
      Writing graphical output:            output-particle_load_balancing_repartition_multiple_systems/solution/solution-00000
 

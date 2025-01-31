@@ -22,7 +22,7 @@ Number of degrees of freedom: 605 (282+41+141+141)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 10, 35, 75
+     Particle count per cell min/avg/max: 4, 35, 79
      Cells per process min/max/avg:       4/8/7
 
 Number of active cells: 31 (on 4 levels)
@@ -35,7 +35,7 @@ Number of degrees of freedom: 673 (314+45+157+157)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 10, 32, 75
+     Particle count per cell min/avg/max: 6, 32, 75
      Cells per process min/max/avg:       4/10/7.75
 
 Number of active cells: 40 (on 4 levels)
@@ -48,7 +48,7 @@ Number of degrees of freedom: 827 (386+55+193+193)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 10, 25, 75
+     Particle count per cell min/avg/max: 7, 25, 84
      Cells per process min/max/avg:       8/12/10
 
 Number of active cells: 52 (on 5 levels)
@@ -62,7 +62,7 @@ Number of degrees of freedom: 1,112 (520+72+260+260)
 
    Postprocessing:
      Number of advected particles:        1000
-     Particle count per cell min/avg/max: 1, 19, 75
+     Particle count per cell min/avg/max: 1, 19, 80
      Cells per process min/max/avg:       9/16/13
 
 Number of active cells: 70 (on 5 levels)

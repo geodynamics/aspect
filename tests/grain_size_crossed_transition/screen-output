@@ -29,10 +29,10 @@ Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00001
-     Compositions min/max/mass: 0.001313/0.002/5.938e+07
+     Compositions min/max/mass: 0.00135/0.002/5.942e+07
      Writing particle output:   output-grain_size_crossed_transition/particles/particles-00001
 
-*** Timestep 2:  t=6442.31 years, dt=3220.42 years
+*** Timestep 2:  t=6439.33 years, dt=3217.44 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
@@ -40,29 +40,29 @@ Number of degrees of freedom: 5,285 (2,482+321+1,241+1,241)
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00002
-     Compositions min/max/mass: 0.001/0.002/5.876e+07
+     Compositions min/max/mass: 0.001/0.002/5.879e+07
      Writing particle output:   output-grain_size_crossed_transition/particles/particles-00002
 
-*** Timestep 3:  t=9648.75 years, dt=3206.45 years
+*** Timestep 3:  t=9649.24 years, dt=3209.91 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 30+0 iterations.
+   Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00003
-     Compositions min/max/mass: 0.001/0.002/5.816e+07
+     Compositions min/max/mass: 0.001/0.002/5.822e+07
      Writing particle output:   output-grain_size_crossed_transition/particles/particles-00003
 
-*** Timestep 4:  t=10000 years, dt=351.245 years
+*** Timestep 4:  t=10000 years, dt=350.761 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 25+0 iterations.
+   Solving Stokes system (AMG)... 24+0 iterations.
 
    Postprocessing:
      Writing graphical output:  output-grain_size_crossed_transition/solution/solution-00004
-     Compositions min/max/mass: 0.001/0.002/5.81e+07
+     Compositions min/max/mass: 0.001/0.002/5.815e+07
      Writing particle output:   output-grain_size_crossed_transition/particles/particles-00004
 
 Termination requested by criterion: end time
