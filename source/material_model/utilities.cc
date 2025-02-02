@@ -1216,7 +1216,7 @@ namespace aspect
             start_phase_transition_index += n_phase_transitions_per_chemical_composition[n_relevant_fields];
           }
 
-        const double pressure_in_bar = in.pressure/1e5;
+        const double pressure_in_bar = in.pressure/1.e5;
 
         Assert (in.temperature >= minimum_temperature[n_comp] && in.temperature < maximum_temperature[n_comp], ExcInternalError());
         Assert (pressure_in_bar >= minimum_pressure[n_comp] && pressure_in_bar < maximum_pressure[n_comp], ExcInternalError());
