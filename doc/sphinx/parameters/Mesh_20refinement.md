@@ -156,7 +156,7 @@ This refinement criterion computes the gradient of the compositional field at qu
 
 On the other hand, for discontinuous finite elements (see the &lsquo;Use discontinuous composition discretization&rsquo; parameter in the &lsquo;Discretization&rsquo; section), the gradient at quadrature points does not include the contribution of jumps in the compositional field between cells, and consequently will not be an accurate approximation of the true gradient. As an extreme example, consider the case of using piecewise constant finite elements for compositional fields; in that case, the gradient of the solution at quadrature points inside each cell will always be exactly zero, even if the finite element solution is different from each cell to the next. Consequently, the current refinement criterion will likely not be useful in this situation. That said, the &lsquo;composition approximate gradient&rsquo; refinement criterion exists for exactly this purpose.
 
-&lsquo;composition threshold&rsquo;: A mesh refinement criterion that computes refinement indicators from the compositional fields. If any field exceeds the threshold given in the input file, the cell is marked for refinement.
+&lsquo;composition threshold&rsquo;: A mesh refinement criterion that computes refinement indicators from the compositional fields. One threshold per compositional is given in the input file, and if any field exceeds its threshold, the cell is marked for refinement.
 
 &lsquo;density&rsquo;: A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
@@ -306,7 +306,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of thresholds that every individual compositional field will be evaluated against.
+**Documentation:** A list of thresholds, one for each compositional field to be evaluated against.
 
 (parameters:Mesh_20refinement/Isosurfaces)=
 ## **Subsection:** Mesh refinement / Isosurfaces

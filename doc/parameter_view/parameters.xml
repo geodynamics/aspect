@@ -83,7 +83,7 @@ The number of space dimensions you want to run this program in. ASPECT can run i
 The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-436
+438
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -11867,16 +11867,20 @@ The value of the constant viscosity. Units: \si{\pascal\second}.
 </pattern_description>
 </Viscosity>
 <Viscosity_20prefactors>
-<value/>
-<default_value/>
+<value>
+all:1
+</value>
+<default_value>
+all:1
+</default_value>
 <documentation>
-A list of prefactors for the viscosity for each phase. The reference viscosity will be multiplied by this factor to get the corresponding viscosity for each phase. List must have one more entry than Phase transition depths. Units: non-dimensional.
+A list of prefactors for the viscosity for each phase. The ``Viscosity&apos;&apos; parameter (modified by the ``Composition viscosity prefactor&apos;&apos;, depending on composition) will be multiplied by this factor to get the corresponding viscosity for each phase. List must have the same number of entries as there are phases, that is one more than ``Phase transition depths&apos;&apos; for each composition that is used in the model. Units: non-dimensional.
 </documentation>
 <pattern>
 711
 </pattern>
 <pattern_description>
-[List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
+[Anything]
 </pattern_description>
 </Viscosity_20prefactors>
 </Latent_20heat>
@@ -18644,7 +18648,7 @@ $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT.
 </documentation>
 <pattern>
-133
+127
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -18661,7 +18665,7 @@ box_3d_%s.0.txt
 The file name of the model data.
 </documentation>
 <pattern>
-134
+128
 </pattern>
 <pattern_description>
 [Anything]
@@ -18678,7 +18682,7 @@ The file name of the model data.
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-135
+129
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -18695,7 +18699,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-132
+135
 </pattern>
 <pattern_description>
 [Anything]
@@ -18714,7 +18718,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-131
+134
 </pattern>
 <pattern_description>
 [Anything]
@@ -18731,7 +18735,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-130
+133
 </pattern>
 <pattern_description>
 [Anything]
@@ -18750,7 +18754,7 @@ The names of the variables as they will be used in the function, separated by co
 The hillslope transport coefficient $\kappa$ used to diffuse the free surface, either as a  stabilization step or to mimic erosional and depositional processes. Units: $\si{m^2/s}$. 
 </documentation>
 <pattern>
-127
+130
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -18767,7 +18771,7 @@ The hillslope transport coefficient $\kappa$ used to diffuse the free surface, e
 The number of time steps between each application of diffusion.
 </documentation>
 <pattern>
-128
+131
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -18803,7 +18807,7 @@ normal
 After each time step the free surface must be advected in the direction of the velocity field. Mass conservation requires that the mesh velocity is in the normal direction of the surface. However, for steep topography or large curvature, advection in the normal direction can become ill-conditioned, and instabilities in the mesh can form. Projection of the mesh velocity onto the local vertical direction can preserve the mesh quality better, but at the cost of slightly poorer mass conservation of the domain.
 </documentation>
 <pattern>
-129
+132
 </pattern>
 <pattern_description>
 [Selection normal|vertical ]
@@ -19074,7 +19078,7 @@ This refinement criterion computes the gradient of the compositional field at qu
 
 On the other hand, for discontinuous finite elements (see the `Use discontinuous composition discretization&apos; parameter in the `Discretization&apos; section), the gradient at quadrature points does not include the contribution of jumps in the compositional field between cells, and consequently will not be an accurate approximation of the true gradient. As an extreme example, consider the case of using piecewise constant finite elements for compositional fields; in that case, the gradient of the solution at quadrature points inside each cell will always be exactly zero, even if the finite element solution is different from each cell to the next. Consequently, the current refinement criterion will likely not be useful in this situation. That said, the `composition approximate gradient&apos; refinement criterion exists for exactly this purpose.
 
-`composition threshold&apos;: A mesh refinement criterion that computes refinement indicators from the compositional fields. If any field exceeds the threshold given in the input file, the cell is marked for refinement.
+`composition threshold&apos;: A mesh refinement criterion that computes refinement indicators from the compositional fields. One threshold per compositional is given in the input file, and if any field exceeds its threshold, the cell is marked for refinement.
 
 `density&apos;: A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
@@ -19164,7 +19168,7 @@ A list of scaling factors by which every individual compositional field will be 
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to 0. If the list is not empty then it needs to have as many entries as there are compositional fields.
 </documentation>
 <pattern>
-430
+431
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -19181,7 +19185,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 A scaling factor for the artificial viscosity  of the temperature equation. Use 0.0 to disable.
 </documentation>
 <pattern>
-429
+430
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19198,7 +19202,7 @@ A comma separated list of names denoting those boundaries where there should be 
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 </documentation>
 <pattern>
-431
+432
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -19217,7 +19221,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 The desired ratio between compaction length and size of the mesh cells, or, in other words, how many cells the mesh should (at least) have per compaction length. Every cell where this ratio is smaller than the value specified by this parameter (in places with fewer mesh cells per compaction length) is marked for refinement.
 </documentation>
 <pattern>
-432
+424
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19234,7 +19238,7 @@ A list of scaling factors by which every individual compositional field will be 
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
 </documentation>
 <pattern>
-420
+425
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -19251,7 +19255,7 @@ A list of scaling factors by which every individual compositional field gradient
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
 </documentation>
 <pattern>
-421
+426
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -19268,7 +19272,7 @@ A list of scaling factors by which every individual compositional field gradient
 If the list of scaling factors given in this parameter is empty, then this indicates that they should all be chosen equal to one. If the list is not empty then it needs to have as many entries as there are compositional fields.
 </documentation>
 <pattern>
-422
+427
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -19280,10 +19284,10 @@ If the list of scaling factors given in this parameter is empty, then this indic
 <value/>
 <default_value/>
 <documentation>
-A list of thresholds that every individual compositional field will be evaluated against.
+A list of thresholds, one for each compositional field to be evaluated against.
 </documentation>
 <pattern>
-423
+428
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -19300,7 +19304,7 @@ A list of isosurfaces separated by semi-colons (;). Each isosurface entry consis
 The first two entries for each isosurface, describing the minimum and maximum grid levels, can be two numbers or contain one of the key values &apos;min&apos; and &apos;max&apos;. This indicates the key will be replaced with the global minimum and maximum refinement levels. The &apos;min&apos; and &apos;max&apos; keys also accept adding values to be added or subtracted from them respectively. This is done by adding a &apos;+&apos; or &apos;-&apos; and a number behind them (e.g. min+2 or max-1). Note that you can&apos;t subtract a value from a minimum value or add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the maximum, it will simply use the global minimum and maximum values respectively. The same holds for any mesh refinement level below the global minimum or above the global maximum.
 </documentation>
 <pattern>
-424
+429
 </pattern>
 <pattern_description>
 [Anything]
@@ -19308,76 +19312,6 @@ The first two entries for each isosurface, describing the minimum and maximum gr
 </Isosurfaces>
 </Isosurfaces>
 <Maximum_20refinement_20function>
-<Coordinate_20system>
-<value>
-depth
-</value>
-<default_value>
-depth
-</default_value>
-<documentation>
-A selection that determines the assumed coordinate system for the function variables. Allowed values are `depth&apos;, `cartesian&apos; and `spherical&apos;. `depth&apos; will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
-</documentation>
-<pattern>
-425
-</pattern>
-<pattern_description>
-[Selection depth|cartesian|spherical ]
-</pattern_description>
-</Coordinate_20system>
-<Function_20constants>
-<value/>
-<default_value/>
-<documentation>
-Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
-
-A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
-</documentation>
-<pattern>
-428
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20constants>
-<Function_20expression>
-<value>
-0
-</value>
-<default_value>
-0
-</default_value>
-<documentation>
-The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
-
-If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
-</documentation>
-<pattern>
-427
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20expression>
-<Variable_20names>
-<value>
-x,y,t
-</value>
-<default_value>
-x,y,t
-</default_value>
-<documentation>
-The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
-</documentation>
-<pattern>
-426
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Variable_20names>
-</Maximum_20refinement_20function>
-<Minimum_20refinement_20function>
 <Coordinate_20system>
 <value>
 depth
@@ -19446,6 +19380,76 @@ The names of the variables as they will be used in the function, separated by co
 [Anything]
 </pattern_description>
 </Variable_20names>
+</Maximum_20refinement_20function>
+<Minimum_20refinement_20function>
+<Coordinate_20system>
+<value>
+depth
+</value>
+<default_value>
+depth
+</default_value>
+<documentation>
+A selection that determines the assumed coordinate system for the function variables. Allowed values are `depth&apos;, `cartesian&apos; and `spherical&apos;. `depth&apos; will create a function, in which only the first variable is non-zero, which is interpreted to be the depth of the point. `spherical&apos; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d respectively with theta being the polar angle.
+</documentation>
+<pattern>
+418
+</pattern>
+<pattern_description>
+[Selection depth|cartesian|spherical ]
+</pattern_description>
+</Coordinate_20system>
+<Function_20constants>
+<value/>
+<default_value/>
+<documentation>
+Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
+</documentation>
+<pattern>
+421
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20constants>
+<Function_20expression>
+<value>
+0
+</value>
+<default_value>
+0
+</default_value>
+<documentation>
+The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+</documentation>
+<pattern>
+420
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20expression>
+<Variable_20names>
+<value>
+x,y,t
+</value>
+<default_value>
+x,y,t
+</default_value>
+<documentation>
+The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
+</documentation>
+<pattern>
+419
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Variable_20names>
 </Minimum_20refinement_20function>
 <Nonadiabatic_20temperature_20threshold>
 <Temperature_20anomaly_20type>
@@ -19459,7 +19463,7 @@ absolute value
 What type of temperature anomaly should be considered when evaluating against the threshold: Only negative anomalies (negative only), only positive anomalies (positive only) or the absolute value of the nonadiabatic temperature.
 </documentation>
 <pattern>
-419
+423
 </pattern>
 <pattern_description>
 [Selection negative only|positive only|absolute value ]
@@ -19476,7 +19480,7 @@ What type of temperature anomaly should be considered when evaluating against th
 A threshold that the nonadiabatic temperature will be evaluated against. Units: \si{\kelvin}
 </documentation>
 <pattern>
-418
+422
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19539,7 +19543,7 @@ false
 By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&apos;s properties.
 </documentation>
 <pattern>
-249
+254
 </pattern>
 <pattern_description>
 [Bool]
@@ -19568,7 +19572,7 @@ Select one of the following models:
 `rk4&apos;: Runge Kutta fourth order integrator, where $y_{n+1} = y_n + \frac{1}{6} k_1 + \frac{1}{3} k_2 + \frac{1}{3} k_3 + \frac{1}{6} k_4$ and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.
 </documentation>
 <pattern>
-242
+245
 </pattern>
 <pattern_description>
 [Selection euler|rk2|rk4 ]
@@ -19597,7 +19601,7 @@ Select one of the following models:
 `quadratic least squares&apos;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 </documentation>
 <pattern>
-244
+247
 </pattern>
 <pattern_description>
 [Selection bilinear least squares|cell average|distance weighted average|harmonic average|nearest neighbor|quadratic least squares ]
@@ -19650,7 +19654,7 @@ The following properties are available:
 `viscoplastic strain invariants&apos;: A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 </documentation>
 <pattern>
-252
+255
 </pattern>
 <pattern_description>
 [MultipleSelection composition|cpo bingham average|cpo elastic tensor|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
@@ -19667,7 +19671,7 @@ repartition
 Strategy that is used to balance the computational load across processors for adaptive meshes.
 </documentation>
 <pattern>
-205
+208
 </pattern>
 <pattern_description>
 [MultipleSelection none|remove particles|add particles|remove and add particles|repartition ]
@@ -19684,7 +19688,7 @@ Strategy that is used to balance the computational load across processors for ad
 Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are \texttt{n\_number\_of\_particles} $&gt;$ \texttt{max\_particles\_per\_cell} particles in one cell then \texttt{n\_number\_of\_particles} - \texttt{max\_particles\_per\_cell} particles in this cell are randomly chosen and destroyed.
 </documentation>
 <pattern>
-207
+210
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -19701,7 +19705,7 @@ Upper limit for particle number per cell. This limit is useful for adaptive mesh
 Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are \texttt{n\_number\_of\_particles} $&lt;$ \texttt{min\_particles\_per\_cell} particles in one cell then \texttt{min\_particles\_per\_cell} - \texttt{n\_number\_of\_particles} particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
 </documentation>
 <pattern>
-206
+209
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -19749,7 +19753,7 @@ Select one of the following models:
 `uniform radial&apos;: Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 </documentation>
 <pattern>
-210
+213
 </pattern>
 <pattern_description>
 [Selection ascii file|probability density function|quadrature points|random uniform|reference cell|uniform box|uniform radial ]
@@ -19766,7 +19770,7 @@ Select one of the following models:
 Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the `repartition&apos; particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
 </documentation>
 <pattern>
-208
+211
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -19783,7 +19787,7 @@ true
 Some particle interpolation algorithms require knowledge about particles in neighboring cells. To allow this, particles in ghost cells need to be exchanged between the processes neighboring this cell. This parameter determines whether this transport is happening. This parameter is deprecated and will be removed in the future. Ghost particle updates are always performed. Please set the parameter to `true&apos;.
 </documentation>
 <pattern>
-209
+212
 </pattern>
 <pattern_description>
 [Bool]
@@ -19801,7 +19805,7 @@ Some particle interpolation algorithms require knowledge about particles in neig
 This determines how many samples are taken when using the random draw volume averaging. Setting it to zero means that the number of samples is set to be equal to the number of grains.
 </documentation>
 <pattern>
-255
+262
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19818,7 +19822,7 @@ This determines how many samples are taken when using the random draw volume ave
 The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank. 
 </documentation>
 <pattern>
-254
+261
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -19837,7 +19841,7 @@ Spin tensor
 Options: Spin tensor
 </documentation>
 <pattern>
-261
+268
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -19854,7 +19858,7 @@ Options: Spin tensor
 The number of grains of each different mineral each particle contains.
 </documentation>
 <pattern>
-257
+264
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -19871,7 +19875,7 @@ The number of grains of each different mineral each particle contains.
 The Backward Euler property advection method involve internal iterations. This option allows for setting the maximum number of iterations. Note that when the iteration is ended by the max iteration amount an assert is thrown.
 </documentation>
 <pattern>
-260
+267
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -19888,7 +19892,7 @@ Backward Euler
 Options: Forward Euler, Backward Euler
 </documentation>
 <pattern>
-258
+265
 </pattern>
 <pattern_description>
 [Anything]
@@ -19905,7 +19909,7 @@ Options: Forward Euler, Backward Euler
 The Backward Euler property advection method involve internal iterations. This option allows for setting a tolerance. When the norm of tensor new - tensor old is smaller than this tolerance, the iteration is stopped.
 </documentation>
 <pattern>
-259
+266
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19922,7 +19926,7 @@ The Backward Euler property advection method involve internal iterations. This o
 The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same number of MPI processes. It is implemented as final seed = user seed + MPI Rank. 
 </documentation>
 <pattern>
-256
+263
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -19940,7 +19944,7 @@ The seed used to generate random numbers. This will make sure that results are r
 This is exponent p as defined in equation 11 of Kaminski et al., 2004. 
 </documentation>
 <pattern>
-268
+275
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19957,7 +19961,7 @@ This is exponent p as defined in equation 11 of Kaminski et al., 2004.
 The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.
 </documentation>
 <pattern>
-265
+272
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19974,7 +19978,7 @@ The dimensionless intrinsic grain boundary mobility for both olivine and enstati
 This is the dimensionless nucleation rate as defined in equation 8 of Kaminski et al., 2004. 
 </documentation>
 <pattern>
-269
+276
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -19991,7 +19995,7 @@ This is the dimensionless nucleation rate as defined in equation 8 of Kaminski e
 This is the power law exponent that characterizes the rheology of the slip systems. It is used in equation 11 of Kaminski et al., 2004.
 </documentation>
 <pattern>
-267
+274
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20008,7 +20012,7 @@ This is the power law exponent that characterizes the rheology of the slip syste
 The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
 </documentation>
 <pattern>
-270
+277
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20025,7 +20029,7 @@ The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size t
 The volume fraction for the different minerals. There need to be the same amount of values as there are minerals
 </documentation>
 <pattern>
-266
+273
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -20044,7 +20048,7 @@ Olivine: Karato 2008, Enstatite
 This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
 </documentation>
 <pattern>
-263
+270
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -20061,7 +20065,7 @@ Uniform grains and random uniform rotations
 The model used to initialize the CPO for all particles. Currently &apos;Uniform grains and random uniform rotations&apos; and &apos;World Builder&apos; are the only valid option.
 </documentation>
 <pattern>
-262
+269
 </pattern>
 <pattern_description>
 [Anything]
@@ -20078,7 +20082,7 @@ The model used to initialize the CPO for all particles. Currently &apos;Uniform 
 The volume fractions for the different minerals. There need to be the same number of values as there are minerals.Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases
 </documentation>
 <pattern>
-264
+271
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -20096,7 +20100,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-274
+259
 </pattern>
 <pattern_description>
 [Anything]
@@ -20115,7 +20119,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-273
+258
 </pattern>
 <pattern_description>
 [Anything]
@@ -20132,7 +20136,7 @@ If the function you are describing represents a vector-valued function with mult
 The number of function components where each component is described by a function expression delimited by a &apos;;&apos;.
 </documentation>
 <pattern>
-271
+256
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -20149,7 +20153,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-272
+257
 </pattern>
 <pattern_description>
 [Anything]
@@ -20169,7 +20173,7 @@ $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
 The name of a directory that contains the particle data. This path may either be absolute (if starting with a &apos;/&apos;) or relative to the current directory. The path may also include the special text &apos;$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. 
 </documentation>
 <pattern>
-233
+236
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -20186,7 +20190,7 @@ particle.dat
 The name of the particle file.
 </documentation>
 <pattern>
-234
+237
 </pattern>
 <pattern_description>
 [Anything]
@@ -20203,7 +20207,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-237
+240
 </pattern>
 <pattern_description>
 [Anything]
@@ -20220,7 +20224,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536&apo
 The formula that denotes the spatially variable probability density function. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, 0)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise; this example would result in no particles at all in that part of the domain where $x==0$, and a constant particle density in the rest of the domain. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/. Note that the function has to be non-negative everywhere in the domain, and needs to be positive in at least some parts of the domain.
 </documentation>
 <pattern>
-238
+241
 </pattern>
 <pattern_description>
 [Anything]
@@ -20237,7 +20241,7 @@ The formula that denotes the spatially variable probability density function. Th
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-239
+242
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20254,7 +20258,7 @@ true
 If true, particle numbers per cell are calculated randomly according to their respective probability density. This means particle numbers per cell can deviate statistically from the integral of the probability density. If false, first determine how many particles each cell should have based on the integral of the density over each of the cells, and then once we know how many particles we want on each cell, choose their locations randomly within each cell.
 </documentation>
 <pattern>
-240
+243
 </pattern>
 <pattern_description>
 [Bool]
@@ -20271,7 +20275,7 @@ If true, particle numbers per cell are calculated randomly according to their re
 The seed for the random number generator that controls the particle generation. Keep constant to generate identical particle distributions in subsequent model runs. Change to get a different distribution. In parallel computations the seed is further modified on each process to ensure different particle patterns on different processes. Note that the number of particles per processor is not affected by the seed.
 </documentation>
 <pattern>
-241
+244
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -20288,7 +20292,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-235
+238
 </pattern>
 <pattern_description>
 [Anything]
@@ -20307,7 +20311,7 @@ The names of the variables as they will be used in the function, separated by co
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-211
+214
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20324,7 +20328,7 @@ true
 If true, particle numbers per cell are calculated randomly according to their respective probability density. This means particle numbers per cell can deviate statistically from the integral of the probability density. If false, first determine how many particles each cell should have based on the integral of the density over each of the cells, and then once we know how many particles we want on each cell, choose their locations randomly within each cell.
 </documentation>
 <pattern>
-212
+215
 </pattern>
 <pattern_description>
 [Bool]
@@ -20341,7 +20345,7 @@ If true, particle numbers per cell are calculated randomly according to their re
 The seed for the random number generator that controls the particle generation. Keep constant to generate identical particle distributions in subsequent model runs. Change to get a different distribution. In parallel computations the seed is further modified on each process to ensure different particle patterns on different processes. Note that the number of particles per processor is not affected by the seed.
 </documentation>
 <pattern>
-213
+216
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -20360,7 +20364,7 @@ The seed for the random number generator that controls the particle generation. 
 List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-214
+217
 </pattern>
 <pattern_description>
 [List of &lt;[Integer range 1...2147483647 (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -20379,7 +20383,7 @@ List of number of particles to create per cell and spatial dimension. The size o
 Maximum x coordinate for the region of particles.
 </documentation>
 <pattern>
-217
+220
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20396,7 +20400,7 @@ Maximum x coordinate for the region of particles.
 Maximum y coordinate for the region of particles.
 </documentation>
 <pattern>
-219
+222
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20413,7 +20417,7 @@ Maximum y coordinate for the region of particles.
 Maximum z coordinate for the region of particles.
 </documentation>
 <pattern>
-221
+224
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20430,7 +20434,7 @@ Maximum z coordinate for the region of particles.
 Minimum x coordinate for the region of particles.
 </documentation>
 <pattern>
-216
+219
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20447,7 +20451,7 @@ Minimum x coordinate for the region of particles.
 Minimum y coordinate for the region of particles.
 </documentation>
 <pattern>
-218
+221
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20464,7 +20468,7 @@ Minimum y coordinate for the region of particles.
 Minimum z coordinate for the region of particles.
 </documentation>
 <pattern>
-220
+223
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20481,7 +20485,7 @@ Minimum z coordinate for the region of particles.
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-215
+218
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20500,7 +20504,7 @@ Total number of particles to create (not per processor or per element). The numb
 x coordinate for the center of the spherical region, where particles are generated.
 </documentation>
 <pattern>
-223
+226
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20517,7 +20521,7 @@ x coordinate for the center of the spherical region, where particles are generat
 y coordinate for the center of the spherical region, where particles are generated.
 </documentation>
 <pattern>
-224
+227
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20534,7 +20538,7 @@ y coordinate for the center of the spherical region, where particles are generat
 z coordinate for the center of the spherical region, where particles are generated.
 </documentation>
 <pattern>
-225
+228
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20551,7 +20555,7 @@ z coordinate for the center of the spherical region, where particles are generat
 Maximum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
 </documentation>
 <pattern>
-231
+234
 </pattern>
 <pattern_description>
 [Double 0...180 (inclusive)]
@@ -20568,7 +20572,7 @@ Maximum latitude coordinate for the region of particles in degrees. Measured fro
 Maximum longitude coordinate for the region of particles in degrees. Measured from the center position.
 </documentation>
 <pattern>
-229
+232
 </pattern>
 <pattern_description>
 [Double -180...360 (inclusive)]
@@ -20585,7 +20589,7 @@ Maximum longitude coordinate for the region of particles in degrees. Measured fr
 Maximum radial coordinate for the region of particles. Measured from the center position.
 </documentation>
 <pattern>
-227
+230
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -20602,7 +20606,7 @@ Maximum radial coordinate for the region of particles. Measured from the center 
 Minimum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
 </documentation>
 <pattern>
-230
+233
 </pattern>
 <pattern_description>
 [Double 0...180 (inclusive)]
@@ -20619,7 +20623,7 @@ Minimum latitude coordinate for the region of particles in degrees. Measured fro
 Minimum longitude coordinate for the region of particles in degrees. Measured from the center position.
 </documentation>
 <pattern>
-228
+231
 </pattern>
 <pattern_description>
 [Double -180...360 (inclusive)]
@@ -20636,7 +20640,7 @@ Minimum longitude coordinate for the region of particles in degrees. Measured fr
 Minimum radial coordinate for the region of particles. Measured from the center position.
 </documentation>
 <pattern>
-226
+229
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20653,7 +20657,7 @@ Minimum radial coordinate for the region of particles. Measured from the center 
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-222
+225
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20670,7 +20674,7 @@ Total number of particles to create (not per processor or per element). The numb
 The number of radial shells of particles that will be generated around the central point.
 </documentation>
 <pattern>
-232
+235
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -20691,7 +20695,7 @@ true
 Whether to correctly evaluate old and current velocity solution to reach higher-order accuracy in time. If set to &apos;false&apos; only the old velocity solution is evaluated to simulate a first order method in time. This is only recommended for benchmark purposes.
 </documentation>
 <pattern>
-243
+246
 </pattern>
 <pattern_description>
 [Bool]
@@ -20712,7 +20716,7 @@ false
 Extends the range used by &apos;Use linear least squares limiter&apos; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &apos;Use boundary extrapolation&apos; requires enabling &apos;Use linear least squares limiter&apos;.
 </documentation>
 <pattern>
-246
+251
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -20729,7 +20733,7 @@ true
 Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 </documentation>
 <pattern>
-245
+250
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -20748,7 +20752,7 @@ false
 Extends the range used by &apos;Use quadratic least squares limiter&apos; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &apos;Use boundary extrapolation&apos; requires enabling &apos;Use quadratic least squares limiter&apos;.
 </documentation>
 <pattern>
-251
+249
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -20765,7 +20769,7 @@ true
 Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 </documentation>
 <pattern>
-250
+248
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -20785,7 +20789,7 @@ Limit the interpolation of particle properties onto the cell, so that the value 
 The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt presence property is set to 1).
 </documentation>
 <pattern>
-253
+260
 </pattern>
 <pattern_description>
 [Double 0...1 (inclusive)]
@@ -20805,7 +20809,7 @@ false
 By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles. In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell&apos;s properties.
 </documentation>
 <pattern>
-319
+324
 </pattern>
 <pattern_description>
 [Bool]
@@ -20834,7 +20838,7 @@ Select one of the following models:
 `rk4&apos;: Runge Kutta fourth order integrator, where $y_{n+1} = y_n + \frac{1}{6} k_1 + \frac{1}{3} k_2 + \frac{1}{3} k_3 + \frac{1}{6} k_4$ and $k_1$, $k_2$, $k_3$, $k_4$ are defined as usual.
 </documentation>
 <pattern>
-312
+315
 </pattern>
 <pattern_description>
 [Selection euler|rk2|rk4 ]
@@ -20863,7 +20867,7 @@ Select one of the following models:
 `quadratic least squares&apos;: Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 </documentation>
 <pattern>
-314
+317
 </pattern>
 <pattern_description>
 [Selection bilinear least squares|cell average|distance weighted average|harmonic average|nearest neighbor|quadratic least squares ]
@@ -20916,7 +20920,7 @@ The following properties are available:
 `viscoplastic strain invariants&apos;: A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 </documentation>
 <pattern>
-322
+325
 </pattern>
 <pattern_description>
 [MultipleSelection composition|cpo bingham average|cpo elastic tensor|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
@@ -20933,7 +20937,7 @@ repartition
 Strategy that is used to balance the computational load across processors for adaptive meshes.
 </documentation>
 <pattern>
-275
+278
 </pattern>
 <pattern_description>
 [MultipleSelection none|remove particles|add particles|remove and add particles|repartition ]
@@ -20950,7 +20954,7 @@ Strategy that is used to balance the computational load across processors for ad
 Upper limit for particle number per cell. This limit is useful for adaptive meshes to prevent coarse cells from slowing down the whole model. It will be checked and enforced after mesh refinement, after MPI transfer of particles and after particle movement. If there are \texttt{n\_number\_of\_particles} $&gt;$ \texttt{max\_particles\_per\_cell} particles in one cell then \texttt{n\_number\_of\_particles} - \texttt{max\_particles\_per\_cell} particles in this cell are randomly chosen and destroyed.
 </documentation>
 <pattern>
-277
+280
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -20967,7 +20971,7 @@ Upper limit for particle number per cell. This limit is useful for adaptive mesh
 Lower limit for particle number per cell. This limit is useful for adaptive meshes to prevent fine cells from being empty of particles. It will be checked and enforced after mesh refinement and after particle movement. If there are \texttt{n\_number\_of\_particles} $&lt;$ \texttt{min\_particles\_per\_cell} particles in one cell then \texttt{min\_particles\_per\_cell} - \texttt{n\_number\_of\_particles} particles are generated and randomly placed in this cell. If the particles carry properties the individual property plugins control how the properties of the new particles are initialized.
 </documentation>
 <pattern>
-276
+279
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -20998,7 +21002,7 @@ Select one of the following models:
 `uniform radial&apos;: Generate a uniform distribution of particles over a spherical domain in 2d or 3d. Uniform here means the particles will be generated with an equal spacing in each spherical spatial dimension, i.e., the particles are created at positions that increase linearly with equal spacing in radius, colatitude and longitude around a certain center point. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 </documentation>
 <pattern>
-280
+283
 </pattern>
 <pattern_description>
 [Selection ascii file|probability density function|quadrature points|random uniform|reference cell|uniform box|uniform radial ]
@@ -21015,7 +21019,7 @@ Select one of the following models:
 Weight that is associated with the computational load of a single particle. The sum of particle weights will be added to the sum of cell weights to determine the partitioning of the mesh if the `repartition&apos; particle load balancing strategy is selected. The optimal weight depends on the used integrator and particle properties. In general for a more expensive integrator and more expensive properties a larger particle weight is recommended. Before adding the weights of particles, each cell already carries a weight of 1000 to account for the cost of field-based computations.
 </documentation>
 <pattern>
-278
+281
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -21032,7 +21036,7 @@ true
 Some particle interpolation algorithms require knowledge about particles in neighboring cells. To allow this, particles in ghost cells need to be exchanged between the processes neighboring this cell. This parameter determines whether this transport is happening. This parameter is deprecated and will be removed in the future. Ghost particle updates are always performed. Please set the parameter to `true&apos;.
 </documentation>
 <pattern>
-279
+282
 </pattern>
 <pattern_description>
 [Bool]
@@ -21050,7 +21054,7 @@ Some particle interpolation algorithms require knowledge about particles in neig
 This determines how many samples are taken when using the random draw volume averaging. Setting it to zero means that the number of samples is set to be equal to the number of grains.
 </documentation>
 <pattern>
-325
+332
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21067,7 +21071,7 @@ This determines how many samples are taken when using the random draw volume ave
 The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank. 
 </documentation>
 <pattern>
-324
+331
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -21086,7 +21090,7 @@ Spin tensor
 Options: Spin tensor
 </documentation>
 <pattern>
-331
+338
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -21103,7 +21107,7 @@ Options: Spin tensor
 The number of grains of each different mineral each particle contains.
 </documentation>
 <pattern>
-327
+334
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -21120,7 +21124,7 @@ The number of grains of each different mineral each particle contains.
 The Backward Euler property advection method involve internal iterations. This option allows for setting the maximum number of iterations. Note that when the iteration is ended by the max iteration amount an assert is thrown.
 </documentation>
 <pattern>
-330
+337
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -21137,7 +21141,7 @@ Backward Euler
 Options: Forward Euler, Backward Euler
 </documentation>
 <pattern>
-328
+335
 </pattern>
 <pattern_description>
 [Anything]
@@ -21154,7 +21158,7 @@ Options: Forward Euler, Backward Euler
 The Backward Euler property advection method involve internal iterations. This option allows for setting a tolerance. When the norm of tensor new - tensor old is smaller than this tolerance, the iteration is stopped.
 </documentation>
 <pattern>
-329
+336
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21171,7 +21175,7 @@ The Backward Euler property advection method involve internal iterations. This o
 The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same number of MPI processes. It is implemented as final seed = user seed + MPI Rank. 
 </documentation>
 <pattern>
-326
+333
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -21189,7 +21193,7 @@ The seed used to generate random numbers. This will make sure that results are r
 This is exponent p as defined in equation 11 of Kaminski et al., 2004. 
 </documentation>
 <pattern>
-338
+345
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21206,7 +21210,7 @@ This is exponent p as defined in equation 11 of Kaminski et al., 2004.
 The dimensionless intrinsic grain boundary mobility for both olivine and enstatite.
 </documentation>
 <pattern>
-335
+342
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21223,7 +21227,7 @@ The dimensionless intrinsic grain boundary mobility for both olivine and enstati
 This is the dimensionless nucleation rate as defined in equation 8 of Kaminski et al., 2004. 
 </documentation>
 <pattern>
-339
+346
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21240,7 +21244,7 @@ This is the dimensionless nucleation rate as defined in equation 8 of Kaminski e
 This is the power law exponent that characterizes the rheology of the slip systems. It is used in equation 11 of Kaminski et al., 2004.
 </documentation>
 <pattern>
-337
+344
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21257,7 +21261,7 @@ This is the power law exponent that characterizes the rheology of the slip syste
 The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size threshold below which grain deform by GBS and become strain-free grains.
 </documentation>
 <pattern>
-340
+347
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21274,7 +21278,7 @@ The Dimensionless Grain Boundary Sliding (GBS) threshold. This is a grain size t
 The volume fraction for the different minerals. There need to be the same amount of values as there are minerals
 </documentation>
 <pattern>
-336
+343
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -21293,7 +21297,7 @@ Olivine: Karato 2008, Enstatite
 This determines what minerals and fabrics or fabric selectors are used used for the LPO/CPO calculation. The options are Olivine: Passive, A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric, Olivine: E-fabric, Olivine: Karato 2008 or Enstatite. Passive sets all RRSS entries to the maximum. The Karato 2008 selector selects a fabric based on stress and water content as defined in figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).
 </documentation>
 <pattern>
-333
+340
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -21310,7 +21314,7 @@ Uniform grains and random uniform rotations
 The model used to initialize the CPO for all particles. Currently &apos;Uniform grains and random uniform rotations&apos; and &apos;World Builder&apos; are the only valid option.
 </documentation>
 <pattern>
-332
+339
 </pattern>
 <pattern_description>
 [Anything]
@@ -21327,7 +21331,7 @@ The model used to initialize the CPO for all particles. Currently &apos;Uniform 
 The volume fractions for the different minerals. There need to be the same number of values as there are minerals.Note that the currently implemented scheme is incompressible and does not allow chemical interaction or the formation of new phases
 </documentation>
 <pattern>
-334
+341
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -21345,7 +21349,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-344
+329
 </pattern>
 <pattern_description>
 [Anything]
@@ -21364,7 +21368,7 @@ The formula that denotes the function you want to evaluate for particular values
 If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
 </documentation>
 <pattern>
-343
+328
 </pattern>
 <pattern_description>
 [Anything]
@@ -21381,7 +21385,7 @@ If the function you are describing represents a vector-valued function with mult
 The number of function components where each component is described by a function expression delimited by a &apos;;&apos;.
 </documentation>
 <pattern>
-341
+326
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -21398,7 +21402,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-342
+327
 </pattern>
 <pattern_description>
 [Anything]
@@ -21418,7 +21422,7 @@ $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
 The name of a directory that contains the particle data. This path may either be absolute (if starting with a &apos;/&apos;) or relative to the current directory. The path may also include the special text &apos;$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT. 
 </documentation>
 <pattern>
-303
+306
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -21435,7 +21439,7 @@ particle.dat
 The name of the particle file.
 </documentation>
 <pattern>
-304
+307
 </pattern>
 <pattern_description>
 [Anything]
@@ -21452,7 +21456,7 @@ Sometimes it is convenient to use symbolic constants in the expression that desc
 A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
 </documentation>
 <pattern>
-307
+310
 </pattern>
 <pattern_description>
 [Anything]
@@ -21469,7 +21473,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536&apo
 The formula that denotes the spatially variable probability density function. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, 0)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise; this example would result in no particles at all in that part of the domain where $x==0$, and a constant particle density in the rest of the domain. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/. Note that the function has to be non-negative everywhere in the domain, and needs to be positive in at least some parts of the domain.
 </documentation>
 <pattern>
-308
+311
 </pattern>
 <pattern_description>
 [Anything]
@@ -21486,7 +21490,7 @@ The formula that denotes the spatially variable probability density function. Th
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-309
+312
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21503,7 +21507,7 @@ true
 If true, particle numbers per cell are calculated randomly according to their respective probability density. This means particle numbers per cell can deviate statistically from the integral of the probability density. If false, first determine how many particles each cell should have based on the integral of the density over each of the cells, and then once we know how many particles we want on each cell, choose their locations randomly within each cell.
 </documentation>
 <pattern>
-310
+313
 </pattern>
 <pattern_description>
 [Bool]
@@ -21520,7 +21524,7 @@ If true, particle numbers per cell are calculated randomly according to their re
 The seed for the random number generator that controls the particle generation. Keep constant to generate identical particle distributions in subsequent model runs. Change to get a different distribution. In parallel computations the seed is further modified on each process to ensure different particle patterns on different processes. Note that the number of particles per processor is not affected by the seed.
 </documentation>
 <pattern>
-311
+314
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -21537,7 +21541,7 @@ x,y,t
 The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
 </documentation>
 <pattern>
-305
+308
 </pattern>
 <pattern_description>
 [Anything]
@@ -21556,7 +21560,7 @@ The names of the variables as they will be used in the function, separated by co
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-281
+284
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21573,7 +21577,7 @@ true
 If true, particle numbers per cell are calculated randomly according to their respective probability density. This means particle numbers per cell can deviate statistically from the integral of the probability density. If false, first determine how many particles each cell should have based on the integral of the density over each of the cells, and then once we know how many particles we want on each cell, choose their locations randomly within each cell.
 </documentation>
 <pattern>
-282
+285
 </pattern>
 <pattern_description>
 [Bool]
@@ -21590,7 +21594,7 @@ If true, particle numbers per cell are calculated randomly according to their re
 The seed for the random number generator that controls the particle generation. Keep constant to generate identical particle distributions in subsequent model runs. Change to get a different distribution. In parallel computations the seed is further modified on each process to ensure different particle patterns on different processes. Note that the number of particles per processor is not affected by the seed.
 </documentation>
 <pattern>
-283
+286
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -21609,7 +21613,7 @@ The seed for the random number generator that controls the particle generation. 
 List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-284
+287
 </pattern>
 <pattern_description>
 [List of &lt;[Integer range 1...2147483647 (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -21628,7 +21632,7 @@ List of number of particles to create per cell and spatial dimension. The size o
 Maximum x coordinate for the region of particles.
 </documentation>
 <pattern>
-287
+290
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21645,7 +21649,7 @@ Maximum x coordinate for the region of particles.
 Maximum y coordinate for the region of particles.
 </documentation>
 <pattern>
-289
+292
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21662,7 +21666,7 @@ Maximum y coordinate for the region of particles.
 Maximum z coordinate for the region of particles.
 </documentation>
 <pattern>
-291
+294
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21679,7 +21683,7 @@ Maximum z coordinate for the region of particles.
 Minimum x coordinate for the region of particles.
 </documentation>
 <pattern>
-286
+289
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21696,7 +21700,7 @@ Minimum x coordinate for the region of particles.
 Minimum y coordinate for the region of particles.
 </documentation>
 <pattern>
-288
+291
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21713,7 +21717,7 @@ Minimum y coordinate for the region of particles.
 Minimum z coordinate for the region of particles.
 </documentation>
 <pattern>
-290
+293
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21730,7 +21734,7 @@ Minimum z coordinate for the region of particles.
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-285
+288
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21749,7 +21753,7 @@ Total number of particles to create (not per processor or per element). The numb
 x coordinate for the center of the spherical region, where particles are generated.
 </documentation>
 <pattern>
-293
+296
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21766,7 +21770,7 @@ x coordinate for the center of the spherical region, where particles are generat
 y coordinate for the center of the spherical region, where particles are generated.
 </documentation>
 <pattern>
-294
+297
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21783,7 +21787,7 @@ y coordinate for the center of the spherical region, where particles are generat
 z coordinate for the center of the spherical region, where particles are generated.
 </documentation>
 <pattern>
-295
+298
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21800,7 +21804,7 @@ z coordinate for the center of the spherical region, where particles are generat
 Maximum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
 </documentation>
 <pattern>
-301
+304
 </pattern>
 <pattern_description>
 [Double 0...180 (inclusive)]
@@ -21817,7 +21821,7 @@ Maximum latitude coordinate for the region of particles in degrees. Measured fro
 Maximum longitude coordinate for the region of particles in degrees. Measured from the center position.
 </documentation>
 <pattern>
-299
+302
 </pattern>
 <pattern_description>
 [Double -180...360 (inclusive)]
@@ -21834,7 +21838,7 @@ Maximum longitude coordinate for the region of particles in degrees. Measured fr
 Maximum radial coordinate for the region of particles. Measured from the center position.
 </documentation>
 <pattern>
-297
+300
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -21851,7 +21855,7 @@ Maximum radial coordinate for the region of particles. Measured from the center 
 Minimum latitude coordinate for the region of particles in degrees. Measured from the center position, and from the north pole.
 </documentation>
 <pattern>
-300
+303
 </pattern>
 <pattern_description>
 [Double 0...180 (inclusive)]
@@ -21868,7 +21872,7 @@ Minimum latitude coordinate for the region of particles in degrees. Measured fro
 Minimum longitude coordinate for the region of particles in degrees. Measured from the center position.
 </documentation>
 <pattern>
-298
+301
 </pattern>
 <pattern_description>
 [Double -180...360 (inclusive)]
@@ -21885,7 +21889,7 @@ Minimum longitude coordinate for the region of particles in degrees. Measured fr
 Minimum radial coordinate for the region of particles. Measured from the center position.
 </documentation>
 <pattern>
-296
+299
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21902,7 +21906,7 @@ Minimum radial coordinate for the region of particles. Measured from the center 
 Total number of particles to create (not per processor or per element). The number is parsed as a floating point number (so that one can specify, for example, &apos;1e4&apos; particles) but it is interpreted as an integer, of course.
 </documentation>
 <pattern>
-292
+295
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -21919,7 +21923,7 @@ Total number of particles to create (not per processor or per element). The numb
 The number of radial shells of particles that will be generated around the central point.
 </documentation>
 <pattern>
-302
+305
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -21940,7 +21944,7 @@ true
 Whether to correctly evaluate old and current velocity solution to reach higher-order accuracy in time. If set to &apos;false&apos; only the old velocity solution is evaluated to simulate a first order method in time. This is only recommended for benchmark purposes.
 </documentation>
 <pattern>
-313
+316
 </pattern>
 <pattern_description>
 [Bool]
@@ -21961,7 +21965,7 @@ false
 Extends the range used by &apos;Use linear least squares limiter&apos; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &apos;Use boundary extrapolation&apos; requires enabling &apos;Use linear least squares limiter&apos;.
 </documentation>
 <pattern>
-316
+321
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -21978,7 +21982,7 @@ true
 Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 </documentation>
 <pattern>
-315
+320
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -21997,7 +22001,7 @@ false
 Extends the range used by &apos;Use quadratic least squares limiter&apos; by linearly interpolating values at cell boundaries from neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property. Enabling &apos;Use boundary extrapolation&apos; requires enabling &apos;Use quadratic least squares limiter&apos;.
 </documentation>
 <pattern>
-321
+319
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -22014,7 +22018,7 @@ true
 Limit the interpolation of particle properties onto the cell, so that the value of each property is no smaller than its minimum and no larger than its maximum on the particles of each cell, and the average of neighboring cells. If more than one value is given, it will be treated as a list with one component per particle property.
 </documentation>
 <pattern>
-320
+318
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -22034,7 +22038,7 @@ Limit the interpolation of particle properties onto the cell, so that the value 
 The minimum porosity that has to be present at the position of a particle for it to be considered a melt particle (in the sense that the melt presence property is set to 1).
 </documentation>
 <pattern>
-323
+330
 </pattern>
 <pattern_description>
 [Double 0...1 (inclusive)]
@@ -22209,7 +22213,7 @@ $ASPECT_SOURCE_DIR/data/postprocess/boundary-strain-rate-residual/
 The name of a directory that contains the ascii data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT.
 </documentation>
 <pattern>
-396
+397
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -22226,7 +22230,7 @@ box_3d_boundary_strain_rate.txt
 The file name of the input surface strain rate an ascii data. The file has one column in addition to the coordinate columns corresponding to the second invariant of strain rate. 
 </documentation>
 <pattern>
-397
+398
 </pattern>
 <pattern_description>
 [Anything]
@@ -22243,7 +22247,7 @@ The file name of the input surface strain rate an ascii data. The file has one c
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model.
 </documentation>
 <pattern>
-398
+399
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -22262,7 +22266,7 @@ $ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/
 The name of a directory that contains the GPlates model or the ascii data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT.
 </documentation>
 <pattern>
-399
+400
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -22279,7 +22283,7 @@ current_day.gpml
 The file name of the input velocity as a GPlates model or an ascii data. For the GPlates model, provide file in the same format as described in the &apos;gplates&apos; boundary velocity plugin. For the ascii data, provide file in the same format as described in  &apos;ascii data&apos; initial composition plugin.
 </documentation>
 <pattern>
-400
+401
 </pattern>
 <pattern_description>
 [Anything]
@@ -22296,7 +22300,7 @@ The file name of the input velocity as a GPlates model or an ascii data. For the
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/year set this factor to 0.01.
 </documentation>
 <pattern>
-401
+402
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -22313,7 +22317,7 @@ false
 Use ascii data files (e.g., GPS) for computing residual velocities instead of GPlates data.
 </documentation>
 <pattern>
-403
+404
 </pattern>
 <pattern_description>
 [Bool]
@@ -22330,7 +22334,7 @@ false
 Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3d) or out and clockwise (in 2d). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
 </documentation>
 <pattern>
-402
+403
 </pattern>
 <pattern_description>
 [Bool]
@@ -22345,7 +22349,7 @@ Specify velocity as r, phi, and theta components instead of x, y, and z. Positiv
 Command to execute.
 </documentation>
 <pattern>
-406
+407
 </pattern>
 <pattern_description>
 [Anything]
@@ -22362,7 +22366,7 @@ false
 Whether to run command from all processes (true), or only on process 0 (false).
 </documentation>
 <pattern>
-405
+406
 </pattern>
 <pattern_description>
 [Bool]
@@ -22379,7 +22383,7 @@ false
 Select whether \aspect{} should terminate if the command returns a non-zero exit status.
 </documentation>
 <pattern>
-404
+405
 </pattern>
 <pattern_description>
 [Bool]
@@ -22394,7 +22398,7 @@ Select whether \aspect{} should terminate if the command returns a non-zero exit
 A list of names for each of the compositional fields that you want to compute the combined RMS velocity for.
 </documentation>
 <pattern>
-407
+408
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -22413,7 +22417,7 @@ true
 Whether to compress the raw and weighted cpo data output files with zlib.
 </documentation>
 <pattern>
-354
+374
 </pattern>
 <pattern_description>
 [Bool]
@@ -22430,7 +22434,7 @@ Whether to compress the raw and weighted cpo data output files with zlib.
 The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = random number seed + MPI Rank. 
 </documentation>
 <pattern>
-349
+369
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -22443,7 +22447,7 @@ The seed used to generate random numbers. This will make sure that results are r
 On large clusters it can be advantageous to first write the output to a temporary file on a local file system and later move this file to a network file system. If this variable is set to a non-empty string it will be interpreted as a temporary storage location.
 </documentation>
 <pattern>
-351
+371
 </pattern>
 <pattern_description>
 [Anything]
@@ -22462,7 +22466,7 @@ The time interval between each generation of output files. A value of zero indic
 Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-348
+368
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -22479,7 +22483,7 @@ false
 File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to `true&apos; moves this process into background threads, while the rest of the model continues.
 </documentation>
 <pattern>
-350
+370
 </pattern>
 <pattern_description>
 [Bool]
@@ -22497,7 +22501,7 @@ A list containing the what part of the random draw volume weighted particle cpo 
 Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written. Furthermore, the entries will be written out in the order given, and if entries are entered multiple times, they will be written out multiple times.
 </documentation>
 <pattern>
-353
+373
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -22515,7 +22519,7 @@ A list containing what particle cpo data needs to be written out after the parti
 Note that the rotation matrix and Euler angles both contain the same information, but in a different format. Euler angles are recommended over the rotation matrix since they only require to write 3 values instead of 9. If the list is empty, this file will not be written.Furthermore, the entries will be written out in the order given, and if entries are entered multiple times, they will be written out multiple times.
 </documentation>
 <pattern>
-352
+372
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -22530,7 +22534,7 @@ Note that the rotation matrix and Euler angles both contain the same information
 The depth boundaries of zones within which we are to compute averages. By default this list is empty and we subdivide the entire domain into equidistant depth zones and compute averages within each of these zones. If this list is not empty it has to contain one more entry than the &apos;Number of zones&apos; parameter, representing the upper and lower depth boundary of each zone. It is not necessary to cover the whole depth-range (i.e. you can select to only average in a single layer by choosing 2 arbitrary depths as the boundaries of that layer).
 </documentation>
 <pattern>
-357
+377
 </pattern>
 <pattern_description>
 [List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -22552,7 +22556,7 @@ List of options:
 all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass
 </documentation>
 <pattern>
-359
+379
 </pattern>
 <pattern_description>
 [MultipleSelection all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|viscosity|vertical heat flux|vertical mass flux|composition mass ]
@@ -22569,7 +22573,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 The number of zones in depth direction within which we are to compute averages. By default, we subdivide the entire domain into 10 depth zones and compute temperature and other averages within each of these zones. However, if you have a very coarse mesh, it may not make much sense to subdivide the domain into so many zones and you may wish to choose less than this default. It may also make computations slightly faster. On the other hand, if you have an extremely highly resolved mesh, choosing more zones might also make sense.
 </documentation>
 <pattern>
-356
+376
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -22586,7 +22590,7 @@ gnuplot, txt
 A list of formats in which the output shall be produced. The format in which the output is generated also determines the extension of the file into which data is written. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described. By default the output is written as gnuplot file (for plotting), and as a simple text file.
 </documentation>
 <pattern>
-358
+378
 </pattern>
 <pattern_description>
 [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|txt ]
@@ -22603,7 +22607,7 @@ A list of formats in which the output shall be produced. The format in which the
 The time interval between each generation of graphical output files. A value of zero indicates that output should be generated in each time step. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-355
+375
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -22622,7 +22626,7 @@ false
 Output the excess entropy only instead the each entropy terms.
 </documentation>
 <pattern>
-408
+367
 </pattern>
 <pattern_description>
 [Bool]
@@ -22641,7 +22645,7 @@ Output the excess entropy only instead the each entropy terms.
 Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter `Density above&apos; allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: \si{\kilogram\per\meter\cubed}.
 </documentation>
 <pattern>
-360
+380
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -22658,7 +22662,7 @@ Dynamic topography is calculated as the excess or lack of mass that is supported
 Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter `Density below&apos; allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: \si{\kilogram\per\meter\cubed}.
 </documentation>
 <pattern>
-361
+381
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -22675,7 +22679,7 @@ true
 Whether to output a file containing the bottom (i.e., CMB) dynamic topography.
 </documentation>
 <pattern>
-363
+383
 </pattern>
 <pattern_description>
 [Bool]
@@ -22692,7 +22696,7 @@ true
 Whether to output a file containing the surface dynamic topography.
 </documentation>
 <pattern>
-362
+382
 </pattern>
 <pattern_description>
 [Bool]
@@ -22751,7 +22755,7 @@ false
 The density value above the surface boundary.
 </documentation>
 <pattern>
-369
+389
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -22768,7 +22772,7 @@ The density value above the surface boundary.
 The density value below the CMB boundary.
 </documentation>
 <pattern>
-370
+390
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -22785,7 +22789,7 @@ true
 Option to include the contribution from CMB topography on geoid. The default is true.
 </documentation>
 <pattern>
-365
+385
 </pattern>
 <pattern_description>
 [Bool]
@@ -22802,7 +22806,7 @@ true
 Option to include the contribution from surface topography on geoid. The default is true.
 </documentation>
 <pattern>
-364
+384
 </pattern>
 <pattern_description>
 [Bool]
@@ -22819,7 +22823,7 @@ Option to include the contribution from surface topography on geoid. The default
 This parameter can be a random positive integer. However, the value normally should not exceed the maximum degree of the initial perturbed temperature field. For example, if the initial temperature uses S40RTS, the maximum degree should not be larger than 40.
 </documentation>
 <pattern>
-366
+386
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -22836,7 +22840,7 @@ This parameter can be a random positive integer. However, the value normally sho
 This parameter normally is set to 2 since the perturbed gravitational potential at degree 1 always vanishes in a reference frame with the planetary center of mass same as the center of figure.
 </documentation>
 <pattern>
-367
+387
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -22853,7 +22857,7 @@ false
 Option to output the spherical harmonic coefficients of the CMB topography contribution to the maximum degree. The default is false. 
 </documentation>
 <pattern>
-373
+393
 </pattern>
 <pattern_description>
 [Bool]
@@ -22870,7 +22874,7 @@ false
 Option to output the geoid anomaly in geographical coordinates (latitude and longitude). The default is false, so the postprocessor will output the data in geocentric coordinates (x,y,z) as normally.
 </documentation>
 <pattern>
-368
+388
 </pattern>
 <pattern_description>
 [Bool]
@@ -22887,7 +22891,7 @@ false
 Option to output the spherical harmonic coefficients of the density anomaly contribution to the maximum degree. The default is false. 
 </documentation>
 <pattern>
-374
+394
 </pattern>
 <pattern_description>
 [Bool]
@@ -22904,7 +22908,7 @@ false
 Option to output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. The default is false, so the postprocessor will only output the geoid anomaly in grid format. 
 </documentation>
 <pattern>
-371
+391
 </pattern>
 <pattern_description>
 [Bool]
@@ -22921,7 +22925,7 @@ false
 Option to output the free-air gravity anomaly up to the maximum degree. The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false. 
 </documentation>
 <pattern>
-375
+395
 </pattern>
 <pattern_description>
 [Bool]
@@ -22938,7 +22942,7 @@ false
 Option to output the spherical harmonic coefficients of the surface topography contribution to the maximum degree. The default is false. 
 </documentation>
 <pattern>
-372
+392
 </pattern>
 <pattern_description>
 [Bool]
@@ -22957,7 +22961,7 @@ false
 Whether to put every nonlinear iteration into a separate line in the statistics file (if true), or to output only one line per time step that contains the total number of iterations of the Stokes and advection linear system solver.
 </documentation>
 <pattern>
-376
+396
 </pattern>
 <pattern_description>
 [Bool]
@@ -22972,7 +22976,7 @@ Whether to put every nonlinear iteration into a separate line in the statistics 
 Parameter for the list of points sampling scheme: List of satellite latitude coordinates.
 </documentation>
 <pattern>
-393
+364
 </pattern>
 <pattern_description>
 [List of &lt;[Double -90...90 (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -22985,7 +22989,7 @@ Parameter for the list of points sampling scheme: List of satellite latitude coo
 Parameter for the list of points sampling scheme: List of satellite longitude coordinates.
 </documentation>
 <pattern>
-392
+363
 </pattern>
 <pattern_description>
 [List of &lt;[Double -180...180 (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -22998,7 +23002,7 @@ Parameter for the list of points sampling scheme: List of satellite longitude co
 Parameter for the list of points sampling scheme: List of satellite radius coordinates. Just specify one radius if all points values have the same radius. If not, make sure there are as many radius as longitude and latitude
 </documentation>
 <pattern>
-391
+362
 </pattern>
 <pattern_description>
 [List of &lt;[Double 0...MAX_DOUBLE (inclusive)]&gt; of length 0...4294967295 (inclusive)]
@@ -23015,7 +23019,7 @@ Parameter for the list of points sampling scheme: List of satellite radius coord
 Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
 </documentation>
 <pattern>
-388
+359
 </pattern>
 <pattern_description>
 [Double -90...90 (inclusive)]
@@ -23032,7 +23036,7 @@ Parameter for the uniform distribution sampling scheme: Gravity may be calculate
 Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
 </documentation>
 <pattern>
-387
+358
 </pattern>
 <pattern_description>
 [Double -180...180 (inclusive)]
@@ -23049,7 +23053,7 @@ Parameter for the uniform distribution sampling scheme: Gravity may be calculate
 Parameter for the map sampling scheme: Maximum radius can be defined in or outside the model.
 </documentation>
 <pattern>
-384
+355
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23066,7 +23070,7 @@ Parameter for the map sampling scheme: Maximum radius can be defined in or outsi
 Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the latitude between a minimum and maximum latitude.
 </documentation>
 <pattern>
-386
+357
 </pattern>
 <pattern_description>
 [Double -90...90 (inclusive)]
@@ -23083,7 +23087,7 @@ Parameter for the uniform distribution sampling scheme: Gravity may be calculate
 Parameter for the uniform distribution sampling scheme: Gravity may be calculated for a sets of points along the longitude between a minimum and maximum longitude.
 </documentation>
 <pattern>
-385
+356
 </pattern>
 <pattern_description>
 [Double -180...180 (inclusive)]
@@ -23100,7 +23104,7 @@ Parameter for the uniform distribution sampling scheme: Gravity may be calculate
 Parameter for the map sampling scheme: Minimum radius may be defined in or outside the model. Prescribe a minimum radius for a sampling coverage at a specific height.
 </documentation>
 <pattern>
-383
+354
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23117,7 +23121,7 @@ Parameter for the map sampling scheme: Minimum radius may be defined in or outsi
 Parameter for the fibonacci spiral sampling scheme: This specifies the desired number of satellites per radius layer. The default value is 200. Note that sampling becomes more uniform with increasing number of satellites
 </documentation>
 <pattern>
-378
+349
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -23134,7 +23138,7 @@ Parameter for the fibonacci spiral sampling scheme: This specifies the desired n
 Parameter for the map sampling scheme: This specifies the number of points along the latitude (e.g. gravity map) between a minimum and maximum latitude.
 </documentation>
 <pattern>
-382
+353
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -23151,7 +23155,7 @@ Parameter for the map sampling scheme: This specifies the number of points along
 Parameter for the map sampling scheme: This specifies the number of points along the longitude (e.g. gravity map) between a minimum and maximum longitude.
 </documentation>
 <pattern>
-381
+352
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -23168,7 +23172,7 @@ Parameter for the map sampling scheme: This specifies the number of points along
 Parameter for the map sampling scheme: This specifies the number of points along the radius (e.g. depth profile) between a minimum and maximum radius.
 </documentation>
 <pattern>
-380
+351
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -23185,7 +23189,7 @@ Parameter for the map sampling scheme: This specifies the number of points along
 Set the precision of gravity acceleration, potential and gradients in the gravity output and statistics file.
 </documentation>
 <pattern>
-390
+361
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -23202,7 +23206,7 @@ Set the precision of gravity acceleration, potential and gradients in the gravit
 Quadrature degree increase over the velocity element degree may be required when gravity is calculated near the surface or inside the model. An increase in the quadrature element adds accuracy to the gravity solution from noise due to the model grid.
 </documentation>
 <pattern>
-379
+350
 </pattern>
 <pattern_description>
 [Integer range -1...2147483647 (inclusive)]
@@ -23219,7 +23223,7 @@ Quadrature degree increase over the velocity element degree may be required when
 Gravity anomalies may be computed using density anomalies relative to a reference density.
 </documentation>
 <pattern>
-389
+360
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23236,7 +23240,7 @@ map
 Choose the sampling scheme. By default, the map produces a grid of equally angled points between a minimum and maximum radius, longitude, and latitude. A list of points contains the specific coordinates of the satellites. The fibonacci spiral sampling scheme produces a uniformly distributed map on the surface of sphere defined by a minimum and/or maximum radius.
 </documentation>
 <pattern>
-377
+348
 </pattern>
 <pattern_description>
 [Selection map|list|list of points|fibonacci spiral ]
@@ -23253,7 +23257,7 @@ Choose the sampling scheme. By default, the map produces a grid of equally angle
 The time interval between each generation of gravity output files. A value of 0 indicates that output should be generated in each time step. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-394
+365
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23270,7 +23274,7 @@ The time interval between each generation of gravity output files. A value of 0 
 The maximum number of time steps between each generation of gravity output files.
 </documentation>
 <pattern>
-395
+366
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -23289,7 +23293,7 @@ true
 If set to &apos;true&apos;, also output the peak virtual memory usage (computed as the maximum over all processors).
 </documentation>
 <pattern>
-198
+201
 </pattern>
 <pattern_description>
 [Bool]
@@ -23308,7 +23312,7 @@ vtu
 A comma separated list of file formats to be used for graphical output. The list of possible output formats that can be given here is documented in the appendix of the manual where the current parameter is described.
 </documentation>
 <pattern>
-200
+203
 </pattern>
 <pattern_description>
 [MultipleSelection none|dx|ucd|gnuplot|povray|eps|gmv|tecplot|vtk|vtu|hdf5|svg|deal.II intermediate|ascii ]
@@ -23321,7 +23325,7 @@ A comma separated list of file formats to be used for graphical output. The list
 A comma separated list of particle properties that should \textit{not} be output. If this list contains the entry `all&apos;, only the id of particles will be provided in graphical output files.
 </documentation>
 <pattern>
-204
+207
 </pattern>
 <pattern_description>
 [Anything]
@@ -23338,7 +23342,7 @@ A comma separated list of particle properties that should \textit{not} be output
 VTU file output supports grouping files from several CPUs into a given number of files using MPI I/O when writing on a parallel filesystem. Select 0 for no grouping. This will disable parallel file output and instead write one file per processor. A value of 1 will generate one big file containing the whole solution, while a larger value will create that many files (at most as many as there are MPI ranks).
 </documentation>
 <pattern>
-201
+204
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -23351,7 +23355,7 @@ VTU file output supports grouping files from several CPUs into a given number of
 On large clusters it can be advantageous to first write the output to a temporary file on a local file system and later move this file to a network file system. If this variable is set to a non-empty string it will be interpreted as a temporary storage location.
 </documentation>
 <pattern>
-203
+206
 </pattern>
 <pattern_description>
 [Anything]
@@ -23370,7 +23374,7 @@ The time interval between each generation of output files. A value of zero indic
 Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-199
+202
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23387,7 +23391,7 @@ false
 File operations can potentially take a long time, blocking the progress of the rest of the model run. Setting this variable to `true&apos; moves this process into a background thread, while the rest of the model continues.
 </documentation>
 <pattern>
-202
+205
 </pattern>
 <pattern_description>
 [Bool]
@@ -23402,7 +23406,7 @@ File operations can potentially take a long time, blocking the progress of the r
 The list of points at which the solution should be evaluated. Points need to be separated by semicolons, and coordinates of each point need to be separated by commas.
 </documentation>
 <pattern>
-346
+187
 </pattern>
 <pattern_description>
 [List of &lt;[List of &lt;[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]&gt; of length 2...2 (inclusive)]&gt; of length 0...4294967295 (inclusive) separated by &lt;;&gt;]
@@ -23419,7 +23423,7 @@ The list of points at which the solution should be evaluated. Points need to be 
 The time interval between each generation of point values output. A value of zero indicates that output should be generated in each time step. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-345
+186
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23436,7 +23440,7 @@ false
 Whether or not the Evaluation points are specified in the natural coordinates of the geometry model, e.g. radius, lon, lat for the chunk model. Currently, natural coordinates for the spherical shell and sphere geometries are not supported. 
 </documentation>
 <pattern>
-347
+188
 </pattern>
 <pattern_description>
 [Bool]
@@ -23455,7 +23459,7 @@ false
 Whether to write the full moment of inertia tensor into the statistics output instead of its norm for the current rotation axis. This is a second-order symmetric tensor with 6 components in 3d. In 2d this option has no effect, because the rotation axis is fixed and thus the moment of inertia is always a scalar.
 </documentation>
 <pattern>
-187
+190
 </pattern>
 <pattern_description>
 [Bool]
@@ -23472,7 +23476,7 @@ false
 Whether to use a constant density of one for the computation of the angular momentum and moment of inertia. This is an approximation that assumes that the &apos;volumetric&apos; rotation is equal to the &apos;mass&apos; rotation. If this parameter is true this postprocessor computes &apos;net rotation&apos; instead of &apos;angular momentum&apos;.
 </documentation>
 <pattern>
-186
+189
 </pattern>
 <pattern_description>
 [Bool]
@@ -23491,7 +23495,7 @@ $ASPECT_SOURCE_DIR/data/postprocess/sea-level/
 The name of a directory that contains the ice height [m] ascii data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT.
 </documentation>
 <pattern>
-192
+195
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -23508,7 +23512,7 @@ $ASPECT_SOURCE_DIR/data/postprocess/sea-level/
 The name of a directory that contains the topography ascii data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT.
 </documentation>
 <pattern>
-190
+193
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -23525,7 +23529,7 @@ shell_3d_ice_top.0.txt
 The file name of the ice height ascii data. For the ascii data, provide file in the same format as described in &apos;ascii data&apos; initial composition plugin.
 </documentation>
 <pattern>
-193
+196
 </pattern>
 <pattern_description>
 [Anything]
@@ -23542,7 +23546,7 @@ shell_3d_topo_top.0.txt
 The file name of the topography ascii data. For the ascii data, provide file in the same format as described in &apos;ascii data&apos; initial composition plugin.
 </documentation>
 <pattern>
-191
+194
 </pattern>
 <pattern_description>
 [Anything]
@@ -23559,7 +23563,7 @@ The file name of the topography ascii data. For the ascii data, provide file in 
 The density of ice [kg/m3]
 </documentation>
 <pattern>
-188
+191
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23576,7 +23580,7 @@ false
 Whether or not to write sea level to a text file named named &apos;sea_level.NNNNN&apos; in the output directory
 </documentation>
 <pattern>
-194
+197
 </pattern>
 <pattern_description>
 [List of &lt;[Bool]&gt; of length 0...4294967295 (inclusive)]
@@ -23593,7 +23597,7 @@ Whether or not to write sea level to a text file named named &apos;sea_level.NNN
 The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-195
+198
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23610,7 +23614,7 @@ The time interval between each generation of text output files. A value of zero 
 The density of water [kg/m3]
 </documentation>
 <pattern>
-189
+192
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -23629,7 +23633,7 @@ false
 Whether or not to write topography to a text file named named &apos;topography.NNNNN&apos; in the output directory
 </documentation>
 <pattern>
-196
+199
 </pattern>
 <pattern_description>
 [Bool]
@@ -23646,7 +23650,7 @@ Whether or not to write topography to a text file named named &apos;topography.N
 The time interval between each generation of text output files. A value of zero indicates that output should be generated in each time step. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-197
+200
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -24190,7 +24194,7 @@ false
 A boolean flag that controls whether to output the heat flux map as a point wise value, or as a cell-wise averaged value. The point wise output is more accurate, but it currently omits prescribed heat flux values at boundaries and advective heat flux that is caused by velocities non-tangential to boundaries. If you do not use these two features it is recommended to switch this setting on to benefit from the increased output resolution.
 </documentation>
 <pattern>
-162
+180
 </pattern>
 <pattern_description>
 [Bool]
@@ -24211,7 +24215,7 @@ A comma separated list of material properties that should be written whenever wr
 viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms|melt fraction
 </documentation>
 <pattern>
-163
+181
 </pattern>
 <pattern_description>
 [MultipleSelection viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal diffusivity|compressibility|entropy derivative temperature|entropy derivative pressure|reaction terms|melt fraction ]
@@ -24230,7 +24234,7 @@ viscosity|density|thermal expansivity|specific heat|thermal conductivity|thermal
 Constant parameter in the quadratic function that approximates the solidus of peridotite. Units: \si{\degreeCelsius}.
 </documentation>
 <pattern>
-165
+157
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24247,7 +24251,7 @@ Constant parameter in the quadratic function that approximates the solidus of pe
 Prefactor of the linear pressure term in the quadratic function that approximates the solidus of peridotite. \si{\degreeCelsius\per\pascal}.
 </documentation>
 <pattern>
-166
+158
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24264,7 +24268,7 @@ Prefactor of the linear pressure term in the quadratic function that approximate
 Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of peridotite. \si{\degreeCelsius\per\pascal\squared}.
 </documentation>
 <pattern>
-167
+159
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24281,7 +24285,7 @@ Prefactor of the quadratic pressure term in the quadratic function that approxim
 Constant parameter in the quadratic function that approximates the lherzolite liquidus used for calculating the fraction of peridotite-derived melt. Units: \si{\degreeCelsius}.
 </documentation>
 <pattern>
-168
+160
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24298,7 +24302,7 @@ Constant parameter in the quadratic function that approximates the lherzolite li
 Prefactor of the linear pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. \si{\degreeCelsius\per\pascal}.
 </documentation>
 <pattern>
-169
+161
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24315,7 +24319,7 @@ Prefactor of the linear pressure term in the quadratic function that approximate
 Prefactor of the quadratic pressure term in the quadratic function that approximates the  lherzolite liquidus used for calculating the fraction of peridotite-derived melt. \si{\degreeCelsius\per\pascal\squared}.
 </documentation>
 <pattern>
-170
+162
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24332,7 +24336,7 @@ Prefactor of the quadratic pressure term in the quadratic function that approxim
 Constant parameter in the quadratic function that approximates the liquidus of peridotite. Units: \si{\degreeCelsius}.
 </documentation>
 <pattern>
-171
+163
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24349,7 +24353,7 @@ Constant parameter in the quadratic function that approximates the liquidus of p
 Prefactor of the linear pressure term in the quadratic function that approximates the liquidus of peridotite. \si{\degreeCelsius\per\pascal}.
 </documentation>
 <pattern>
-172
+164
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24366,7 +24370,7 @@ Prefactor of the linear pressure term in the quadratic function that approximate
 Prefactor of the quadratic pressure term in the quadratic function that approximates the liquidus of peridotite. \si{\degreeCelsius\per\pascal\squared}.
 </documentation>
 <pattern>
-173
+165
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24383,7 +24387,7 @@ Prefactor of the quadratic pressure term in the quadratic function that approxim
 Constant parameter in the quadratic function that approximates the solidus of pyroxenite. Units: \si{\degreeCelsius}.
 </documentation>
 <pattern>
-178
+170
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24400,7 +24404,7 @@ Constant parameter in the quadratic function that approximates the solidus of py
 Prefactor of the linear pressure term in the quadratic function that approximates the solidus of pyroxenite. Note that this factor is different from the value given in Sobolev, 2011, because they use the potential temperature whereas we use the absolute temperature. \si{\degreeCelsius\per\pascal}.
 </documentation>
 <pattern>
-179
+171
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24417,7 +24421,7 @@ Prefactor of the linear pressure term in the quadratic function that approximate
 Prefactor of the quadratic pressure term in the quadratic function that approximates the solidus of pyroxenite. \si{\degreeCelsius\per\pascal\squared}.
 </documentation>
 <pattern>
-180
+172
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24434,7 +24438,7 @@ Prefactor of the quadratic pressure term in the quadratic function that approxim
 Prefactor of the linear depletion term in the quadratic function that approximates the melt fraction of pyroxenite. \si{\degreeCelsius\per\pascal}.
 </documentation>
 <pattern>
-181
+173
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24451,7 +24455,7 @@ Prefactor of the linear depletion term in the quadratic function that approximat
 Prefactor of the quadratic depletion term in the quadratic function that approximates the melt fraction of pyroxenite. \si{\degreeCelsius\per\pascal\squared}.
 </documentation>
 <pattern>
-182
+174
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24468,7 +24472,7 @@ Prefactor of the quadratic depletion term in the quadratic function that approxi
 Mass fraction of clinopyroxene in the peridotite to be molten. Units: non-dimensional.
 </documentation>
 <pattern>
-177
+169
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24485,7 +24489,7 @@ Mass fraction of clinopyroxene in the peridotite to be molten. Units: non-dimens
 Exponent of the melting temperature in the melt fraction calculation. Units: non-dimensional.
 </documentation>
 <pattern>
-176
+168
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24502,7 +24506,7 @@ Exponent of the melting temperature in the melt fraction calculation. Units: non
 Constant in the linear function that approximates the clinopyroxene reaction coefficient. Units: non-dimensional.
 </documentation>
 <pattern>
-174
+166
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24519,7 +24523,7 @@ Constant in the linear function that approximates the clinopyroxene reaction coe
 Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
 </documentation>
 <pattern>
-175
+167
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24540,7 +24544,7 @@ A comma separated list of melt properties that should be written whenever writin
 compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|is melt cell|darcy coefficient|darcy coefficient no cutoff|compaction length
 </documentation>
 <pattern>
-164
+182
 </pattern>
 <pattern_description>
 [MultipleSelection compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gradient|is melt cell|darcy coefficient|darcy coefficient no cutoff|compaction length ]
@@ -24559,7 +24563,7 @@ false
 Whether to use the deviatoric stress tensor instead of the full stress tensor to compute principal stress directions and values.
 </documentation>
 <pattern>
-157
+175
 </pattern>
 <pattern_description>
 [Bool]
@@ -24667,7 +24671,7 @@ reference profile
 Scheme to compute the average velocity-depth profile. The reference profile option evaluates the conditions along the reference adiabat according to the material model. The lateral average option instead calculates a lateral average from subdivision of the mesh. The lateral average option may produce spurious results where there are sharp velocity changes.
 </documentation>
 <pattern>
-160
+178
 </pattern>
 <pattern_description>
 [Selection reference profile|lateral average ]
@@ -24684,7 +24688,7 @@ Scheme to compute the average velocity-depth profile. The reference profile opti
 Number of depth slices used to define average seismic compressional wave velocities from which anomalies are calculated. Units: non-dimensional.
 </documentation>
 <pattern>
-161
+179
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -24703,7 +24707,7 @@ reference profile
 Scheme to compute the average velocity-depth profile. The reference profile option evaluates the conditions along the reference adiabat according to the material model. The lateral average option instead calculates a lateral average from subdivision of the mesh. The lateral average option may produce spurious results where there are sharp velocity changes.
 </documentation>
 <pattern>
-158
+176
 </pattern>
 <pattern_description>
 [Selection reference profile|lateral average ]
@@ -24720,7 +24724,7 @@ Scheme to compute the average velocity-depth profile. The reference profile opti
 Number of depth slices used to define average seismic shear wave velocities from which anomalies are calculated. Units: non-dimensional.
 </documentation>
 <pattern>
-159
+177
 </pattern>
 <pattern_description>
 [Integer range 1...2147483647 (inclusive)]
@@ -24765,7 +24769,7 @@ $ASPECT_SOURCE_DIR/data/prescribed-stokes-solution/
 The name of a directory that contains the model data. This path may either be absolute (if starting with a `/&apos;) or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR&apos; which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/&apos; subdirectory of ASPECT.
 </documentation>
 <pattern>
-1325
+1310
 </pattern>
 <pattern_description>
 [DirectoryName]
@@ -24782,7 +24786,7 @@ box_2d.txt
 The file name of the model data.
 </documentation>
 <pattern>
-1326
+1311
 </pattern>
 <pattern_description>
 [Anything]
@@ -24799,7 +24803,7 @@ The file name of the model data.
 Point that determines the plane in which the 2d slice lies in. This variable is only used if &apos;Slice dataset in 2d plane&apos; is true. The slice will go through this point, the point defined by the parameter &apos;Second point on slice&apos;, and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
 </documentation>
 <pattern>
-1329
+1314
 </pattern>
 <pattern_description>
 [Anything]
@@ -24816,7 +24820,7 @@ Point that determines the plane in which the 2d slice lies in. This variable is 
 Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 </documentation>
 <pattern>
-1327
+1312
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -24833,7 +24837,7 @@ Scalar factor, which is applied to the model data. You might want to use this to
 Second point that determines the plane in which the 2d slice lies in. This variable is only used if &apos;Slice dataset in 2d plane&apos; is true. The slice will go through this point, the point defined by the parameter &apos;First point on slice&apos;, and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
 </documentation>
 <pattern>
-1330
+1315
 </pattern>
 <pattern_description>
 [Anything]
@@ -24850,7 +24854,7 @@ false
 Whether to use a 2d data slice of a 3d data file or the entire data file. Slicing a 3d dataset is only supported for 2d models.
 </documentation>
 <pattern>
-1328
+1313
 </pattern>
 <pattern_description>
 [Bool]
@@ -24858,6 +24862,165 @@ Whether to use a 2d data slice of a 3d data file or the entire data file. Slicin
 </Slice_20dataset_20in_202D_20plane>
 </Ascii_20data_20model>
 <Compaction_20pressure_20function>
+<Function_20constants>
+<value/>
+<default_value/>
+<documentation>
+Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
+</documentation>
+<pattern>
+1327
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20constants>
+<Function_20expression>
+<value>
+0
+</value>
+<default_value>
+0
+</default_value>
+<documentation>
+The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+</documentation>
+<pattern>
+1326
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20expression>
+<Variable_20names>
+<value>
+x,y,t
+</value>
+<default_value>
+x,y,t
+</default_value>
+<documentation>
+The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
+</documentation>
+<pattern>
+1325
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Variable_20names>
+</Compaction_20pressure_20function>
+<Fluid_20pressure_20function>
+<Function_20constants>
+<value/>
+<default_value/>
+<documentation>
+Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
+</documentation>
+<pattern>
+1324
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20constants>
+<Function_20expression>
+<value>
+0
+</value>
+<default_value>
+0
+</default_value>
+<documentation>
+The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+</documentation>
+<pattern>
+1323
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20expression>
+<Variable_20names>
+<value>
+x,y,t
+</value>
+<default_value>
+x,y,t
+</default_value>
+<documentation>
+The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
+</documentation>
+<pattern>
+1322
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Variable_20names>
+</Fluid_20pressure_20function>
+<Fluid_20velocity_20function>
+<Function_20constants>
+<value/>
+<default_value/>
+<documentation>
+Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
+</documentation>
+<pattern>
+1330
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20constants>
+<Function_20expression>
+<value>
+0; 0
+</value>
+<default_value>
+0; 0
+</default_value>
+<documentation>
+The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+</documentation>
+<pattern>
+1329
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Function_20expression>
+<Variable_20names>
+<value>
+x,y,t
+</value>
+<default_value>
+x,y,t
+</default_value>
+<documentation>
+The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
+</documentation>
+<pattern>
+1328
+</pattern>
+<pattern_description>
+[Anything]
+</pattern_description>
+</Variable_20names>
+</Fluid_20velocity_20function>
+<Pressure_20function>
 <Function_20constants>
 <value/>
 <default_value/>
@@ -24909,8 +25072,8 @@ The names of the variables as they will be used in the function, separated by co
 [Anything]
 </pattern_description>
 </Variable_20names>
-</Compaction_20pressure_20function>
-<Fluid_20pressure_20function>
+</Pressure_20function>
+<Velocity_20function>
 <Function_20constants>
 <value/>
 <default_value/>
@@ -24928,10 +25091,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536&apo
 </Function_20constants>
 <Function_20expression>
 <value>
-0
+0; 0
 </value>
 <default_value>
-0
+0; 0
 </default_value>
 <documentation>
 The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
@@ -24957,165 +25120,6 @@ The names of the variables as they will be used in the function, separated by co
 </documentation>
 <pattern>
 1316
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Variable_20names>
-</Fluid_20pressure_20function>
-<Fluid_20velocity_20function>
-<Function_20constants>
-<value/>
-<default_value/>
-<documentation>
-Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
-
-A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
-</documentation>
-<pattern>
-1324
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20constants>
-<Function_20expression>
-<value>
-0; 0
-</value>
-<default_value>
-0; 0
-</default_value>
-<documentation>
-The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
-
-If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
-</documentation>
-<pattern>
-1323
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20expression>
-<Variable_20names>
-<value>
-x,y,t
-</value>
-<default_value>
-x,y,t
-</default_value>
-<documentation>
-The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
-</documentation>
-<pattern>
-1322
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Variable_20names>
-</Fluid_20velocity_20function>
-<Pressure_20function>
-<Function_20constants>
-<value/>
-<default_value/>
-<documentation>
-Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
-
-A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
-</documentation>
-<pattern>
-1315
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20constants>
-<Function_20expression>
-<value>
-0
-</value>
-<default_value>
-0
-</default_value>
-<documentation>
-The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
-
-If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
-</documentation>
-<pattern>
-1314
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20expression>
-<Variable_20names>
-<value>
-x,y,t
-</value>
-<default_value>
-x,y,t
-</default_value>
-<documentation>
-The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
-</documentation>
-<pattern>
-1313
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Variable_20names>
-</Pressure_20function>
-<Velocity_20function>
-<Function_20constants>
-<value/>
-<default_value/>
-<documentation>
-Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...&apos;.
-
-A typical example would be to set this runtime parameter to `pi=3.1415926536&apos; and then use `pi&apos; in the expression of the actual formula. (That said, for convenience this class actually defines both `pi&apos; and `Pi&apos; by default, but you get the idea.)
-</documentation>
-<pattern>
-1312
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20constants>
-<Function_20expression>
-<value>
-0; 0
-</value>
-<default_value>
-0; 0
-</default_value>
-<documentation>
-The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin&apos; or `cos&apos;. In addition, it may contain expressions like `if(x&gt;0, 1, -1)&apos; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
-
-If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
-</documentation>
-<pattern>
-1311
-</pattern>
-<pattern_description>
-[Anything]
-</pattern_description>
-</Function_20expression>
-<Variable_20names>
-<value>
-x,y,t
-</value>
-<default_value>
-x,y,t
-</default_value>
-<documentation>
-The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x&apos; (in 1d), `x,y&apos; (in 2d) or `x,y,z&apos; (in 3d) for spatial coordinates and `t&apos; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t&apos; and then use these variable names in your function expression.
-</documentation>
-<pattern>
-1310
 </pattern>
 <pattern_description>
 [Anything]
@@ -25829,7 +25833,7 @@ Whether to checkpoint the simulation right before termination.
 Terminate the simulation once the specified timestep has been reached.
 </documentation>
 <pattern>
-435
+437
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -25879,7 +25883,7 @@ The criterion considers the total heat flux over all boundaries listed by their 
 The wall time of the simulation. Unit: hours.
 </documentation>
 <pattern>
-437
+439
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -25895,7 +25899,7 @@ A comma separated list of names denoting those boundaries that should be taken i
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 </documentation>
 <pattern>
-440
+442
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -25912,7 +25916,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 The maximum relative deviation of the heat flux in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-438
+440
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -25929,7 +25933,7 @@ The maximum relative deviation of the heat flux in recent simulation time for th
 The minimum length of simulation time that the system should be in steady state before termination. Note that if the time step size is similar to or larger than this value, the termination criterion will only have very few (in the most extreme case, just two) heat flux values to check. To ensure that a larger number of time steps are included in the check for steady state, this value should be much larger than the time step size. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-439
+441
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -25946,6 +25950,42 @@ The minimum length of simulation time that the system should be in steady state 
 </default_value>
 <documentation>
 The maximum relative deviation of the temperature in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
+</documentation>
+<pattern>
+434
+</pattern>
+<pattern_description>
+[Double 0...MAX_DOUBLE (inclusive)]
+</pattern_description>
+</Maximum_20relative_20deviation>
+<Time_20in_20steady_20state>
+<value>
+1e7
+</value>
+<default_value>
+1e7
+</default_value>
+<documentation>
+The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
+</documentation>
+<pattern>
+435
+</pattern>
+<pattern_description>
+[Double 0...MAX_DOUBLE (inclusive)]
+</pattern_description>
+</Time_20in_20steady_20state>
+</Steady_20state_20temperature>
+<Steady_20state_20velocity>
+<Maximum_20relative_20deviation>
+<value>
+0.05
+</value>
+<default_value>
+0.05
+</default_value>
+<documentation>
+The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
 443
@@ -25971,42 +26011,6 @@ The minimum length of simulation time that the system should be in steady state 
 [Double 0...MAX_DOUBLE (inclusive)]
 </pattern_description>
 </Time_20in_20steady_20state>
-</Steady_20state_20temperature>
-<Steady_20state_20velocity>
-<Maximum_20relative_20deviation>
-<value>
-0.05
-</value>
-<default_value>
-0.05
-</default_value>
-<documentation>
-The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
-</documentation>
-<pattern>
-441
-</pattern>
-<pattern_description>
-[Double 0...MAX_DOUBLE (inclusive)]
-</pattern_description>
-</Maximum_20relative_20deviation>
-<Time_20in_20steady_20state>
-<value>
-1e7
-</value>
-<default_value>
-1e7
-</default_value>
-<documentation>
-The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
-</documentation>
-<pattern>
-442
-</pattern>
-<pattern_description>
-[Double 0...MAX_DOUBLE (inclusive)]
-</pattern_description>
-</Time_20in_20steady_20state>
 </Steady_20state_20velocity>
 <User_20request>
 <File_20name>
@@ -26020,7 +26024,7 @@ terminate-aspect
 The name of a file that, if it exists in the output directory (whose name is also specified in the input file) will lead to termination of the simulation. The file&apos;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 </documentation>
 <pattern>
-434
+436
 </pattern>
 <pattern_description>
 [FileName (Type: input)]
