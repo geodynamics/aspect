@@ -1776,11 +1776,11 @@ Units: \si{\pascal\second}
 
 (parameters:Material_20model/Latent_20heat/Viscosity_20prefactors)=
 ### __Parameter name:__ Viscosity prefactors
-**Default value:**
+**Default value:** all:1
 
-**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+**Pattern:** [Anything]
 
-**Documentation:** A list of prefactors for the viscosity for each phase. The reference viscosity will be multiplied by this factor to get the corresponding viscosity for each phase. List must have one more entry than Phase transition depths. Units: non-dimensional.
+**Documentation:** A list of prefactors for the viscosity for each phase. The &ldquo;Viscosity&rdquo; parameter (modified by the &ldquo;Composition viscosity prefactor&rdquo;, depending on composition) will be multiplied by this factor to get the corresponding viscosity for each phase. List must have the same number of entries as there are phases, that is one more than &ldquo;Phase transition depths&rdquo; for each composition that is used in the model. Units: non-dimensional.
 
 (parameters:Material_20model/Latent_20heat_20melt)=
 ## **Subsection:** Material model / Latent heat melt
