@@ -65,7 +65,7 @@ end
 
 subsection Mesh refinement
   set Initial global refinement                 = 5
-  set Initial adaptive refinement               = 3
+  set Initial adaptive refinement               = 1
   set Run postprocessors on initial refinement  = true
 end
 
@@ -93,7 +93,7 @@ subsection Particles
 
   subsection Generator
     subsection Random uniform
-      set Number of particles = 2500
+      set Number of particles = 3500
     end
   end
 end

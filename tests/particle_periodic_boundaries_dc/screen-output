@@ -19,7 +19,7 @@ Number of degrees of freedom: 1,399 (552+76+276+495)
    Postprocessing:
      Writing graphical output:  output-particle_periodic_boundaries_dc/solution/solution-00000
      Writing particle output:   output-particle_periodic_boundaries_dc/particles/particles-00000
-     Compositions min/max/mass: 0/1/0.1824
+     Compositions min/max/mass: 0/1/0.1825
 
 *** Timestep 1:  t=70 seconds, dt=70 seconds
    Skipping temperature solve because RHS is zero.
@@ -28,7 +28,7 @@ Number of degrees of freedom: 1,399 (552+76+276+495)
 
    Postprocessing:
      Writing particle output:   output-particle_periodic_boundaries_dc/particles/particles-00001
-     Compositions min/max/mass: 0/1/0.1818
+     Compositions min/max/mass: 0/1/0.1815
 
 Termination requested by criterion: end time
 

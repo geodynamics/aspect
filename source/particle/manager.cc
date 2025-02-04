@@ -574,9 +574,14 @@ namespace aspect
     void
     Manager<dim>::setup_initial_state ()
     {
-      // If we are in the first adaptive refinement cycle generate particles
-      if (this->get_pre_refinement_step() == 0)
-        generate_particles();
+      // We want to generate a new set of particles in each adaptive refinement
+      // cycle to get the right number of particles per cell and to accurately
+      // initialize their properties. Delete existing particles beforehand.
+      if (this->get_pre_refinement_step() > 0)
+        particle_handler->clear();
+
+      // Generate particles in each adaptive refinement cycle
+      generate_particles();
 
       // And initialize the particle properties according to the initial
       // conditions on the current mesh
