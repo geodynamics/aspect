@@ -2465,40 +2465,23 @@ namespace aspect
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
 
       std::set<types::boundary_id> dirichlet_boundary = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators();
-      for (const auto &it: sim.boundary_velocity_manager.get_active_boundary_velocity_names())
+      for (const auto boundary_id: sim.boundary_velocity_manager.get_prescribed_boundary_velocity_indicators())
         {
-          const types::boundary_id bdryid = it.first;
-          const std::string component=it.second.first;
+          const ComponentMask component_mask = sim.boundary_velocity_manager.get_component_mask(boundary_id);
 
-          if (component.length()>0)
+          if (component_mask != ComponentMask(sim.introspection.n_components, false))
             {
-              std::vector<bool> mask(fe_v.n_components(), false);
-              for (const auto &direction : component)
-                {
-                  switch (direction)
-                    {
-                      case 'x':
-                        mask[0] = true;
-                        break;
-                      case 'y':
-                        mask[1] = true;
-                        break;
-                      case 'z':
-                        // we must be in 3d, or 'z' should never have gotten through
-                        Assert (dim==3, ExcInternalError());
-                        if (dim==3)
-                          mask[2] = true;
-                        break;
-                      default:
-                        Assert (false, ExcInternalError());
-                    }
-                }
-              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {bdryid}, ComponentMask(mask));
+              ComponentMask velocity_mask(fe_v.n_components(), false);
+
+              for (unsigned int i=0; i<dim; ++i)
+                velocity_mask.set(i, component_mask[sim.introspection.component_indices.velocities[i]]);
+
+              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {boundary_id}, velocity_mask);
             }
           else
             {
               // no mask given: add at the end
-              dirichlet_boundary.insert(bdryid);
+              dirichlet_boundary.insert(boundary_id);
             }
         }
 

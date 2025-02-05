@@ -97,16 +97,17 @@ namespace aspect
   void
   AsciiBoundaryMember<dim>::initialize ()
   {
-    const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>> &
-    bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
-    for (const auto &boundary : bvs)
-      for (const auto &p : boundary.second)
-        {
-          if (p.get() == this)
-            boundary_ids.insert(boundary.first);
-        }
-    AssertThrow(*(boundary_ids.begin()) != numbers::invalid_boundary_id,
-                ExcMessage("Did not find the boundary indicator for the prescribed data plugin."));
+    unsigned int i=0;
+    for (const auto &plugin : this->get_boundary_velocity_manager().get_active_plugins())
+      {
+        if (plugin.get() == this)
+          boundary_ids.insert(this->get_boundary_velocity_manager().get_active_plugin_boundary_indicators()[i]);
+
+        ++i;
+      }
+
+    AssertThrow(boundary_ids.empty() == false,
+                ExcMessage("Did not find the boundary indicator for the velocity ascii data plugin."));
 
     member->initialize(boundary_ids,
                        dim);

@@ -2315,7 +2315,7 @@ namespace aspect
       boundary_velocity_manager.get_zero_boundary_velocity_indicators();
 
     const auto &prescribed_velocity_boundaries =
-      boundary_velocity_manager.get_active_boundary_velocity_conditions();
+      boundary_velocity_manager.get_prescribed_boundary_velocity_indicators();
 
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
@@ -2412,104 +2412,54 @@ namespace aspect
   void
   Simulator<dim>::check_consistency_of_boundary_conditions() const
   {
-    // make sure velocity and traction boundary indicators don't appear in multiple lists
-    std::set<types::boundary_id> boundary_indicator_lists[6]
-      = { boundary_velocity_manager.get_zero_boundary_velocity_indicators(),
-          boundary_velocity_manager.get_tangential_boundary_velocity_indicators(),
-          std::set<types::boundary_id>()   // to be prescribed velocity and traction boundary indicators
-        };
+    // a container for the indicators of all boundary conditions
+    std::vector<std::set<types::boundary_id>> boundary_indicator_lists;
+    boundary_indicator_lists.emplace_back(boundary_velocity_manager.get_zero_boundary_velocity_indicators());
+    boundary_indicator_lists.emplace_back(boundary_velocity_manager.get_tangential_boundary_velocity_indicators());
+    boundary_indicator_lists.emplace_back(boundary_velocity_manager.get_prescribed_boundary_velocity_indicators());
+    boundary_indicator_lists.emplace_back(boundary_traction_manager.get_prescribed_boundary_traction_indicators());
 
-    // sets of the boundary indicators only (no selectors and values)
-    std::set<types::boundary_id> velocity_bi;
-    std::set<types::boundary_id> traction_bi;
-
-    for (const auto &p : boundary_velocity_manager.get_active_boundary_velocity_names())
-      velocity_bi.insert(p.first);
-
-    for (const auto &r : parameters.prescribed_traction_boundary_indicators)
-      traction_bi.insert(r.first);
-
-    // are there any indicators that occur in both the prescribed velocity and traction list?
-    std::set<types::boundary_id> intersection;
-    std::set_intersection (velocity_bi.begin(),
-                           velocity_bi.end(),
-                           traction_bi.begin(),
-                           traction_bi.end(),
-                           std::inserter(intersection, intersection.end()));
-
-    // if so, do they have different selectors?
-    if (!intersection.empty())
+    // Make sure that each combination of boundary velocity and boundary traction condition
+    // either refers to different boundary indicators or to different components
+    for (const auto velocity_boundary_id: boundary_indicator_lists[2])
       {
-        for (const auto it : intersection)
+        bool found_compatible_duplicate_boundary_id = false;
+        for (const auto traction_boundary_id: boundary_indicator_lists[3])
           {
-            const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>>::const_iterator
-            boundary_velocity_names = boundary_velocity_manager.get_active_boundary_velocity_names().find(it);
-            Assert(boundary_velocity_names != boundary_velocity_manager.get_active_boundary_velocity_names().end(),
-                   ExcInternalError());
+            if (velocity_boundary_id == traction_boundary_id)
+              {
+                // if boundary ids are identical, make sure that the components are different
+                AssertThrow((boundary_velocity_manager.get_component_mask(velocity_boundary_id) &
+                             boundary_traction_manager.get_component_mask(traction_boundary_id)) ==
+                            ComponentMask(introspection.n_components, false),
+                            ExcMessage("Boundary indicator <"
+                                       +
+                                       Utilities::int_to_string(velocity_boundary_id)
+                                       +
+                                       "> with symbolic name <"
+                                       +
+                                       geometry_model->translate_id_to_symbol_name (velocity_boundary_id)
+                                       +
+                                       "> is listed as having both "
+                                       "velocity and traction boundary conditions in the input file."));
 
-            std::set<char> velocity_selector;
-            std::set<char> traction_selector;
-
-            for (const auto it_selector : boundary_velocity_names->second.first)
-              velocity_selector.insert(it_selector);
-
-            for (std::string::const_iterator
-                 it_selector  = parameters.prescribed_traction_boundary_indicators.find(it)->second.first.begin();
-                 it_selector != parameters.prescribed_traction_boundary_indicators.find(it)->second.first.end();
-                 ++it_selector)
-              traction_selector.insert(*it_selector);
-
-            // if there are no selectors specified, throw exception
-            AssertThrow(!velocity_selector.empty() || !traction_selector.empty(),
-                        ExcMessage ("Boundary indicator <"
-                                    +
-                                    Utilities::int_to_string(it)
-                                    +
-                                    "> with symbolic name <"
-                                    +
-                                    geometry_model->translate_id_to_symbol_name (it)
-                                    +
-                                    "> is listed as having both "
-                                    "velocity and traction boundary conditions in the input file."));
-
-            std::set<char> intersection_selector;
-            std::set_intersection (velocity_selector.begin(),
-                                   velocity_selector.end(),
-                                   traction_selector.begin(),
-                                   traction_selector.end(),
-                                   std::inserter(intersection_selector, intersection_selector.end()));
-
-            // if the same selectors are specified, throw exception
-            AssertThrow(intersection_selector.empty(),
-                        ExcMessage ("Selectors of boundary indicator <"
-                                    +
-                                    Utilities::int_to_string(it)
-                                    +
-                                    "> with symbolic name <"
-                                    +
-                                    geometry_model->translate_id_to_symbol_name (it)
-                                    +
-                                    "> are listed as having both "
-                                    "velocity and traction boundary conditions in the input file."));
+                found_compatible_duplicate_boundary_id = true;
+              }
           }
+        // we have ensured the prescribed velocity and prescribed traction boundary conditions
+        // for the current boundary id are compatible. In order to check them against the other
+        // boundary conditions, we need to remove the boundary indicator from one of the lists
+        // to make sure it only appears in one of them. We choose to remove the boundary
+        // indicator from the traction list. We cannot do that in the loop above, because it
+        // invalidates the range of the loop.
+        if (found_compatible_duplicate_boundary_id)
+          boundary_indicator_lists[3].erase(velocity_boundary_id);
       }
 
-    // remove correct boundary indicators that occur in both the velocity and the traction set
-    // but have different selectors
-    std::set<types::boundary_id> union_set;
-    std::set_union (velocity_bi.begin(),
-                    velocity_bi.end(),
-                    traction_bi.begin(),
-                    traction_bi.end(),
-                    std::inserter(union_set, union_set.end()));
-
-    // assign the prescribed boundary indicator list to the boundary_indicator_lists
-    boundary_indicator_lists[3] = union_set;
-
-    // for each combination of boundary indicator lists, make sure that the
+    // for each combination of velocity boundary indicator lists, make sure that the
     // intersection is empty
-    for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-      for (unsigned int j=i+1; j<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++j)
+    for (unsigned int i=0; i<boundary_indicator_lists.size(); ++i)
+      for (unsigned int j=i+1; j<boundary_indicator_lists.size(); ++j)
         {
           std::set<types::boundary_id> intersection;
           std::set_intersection (boundary_indicator_lists[i].begin(),
@@ -2534,20 +2484,30 @@ namespace aspect
 
     // make sure temperature and heat flux boundary indicators don't appear in multiple lists
     // this is easier than for the velocity/traction, as there are no selectors
-    std::set<types::boundary_id> temperature_bi = boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
-    std::set<types::boundary_id> heat_flux_bi = parameters.fixed_heat_flux_boundary_indicators;
+    boundary_indicator_lists.emplace_back(boundary_temperature_manager.get_fixed_temperature_boundary_indicators());
+    boundary_indicator_lists.emplace_back(parameters.fixed_heat_flux_boundary_indicators);
 
     // are there any indicators that occur in both the prescribed temperature and heat flux list?
     std::set<types::boundary_id> T_intersection;
-    std::set_intersection (temperature_bi.begin(),
-                           temperature_bi.end(),
-                           heat_flux_bi.begin(),
-                           heat_flux_bi.end(),
+    std::set_intersection (boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin(),
+                           boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(),
+                           parameters.fixed_heat_flux_boundary_indicators.begin(),
+                           parameters.fixed_heat_flux_boundary_indicators.end(),
                            std::inserter(T_intersection, T_intersection.end()));
 
-    AssertThrow(T_intersection.empty(),
-                ExcMessage ("There is a boundary indicator listed as having both "
-                            "temperature and heat flux boundary conditions in the input file."));
+    AssertThrow (T_intersection.empty(),
+                 ExcMessage ("Boundary indicator <"
+                             +
+                             Utilities::int_to_string(*T_intersection.begin())
+                             +
+                             "> with symbolic name <"
+                             +
+                             geometry_model->translate_id_to_symbol_name (*T_intersection.begin())
+                             +
+                             "> is listed as having more "
+                             "than one type of temperature or heat flux boundary condition in the input file."));
+
+    boundary_indicator_lists.emplace_back(boundary_composition_manager.get_fixed_composition_boundary_indicators());
 
     // Check that the periodic boundaries do not have other boundary conditions set
     using periodic_boundary_set
@@ -2556,56 +2516,59 @@ namespace aspect
     periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 
     for (const auto &pb : pbs)
-      {
-        // Throw error if we are trying to use the same boundary for more than one boundary condition
-        AssertThrow( is_element( pb.first.first, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
-                     is_element( pb.first.second, boundary_temperature_manager.get_fixed_temperature_boundary_indicators() ) == false &&
-                     is_element( pb.first.first, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
-                     is_element( pb.first.second, boundary_composition_manager.get_fixed_composition_boundary_indicators() ) == false &&
-                     is_element( pb.first.first, boundary_indicator_lists[0] ) == false && // zero velocity
-                     is_element( pb.first.second, boundary_indicator_lists[0] ) == false && // zero velocity
-                     is_element( pb.first.first, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( pb.first.second, boundary_indicator_lists[1] ) == false && // tangential velocity
-                     is_element( pb.first.first, boundary_indicator_lists[3] ) == false && // prescribed traction or velocity
-                     is_element( pb.first.second, boundary_indicator_lists[3] ) == false,  // prescribed traction or velocity
-                     ExcMessage("Periodic boundaries must not have boundary conditions set."));
-      }
+      for (const auto &boundary_indicators: boundary_indicator_lists)
+        {
+          AssertThrow(is_element(pb.first.first, boundary_indicators) == false,
+                      ExcMessage ("Boundary indicator <"
+                                  +
+                                  Utilities::int_to_string(pb.first.first)
+                                  +
+                                  "> with symbolic name <"
+                                  +
+                                  geometry_model->translate_id_to_symbol_name (pb.first.first)
+                                  +
+                                  "> is listed as having a periodic boundary condition "
+                                  "in the input file, but also has another type of boundary condition. "
+                                  "Periodic boundaries cannot have other boundary conditions."));
+
+          AssertThrow(is_element(pb.first.second, boundary_indicators) == false,
+                      ExcMessage ("Boundary indicator <"
+                                  +
+                                  Utilities::int_to_string(pb.first.second)
+                                  +
+                                  "> with symbolic name <"
+                                  +
+                                  geometry_model->translate_id_to_symbol_name (pb.first.second)
+                                  +
+                                  "> is listed as having a periodic boundary condition "
+                                  "in the input file, but also has another type of boundary condition. "
+                                  "Periodic boundaries cannot have other boundary conditions."));
+        }
 
     const std::set<types::boundary_id> all_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
-    if (parameters.nonlinear_solver != NonlinearSolver::single_Advection_no_Stokes)
+
+    // next make sure that all listed indicators are actually used by
+    // this geometry
+    for (const auto &list : boundary_indicator_lists)
+      for (const auto &p : list)
+        AssertThrow (all_boundary_indicators.find (p)
+                     != all_boundary_indicators.end(),
+                     ExcMessage ("Boundary indicator <"
+                                 +
+                                 Utilities::int_to_string(p)
+                                 +
+                                 "> is listed for a boundary condition, but is not used by the geometry model."));
+
+    if (parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
       {
-        // next make sure that all listed indicators are actually used by
-        // this geometry
-        for (const auto &list : boundary_indicator_lists)
-          for (const auto &p : list)
-            AssertThrow (all_boundary_indicators.find (p)
-                         != all_boundary_indicators.end(),
-                         ExcMessage ("One of the boundary indicators listed in the input file "
-                                     "is not used by the geometry model."));
-      }
-    else
-      {
-        // next make sure that there are no listed indicators
-        for (const auto &list : boundary_indicator_lists)
-          AssertThrow (list.empty(),
+        // make sure that there are no listed velocity boundary conditions
+        for (unsigned int i=0; i<4; ++i)
+          AssertThrow (boundary_indicator_lists[i].empty(),
                        ExcMessage ("With the solver scheme `single Advection, no Stokes', "
-                                   "one cannot set boundary conditions for velocity."));
+                                   "one cannot set boundary conditions for velocity or traction, "
+                                   "but a boundary condition has been set."));
       }
-
-
-    // now do the same for the fixed temperature indicators and the
-    // compositional indicators
-    for (const auto p : boundary_temperature_manager.get_fixed_temperature_boundary_indicators())
-      AssertThrow (all_boundary_indicators.find (p)
-                   != all_boundary_indicators.end(),
-                   ExcMessage ("One of the fixed boundary temperature indicators listed in the input file "
-                               "is not used by the geometry model."));
-    for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
-      AssertThrow (all_boundary_indicators.find (p)
-                   != all_boundary_indicators.end(),
-                   ExcMessage ("One of the fixed boundary composition indicators listed in the input file "
-                               "is not used by the geometry model."));
   }
 
 
@@ -2628,8 +2591,8 @@ namespace aspect
     // the system is assembled correctly when boundary conditions are prescribed, so we assemble the whole system.
     // TODO: This is a waste of time in the first nonlinear iteration. Check if we can modify the asserts in the
     // assemble_stokes_system() function to only assemble the RHS.
-    rebuild_stokes_matrix = boundary_velocity_manager.get_active_boundary_velocity_conditions().size()!=0;
-    assemble_newton_stokes_matrix = boundary_velocity_manager.get_active_boundary_velocity_conditions().size()!=0;
+    rebuild_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
+    assemble_newton_stokes_matrix = boundary_velocity_manager.get_prescribed_boundary_velocity_indicators().size()!=0;
 
     compute_current_constraints ();
 

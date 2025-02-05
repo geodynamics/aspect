@@ -26,11 +26,12 @@
 
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/parameter_handler.h>
-#include <tuple>
 #include <deal.II/base/exceptions.h>
+#include <deal.II/fe/component_mask.h>
 
 #include <boost/core/demangle.hpp>
 
+#include <tuple>
 #include <string>
 #include <list>
 #include <set>

@@ -1,15 +1,15 @@
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_2d_bottom.0.txt.
-
-
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_2d_top.0.txt.
-
-
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_2d_left.0.txt.
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_2d_right.0.txt.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_2d_bottom.0.txt.
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_2d_top.0.txt.
 
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 2,724 (1,666+225+833)

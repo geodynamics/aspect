@@ -1039,11 +1039,9 @@ namespace aspect
       Assert(face_no != numbers::invalid_unsigned_int,ExcInternalError());
 
       const typename DoFHandler<dim>::face_iterator face = cell->face(face_no);
+      const auto &traction_bis = this->get_boundary_traction_manager().get_prescribed_boundary_traction_indicators();
 
-      if (this->get_boundary_traction_manager().get_active_boundary_traction_names()
-          .find (face->boundary_id())
-          !=
-          this->get_boundary_traction_manager().get_active_boundary_traction_names().end())
+      if (traction_bis.find(face->boundary_id()) != traction_bis.end())
         {
           scratch.face_finite_element_values.reinit (cell, face_no);
 
@@ -1697,7 +1695,7 @@ namespace aspect
       std::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim>>());
 
     // add the terms for traction boundary conditions
-    if (!this->get_boundary_traction_manager().get_active_boundary_traction_names().empty())
+    if (!this->get_boundary_traction_manager().get_prescribed_boundary_traction_indicators().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
           std::make_unique<Assemblers::MeltBoundaryTraction<dim>> ());
