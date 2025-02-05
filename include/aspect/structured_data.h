@@ -191,10 +191,14 @@ namespace aspect
          * @param component The index (starting at 0) of the data column to be
          * returned. The index is therefore less than the number of data
          * columns in the data file (or specified in the constructor).
+         * @param crash_if_not_in_range If set to true, the function will throw
+         * when the requested position is outside the range of the coordinates
+         * provided by the data file.
          */
         double
         get_data(const Point<dim> &position,
-                 const unsigned int component) const;
+                 const unsigned int component,
+                 const bool crash_if_not_in_range = false) const;
 
         /**
          * Returns the gradient of the function based on the bilinear

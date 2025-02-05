@@ -1,0 +1,4 @@
+Changed: The entropy reader throws when the range of the provided look-up table
+does not fully cover the entropy-pressure range in the model.
+<br>
+(Ranpeng Li, 2025/01/10)
