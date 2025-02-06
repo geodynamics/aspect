@@ -356,6 +356,8 @@ namespace aspect
       return (r0+r1)/2.;
     }
 
+
+
     template <int dim>
     bool
     DynamicCore<dim>::solve_time_step(double &X, double &T, double &R) const
@@ -386,6 +388,8 @@ namespace aspect
       double dT1 = get_dT(R_1);
       double dT2 = get_dT(R_2);
 
+      // If the temperature difference at the core-mantle boundary and at the
+      // inner-outer core boundary have the same sign, we have a fully molten or fully solid core.
       if (dT0 >= 0. && dT2 >= 0.)
         {
           // Fully molten core
@@ -399,47 +403,63 @@ namespace aspect
           dT1 = 0;
         }
       else
-        while (!(dT1==0 || steps>max_steps))
-          {
-            // If solution is out of the interval, then something is wrong.
-            if (dT0*dT2>0)
-              {
-                this->get_pcout()<<"Step: "<<steps<<std::endl
-                                 <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
-                                 <<" dT0="<<dT0<<", dT2="<<dT2<<std::endl
-                                 <<"Q_CMB="<<core_data.Q<<std::endl
-                                 <<"Warning: Solution for inner core radius can not be found! Mid-point is used."<<std::endl;
-                AssertThrow(dT0*dT2<=0,ExcMessage("No single solution for inner core!"));
-              }
-            else if (dT0*dT1 < 0.)
-              {
-                R_2 = R_1;
-                dT2 = dT1;
-              }
-            else if (dT2*dT1 < 0.)
-              {
-                R_0 = R_1;
-                dT0 = dT1;
-              }
-            R_1 = (R_0 + R_2) / 2.;
-            dT1 = get_dT(R_1);
-            ++steps;
-          }
+        {
+          // Use bisection method to find R_1 such that dT1 = 0
+          while (!(dT1==0 || steps>max_steps))
+            {
+              // If solution is out of the interval, then something is wrong.
+              if (dT0*dT2>0)
+                {
+                  this->get_pcout()<<"Step: "<<steps<<std::endl
+                                   <<" R=["<<R_0/1e3<<","<<R_2/1e3<<"]"<<"(km)"
+                                   <<" dT0="<<dT0<<", dT2="<<dT2<<std::endl
+                                   <<"Q_CMB="<<core_data.Q<<std::endl
+                                   <<"Warning: Solution for inner core radius can not be found! Mid-point is used."<<std::endl;
+                  AssertThrow(dT0*dT2<=0,ExcMessage("No single solution for inner core!"));
+                }
+              else if (dT0*dT1 < 0.)
+                {
+                  R_2 = R_1;
+                  dT2 = dT1;
+                }
+              else if (dT2*dT1 < 0.)
+                {
+                  R_0 = R_1;
+                  dT0 = dT1;
+                }
+
+              // Update R_1 and recalculate dT1
+              R_1 = (R_0 + R_2) / 2.;
+              dT1 = get_dT(R_1);
+              ++steps;
+            }
+        }
 
       // Calculate new R,T,X
       R = R_1;
       T = get_Tc(R);
       X = get_X(R);
 
+      // Check the signs of dT at the boundaries to classify the solution
       if (dT0<0. && dT2>0.)
         {
-          // Normal solution
+          // Core partially molten, freezing from the inside, normal solution
           return true;
         }
       else if (dT0>0. && dT2<0.)
         {
-          // Snowing core solution
+          // Core partially molten, snowing core solution
           return false;
+        }
+      else if (dT0 >= 0. && dT2 >= 0.)
+        {
+          // Core fully molten, normal solution
+          return true;
+        }
+      else if (dT0 <= 0. && dT2 <= 0.)
+        {
+          // Core fully solid, normal solution
+          return true;
         }
       else
         {
