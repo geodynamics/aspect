@@ -108,7 +108,7 @@ subsection Initial composition model
     set Coordinate system = spherical
     set Variable names = r,phi
     set Function expression = 2535.08 + 10 * sin(2*phi)*sin(pi*(r-6371000)/2890000) - 1878.618 * erfc((6371000-r)/(2*sqrt(1.152e-6*5e7*31557600))) + \
-    486.368 * max(erfc((r-3481000)/(2*sqrt(1.152e-6*5e8*31557600))), exp(-((phi - 3/4*pi)^2)/(2*(1/35*pi)^2) - ((r-3481000)^2)/(2*400000^2))  );0
+    100 * max(erfc((r-3481000)/(2*sqrt(1.152e-6*5e8*31557600))), exp(-((phi - 3/4*pi)^2)/(2*(1/35*pi)^2) - ((r-3481000)^2)/(2*400000^2))  );0
 
     #set Function expression = 2687.748 + 10 * sin(2*phi)*sin(pi*(r-6371000)/2890000) - 2031.286 * erfc((6371000-r)/(2*sqrt(1.152e-6*5e7*31557600))) + 333.7 * erfc((r-3481000)/(2*sqrt(1.152e-6*5e8*31557600)));0
   end

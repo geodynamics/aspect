@@ -837,7 +837,7 @@ namespace aspect
         EntropyReader::temperature(const double entropy,
                                    const double pressure) const
         {
-          const double temperature = material_lookup->get_data({entropy,pressure}, 0);
+          const double temperature = material_lookup->get_data({entropy,pressure}, 0, true);
           return temperature;
         }
 
