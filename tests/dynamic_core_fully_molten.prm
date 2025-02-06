@@ -1,0 +1,12 @@
+# A simple setup for Earth convection model in a 2d shell
+# where the core mantle boundary (CMB) temperature dynamically evolves through time.
+# 
+# This is a variation of dynamic_core.prm with a fully molten core.
+
+include $ASPECT_SOURCE_DIR/tests/dynamic_core.prm
+
+subsection Boundary temperature model
+  subsection Dynamic core
+    set Inner temperature                 = 6000
+  end
+end

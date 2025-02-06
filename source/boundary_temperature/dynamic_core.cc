@@ -701,21 +701,29 @@ namespace aspect
     DynamicCore<dim>::
     get_heat_solution(const double Tc, const double r, const double X, double &Eh) const
     {
-      double It = numbers::signaling_nan<double>();
-      if (D>L)
+      if (r==Rc)
         {
-          const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
-          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*r/2*std::exp(-Utilities::fixed_power<2>(r/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(r/B));
+          // No energy change rate if the inner core is fully frozen.
+          Eh = 0.;
         }
       else
         {
-          const double B = std::sqrt(1./(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
-          It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
-          It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*r/2*std::exp(Utilities::fixed_power<2>(r/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,r,100)/2);
+          double It = numbers::signaling_nan<double>();
+          if (D>L)
+            {
+              const double B = std::sqrt(1./(1./Utilities::fixed_power<2>(L)-1./Utilities::fixed_power<2>(D)));
+              It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*Rc/2*std::exp(-Utilities::fixed_power<2>(Rc/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(Rc/B));
+              It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(-Utilities::fixed_power<2>(B)*r/2*std::exp(-Utilities::fixed_power<2>(r/B))+Utilities::fixed_power<3>(B)/std::sqrt(numbers::PI)/4*std::erf(r/B));
+            }
+          else
+            {
+              const double B = std::sqrt(1./(Utilities::fixed_power<-2>(D)-Utilities::fixed_power<-2>(L)));
+              It = 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*Rc/2*std::exp(Utilities::fixed_power<2>(Rc/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,Rc,100)/2);
+              It -= 4*numbers::PI*Rho_cen/get_T(Tc,0)*(Utilities::fixed_power<2>(B)*r/2*std::exp(Utilities::fixed_power<2>(r/B))-Utilities::fixed_power<2>(B)*fun_Sn(B,r,100)/2);
+            }
+          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
+          Eh = Rh*(It-(Mc-get_mass(r))/get_T(Tc,r))*Cc;
         }
-      const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
-      Eh = Rh*(It-(Mc-get_mass(r))/get_T(Tc,r))*Cc;
     }
 
 
@@ -725,12 +733,12 @@ namespace aspect
     DynamicCore<dim>::
     get_gravity_heating(const double Tc, const double r, const double X, double &Qg, double &Eg) const
     {
-      const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
-      const double C_2 = 3./16.*Utilities::fixed_power<2>(L) - 0.5*Utilities::fixed_power<2>(Rc)*(1.-3./10.*Utilities::fixed_power<2>(Rc/L));
       if (r==Rc)
         Qg = 0.;
       else
         {
+          const double Cc = 4*numbers::PI*Utilities::fixed_power<2>(r)*get_rho(r)*X/(Mc-get_mass(r));
+          const double C_2 = 3./16.*Utilities::fixed_power<2>(L) - 0.5*Utilities::fixed_power<2>(Rc)*(1.-3./10.*Utilities::fixed_power<2>(Rc/L));
           Qg = (8./3.*Utilities::fixed_power<2>(numbers::PI*Rho_cen)*constants::big_g*(
                   ((3./20.*Utilities::fixed_power<5>(Rc)-Utilities::fixed_power<2>(L)*Utilities::fixed_power<3>(Rc)/8.-C_2*Utilities::fixed_power<2>(L)*Rc)*std::exp(-Utilities::fixed_power<2>(Rc/L))
                    +C_2/2.*Utilities::fixed_power<3>(L)*std::sqrt(numbers::PI)*std::erf(Rc/L))
