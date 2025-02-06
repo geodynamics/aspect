@@ -1,0 +1,5 @@
+Fixed: The boundary temperature plugin 'dynamic core' used to
+crash when the inner core was completely molten or completely
+solid. This is fixed now.
+<br>
+(Francesco Radica, Rene Gassmoeller, 2025/02/06)
