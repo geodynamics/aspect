@@ -1,0 +1,28 @@
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+   Dynamic core initialized as:
+     Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
+     1000           3481           0.084          0              0              0              
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
+
+   Postprocessing:
+     CMB heat flux out of the core 0.175 TW,
+
+*** Timestep 1:  t=1e+06 years, dt=1e+06 years
+   Dynamic core data updated.
+     Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
+     1000.13        3481           0.084          1.33889e-07    0              0              
+   Solving temperature system... 9 iterations.
+   Solving Stokes system (GMG)... 16+0 iterations.
+
+   Postprocessing:
+     CMB heat flux out of the core 0.175 TW,
+
+Termination requested by criterion: end time
+
+
+
