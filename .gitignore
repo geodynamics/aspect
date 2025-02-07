@@ -9,6 +9,7 @@
 /compile_commands.json
 /.vscode/
 /.cache/
+/**/.DS_Store
 /AspectConfig.cmake
 /CMakeLists.txt.user*
 /CTestTestfile.cmake
