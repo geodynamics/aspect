@@ -154,6 +154,7 @@ section on how to debug deal.II programs.
 ---
 maxdepth: 1
 ---
+contributing.md
 idea-of-plugins.md
 write-a-plugin.md
 write-a-cookbook/index.md
@@ -163,7 +164,6 @@ signals.md
 extending-solver.md
 testing/index.md
 benchmarking-run-time.md
-contributing.md
 future-plans.md
 release-tasklist-link.md
 :::
