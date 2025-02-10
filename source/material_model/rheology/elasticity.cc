@@ -863,8 +863,6 @@ namespace aspect
             // We assume (and assert in parse_parameters) that the 2*n_independent_components
             // tensor components are in the correct order and consecutively listed.
             // These stresses have not yet been rotated or advected to the current timestep.
-            std::vector<SymmetricTensor<2, dim>>
-            stress_t(in.n_evaluation_points(), SymmetricTensor<2, dim>());
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               {
                 const Tensor<1,n_independent_components> composition_values = evaluator_composition->get_value(i);
