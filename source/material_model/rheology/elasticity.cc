@@ -191,6 +191,10 @@ namespace aspect
                     ExcMessage("The viscoelastic material model and the visco-plastic material model with elasticity enabled require "
                                "operator splitting for stresses tracked on compositional fields or the particle property 'elastic stress' "
                                "for stresses tracked on particles."));
+        // If the operator splitting scheme is used, make sure to use its fixed step solver, as we know the update and it should be applied in one step.
+        if (this->get_parameters().use_operator_splitting)
+          AssertThrow(this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step,
+                      ExcMessage("If the operator splitting scheme is used, its solver should be set to 'fixed step'."));
         if ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx")))
           AssertThrow(!this->get_parameters().use_operator_splitting,
                       ExcMessage("If stresses are tracked on particles, the stress update is applied by the particle property 'elastic stress' "
