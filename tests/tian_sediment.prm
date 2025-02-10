@@ -22,6 +22,8 @@ end
 
 subsection Material model
   subsection Reactive Fluid Transport Model
-    set Maximum weight percent water in sediment                 = 3.2
+    subsection Tian 2019 model
+      set Maximum weight percent water in sediment                 = 3.2
+    end
   end
 end
