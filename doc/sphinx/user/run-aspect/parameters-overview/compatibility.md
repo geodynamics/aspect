@@ -6,7 +6,7 @@ from parameter files to improve ASPECT further.
 This is especially true for new major versions. In order to allow running old
 parameter files with newer ASPECT versions we
 provide scripts that can automatically update existing parameter files to the
-new syntax. Executing `doc/update_prm_files.sh` with one or more parameter
+new syntax. Executing `contrib/utilities/update_prm_files.sh` with one or more parameter
 files as arguments will create a backup of the old parameter file (named
 `old_filename.bak`), and replace the existing file with a version that should
 work with the current ASPECT version. Using
