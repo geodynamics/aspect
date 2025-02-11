@@ -1,29 +1,14 @@
-# A model which takes utilizes the python script `extract_local_velocity.py`
-# to take the output of the global convection cookbook `initial-condition-S20RTS`
-# and apply the velocity as boundary conditions in a regional 3D spherical chunk.
-# This will outline the workflow for running the `extract_local_velocity.py` script,
-# and show how the solution to the regional spherical chunk model varies between the case
-# where the boundaries are free-slip, or when the boundaries are prescribed velocity
-# boundary conditions. With the exception of the velocity boundary conditions and the
-# geometry model, the .prm file for this cookbook is identical to the `initial-condition-S20RTS`
-# cookbook .prm file.
+# A model which utilizes the S20RTS temperature model within a 3D
+# regional chunk with free slip boundary conditions on all sides.
+# The output of this model is used to investigate the effect of boundary
+# conditions on the regional model, and is compared with the output from
+# `cookbooks/global_regional_coupling.prm`. Besides specifying a different
+# geometry, this model is identical to `cookbooks/initial-condition-S20RTS.prm`.
 
-# Specify the time you want to let the model run for in
-# years and the output directory. Here we only calculate
-# the instantaneous solution.
-set End time                               = 0
-set Use years in output instead of seconds = true
-set Output directory                       = output-chunk-free-slip-S20RTS
-set Dimension                              = 3
-
-# The following variables describe how the pressure should
-# be normalized. Here, we choose a zero average pressure
-# at the surface of the domain. The 'Surface pressure' and
-# 'Adiabatic surface temperature' are used to compute
-# the adiabatic reference profile.
-set Pressure normalization                 = surface
-set Surface pressure                       = 0
-set Adiabatic surface temperature          = 1600
+# Include the S20RTS model from the initial condition cookbook, and change
+# the output directory.
+include $ASPECT_SOURCE_DIR/cookbooks/initial-condition-S20RTS/S20RTS.prm
+set Output directory = output-chunk-free-slip-S20RTS
 
 # Here we specify the geometry of the regional mode
 # domain, which is a spherical chunk with inner radius
@@ -45,60 +30,6 @@ subsection Geometry model
   end
 end
 
-# This section describes the gravity field, which is pointing
-# towards the Earth's center with the same magnitude of 10 m/s^2
-# everywhere
-subsection Gravity model
-  set Model name = radial constant
-
-  subsection Radial constant
-    set Magnitude = 10
-  end
-end
-
-# This section prescribes the initial condition in the temperature
-# field, which is chosen as a scaled version of the S20RTS shear
-# wave velocity model (Ritsema et al., 2000). S20RTS is defined
-# by spherical harmonics up to degree 20 that are radially interpolated
-# with a cubic spline.
-subsection Initial temperature model
-  set Model name = S40RTS perturbation
-
-  subsection S40RTS perturbation
-    # The two input options here are S20RTS or the higher resolution
-    # S40RTS (Ritsema et al., 2011). One can choose to remove the
-    # degree 0 from these files so that the depth average value
-    # is zero.
-    set Initial condition file name       = S20RTS.sph
-    set Remove degree 0 from perturbation = false
-
-    # The following parameters determine the scaling from shear wave
-    # velocity perturbation to temperature differences. We chose the
-    # scaling to density perturbation as 0.15
-    set Vs to density scaling             = 0.15
-    set Thermal expansion coefficient in initial temperature scaling = 3e-5
-
-    # This specifies the background temperature to which we add the
-    # temperature difference.
-    set Reference temperature             = 1600
-  end
-end
-
-# The material model is based on the simple material model, which assumes
-# a constant density, and other parameters as stated below.
-subsection Material model
-  set Model name = simple
-
-  subsection Simple model
-    set Reference density                 = 3300
-    set Viscosity                         = 1e21
-    set Thermal expansion coefficient     = 3e-5
-    set Reference temperature             = 1600
-    set Thermal conductivity              = 4.125
-    set Reference specific heat           = 1250
-  end
-end
-
 # For the regional calculation we do 5 global refinement steps, 3 more than the
 # global S20RTS model in the `initial-condition-S20RTS` cookbook. This showcases
 # how the 'extract_local_velocity' python script allows the user to interpolate
@@ -107,15 +38,23 @@ subsection Mesh refinement
   set Initial global refinement = 5
 end
 
+# We also modify the boundary temperature model, since the
+# bottom boundary in the initial temperature model defined
+# in the S20RTS cookbook reaches the core-mantle boundary.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = initial temperature
+end
+
 # We apply free slip boundary conditions in this model for comparison with the
 # case where global velocities are prescribed on the boundaries.
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = outer, inner, east, west, south, north
+  set Tangential velocity boundary indicators = outer, east, west, south, north, inner
 end
 
 # We output the velocity and the material properties for visualization.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, visualization, basic statistics
+  set List of postprocessors = velocity statistics, visualization
 
   subsection Visualization
     set Output format                 = vtu
@@ -123,4 +62,10 @@ subsection Postprocess
     set Time between graphical output = 0
     set Number of grouped files       = 1
   end
+end
+
+# The S20RTS is a spherical shell, and so removes a rotational nullspace.
+# Here, the model is a chunk so we do not remove the nullspace.
+subsection Nullspace removal
+  set Remove nullspace =
 end

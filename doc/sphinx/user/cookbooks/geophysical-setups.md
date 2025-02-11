@@ -95,6 +95,7 @@ cookbooks/shell_simple_2d/doc/shell_simple_2d.md
 cookbooks/shell_simple_3d/doc/shell_simple_3d.md
 cookbooks/shell_3d_postprocess/doc/shell_3d_postprocess.md
 cookbooks/initial-condition-S20RTS/doc/initial-condition-S20RTS.md
+cookbooks/global_regional_coupling/doc/global_regional_coupling.md
 cookbooks/gplates/doc/gplates.md
 cookbooks/burnman/doc/burnman.md
 cookbooks/steinberger/doc/steinberger.md
@@ -105,7 +106,6 @@ cookbooks/continental_extension/doc/continental_extension.md
 cookbooks/inner_core_convection/doc/inner_core_convection.md
 cookbooks/lower_crustal_flow/doc/lower_crustal_flow.md
 cookbooks/global_melt/doc/global_melt.md
-cookbooks/global_regional_coupling/doc/global_regional_coupling.md
 cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.md
 cookbooks/grain_size_ridge/doc/grain_size_ridge.md
 cookbooks/transform_fault_behn_2007/doc/transform_fault_behn_2007.md

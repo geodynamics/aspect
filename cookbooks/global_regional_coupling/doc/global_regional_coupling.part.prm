@@ -1,10 +1,10 @@
 # When applying the velocities from global convection models as boundary conditions
 # on regional models, enabling an open boundary dramatically improves convergence.
-# In the global convection models, mass is conserved across the entire domain, but
-# within any given subset of the domain, mass may not be conserved. Opening a boundary
-# allows the regional model to dynamically conserve mass based on the prescribed velocities
-# on the other boundaries of the regional model. Here, we prescribe a free slip boundary on
-# the surface of the model, global velocities on the four lateral boundaries, and the leave
+# In the global convection models, mass is conserved across the entire domain, but interpolating
+# onto a new grid introduces a small mass error. Opening a boundary allows the regional
+# model to dynamically conserve mass based on the prescribed velocities on the other
+# boundaries of the regional model. Here, we prescribe a free slip boundary on the
+# surface of the model, global velocities on the four lateral boundaries, and then leave
 # the basal boundary open.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = outer
