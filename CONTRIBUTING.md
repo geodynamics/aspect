@@ -5,16 +5,6 @@ members — i.e., including you! It is our goal to build an inclusive
 and participatory community so we are happy that you are interested in
 participating!
 
-## Getting started with git and GitHub
-
-If you are new to using git or the GitHub platform you may find it
-helpful to review [video lecture
-32.8](http://www.math.colostate.edu/~bangerth/videos.676.32.8.html), which
-should be enough to help you get started with using GitHub or possibly
-contributing to ASPECT itself. Alternatively, GitHub provides a helpful
-guide on the process of contributing to an open-source project
-[here](https://opensource.guide/how-to-contribute/).
-
 ## Asking and answering questions about ASPECT
 
 For questions about ASPECT on all levels, please use the
@@ -22,27 +12,63 @@ For questions about ASPECT on all levels, please use the
 Archived discussions from the inactive aspect-devel mailing list can be downloaded
 at [aspect-devel archives](https://geodynamics.org/pipermail/aspect-devel/).
 
-## Bug reports
+Please note that no one in the forum is paid or obliged to answer
+your questions. Everyone answering forum posts is volunteering
+their time to help make our community a friendly and helpful
+place to inhabit. Therefore, we ask that you keep your inquiries
+polite, take some effort to make them easily readable, and
+include all useful information as described below. If there is
+something you can test on your own, please test it first,
+before asking a question on the forum.
+
+There is no guarantee that we can or will help with your problem, but
+you are welcome to contact us and we will try to jointly improve
+ASPECT for your application case. Depending on the level of
+effort provided a thank you note or an acknowledgment in
+a paper is always appreciated. Keep in mind that for significant
+and scientifically creative contributions by a community member
+(but usually only then) a co-authorship on a publication
+is appropriate.
+
+## Reporting bugs and asking questions
 
 It is a great help to the community if you report any bugs that you
 may find. We keep track of all open issues related to ASPECT
 [here](https://github.com/geodynamics/aspect/issues).
 
-Please follow these simple instructions before opening a new bug report:
+Please follow these instructions before opening a new bug report or ask
+a question:
 
-- Do a search in the [list of open and closed issues](https://github.com/geodynamics/aspect/issues?q=is%3Aissue)
-  for a duplicate of your problem.
-- Do a search in the [ASPECT forum](https://community.geodynamics.org/c/aspect) for a
-  duplicate of your problem.
-- If you did not find an answer, open a new
-  [issue](https://github.com/geodynamics/aspect/issues/new) and explain your
-  problem in as much detail as possible.
-- Attach as much as possible of the following information to your issue:
-  - a minimal parameter file that reproduces the issue,
+- Make sure you have run your model in
+  [DEBUG mode](https://aspect-documentation.readthedocs.io/en/latest/user/run-aspect/debug-mode.html).
+  DEBUG mode reports many errors in greater detail and may already solve your
+  question.
+- Search in the
+  [list of open and closed issues](https://github.com/geodynamics/aspect/issues?q=is%3Aissue)
+  for a duplicate of your question.
+- Search in the [ASPECT forum](https://community.geodynamics.org/c/aspect) for
+  a duplicate of your question.
+- If you did not find an answer in the previous searches, open a new question:
+  - If you suspect you have found a bug, open a new
+    [issue](https://github.com/geodynamics/aspect/issues/new) and explain your
+    problem as described below.
+  - If you are not sure how to set up a model, ask a question in the
+    [ASPECT forum](https://community.geodynamics.org/c/aspect) as described below.
+  - If you are not sure what to do, you can post a question in the
+    [ASPECT forum](https://community.geodynamics.org/c/aspect).
+- In either case, attach the following information:
+  - a parameter file with a simplified and small model that reproduces the
+    issue,
   - the `log.txt` file that was created during the model run,
-  - the error message you saw on your screen,
-  - any information that helps us understand why you think this is a bug, and
-    how to reproduce it.
+  - one or several screenshots of the full error message you saw on your
+    screen,
+  - any information that helps us understand why you think this is a bug
+    (screenshots, data series, comparisons to reference results, etc.),
+  - instructions for how to reproduce the problem.
+
+Without providing the information above, we will be less likely able to help
+you, it may take significantly longer until you receive a reply, and we will
+just ask you for this information anyway.
 
 ## Making ASPECT better
 
@@ -59,6 +85,16 @@ larger contribution to the core functionality, please open a new
 your idea with one of the maintainers. This allows us to give you early
 feedback and prevents you from spending much time on a project that might already be
 planned, or that conflicts with other plans.
+
+### Getting started with git and GitHub
+
+If you are new to using git or the GitHub platform you may find it
+helpful to review [video lecture
+32.8](http://www.math.colostate.edu/~bangerth/videos.676.32.8.html), which
+should be enough to help you get started with using GitHub or possibly
+contributing to ASPECT itself. Alternatively, GitHub provides a helpful
+guide on the process of contributing to an open-source project
+[here](https://opensource.guide/how-to-contribute/).
 
 ### Opening pull requests
 
