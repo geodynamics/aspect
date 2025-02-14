@@ -523,7 +523,12 @@ namespace aspect
                      ExcMessage("parse_map_to_double_array can only check the structure "
                                 "of the parsed map for "
                                 + options.property_name
-                                + " if an expected number of values for each key is given."));
+                                + " if an expected number of values for each key is given. "
+                                "The expected number of values is "
+                                + std::to_string(options.list_of_required_keys.size())
+                                + ", but instead "
+                                + std::to_string(options.n_values_per_key.size())
+                                + " were provided."));
 
         // First: parse the string into a map depending on what Pattern we are dealing with
         std::multimap<std::string, double> parsed_map = parse_string_to_map(input_string,
