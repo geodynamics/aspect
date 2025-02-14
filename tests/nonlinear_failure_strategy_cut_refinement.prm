@@ -1,0 +1,22 @@
+# Check that nonlinear solver strategy "cut timestep size" works
+# also if we change the mesh in the same time step.
+#
+# Like iterated_advection_and_stokes_residual.prm
+# but we coarsen the mesh after timestep 0 and 1.
+
+include $ASPECT_SOURCE_DIR/tests/iterated_advection_and_stokes_residual.prm
+
+set Nonlinear solver failure strategy = cut timestep size
+set Max nonlinear iterations = 4
+set Dimension = 2
+set End time = 14000
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 1
+  set Refinement fraction                      = 0
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 1
+  set Minimum refinement level                 = 2
+end

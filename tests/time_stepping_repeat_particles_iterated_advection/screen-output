@@ -277,6 +277,7 @@ Number of degrees of freedom: 2,958 (1,122+153+561+561+561)
 
 
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 12:  t=0.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 10 iterations.
    Advecting particles...  done.
@@ -328,6 +329,7 @@ Repeating the current time step based on the time stepping manager ...
 
 
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 13:  t=0.734688 seconds, dt=0.0159375 seconds
    Solving temperature system... 9 iterations.
    Advecting particles...  done.

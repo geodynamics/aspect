@@ -49,6 +49,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 WARNING: The nonlinear solver in the current timestep failed to converge.
 Acting according to the parameter 'Nonlinear solver failure strategy'...
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 1:  t=6625.49 years, dt=6625.49 years
    Solving temperature system... 11 iterations.
    Skipping porosity composition solve because RHS is zero.

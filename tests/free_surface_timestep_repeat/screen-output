@@ -45,48 +45,63 @@ Number of mesh deformation degrees of freedom: 1,162
    Solving ve_stress_xy system ... 12 iterations.
    Solving Stokes system (GMG)... 46+0 iterations.
 
-Number of active cells: 505 (on 3 levels)
-Number of degrees of freedom: 12,022 (4,356+566+566+2,178+2,178+2,178)
-
-Number of mesh deformation degrees of freedom: 1,132
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 1:  t=0.460632 years, dt=0.460632 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 12 iterations.
    Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 12 iterations.
-   Solving Stokes system (GMG)... 51+0 iterations.
+   Solving Stokes system (GMG)... 47+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -2.36e+05/4.138e+05/3.094e+11 // -4.138e+05/2.36e+05/-3.094e+11 // -9.739e+04/5.046e+05/1.814e+16
+     Compositions min/max/mass: -2.36e+05/4.138e+05/3.097e+11 // -4.138e+05/2.36e+05/-3.097e+11 // -9.736e+04/5.045e+05/1.814e+16
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -11.65 m, 4.811 m
      RMS, max velocity:         19.5 m/year, 63.2 m/year
 
-Number of active cells: 499 (on 3 levels)
-Number of degrees of freedom: 11,895 (4,310+560+560+2,155+2,155+2,155)
+Number of active cells: 505 (on 3 levels)
+Number of degrees of freedom: 12,022 (4,356+566+566+2,178+2,178+2,178)
 
-Number of mesh deformation degrees of freedom: 1,120
+Number of mesh deformation degrees of freedom: 1,132
 *** Timestep 2:  t=0.960632 years, dt=0.5 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 12 iterations.
    Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 11 iterations.
-   Solving Stokes system (GMG)... 54+0 iterations.
+   Solving Stokes system (GMG)... 53+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -2.096e+06/3.187e+06/2.942e+12 // -3.187e+06/2.096e+06/-2.942e+12 // -8.812e+05/4.289e+06/1.333e+17
+     Compositions min/max/mass: -2.095e+06/3.187e+06/-8.572e+11 // -3.187e+06/2.095e+06/8.572e+11 // -8.812e+05/4.289e+06/1.333e+17
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -43.31 m, 18.13 m
      RMS, max velocity:         8.63 m/year, 27.4 m/year
+
+Number of active cells: 499 (on 3 levels)
+Number of degrees of freedom: 11,895 (4,310+560+560+2,155+2,155+2,155)
+
+Number of mesh deformation degrees of freedom: 1,120
+*** Timestep 3:  t=1.46063 years, dt=0.5 years
+   Solving mesh displacement system... 5 iterations.
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 12 iterations.
+   Solving Stokes system (GMG)... 54+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -1.204e+06/1.463e+06/9.777e+12 // -1.463e+06/1.204e+06/-9.777e+12 // -6.296e+05/2.307e+06/5.939e+16
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -29.59 m, 12.04 m
+     RMS, max velocity:         7.63 m/year, 24.4 m/year
 
 Number of active cells: 502 (on 3 levels)
 Number of degrees of freedom: 11,956 (4,332+563+563+2,166+2,166+2,166)
 
 Number of mesh deformation degrees of freedom: 1,126
-*** Timestep 3:  t=1.46063 years, dt=0.5 years
+*** Timestep 4:  t=1.97242 years, dt=0.511791 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 12 iterations.
@@ -95,34 +110,16 @@ Number of mesh deformation degrees of freedom: 1,126
    Solving Stokes system (GMG)... 53+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -1.204e+06/1.463e+06/1.36e+13 // -1.463e+06/1.204e+06/-1.36e+13 // -6.296e+05/2.308e+06/5.936e+16
+     Compositions min/max/mass: -1.959e+06/2.632e+06/1.494e+13 // -2.632e+06/1.959e+06/-1.494e+13 // -1.046e+06/3.85e+06/1.095e+17
      Temperature min/avg/max:   293 K, 293 K, 293 K
-     Topography min/max:        -29.59 m, 12.04 m
-     RMS, max velocity:         7.63 m/year, 24.4 m/year
+     Topography min/max:        -42.1 m, 17.48 m
+     RMS, max velocity:         3.72 m/year, 11.6 m/year
 
 Number of active cells: 499 (on 3 levels)
 Number of degrees of freedom: 11,895 (4,310+560+560+2,155+2,155+2,155)
 
 Number of mesh deformation degrees of freedom: 1,120
-*** Timestep 4:  t=1.97252 years, dt=0.511887 years
-   Solving mesh displacement system... 5 iterations.
-   Solving temperature system... 0 iterations.
-   Solving ve_stress_xx system ... 12 iterations.
-   Solving ve_stress_yy system ... 12 iterations.
-   Solving ve_stress_xy system ... 12 iterations.
-   Solving Stokes system (GMG)... 54+0 iterations.
-
-   Postprocessing:
-     Compositions min/max/mass: -1.958e+06/2.632e+06/7.548e+12 // -2.632e+06/1.958e+06/-7.548e+12 // -1.046e+06/3.851e+06/1.095e+17
-     Temperature min/avg/max:   293 K, 293 K, 293 K
-     Topography min/max:        -42.1 m, 17.48 m
-     RMS, max velocity:         3.72 m/year, 11.6 m/year
-
-Number of active cells: 502 (on 3 levels)
-Number of degrees of freedom: 11,956 (4,332+563+563+2,166+2,166+2,166)
-
-Number of mesh deformation degrees of freedom: 1,126
-*** Timestep 5:  t=2 years, dt=0.0274814 years
+*** Timestep 5:  t=2 years, dt=0.0275774 years
    Solving mesh displacement system... 5 iterations.
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 10 iterations.
@@ -131,16 +128,16 @@ Number of mesh deformation degrees of freedom: 1,126
    Solving Stokes system (GMG)... 50+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -1.953e+06/2.611e+06/7.161e+12 // -2.611e+06/1.953e+06/-7.161e+12 // -1.049e+06/3.836e+06/1.086e+17
+     Compositions min/max/mass: -1.954e+06/2.611e+06/1.511e+13 // -2.611e+06/1.954e+06/-1.511e+13 // -1.049e+06/3.835e+06/1.086e+17
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -41.78 m, 17.33 m
-     RMS, max velocity:         65.5 m/year, 204 m/year
+     RMS, max velocity:         65.2 m/year, 203 m/year
      Writing graphical output:  output-free_surface_timestep_repeat/solution/solution-00001
 
-Number of active cells: 499 (on 3 levels)
-Number of degrees of freedom: 11,895 (4,310+560+560+2,155+2,155+2,155)
+Number of active cells: 502 (on 3 levels)
+Number of degrees of freedom: 11,956 (4,332+563+563+2,166+2,166+2,166)
 
-Number of mesh deformation degrees of freedom: 1,120
+Number of mesh deformation degrees of freedom: 1,126
 Termination requested by criterion: end time
 
 
