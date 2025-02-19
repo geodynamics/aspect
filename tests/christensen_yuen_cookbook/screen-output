@@ -1,0 +1,55 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.53346e-16, 0.121857
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.121857
+
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 1.53346e-16, 2.98719e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.98719e-09
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.0448 m/year, 0.126 m/year
+     Temperature min/avg/max:            0 K, 500 K, 1000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.382e+06 W, 1.382e+06 W
+     Heating rate (average/total):       0 W/kg, 0 W
+     Writing graphical output:           output-christensen_yuen_cookbook/solution/solution-00000
+
+*** Timestep 1:  t=5000 years, dt=5000 years
+   Solving temperature system... 7 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 0.000838057, 3.8353e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000838057
+
+   Solving temperature system... 5 iterations.
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, Stokes system): 7.80621e-07, 3.56952e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.80621e-07
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.0449 m/year, 0.126 m/year
+     Temperature min/avg/max:            0 K, 500 K, 1000 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.386e+06 W, 1.386e+06 W
+     Heating rate (average/total):       0 W/kg, 0 W
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

@@ -1,0 +1,9 @@
+# Test for the christensen_yuen_phase_function cookbook
+
+include $ASPECT_SOURCE_DIR/cookbooks/christensen_yuen_phase_function/christensen_yuen_phase_function.prm
+
+set End time = 5000
+
+subsection Mesh refinement
+  set Initial global refinement                = 4
+end

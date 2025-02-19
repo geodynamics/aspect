@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimal temperature (K)
+# 15: Average temperature (K)
+# 16: Maximal temperature (K)
+# 17: Average nondimensional temperature (K)
+# 18: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 19: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 3 ("top") (W)
+# 22: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2  0 8 12 12 4.47674564e-02 1.25823200e-01 0.00000000e+00 5.00000000e+02 1.00000000e+03 5.00000000e-01 0.00000000e+00 0.00000000e+00 -1.38242904e+06 1.38241488e+06 output-christensen_yuen_cookbook/solution/solution-00000 
+1 5.000000000000e+03 5.000000000000e+03 256 2467 1089 2 12 7 11 11 4.48965253e-02 1.26412968e-01 0.00000000e+00 5.00000004e+02 1.00000000e+03 5.00000004e-01 0.00000000e+00 0.00000000e+00 -1.38557376e+06 1.38552200e+06                                                       "" 
