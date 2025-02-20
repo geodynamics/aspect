@@ -57,7 +57,7 @@ file:
     end
 
 
-**[Description of benchmark files](../README.md)**
+**[Description of benchmark files](../README)**
 
 ```{figure-md} fig:RTi_grids_a
 <img src="grid.*" style="width:44.0%" />

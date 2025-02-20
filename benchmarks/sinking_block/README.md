@@ -8,4 +8,4 @@ In order to run the benchmark for many resolution, density and viscosity combina
 all the input files generated inside the triple loop.
 The `sinking_block.prm` input file is the standalone prm file for the sinking block benchmark.
 
-For more information see [doc/sinking_block.md](doc/sinking_block.md).
+For more information see [](doc/sinking_block).
