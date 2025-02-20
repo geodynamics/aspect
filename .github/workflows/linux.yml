@@ -23,7 +23,7 @@ jobs:
   linux-nounity:
     #linux build with unity/precompiled headers disabled
     name: no-unity-build
-    runs-on: [ubuntu-20.04]
+    runs-on: [ubuntu-22.04]
 
     steps:
     - uses: actions/checkout@v4
@@ -45,17 +45,14 @@ jobs:
   linux:
     #linux build including indent, examples and documentation
     name: indent+documentation
-    runs-on: [ubuntu-20.04]
+    runs-on: [ubuntu-24.04]
 
     steps:
     - uses: actions/checkout@v4
     - name: setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.5.1-backports
-        sudo apt-get update
-        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen latexmk biber inkscape
+        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip libdeal.ii-dev doxygen latexmk biber inkscape
         doxygen --version
 
         wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz
