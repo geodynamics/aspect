@@ -1,0 +1,147 @@
+set Dimension                              = 3
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Nonlinear solver scheme                = single Advection, no Stokes
+set End time                               = 1e5
+set Use years in output instead of seconds = false
+set Output directory                       = cpo_karato_simple_shearbox
+set Maximum time step                      = 1e4
+
+subsection Compositional fields
+  set Number of fields            = 1
+  set Names of fields             = water
+  set Compositional field methods = static
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function expression = 1000*x + 500
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent                = 1
+    set Y extent                = 1
+    set Z extent                = 1
+    set Box origin X coordinate = -0.500
+    set Box origin Y coordinate = -0.500
+    set Box origin Z coordinate = -0.500
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1200 ## Annotation: Temperature function
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names                   = box
+  set Fixed temperature boundary indicators = bottom, top, left, right, front, back
+
+  subsection Box
+    set Bottom temperature = 1200
+    set Left temperature   = 1200
+    set Right temperature  = 1200
+    set Top temperature    = 1200
+    set Front temperature  = 1200
+    set Back temperature   = 1200
+  end
+end
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names      = x,y,z,t
+    set Function expression = z*1e-5;0;0 ## Annotation set velocity condition
+  end
+end
+
+
+# Set the viscosity to be 1.75e13, which results in a differential stress
+# of 350 MPa when combined with the prescribed shear conditions.
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Maximum viscosity   = 1.75e13
+    set Minimum viscosity   = 1.75e13
+    set Densities           = 3300
+  end
+end
+
+# No need to refine the mesh in this case
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 10000
+end
+
+
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end
+
+subsection Particles
+  set List of particle properties = crystal preferred orientation
+  set Particle generator name     =  reference cell
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 5
+    end
+  end
+
+  subsection Crystal Preferred Orientation
+    set Random number seed            = 301
+    set Number of grains per particle = 5
+    set Property advection method     = Backward Euler
+    set Property advection tolerance  = 1e-15
+    set CPO derivatives algorithm     = D-Rex 2004
+
+    subsection Initial grains
+      set Minerals                    = Olivine: Karato 2008
+      set Volume fractions minerals   = 1.0
+    end
+
+    subsection D-Rex 2004
+      set Mobility                    = 125
+      set Stress exponents            = 3.5
+      set Exponents p                 = 1.5
+      set Nucleation efficiency       = 5
+      set Threshold GBS               = 0.3
+    end
+  end
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = particles
+
+  subsection Particles
+    set Time between data output  = 1e5
+    set Data output format        = gnuplot
+    set Exclude output properties = a_cosine_matrix, volume fraction, integrated strain invariant, crystal preferred orientation, cpo elastic tensor, cpo bingham average, elastic tensor decomposition
+  end
+end
