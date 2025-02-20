@@ -298,6 +298,7 @@ namespace aspect
               }
 
             ArrayView<double> data = particle.get_properties();
+            const typename DoFHandler<dim>::active_cell_iterator cell(*particle.get_surrounding_cell(),&(this->get_dof_handler()));
 
             for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
@@ -316,6 +317,7 @@ namespace aspect
                                                                strain_rate_3d,
                                                                velocity_gradient_3d,
                                                                particle.get_location(),
+                                                               cell,
                                                                temperature,
                                                                pressure,
                                                                velocity,
@@ -571,6 +573,7 @@ namespace aspect
                                                             const SymmetricTensor<2,3> &strain_rate_3d,
                                                             const Tensor<2,3> &velocity_gradient_tensor,
                                                             const Point<dim> &position,
+                                                            const typename DoFHandler<dim>::active_cell_iterator &cell,
                                                             const double temperature,
                                                             const double pressure,
                                                             const Tensor<1,dim> &velocity,
@@ -592,6 +595,7 @@ namespace aspect
 
               const DeformationType deformation_type = determine_deformation_type(deformation_type_selector[mineral_i],
                                                                                   position,
+                                                                                  cell,
                                                                                   temperature,
                                                                                   pressure,
                                                                                   velocity,
@@ -836,6 +840,7 @@ namespace aspect
       DeformationType
       CrystalPreferredOrientation<dim>::determine_deformation_type(const DeformationTypeSelector deformation_type_selector,
                                                                    const Point<dim> &position,
+                                                                   const typename DoFHandler<dim>::active_cell_iterator &cell,
                                                                    const double temperature,
                                                                    const double pressure,
                                                                    const Tensor<1,dim> &velocity,
@@ -872,6 +877,7 @@ namespace aspect
               material_model_inputs.velocity[0] = velocity;
               material_model_inputs.composition[0] = compositions;
               material_model_inputs.strain_rate[0] = strain_rate;
+              material_model_inputs.current_cell = cell;
 
               MaterialModel::MaterialModelOutputs<dim> material_model_outputs(1,this->n_compositional_fields());
               this->get_material_model().evaluate(material_model_inputs, material_model_outputs);
