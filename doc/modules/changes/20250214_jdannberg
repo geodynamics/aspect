@@ -1,0 +1,9 @@
+Fixed: If the nonlinear solver fails in a timestep with mesh
+refinement and "cut timestep size" is selected as the
+Nonlinear solver failure strategy, ASPECT now correctly
+repeats the timestep first before refining the mesh. Before,
+ASPECT would execute refinement/coarsening of the mesh first,
+which could lead to changes of the mesh in each failure
+cycle.
+<br>
+(Juliane Dannberg, 2025/02/14)

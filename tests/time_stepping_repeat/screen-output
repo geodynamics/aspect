@@ -91,6 +91,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 12:  t=0.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 9 iterations.
    Solving Stokes system (GMG)... 4+0 iterations.
@@ -103,6 +104,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 13:  t=0.734688 seconds, dt=0.0159375 seconds
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
@@ -115,6 +117,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 14:  t=0.742816 seconds, dt=0.00812812 seconds
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 2+0 iterations.
@@ -127,6 +130,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 15:  t=0.746961 seconds, dt=0.00414534 seconds
    Solving temperature system... 8 iterations.
    Solving Stokes system (GMG)... 1+0 iterations.
@@ -139,6 +143,7 @@ Repeating the current time step based on the time stepping manager ...
    Solving Stokes system (GMG)... 11+0 iterations.
 
 Repeating the current time step based on the time stepping manager ...
+
 *** Timestep 16:  t=0.749075 seconds, dt=0.00211413 seconds
    Solving temperature system... 7 iterations.
    Solving Stokes system (GMG)... 2+0 iterations.

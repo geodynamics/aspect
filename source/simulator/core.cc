@@ -2123,17 +2123,17 @@ namespace aspect
             && !parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
+        // if the time stepping manager tells us to refine the mesh,
+        // we need to do this before going to the next time step
         if (time_stepping_manager.should_refine_mesh())
           {
             pcout << "Refining the mesh based on the time stepping manager ...\n" << std::endl;
             refine_mesh(max_refinement_level);
           }
-        else
-          maybe_refine_mesh(new_time_step_size, max_refinement_level);
 
         if (time_stepping_manager.should_repeat_time_step())
           {
-            pcout << "Repeating the current time step based on the time stepping manager ..." << std::endl;
+            pcout << "Repeating the current time step based on the time stepping manager ...\n" << std::endl;
 
             if (mesh_deformation)
               mesh_deformation->mesh_displacements = mesh_deformation->old_mesh_displacements;
@@ -2150,6 +2150,9 @@ namespace aspect
 
             continue; // repeat time step loop
           }
+
+        if (!time_stepping_manager.should_refine_mesh())
+          maybe_refine_mesh(new_time_step_size, max_refinement_level);
 
         // see if we want to write a timing summary
         maybe_write_timing_output();
