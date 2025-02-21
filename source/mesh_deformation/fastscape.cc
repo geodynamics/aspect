@@ -1334,9 +1334,9 @@ namespace aspect
 
               // Set bottom ghost node
               velocity_x[index_bot] = velocity_x[index_top - 2*fastscape_nx];
-	      velocity_y[index_bot] = velocity_y[index_top - 2*fastscape_nx];
+              velocity_y[index_bot] = velocity_y[index_top - 2*fastscape_nx];
               velocity_z[index_bot] = velocity_z[index_top - 2*fastscape_nx] + (elevation[index_top - 2*fastscape_nx] - elevation[index_bot])/fastscape_timestep_in_years;
-             
+
               if (velocity_y[index_bot+fastscape_nx-1] > 0 && velocity_y[index_top-fastscape_nx-1] >= 0)
                 {
                   side = index_top;
