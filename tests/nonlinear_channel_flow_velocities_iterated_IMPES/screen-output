@@ -506,9 +506,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total system) after nonlinear iteration 100: 5.41172e-07
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
      Pressure min/avg/max:               -1.001e+08 Pa, 5.034e+08 Pa, 1.136e+09 Pa
@@ -1017,9 +1018,10 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000450363
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
      Pressure min/avg/max:               -1.046e+08 Pa, 5.042e+08 Pa, 1.103e+09 Pa
@@ -1527,9 +1529,10 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 100: 0.000373286
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
      Pressure min/avg/max:               -1.276e+08 Pa, 5.044e+08 Pa, 1.124e+09 Pa

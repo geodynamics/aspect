@@ -52,9 +52,10 @@ Number of mesh deformation degrees of freedom: 462
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00189298
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Compositions min/max/mass:          0/1.472/6.041e+09 // 0/0/0 // 0/1/4e+09 // 0/1/4e+09 // 0/1/1.1e+10
      Heat flux densities for boundaries: 0.19 W/m, 0.19 W/m, -0.344 W/m, 0.05501 W/m
@@ -115,9 +116,10 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.00366469
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Compositions min/max/mass:          0/1.472/6.043e+09 // 0/0.0008647/1.867e+06 // 0/1/4e+09 // -0.001458/1.001/3.999e+09 // -1.29e-07/1/1.1e+10
      Heat flux densities for boundaries: 0.19 W/m, 0.19 W/m, -0.345 W/m, 0.05501 W/m
@@ -178,9 +180,10 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000440009
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Compositions min/max/mass:          0/1.472/6.044e+09 // 0/0.001942/3.746e+06 // 0/1/4e+09 // -0.002998/1.002/3.998e+09 // -4.899e-07/1/1.1e+10
      Heat flux densities for boundaries: 0.19 W/m, 0.19 W/m, -0.3448 W/m, 0.05502 W/m
@@ -241,9 +244,10 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000186489
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Compositions min/max/mass:          0/1.473/6.046e+09 // 0/0.003107/5.626e+06 // 0/1/4e+09 // -0.004627/1.002/3.997e+09 // -1.281e-06/1/1.101e+10
      Heat flux densities for boundaries: 0.1899 W/m, 0.19 W/m, -0.3445 W/m, 0.05503 W/m

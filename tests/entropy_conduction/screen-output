@@ -111,9 +111,10 @@ Number of degrees of freedom: 6,417 (2,406+402+1,203+1,203+1,203)
       Relative nonlinear residual (total system) after nonlinear iteration 10: 0.0441691
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      RMS, max velocity:                  1.64e-07 m/year, 8.46e-07 m/year
      Temperature min/avg/max:            1600 K, 1833 K, 1993 K

@@ -30,9 +30,10 @@ Number of degrees of freedom: 61,140 (37,570+4,785+18,785)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.133364
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      RMS, max velocity:                  41.8 m/year, 121 m/year
      Mass fluxes through boundary parts: 3.376e+06 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr

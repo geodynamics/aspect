@@ -9,9 +9,10 @@ Number of degrees of freedom: 948 (578+81+289)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00000
      DoFs; Errors u_L1, p_L1, u_L2, p_L2: 659; 2.874664e-01, 2.688132e+00, 1.425676e-01, 1.852245e+00
@@ -24,9 +25,10 @@ Number of degrees of freedom: 1,520 (930+125+465)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00001
      DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1055; 2.587684e-01, 2.904484e+00, 1.286212e-01, 2.779361e+00
@@ -39,9 +41,10 @@ Number of degrees of freedom: 2,716 (1,666+217+833)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00002
      DoFs; Errors u_L1, p_L1, u_L2, p_L2: 1883; 9.203223e-02, 9.273608e-01, 4.802945e-02, 9.029288e-01
@@ -54,9 +57,10 @@ Number of degrees of freedom: 4,484 (2,754+353+1,377)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00003
      DoFs; Errors u_L1, p_L1, u_L2, p_L2: 3107; 5.571668e-02, 5.986879e-01, 2.970837e-02, 8.262387e-01
@@ -69,9 +73,10 @@ Number of degrees of freedom: 5,524 (3,394+433+1,697)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00004
      DoFs; Errors u_L1, p_L1, u_L2, p_L2: 3827; 3.573939e-02, 3.728804e-01, 1.913570e-02, 4.757713e-01
@@ -84,9 +89,10 @@ Number of degrees of freedom: 7,344 (4,514+573+2,257)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:            output-inclusion_adaptive/solution/solution-00005
      DoFs; Errors u_L1, p_L1, u_L2, p_L2: 5087; 2.676587e-02, 2.984005e-01, 1.447695e-02, 4.244469e-01

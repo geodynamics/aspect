@@ -15,9 +15,10 @@ Number of degrees of freedom: 1,607 (578+81+81+289+289+289)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Compositions min/max/mass:                         0/1/4.149e+09 // 0/1/5.417e+09 // 0/1/4.34e+08
      Average density / Average viscosity / Total mass:  2700 kg/m^3, 1.442e+22 Pa s, 2.7e+13 kg

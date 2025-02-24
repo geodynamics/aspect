@@ -20,9 +20,10 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0147308
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:           output-periodic_compressible/solution/solution-00000
      RMS, max velocity:                  0.00413 m/year, 0.00624 m/year

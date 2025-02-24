@@ -46,8 +46,10 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 2.52488e-05
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Trying to cut the current time step.
+
 Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 1:  t=6625.49 years, dt=6625.49 years

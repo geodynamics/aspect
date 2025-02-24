@@ -40,9 +40,10 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0272016
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:  output-global_melt_parallel/solution/solution-00000
      Compositions min/max/mass: 0/0/0 // 0/0/0
@@ -88,9 +89,10 @@ Continuing to the next timestep even though solution is not fully converged.
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000257626
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:  output-global_melt_parallel/solution/solution-00001
      Compositions min/max/mass: 0/0/0 // 0/0/0
