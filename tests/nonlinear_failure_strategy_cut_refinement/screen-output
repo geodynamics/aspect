@@ -52,8 +52,10 @@ Number of degrees of freedom: 2,397 (1,122+153+561+561)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 6.76851e-05
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Trying to cut the current time step.
+
 Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 1:  t=6625.49 years, dt=6625.49 years
@@ -113,8 +115,10 @@ Number of degrees of freedom: 657 (306+45+153+153)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 8.80853e-05
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Trying to cut the current time step.
+
 Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 2:  t=10312.7 years, dt=3687.25 years
@@ -143,8 +147,10 @@ Repeating the current time step based on the time stepping manager ...
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.51871e-05
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Trying to cut the current time step.
+
 Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 2:  t=8469.12 years, dt=1843.63 years
@@ -203,8 +209,10 @@ Skipping mesh refinement, because the mesh did not change.
       Relative nonlinear residual (total system) after nonlinear iteration 4: 1.33341e-05
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Trying to cut the current time step.
+
 Repeating the current time step based on the time stepping manager ...
 
 *** Timestep 3:  t=10229.8 years, dt=1760.66 years

@@ -54,9 +54,10 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
      RMS, max velocity:         0.000408 m/year, 0.000691 m/year
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
 
 
 
@@ -112,9 +113,10 @@ Continuing to the next timestep even though solution is not fully converged.
      RMS, max velocity:         0.000408 m/year, 0.000691 m/year
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
 
 
 
@@ -170,9 +172,10 @@ Continuing to the next timestep even though solution is not fully converged.
      RMS, max velocity:         0.000408 m/year, 0.000691 m/year
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
 
 
 

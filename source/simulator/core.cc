@@ -1947,35 +1947,47 @@ namespace aspect
       }
     catch (ExcNonlinearSolverNoConvergence &)
       {
-        pcout << "\nWARNING: The nonlinear solver in the current timestep failed to converge." << std::endl
-              << "Acting according to the parameter 'Nonlinear solver failure strategy'..." << std::endl;
+        pcout << "\n"
+              "   WARNING: The nonlinear solver in the current timestep failed to converge.\n"
+              "   Acting according to the parameter 'Nonlinear solver failure strategy':"
+              << std::endl;
         ++nonlinear_solver_failures;
 
         switch (parameters.nonlinear_solver_failure_strategy)
           {
             case Parameters<dim>::NonlinearSolverFailureStrategy::continue_with_next_timestep:
             {
-              pcout << "Continuing to the next timestep even though solution is not fully converged." << std::endl;
-              // do nothing and continue
+              pcout << "   Continuing to the next timestep even though solution is not fully converged."
+                    << std::endl
+                    << std::endl;
+              // swallow the exception and continue
               break;
             }
             case Parameters<dim>::NonlinearSolverFailureStrategy::cut_timestep_size:
             {
               if (timestep_number == 0)
                 {
-                  pcout << "Error: We can not cut the timestep in step 0, so we are aborting."
+                  pcout << "   Error: Can not cut the timestep in step 0. Aborting."
                         << std::endl;
+                  // Rethrow the current exception
                   throw;
                 }
-              time_stepping_manager.template get_matching_active_plugin<TimeStepping::RepeatOnNonlinearFail<dim>>().nonlinear_solver_has_failed();
+              else
+                pcout << "   Trying to cut the current time step.\n"
+                      << std::endl;
+
+              time_stepping_manager.template get_matching_active_plugin<TimeStepping::RepeatOnNonlinearFail<dim>>()
+              .nonlinear_solver_has_failed();
               break;
             }
+
             case Parameters<dim>::NonlinearSolverFailureStrategy::abort_program:
             {
-              pcout << "Aborting simulation as requested." << std::endl;
-              // rethrow the current exception
+              pcout << "   Aborting simulation as requested." << std::endl;
+              // Rethrow the current exception
               throw;
             }
+
             default:
               AssertThrow(false, ExcNotImplemented());
           }

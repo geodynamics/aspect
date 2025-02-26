@@ -9,9 +9,10 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.00018
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Heating rate (average/total):  5.225 W/kg, 8.978 W
      RMS, max velocity:             1.08 m/s, 1.65 m/s

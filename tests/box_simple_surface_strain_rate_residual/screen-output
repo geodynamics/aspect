@@ -10,9 +10,10 @@ Number of mesh deformation degrees of freedom: 2,187
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Max, min, and RMS residual strain rate invariant along boundary parts: 4.78651e-06 1/s, 1.30885e-06 1/s, 1.991e-06 1/s
      Writing graphical output:                                              output-box_simple_surface_strain_rate_residual/solution/solution-00000

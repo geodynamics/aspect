@@ -11,9 +11,10 @@ pressure_scaling = 69.1186 reference_viscosity = 1.38237 length_scale = 0.02
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output:            output-pressure_scaling_signal/solution/solution-00000
      DoFs; Errors u_L1, p_L1, u_L2, p_L2: 2467; 2.564925e-01, 2.917011e+00, 1.276561e-01, 2.772922e+00

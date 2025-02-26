@@ -46,8 +46,8 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
       Relative nonlinear residual (total system) after nonlinear iteration 4: 2.52488e-05
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
 Aborting simulation as requested.
 TimerOutput objects finalize timed values printed to the
 screen by communicating over MPI in their destructors.

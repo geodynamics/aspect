@@ -16,9 +16,10 @@ Number of degrees of freedom: 134 (50+9+25+25+25)
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.00007
 
 
-WARNING: The nonlinear solver in the current timestep failed to converge.
-Acting according to the parameter 'Nonlinear solver failure strategy'...
-Continuing to the next timestep even though solution is not fully converged.
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
    Postprocessing:
      Writing graphical output: output-darcy_convection_step/solution/solution-00000
 
