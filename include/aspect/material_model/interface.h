@@ -1176,8 +1176,8 @@ namespace aspect
     {
       public:
         ElasticOutputs(const unsigned int n_points)
-          : elastic_force(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
-          , viscoelastic_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
+          : elastic_force(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
+            viscoelastic_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
         {}
 
         ~ElasticOutputs() override
