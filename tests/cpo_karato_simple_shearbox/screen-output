@@ -1,0 +1,85 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 143 (81+8+27+27)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Writing particle output: output-cpo_karato_simple_shearbox/particles/particles-00000
+
+*** Timestep 1:  t=10000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 125
+
+*** Timestep 2:  t=20000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 125
+
+*** Timestep 3:  t=30000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 115
+
+*** Timestep 4:  t=40000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 115
+
+*** Timestep 5:  t=50000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 110
+
+*** Timestep 6:  t=60000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 105
+
+*** Timestep 7:  t=70000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 105
+
+*** Timestep 8:  t=80000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 95
+
+*** Timestep 9:  t=90000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Number of advected particles: 95
+
+*** Timestep 10:  t=100000 seconds, dt=10000 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     Writing particle output: output-cpo_karato_simple_shearbox/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
+
