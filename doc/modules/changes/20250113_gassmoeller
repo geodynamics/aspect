@@ -1,0 +1,5 @@
+Changed: Prescribed compositional fields are now copied from the material
+model output in one combined operation (instead of being copied field by field).
+This change improves the efficiency of the copy process.
+<br>
+(Rene Gassmoeller, 2025/02/28)
