@@ -111,10 +111,19 @@ namespace aspect
         if (column_name == advection_iterations[i].first)
           column_position = i;
 
+      // If the solver was not called (e.g. the field
+      // was computed by the material model), then the solver control
+      // object stores an invalid number of iterations. However, it
+      // is equally true and more intuitive to say that in this case
+      // the solver did not need to do any iterations.
+      unsigned int n_iterations = solver_control.last_step();
+      if (n_iterations == numbers::invalid_unsigned_int)
+        n_iterations = 0;
+
       if (column_position == numbers::invalid_unsigned_int)
-        advection_iterations.emplace_back(column_name,std::vector<unsigned int>(1,solver_control.last_step()));
+        advection_iterations.emplace_back(column_name,std::vector<unsigned int>(n_iterations));
       else
-        advection_iterations[column_position].second.push_back(solver_control.last_step());
+        advection_iterations[column_position].second.push_back(n_iterations);
     }
 
 
