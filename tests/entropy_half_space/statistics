@@ -8,8 +8,8 @@
 # 8: Number of nonlinear iterations
 # 9: Iterations for temperature solver
 # 10: Iterations for composition solver 1
-# 11: Iterations for composition solver 2
-# 12: Iterations for composition solver 3
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 2
 # 13: Iterations for Stokes solver
 # 14: Velocity iterations in Stokes preconditioner
 # 15: Schur complement iterations in Stokes preconditioner

@@ -1,0 +1,19 @@
+
+Loading shared library <./libmultiple_prescribed_fields_dc.debug.so>
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 209 (50+9+25+25+36+64)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional fields... done.
+   Solving Stokes system (GMG)... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-multiple_prescribed_fields_dc/solution/solution-00000
+     Compositions min/max/mass: 0/0/0 // 0/1/0.5 // 0/2/1
+
+Termination requested by criterion: end time
+
+
+

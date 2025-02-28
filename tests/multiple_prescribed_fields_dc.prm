@@ -1,0 +1,88 @@
+# A testcase that demonstrates the named additional outputs postprocessor for multiple
+# named outputs. The test is based on prescribed_field_with_diffusion only
+# with more than one additional output.
+
+set Dimension = 2
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1.0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+subsection Discretization
+  set Composition polynomial degree = 2,2,3
+  set Use discontinuous composition discretization = false, true, true
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = prescribed_1, prescribed_2, prescribed_3
+  set Compositional field methods = prescribed field, prescribed field, prescribed field
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.1
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0; 0.2; 0.3
+  end
+end
+
+subsection Material model
+  set Model name = prescribed fields material
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = named additional outputs
+    set Number of grouped files       = 0
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+  end
+end
