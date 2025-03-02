@@ -1368,6 +1368,25 @@ namespace aspect
        */
       void apply_limiter_to_dg_solutions (const AdvectionField &advection_field);
 
+      /**
+       * Compute the unique support points for the advection fields @p advection_fields.
+       * The support points are collected by taking the union of the support points
+       * of all given advection fields and filtering out duplicate points. The resulting
+       * set of points is written into @p unique_support_points. @p support_point_index_by_field
+       * is a vector of vectors that contains the indices of the support points for each field.
+       * I.e. support_point_index_by_field[i][j] contains the j-th support point
+       * for the i-th field in @p advection_fields and
+       * unique_support_points[support_point_index_by_field[i][j]] is its location.
+       *
+       * For the common case that all fields have the same support points, each vector in
+       * @p support_point_index_by_field will contain the same indices for all fields.
+       *
+       * Note that existing content of @p unique_support_points and @p support_point_index_by_field
+       * will be overwritten in this function.
+       */
+      void compute_unique_advection_support_points (const std::vector<AdvectionField> &advection_fields,
+                                                    std::vector<Point<dim>> &unique_support_points,
+                                                    std::vector<std::vector<unsigned int>> &support_point_index_by_field) const;
 
       /**
        * Compute the reactions in case of operator splitting:
@@ -1437,7 +1456,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void interpolate_material_output_into_advection_field (const AdvectionField &adv_field);
+      void interpolate_material_output_into_advection_field (const std::vector<AdvectionField> &adv_field);
 
 
       /**
