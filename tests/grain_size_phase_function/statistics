@@ -19,5 +19,5 @@
 # 19: Average viscosity (Pa s)
 # 20: Total mass (kg)
 # 21: Average iterations for ODE solver
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0 138 140 140 output-grain_size_phase_function/solution/solution-00000 1.00000000e-03 1.00000000e-03 1.00000000e+07 10000 output-grain_size_phase_function/particles/particles-00000 1.00000000e+03 3.19873350e+19 1.00000000e+13 nan 
-1 1.000000000000e+04 1.000000000000e+04 256 2467 1089 1089 0 135 137 137 output-grain_size_phase_function/solution/solution-00001 1.00000000e-03 1.60801892e-03 1.30380370e+07 10000 output-grain_size_phase_function/particles/particles-00001 1.00000000e+03 6.97407271e+19 1.00000000e+13 nan 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0 139 140 140 output-grain_size_phase_function/solution/solution-00000 1.00000000e-03 1.00000000e-03 1.00000000e+07 10000 output-grain_size_phase_function/particles/particles-00000 1.00000000e+03 3.19873350e+19 1.00000000e+13 nan 
+1 1.000000000000e+04 1.000000000000e+04 256 2467 1089 1089 0 136 137 137 output-grain_size_phase_function/solution/solution-00001 1.00000000e-03 1.60801892e-03 1.30380370e+07 10000 output-grain_size_phase_function/particles/particles-00001 1.00000000e+03 6.97407271e+19 1.00000000e+13 nan 

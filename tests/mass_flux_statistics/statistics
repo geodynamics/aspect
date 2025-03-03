@@ -14,4 +14,4 @@
 # 14: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
 # 15: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 16: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 13 15 15 1.41421356e+00 1.41421357e+00 -3.21373800e+03 3.21373800e+03 -3.21373800e+03 3.21373800e+03 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 14 15 15 1.41421356e+00 1.41421357e+00 -3.21373800e+03 3.21373800e+03 -3.21373800e+03 3.21373800e+03 

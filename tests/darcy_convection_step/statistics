@@ -13,6 +13,6 @@
 # 13: Velocity iterations in Stokes preconditioner
 # 14: Schur complement iterations in Stokes preconditioner
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 4 59 25 50 1 0 0 0          5 7 7 output-darcy_convection_step/solution/solution-00000 
-1 1.000166530498e+02 1.000166530498e+02 4 59 25 50 1 0 0 0 4294967295 0 0                                                   "" 
-2 2.000000000000e+02 9.998334695023e+01 4 59 25 50 1 0 0 0 4294967295 0 0                                                   "" 
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 50 1 0 0 0 6 7 7 output-darcy_convection_step/solution/solution-00000 
+1 1.000166530498e+02 1.000166530498e+02 4 59 25 50 1 0 0 0 0 0 0                                                   "" 
+2 2.000000000000e+02 9.998334695023e+01 4 59 25 50 1 0 0 0 0 0 0                                                   "" 

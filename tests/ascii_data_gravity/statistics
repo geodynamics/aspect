@@ -9,5 +9,5 @@
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 7 9 9 output-ascii_data_gravity/solution/solution-00000 
-1 1.000000000000e+06 1.000000000000e+06 1024 9539 4225 2 7 9 9                                                "" 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 8 9 9 output-ascii_data_gravity/solution/solution-00000 
+1 1.000000000000e+06 1.000000000000e+06 1024 9539 4225 2 8 9 9                                                "" 

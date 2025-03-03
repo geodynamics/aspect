@@ -68,7 +68,7 @@ Number of degrees of freedom: 47,413 (18,018+2,368+9,009+9,009+9,009)
      Writing graphical output:           output-entropy_initial_lookup_wb/solution/solution-00003
      RMS, max velocity:                  0.0138 m/year, 0.124 m/year
      Temperature min/avg/max:            273 K, 2184 K, 3500 K
-     Mass fluxes through boundary parts: 0.004614 kg/yr, 0.06577 kg/yr, 0 kg/yr, 2.203e-08 kg/yr
+     Mass fluxes through boundary parts: 0.004614 kg/yr, 0.06577 kg/yr, 0 kg/yr, 2.216e-08 kg/yr
      Compositions min/max/mass:          577.9/2758/1.089e+17 // 3228/5592/1.939e+17
 
 Termination requested by criterion: end time

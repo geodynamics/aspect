@@ -18,4 +18,4 @@
 # 18: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 19: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
 # 20: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 10 0 0 34 289 54 4.08254695e-04 6.90788367e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_viscous_strain_weakening/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 10 0 0 44 289 54 4.08254695e-04 6.90788367e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_viscous_strain_weakening/solution/solution-00000 

@@ -19,4 +19,4 @@
 # 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
 # 20: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
 # 21: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 10 0 149 169 169 1.95647143e-08 2.32828598e-08 -2.15026089e+00 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -6.17622785e-01 6.17622785e-01 output-nonlinear_channel_flow_tractions_dc_picard_Stokes_GMG/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 10 0 159 169 169 1.95647143e-08 2.32828598e-08 -2.15026089e+00 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -6.17622785e-01 6.17622785e-01 output-nonlinear_channel_flow_tractions_dc_picard_Stokes_GMG/solution/solution-00000 

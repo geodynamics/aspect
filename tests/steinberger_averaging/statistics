@@ -21,4 +21,4 @@
 # 21: Outward heat flux through boundary with indicator 1 ("top") (W)
 # 22: Outward heat flux through boundary with indicator 2 ("left") (W)
 # 23: Outward heat flux through boundary with indicator 3 ("right") (W)
-0 0.000000000000e+00 0.000000000000e+00 12 151 65 65 0 0 13 15 15 output-steinberger_averaging/solution/solution-00000 1.38312843e-07 2.15689016e-07 2.73000000e+02 1.96584831e+03 4.25000000e+03 4.25659620e-01 -8.74648065e+04 1.09753057e+05 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 12 151 65 65 0 0 14 15 15 output-steinberger_averaging/solution/solution-00000 1.38312843e-07 2.15689016e-07 2.73000000e+02 1.96584831e+03 4.25000000e+03 4.25659620e-01 -8.74648065e+04 1.09753057e+05 0.00000000e+00 0.00000000e+00 

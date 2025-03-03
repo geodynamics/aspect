@@ -15,5 +15,5 @@
 # 15: Minimal value for composition C_1
 # 16: Maximal value for composition C_1
 # 17: Global mass for composition C_1
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 576 0 16 18 116 output-particle_interpolator_quadratic_least_squares_2d_periodic/solution/solution-00000 10000 output-particle_interpolator_quadratic_least_squares_2d_periodic/particles/particles-00000 0.00000000e+00 9.99999078e-01 1.82597968e-01 
-1 7.000000000000e+01 7.000000000000e+01 64 659 289 576 0 16 18 128                                                                                       "" 10000 output-particle_interpolator_quadratic_least_squares_2d_periodic/particles/particles-00001 0.00000000e+00 9.99999868e-01 1.81337853e-01 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 576 0 17 18 116 output-particle_interpolator_quadratic_least_squares_2d_periodic/solution/solution-00000 10000 output-particle_interpolator_quadratic_least_squares_2d_periodic/particles/particles-00000 0.00000000e+00 9.99999078e-01 1.82597968e-01 
+1 7.000000000000e+01 7.000000000000e+01 64 659 289 576 0 17 18 128                                                                                       "" 10000 output-particle_interpolator_quadratic_least_squares_2d_periodic/particles/particles-00001 0.00000000e+00 9.99999868e-01 1.81337853e-01 

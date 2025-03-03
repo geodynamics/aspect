@@ -15,4 +15,4 @@
 # 15: Average viscosity (Pa s)
 # 16: Total mass (kg)
 # 17: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 1 0 0 4294967295 0 0 3.19836000e+03 3.17247822e+22 3.19836000e+13 output-hk04_olivine_composite_hydration_prefactor_cutoff/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 1 0 0 0 0 0 3.19836000e+03 3.17247822e+22 3.19836000e+13 output-hk04_olivine_composite_hydration_prefactor_cutoff/solution/solution-00000 

@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 7 9 9 output-random_perturbation_box/solution/solution-00000 4.81899926e+02 5.00927211e+02 5.21733805e+02 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 8 9 9 output-random_perturbation_box/solution/solution-00000 4.81899926e+02 5.00927211e+02 5.21733805e+02 

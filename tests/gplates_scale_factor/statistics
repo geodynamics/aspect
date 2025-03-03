@@ -17,4 +17,4 @@
 # 17: Outward heat flux through boundary with indicator 0 ("bottom") (W)
 # 18: Outward heat flux through boundary with indicator 1 ("top") (W)
 # 19: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 0 33 35 35 5.36055619e-02 1.53551842e-01 2.73000000e+02 1.57868329e+03 2.60000000e+03 5.61101541e-01 -5.04566531e+05 1.20303836e+06 output-gplates_scale_factor/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 0 34 35 35 5.36055619e-02 1.53551842e-01 2.73000000e+02 1.57868329e+03 2.60000000e+03 5.61101541e-01 -5.04566531e+05 1.20303836e+06 output-gplates_scale_factor/solution/solution-00000 

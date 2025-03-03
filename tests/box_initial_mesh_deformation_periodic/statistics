@@ -13,4 +13,4 @@
 # 13: Max. velocity (m/year)
 # 14: Minimum topography (m)
 # 15: Maximum topography (m)
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 7 9 29 output-box_initial_mesh_deformation_periodic/solution/solution-00000 2.44104318e-10 9.73945986e-10 -2.00000000e+04 2.00000000e+04 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 8 9 29 output-box_initial_mesh_deformation_periodic/solution/solution-00000 2.44104846e-10 9.73947206e-10 -2.00000000e+04 2.00000000e+04 

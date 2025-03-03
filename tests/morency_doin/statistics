@@ -11,4 +11,4 @@
 # 11: Iterations for Stokes solver
 # 12: Velocity iterations in Stokes preconditioner
 # 13: Schur complement iterations in Stokes preconditioner
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 8450 0 0 0 25 27 27 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 8450 0 0 0 26 27 27 

@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 3072 28608 12672 0 14 16 16 output-random_perturbation_spherical_shell/solution/solution-00000 4.76701616e+02 4.99411300e+02 5.20058384e+02 
+0 0.000000000000e+00 0.000000000000e+00 3072 28608 12672 0 15 16 16 output-random_perturbation_spherical_shell/solution/solution-00000 4.76701616e+02 4.99411300e+02 5.20058384e+02 

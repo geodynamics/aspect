@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 12 14 14 output-random_perturbation_chunk/solution/solution-00000 4.75417997e+02 4.98884133e+02 5.16792898e+02 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 13 14 14 output-random_perturbation_chunk/solution/solution-00000 4.75417997e+02 4.98884133e+02 5.16792898e+02 

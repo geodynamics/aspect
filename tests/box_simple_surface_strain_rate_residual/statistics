@@ -13,4 +13,4 @@
 # 13: RMS strain rate invariant residual on boundary with indicator 5 ("top") (1/s)
 # 14: Visualization file name
 # 15: Surface visualization file name
-0 0.000000000000e+00 0.000000000000e+00 512 15468 4913 1 14 16 16 4.78650940e-06 1.30885315e-06 1.99100323e-06 output-box_simple_surface_strain_rate_residual/solution/solution-00000 output-box_simple_surface_strain_rate_residual/solution_surface/solution_surface-00000 
+0 0.000000000000e+00 0.000000000000e+00 512 15468 4913 1 15 16 16 4.78650940e-06 1.30885315e-06 1.99100323e-06 output-box_simple_surface_strain_rate_residual/solution/solution-00000 output-box_simple_surface_strain_rate_residual/solution_surface/solution_surface-00000 

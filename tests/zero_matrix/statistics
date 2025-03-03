@@ -15,4 +15,4 @@
 # 15: Visualization file name
 # 16: RMS velocity (m/year)
 # 17: Max. velocity (m/year)
-0 0.000000000000e+00 0.000000000000e+00 1000 9553 4221 8442 4 0 0 0 920 935 935 output-zero_matrix/solution/solution-00000 1.01711111e-02 1.03408802e-02 
+0 0.000000000000e+00 0.000000000000e+00 1000 9553 4221 8442 4 0 0 0 924 935 935 output-zero_matrix/solution/solution-00000 1.01711111e-02 1.03408802e-02 
