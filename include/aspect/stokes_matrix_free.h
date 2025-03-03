@@ -23,8 +23,10 @@
 #define _aspect_stokes_matrix_free_h
 
 #include <aspect/global.h>
+#include <aspect/plugins.h>
 
 #include <aspect/simulator.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/matrix_free/matrix_free.h>
 #include <deal.II/matrix_free/operators.h>
@@ -400,14 +402,9 @@ namespace aspect
    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
    */
   template <int dim>
-  class StokesMatrixFreeHandler
+  class StokesMatrixFreeHandler: public SimulatorAccess<dim>, public Plugins::InterfaceBase
   {
     public:
-      /**
-       * virtual Destructor.
-       */
-      virtual ~StokesMatrixFreeHandler() = default;
-
       /**
        * Solves the Stokes linear system using the matrix-free
        * solver.
@@ -442,7 +439,7 @@ namespace aspect
       virtual void build_preconditioner()=0;
 
       /**
-       * Declare parameters.
+       * Declare parameters necessary for this solver.
        */
       static
       void declare_parameters (ParameterHandler &prm);
@@ -518,17 +515,22 @@ namespace aspect
   {
     public:
       /**
-       * Initialize this class, allowing it to read in
-       * relevant parameters as well as giving it a reference to the
+       * Constructor. Give it a reference to the
        * Simulator that owns it, since it needs to make fairly extensive
        * changes to the internals of the simulator.
        */
-      StokesMatrixFreeHandlerImplementation(Simulator<dim> &, ParameterHandler &prm);
+      StokesMatrixFreeHandlerImplementation(Simulator<dim> &simulator,
+                                            const Parameters<dim> &parameters);
 
       /**
        * Destructor.
        */
       ~StokesMatrixFreeHandlerImplementation() override = default;
+
+      /**
+       * Initialize the matrix-free solver.
+       */
+      void initialize() override;
 
       /**
        * Solves the Stokes linear system using the matrix-free
@@ -563,10 +565,15 @@ namespace aspect
       void build_preconditioner() override;
 
       /**
-       * Declare parameters. (No actual parameters at the moment).
+       * Declare parameters.
        */
       static
       void declare_parameters (ParameterHandler &prm);
+
+      /**
+       * Parse parameters.
+       */
+      void parse_parameters (ParameterHandler &prm) override;
 
       /**
        * Return a reference to the DoFHandler that is used for velocity in
@@ -625,11 +632,6 @@ namespace aspect
       std::size_t get_cell_data_memory_consumption() const override;
 
     private:
-      /**
-       * Parse parameters.
-       */
-      void parse_parameters (ParameterHandler &prm);
-
       /**
        * Evaluate the MaterialModel to query information like the viscosity and
        * project this viscosity to the multigrid hierarchy. Also queries
