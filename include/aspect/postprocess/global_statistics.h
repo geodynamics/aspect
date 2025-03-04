@@ -128,16 +128,16 @@ namespace aspect
          * A container that stores the advection solver history of the current
          * timestep, until it is written into the statistics object
          * upon the call to execute(). It is cleared after writing
-         * the content. The vector contains pairs, which consist
-         * of a column name (for the temperature or one of the
-         * compositional fields), and a vector of SolverControl
-         * objects (one per nonlinear iteration for this particular
+         * the content. The map contains pairs, which consist
+         * of a unique field index (for the temperature or one of the
+         * compositional fields), and a vector of number of iterations
+         * (one number per nonlinear iteration for this particular
          * field). This layout allows storing varying numbers of
          * nonlinear iterations for temperature and compositional fields
          * (if any nonlinear solver scheme would implement that at
          * some point).
          */
-        std::vector<std::pair<std::string, std::vector<unsigned int>>> advection_iterations;
+        std::map<unsigned int, std::vector<unsigned int>> advection_iterations;
 
         /**
          * Whether to put every nonlinear iteration into a separate

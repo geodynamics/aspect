@@ -15,8 +15,8 @@
 # 15: Global mass for composition grain_size
 # 16: Number of advected particles
 # 17: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 264 2803 1241 1241 0 30 32 160 output-grain_size_crossed_transition/solution/solution-00000 2.00000000e-03 2.00000000e-03 6.00000000e+07 10000 output-grain_size_crossed_transition/particles/particles-00000 
-1 3.221888105682e+03 3.221888105682e+03 264 2803 1241 1241 0 24 26 130 output-grain_size_crossed_transition/solution/solution-00001 1.35000000e-03 2.00000000e-03 5.94221251e+07  9877 output-grain_size_crossed_transition/particles/particles-00001 
-2 6.439327373120e+03 3.217439267438e+03 264 2803 1241 1241 0 28 30 150 output-grain_size_crossed_transition/solution/solution-00002 1.00000000e-03 2.00000000e-03 5.87878710e+07  9750 output-grain_size_crossed_transition/particles/particles-00002 
-3 9.649238592234e+03 3.209911219114e+03 264 2803 1241 1241 0 28 30 150 output-grain_size_crossed_transition/solution/solution-00003 1.00000000e-03 2.00000000e-03 5.82190312e+07  9604 output-grain_size_crossed_transition/particles/particles-00003 
-4 1.000000000000e+04 3.507614077663e+02 264 2803 1241 1241 0 23 25 125 output-grain_size_crossed_transition/solution/solution-00004 1.00000000e-03 2.00000000e-03 5.81477550e+07  9593 output-grain_size_crossed_transition/particles/particles-00004 
+0 0.000000000000e+00 0.000000000000e+00 264 2803 1241 1241 0 31 32 160 output-grain_size_crossed_transition/solution/solution-00000 2.00000000e-03 2.00000000e-03 6.00000000e+07 10000 output-grain_size_crossed_transition/particles/particles-00000 
+1 3.221888105682e+03 3.221888105682e+03 264 2803 1241 1241 0 25 26 130 output-grain_size_crossed_transition/solution/solution-00001 1.35000000e-03 2.00000000e-03 5.94221251e+07  9877 output-grain_size_crossed_transition/particles/particles-00001 
+2 6.439327373120e+03 3.217439267438e+03 264 2803 1241 1241 0 29 30 150 output-grain_size_crossed_transition/solution/solution-00002 1.00000000e-03 2.00000000e-03 5.87878710e+07  9750 output-grain_size_crossed_transition/particles/particles-00002 
+3 9.649238592234e+03 3.209911219114e+03 264 2803 1241 1241 0 29 30 150 output-grain_size_crossed_transition/solution/solution-00003 1.00000000e-03 2.00000000e-03 5.82190312e+07  9604 output-grain_size_crossed_transition/particles/particles-00003 
+4 1.000000000000e+04 3.507614077663e+02 264 2803 1241 1241 0 24 25 125 output-grain_size_crossed_transition/solution/solution-00004 1.00000000e-03 2.00000000e-03 5.81477550e+07  9593 output-grain_size_crossed_transition/particles/particles-00004 

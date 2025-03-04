@@ -15,5 +15,5 @@
 # 15: Schur complement iterations in Stokes preconditioner
 # 16: Visualization file name
 # 17: Surface visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 4356 0  0  0  0  0         10 12 12 output-stress_vs_surface_stress/solution/solution-00000 output-stress_vs_surface_stress/solution_surface/solution_surface-00000 
-1 2.500000000000e-02 2.500000000000e-02 256 2467 1089 4356 0 11 13 13 11 4294967295  0  0                                                      ""                                                                      "" 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 4356 0  0  0  0  0 11 12 12 output-stress_vs_surface_stress/solution/solution-00000 output-stress_vs_surface_stress/solution_surface/solution_surface-00000 
+1 2.500000000000e-02 2.500000000000e-02 256 2467 1089 4356 0 11 13 13 11  0  0  0                                                      ""                                                                      "" 

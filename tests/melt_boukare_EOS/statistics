@@ -10,4 +10,4 @@
 # 10: Velocity iterations in Stokes preconditioner
 # 11: Schur complement iterations in Stokes preconditioner
 # 12: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 4 59 25 75 1 6 8 44 output-melt_boukare_EOS/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 75 1 7 8 44 output-melt_boukare_EOS/solution/solution-00000 

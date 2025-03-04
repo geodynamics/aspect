@@ -22,4 +22,4 @@
 # 22: Average density (kg/m^3)
 # 23: Average viscosity (Pa s)
 # 24: Total mass (kg)
-0 0.000000000000e+00 0.000000000000e+00 256 2507 297 1105 10 0 160 516 2515 1.87695049e-11 2.05167474e-11 5.40000000e-04 5.40000000e-04 0.00000000e+00 -1.08002661e-03 output-gs_drucker_prager_extension_adiabatic/solution/solution-00000 10000 output-gs_drucker_prager_extension_adiabatic/particles/particles-00000 2.70000000e+03 1.95959845e+25 1.08000000e+12 
+0 0.000000000000e+00 0.000000000000e+00 256 2507 297 1105 10 0 170 516 2515 1.87695049e-11 2.05167474e-11 5.40000000e-04 5.40000000e-04 0.00000000e+00 -1.08002661e-03 output-gs_drucker_prager_extension_adiabatic/solution/solution-00000 10000 output-gs_drucker_prager_extension_adiabatic/particles/particles-00000 2.70000000e+03 1.95959845e+25 1.08000000e+12 

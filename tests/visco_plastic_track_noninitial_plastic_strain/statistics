@@ -19,5 +19,5 @@
 # 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 20: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
 # 21: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 882 1 0  0  0 6 40 8 4.08254715e-04 6.91027782e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_track_noninitial_plastic_strain/solution/solution-00000 
-1 1.000000000000e+03 1.000000000000e+03 100 1003 441 882 1 0 10 11 5 37 7 4.08271783e-04 6.90827480e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_track_noninitial_plastic_strain/solution/solution-00001 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 882 1 0  0  0 7 40 8 4.08254715e-04 6.91027782e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_track_noninitial_plastic_strain/solution/solution-00000 
+1 1.000000000000e+03 1.000000000000e+03 100 1003 441 882 1 0 10 11 6 37 7 4.08271783e-04 6.90827480e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_track_noninitial_plastic_strain/solution/solution-00001 

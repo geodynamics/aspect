@@ -16,4 +16,4 @@
 # 16: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 17: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
 # 18: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 1 0 7 47 9 4.08252829e-04 6.91169792e-04 1.57608000e+05 1.57608000e+05 -1.57608000e+05 -1.57608000e+05 output-visco_plastic_adiabatic_pressure_in_viscous_creep/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 1 0 8 47 9 4.08252829e-04 6.91169792e-04 1.57608000e+05 1.57608000e+05 -1.57608000e+05 -1.57608000e+05 output-visco_plastic_adiabatic_pressure_in_viscous_creep/solution/solution-00000 

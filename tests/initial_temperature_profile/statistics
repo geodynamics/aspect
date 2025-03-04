@@ -13,4 +13,4 @@
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
 # 15: Average nondimensional temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 24 972 305 0 22 24 24 output-initial_temperature_profile/solution/solution-00000 3.00000000e+02 2.29261981e+03 3.96846847e+03 5.28126109e-01 
+0 0.000000000000e+00 0.000000000000e+00 24 972 305 0 23 24 24 output-initial_temperature_profile/solution/solution-00000 3.00000000e+02 2.29261981e+03 3.96846847e+03 5.28126109e-01 

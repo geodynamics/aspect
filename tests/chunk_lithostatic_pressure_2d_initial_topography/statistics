@@ -16,4 +16,4 @@
 # 16: Average pressure (Pa)
 # 17: Maximal pressure (Pa)
 # 18: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 4 59 25 25 0 8 12 14 14 2.60602873e-01 4.00858920e-01 -2.13911421e+09 3.92749581e+10 9.24872297e+10 output-chunk_lithostatic_pressure_2d_initial_topography/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 25 0 8 13 14 14 2.60602873e-01 4.00858920e-01 -2.13911421e+09 3.92749581e+10 9.24872297e+10 output-chunk_lithostatic_pressure_2d_initial_topography/solution/solution-00000 

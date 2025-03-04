@@ -13,28 +13,28 @@
 # 13: Visualization file name
 # 14: Number of advected particles
 # 15: Particle file name
- 0 0.000000000000e+00 0.000000000000e+00 128 1275 561 1122  0  0         10 12 12 output-time_stepping_repeat_particles/solution/solution-00000 63 output-time_stepping_repeat_particles/particles/particles-00000 
- 1 6.250000000000e-02 6.250000000000e-02 128 1275 561 1122 15 11          5  7  7                                                            "" 63                                                              "" 
- 2 1.250000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5 output-time_stepping_repeat_particles/solution/solution-00001 63 output-time_stepping_repeat_particles/particles/particles-00001 
- 3 1.875000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5                                                            "" 63                                                              "" 
- 4 2.500000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5 output-time_stepping_repeat_particles/solution/solution-00002 63 output-time_stepping_repeat_particles/particles/particles-00002 
- 5 3.125000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5 output-time_stepping_repeat_particles/solution/solution-00003 63 output-time_stepping_repeat_particles/particles/particles-00003 
- 6 3.750000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5                                                            "" 63                                                              "" 
- 7 4.375000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5 output-time_stepping_repeat_particles/solution/solution-00004 63 output-time_stepping_repeat_particles/particles/particles-00004 
- 8 5.000000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5 output-time_stepping_repeat_particles/solution/solution-00005 63 output-time_stepping_repeat_particles/particles/particles-00005 
- 9 5.625000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14          3  5  5                                                            "" 63                                                              "" 
-10 6.250000000000e-01 6.250000000000e-02 128 1275 561 1122 13 14          3  5  5 output-time_stepping_repeat_particles/solution/solution-00006 63 output-time_stepping_repeat_particles/particles/particles-00006 
-11 6.875000000000e-01 6.250000000000e-02 128 1275 561 1122 13 14          3  5  5                                                            "" 63                                                              "" 
-12 7.187500000000e-01 3.125000000000e-02 128 1275 561 1122 23 24         13 17 17 output-time_stepping_repeat_particles/solution/solution-00007 63 output-time_stepping_repeat_particles/particles/particles-00007 
-13 7.346875000000e-01 1.593750000000e-02 128 1275 561 1122 19 19         12 16 16                                                            "" 63                                                              "" 
-14 7.428156250000e-01 8.128125000000e-03 128 1275 561 1122 17 17         11 15 15                                                            "" 63                                                              "" 
-15 7.469609687500e-01 4.145343750000e-03 128 1275 561 1122 16 16          9 12 12                                                            "" 63                                                              "" 
-16 7.490750940625e-01 2.114125312500e-03 128 1275 561 1122 14 15         11 15 15                                                            "" 63                                                              "" 
-17 7.512315018813e-01 2.156407818750e-03 128 1275 561 1122  7  7         10 12 12                                                            "" 63                                                              "" 
-18 7.518565018813e-01 6.250000000000e-04 128 1275 561 1122 20 21         10 12 12                                                            "" 63                                                              "" 
-19 7.524815018813e-01 6.250000000000e-04 128 1275 561 1122 14 15          1  3  3                                                            "" 63                                                              "" 
-20 7.531065018813e-01 6.250000000000e-04 128 1275 561 1122 14 15          1  3  3                                                            "" 63                                                              "" 
-21 7.537315018813e-01 6.250000000000e-04 128 1275 561 1122 13 15          1  3  3                                                            "" 63                                                              "" 
-22 7.543565018813e-01 6.250000000000e-04 128 1275 561 1122 13 15          1  3  3                                                            "" 63                                                              "" 
-23 7.549815018813e-01 6.250000000000e-04 128 1275 561 1122 13 14          1  3  3                                                            "" 63                                                              "" 
-24 7.550000000000e-01 1.849811874999e-05 128 1275 561 1122  8  8 4294967295  0  0                                                            "" 63                                                              "" 
+ 0 0.000000000000e+00 0.000000000000e+00 128 1275 561 1122  0  0 11 12 12 output-time_stepping_repeat_particles/solution/solution-00000 63 output-time_stepping_repeat_particles/particles/particles-00000 
+ 1 6.250000000000e-02 6.250000000000e-02 128 1275 561 1122 15 11  6  7  7                                                            "" 63                                                              "" 
+ 2 1.250000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5 output-time_stepping_repeat_particles/solution/solution-00001 63 output-time_stepping_repeat_particles/particles/particles-00001 
+ 3 1.875000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5                                                            "" 63                                                              "" 
+ 4 2.500000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5 output-time_stepping_repeat_particles/solution/solution-00002 63 output-time_stepping_repeat_particles/particles/particles-00002 
+ 5 3.125000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5 output-time_stepping_repeat_particles/solution/solution-00003 63 output-time_stepping_repeat_particles/particles/particles-00003 
+ 6 3.750000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5                                                            "" 63                                                              "" 
+ 7 4.375000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5 output-time_stepping_repeat_particles/solution/solution-00004 63 output-time_stepping_repeat_particles/particles/particles-00004 
+ 8 5.000000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5 output-time_stepping_repeat_particles/solution/solution-00005 63 output-time_stepping_repeat_particles/particles/particles-00005 
+ 9 5.625000000000e-01 6.250000000000e-02 128 1275 561 1122 14 14  4  5  5                                                            "" 63                                                              "" 
+10 6.250000000000e-01 6.250000000000e-02 128 1275 561 1122 13 14  4  5  5 output-time_stepping_repeat_particles/solution/solution-00006 63 output-time_stepping_repeat_particles/particles/particles-00006 
+11 6.875000000000e-01 6.250000000000e-02 128 1275 561 1122 13 14  4  5  5                                                            "" 63                                                              "" 
+12 7.187500000000e-01 3.125000000000e-02 128 1275 561 1122 23 24 15 17 17 output-time_stepping_repeat_particles/solution/solution-00007 63 output-time_stepping_repeat_particles/particles/particles-00007 
+13 7.346875000000e-01 1.593750000000e-02 128 1275 561 1122 19 19 14 16 16                                                            "" 63                                                              "" 
+14 7.428156250000e-01 8.128125000000e-03 128 1275 561 1122 17 17 13 15 15                                                            "" 63                                                              "" 
+15 7.469609687500e-01 4.145343750000e-03 128 1275 561 1122 16 16 11 12 12                                                            "" 63                                                              "" 
+16 7.490750940625e-01 2.114125312500e-03 128 1275 561 1122 14 15 13 15 15                                                            "" 63                                                              "" 
+17 7.512315018813e-01 2.156407818750e-03 128 1275 561 1122  7  7 11 12 12                                                            "" 63                                                              "" 
+18 7.518565018813e-01 6.250000000000e-04 128 1275 561 1122 20 21 11 12 12                                                            "" 63                                                              "" 
+19 7.524815018813e-01 6.250000000000e-04 128 1275 561 1122 14 15  2  3  3                                                            "" 63                                                              "" 
+20 7.531065018813e-01 6.250000000000e-04 128 1275 561 1122 14 15  2  3  3                                                            "" 63                                                              "" 
+21 7.537315018813e-01 6.250000000000e-04 128 1275 561 1122 13 15  2  3  3                                                            "" 63                                                              "" 
+22 7.543565018813e-01 6.250000000000e-04 128 1275 561 1122 13 15  2  3  3                                                            "" 63                                                              "" 
+23 7.549815018813e-01 6.250000000000e-04 128 1275 561 1122 13 14  2  3  3                                                            "" 63                                                              "" 
+24 7.550000000000e-01 1.849811874999e-05 128 1275 561 1122  8  8  0  0  0                                                            "" 63                                                              "" 

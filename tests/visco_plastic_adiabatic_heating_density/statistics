@@ -17,4 +17,4 @@
 # 17: Maximal temperature (K)
 # 18: Average nondimensional temperature (K)
 # 19: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 1 22 9 1 0 2 4 4 3.30000000e+03 1.00000000e+21 3.30000000e+13 1.57300000e+03 1.57930879e+03 1.58563442e+03 1.67208772e-03 output-visco_plastic_adiabatic_heating_density/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 1 0 3 4 4 3.30000000e+03 1.00000000e+21 3.30000000e+13 1.57300000e+03 1.57930879e+03 1.58563442e+03 1.67208772e-03 output-visco_plastic_adiabatic_heating_density/solution/solution-00000 

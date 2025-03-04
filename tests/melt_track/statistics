@@ -19,4 +19,4 @@
 # 19: Global mass for composition porosity
 # 20: RMS velocity (m/year)
 # 21: Max. velocity (m/year)
-0 0.000000000000e+00 0.000000000000e+00 640 6583 2889 2889 2 0 0 9 54 244 3 output-melt_track/particles/particles-00000 output-melt_track/solution/solution-00000 1.00000000e-03 1.00000000e-02 1.32970963e+01 1.66058237e-04 1.67158942e-04 
+0 0.000000000000e+00 0.000000000000e+00 640 6583 2889 2889 2 0 0 11 54 244 3 output-melt_track/particles/particles-00000 output-melt_track/solution/solution-00000 1.00000000e-03 1.00000000e-02 1.32970963e+01 1.66058237e-04 1.67158942e-04 

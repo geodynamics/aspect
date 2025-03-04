@@ -9,4 +9,4 @@
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 4 59 25 0 7 9 9 output-geometric_average_only_viscosity/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 0 8 9 9 output-geometric_average_only_viscosity/solution/solution-00000 

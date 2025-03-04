@@ -88,8 +88,20 @@ namespace aspect
     {
       list_of_S_iterations.push_back(number_S_iterations);
       list_of_A_iterations.push_back(number_A_iterations);
-      stokes_iterations_cheap.push_back(solver_control_cheap.last_step());
-      stokes_iterations_expensive.push_back(solver_control_expensive.last_step());
+
+      // If the solver was skipped, then the solver control
+      // object stores an invalid number of iterations. However, it
+      // is equally true and more intuitive to say that in this case
+      // the solver did not need to do any iterations.
+      if (solver_control_cheap.last_step() == numbers::invalid_unsigned_int)
+        stokes_iterations_cheap.push_back(0);
+      else
+        stokes_iterations_cheap.push_back(solver_control_cheap.last_step());
+
+      if (solver_control_expensive.last_step() == numbers::invalid_unsigned_int)
+        stokes_iterations_expensive.push_back(0);
+      else
+        stokes_iterations_expensive.push_back(solver_control_expensive.last_step());
     }
 
 
@@ -100,21 +112,19 @@ namespace aspect
                                                           const unsigned int compositional_index,
                                                           const SolverControl &solver_control)
     {
-      const std::string column_name = (solved_temperature_field) ?
-                                      "Iterations for temperature solver"
-                                      :
-                                      "Iterations for composition solver " + Utilities::int_to_string(compositional_index+1);
+      const unsigned int column_position = (solved_temperature_field) ?
+                                           0 :
+                                           compositional_index+1;
 
-      unsigned int column_position = numbers::invalid_unsigned_int;
-
-      for (unsigned int i=0; i<advection_iterations.size(); ++i)
-        if (column_name == advection_iterations[i].first)
-          column_position = i;
-
-      if (column_position == numbers::invalid_unsigned_int)
-        advection_iterations.emplace_back(column_name,std::vector<unsigned int>(1,solver_control.last_step()));
+      // If the solver was not called (e.g. the field
+      // was computed by the material model), then the solver control
+      // object stores an invalid number of iterations. However, it
+      // is equally true and more intuitive to say that in this case
+      // the solver did not need to do any iterations.
+      if (solver_control.last_step() == numbers::invalid_unsigned_int)
+        advection_iterations[column_position].push_back(0);
       else
-        advection_iterations[column_position].second.push_back(solver_control.last_step());
+        advection_iterations[column_position].push_back(solver_control.last_step());
     }
 
 
@@ -144,8 +154,15 @@ namespace aspect
 
             for (const auto &advection_iteration : advection_iterations)
               if (iteration < advection_iteration.second.size())
-                statistics.add_value(advection_iteration.first,
-                                     advection_iteration.second[iteration]);
+                {
+                  const std::string column_name = (advection_iteration.first == 0) ?
+                                                  "Iterations for temperature solver"
+                                                  :
+                                                  "Iterations for composition solver " + Utilities::int_to_string(advection_iteration.first);
+
+                  statistics.add_value(column_name,
+                                       advection_iteration.second[iteration]);
+                }
 
             if (iteration < stokes_iterations_cheap.size())
               {
@@ -169,9 +186,14 @@ namespace aspect
 
           for (unsigned int iteration = 0; iteration < nonlinear_iterations; ++iteration)
             {
-              for (unsigned int column=0; column<advection_iterations.size(); ++column)
-                if (iteration < advection_iterations[column].second.size())
-                  advection_outer_iterations[column] += advection_iterations[column].second[iteration];
+              unsigned int column = 0;
+              for (const auto &field_index_and_iterations : advection_iterations)
+                {
+                  if (iteration < field_index_and_iterations.second.size())
+                    advection_outer_iterations[column] += field_index_and_iterations.second[iteration];
+
+                  ++column;
+                }
 
               if (iteration < stokes_iterations_cheap.size())
                 {
@@ -191,9 +213,18 @@ namespace aspect
 
           // Only output statistics columns if the solver actually signaled at least one
           // successful solve. Some solver schemes might need no advection or Stokes solver
-          for (unsigned int column=0; column<advection_iterations.size(); ++column)
-            statistics.add_value(advection_iterations[column].first,
-                                 advection_outer_iterations[column]);
+          unsigned int column = 0;
+          for (const auto &field_index_and_iterations : advection_iterations)
+            {
+              const std::string column_name = (field_index_and_iterations.first == 0) ?
+                                              "Iterations for temperature solver"
+                                              :
+                                              "Iterations for composition solver " + Utilities::int_to_string(field_index_and_iterations.first);
+
+              statistics.add_value(column_name,
+                                   advection_outer_iterations[column]);
+              ++column;
+            }
 
           // Note that even if no cheap solver iterations were done, the solver control
           // object is still stored, so this line works in that case as well.

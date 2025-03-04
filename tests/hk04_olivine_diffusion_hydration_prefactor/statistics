@@ -16,4 +16,4 @@
 # 16: Average viscosity (Pa s)
 # 17: Total mass (kg)
 # 18: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 882 1 0 0 0 4294967295 0 0 3.14061000e+03 2.46210138e+23 3.14061000e+13 output-hk04_olivine_diffusion_hydration_prefactor/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 882 1 0 0 0 0 0 0 3.14061000e+03 2.46210138e+23 3.14061000e+13 output-hk04_olivine_diffusion_hydration_prefactor/solution/solution-00000 

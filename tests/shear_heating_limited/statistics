@@ -11,4 +11,4 @@
 # 11: Average shear heating rate (W/kg)
 # 12: Total shear heating rate (W)
 # 13: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 0 2 5 5.00000000e-01 5.00000000e-01 output-shear_heating_limited/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 1 2 5 5.00000000e-01 5.00000000e-01 output-shear_heating_limited/solution/solution-00000 

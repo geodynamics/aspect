@@ -20,4 +20,4 @@
 # 20: Outward heat flux through boundary with indicator 1 ("right") (W)
 # 21: Outward heat flux through boundary with indicator 2 ("bottom") (W)
 # 22: Outward heat flux through boundary with indicator 3 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 3 0 86 92 273 output-periodic_compressible/solution/solution-00000 4.12865921e-03 6.23699087e-03 2.73000000e+02 1.62186269e+03 3.77300000e+03 3.85389341e-01 4.28501304e+04 -4.28501304e+04 -3.29934227e+05 1.69745572e+05 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 3 0 89 92 273 output-periodic_compressible/solution/solution-00000 4.12865921e-03 6.23699087e-03 2.73000000e+02 1.62186269e+03 3.77300000e+03 3.85389341e-01 4.28501304e+04 -4.28501304e+04 -3.29934227e+05 1.69745572e+05 

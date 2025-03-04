@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 4294967295 7 9 9 output-prescribed_field_temperature/solution/solution-00000 0.00000000e+00 5.00000000e-01 1.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 0 8 9 9 output-prescribed_field_temperature/solution/solution-00000 0.00000000e+00 5.00000000e-01 1.00000000e+00 

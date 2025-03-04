@@ -12,4 +12,4 @@
 # 12: Minimal temperature (K)
 # 13: Average temperature (K)
 # 14: Maximal temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 400 4613 2005 152 72 74 74 output-prescribed_temperature_with_diffusion/solution/solution-00000 1.90639024e-14 1.25331414e-01 9.52987448e-01 
+0 0.000000000000e+00 0.000000000000e+00 400 4613 2005 152 73 74 74 output-prescribed_temperature_with_diffusion/solution/solution-00000 1.90639024e-14 1.25331414e-01 9.52987448e-01 

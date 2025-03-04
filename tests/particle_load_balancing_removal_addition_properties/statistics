@@ -12,7 +12,7 @@
 # 12: Schur complement iterations in Stokes preconditioner
 # 13: Number of advected particles
 # 14: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 10 12 12 107 output-particle_load_balancing_removal_addition_properties/particles/particles-00000 
-1 2.484857000682e+02 2.484857000682e+02 10 132 57 57 0 8 23 25 25  70                                                                                   "" 
-2 4.562363965908e+02 2.077506965226e+02 10 132 57 57 0 8 12 14 14  74                                                                                   "" 
-3 5.000000000000e+02 4.376360340925e+01 10 132 57 57 0 8 11 13 13  75 output-particle_load_balancing_removal_addition_properties/particles/particles-00001 
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 81 0 0 11 12 12 107 output-particle_load_balancing_removal_addition_properties/particles/particles-00000 
+1 2.484857000682e+02 2.484857000682e+02 10 132 57 57 0 8 24 25 25  70                                                                                   "" 
+2 4.562363965908e+02 2.077506965226e+02 10 132 57 57 0 8 13 14 14  74                                                                                   "" 
+3 5.000000000000e+02 4.376360340925e+01 10 132 57 57 0 8 12 13 13  75 output-particle_load_balancing_removal_addition_properties/particles/particles-00001 

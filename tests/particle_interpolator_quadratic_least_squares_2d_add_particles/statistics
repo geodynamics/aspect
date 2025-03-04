@@ -10,4 +10,4 @@
 # 10: Velocity iterations in Stokes preconditioner
 # 11: Schur complement iterations in Stokes preconditioner
 # 12: Number of advected particles
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 18432 0 17 19 19 10240 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 18432 0 18 19 19 10240 

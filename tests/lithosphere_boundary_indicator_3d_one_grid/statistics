@@ -16,4 +16,4 @@
 # 16: Average pressure (Pa)
 # 17: Maximal pressure (Pa)
 # 18: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 128 4356 1377 1377 0 0 19 21 21 4.38998750e-03 9.99335854e-03 -5.57372897e+05 9.85655470e+09 1.97534996e+10 output-lithosphere_boundary_indicator_3d_one_grid/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 128 4356 1377 1377 0 0 20 21 21 4.38998750e-03 9.99335854e-03 -5.57372897e+05 9.85655470e+09 1.97534996e+10 output-lithosphere_boundary_indicator_3d_one_grid/solution/solution-00000 

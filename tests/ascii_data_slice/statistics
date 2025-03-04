@@ -13,4 +13,4 @@
 # 13: RMS velocity (m/year)
 # 14: Max. velocity (m/year)
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 3264 0 4294967295 10 12 12 1.04754312e-05 2.47217390e-05 output-ascii_data_slice/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 3264 0 0 11 12 12 1.04754366e-05 2.47217427e-05 output-ascii_data_slice/solution/solution-00000 
