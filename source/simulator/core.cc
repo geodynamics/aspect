@@ -432,15 +432,18 @@ namespace aspect
         switch (parameters.stokes_velocity_degree)
           {
             case 2:
-              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, prm);
+              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, parameters);
               break;
             case 3:
-              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, prm);
+              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, parameters);
               break;
             default:
               AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
           }
 
+        stokes_matrix_free->initialize_simulator(*this);
+        stokes_matrix_free->parse_parameters(prm);
+        stokes_matrix_free->initialize();
       }
 
     postprocess_manager.initialize_simulator (*this);
