@@ -427,18 +427,23 @@ namespace aspect
         p_eval.reinit(cell);
         p_eval.gather_evaluate(src.block(1), EvaluationFlags::values);
 
-        // Store the symmetric gradients of the velocity field and the
-        // values of the pressure field
-        AlignedVector<SymmetricTensor<2,dim,VectorizedArray<number>>> sym_grad_u;
-        AlignedVector<VectorizedArray<number>> val_p;
+        // factors related with Newton derivatives
+        VectorizedArray<number> deta_deps_times_sym_grad_u(0.);
+        VectorizedArray<number> eps_times_sym_grad_u(0.);
+        VectorizedArray<number> deta_dp_times_p(0.);
         if (cell_data->enable_newton_derivatives)
           {
-            sym_grad_u.resize(u_eval.n_q_points);
-            val_p.resize(u_eval.n_q_points);
-            for (const unsigned int r : u_eval.quadrature_point_indices())
+            SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u;
+            VectorizedArray<number> val_p;
+            for (const unsigned int q : u_eval.quadrature_point_indices())
               {
-                sym_grad_u[r] = u_eval.get_symmetric_gradient(r);
-                val_p[r]      = p_eval.get_value(r);
+                sym_grad_u = u_eval.get_symmetric_gradient(q);
+                val_p      = p_eval.get_value(q);
+                deta_deps_times_sym_grad_u += cell_data->newton_factor_wrt_strain_rate_table(cell,q)
+                                              * sym_grad_u;
+                deta_dp_times_p += cell_data->newton_factor_wrt_pressure_table(cell,q) * val_p;
+                if (cell_data->symmetrize_newton_system)
+                  eps_times_sym_grad_u += cell_data->strain_rate_table(cell,q) * sym_grad_u;
               }
           }
 
@@ -449,48 +454,34 @@ namespace aspect
               viscosity_x_2 = 2. * cell_data->viscosity(cell,q);
 
             const SymmetricTensor<2,dim,VectorizedArray<number>>
-            sym_grad_u_q = u_eval.get_symmetric_gradient(q);
-            const VectorizedArray<number> div_u_q = trace(sym_grad_u_q);
-            const VectorizedArray<number> val_p_q = p_eval.get_value(q);
+            sym_grad_u = u_eval.get_symmetric_gradient(q);
+            const VectorizedArray<number> div_u = trace(sym_grad_u);
+            const VectorizedArray<number> val_p = p_eval.get_value(q);
 
             // Terms to be tested by phi_p:
             const VectorizedArray<number> pressure_terms =
-              -cell_data->pressure_scaling * div_u_q;
+              -cell_data->pressure_scaling * div_u;
 
             // Terms to be tested by the symmetric gradients of phi_u:
             SymmetricTensor<2,dim,VectorizedArray<number>>
-            velocity_terms = viscosity_x_2 * sym_grad_u_q;
+            velocity_terms = viscosity_x_2 * sym_grad_u;
 
             for (unsigned int d=0; d<dim; ++d)
-              velocity_terms[d][d] -= cell_data->pressure_scaling * val_p_q;
+              velocity_terms[d][d] -= cell_data->pressure_scaling * val_p;
 
             if (cell_data->is_compressible)
               for (unsigned int d=0; d<dim; ++d)
-                velocity_terms[d][d] -= viscosity_x_2 / 3. * div_u_q;
+                velocity_terms[d][d] -= viscosity_x_2 / 3. * div_u;
 
             // Add the Newton derivatives if required.
             if (cell_data->enable_newton_derivatives)
-              {
-                VectorizedArray<number> deta_deps_times_sym_grad_u(0.);
-                VectorizedArray<number> eps_times_sym_grad_u(0.);
-                VectorizedArray<number> deta_dp_times_p(0.);
-                for (const unsigned int r : u_eval.quadrature_point_indices())
-                  {
-                    deta_deps_times_sym_grad_u += cell_data->newton_factor_wrt_strain_rate_table(cell,r)
-                                                  * sym_grad_u[r];
-                    deta_dp_times_p += cell_data->newton_factor_wrt_pressure_table(cell,r) * val_p[r];
-                    if (cell_data->symmetrize_newton_system)
-                      eps_times_sym_grad_u += cell_data->strain_rate_table(cell,r) * sym_grad_u[r];
-                  }
-
-                velocity_terms +=
-                  ( cell_data->symmetrize_newton_system ?
-                    ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
-                      cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
-                    2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u )
-                  +
-                  2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
-              }
+              velocity_terms +=
+                ( cell_data->symmetrize_newton_system ?
+                  ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
+                    cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
+                  2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u )
+                +
+                2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
 
             u_eval.submit_symmetric_gradient(velocity_terms, q);
             p_eval.submit_value(pressure_terms, q);
