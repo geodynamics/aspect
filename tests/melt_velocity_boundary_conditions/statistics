@@ -18,4 +18,4 @@
 # 18: Minimal value for composition porosity
 # 19: Maximal value for composition porosity
 # 20: Global mass for composition porosity
-0 0.000000000000e+00 0.000000000000e+00 640 6043 2673 2673 0 0 9 56 80 0.00000000e+00 0.00000000e+00 2.65238233e-03 6.83495289e-03 output-melt_velocity_boundary_conditions/solution/solution-00000 0.00000000e+00 2.00000000e-02 1.00000000e+09 
+0 0.000000000000e+00 0.000000000000e+00 640 6043 2673 2673 0 0 10 56 80 0.00000000e+00 0.00000000e+00 2.65238233e-03 6.83495289e-03 output-melt_velocity_boundary_conditions/solution/solution-00000 0.00000000e+00 2.00000000e-02 1.00000000e+09 

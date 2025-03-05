@@ -15,4 +15,4 @@
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
 # 17: Average nondimensional temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 920 9413 4161 0 8 10 10 output-muparser-temperature-example/solution/solution-00000 2.64762174e-03 1.41774749e-02 2.73000000e+02 1.62141994e+03 1.68279131e+03 9.63157097e-01 
+0 0.000000000000e+00 0.000000000000e+00 920 9413 4161 0 9 10 10 output-muparser-temperature-example/solution/solution-00000 2.64762174e-03 1.41774749e-02 2.73000000e+02 1.62141994e+03 1.68279131e+03 9.63157097e-01 

@@ -9,4 +9,4 @@
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 16 187 81 2 9 12 12 output-graphical_output/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 2 11 12 12 output-graphical_output/solution/solution-00000 

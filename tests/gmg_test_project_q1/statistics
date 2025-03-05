@@ -17,4 +17,4 @@
 # 17: Average nondimensional temperature (K)
 # 18: Outward heat flux through boundary with indicator 0 ("bottom") (W)
 # 19: Outward heat flux through boundary with indicator 1 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 192 1968 864 0 147 149 149 output-gmg_test_project_q1/solution/solution-00000 2.21398570e-02 6.09973246e-02 2.73000000e+02 1.60223828e+03 3.70000000e+03 3.87872272e-01 9.77672997e+05 4.04670189e+07 
+0 0.000000000000e+00 0.000000000000e+00 192 1968 864 0 148 149 149 output-gmg_test_project_q1/solution/solution-00000 2.21398570e-02 6.09973246e-02 2.73000000e+02 1.60223828e+03 3.70000000e+03 3.87872272e-01 9.77672997e+05 4.04670189e+07 

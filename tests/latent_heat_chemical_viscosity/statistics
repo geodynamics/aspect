@@ -11,4 +11,4 @@
 # 11: Velocity iterations in Stokes preconditioner
 # 12: Schur complement iterations in Stokes preconditioner
 # 13: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 2145 0 0 17 19 19 output-latent_heat_chemical_viscosity/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 2145 0 0 18 19 19 output-latent_heat_chemical_viscosity/solution/solution-00000 

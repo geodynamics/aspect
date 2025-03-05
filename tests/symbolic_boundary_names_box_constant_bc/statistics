@@ -19,4 +19,4 @@
 # 19: Outward heat flux through boundary with indicator 1 ("right") (W)
 # 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
 # 21: Outward heat flux through boundary with indicator 3 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 15 17 17 output-symbolic_boundary_names_box_constant_bc/solution/solution-00000 2.89176503e-07 1.40777995e-06 1.00024076e+00 3.19135313e+00 1.68000000e+02 1.73897807e-02 -2.46821517e-03 -5.06807330e-03 -1.09629789e-02 -1.50331095e-02 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 0 16 17 17 output-symbolic_boundary_names_box_constant_bc/solution/solution-00000 2.89176503e-07 1.40777995e-06 1.00024076e+00 3.19135313e+00 1.68000000e+02 1.73897807e-02 -2.46821517e-03 -5.06807330e-03 -1.09629789e-02 -1.50331095e-02 

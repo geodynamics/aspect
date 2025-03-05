@@ -15,4 +15,4 @@
 # 15: Average nondimensional temperature (K)
 # 16: RMS velocity (m/s)
 # 17: Max. velocity (m/s)
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 14 16 16 output-boundary_temperature_function/solution/solution-00000 0.00000000e+00 7.92922653e+01 1.92000000e+03 2.26549329e-02 2.78573375e-05 1.19616223e-04 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 15 16 16 output-boundary_temperature_function/solution/solution-00000 0.00000000e+00 7.92922653e+01 1.92000000e+03 2.26549329e-02 2.78573375e-05 1.19616223e-04 

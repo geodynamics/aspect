@@ -1,0 +1,9 @@
+Fixed: The statistics file contained an invalid number of iterations
+for variables that were not solved (e.g. because compositions were
+prescribed, or Stokes was only solved using cheap or only expensive
+iterations). This is confusing, because it looks like an error and for the
+Stokes solver it caused an incorrect iteration number to be reported. It is
+more accurate to report 0 iterations if none were made, which is what the
+postprocessor does now.
+<br>
+(Rene Gassmoeller, 2025/03/04)

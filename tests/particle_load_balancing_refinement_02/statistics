@@ -12,15 +12,15 @@
 # 12: Schur complement iterations in Stokes preconditioner
 # 13: Number of advected particles
 # 14: Particle file name
- 0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0  0 11 13 13 10 output-particle_load_balancing_refinement_02/particles/particles-00000 
- 1 1.008967254620e+02 1.008967254620e+02 31 362 158 158 0 10 15 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00001 
- 2 1.839602047765e+02 8.306347931455e+01 31 362 158 158 0 14 15 17 17 10                                                                     "" 
- 3 2.469195658411e+02 6.295936106460e+01 16 214  93  93 0  9 15 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00002 
- 4 2.976680025591e+02 5.074843671795e+01 19 241 105 105 0 13 15 17 17 10                                                                     "" 
- 5 3.415770645099e+02 4.390906195086e+01 16 214  93  93 0 10 15 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00003 
- 6 3.755634357002e+02 3.398637119022e+01 22 273 119 119 0 13 14 16 16 10                                                                     "" 
- 7 4.079494770338e+02 3.238604133366e+01 22 273 119 119 0 13 15 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00004 
- 8 4.397062085446e+02 3.175673151078e+01 22 273 119 119 0 13 27 29 29 10                                                                     "" 
- 9 4.702514435838e+02 3.054523503924e+01 28 337 147 147 0 12 14 16 16 10                                                                     "" 
-10 4.866520854720e+02 1.640064188816e+01 28 328 143 143 0 12 14 16 16 10                                                                     "" 
-11 5.000000000000e+02 1.334791452801e+01 25 303 132 132 0 11 14 16 16 10 output-particle_load_balancing_refinement_02/particles/particles-00005 
+ 0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0  0 12 13 13 10 output-particle_load_balancing_refinement_02/particles/particles-00000 
+ 1 1.008967254620e+02 1.008967254620e+02 31 362 158 158 0 10 16 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00001 
+ 2 1.839602047765e+02 8.306347931455e+01 31 362 158 158 0 14 16 17 17 10                                                                     "" 
+ 3 2.469195658411e+02 6.295936106460e+01 16 214  93  93 0  9 16 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00002 
+ 4 2.976680025591e+02 5.074843671795e+01 19 241 105 105 0 13 16 17 17 10                                                                     "" 
+ 5 3.415770645099e+02 4.390906195086e+01 16 214  93  93 0 10 16 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00003 
+ 6 3.755634357002e+02 3.398637119022e+01 22 273 119 119 0 13 15 16 16 10                                                                     "" 
+ 7 4.079494770338e+02 3.238604133366e+01 22 273 119 119 0 13 16 17 17 10 output-particle_load_balancing_refinement_02/particles/particles-00004 
+ 8 4.397062085446e+02 3.175673151078e+01 22 273 119 119 0 13 28 29 29 10                                                                     "" 
+ 9 4.702514435838e+02 3.054523503924e+01 28 337 147 147 0 12 15 16 16 10                                                                     "" 
+10 4.866520854720e+02 1.640064188816e+01 28 328 143 143 0 12 15 16 16 10                                                                     "" 
+11 5.000000000000e+02 1.334791452801e+01 25 303 132 132 0 11 15 16 16 10 output-particle_load_balancing_refinement_02/particles/particles-00005 

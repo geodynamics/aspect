@@ -13,4 +13,4 @@
 # 13: Visualization file name
 # 14: RMS velocity (m/s)
 # 15: Max. velocity (m/s)
-0 0.000000000000e+00 0.000000000000e+00 155 5925 1877 1877 0 0 24 26 26 output-stokes/solution/solution-00000 1.37114470e-10 1.03934736e-09 
+0 0.000000000000e+00 0.000000000000e+00 155 5925 1877 1877 0 0 25 26 26 output-stokes/solution/solution-00000 1.37114470e-10 1.03934736e-09 

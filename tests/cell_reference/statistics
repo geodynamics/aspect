@@ -19,4 +19,4 @@
 # 19: Outward heat flux through boundary with indicator 1 ("right") (W)
 # 20: Outward heat flux through boundary with indicator 2 ("bottom") (W)
 # 21: Outward heat flux through boundary with indicator 3 ("top") (W)
-0 0.000000000000e+00 0.000000000000e+00 4 59 25 0 7 9 9 output-cell_reference/solution/solution-00000 5.87731480e-08 1.40992997e-07 0.00000000e+00 9.57380151e-01 1.10000000e+00 9.57380151e-01 1.65078029e-07 4.05396692e-06 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 4 59 25 0 8 9 9 output-cell_reference/solution/solution-00000 5.87731480e-08 1.40992997e-07 0.00000000e+00 9.57380151e-01 1.10000000e+00 9.57380151e-01 1.65078029e-07 4.05396692e-06 0.00000000e+00 0.00000000e+00 

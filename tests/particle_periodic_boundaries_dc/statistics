@@ -15,5 +15,5 @@
 # 15: Minimal value for composition C_1
 # 16: Maximal value for composition C_1
 # 17: Global mass for composition C_1
-0 0.000000000000e+00 0.000000000000e+00 55 628 276 495 0 17 19 171 output-particle_periodic_boundaries_dc/solution/solution-00000 10000 output-particle_periodic_boundaries_dc/particles/particles-00000 0.00000000e+00 1.00000000e+00 1.82530208e-01 
-1 7.000000000000e+01 7.000000000000e+01 55 628 276 495 0 16 18 171                                                             "" 10000 output-particle_periodic_boundaries_dc/particles/particles-00001 0.00000000e+00 1.00000000e+00 1.81521114e-01 
+0 0.000000000000e+00 0.000000000000e+00 55 628 276 495 0 18 19 171 output-particle_periodic_boundaries_dc/solution/solution-00000 10000 output-particle_periodic_boundaries_dc/particles/particles-00000 0.00000000e+00 1.00000000e+00 1.82530208e-01 
+1 7.000000000000e+01 7.000000000000e+01 55 628 276 495 0 17 18 171                                                             "" 10000 output-particle_periodic_boundaries_dc/particles/particles-00001 0.00000000e+00 1.00000000e+00 1.81521114e-01 

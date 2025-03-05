@@ -9,5 +9,5 @@
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
 # 11: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089  0 7 9 9 output-heat_flux_map_vis_point_wise/solution/solution-00000 
-1 1.000000000000e-02 1.000000000000e-02 256 2467 1089 35 7 9 9 output-heat_flux_map_vis_point_wise/solution/solution-00001 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089  0 8 9 9 output-heat_flux_map_vis_point_wise/solution/solution-00000 
+1 1.000000000000e-02 1.000000000000e-02 256 2467 1089 35 8 9 9 output-heat_flux_map_vis_point_wise/solution/solution-00001 

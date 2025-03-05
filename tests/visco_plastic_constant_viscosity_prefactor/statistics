@@ -18,5 +18,5 @@
 # 18: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
 # 19: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
 # 20: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 1 0 0 4294967295 0 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-visco_plastic_constant_viscosity_prefactor/solution/solution-00000 
-1 1.000000000000e+00 1.000000000000e+00 100 1003 441 441 1 0 0 4294967295 0 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                                 "" 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 1 0 0 0 0 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-visco_plastic_constant_viscosity_prefactor/solution/solution-00000 
+1 1.000000000000e+00 1.000000000000e+00 100 1003 441 441 1 0 0 0 0 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                                        "" 

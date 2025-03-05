@@ -19,4 +19,4 @@
 # 19: Outward heat flux through boundary with indicator 1 ("top") (W)
 # 20: Outward heat flux through boundary with indicator 2 ("left") (W)
 # 21: Outward heat flux through boundary with indicator 3 ("right") (W)
-0 0.000000000000e+00 0.000000000000e+00 3072 28291 12545 0 143 146 146 output-latent_heat_viscosity_adiabatic/solution/solution-00000 1.51328051e-04 8.22943012e-04 2.73000000e+02 2.48638094e+03 3.93109399e+03 9.51173589e-01 4.63319751e+05 7.86839837e+05 0.00000000e+00 0.00000000e+00 
+0 0.000000000000e+00 0.000000000000e+00 3072 28291 12545 0 144 146 146 output-latent_heat_viscosity_adiabatic/solution/solution-00000 1.51328051e-04 8.22943012e-04 2.73000000e+02 2.48638094e+03 3.93109399e+03 9.51173589e-01 4.63319751e+05 7.86839837e+05 0.00000000e+00 0.00000000e+00 
