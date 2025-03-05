@@ -23,10 +23,9 @@
 #define _aspect_stokes_matrix_free_h
 
 #include <aspect/global.h>
-#include <aspect/plugins.h>
+#include <aspect/simulator/solver/interface.h>
 
 #include <aspect/simulator.h>
-#include <aspect/simulator_access.h>
 
 #include <deal.II/matrix_free/matrix_free.h>
 #include <deal.II/matrix_free/operators.h>
@@ -402,20 +401,9 @@ namespace aspect
    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
    */
   template <int dim>
-  class StokesMatrixFreeHandler: public SimulatorAccess<dim>, public Plugins::InterfaceBase
+  class StokesMatrixFreeHandler: public Solver::Interface<dim>
   {
     public:
-      /**
-       * Solves the Stokes linear system using the matrix-free
-       * solver.
-       *
-       * @param solution_vector The existing solution vector that will be
-       * updated with the new solution. This vector is expected to have the
-       * block structure of the full solution vector, and its velocity and
-       * pressure blocks will be updated with the new solution.
-       */
-      virtual std::pair<double,double> solve(LinearAlgebra::BlockVector &solution_vector) = 0;
-
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This
        * is called by Simulator<dim>::setup_dofs()
@@ -533,15 +521,25 @@ namespace aspect
       void initialize() override;
 
       /**
+       * Return the name of the solver for screen output.
+       */
+      std::string name() const override;
+
+      /**
        * Solves the Stokes linear system using the matrix-free
        * solver.
        *
-       * @param solution_vector The existing solution vector that will be
+       * @param system_matrix The system matrix. Note that we do not actually
+       * use this matrix for this matrix free solver.
+       * @param system_rhs The right hand side vector of the system.
+       * @param solution_vector The solution vector that will be
        * updated with the new solution. This vector is expected to have the
        * block structure of the full solution vector, and its velocity and
        * pressure blocks will be updated with the new solution.
        */
-      std::pair<double,double> solve(LinearAlgebra::BlockVector &solution_vector) override;
+      std::pair<double,double> solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+                                     const LinearAlgebra::BlockVector &system_rhs,
+                                     LinearAlgebra::BlockVector &solution_vector) override;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This

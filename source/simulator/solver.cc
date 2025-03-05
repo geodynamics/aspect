@@ -768,7 +768,7 @@ namespace aspect
     const std::string name = [&]() -> std::string
     {
       if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
-        return "GMG";
+        return stokes_matrix_free->name();
       if (parameters.use_direct_stokes_solver)
         return "direct";
       if (parameters.use_bfbt)
@@ -780,7 +780,7 @@ namespace aspect
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
-        return stokes_matrix_free->solve(solution_vector);
+        return stokes_matrix_free->solve(system_matrix, system_rhs, solution_vector);
       }
 
     // In the following, we will operate on a vector that contains only

@@ -1036,6 +1036,15 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
+  std::string
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::name () const
+  {
+    return "GMG";
+  }
+
+
+
+  template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::assemble ()
   {
     if (this->get_parameters().mesh_deformation_enabled)
@@ -1693,7 +1702,10 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  std::pair<double,double> StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve(LinearAlgebra::BlockVector &solution_vector)
+  std::pair<double,double>
+  StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+                                                                    const LinearAlgebra::BlockVector &system_rhs,
+                                                                    LinearAlgebra::BlockVector &solution_vector)
   {
     double initial_nonlinear_residual = numbers::signaling_nan<double>();
     double final_linear_residual      = numbers::signaling_nan<double>();
@@ -1861,8 +1873,8 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_stokes_rhs(this->introspection().index_sets.stokes_partitioning,
                                                       this->get_mpi_communicator());
 
-    distributed_stokes_rhs.block(block_vel) = sim.system_rhs.block(block_vel);
-    distributed_stokes_rhs.block(block_p) = sim.system_rhs.block(block_p);
+    distributed_stokes_rhs.block(block_vel) = system_rhs.block(block_vel);
+    distributed_stokes_rhs.block(block_p) = system_rhs.block(block_p);
 
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
@@ -2332,9 +2344,15 @@ namespace aspect
     // convert melt pressures
     // TODO: We assert in the StokesMatrixFreeHandler constructor that we
     //       are not including melt transport.
-    if (this->get_parameters().include_melt_transport)
-      this->get_melt_handler().compute_melt_variables(sim.system_matrix,solution_vector,sim.system_rhs);
+    // TODO: We have to const_cast, because the compute_melt_variables
+    //       function assembles and solves an equation. To avoid this we either
+    //       have to hand over non-const references to the current function, or
+    //       call the compute_melt_variables function after finishing the current function.
 
+    if (this->get_parameters().include_melt_transport)
+      this->get_melt_handler().compute_melt_variables(const_cast<LinearAlgebra::BlockSparseMatrix &>(system_matrix),
+                                                      solution_vector,
+                                                      const_cast<LinearAlgebra::BlockVector &>(system_rhs));
 
     return std::pair<double,double>(initial_nonlinear_residual,
                                     final_linear_residual);
