@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,10 +19,8 @@
 */
 
 
-
-#include <aspect/postprocess/visualization/stress_second_invariant.h>
-
-#include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/postprocess/visualization/stress_residual.h>
+#include <aspect/material_model/visco_plastic.h>
 
 namespace aspect
 {
@@ -31,40 +29,41 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      StressSecondInvariant<dim>::
-      StressSecondInvariant ()
+      StressResidual<dim>::
+      StressResidual ()
         :
-        DataPostprocessorScalar<dim> ("stress_second_invariant",
-                                      update_values | update_gradients | update_quadrature_points),
-        Interface<dim>("Pa")
+        DataPostprocessorScalar<dim> ("stress_residual",
+                                      update_values | update_gradients | update_quadrature_points)
       {}
 
 
 
       template <int dim>
       void
-      StressSecondInvariant<dim>::
+      StressResidual<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double>> &computed_quantities) const
       {
+        AssertThrow(Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model()),
+                    ExcMessage("This postprocessor only works with the viscoplastic material model. "));
+
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert(computed_quantities.size() == n_quadrature_points, ExcInternalError());
         Assert(computed_quantities[0].size() == 1, ExcInternalError());
         Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
         Assert(input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
 
-        // Create the material model inputs and outputs to
-        // retrieve the current viscosity.
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection());
-
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
-
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
         this->get_material_model().create_additional_named_outputs(out);
 
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
+        in.current_cell = input_data.template get_cell<dim>();
+
+        // Get the viscosity
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q = 0; q < n_quadrature_points; ++q)
@@ -90,23 +89,25 @@ namespace aspect
               }
 
             // Compute the second moment invariant of the deviatoric stress
-            // in the same way as the second moment invariant of the deviatoric
-            // strain rate is computed in the viscoplastic material model.
-            // TODO check that this is valid for the compressible case.
-            const double stress_invariant = std::sqrt(std::max(-second_invariant(deviatoric_stress), 0.));
+            const double stress_invariant = std::sqrt(std::fabs(second_invariant(deviatoric_stress)));
 
-            computed_quantities[q](0) = stress_invariant;
+            // Get the current yield_stress
+            const MaterialModel::PlasticAdditionalOutputs<dim> *plastic_output =
+              out.template get_additional_output<MaterialModel::PlasticAdditionalOutputs<dim>>();
+            const double yield_stress = plastic_output->yield_stresses[q];
+
+            // Compute the difference between the second stress invariant and the yield stress
+            computed_quantities[q](0) = stress_invariant - yield_stress;
           }
 
         // average the values if requested
-        const auto &viz = this->get_postprocess_manager().template get_matching_active_plugin<Postprocess::Visualization<dim>>();
+        const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim>>();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
       }
     }
   }
 }
-
 
 
 // explicit instantiations
@@ -116,12 +117,13 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(StressSecondInvariant,
-                                                  "stress second invariant",
-                                                  "A visualization output object that outputs "
-                                                  "the second moment invariant of the deviatoric stress tensor."
-                                                  "\n\n"
-                                                  "Physical units: \\si{\\pascal}.")
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(StressResidual,
+                                                  "stress residual",
+                                                  "A visualization output object that generates output "
+                                                  "for the difference between the second moment invariant "
+                                                  "of the deviatoric stress tensor and the yield stress. "
+                                                  "Note that this plugin currently only works when the "
+                                                  "'visco plastic' material model is used. ")
     }
   }
 }
