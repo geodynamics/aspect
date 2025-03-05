@@ -39,13 +39,21 @@ namespace aspect
         /**
          * Solves the linear system.
          *
+         * @param system_matrix The system matrix. Note that even if the matrix
+         * is not assembled (e.g. for matrix free solvers), a reference to the
+         * system matrix will be provided to the solver.
+         * @param system_rhs The right hand side vector of the system.
          * @param solution_vector The existing solution vector that will be
          * updated with the new solution. This vector is expected to have the
          * block structure of the full solution vector, and the blocks that
          * are to be solved in this solver will be overwritten.
+         *
+         * @return A pair of the initial and final residual of the linear solver.
          */
         virtual
-        std::pair<double,double> solve(LinearAlgebra::BlockVector &solution_vector) = 0;
+        std::pair<double,double> solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+                                       const LinearAlgebra::BlockVector &system_rhs,
+                                       LinearAlgebra::BlockVector &solution_vector) = 0;
 
         /**
          * Return the name of the solver for screen output.

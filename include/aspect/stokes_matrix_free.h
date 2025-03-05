@@ -529,12 +529,17 @@ namespace aspect
        * Solves the Stokes linear system using the matrix-free
        * solver.
        *
-       * @param solution_vector The existing solution vector that will be
+       * @param system_matrix The system matrix. Note that we do not actually
+       * use this matrix for this matrix free solver.
+       * @param system_rhs The right hand side vector of the system.
+       * @param solution_vector The solution vector that will be
        * updated with the new solution. This vector is expected to have the
        * block structure of the full solution vector, and its velocity and
        * pressure blocks will be updated with the new solution.
        */
-      std::pair<double,double> solve(LinearAlgebra::BlockVector &solution_vector) override;
+      std::pair<double,double> solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+                                     const LinearAlgebra::BlockVector &system_rhs,
+                                     LinearAlgebra::BlockVector &solution_vector) override;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This

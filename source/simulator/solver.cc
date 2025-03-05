@@ -780,7 +780,7 @@ namespace aspect
 
     if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
       {
-        return stokes_matrix_free->solve(solution_vector);
+        return stokes_matrix_free->solve(system_matrix, system_rhs, solution_vector);
       }
 
     // In the following, we will operate on a vector that contains only
