@@ -1033,6 +1033,12 @@ namespace aspect
                   ExcNotImplemented());
   }
 
+  template <int dim, int velocity_degree>
+  std::string
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::name () const
+  {
+    return "GMG";
+  }
 
 
   template <int dim, int velocity_degree>

@@ -768,7 +768,7 @@ namespace aspect
     const std::string name = [&]() -> std::string
     {
       if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg)
-        return "GMG";
+        return stokes_matrix_free->name();
       if (parameters.use_direct_stokes_solver)
         return "direct";
       if (parameters.use_bfbt)
