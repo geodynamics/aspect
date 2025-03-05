@@ -427,7 +427,7 @@ namespace aspect
         p_eval.reinit(cell);
         p_eval.gather_evaluate(src.block(1), EvaluationFlags::values);
 
-        // factors related with Newton derivatives
+        // Derivative terms related to the Newton solver
         VectorizedArray<number> deta_deps_times_sym_grad_u(0.);
         VectorizedArray<number> eps_times_sym_grad_u(0.);
         VectorizedArray<number> deta_dp_times_p(0.);
