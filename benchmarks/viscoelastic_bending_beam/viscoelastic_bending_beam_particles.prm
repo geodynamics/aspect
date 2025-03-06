@@ -6,12 +6,16 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_ben
 
 set Output directory = output_viscoelastic_bending_beam_particles
 
+# On particles, the operator splitting is handled by the particle property elastic stress.
+set Use operator splitting                 = false
+
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 4
-  set Compositional field methods =           particles,           particles,           particles,         particles
-  set Names of fields             =           ve_stress_xx,        ve_stress_yy,        ve_stress_xy,      beam
-  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, beam:initial beam
+  set Number of fields = 7
+  set Compositional field methods =           particles,           particles,           particles,         particles,           particles,           particles,         particles
+  set Names of fields             =           ve_stress_xx,        ve_stress_yy,        ve_stress_xy,      ve_stress_xx_old,    ve_stress_yy_old,    ve_stress_xy_old,  beam
+  set Types of fields             =           stress,              stress,              stress,            stress,              stress,              stress,            chemical composition
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, ve_stress_xx_old:ve_stress_xx_old, ve_stress_yy_old:ve_stress_yy_old, ve_stress_xy_old:ve_stress_xy_old, beam:initial beam
 end
 
 # Post processing
