@@ -1,0 +1,102 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000451 m/year, 0.000983 m/year
+     Compositions min/max/mass: 0/1/0.1825 // 0.01729/0.9066/0.4265 // 0/0/0
+     Writing particle output:   output-particle_property_composition_reaction/particles/particles-00000
+     Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00000
+
+*** Timestep 1:  t=29.0767 years, dt=29.0767 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 15 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000834 m/year, 0.00182 m/year
+     Compositions min/max/mass: -0.002083/1.001/0.1825 // 0/0.9016/0.2646 // 0/0.8979/0.161
+     Writing particle output:   output-particle_property_composition_reaction/particles/particles-00001
+     Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00001
+
+*** Timestep 2:  t=44.7956 years, dt=15.7189 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 20 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00125 m/year, 0.0027 m/year
+     Compositions min/max/mass: -0.004074/1.003/0.1825 // 0/1/0.3711 // 0/0.8979/0.1606
+     Writing particle output:   output-particle_property_composition_reaction/particles/particles-00002
+     Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00002
+
+*** Timestep 3:  t=55.3742 years, dt=10.5786 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 19 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00167 m/year, 0.00359 m/year
+     Compositions min/max/mass: -0.006706/1.005/0.1825 // 0/1/0.3686 // 0/0.8979/0.1628
+     Writing particle output:   output-particle_property_composition_reaction/particles/particles-00003
+     Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00003
+
+*** Timestep 4:  t=63.3388 years, dt=7.96457 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 19 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00209 m/year, 0.00446 m/year
+     Compositions min/max/mass: -0.009783/1.01/0.1825 // 0/1.795/0.6074 // -0.8973/0.4045/-0.07507
+     Writing particle output:   output-particle_property_composition_reaction/particles/particles-00004
+     Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00004
+
+*** Timestep 5:  t=69.7354 years, dt=6.39659 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 19 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00251 m/year, 0.00532 m/year
+     Compositions min/max/mass: -0.01164/1.014/0.1825 // 0/1.795/0.6092 // -0.8974/0.3936/-0.07737
+     Writing particle output:   output-particle_property_composition_reaction/particles/particles-00005
+     Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00005
+
+*** Timestep 6:  t=70 years, dt=0.264622 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 11 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00253 m/year, 0.00536 m/year
+     Compositions min/max/mass: -0.01167/1.014/0.1825 // 0/1.795/0.6091 // -0.8974/0.3936/-0.07708
+     Writing particle output:   output-particle_property_composition_reaction/particles/particles-00006
+     Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00006
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
