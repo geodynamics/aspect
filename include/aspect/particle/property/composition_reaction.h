@@ -23,6 +23,7 @@
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/parsed_function.h>
 

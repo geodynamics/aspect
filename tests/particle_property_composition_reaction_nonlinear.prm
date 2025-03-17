@@ -1,0 +1,8 @@
+# Like particle_property_composition_reaction
+# but with a nonlinear solver.
+
+include $ASPECT_SOURCE_DIR/tests/particle_property_composition_reaction.prm
+
+set Nonlinear solver scheme = iterated Advection and Stokes
+set Maximum time step = 10
+set End time = 45

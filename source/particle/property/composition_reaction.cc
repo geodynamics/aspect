@@ -20,6 +20,7 @@
 
 #include <aspect/particle/property/composition_reaction.h>
 #include <aspect/initial_composition/interface.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -50,16 +51,27 @@ namespace aspect
         else
           reaction_rate->set_time (this->get_time());
 
+        // Check if any reaction occurs during the current time step.
+        const unsigned int n_reactions = reactant_indices.size();
+        std::vector<bool> reaction_occurs (n_reactions, false);
+
+        for (unsigned int i=0; i<n_reactions; ++i)
+          if (this->get_time() >= reaction_times[i] &&
+              (this->get_time() - this->get_timestep()) < reaction_times[i])
+            reaction_occurs[i] = true;
+
+        if (std::find(reaction_occurs.begin(), reaction_occurs.end(), true) == reaction_occurs.end())
+          return;
+
         // Loop over all particles to apply reactions.
         for (auto &particle: particles)
           {
             const Utilities::NaturalCoordinate<dim> point =
               this->get_geometry_model().cartesian_to_other_coordinates(particle.get_location(), coordinate_system);
+            const ArrayView<double> particle_properties = particle.get_properties();
 
-            // Loop over all reaction and compute total change for each compositional field
-            std::vector<double> reactions_for_each_composition (this->n_compositional_fields(), 0.0);
-
-            for (unsigned int i=0; i<reactant_indices.size(); ++i)
+            // Loop over all reactions and compute total change for each compositional field.
+            for (unsigned int i=0; i<n_reactions; ++i)
               {
                 std::array<double,2> reactant_and_product;
                 if (reactant_indices[i] == background_index)
@@ -75,23 +87,13 @@ namespace aspect
                 const double area = reaction_area->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()), i);
                 const double rate = reaction_rate->value(Utilities::convert_array_to_point<2>(reactant_and_product), i);
 
-                // Check if the reaction should occur during the current time step
-                bool reaction_occurs = false;
-                if (this->get_time() > reaction_times[i] &&
-                    (this->get_time() - this->get_timestep()) < reaction_times[i])
-                  reaction_occurs =  true;
-
                 // Subtract the reaction value from the reactant and add it to the product.
                 // For the background, we do not have to do anything.
-                if (reaction_occurs && reactant_indices[i] != background_index)
-                  reactions_for_each_composition[reactant_indices[i]] -= area * rate;
-                if (reaction_occurs && product_indices[i] != background_index)
-                  reactions_for_each_composition[product_indices[i]] += area * rate;
+                if (reaction_occurs[i] && reactant_indices[i] != background_index)
+                  particle_properties[this->data_position + reactant_indices[i]] -= area * rate;
+                if (reaction_occurs[i] && product_indices[i] != background_index)
+                  particle_properties[this->data_position + product_indices[i]] += area * rate;
               }
-
-            // Loop over all compositional fields to apply reactions
-            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-              particle.get_properties()[this->data_position + c] += reactions_for_each_composition[c];
           }
       }
 
@@ -119,12 +121,6 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       CompositionReaction<dim>::get_property_information() const
       {
-        AssertThrow(this->n_compositional_fields() > 0,
-                    ExcMessage("You have requested the particle property <composition "
-                               "reaction>, but the number of compositional fields is 0. "
-                               "Please add compositional fields to your model, or remove "
-                               "this particle property."));
-
         std::vector<std::pair<std::string,unsigned int>> property_information;
 
         for (unsigned int i = 0; i < this->n_compositional_fields(); ++i)
@@ -217,6 +213,12 @@ namespace aspect
       void
       CompositionReaction<dim>::parse_parameters (ParameterHandler &prm)
       {
+        AssertThrow(this->n_compositional_fields() > 0,
+                    ExcMessage("You have requested the particle property <composition "
+                               "reaction>, but the number of compositional fields is 0. "
+                               "Please add compositional fields to your model, or remove "
+                               "this particle property."));
+
         prm.enter_subsection("Composition reaction");
         {
           std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
