@@ -200,6 +200,12 @@ namespace aspect
 
 
           /**
+           * Return the names of the active particle property plugins.
+           */
+          std::vector<std::string>
+          get_property_names() const;
+
+          /**
            * Return the number of active particle property plugins.
            */
           unsigned int

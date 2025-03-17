@@ -174,6 +174,14 @@ namespace aspect
 
 
 
+      std::vector<std::string>
+      ParticlePropertyInformation::get_property_names() const
+      {
+        return field_names;
+      }
+
+
+
       unsigned int
       ParticlePropertyInformation::n_plugins() const
       {
