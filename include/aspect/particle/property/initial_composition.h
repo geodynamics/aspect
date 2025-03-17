@@ -31,8 +31,10 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that initializes particle properties based on a
-       * functional description provided in the input file.
+       * A class that initializes particle properties based on
+       * the initial value of the compositional fields in
+       * the model. This can be used to track solid composition
+       * evolution over time.
        *
        * @ingroup ParticleProperties
        */
