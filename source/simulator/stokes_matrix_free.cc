@@ -1693,13 +1693,14 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  std::pair<double,double>
-  StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+  StokesSolver::SolverOutputs
+  StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve(const LinearAlgebra::BlockSparseMatrix &/*system_matrix*/,
                                                                     const LinearAlgebra::BlockVector &system_rhs,
+                                                                    const bool solve_newton_system,
+                                                                    const double last_pressure_normalization_adjustment,
                                                                     LinearAlgebra::BlockVector &solution_vector)
   {
-    double initial_nonlinear_residual = numbers::signaling_nan<double>();
-    double final_linear_residual      = numbers::signaling_nan<double>();
+    StokesSolver::SolverOutputs outputs;
 
     // Below we define all the objects needed to build the GMG preconditioner:
     using VectorType = dealii::LinearAlgebra::distributed::Vector<GMGNumberType>;
@@ -1883,13 +1884,13 @@ namespace aspect
     // linearized_stokes_variables has a different
     // layout than current_linearization_point, which also contains all the
     // other solution variables.
-    if (sim.assemble_newton_stokes_system == false)
+    if (solve_newton_system == false)
       {
         linearized_stokes_initial_guess.block (block_vel) = this->get_current_linearization_point().block (block_vel);
         linearized_stokes_initial_guess.block (block_p) = this->get_current_linearization_point().block (block_p);
 
-        sim.denormalize_pressure (sim.last_pressure_normalization_adjustment,
-                                  linearized_stokes_initial_guess);
+        this->denormalize_pressure (last_pressure_normalization_adjustment,
+                                    linearized_stokes_initial_guess);
       }
     else
       {
@@ -1898,7 +1899,7 @@ namespace aspect
         // have to assemble the full (non-defect correction) Picard, to get the boundary conditions
         // right in combination with being able to use the initial guess optimally. So we may never
         // end up here when it is the first nonlinear iteration.
-        Assert(sim.nonlinear_iteration != 0,
+        Assert(this->get_nonlinear_iteration() != 0,
                ExcMessage ("The Newton solver may not be active in the first nonlinear iteration"));
 
         linearized_stokes_initial_guess.block (block_vel) = 0;
@@ -1909,7 +1910,7 @@ namespace aspect
     linearized_stokes_initial_guess.block (block_p) /= this->get_pressure_scaling();
 
     double solver_tolerance = 0;
-    if (sim.assemble_newton_stokes_system == false)
+    if (solve_newton_system == false)
       {
         // (ab)use the distributed solution vector to temporarily put a residual in
         // (we don't care about the residual vector -- all we care about is the
@@ -1936,7 +1937,7 @@ namespace aspect
         // Compute residual l2_norm
         stokes_matrix.vmult(solution_copy,initial_copy);
         solution_copy.sadd(-1,1,rhs_copy);
-        initial_nonlinear_residual = solution_copy.l2_norm();
+        outputs.initial_nonlinear_residual = solution_copy.l2_norm();
 
         // Note: the residual is computed with a zero velocity, effectively computing
         // || B^T p - g ||, which we are going to use for our solver tolerance.
@@ -1971,7 +1972,7 @@ namespace aspect
         // as described in the documentation of the function, the initial
         // nonlinear residual for the Newton method is computed by just
         // taking the norm of the right hand side
-        initial_nonlinear_residual = std::sqrt(residual_u*residual_u+residual_p*residual_p);
+        outputs.initial_nonlinear_residual = std::sqrt(residual_u*residual_u+residual_p*residual_p);
       }
 
     // Now overwrite the solution vector again with the current best guess
@@ -2215,7 +2216,7 @@ namespace aspect
                           << "+0"
                           << " iterations." << std::endl;
 
-        final_linear_residual = solver_control_cheap.last_value();
+        outputs.final_linear_residual = solver_control_cheap.last_value();
       }
     // step 1b: take the stronger solver in case
     // the simple solver failed and attempt solving
@@ -2259,7 +2260,7 @@ namespace aspect
             this->get_pcout() << solver_control_expensive.last_step()
                               << " iterations." << std::endl;
 
-            final_linear_residual = solver_control_expensive.last_value();
+            outputs.final_linear_residual = solver_control_expensive.last_value();
           }
         // if the solver fails trigger the post stokes solver signal and throw an exception
         catch (const std::exception &exc)
@@ -2327,10 +2328,9 @@ namespace aspect
       }
 
     // do some cleanup now that we have the solution
-    sim.remove_nullspace(solution_vector, distributed_stokes_solution);
-    if (sim.assemble_newton_stokes_system == false)
-      sim.last_pressure_normalization_adjustment = sim.normalize_pressure(solution_vector);
-
+    this->remove_nullspace(solution_vector, distributed_stokes_solution);
+    if (solve_newton_system == false)
+      outputs.pressure_normalization_adjustment = this->normalize_pressure(solution_vector);
 
     // convert melt pressures
     // TODO: We assert in the StokesMatrixFreeHandler constructor that we
@@ -2340,13 +2340,7 @@ namespace aspect
     //       have to hand over non-const references to the current function, or
     //       call the compute_melt_variables function after finishing the current function.
 
-    if (this->get_parameters().include_melt_transport)
-      this->get_melt_handler().compute_melt_variables(const_cast<LinearAlgebra::BlockSparseMatrix &>(system_matrix),
-                                                      solution_vector,
-                                                      const_cast<LinearAlgebra::BlockVector &>(system_rhs));
-
-    return std::pair<double,double>(initial_nonlinear_residual,
-                                    final_linear_residual);
+    return outputs;
   }
 
 

@@ -873,6 +873,35 @@ namespace aspect
   {
     return simulator->compute_net_angular_momentum(use_constant_density, solution, limit_to_top_faces);
   }
+
+
+
+  template <int dim>
+  double
+  SimulatorAccess<dim>::normalize_pressure(LinearAlgebra::BlockVector &vector) const
+  {
+    return simulator->normalize_pressure(vector);
+  }
+
+
+
+  template <int dim>
+  void
+  SimulatorAccess<dim>::denormalize_pressure(const double                      pressure_adjustment,
+                                             LinearAlgebra::BlockVector       &vector) const
+  {
+    simulator->denormalize_pressure(pressure_adjustment, vector);
+  }
+
+
+
+  template <int dim>
+  void
+  SimulatorAccess<dim>::remove_nullspace(LinearAlgebra::BlockVector &solution,
+                                         LinearAlgebra::BlockVector &distributed_stokes_solution) const
+  {
+    simulator->remove_nullspace(solution, distributed_stokes_solution);
+  }
 }
 
 
