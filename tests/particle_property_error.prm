@@ -1,0 +1,16 @@
+# Test for the particle property error message.
+# This test is supposed to fail because one of the
+# mapped particle properties has the wrong name.
+#
+# EXPECT FAILURE
+
+include $ASPECT_SOURCE_DIR/tests/particle_property_multiple_functions_with_interpolation.prm
+
+subsection Compositional fields
+  set Compositional field methods = field, particles, particles
+  set Mapped particle properties = advection_particle:pT path, advection_particle2:function [1]
+end
+
+subsection Particles
+  set List of particle properties = velocity, function, initial composition, pT path
+end

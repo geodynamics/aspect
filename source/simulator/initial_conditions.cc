@@ -334,9 +334,30 @@ namespace aspect
       }
 
     for (unsigned int advection_field=0; advection_field<advection_fields.size(); ++advection_field)
-      Assert (advection_field_has_been_found[advection_field] == true,
-              ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is marked as advected by particles, but no particle property exists that is mapped to this field. "
-                         "Make sure that the particle property exists and is mapped to the correct field in the parameter file."));
+      if (advection_field_has_been_found[advection_field] != true)
+        {
+          std::stringstream property_names;
+          property_names << std::endl;
+
+          for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
+            {
+              const Particle::Property::Manager<dim> &particle_property_manager = particle_managers[particle_manager].get_property_manager();
+              std::vector<std::string> properties = particle_property_manager.get_data_info().get_property_names();
+
+              // The last entry is an internal property that we do not want to list.
+              for (unsigned int i=0; i<properties.size()-1; ++i)
+                property_names << properties[i] << std::endl;
+            }
+
+          const std::pair<std::string,unsigned int> wrong_property = parameters.mapped_particle_properties.find(advection_fields[advection_field].compositional_variable)->second;
+
+          Assert (false,
+                  ExcMessage("The field " + advection_fields[advection_field].name(introspection) + " is marked as advected by particles, "
+                             "but no particle property exists that is mapped to this field. The active particle properties in your model are "
+                             "the following:" + property_names.str() + "The property you selected is '" + wrong_property.first + "'. "
+                             "Make sure that any particle property you want to map to a field exists in your model (by adding it to the "
+                             "'List of particle properties' in the parameter file) and that it is mapped to the correct field."));
+        }
 
     LinearAlgebra::BlockVector particle_solution;
 
