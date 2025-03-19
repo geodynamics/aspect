@@ -1,0 +1,7 @@
+New: There is now a new particle property called 'composition
+reaction' that tracks the initial composition but also allows
+for reactions between the different compositions (or reactions
+just including one composition) at specific points in time
+given in the input file.
+<br>
+(Juliane Dannberg, 2025/03/14)

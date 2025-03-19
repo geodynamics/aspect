@@ -1,0 +1,297 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 0 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.63194e-16, 0, 0, 0.000504324
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000504324
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.63194e-16, 0, 0, 7.43845e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.43845e-12
+
+
+   Postprocessing:
+     RMS, max velocity:         0.000451 m/year, 0.000983 m/year
+     Compositions min/max/mass: 0/1/0.1825 // 0.004373/0.9007/0.4268 // 0/0/0
+     Writing particle output:   output-particle_property_composition_reaction_nonlinear/particles/particles-00000
+     Writing graphical output:  output-particle_property_composition_reaction_nonlinear/solution/solution-00000
+
+*** Timestep 1:  t=10 years, dt=10 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 10 iterations.
+   Solving Stokes system (GMG)... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0339988, 0, 0, 0.000140593
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0339988
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 10 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00956559, 0, 0, 3.95904e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00956559
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 10 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00285619, 0, 0, 1.17808e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00285619
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 9 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00086308, 0, 0, 3.55095e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00086308
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 9 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000263132, 0, 0, 1.08058e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.000263132
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 8 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.07003e-05, 0, 0, 3.30945e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 8.07003e-05
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 8 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.48356e-05, 0, 0, 1.01745e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 2.48356e-05
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 7 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.65787e-06, 0, 0, 3.13494e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 7.65787e-06
+
+
+   Postprocessing:
+     RMS, max velocity:         0.00064 m/year, 0.0014 m/year
+     Compositions min/max/mass: -0.001641/1.009/0.1824 // 0.004373/0.8993/0.4269 // 0/0/0
+     Writing particle output:   output-particle_property_composition_reaction_nonlinear/particles/particles-00001
+     Writing graphical output:  output-particle_property_composition_reaction_nonlinear/solution/solution-00001
+
+*** Timestep 2:  t=20 years, dt=10 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 13 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0111087, 0, 0, 4.55551e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0111087
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 12 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00173568, 0, 0, 7.22786e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00173568
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 12 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000360721, 0, 0, 1.50165e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000360721
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 11 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.56225e-05, 0, 0, 3.14701e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 7.56225e-05
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 10 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59213e-05, 0, 0, 6.6243e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.59213e-05
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 8 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.35727e-06, 0, 0, 1.39672e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 3.35727e-06
+
+
+   Postprocessing:
+     RMS, max velocity:         0.000875 m/year, 0.00191 m/year
+     Compositions min/max/mass: -0.004594/1.01/0.1824 // 0.02237/0.8987/0.4261 // 0/0/0
+     Writing particle output:   output-particle_property_composition_reaction_nonlinear/particles/particles-00002
+     Writing graphical output:  output-particle_property_composition_reaction_nonlinear/solution/solution-00002
+
+*** Timestep 3:  t=30 years, dt=10 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 15 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0202761, 0, 0, 8.26949e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0202761
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 14 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00292939, 0, 0, 1.21765e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00292939
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 13 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000622281, 0, 0, 2.58849e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000622281
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 12 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00013319, 0, 0, 5.54214e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.00013319
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 11 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.85501e-05, 0, 0, 1.18827e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 2.85501e-05
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 10 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.11334e-06, 0, 0, 2.5448e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 6.11334e-06
+
+
+   Postprocessing:
+     RMS, max velocity:         0.00119 m/year, 0.00258 m/year
+     Compositions min/max/mass: -0.01067/1.006/0.1824 // 0/0.8987/0.2634 // 0/0.8875/0.1617
+     Writing particle output:   output-particle_property_composition_reaction_nonlinear/particles/particles-00003
+     Writing graphical output:  output-particle_property_composition_reaction_nonlinear/solution/solution-00003
+
+*** Timestep 4:  t=40 years, dt=10 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 17 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0319504, 0, 0, 0.00012207
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0319504
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 16 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00426102, 0, 0, 1.74119e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00426102
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 15 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000920101, 0, 0, 3.7648e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000920101
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 14 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000199306, 0, 0, 8.159e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.000199306
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 13 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.30519e-05, 0, 0, 1.76293e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 4.30519e-05
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 13 iterations.
+   Solving Stokes system (GMG)... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.2634e-06, 0, 0, 3.7939e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 9.2634e-06
+
+
+   Postprocessing:
+     RMS, max velocity:         0.00161 m/year, 0.00348 m/year
+     Compositions min/max/mass: -0.01639/1.007/0.1824 // 0/1/0.3678 // 0/0.8875/0.1629
+     Writing particle output:   output-particle_property_composition_reaction_nonlinear/particles/particles-00004
+     Writing graphical output:  output-particle_property_composition_reaction_nonlinear/solution/solution-00004
+
+*** Timestep 5:  t=45 years, dt=5 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 15 iterations.
+   Solving Stokes system (GMG)... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0160964, 0, 0, 6.38377e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0160964
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 13 iterations.
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00123443, 0, 0, 5.11051e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00123443
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 12 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000151871, 0, 0, 6.29312e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000151871
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 11 iterations.
+   Solving Stokes system (GMG)... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.86311e-05, 0, 0, 7.7222e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.86311e-05
+
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving advection_field system ... 9 iterations.
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.27587e-06, 0, 0, 9.43437e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 2.27587e-06
+
+
+   Postprocessing:
+     RMS, max velocity:         0.00187 m/year, 0.00403 m/year
+     Compositions min/max/mass: -0.02024/1.008/0.1824 // 0/1/0.3656 // 0/0.8875/0.1643
+     Writing particle output:   output-particle_property_composition_reaction_nonlinear/particles/particles-00005
+     Writing graphical output:  output-particle_property_composition_reaction_nonlinear/solution/solution-00005
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

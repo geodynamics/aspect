@@ -1,0 +1,129 @@
+# Test for the composition reaction particle property.
+# One reaction occurs from reactant1 to reactant2 in
+# the bottom left triangle of the domain at t=25 yrs,
+# another back from reactant2 to reactant1 in the
+# bottom right triangle of the domain at t=60yrs.
+# An additional reaction creates reactant1 out of
+# nothing (using a background field), setting it to
+# a value of 1 in the top 20% of the domain.
+# This is based on the van Keken et al. benchmark
+
+# MPI: 2
+
+set Dimension                              = 2
+set End time                               = 70
+set Use years in output instead of seconds = true
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 0.9142
+    set Y extent  = 1.0000
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, top, bottom
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1010
+    set Viscosity                     = 3e9
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = -10
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = advection_field, reactant1, reactant2
+  set Compositional field methods = field, particles, particles
+  set Mapped particle properties = reactant1:reactant1 reaction, reactant2:reactant2 reaction
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02));x;0.0
+  end
+end
+
+############### Parameters describing the discretization
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = composition
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, particles, visualization
+
+  subsection Particles
+    set Time between data output = 0
+    #set Data output format = none
+  end
+  
+  subsection Visualization
+    set Time between graphical output = 0
+  end
+end
+
+subsection Particles
+  set List of particle properties = composition reaction
+  set Particle generator name = random uniform
+
+  subsection Composition reaction
+    set List of reactants      = reactant1, reactant2, background
+    set List of products       = reactant2, reactant1, reactant1
+    set List of reaction times = 25, 60, 40
+    
+    subsection Reaction area function
+      set Variable names      = x, z
+      set Function expression = if(x+z>1, 0 , 1); if(x-z<0, 0 , 1); if(z>0.8, 1, 0)
+    end
+    
+    subsection Reaction rate function
+      set Function expression = reactant; 2 * reactant; 1-product
+    end
+    
+  end
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 1024
+    end
+  end
+end
