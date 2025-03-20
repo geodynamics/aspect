@@ -173,10 +173,9 @@ namespace aspect
         data.initial_time = 0.0;
         data.final_time = this->get_timestep();
 
-        // TODO: make this an input parameter.
-        data.initial_step_size = 0.001 * this->get_timestep();
+        data.initial_step_size = arkode_initial_step_size * this->get_timestep();
         data.output_period = this->get_timestep();
-        data.minimum_step_size = 1.e-6*this->get_timestep();
+        data.minimum_step_size = arkode_minimum_step_size * this->get_timestep();
         data.maximum_order = 3;
         data.maximum_non_linear_iterations = 30;
 
@@ -417,6 +416,18 @@ namespace aspect
         prm.declare_entry ("Advect logarithm of grain size", "false",
                            Patterns::Bool (),
                            "This option does not exist any more.");
+        prm.declare_entry ("ARKode initial step size", "1e-3",
+                           Patterns::Double (1e-12, 1.0),
+                           "The initial step size that the ODE solver uses when solving the grain "
+                           "size evolution equation. The step size is relative to the ASPECT time step, i.e. "
+                           "the default value of 1e-3 means the initial step size will be 1e-3 times the "
+                           "current ASPECT time step.");
+        prm.declare_entry ("ARKode minimum step size", "1e-6",
+                           Patterns::Double (1e-12, 1.0),
+                           "The minimum step size that the ODE solver uses when solving the grain "
+                           "size evolution equation. The step size is relative to the ASPECT time step, i.e. "
+                           "the default value of 1e-6 means the step size will never be smaller than 1e-6 "
+                           "times the current ASPECT time step.");
 
         prm.enter_subsection("Grain damage partitioning");
         {
@@ -553,6 +564,9 @@ namespace aspect
                                "has been removed. Please remove it from your input file. For models "
                                "with large spatial variations in grain size, please advect your "
                                "grain size on particles."));
+
+        arkode_initial_step_size = prm.get_double ("ARKode initial step size");
+        arkode_minimum_step_size = prm.get_double ("ARKode minimum step size");
 
         if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
             grain_growth_activation_energy.size() != grain_growth_rate_constant.size() ||

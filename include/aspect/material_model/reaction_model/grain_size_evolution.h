@@ -257,6 +257,16 @@ namespace aspect
            * Cache the total number of phase transitions defined in phase_function.
            */
           unsigned int n_phase_transitions;
+
+          /**
+           * The initial step size taken by the ARKode solver.
+           */
+          double arkode_initial_step_size;
+
+          /**
+           * The minimum step size taken by the ARKode solver.
+           */
+          double arkode_minimum_step_size;
       };
     }
 

@@ -1,0 +1,20 @@
+# A test for the grain size material model using the pinned state damage formulation.
+# This test is like the grain_size_plunge test, but modifies the ODE solver parameters
+# to check that they are working as intended. At the time of writing the test, the ODE
+# statistics postprocessor reports 3 steps for the default values, and 5 steps
+# for the parameters in this file. Using an initial step size of 1.0 results in 1 step.
+
+include $ASPECT_SOURCE_DIR/benchmarks/grain_size_pinned_state/grain_size_plunge.prm
+
+set End time                               = 1e2
+
+subsection Material model
+  subsection Grain size model
+    set ARKode initial step size = 1e-6
+    set ARKode minimum step size = 1e-6
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = ODE statistics
+end
