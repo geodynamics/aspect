@@ -190,24 +190,13 @@ namespace aspect
                     if (in.composition[q][porosity_idx] + porosity_change < 0)
                       porosity_change = -in.composition[q][porosity_idx];
 
-                    if (fluid_solid_reaction_scheme != katz2003)
-                      {
-                        const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-                        if (c == bound_fluid_idx && this->get_timestep_number() > 0)
-                          reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
-                        else if (c == porosity_idx && this->get_timestep_number() > 0)
-                          reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
-                        else
-                          reaction_rate_out->reaction_rates[q][c] = 0.0;
-                      }
+                    const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+                    if (c == bound_fluid_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
+                    else if (c == porosity_idx && this->get_timestep_number() > 0)
+                      reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
                     else
-                      {
-                        if (c == porosity_idx && this->get_timestep_number() > 0)
-                          reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
-                        else
-                          reaction_rate_out->reaction_rates[q][c] = 0.0;
-                      }
-
+                      reaction_rate_out->reaction_rates[q][c] = 0.0;
                   }
             }
         }
