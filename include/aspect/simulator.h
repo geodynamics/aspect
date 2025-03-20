@@ -84,6 +84,12 @@ namespace aspect
   template <int dim>
   class StokesMatrixFreeHandler;
 
+  namespace StokesSolver
+  {
+    template <int dim>
+    class Direct;
+  }
+
   template <int dim, int velocity_degree>
   class StokesMatrixFreeHandlerImplementation;
 
@@ -1489,17 +1495,18 @@ namespace aspect
 
       /**
        * Eliminate the nullspace of the velocity in the given vector. Both
-       * vectors are expected to contain the up to date data.
+       * vectors are expected to contain the current solution.
        *
-       * @param relevant_dst locally relevant vector for the whole FE, will be
-       * filled at the end.
-       * @param tmp_distributed_stokes only contains velocity and pressure.
+       * @param solution The locally relevant vector for the whole
+       * finite element, this vector will be filled at the end.
+       * @param distributed_stokes_solution only contains velocity and pressure and
+       * only locally owned elements.
        *
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
-      void remove_nullspace(LinearAlgebra::BlockVector &relevant_dst,
-                            LinearAlgebra::BlockVector &tmp_distributed_stokes) const;
+      void remove_nullspace(LinearAlgebra::BlockVector &solution,
+                            LinearAlgebra::BlockVector &distributed_stokes_solution) const;
 
       /**
        * Compute the angular momentum and other rotation properties
@@ -2171,6 +2178,12 @@ namespace aspect
        * Unique pointer for the matrix-free Stokes solver
        */
       std::unique_ptr<StokesMatrixFreeHandler<dim>> stokes_matrix_free;
+
+      /**
+       * Unique pointer for the direct Stokes solver
+       */
+      std::unique_ptr<StokesSolver::Direct<dim>> stokes_direct;
+
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;

@@ -401,7 +401,7 @@ namespace aspect
    * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
    */
   template <int dim>
-  class StokesMatrixFreeHandler: public Solver::Interface<dim>
+  class StokesMatrixFreeHandler: public StokesSolver::Interface<dim>
   {
     public:
       /**
@@ -532,14 +532,24 @@ namespace aspect
        * @param system_matrix The system matrix. Note that we do not actually
        * use this matrix for this matrix free solver.
        * @param system_rhs The right hand side vector of the system.
+       * @param solve_newton_system A flag indicating whether the system to be
+       * solved is the normal linear system or the Newton system. If the Newton
+       * system is solved, some operations have to change, e.g. the residual
+       * is computed differently.
        * @param solution_vector The solution vector that will be
        * updated with the new solution. This vector is expected to have the
        * block structure of the full solution vector, and its velocity and
        * pressure blocks will be updated with the new solution.
+       *
+       * @return A structure that contains information about the solver, like
+       * the initial and final residual.
        */
-      std::pair<double,double> solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
-                                     const LinearAlgebra::BlockVector &system_rhs,
-                                     LinearAlgebra::BlockVector &solution_vector) override;
+      StokesSolver::SolverOutputs
+      solve(const LinearAlgebra::BlockSparseMatrix &system_matrix,
+            const LinearAlgebra::BlockVector &system_rhs,
+            const bool solve_newton_system,
+            const double last_pressure_normalization_adjustment,
+            LinearAlgebra::BlockVector &solution_vector) override;
 
       /**
        * Allocates and sets up the members of the StokesMatrixFreeHandler. This

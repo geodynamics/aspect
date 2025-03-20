@@ -978,6 +978,45 @@ namespace aspect
                                    const LinearAlgebra::BlockVector &solution,
                                    const bool limit_to_top_faces = false) const;
 
+      /**
+      * Eliminate the nullspace of the velocity in the given vector. Both
+      * vectors are expected to contain the current solution.
+      *
+      * @param solution The locally relevant vector for the whole
+      * finite element, this vector will be filled at the end.
+      * @param distributed_stokes_solution only contains velocity and pressure and
+      * only locally owned elements.
+      */
+      void remove_nullspace(LinearAlgebra::BlockVector &solution,
+                            LinearAlgebra::BlockVector &distributed_stokes_solution) const;
+
+      /**
+       * Adjust the pressure variable (which is only determined up to
+       * a constant by the equations) by adding a constant to it in
+       * such a way that the pressure on the surface or within the
+       * entire volume has a known average value. See the documentation
+       * of the normalize_pressure() function in the Simulator class
+       * for more information.
+       *
+       * @return This function returns the pressure adjustment by value.
+       * This is so that its negative can later be used again in
+       * denormalize_pressure().
+       */
+      double normalize_pressure(LinearAlgebra::BlockVector &vector) const;
+
+      /**
+       * Invert the action of the normalize_pressure() function above. This
+       * means that we move from a pressure that satisfies the pressure
+       * normalization (e.g., has a zero average pressure, or a zero average
+       * surface pressure) to one that does not actually satisfy this
+       * normalization. See the function denormalize_pressure() in the
+       * Simulator class for more information.
+       *
+       * This function modifies @p vector in-place.
+       */
+      void denormalize_pressure(const double                      pressure_adjustment,
+                                LinearAlgebra::BlockVector       &vector) const;
+
       /** @} */
 
     private:

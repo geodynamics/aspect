@@ -26,6 +26,7 @@
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/stokes_matrix_free.h>
+#include <aspect/simulator/solver/stokes_direct.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/postprocess/particles.h>
 
@@ -444,6 +445,14 @@ namespace aspect
         stokes_matrix_free->initialize_simulator(*this);
         stokes_matrix_free->parse_parameters(prm);
         stokes_matrix_free->initialize();
+      }
+
+    if (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::direct_solver)
+      {
+        stokes_direct = std::make_unique<StokesSolver::Direct<dim>>();
+        stokes_direct->initialize_simulator(*this);
+        stokes_direct->parse_parameters(prm);
+        stokes_direct->initialize();
       }
 
     postprocess_manager.initialize_simulator (*this);
