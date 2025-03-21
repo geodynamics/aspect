@@ -1,0 +1,9 @@
+Fixed: The 'surface stress' postprocessor used the wrong sign for stresses,  
+leading to incorrect stress directions in models with elastic deformation.  
+Additionally, the 'stress second invariant' postprocessor had incorrect  
+magnitude values due to a sign convention issue. These issues are now fixed.  
+
+Fix applied in `surface_stress.cc` and `stress_second_invariant.cc`.  
+
+<br>  
+(Ninghui Tian, Rene Gassmoeller, 2025/03/21)
