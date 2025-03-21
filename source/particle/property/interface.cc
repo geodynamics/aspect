@@ -581,15 +581,23 @@ namespace aspect
                   // Otherwise use the boundary condition
                   else
                     {
-                      Assert(property_information.get_components_by_plugin_index(property_index) == this->n_compositional_fields(),
-                             ExcInternalError());
-
                       const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
 
-                      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
                         {
-                          const double composition = manager.boundary_composition(boundary_id,particle_location,c);
-                          particle_properties.push_back(composition);
+                          unsigned int composition_index = numbers::invalid_unsigned_int;
+                          const std::string name = property_information.get_field_name_by_index(property_index);
+
+                          for (const std::pair<unsigned int,std::pair<std::string,unsigned int>> &item : this->get_parameters().mapped_particle_properties)
+                            {
+                              if (item.second.first == name && item.second.second == property_component)
+                                composition_index = item.first;
+                            }
+                          Assert(composition_index != numbers::invalid_unsigned_int,
+                                 ExcMessage("Could not find composition index " + std::to_string(property_index)
+                                            + " with name " + name + " in the list of compositions."));
+
+                          particle_properties.push_back(manager.boundary_composition(boundary_id,particle_location,composition_index));
                         }
                     }
 
