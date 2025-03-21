@@ -1,0 +1,81 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Solving C_2 system ... 0 iterations.
+   Skipping C_3 composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 11+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                                   output-composition_velocity_zero/solution/solution-00000
+     Temperature min/avg/max:                                    0 K, 0.5 K, 1 K
+     Compositions min/max/mass:                                  0/1/0.4583 // 0/1/0.4583 // 0/0/0
+     RMS velocity for compositions and combined selected fields: 0.1856 m/s // 0.5652 m/s // 0 m/s
+
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
+   Solving temperature system... 9 iterations.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 10 iterations.
+   Skipping C_3 composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:                                    0 K, 0.5013 K, 1 K
+     Compositions min/max/mass:                                  -0.006514/1.046/0.4591 // -0.01597/1.028/0.4583 // 0/0/0
+     RMS velocity for compositions and combined selected fields: 0.1513 m/s // 0.5546 m/s // 0 m/s
+
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 11 iterations.
+   Skipping C_3 composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                                   output-composition_velocity_zero/solution/solution-00001
+     Temperature min/avg/max:                                    0 K, 0.5026 K, 1 K
+     Compositions min/max/mass:                                  -0.008045/1.061/0.4596 // -0.02111/1.031/0.4583 // 0/0/0
+     RMS velocity for compositions and combined selected fields: 0.1549 m/s // 0.5509 m/s // 0 m/s
+
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
+   Solving temperature system... 10 iterations.
+   Solving C_1 system ... 12 iterations.
+   Solving C_2 system ... 12 iterations.
+   Skipping C_3 composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 12+0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:                                    0 K, 0.504 K, 1 K
+     Compositions min/max/mass:                                  -0.006562/1.059/0.46 // -0.01251/1.028/0.4582 // 0/0/0
+     RMS velocity for compositions and combined selected fields: 0.1608 m/s // 0.5471 m/s // 0 m/s
+
+*** Timestep 4:  t=0.2 seconds, dt=0.0125 seconds
+   Solving temperature system... 8 iterations.
+   Solving C_1 system ... 9 iterations.
+   Solving C_2 system ... 10 iterations.
+   Skipping C_3 composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 10+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                                   output-composition_velocity_zero/solution/solution-00002
+     Temperature min/avg/max:                                    0 K, 0.5042 K, 1 K
+     Compositions min/max/mass:                                  -0.005787/1.057/0.46 // -0.01031/1.026/0.4582 // 0/0/0
+     RMS velocity for compositions and combined selected fields: 0.1576 m/s // 0.5454 m/s // 0 m/s
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
