@@ -181,10 +181,11 @@ namespace aspect
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
 
+            const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+            const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
+
             if (this->include_melt_transport())
               {
-                const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-                const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
                 const double old_porosity = in.composition[i][porosity_idx];
                 const double maximum_melt_fraction = in.composition[i][peridotite_idx];
 
@@ -275,13 +276,16 @@ namespace aspect
                 out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), 0, NonlinearDependence::pressure);
                 out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), 0, NonlinearDependence::temperature);
 
-                // no melting/freezing is used in the model --> set all reactions to zero
+                // no melting/freezing is used in the model --> set reactions for peridotite and porosity fields to 0
                 for (unsigned int c=0; c<in.composition[i].size(); ++c)
                   {
-                    out.reaction_terms[i][c] = 0.0;
+                    if (c == peridotite_idx || c == porosity_idx)
+                      {
+                        out.reaction_terms[i][c] = 0.0;
 
-                    if (reaction_rate_out != nullptr)
-                      reaction_rate_out->reaction_rates[i][c] = 0.0;
+                        if (reaction_rate_out != nullptr)
+                          reaction_rate_out->reaction_rates[i][c] = 0.0;
+                      }
                   }
               }
           }
