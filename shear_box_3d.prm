@@ -1,0 +1,116 @@
+
+############### Global parameters
+
+set Dimension                              = 3
+set Start time                             = 0
+set End time                               = 0 
+set Use years in output instead of seconds = false #true
+set CFL number                             = .5
+set Output directory                       = output-shear_box_3D
+set Nonlinear solver scheme                = Stokes only
+set Pressure normalization                 = no
+set Timing output frequency                = 1
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 1
+    set Y extent  =  1
+    set Z extent  =  1
+  end
+end
+
+
+
+subsection Material model
+  set Model name = simpler 
+  subsection Simpler model
+    set Reference density = 0
+    set Viscosity = 0.5
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+
+# The velocity along the top boundary models a spreading
+# center that is moving left and right:
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 
+  set Prescribed velocity boundary indicators = front z:function, back z:function, left z:function, right z:function, top:function, bottom:function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = cm=0.01, year=1 
+    set Function expression =  (0.5-z)*2 ; 0.5-z ; z
+  end
+end
+
+
+############### Parameters describing the temperature field
+# As above, there is no need to set anything for the
+# temperature boundary conditions.
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+############### Parameters describing the discretization
+# The following parameters describe how often we want to refine
+# the mesh globally and adaptively, what fraction of cells should
+# be refined in each adaptive refinement step, and what refinement
+# indicator to use when refining the mesh adaptively. 
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Refinement fraction                = 0.9
+  set Strategy                           = strain rate 
+  set Coarsening fraction                = 0.05
+  set Minimum refinement level           = 2
+  set Time steps between mesh refinement = 1
+  set Run postprocessors on initial refinement = true
+end
+
+
+############### Parameters describing what to do with the solution
+# The final section allows us to choose which postprocessors to
+# run at the end of each time step. We select to generate graphical
+# output that will consist of the primary variables (velocity, pressure,
+# temperature and the compositional fields) as well as the density and
+# viscosity. We also select to compute some statistics about the
+# velocity field.
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, topography, pressure statistics
+  subsection Visualization
+    set List of output variables = density, viscosity, strain rate, error indicator, gravity, maximum horizontal compressive stress, shear stress eigenvectors, strain rate tensor
+    set Time between graphical output = 0
+    set Interpolate output = true
+  end
+end
+
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-9
+    set Number of cheap Stokes solver steps = 0
+  end
+end
