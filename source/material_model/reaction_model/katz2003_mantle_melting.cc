@@ -265,7 +265,8 @@ namespace aspect
                         else
                           reaction_rate_out->reaction_rates[i][c] = 0.0;
                       }
-                    out.reaction_terms[i][c] = 0.0;
+                    if (c == peridotite_idx || c == porosity_idx)
+                      out.reaction_terms[i][c] = 0.0;
                   }
 
                 out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::pressure);
