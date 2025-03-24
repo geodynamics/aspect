@@ -188,11 +188,7 @@ namespace aspect
           // Check that the names given as selected_fields are actually fields.
           for (const std::string &field_name: selected_fields)
             {
-              std::vector<std::string> field_names = this->get_parameters().names_of_compositional_fields;
-              AssertThrow(std::find(field_names.begin(),
-                                    field_names.end(),
-                                    field_name)
-                          != field_names.end(),
+              AssertThrow(this->introspection().compositional_name_exists(field_name),
                           ExcMessage("The entry '" + field_name + "' in the parameter "
                                      "<Names of selected compositional fields> in the composition velocity "
                                      "statistics postprocessor is not a valid name of a compositional field "

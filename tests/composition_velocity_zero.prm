@@ -20,6 +20,10 @@ subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, composition statistics, composition velocity statistics
 
   subsection Composition velocity statistics
+    # The postprocessor always calculates the RMS velocity of all individual compositional fields.
+    # This parameter allows it to additionally compute a combined RMS velocity for specific fields.
+    # Leaving this parameter blank only means that we do not want to do this combined calculation,
+    # but the RMS velocity of all individual fields will still be computed.
     set Names of selected compositional fields =
   end
 end

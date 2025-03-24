@@ -17,7 +17,7 @@ Number of degrees of freedom: 47,115 (15,058+1,941+7,529+7,529+7,529+7,529)
      RMS, max velocity:                                          0.0197 m/year, 0.0501 m/year
      Heating rate (average/total):                               0 W/kg, 0 W
      Compositions max depth [m]:                                 7.328e+04 // 1.07e+05 // 7.328e+04
-     RMS velocity for compositions and combined selected fields: 0.0142 m/year // 0.03851 m/year // 0.03684 m/year // 0.03841
+     RMS velocity for compositions and combined selected fields: 0.0142 m/year // 0.03851 m/year // 0.03684 m/year // 0.03841 m/year
      Viscous dissipation per field and for whole domain (W/m):   6727 // 9668 // 3.565 // 1.82e+04
 
 *** Timestep 1:  t=100000 years, dt=100000 years
@@ -31,7 +31,7 @@ Number of degrees of freedom: 47,115 (15,058+1,941+7,529+7,529+7,529+7,529)
      RMS, max velocity:                                          0.0197 m/year, 0.0501 m/year
      Heating rate (average/total):                               0 W/kg, 0 W
      Compositions max depth [m]:                                 7.328e+04 // 1.07e+05 // 7.328e+04
-     RMS velocity for compositions and combined selected fields: 0.01422 m/year // 0.03849 m/year // 0.03669 m/year // 0.03838
+     RMS velocity for compositions and combined selected fields: 0.01422 m/year // 0.03849 m/year // 0.03669 m/year // 0.03838 m/year
      Viscous dissipation per field and for whole domain (W/m):   6771 // 9688 // 46.3 // 1.827e+04
 
 Termination requested by criterion: end time

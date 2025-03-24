@@ -21,7 +21,7 @@
 # 21: RMS velocity (m/year) for composition OP
 # 22: RMS velocity (m/year) for composition ML_SP
 # 23: RMS velocity (m/year) for composition crust_SP
-# 24: RMS velocity (m/year) for the selected field 
+# 24: RMS velocity (m/year) for the selected field(s)
 # 25: Viscous dissipation (W/m) for composition OP
 # 26: Viscous dissipation (W/m) for composition ML_SP
 # 27: Viscous dissipation (W/m) for composition crust_SP
