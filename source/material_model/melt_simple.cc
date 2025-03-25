@@ -132,6 +132,13 @@ namespace aspect
 
         }
 
+      // Set the reaction terms to zero.
+      // Melting and freezing reactions are set with the reaction rates,
+      // which are filled by the Katz 2003 reaction model.
+      for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
+        for (unsigned int c=0; c<in.composition[q].size(); ++c)
+          out.reaction_terms[q][c] = 0.0;
+
       katz2003_model.calculate_reaction_rate_outputs(in, out);
       katz2003_model.calculate_fluid_outputs(in, out, reference_T);
     }

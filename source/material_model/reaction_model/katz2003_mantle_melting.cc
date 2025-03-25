@@ -264,7 +264,6 @@ namespace aspect
                         else
                           reaction_rate_out->reaction_rates[i][c] = 0.0;
                       }
-                    out.reaction_terms[i][c] = 0.0;
                   }
 
                 out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::pressure);
@@ -277,12 +276,8 @@ namespace aspect
 
                 // no melting/freezing is used in the model --> set all reactions to zero
                 for (unsigned int c=0; c<in.composition[i].size(); ++c)
-                  {
-                    out.reaction_terms[i][c] = 0.0;
-
-                    if (reaction_rate_out != nullptr)
-                      reaction_rate_out->reaction_rates[i][c] = 0.0;
-                  }
+                  if (reaction_rate_out != nullptr)
+                    reaction_rate_out->reaction_rates[i][c] = 0.0;
               }
           }
 
