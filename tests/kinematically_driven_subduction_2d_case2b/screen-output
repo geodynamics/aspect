@@ -23,7 +23,7 @@ Number of degrees of freedom: 77,231 (15,058+1,941+7,529+7,529+7,529+7,529+7,529
      RMS, max velocity:                                                           0.0193 m/year, 0.0501 m/year
      Heating rate (average/total):                                                0 W/kg, 0 W
      Compositions max depth [m]:                                                  2360 // 2360 // 3.141e+04 // 3.141e+04 // 7.328e+04 // 1.07e+05 // 8.139e+04
-     RMS velocity for compositions and combined selected fields:                  0.01479 m/year // 0.03895 m/year // 0.01458 m/year // 0.03876 m/year // 0.01402 m/year // 0.03844 m/year // 0.02555 m/year // 0.03855
+     RMS velocity for compositions and combined selected fields:                  0.01479 m/year // 0.03895 m/year // 0.01458 m/year // 0.03876 m/year // 0.01402 m/year // 0.03844 m/year // 0.02555 m/year // 0.03855 m/year
      Viscous dissipation per field and for whole domain (W/m):                    516.2 // 0.4375 // 2740 // 2240 // 3525 // 7391 // 72.41 // 1.827e+04
      Temperature min/avg/max:                                                     273.1 K, 1554 K, 1720 K
      Trench location [m]:                                                         1.465e+06 m
@@ -45,7 +45,7 @@ Number of degrees of freedom: 77,231 (15,058+1,941+7,529+7,529+7,529+7,529+7,529
      RMS, max velocity:                                                           0.0194 m/year, 0.0501 m/year
      Heating rate (average/total):                                                0 W/kg, 0 W
      Compositions max depth [m]:                                                  2360 // 2360 // 3.141e+04 // 3.141e+04 // 7.328e+04 // 1.07e+05 // 8.139e+04
-     RMS velocity for compositions and combined selected fields:                  0.01455 m/year // 0.03911 m/year // 0.01432 m/year // 0.0389 m/year // 0.01378 m/year // 0.0386 m/year // 0.02569 m/year // 0.0387
+     RMS velocity for compositions and combined selected fields:                  0.01455 m/year // 0.03911 m/year // 0.01432 m/year // 0.0389 m/year // 0.01378 m/year // 0.0386 m/year // 0.02569 m/year // 0.0387 m/year
      Viscous dissipation per field and for whole domain (W/m):                    499.6 // 0.4271 // 2633 // 2195 // 3418 // 7272 // 48.77 // 1.789e+04
      Temperature min/avg/max:                                                     273.1 K, 1553 K, 1720 K
      Trench location [m]:                                                         1.465e+06 m

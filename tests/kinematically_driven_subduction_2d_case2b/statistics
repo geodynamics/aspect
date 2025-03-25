@@ -33,7 +33,7 @@
 # 33: RMS velocity (m/year) for composition thermal_OP
 # 34: RMS velocity (m/year) for composition thermal_SP
 # 35: RMS velocity (m/year) for composition WZ
-# 36: RMS velocity (m/year) for the selected field 
+# 36: RMS velocity (m/year) for the selected field(s)
 # 37: Viscous dissipation (W/m) for composition BOC_OP
 # 38: Viscous dissipation (W/m) for composition BOC_SP
 # 39: Viscous dissipation (W/m) for composition SHB_OP

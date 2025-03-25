@@ -1,0 +1,29 @@
+# This is a test for the composition velocity statistics
+# postprocessor, specifically, if it also works when a
+# field is zero.
+
+include $ASPECT_SOURCE_DIR/tests/composition_active.prm
+
+set End time = 0.2
+
+subsection Compositional fields
+  set Number of fields = 3
+end
+
+subsection Initial composition model
+  subsection Function
+    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0); 0.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, composition statistics, composition velocity statistics
+
+  subsection Composition velocity statistics
+    # The postprocessor always calculates the RMS velocity of all individual compositional fields.
+    # This parameter allows it to additionally compute a combined RMS velocity for specific fields.
+    # Leaving this parameter blank only means that we do not want to do this combined calculation,
+    # but the RMS velocity of all individual fields will still be computed.
+    set Names of selected compositional fields =
+  end
+end
