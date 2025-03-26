@@ -24,11 +24,23 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 1e3
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, single Stokes
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set CFL number                             = 0.1
 set Maximum time step                      = 5
 set Output directory                       = output-viscoelastic_plate_flexure
 set Pressure normalization                 = no
+
+# To update the elastic stresses,
+# we do 1 operator splitting step.
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
 
 # Model geometry (500 m initial resolution)
 subsection Geometry model
@@ -62,8 +74,8 @@ subsection Discretization
 
   subsection Stabilization parameters
     set Use limiter for discontinuous composition solution = true
-    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0, 1.0
-    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0, 0.0
+    set Global composition maximum =  1.e11,  1.e11,  1.e11,  1.e11,  1.e11,  1.e11, 1.0, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0, 0.0
   end
 end
 
@@ -90,8 +102,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 5
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plate, inclusion
+  set Number of fields = 8
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, plate, inclusion
+  set Types of fields  = stress, stress, stress, stress, stress, stress, chemical composition, chemical composition
 end
 
 # Spatial domain of different compositional fields
@@ -101,7 +114,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; \
+    set Function expression = 0; 0; 0; 0; 0; 0; \
                               if (y>12.5e3, 1, 0); \
                               if (x>=45e3 && y>=7.5e3 && y<=12.5e3, 1, 0);
   end
@@ -133,12 +146,12 @@ subsection Material model
   set Model name = viscoelastic
 
   subsection Viscoelastic
-    set Densities                   =  2700,  2700,  2700,  2700,  2700,  1890
-    set Viscosities                 = 1.e17, 1.e17, 1.e17, 1.e17, 1.e35, 1.e35
-    set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
-    set Fixed elastic time step     = 5
-    set Use fixed elastic time step = false
-    set Viscosity averaging scheme  = maximum composition
+     set Densities                   =  2700, 2700,  1890
+     set Viscosities                 = 1.e17, 1.e35, 1.e35
+     set Elastic shear moduli        = 1.e50, 3.e10, 3.e10
+     set Fixed elastic time step     = 5
+     set Use fixed elastic time step = false
+     set Viscosity averaging scheme  = maximum composition
   end
 end
 
