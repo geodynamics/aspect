@@ -1,0 +1,87 @@
+#specify posstprocessor objects that will be run at the end of each time step
+#The statistics is important for cpo plotter for reading the data
+#The particles and crystal preferred orientation are required for CPO calculations
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization, particles, crystal preferred orientation
+
+  #specify data output for visualizing in paraview or visit
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set List of output variables = stress, viscosity, strain rate
+  end
+
+  #specify CPO data output
+  subsection Crystal Preferred Orientation
+    set Time between data output = 1e5
+    set Write in background thread = true
+    set Compress cpo data files = false # so results are human readable
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles #specify what to output, here will only output volume fraction and Euler angles for mineral 0 (olivine)
+    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles
+
+    #specify output parameters for draw volume weighted cpo, the pole figures are plotted with these data
+  end
+
+  # Here is for data results read by paraview and visit
+  # Exclude output properties so as to allow fast reading by paraview
+  # because if number of particles is large, paraview will crash
+  subsection Particles
+    set Time between data output = 1e4
+    set Data output format       = vtu
+    set Exclude output properties = volume fraction, rotation_matrix
+  end
+end
+
+# subsection Particles was part of subsection Postprocess but from V3.0 it standalone
+subsection Particles
+  set List of particle properties = integrated strain, crystal preferred orientation, cpo elastic tensor, cpo bingham average, integrated strain invariant, velocity, pT path #what particle properties are calculated
+
+  # When specifying locations for particles using subsection Generator below, below 3 lines are commented
+  #set Load balancing strategy = add particles
+  #set Minimum particles per cell = 128
+  #set Maximum particles per cell = 512
+  # use a ascii file particle_one.dat to specify initial locations of particles
+  set Particle generator name = ascii file
+
+  #
+  subsection Generator
+    subsection Ascii file
+      # you may need to change the below path to the absolute path in your local computer
+      # the particle_one.dat is located in the cookbook folder
+      set Data directory = /aspect/cookbooks/crystal_preferred_orientation_olivine_fraters_billen_2021/
+      set Data file name = particle_one.dat
+    end
+  end
+
+  # parameters for DRex
+  subsection Crystal Preferred Orientation
+    # a random seed to 'randomize' initial Euler angles for the grains
+    set Random number seed = 301
+    set Number of grains per particle = 500 ## Annotation grain count
+    set Property advection method = Backward Euler ## Annotation Property advection method
+    set Property advection tolerance = 1e-15
+    set CPO derivatives algorithm = D-Rex 2004
+
+    subsection Initial grains
+      # prescribe types of mineral
+      # The A,B,C,D,E types of olivine fabric can be set here by changing
+      # A-fabric to B-fabric for example
+      set Minerals = Olivine: A-fabric, Enstatite ## Annotation Minerals
+
+      # The two minerals are not interacting with each other.
+      set Volume fractions minerals = 0.7,0.3 ## Annotation Volume fractions minerals
+    end
+
+    # DRex parameters following Kaminski et al., 2004
+    subsection D-Rex 2004
+      set Mobility = 125 ## 125+-75 Annotation LPO Mobility
+      set Stress exponents = 3.5
+      set Exponents p = 1.5
+      set Nucleation efficiency = 5 ## Annotation Nucleation efficiency
+      set Threshold GBS = 0.3 ## Annotation TGBS
+    end
+  end
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+  end
+end
