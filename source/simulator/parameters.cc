@@ -1131,7 +1131,7 @@ namespace aspect
         prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",
                            Patterns::List(Patterns::Anything()),
                            "Select for which compositional fields to skip the entropy viscosity "
-                           "stabilization at dirichlet boundaries. This is "
+                           "stabilization at Dirichlet boundaries. This is "
                            "only advisable for compositional fields "
                            "that have intrinsic physical diffusion terms, otherwise "
                            "oscillations may develop. The parameter should contain a list of "
@@ -1154,7 +1154,7 @@ namespace aspect
                            "Rather, the paper always uses 2 as the exponent in the definition "
                            "of the entropy, following equation (15) of the paper. The full "
                            "approach is discussed in \\cite{guermond:etal:2011}.) Note that this is not the "
-                           "thermal expansion coefficient, also commonly referred to as $\\alpha$."
+                           "thermal expansion coefficient, also commonly referred to as $\\alpha$. "
                            "Units: None.");
         prm.declare_entry ("cR", "0.11",
                            Patterns::List(Patterns::Double (0.)),
@@ -1341,8 +1341,8 @@ namespace aspect
                          "determine the equation of state, rheology, and reactions."
                          "\n"
                          "* ``stress'': This type of field represents stress in the material. "
-                         "Whether the fields represents a scalar stress invariant or "
-                         "tensor components, and which type of stress is represented "
+                         "Whether the field represents a scalar stress invariant or a "
+                         "tensor component, and which type of stress is represented "
                          "depends on the interpretation of the material model."
                          "\n"
                          "* ``strain'': This type of field represents accumulated strain. "
@@ -1443,8 +1443,8 @@ namespace aspect
                          "field as mentioned in Section~\\ref{sec:methods:compositional-fields}, except that it is "
                          "advected with the Darcy velocity instead of the solid velocity. This method "
                          "requires there to be a compositional field named porosity that is advected "
-                         "the darcy field method. We calculate the fluid velocity $u_f$ using an "
-                         "approximation of Darcy's Law: $u_f = u_s - K_D / \\phi * (rho_s * g - rho_f * g)$."
+                         "with the darcy field method. We calculate the fluid velocity $u_f$ using an "
+                         "approximation of Darcy's Law: $u_f = u_s - K_D / \\phi * (\\rho_s * g - \\rho_f * g)$."
                          "\n"
                          "* ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
