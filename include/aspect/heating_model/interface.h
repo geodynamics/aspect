@@ -157,6 +157,14 @@ namespace aspect
         virtual
         void
         create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const;
+
+        /**
+        * Let the heating model specify which material model outputs it
+        * requires for computing the heating terms.
+        */
+        virtual
+        MaterialModel::MaterialProperties::Property
+        get_required_properties() const;
     };
 
 
@@ -264,7 +272,7 @@ namespace aspect
          * Return a list of pointers to all heating models currently used in the
          * computation, as specified in the input file.
          *
-         * @deprecated Use Plugins::ManagerBase::get_active_plugin_names()
+         * @deprecated Use Plugins::ManagerBase::get_active_plugins()
          *   instead.
          */
         DEAL_II_DEPRECATED
