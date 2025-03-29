@@ -79,6 +79,17 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    ShearHeatingMelt<dim>::
+    get_required_properties () const
+    {
+      return MaterialModel::MaterialProperties::additional_outputs;
+    }
+
+
+
     template <int dim>
     void
     ShearHeatingMelt<dim>::

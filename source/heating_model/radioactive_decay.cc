@@ -33,6 +33,7 @@ namespace aspect
       = default;
 
 
+
     template <int dim>
     void
     RadioactiveDecay<dim>::
@@ -83,6 +84,16 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    RadioactiveDecay<dim>::get_required_properties () const
+    {
+      return MaterialModel::MaterialProperties::density;
+    }
+
+
+
     template <int dim>
     void
     RadioactiveDecay<dim>::declare_parameters (ParameterHandler &prm)
@@ -122,6 +133,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

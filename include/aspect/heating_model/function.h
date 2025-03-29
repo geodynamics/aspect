@@ -64,6 +64,14 @@ namespace aspect
         update () override;
 
         /**
+         * Specify which material model outputs the heating model requires
+         * for computing the heating terms.
+         */
+        virtual
+        MaterialModel::MaterialProperties::Property
+        get_required_properties () const override;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static

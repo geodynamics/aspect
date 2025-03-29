@@ -109,6 +109,27 @@ namespace aspect
         }
     }
 
+
+
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    LatentHeatMelt<dim>::
+    get_required_properties () const
+    {
+      MaterialModel::MaterialProperties::Property required_properties = MaterialModel::MaterialProperties::additional_outputs;
+      if (this->get_parameters().use_operator_splitting)
+        required_properties = required_properties |
+                              MaterialModel::MaterialProperties::specific_heat |
+                              MaterialModel::MaterialProperties::reaction_rates;
+      else
+        required_properties = required_properties |
+                              MaterialModel::MaterialProperties::reaction_terms |
+                              MaterialModel::MaterialProperties::density;
+      return required_properties;
+    }
+
+
+
     template <int dim>
     void
     LatentHeatMelt<dim>::declare_parameters (ParameterHandler &prm)
