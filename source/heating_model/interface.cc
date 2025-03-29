@@ -51,6 +51,16 @@ namespace aspect
     {}
 
 
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    Interface<dim>::
+    get_required_properties() const
+    {
+      return MaterialModel::MaterialProperties::all_properties;
+    }
+
+
+
     // ------------------------------ Manager -----------------------------
 
 

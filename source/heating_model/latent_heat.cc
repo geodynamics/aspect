@@ -48,6 +48,18 @@ namespace aspect
                                                            * material_model_outputs.entropy_derivative_temperature[q];
         }
     }
+
+
+
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    LatentHeat<dim>::
+    get_required_properties () const
+    {
+      return MaterialModel::MaterialProperties::entropy_derivative_pressure |
+             MaterialModel::MaterialProperties::entropy_derivative_temperature |
+             MaterialModel::MaterialProperties::density;
+    }
   }
 }
 
