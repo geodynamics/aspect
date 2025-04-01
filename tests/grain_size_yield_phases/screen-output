@@ -1,0 +1,30 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 126+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-grain_size_yield_phases/solution/solution-00000
+     Compositions min/max/mass:                         0.001/0.001/1e+07
+     Writing particle output:                           output-grain_size_yield_phases/particles/particles-00000
+     Average density / Average viscosity / Total mass:  1000 kg/m^3, 2.175e+19 Pa s, 1e+13 kg
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 93+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-grain_size_yield_phases/solution/solution-00001
+     Compositions min/max/mass:                         0.001/0.001608/1.304e+07
+     Writing particle output:                           output-grain_size_yield_phases/particles/particles-00001
+     Average density / Average viscosity / Total mass:  1000 kg/m^3, 3.49e+19 Pa s, 1e+13 kg
+
+Termination requested by criterion: end time
+
+
+
