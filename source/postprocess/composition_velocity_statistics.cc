@@ -82,13 +82,17 @@ namespace aspect
       Utilities::MPI::sum(local_area_integral, this->get_mpi_communicator(), global_area_integral);
 
       // compute the RMS velocity for each compositional field and for the selected compositonal fields combined
-      std::vector<double> vrms_per_composition(local_area_integral.size());
+      std::vector<double> vrms_per_composition(local_area_integral.size(), 0.0);
       double velocity_square_integral_selected_fields = 0., area_integral_selected_fields = 0.;
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           if (global_area_integral[c] > 0)
             vrms_per_composition[c] = std::sqrt(global_velocity_square_integral[c]) /
                                       std::sqrt(global_area_integral[c]);
+          else
+            {
+              // leave the field at its initialization value zero
+            }
 
           const std::vector<std::string>::iterator selected_field_it = std::find(selected_fields.begin(), selected_fields.end(), this->introspection().name_for_compositional_index(c));
           if (selected_field_it != selected_fields.end())
@@ -101,6 +105,10 @@ namespace aspect
       double vrms_selected_fields = 0.;
       if (area_integral_selected_fields > 0)
         vrms_selected_fields = std::sqrt(velocity_square_integral_selected_fields) / std::sqrt(area_integral_selected_fields);
+      else
+        {
+          // leave the field at its initialization value zero
+        }
 
       const std::string unit = (this->convert_output_to_years()) ? "m/year" : "m/s";
       const double time_scaling = (this->convert_output_to_years()) ? year_in_seconds : 1.0;
@@ -130,7 +138,7 @@ namespace aspect
           statistics.add_value("RMS velocity (" + unit + ") for the selected field(s)",
                                time_scaling * vrms_selected_fields);
 
-          const std::string column = {"RMS velocity (" + unit + ") for the selected field(s)"};
+          const std::string column = "RMS velocity (" + unit + ") for the selected field(s)";
 
           statistics.set_precision(column, 8);
           statistics.set_scientific(column, true);
