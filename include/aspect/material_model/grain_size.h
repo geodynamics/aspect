@@ -288,9 +288,13 @@ namespace aspect
 
 
         /**
-         * Number of phase transitions for the one chemical composition used in this model.
+         * Number of phase transitions for the chemical compositions used in this model.
+         *
+         * Currently this material model only supports phase transitions for the background
+         * composition, but some functions expect it to be stored in a vector.
+         * This vector will therefore contain exactly one entry.
          */
-        unsigned int n_phase_transitions;
+        std::vector<unsigned int> n_phase_transitions;
 
         /**
          * Object that handles phase transitions.

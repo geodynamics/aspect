@@ -1,0 +1,159 @@
+# This test is like grain_size_phase_function.prm, but
+# it additionally enables plastic yielding in the material model.
+
+set Dimension                              = 2
+set End time                               = 10000
+set Use years in output instead of seconds = true
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600
+set Output directory                       = grain_size_yield_phases
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 100000
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top,bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 1600
+  end
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = m=0.0005, year=1
+    set Function expression = if (x<50e3 , -1*m/year, 1*m/year); if (y<50e3 , 1*m/year, -1*m/year);
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1400 + 0.004 * x
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  =
+    set Function expression = 1e-3
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields   = grain_size
+  set Compositional field methods = particles
+  set Types of fields = grain size
+  set Mapped particle properties = grain_size:grain_size
+end
+
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Reference density                    = 1000
+    set Thermal conductivity                 = 0
+    set Thermal expansion coefficient        = 0
+    set Reference compressibility            = 0
+    set Viscosity                            = 1e19
+    set Minimum viscosity                    = 1e16
+    set Reference temperature                = 1600
+    set Grain growth activation energy       = 0, 0, 0, 0
+    set Grain growth activation volume       = 0, 0, 0, 0
+    set Grain growth rate constant           = 0, 1e-20, 0, 5e-21
+    set Grain growth exponent                = 3, 3, 3, 3
+    set Average specific grain boundary energy = 1, 1, 1, 1
+    set Work fraction for boundary area change = 0.1, 0.1, 0.1, 0.1
+    set Geometric constant                   = 3, 3, 3, 3
+    set Grain size evolution formulation     = paleowattmeter
+    set Reciprocal required strain           = 10
+    set Phase transition depths              = background:20000|50000|65000
+    set Phase transition Clapeyron slopes    = background:1e6|-5e5|2.5e5
+    set Phase transition temperatures        = background:1600|1600|1600
+    set Phase transition widths              = background:0|0|0
+    set Recrystallized grain size            = 1e-3, 1e-3, 1e-3
+
+    # Faul and Jackson 2007
+    # Diffusion creep
+    # new scaled prefactors to match vertical viscosity profile
+    set Diffusion creep prefactor            = 3.0e-016, 3.0e-015, 3.0e-017, 3.0e-016
+    set Diffusion creep exponent             = 1, 1, 1, 1
+    set Diffusion creep grain size exponent  = 3, 3, 3, 3
+    set Diffusion activation energy          = 3.75e5, 3.75e5, 3.75e5, 3.75e5
+    set Diffusion activation volume          = 0, 0, 0, 0
+    set Dislocation viscosity iteration threshold = 1e-3
+
+    # No dislocation creep
+    set Dislocation creep prefactor          = 1e-200, 1e-200, 1e-200, 1e-200
+    set Dislocation creep exponent           = 1, 1, 1, 1
+    set Dislocation activation energy        = 0, 0, 0, 0
+    set Dislocation activation volume        = 0, 0, 0, 0
+
+    set Use Drucker-Prager rheology          = true
+    set Cohesions                            = 10000
+    set Angles of internal friction          = 1e-3
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+subsection Particles
+  set List of particle properties = grain size
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 10000
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, particles, material statistics, ODE statistics
+
+  subsection Visualization
+    set List of output variables  = material properties, named additional outputs, stress second invariant
+    set Time between graphical output = 0
+  end
+
+  subsection Particles
+    set Time between data output = 0
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set GMRES solver restart length = 200
+  end
+end
