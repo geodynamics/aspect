@@ -166,6 +166,8 @@ longitude_bounds: Array with the minimum and maximum longitude (degrees) of the 
 # Define the input arguments for the S2ORTS cookbook
 input_data = "../../../cookbooks/initial-condition-S20RTS/output-S20RTS/solution.pvd"
 output_directory = "./regional_velocity_files/"
+os.system("mkdir -p " + output_directory) # Create the output directory if it does not exist
+
 refinement_level = 2
 output_radius_resolution = 10e3 # 10 km radial resolution
 output_lateral_resolution = 0.25 # 0.25 degree lateral resolution
