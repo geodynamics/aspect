@@ -451,6 +451,7 @@ TEST_CASE("CPO core: Spin tensor")
     const std::vector<double> compositions;
     const SymmetricTensor<2,3> strain_rate;
     const double water_content = 0;
+    const typename DoFHandler<3>::active_cell_iterator cell;
 
     std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
     derivatives = cpo_3d.compute_derivatives(0,
@@ -459,6 +460,7 @@ TEST_CASE("CPO core: Spin tensor")
                                              strain_rate_nondimensional,
                                              velocity_gradient_tensor_nondimensional,
                                              position,
+                                             cell,
                                              temperature,
                                              pressure,
                                              velocity,
