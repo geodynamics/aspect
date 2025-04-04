@@ -67,7 +67,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; if ( 180e3>=x && y>=100e3 && y<=120e3, 1, 0)
+    set Function expression = 0; 0; 0; 0; 0; 0; if ( 180e3>=x && y>=100e3 && y<=120e3, 1, 0)
   end
 end
 
@@ -77,9 +77,9 @@ subsection Material model
   set Model name = viscoelastic
 
   subsection Viscoelastic
-    set Densities            =  2800,  2800,  2800,  2800,  2805
-    set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e24
-    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
+    set Densities            =  2800, 2805
+    set Viscosities          = 1.e18, 1.e24
+    set Elastic shear moduli = 1.e11, 1.e10
   end
 end
 
