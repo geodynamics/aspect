@@ -34,6 +34,7 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     void
     Function<dim>::
@@ -56,6 +57,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Function<dim>::update ()
@@ -68,6 +70,16 @@ namespace aspect
       else
         heating_model_function.set_time (time);
     }
+
+
+
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    Function<dim>::get_required_properties () const
+    {
+      return MaterialModel::MaterialProperties::none;
+    }
+
 
 
     template <int dim>
@@ -95,6 +107,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

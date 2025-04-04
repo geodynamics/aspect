@@ -77,6 +77,19 @@ namespace aspect
         }
     }
 
+
+
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    AdiabaticHeatingMelt<dim>::get_required_properties () const
+    {
+      return MaterialModel::MaterialProperties::density |
+             MaterialModel::MaterialProperties::thermal_expansion_coefficient |
+             MaterialModel::MaterialProperties::additional_outputs;
+    }
+
+
+
     template <int dim>
     void
     AdiabaticHeatingMelt<dim>::declare_parameters (ParameterHandler &prm)

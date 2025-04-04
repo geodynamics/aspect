@@ -64,6 +64,13 @@ namespace aspect
         evaluate (const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
+
+        /**
+         * Specify which material model outputs the heating model requires
+         * for computing the heating terms.
+         */
+        MaterialModel::MaterialProperties::Property
+        get_required_properties () const override;
     };
   }
 }
