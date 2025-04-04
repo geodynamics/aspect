@@ -282,14 +282,15 @@ namespace aspect
     Steinberger<dim>::
     fill_prescribed_outputs(const unsigned int q,
                             const std::vector<double> &,
-                            const MaterialModel::MaterialModelInputs<dim> &,
+                            const MaterialModel::MaterialModelInputs<dim> &in,
                             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // set up variable to interpolate prescribed field outputs onto compositional field
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
       if (this->introspection().composition_type_exists(CompositionalFieldDescription::density)
-          && prescribed_field_out != nullptr)
+          && prescribed_field_out != nullptr
+          && in.requests_property(MaterialProperties::additional_outputs))
         {
           const unsigned int projected_density_index = this->introspection().find_composition_type(CompositionalFieldDescription::density);
           prescribed_field_out->prescribed_field_outputs[q][projected_density_index] = out.densities[q];
