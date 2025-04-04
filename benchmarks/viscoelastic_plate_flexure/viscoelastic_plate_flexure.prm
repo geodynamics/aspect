@@ -74,7 +74,7 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = true
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true, true
     set Global composition maximum =  1.e11,  1.e11,  1.e11,  1.e11,  1.e11,  1.e11, 1.0, 1.0
     set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0, 0.0
   end
