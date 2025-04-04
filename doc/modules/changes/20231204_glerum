@@ -1,0 +1,10 @@
+ Changed: The implementation of visco-elasticity and
+ visco-elasto-plasticity has been updated to properly
+ track stresses over time. This means that iterative
+ advection schemes need to be used, as well as the DG
+ method for compositions. For fields, operator splitting
+ has to be switched on, while in the case of particles,
+ the particle property 'elastic stress' takes care of
+ the stress update.
+ <br>
+ (Anne Glerum, Robert Myhill, Rene Gassmoeller, Juliane Dannberg, John Naliboff, Gerry Puckett, Esther Heckenbach 2023/12/04)

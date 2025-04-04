@@ -4,13 +4,27 @@ include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_plastic_viscous_strain_weak
 # Global parameters
 set Dimension                              = 2
 set End time                               = 1000
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 2
 set Output directory                       = viscoelastoplastic_yield_plastic_viscous_strain_weakening
 
+# One operator splitting step to update the stresses
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
+
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 5
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plastic_strain, viscous_strain
+  set Number of fields = 8
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, plastic_strain, viscous_strain
+  set Types of fields  = stress,       stress,       stress,       stress,           stress,           stress,           strain,         strain
 end
 
 # We prescribe some initial strain at the center of the domain
@@ -20,7 +34,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0; 0; 0; \
+    set Function expression = 0; 0; 0; 0; 0; 0; \
                               if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0); \
                               if(x>=35e3&x<=65e3&y>=35.e3&y<=65.e3,0.8,0)
   end
@@ -35,6 +49,12 @@ end
 subsection Formulation
   set Enable elasticity = true
 end
+
+subsection Discretization
+  # DG for viscoelastic stresses
+  set Use discontinuous composition discretization = true
+end
+
 
 # Material model (values for background material)
 subsection Material model

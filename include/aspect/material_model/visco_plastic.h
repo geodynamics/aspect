@@ -75,9 +75,12 @@ namespace aspect
      * representing these components must be named and listed in a very specific
      * format, which is designed to minimize mislabeling stress tensor components
      * as distinct 'compositional rock types' (or vice versa). For 2D models,
-     * the first three compositional fields must be labeled ve_stress_xx, ve_stress_yy
-     * and ve_stress_xy. In 3D, the first six compositional fields must be labeled
-     * ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz.
+     * 3+3 consecutive compositional fields must be labeled ve_stress_xx, ve_stress_yy
+     * ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old.
+     * In 3D, six consecutive compositional fields must be labeled
+     * ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz,
+     * ve_stress_xx_old, ve_stress_yy_old, ve_stress_zz_old, ve_stress_xy_old,
+     * ve_stress_xz_old, ve_stress_yz_old.
      *
      * Combining this viscoelasticity implementation with non-linear viscous flow
      * and plasticity produces a constitutive relationship commonly referred to
@@ -93,10 +96,11 @@ namespace aspect
      *
      * The overview below directly follows Moresi et al. (2003) eqns. 23-32.
      * However, an important distinction between this material model and
-     * the studies above is the use of compositional fields, rather than
+     * the studies above is the option to use compositional fields, rather than
      * particles, to track individual components of the viscoelastic stress
-     * tensor. The material model will be updated when an option to track
-     * and calculate viscoelastic stresses with particles is implemented.
+     * tensor. Calculating viscoelastic stresses with particles is also implemented,
+     * and can be switched on by using particles with the particle property
+     * 'elastic stress'.
      * Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric
      * rate of deformation ($\hat{D}$) as the sum of elastic
      * ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components:
@@ -128,12 +132,11 @@ namespace aspect
      * W^{t}\tau^{t} + \tau^{t}W^{t}$.
      * In this material model, the size of the time step above ($\Delta t^{e}$)
      * can be specified as the numerical time step size or an independent fixed time
-     * step. If the latter case is selected, the user has an option to apply a
-     * stress averaging scheme to account for the differences between the numerical
-     * and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time
-     * step throughout the model run, an equal numerical and elastic time step can be
-     * achieved by using CFL and maximum time step values that restrict the numerical
-     * time step to the fixed elastic time step.
+     * step. If the latter case is selected, a stress averaging scheme is applied
+     * to account for the differences between the numerical
+     * and fixed elastic time step (eqn. 32). A fixed computational time
+     * step throughout the model run can be achieved by using a large CFL number and
+     * smaller maximum time step values that restrict the numerical time step to a specific value.
      *
      * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
      * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (
@@ -148,8 +151,10 @@ namespace aspect
      * viscosity is reduced relative to the initial viscosity.
      *
      * Elastic effects are introduced into the governing Stokes equations through
-     * an elastic force term (eqn. 30) using stresses from the previous time step:
-     * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$.
+     * an elastic force term (eqn. 30 updated to the term in eqn. 5 in Farrington et al. 2014)
+     * using stresses from the previous time step rotated and advected into the current
+     * time step:
+     * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{0adv}$.
      * This force term is added onto the right-hand side force vector in the
      * system of equations.
      *
