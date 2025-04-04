@@ -635,32 +635,33 @@ namespace aspect
       {
         for (auto &additional_output: additional_outputs)
           if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))
-            {
-              for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-                {
-                  if (grain_size_evolution_formulation == Formulation::paleowattmeter)
-                    {
-                      const double f = boundary_area_change_work_fraction[phase_indices[i]];
+            if (in.requests_property(MaterialProperties::additional_outputs))
+              {
+                for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+                  {
+                    if (grain_size_evolution_formulation == Formulation::paleowattmeter)
+                      {
+                        const double f = boundary_area_change_work_fraction[phase_indices[i]];
 
-                      // We can only compute the fraction of work done to reduce grain size if we have the viscosity.
-                      // However, in some cases, we can get into this function without the viscosity being computed.
-                      // In that case we can only return a number that will trigger an exception if it were to be used.
-                      // We do not want to trigger the exception here, because we might not need the shear heating work
-                      // fraction at all, and only get into this function because other additional material outputs are needed.
-                      if (in.requests_property(MaterialProperties::viscosity))
-                        shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / dislocation_viscosities[i];
-                      else
-                        shear_heating_out->shear_heating_work_fractions[i] = numbers::signaling_nan<double>();
-                    }
-                  else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
-                    {
-                      const double f = compute_partitioning_fraction(in.temperature[i]);
-                      shear_heating_out->shear_heating_work_fractions[i] = 1. - f;
-                    }
-                  else
-                    AssertThrow(false, ExcNotImplemented());
-                }
-            }
+                        // We can only compute the fraction of work done to reduce grain size if we have the viscosity.
+                        // However, in some cases, we can get into this function without the viscosity being computed.
+                        // In that case we can only return a number that will trigger an exception if it were to be used.
+                        // We do not want to trigger the exception here, because we might not need the shear heating work
+                        // fraction at all, and only get into this function because other additional material outputs are needed.
+                        if (in.requests_property(MaterialProperties::viscosity))
+                          shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / dislocation_viscosities[i];
+                        else
+                          shear_heating_out->shear_heating_work_fractions[i] = numbers::signaling_nan<double>();
+                      }
+                    else if (grain_size_evolution_formulation == Formulation::pinned_grain_damage)
+                      {
+                        const double f = compute_partitioning_fraction(in.temperature[i]);
+                        shear_heating_out->shear_heating_work_fractions[i] = 1. - f;
+                      }
+                    else
+                      AssertThrow(false, ExcNotImplemented());
+                  }
+              }
       }
     }
   }

@@ -127,7 +127,7 @@ namespace aspect
                   Assert(dealii::numbers::is_finite(out.viscosities[i]),
                          ExcMessage ("Error: Averaged viscosity is not finite."));
 
-                  if (derivatives != nullptr)
+                  if (derivatives != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
                       const double averaging_factor = maximum_viscosity * maximum_viscosity
                                                       / ((eta_plastic + minimum_viscosity + maximum_viscosity) * (eta_plastic + minimum_viscosity + maximum_viscosity));

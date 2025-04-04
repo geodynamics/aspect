@@ -106,18 +106,19 @@ namespace aspect
 
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
-            {
-              if (seismic_vp_index != numbers::invalid_unsigned_int)
-                seismic_out->vp[i] = profile.get_data_component(profile_position,seismic_vp_index);
-              if (seismic_vs_index != numbers::invalid_unsigned_int)
-                seismic_out->vs[i] = profile.get_data_component(profile_position,seismic_vs_index);
-              if (seismic_dvp_dT_index != numbers::invalid_unsigned_int)
-                seismic_out->vp[i] += profile.get_data_component(profile_position,seismic_dvp_dT_index)
-                                      * temperature_deviation;
-              if (seismic_dvs_dT_index != numbers::invalid_unsigned_int)
-                seismic_out->vs[i] += profile.get_data_component(profile_position,seismic_dvs_dT_index)
-                                      * temperature_deviation;
-            }
+            if (in.requests_property(MaterialProperties::additional_outputs))
+              {
+                if (seismic_vp_index != numbers::invalid_unsigned_int)
+                  seismic_out->vp[i] = profile.get_data_component(profile_position,seismic_vp_index);
+                if (seismic_vs_index != numbers::invalid_unsigned_int)
+                  seismic_out->vs[i] = profile.get_data_component(profile_position,seismic_vs_index);
+                if (seismic_dvp_dT_index != numbers::invalid_unsigned_int)
+                  seismic_out->vp[i] += profile.get_data_component(profile_position,seismic_dvp_dT_index)
+                                        * temperature_deviation;
+                if (seismic_dvs_dT_index != numbers::invalid_unsigned_int)
+                  seismic_out->vs[i] += profile.get_data_component(profile_position,seismic_dvs_dT_index)
+                                        * temperature_deviation;
+              }
         }
     }
 

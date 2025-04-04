@@ -180,13 +180,17 @@ namespace aspect
 
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
+            const double maximum_melt_fraction = this->include_melt_transport()
+                                                 ?
+                                                 in.composition[i][this->introspection().compositional_index_for_name("peridotite")]
+                                                 :
+                                                 0.0;
 
-            if (this->include_melt_transport())
+            if (this->include_melt_transport() && in.requests_property(MaterialProperties::reaction_rates))
               {
                 const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
                 const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
                 const double old_porosity = in.composition[i][porosity_idx];
-                const double maximum_melt_fraction = in.composition[i][peridotite_idx];
 
                 // calculate the melting rate as difference between the equilibrium melt fraction
                 // and the solution of the previous time step
@@ -240,7 +244,6 @@ namespace aspect
                     // to obtain the rate of melting or freezing, which is used in the operator splitting scheme.
                     if (porosity_change < 0 )
                       porosity_change *= freezing_rate * melting_time_scale;
-
                   }
 
                 // remove melt that gets close to the surface
@@ -264,26 +267,25 @@ namespace aspect
                         else
                           reaction_rate_out->reaction_rates[i][c] = 0.0;
                       }
-                    out.reaction_terms[i][c] = 0.0;
                   }
-
-                out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::pressure);
-                out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::temperature);
               }
             else
               {
-                out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), 0, NonlinearDependence::pressure);
-                out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), 0, NonlinearDependence::temperature);
-
                 // no melting/freezing is used in the model --> set all reactions to zero
                 for (unsigned int c=0; c<in.composition[i].size(); ++c)
                   {
-                    out.reaction_terms[i][c] = 0.0;
-
                     if (reaction_rate_out != nullptr)
                       reaction_rate_out->reaction_rates[i][c] = 0.0;
                   }
               }
+
+            for (unsigned int c=0; c<in.composition[i].size(); ++c)
+              out.reaction_terms[i][c] = 0.0;
+
+            if (in.requests_property(MaterialProperties::entropy_derivative_pressure))
+              out.entropy_derivative_pressure[i]    = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::pressure);
+            if (in.requests_property(MaterialProperties::entropy_derivative_temperature))
+              out.entropy_derivative_temperature[i] = entropy_change (in.temperature[i], this->get_adiabatic_conditions().pressure(in.position[i]), maximum_melt_fraction, NonlinearDependence::temperature);
           }
 
       }
@@ -299,7 +301,7 @@ namespace aspect
         MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-        if (melt_out != nullptr)
+        if (melt_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
           {
 
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -352,8 +354,6 @@ namespace aspect
                     visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e4),1e-4);
                   }
                 melt_out->compaction_viscosities[i] *= visc_temperature_dependence;
-
-
               }
           }
 

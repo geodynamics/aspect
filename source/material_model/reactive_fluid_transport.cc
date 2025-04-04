@@ -149,7 +149,7 @@ namespace aspect
           // but can be reused for a geofluid of arbitrary composition.
           MeltOutputs<dim> *fluid_out = out.template get_additional_output<MeltOutputs<dim>>();
 
-          if (fluid_out != nullptr)
+          if (fluid_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
             {
               for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
                 {
@@ -177,7 +177,8 @@ namespace aspect
           // Fill reaction rate outputs if the model uses operator splitting.
           // Specifically, change the porosity (representing the amount of free fluid)
           // based on the water solubility and the fluid content.
-          if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr)
+          if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr
+              && in.requests_property(MaterialProperties::reaction_rates))
             {
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
               melt_fractions(in, eq_free_fluid_fractions);

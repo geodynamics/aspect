@@ -611,7 +611,7 @@ namespace aspect
 
                   PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
 
-                  if (plastic_out != nullptr)
+                  if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
                       plastic_out->cohesions[i] = drucker_prager_parameters.cohesion;
                       plastic_out->friction_angles[i] = drucker_prager_parameters.angle_internal_friction;
@@ -623,24 +623,27 @@ namespace aspect
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
               if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
-                {
-                  disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
-                  disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
-                }
+                if (in.requests_property(MaterialProperties::additional_outputs))
+                  {
+                    disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
+                    disl_viscosities_out->diffusion_viscosities[i] = std::min(std::max(min_eta,diff_viscosity),1e300);
+                  }
 
             }
 
           // fill seismic velocities outputs if they exist
           if (use_table_properties)
             if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
-              {
-                seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-                seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-              }
+              if (in.requests_property(MaterialProperties::additional_outputs))
+                {
+                  seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+                  seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+                }
         }
 
       DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
-      grain_size_evolution->fill_additional_outputs(in,out,phase_indices,disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
+      if (in.requests_property(MaterialProperties::additional_outputs))
+        grain_size_evolution->fill_additional_outputs(in,out,phase_indices,disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
 
       if (in.requests_property(MaterialProperties::reaction_terms))
         {
