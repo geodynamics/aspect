@@ -117,6 +117,48 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
+        in.requested_properties
+          = MaterialModel::MaterialProperties::uninitialized;
+
+        for (unsigned int i=0; i<property_names.size(); ++i)
+          {
+            if (property_names[i] == "viscosity")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::viscosity;
+
+            else if (property_names[i] == "density")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::density;
+
+            else if (property_names[i] == "thermal expansivity")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::thermal_expansion_coefficient;
+
+            else if (property_names[i] == "specific heat")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::specific_heat;
+
+            else if (property_names[i] == "thermal conductivity")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::thermal_conductivity;
+
+            else if (property_names[i] == "thermal diffusivity")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::density
+                                        | MaterialModel::MaterialProperties::specific_heat
+                                        | MaterialModel::MaterialProperties::thermal_conductivity;
+
+            else if (property_names[i] == "compressibility")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::compressibility;
+
+            else if (property_names[i] == "entropy derivative pressure")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::entropy_derivative_pressure;
+
+            else if (property_names[i] == "entropy derivative temperature")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::entropy_derivative_temperature;
+
+            else if (property_names[i] == "reaction terms")
+              in.requested_properties = in.requested_properties | MaterialModel::MaterialProperties::reaction_terms;
+
+            // We don't know what a material model needs to compute the melt fraction.
+            else if (property_names[i] == "melt fraction")
+              in.requested_properties = MaterialModel::MaterialProperties::all_properties;
+          }
+
         this->get_material_model().evaluate(in, out);
 
         // We want to output material properties as they are used in the

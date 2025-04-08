@@ -898,7 +898,8 @@ namespace aspect
         initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
 
       // This function will fill the outputs for grain size, viscosity, and dislocation viscosity
-      if (in.requests_property(MaterialProperties::viscosity))
+      if (in.requests_property(MaterialProperties::viscosity)
+          || in.requests_property(MaterialProperties::additional_outputs))
         compute_equilibrium_grain_size(in, out);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
