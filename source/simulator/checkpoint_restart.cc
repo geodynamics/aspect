@@ -29,6 +29,8 @@
 #include <deal.II/distributed/solution_transfer.h>
 #include <deal.II/fe/mapping_q_cache.h>
 
+#include <cstring>
+
 #ifdef DEAL_II_WITH_ZLIB
 #  include <zlib.h>
 #endif
@@ -63,8 +65,11 @@ namespace aspect
           AssertThrow (error == 0, ExcMessage(std::string ("Unable to rename files: ")
                                               +
                                               old_name + " -> " + new_name
-                                              + ". The error code is "
-                                              + Utilities::to_string(error) + "."));
+                                              + ". The error code returned by rename() "
+                                              + "is " + Utilities::to_string(error)
+                                              + ", with errno=" + Utilities::to_string(errno)
+                                              + " (corresponding to " + std::strerror(errno)
+                                              + ")."));
         }
     }
   }
