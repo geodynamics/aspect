@@ -532,7 +532,8 @@ namespace aspect
           MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i], adiabatic_pressures[i], depth, rho_g, numbers::invalid_unsigned_int);
           phase_indices[i] = get_phase_index(phase_inputs);
 
-          if (in.requests_property(MaterialProperties::viscosity))
+          if (in.requests_property(MaterialProperties::viscosity)
+              || in.requests_property(MaterialProperties::additional_outputs))
             {
               double effective_viscosity;
               double disl_viscosity = std::numeric_limits<double>::max();

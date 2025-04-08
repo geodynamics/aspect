@@ -48,7 +48,7 @@ namespace aspect
       public:
         PlasticAdditionalOutputs2(const unsigned int n_points);
 
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
          * Cohesions at the evaluation points passed to
@@ -112,7 +112,7 @@ namespace aspect
                       typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const;
+                                     std::vector<double> &melt_fractions) const override;
 
         /**
          * @}
@@ -134,7 +134,7 @@ namespace aspect
          */
         virtual
         void
-        parse_parameters (ParameterHandler &prm);
+        parse_parameters (ParameterHandler &prm) override;
         /**
          * @}
          */
@@ -486,7 +486,7 @@ namespace aspect
             }
         }
 
-      if (in.requests_property(MaterialProperties::viscosity) )
+      if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
         {
           // 5) Compute plastic weakening of the viscosity
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -585,7 +585,7 @@ namespace aspect
       // fill melt outputs if they exist
       MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
 
-      if (melt_out != nullptr)
+      if (melt_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
         {
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
