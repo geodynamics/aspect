@@ -103,7 +103,7 @@ namespace aspect
           = material_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
         // TODO instead of calling the manager, and looping over all properties,
-        // can we use this properties get_update_flags() only?
+        // can we use this property's get_update_flags() only?
         const std::vector<UpdateFlags> update_flags = particle_manager.get_property_manager().get_update_flags();
 
         // combine all update flags to a single flag, which is the required information
