@@ -561,6 +561,17 @@ namespace aspect
                                                               solution,
                                                               scratch.finite_element_values,
                                                               introspection);
+
+        if (advection_field.is_temperature())
+          scratch.material_model_inputs.requested_properties
+            = MaterialModel::MaterialProperties::equation_of_state_properties |
+              MaterialModel::MaterialProperties::thermal_conductivity;
+
+        for (const auto &heating_model : heating_model_manager.get_active_plugins())
+          scratch.material_model_inputs.requested_properties
+            = scratch.material_model_inputs.requested_properties |
+              heating_model->get_required_properties();
+
         material_model->evaluate(scratch.material_model_inputs,scratch.material_model_outputs);
         heating_model_manager.evaluate(scratch.material_model_inputs,scratch.material_model_outputs,scratch.heating_model_outputs);
 

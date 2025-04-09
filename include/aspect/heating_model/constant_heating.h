@@ -47,6 +47,13 @@ namespace aspect
                   HeatingModel::HeatingModelOutputs &heating_model_outputs) const override;
 
         /**
+         * Specify which material model outputs the heating model requires
+         * for computing the heating terms.
+         */
+        MaterialModel::MaterialProperties::Property
+        get_required_properties () const override;
+
+        /**
          * @name Functions used in dealing with run-time parameters
          * @{
          */

@@ -53,6 +53,17 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    MaterialModel::MaterialProperties::Property
+    CompositionalHeating<dim>::
+    get_required_properties () const
+    {
+      return MaterialModel::MaterialProperties::thermal_expansion_coefficient;
+    }
+
+
+
     template <int dim>
     void
     CompositionalHeating<dim>::declare_parameters (ParameterHandler &prm)

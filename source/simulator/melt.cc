@@ -699,7 +699,7 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
-      Assert(melt_outputs->compaction_viscosities[0] > 0.0,
+      Assert(melt_outputs->fluid_densities[0] > 0.0,
              ExcMessage ("MeltOutputs have to be filled for models with melt transport. "
                          "At the moment, these outputs are not filled, or they do not have "
                          "reasonable values."));

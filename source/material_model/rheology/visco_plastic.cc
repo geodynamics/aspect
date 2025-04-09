@@ -811,7 +811,7 @@ namespace aspect
 
         if (plastic_out != nullptr)
           {
-            AssertThrow(in.requests_property(MaterialProperties::viscosity),
+            AssertThrow(!std::isnan(out.viscosities[0]),
                         ExcMessage("The PlasticAdditionalOutputs cannot be filled when the viscosity has not been computed."));
 
             plastic_out->cohesions[i] = 0;

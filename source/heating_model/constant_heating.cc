@@ -45,6 +45,16 @@ namespace aspect
 
 
     template <int dim>
+    MaterialModel::MaterialProperties::Property
+    ConstantHeating<dim>::
+    get_required_properties () const
+    {
+      return MaterialModel::MaterialProperties::none;
+    }
+
+
+
+    template <int dim>
     void
     ConstantHeating<dim>::declare_parameters (ParameterHandler &prm)
     {
