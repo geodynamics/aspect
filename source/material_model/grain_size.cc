@@ -978,7 +978,8 @@ namespace aspect
           phase_function->initialize_simulator (this->get_simulator());
           phase_function->parse_parameters (prm);
 
-          // Phase transitions are only supported for the background composition.
+          // The phase function is only used for the rheology, which is identical for all
+          // compositions. Therefore there is just one number of phase transitions.
           n_phase_transitions.resize(1);
           n_phase_transitions[0] = phase_function->n_phases_for_each_composition()[0] - 1;
 
