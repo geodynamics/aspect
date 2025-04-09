@@ -149,4 +149,9 @@ end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
+
+  subsection Visualization
+    set List of output variables = named additional outputs, material properties
+    set Output format = gnuplot
+  end
 end
