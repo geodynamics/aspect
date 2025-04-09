@@ -232,6 +232,15 @@ namespace aspect
 
                   double effective_viscosity = vis_lateral * viscosity_profile;
 
+                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+
+                  if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
+                  {
+                    plastic_out->cohesions[i] = cohesion;
+                    plastic_out->friction_angles[i] = angle_of_internal_friction;
+                    plastic_out->yielding[i] = 0;
+                  }
+
                   const double strain_rate_effective = std::fabs(second_invariant(deviator(in.strain_rate[i])));
 
                   if (std::sqrt(strain_rate_effective) >= std::numeric_limits<double>::min())
@@ -245,14 +254,10 @@ namespace aspect
 
                       effective_viscosity = 1.0 / ( ( 1.0 /  eta_plastic  ) + ( 1.0 / (vis_lateral * viscosity_profile) ) );
 
-                      PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
                       if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
-                        {
-                          plastic_out->cohesions[i] = cohesion;
-                          plastic_out->friction_angles[i] = angle_of_internal_friction;
                           plastic_out->yielding[i] = eta_plastic < (vis_lateral * viscosity_profile) ? 1 : 0;
-                        }
                     }
+
                   out.viscosities[i] = std::max(std::min(effective_viscosity,max_eta),min_eta);
                 }
             }
