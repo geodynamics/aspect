@@ -203,7 +203,7 @@ namespace aspect
             }
 
           // Calculate Viscosity
-          if (in.requests_property(MaterialProperties::viscosity))
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
             {
               // read in the viscosity profile
               const double depth = this->get_geometry_model().depth(in.position[i]);
@@ -232,20 +232,24 @@ namespace aspect
 
                   double effective_viscosity = vis_lateral * viscosity_profile;
 
-                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+                  const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
 
+                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
                   if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
-                  {
-                    plastic_out->cohesions[i] = cohesion;
-                    plastic_out->friction_angles[i] = angle_of_internal_friction;
-                    plastic_out->yielding[i] = 0;
-                  }
+                    {
+                      plastic_out->cohesions[i] = cohesion;
+                      plastic_out->friction_angles[i] = angle_of_internal_friction;
+                      plastic_out->yielding[i] = 0;
+                      plastic_out->yield_stresses[i] = drucker_prager_plasticity.compute_yield_stress(cohesion,
+                                                                                                      angle_of_internal_friction,
+                                                                                                      pressure,
+                                                                                                      std::numeric_limits<double>::infinity());
+                    }
 
                   const double strain_rate_effective = std::fabs(second_invariant(deviator(in.strain_rate[i])));
 
                   if (std::sqrt(strain_rate_effective) >= std::numeric_limits<double>::min())
                     {
-                      const double pressure =  this->get_adiabatic_conditions().pressure(in.position[i]);
                       const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
                                                                                              angle_of_internal_friction,
                                                                                              pressure,
@@ -255,7 +259,7 @@ namespace aspect
                       effective_viscosity = 1.0 / ( ( 1.0 /  eta_plastic  ) + ( 1.0 / (vis_lateral * viscosity_profile) ) );
 
                       if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
-                          plastic_out->yielding[i] = eta_plastic < (vis_lateral * viscosity_profile) ? 1 : 0;
+                        plastic_out->yielding[i] = eta_plastic < (vis_lateral * viscosity_profile) ? 1 : 0;
                     }
 
                   out.viscosities[i] = std::max(std::min(effective_viscosity,max_eta),min_eta);

@@ -614,7 +614,7 @@ namespace aspect
 
               // effective compaction viscosity (Keller et al. eq (43) )
               // NB: I've added a minus sign as according to eq 43
-              if (in.strain_rate.size() && compaction_pressure < volumetric_yield_strength[i])
+              if (compaction_pressure < volumetric_yield_strength[i])
                 {
                   // the volumetric strain rate might be negative, but will always have the same sign as the volumetric yield strength
                   if (volumetric_strain_rates[i] >= 0)

@@ -73,8 +73,8 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
 
-      // Constant properties on the reference profile
-      in.strain_rate.resize(0);
+      // No deformation on the reference profile
+      in.strain_rate[0] = SymmetricTensor<2,dim>();
       in.velocity[0] = Tensor <1,dim> ();
       in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties;
 
