@@ -644,10 +644,8 @@ namespace aspect
                         const double f = boundary_area_change_work_fraction[phase_indices[i]];
 
                         // We can only compute the fraction of work done to reduce grain size if we have the viscosity.
-                        // However, in some cases, we can get into this function without the viscosity being computed.
-                        // In that case we can only return a number that will trigger an exception if it were to be used.
-                        // We do not want to trigger the exception here, because we might not need the shear heating work
-                        // fraction at all, and only get into this function because other additional material outputs are needed.
+                        // Therefore, we need to make sure that the viscosity outputs have been filled by the material
+                        // model.
                         if (!std::isnan(out.viscosities[0]))
                           shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / dislocation_viscosities[i];
                         else
