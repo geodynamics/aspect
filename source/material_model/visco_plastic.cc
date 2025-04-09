@@ -286,9 +286,10 @@ namespace aspect
 
               // Fill the material properties that are part of the elastic additional outputs
               if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
-                {
-                  elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
-                }
+                if (in.requests_property(MaterialProperties::additional_outputs))
+                  {
+                    elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
+                  }
             }
         }
 

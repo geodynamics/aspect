@@ -246,7 +246,7 @@ namespace aspect
                       effective_viscosity = 1.0 / ( ( 1.0 /  eta_plastic  ) + ( 1.0 / (vis_lateral * viscosity_profile) ) );
 
                       PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
-                      if (plastic_out != nullptr)
+                      if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                         {
                           plastic_out->cohesions[i] = cohesion;
                           plastic_out->friction_angles[i] = angle_of_internal_friction;
@@ -259,18 +259,19 @@ namespace aspect
 
           // fill seismic velocities outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
-            {
+            if (in.requests_property(MaterialProperties::additional_outputs))
+              {
 
-              std::vector<double> vp (material_file_names.size());
-              std::vector<double> vs (material_file_names.size());
-              for (unsigned int j=0; j<material_file_names.size(); ++j)
-                {
-                  vp[j] = entropy_reader[j]->seismic_vp(entropy,pressure);
-                  vs[j] = entropy_reader[j]->seismic_vs(entropy,pressure);
-                }
-              seismic_out->vp[i] = MaterialUtilities::average_value (volume_fractions, vp, MaterialUtilities::arithmetic);
-              seismic_out->vs[i] = MaterialUtilities::average_value (volume_fractions, vs, MaterialUtilities::arithmetic);
-            }
+                std::vector<double> vp (material_file_names.size());
+                std::vector<double> vs (material_file_names.size());
+                for (unsigned int j=0; j<material_file_names.size(); ++j)
+                  {
+                    vp[j] = entropy_reader[j]->seismic_vp(entropy,pressure);
+                    vs[j] = entropy_reader[j]->seismic_vs(entropy,pressure);
+                  }
+                seismic_out->vp[i] = MaterialUtilities::average_value (volume_fractions, vp, MaterialUtilities::arithmetic);
+                seismic_out->vs[i] = MaterialUtilities::average_value (volume_fractions, vs, MaterialUtilities::arithmetic);
+              }
         }
 
       // Evaluate thermal conductivity. This has to happen after

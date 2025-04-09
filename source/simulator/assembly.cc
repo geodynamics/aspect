@@ -927,10 +927,10 @@ namespace aspect
           scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
-    scratch.material_model_inputs.reinit  (scratch.finite_element_values,
-                                           cell,
-                                           this->introspection,
-                                           current_linearization_point);
+    scratch.material_model_inputs.reinit (scratch.finite_element_values,
+                                          cell,
+                                          this->introspection,
+                                          current_linearization_point);
 
     for (unsigned int i=0; i<1+introspection.n_compositional_fields; ++i)
       for (unsigned int j=0; j<assemblers->advection_system[i].size(); ++j)
