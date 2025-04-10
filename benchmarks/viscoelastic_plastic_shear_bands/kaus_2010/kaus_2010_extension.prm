@@ -96,6 +96,11 @@ subsection Discretization
   set Temperature polynomial degree     = 1
   # DG for viscoelastic stresses
   set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, false, true
+    set Global composition maximum = 1.
+    set Global composition minimum = 0.
+  end
 end
 
 # Formulation classification

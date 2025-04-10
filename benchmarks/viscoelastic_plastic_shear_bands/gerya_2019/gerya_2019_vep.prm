@@ -28,6 +28,11 @@ end
 subsection Discretization
   # DG for viscoelastic stresses
   set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true, true, true
+    set Global composition maximum = 1.
+    set Global composition minimum = 0.
+  end
 end
 
 # Number and name of compositional fields
