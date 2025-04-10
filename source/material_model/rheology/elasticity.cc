@@ -622,6 +622,35 @@ namespace aspect
           {
             const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
 
+// The viscosity should be averaged if material averaging is applied.
+            // Here the averaging scheme "project to Q1 (only viscosity)"  is
+            // excluded, because there is no way to know the quadrature formula
+            // used for evaluation.
+            // TODO: find a way to include "project to Q1 (only viscosity)" as well.
+            std::vector<double> effective_creep_viscosities;
+            if (this->get_parameters().material_averaging != MaterialAveraging::none &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1 &&
+                this->get_parameters().material_averaging != MaterialAveraging::project_to_Q1_only_viscosity)
+              {
+                MaterialModelOutputs<dim> out_copy(out.n_evaluation_points(),
+                                                   this->introspection().n_compositional_fields);
+                out_copy.viscosities = out.viscosities;
+
+                const MaterialAveraging::AveragingOperation averaging_operation_for_viscosity =
+                  get_averaging_operation_for_viscosity(this->get_parameters().material_averaging);
+                MaterialAveraging::average(averaging_operation_for_viscosity,
+                                           in.current_cell,
+                                           this->introspection().quadratures.velocities,
+                                           this->get_mapping(),
+                                           in.requested_properties,
+                                           out_copy);
+
+                effective_creep_viscosities = out_copy.viscosities;
+              }
+            else
+              effective_creep_viscosities = out.viscosities;
+
+
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               {
                 // Set all reaction rates to zero
@@ -644,7 +673,8 @@ namespace aspect
                                                            &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
                 // $\eta^{t}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
-                const double effective_creep_viscosity = out.viscosities[i];
+                //const double effective_creep_viscosity = out.viscosities[i];
+                const double effective_creep_viscosity = effective_creep_viscosities[i];
 
                 // $\eta_{el} = G \Delta t_c$.
                 // The elastic viscosity has also already been scaled with $\frac{\Delta t_c} / {\Delta t_{el}}$
