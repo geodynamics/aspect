@@ -112,7 +112,7 @@ namespace aspect
       // Since phase transition depth increases monotonically, we only need
       // to check for the first phase that has not yet undergone the transition
       // (phase function value lower than 0.5).
-      for (unsigned int j=0; j<n_phase_transitions; ++j)
+      for (unsigned int j=0; j<n_phase_transitions[0]; ++j)
         {
           MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature,
                                                                    in.pressure,
@@ -124,7 +124,7 @@ namespace aspect
             return j;
         }
 
-      return n_phase_transitions;
+      return n_phase_transitions[0];
     }
 
 
@@ -572,10 +572,9 @@ namespace aspect
                   const double non_yielding_stress = 2. * effective_viscosity * second_strain_rate_invariant;
 
                   // The following handles phases
-                  std::vector<unsigned int> n_phases = {n_phase_transitions+1};
-                  std::vector<double> phase_function_values(n_phase_transitions, 0.0);
+                  std::vector<double> phase_function_values(n_phase_transitions[0]+1, 0.0);
 
-                  for (unsigned int k=0; k<n_phase_transitions; ++k)
+                  for (unsigned int k=0; k<n_phase_transitions[0]; ++k)
                     {
                       phase_inputs.phase_transition_index = k;
                       phase_function_values[k] = phase_function->compute_value(phase_inputs);
@@ -585,7 +584,7 @@ namespace aspect
                   // so we set the compositional index for the Drucker-Prager parameters to 0.
                   const Rheology::DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(0,
                                                                                       phase_function_values,
-                                                                                      n_phases);
+                                                                                      n_phase_transitions);
                   const double pressure_for_yielding = use_adiabatic_pressure_for_yielding
                                                        ?
                                                        adiabatic_pressures[i]
@@ -983,10 +982,12 @@ namespace aspect
           phase_function->initialize_simulator (this->get_simulator());
           phase_function->parse_parameters (prm);
 
-          std::vector<unsigned int> n_phases_for_each_composition = phase_function->n_phases_for_each_composition();
-          n_phase_transitions = n_phases_for_each_composition[0] - 1;
+          // The phase function is only used for the rheology, which is identical for all
+          // compositions. Therefore there is just one number of phase transitions.
+          n_phase_transitions.resize(1);
+          n_phase_transitions[0] = phase_function->n_phases_for_each_composition()[0] - 1;
 
-          for (unsigned int i=1; i<n_phase_transitions; ++i)
+          for (unsigned int i=1; i<n_phase_transitions[0]; ++i)
             AssertThrow(phase_function->get_transition_depth(i-1)<phase_function->get_transition_depth(i),
                         ExcMessage("Error: Phase transition depths have to be sorted in ascending order!"));
 
@@ -1078,7 +1079,7 @@ namespace aspect
           use_adiabatic_pressure_for_yielding = prm.get_bool ("Use adiabatic pressure for yield stress");
           drucker_prager_plasticity.initialize_simulator (this->get_simulator());
 
-          std::vector<unsigned int> n_phases = {n_phase_transitions+1};
+          std::vector<unsigned int> n_phases = {n_phase_transitions[0]+1};
           drucker_prager_plasticity.parse_parameters(prm, std::make_unique<std::vector<unsigned int>> (n_phases));
 
           // Parse grain size evolution parameters
