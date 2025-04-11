@@ -2009,6 +2009,12 @@ namespace aspect
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
 
+      for (unsigned int i_field = 0; i_field < normalized_fields.size(); ++i_field)
+        {
+          AssertThrow(normalized_fields[i_field]<n_compositional_fields,
+                      ExcMessage("Invalid input parameter file: An entry in List of normalized fields is larger then the number of fields."));
+        }
+
       // Process the compositional field types
       // There are three valid cases:
       // 1) The user doesn't specify types of fields. This choice should
