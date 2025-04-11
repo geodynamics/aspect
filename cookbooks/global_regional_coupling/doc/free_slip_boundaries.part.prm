@@ -1,0 +1,3 @@
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = outer, inner, east, west, south, north
+end
