@@ -648,7 +648,7 @@ namespace aspect
                         // In that case we can only return a number that will trigger an exception if it were to be used.
                         // We do not want to trigger the exception here, because we might not need the shear heating work
                         // fraction at all, and only get into this function because other additional material outputs are needed.
-                        if (in.requests_property(MaterialProperties::viscosity))
+                        if (!std::isnan(out.viscosities[0]))
                           shear_heating_out->shear_heating_work_fractions[i] = 1. - f * out.viscosities[i] / dislocation_viscosities[i];
                         else
                           shear_heating_out->shear_heating_work_fractions[i] = numbers::signaling_nan<double>();

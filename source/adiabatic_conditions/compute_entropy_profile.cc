@@ -69,10 +69,13 @@ namespace aspect
                   ExcMessage("The 'compute entropy' adiabatic conditions plugin "
                              "requires at least one field of type 'entropy'."));
 
-      // Constant properties on the reference profile
       // We only need the material model to compute the density
       in.requested_properties = MaterialModel::MaterialProperties::density | MaterialModel::MaterialProperties::additional_outputs;
+
+      // No deformation on the reference profile
       in.velocity[0] = Tensor <1,dim> ();
+      in.strain_rate[0] = SymmetricTensor<2,dim>();
+
       // The entropy along an adiabat is constant (equals the surface entropy)
       // When there is more than one entropy field, we use the background field to compute the adiabatic profile
       // TODO : provide more ways to specify compositional fields like in compute_profile.cc

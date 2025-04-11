@@ -1,0 +1,6 @@
+Fixed: The entropy material model did under some conditions not fill the additional
+material model outputs correctly. This would not affect the model results, but could
+lead to floating point exceptions in the postprocessor 'named additional outputs'.
+This is fixed now.
+<br>
+(Rene Gassmoeller, 2025/03/04)
