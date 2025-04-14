@@ -165,6 +165,7 @@ namespace aspect
                       if (scratch.dof_component_indices[i] == pressure_component_index && scratch.dof_component_indices[j] == pressure_component_index)
                         data.local_matrix(i, j) += (
                                                      1.0/sqrt_eta * pressure_scaling
+                                                     * pressure_scaling
                                                      * (scratch.grad_phi_p[i]
                                                         * scratch.grad_phi_p[j] + 1e-6*scratch.phi_p[i]*scratch.phi_p[j] ))
                                                    * JxW;
