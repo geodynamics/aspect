@@ -294,6 +294,9 @@ namespace aspect
           rheology->elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
           // Fill the elastic additional outputs with the shear modulus, elastic viscosity
           // and deviatoric stress of the current timestep.
+          // TODO requests_property is already checked in the fill_ function,
+          // but we can also do it here
+          //if (in.requests_property(MaterialProperties::additional_outputs))
           rheology->elastic_rheology.fill_elastic_additional_outputs(in, average_elastic_shear_moduli, out);
           // Fill the reaction terms that account for the rotation of the stresses.
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
