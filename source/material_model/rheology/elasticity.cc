@@ -622,7 +622,7 @@ namespace aspect
           {
             const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
 
-// The viscosity should be averaged if material averaging is applied.
+            // The viscosity should be averaged if material averaging is applied.
             // Here the averaging scheme "project to Q1 (only viscosity)"  is
             // excluded, because there is no way to know the quadrature formula
             // used for evaluation.
@@ -673,7 +673,6 @@ namespace aspect
                                                            &in.composition[i][stress_start_index+n_independent_components]+n_independent_components));
 
                 // $\eta^{t}_{effcreep}$. This viscosity has been calculated with the timestep_ratio dtc/dte.
-                //const double effective_creep_viscosity = out.viscosities[i];
                 const double effective_creep_viscosity = effective_creep_viscosities[i];
 
                 // $\eta_{el} = G \Delta t_c$.
