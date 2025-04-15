@@ -618,7 +618,10 @@ namespace aspect
         // each nonlinear iteration, their values and positions correspond to the old solution.
         // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
         // previous timestep.
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_rates))
+        // TODO The additional outputs include the reaction rates, so we also have to fill the reaction_rates
+        // if additional_outputs are requested.
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 &&
+            (in.requests_property(MaterialProperties::reaction_rates) || in.requests_property(MaterialProperties::additional_outputs)))
           {
             const unsigned int stress_start_index = this->introspection().compositional_index_for_name("ve_stress_xx");
 

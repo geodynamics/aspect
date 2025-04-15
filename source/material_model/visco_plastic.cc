@@ -192,11 +192,12 @@ namespace aspect
 
           // Compute the effective viscosity if requested and retrieve whether the material is plastically yielding.
           // Also always compute the viscosity if additional outputs are requested, because the viscosity is needed
-          // to compute the elastic force term.
+          // to compute the elastic force term and the elastic reaction rates.
           bool plastic_yielding = false;
           IsostrainViscosities isostrain_viscosities;
 
-          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs))
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs) ||
+              (this->get_parameters().enable_elasticity && in.requests_property(MaterialProperties::reaction_rates) ))
             {
               // Currently, the viscosities for each of the compositional fields are calculated assuming
               // isostrain amongst all compositions, allowing calculation of the viscosity ratio.
