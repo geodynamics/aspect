@@ -23,6 +23,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/material_model/visco_plastic_simple.h>
 
 namespace aspect
 {
@@ -449,7 +450,7 @@ namespace aspect
                 data.local_rhs(i) += (
                                        // RHS of momentum eqn: - \int 2/3 eta R, div v
                                        - 2.0 / 3.0 * eta
-                                       * prescribed_dilation->dilation[q]
+                                     * prescribed_dilation->dilation[q]
                                        * scratch.div_phi_u[i]
                                      ) * JxW;
             }
@@ -581,6 +582,7 @@ namespace aspect
 #endif
     }
 
+
     template <int dim>
     void
     NewtonStokesIncompressibleTerms<dim>::
@@ -627,6 +629,196 @@ namespace aspect
 
       if (this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
         NewtonHandler<dim>::create_material_model_outputs(outputs);
+    }
+
+
+    template <int dim>
+    void
+    NewtonStokesSimpleIncompressibleTerms<dim>::
+    execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
+             internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+    {
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
+
+      const Introspection<dim> &introspection = this->introspection();
+      const FiniteElement<dim> &fe = this->get_fe();
+      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
+      const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
+      const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
+
+      const MaterialModel::ViscoPlasticSimple<dim> *material_model =
+        dynamic_cast<const MaterialModel::ViscoPlasticSimple<dim> *>(&this->get_material_model());
+      AssertThrow(material_model != nullptr, ExcInternalError());
+
+      const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
+      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> *force = 
+        enable_additional_stokes_rhs
+        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
+        : nullptr;
+
+      const bool enable_elasticity = this->get_parameters().enable_elasticity;
+      const MaterialModel::ElasticOutputs<dim> *elastic_out =
+        scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+      if (enable_elasticity)
+        AssertThrow(elastic_out != nullptr,
+                    ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
+
+      const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+
+      // always compute the common terms in the weak form of Stokes equation
+      for (unsigned int q=0; q<n_q_points; ++q)
+        {
+          for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  scratch.phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
+                  scratch.phi_p[i_stokes] = scratch.finite_element_values[introspection.extractors.pressure].value (i, q);
+                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
+                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+
+#if DEBUG
+                  // This is needed to test the velocity part of the matrix for
+                  // being symmetric positive-definite.
+                  scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
+#endif
+
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          // Viscosity scalar
+          const double viscosity = scratch.material_model_outputs.viscosities[q];
+          const double pressure  = scratch.material_model_inputs.pressure[q];
+          const double velocity_divergence = scratch.velocity_divergence[q];
+
+          const Tensor<1,dim>
+          gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
+          
+          const double density = scratch.material_model_outputs.densities[q];
+
+          const double JxW = scratch.finite_element_values.JxW(q);
+          const double pressure_scaling = this->get_pressure_scaling();
+
+          // first assemble the rhs
+          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+            {
+              data.local_rhs(i) -= ( viscosity * 2.0 * (scratch.grads_phi_u[i] *
+                                                        scratch.material_model_inputs.strain_rate[q])
+                                     - (scratch.div_phi_u[i] * pressure)
+                                     - (pressure_scaling * scratch.phi_p[i] * velocity_divergence)
+                                     - (density * gravity * scratch.phi_u[i]) 
+                                   ) * JxW;
+              
+              if (enable_elasticity)
+                data.local_rhs(i) += ( deviator(elastic_out->elastic_force[q])
+                                       * scratch.grads_phi_u[i]
+                                     ) * JxW;
+
+              if (enable_additional_stokes_rhs)
+                data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
+                                      + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
+                                     * JxW;
+            }
+
+          // and then the matrix, if necessary
+          if (scratch.rebuild_newton_stokes_matrix)
+            {
+              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                  data.local_matrix(i,j) += (
+                                              viscosity * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
+                                              // assemble \nabla p as -(p, div v):
+                                              - (pressure_scaling *
+                                                 (scratch.div_phi_u[i] * scratch.phi_p[j]))
+                                              // assemble the term -div(u) as -(div u, q).
+                                              // Note the negative sign to make this
+                                              // operator adjoint to the grad p term:
+                                              - (pressure_scaling *
+                                                 (scratch.phi_p[i] * scratch.div_phi_u[j])))
+                                            * JxW;
+            }
+        }
+
+      // Check whether we have to add terms due to the Newton linearization
+      if (scratch.rebuild_newton_stokes_matrix
+          && derivative_scaling_factor > 0.)
+        {
+          Assert(derivatives != nullptr,
+                 ExcMessage("The Newton method is selected for solving the Stokes equation, "
+                            "but the material model does not provide viscosity derivatives."));
+
+          // compute the the cell measure and the average strain rate
+          std::vector<SymmetricTensor<2,dim>> effective_strain_rates(n_q_points);
+          double edot_ii_avg  = 0.;
+          double cell_measure = 0.;
+          for (unsigned int q = 0; q < n_q_points; ++q)
+            {
+              effective_strain_rates[q] = deviator(scratch.material_model_inputs.strain_rate[q]);
+              if (elastic_out != nullptr)
+                effective_strain_rates[q] = elastic_out->viscoelastic_strain_rate[q];
+
+              edot_ii_avg += std::max(-second_invariant(effective_strain_rates[q]), 0.) *
+                             scratch.finite_element_values.JxW(q);
+              cell_measure += scratch.finite_element_values.JxW(q);
+            }
+
+          AssertThrow(cell_measure > std::numeric_limits<double>::min(), 
+                      ExcMessage("The cell measure is smaller than or equal to 0."));
+          edot_ii_avg = std::sqrt(edot_ii_avg / cell_measure);
+
+          std::vector<double> eps_times_grads_phi_u_avg(stokes_dofs_per_cell, 0.);
+          std::vector<double> phi_p_avg(stokes_dofs_per_cell, 0.);
+          for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
+            {
+              if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
+                {
+                  for (unsigned int q = 0; q < n_q_points; ++q)
+                    {
+                      eps_times_grads_phi_u_avg[i_stokes] += effective_strain_rates[q] * 
+                                                             scratch.grads_phi_u[i_stokes] *
+                                                             scratch.finite_element_values.JxW(q);
+                      phi_p_avg[i_stokes]                 += scratch.phi_p[i_stokes] *
+                                                             scratch.finite_element_values.JxW(q);
+                    }
+
+                  eps_times_grads_phi_u_avg[i_stokes] /= cell_measure;
+                  phi_p_avg[i_stokes] /= cell_measure;
+
+                  ++i_stokes;
+                }
+              ++i;
+            }
+
+          const Newton::Parameters::Stabilization velocity_block_stabilization
+            = this->get_newton_handler().parameters.velocity_block_stabilization;
+
+          const double alpha = (velocity_block_stabilization & Newton::Parameters::Stabilization::PD)
+                               != Newton::Parameters::Stabilization::none
+                               ? // TODO
+                               :
+                               1.;
+
+          const double prefactor = 2. * alpha * derivative_scaling_factor * cell_measure;
+
+          const double deta_deps = derivatives->viscosity_derivative_wrt_average_strain_rate;
+          const double deta_dp   = derivatives->viscosity_derivative_wrt_average_pressure;
+          for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
+            for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
+              {
+                data.local_matrix(i,j) += prefactor * eps_times_grads_phi_u_avg[i]
+                                          *
+                                          ( deta_deps / edot_ii_avg * eps_times_grads_phi_u_avg[j]
+                                            +
+                                            deta_dp * phi_p_avg[j] );
+
+                Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
+                       ExcMessage("Error: Assembly matrix is not finite."));
+              }
+        }
     }
 
 
@@ -973,6 +1165,7 @@ namespace aspect
   template class NewtonInterface<dim>; \
   template class NewtonStokesPreconditioner<dim>; \
   template class NewtonStokesIncompressibleTerms<dim>; \
+  template class NewtonStokesSimpleIncompressibleTerms<dim>; \
   template class NewtonStokesCompressibleStrainRateViscosityTerm<dim>; \
   template class NewtonStokesReferenceDensityCompressibilityTerm<dim>; \
   template class NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>; \

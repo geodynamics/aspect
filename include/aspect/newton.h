@@ -61,6 +61,17 @@ namespace aspect
          * derivatives when material averaging is applied.
          */
         std::vector<double> viscosity_derivative_averaging_weights;
+
+        /**
+         * The derivative of viscosity with respect to the average value
+         * of the second invariant of strain rate.
+         */
+        double viscosity_derivative_wrt_average_strain_rate;
+
+        /**
+         * The derivative of viscosity with respect to the average pressure.
+         */
+        double viscosity_derivative_wrt_average_pressure;
     };
   }
 
@@ -266,6 +277,17 @@ namespace aspect
          * terms to the right hand side of the Stokes equations. The latter could include viscoelastic
          * forces or other user-defined values calculated within the material model.
          */
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
+    };
+
+    template <int dim>
+    class NewtonStokesSimpleIncompressibleTerms : public NewtonInterface<dim>
+    {
+      public:
+        void
+        execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
         void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
     };
 
