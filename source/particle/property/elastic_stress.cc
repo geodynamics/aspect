@@ -59,6 +59,8 @@ namespace aspect
 
         material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
 
+        material_inputs.requested_properties = MaterialModel::MaterialProperties::reaction_terms | MaterialModel::MaterialProperties::reaction_rates;
+
         // The reaction rates are stored in additional outputs
         this->get_material_model().create_additional_named_outputs(material_outputs);
 

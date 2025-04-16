@@ -268,6 +268,7 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
 
           // Calculate changes in strain invariants and update the reaction terms
+          // TODO only when requests_property is set to reaction_terms
           rheology->strain_rheology.fill_reaction_outputs(in, i, rheology->min_strain_rate, plastic_yielding, out);
 
           // Fill plastic outputs if they exist.
