@@ -127,6 +127,19 @@ namespace aspect
 
 
       template <int dim>
+      unsigned int
+      GrainSize<dim>::compositional_index_for_boundary_initialization (const unsigned int property_component) const
+      {
+        (void) property_component;
+        Assert (property_component == 0,
+                ExcInternalError());
+
+        return grain_size_index;
+      }
+
+
+
+      template <int dim>
       UpdateTimeFlags
       GrainSize<dim>::need_update() const
       {
