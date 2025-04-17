@@ -493,48 +493,51 @@ void
 parse_parameters (const std::string &input_as_string,
                   dealii::ParameterHandler  &prm)
 {
-  // try reading on processor 0
-  bool success = true;
-  if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
-    try
-      {
-        prm.parse_input_from_string(input_as_string);
-      }
-    catch (const dealii::ExceptionBase &e)
-      {
-        success = false;
-        e.print_info(std::cerr);
-        std::cerr << std::endl;
-      }
-
-
-  // broadcast the result. we'd like to do this with a bool
-  // data type but MPI_C_BOOL is not part of old MPI standards.
-  // so, do the broadcast in integers
-  {
-    int isuccess = (success ? 1 : 0);
-    const int ierr = MPI_Bcast (&isuccess, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    AssertThrowMPI(ierr);
-    success = (isuccess == 1);
-  }
-
-  // if not success, then throw an exception: ExcMessage on processor 0,
-  // QuietException on the others
-  if (success == false)
+  // If we are on one process, just read the file -- if that fails, it will
+  // result in an exception that we can simply let propagate to main():
+  if (dealii::Utilities::MPI::n_mpi_processes (MPI_COMM_WORLD) == 1)
+    prm.parse_input_from_string(input_as_string);
+  else
     {
-      if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
+      // If we are on multiple MPI processes, try reading on process 0 within a
+      // try block. If that's successful, we will broadcast 'true'
+      // to the remaining processes after the catch block. If it is not
+      // successful, we will broadcast 'false' from within the 'catch'
+      // block to let all other processes know that reading failed; once
+      // we sent the 'false', we just re-throw the exception.
+      const unsigned int root_process = 0;
+      if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == root_process)
         {
-          AssertThrow(false, dealii::ExcMessage ("Invalid input parameter file."));
+          try
+            {
+              prm.parse_input_from_string(input_as_string);
+            }
+          catch (const dealii::ExceptionBase &e)
+            {
+              dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
+                                                 /* reading failed: */ false,
+                                                 root_process);
+              throw;
+            }
+          dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD, true, root_process);
         }
       else
-        throw aspect::QuietException();
-    }
+        {
+          // We have multiple processes, and this is not the root. First listen
+          // to what process 0 had to say:
+          const bool success
+            = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
+                                                 /* dummy value, since we are not the sender: */ false,
+                                                 /* sender: */ root_process);
 
-  // otherwise, processor 0 was ok reading the data, so we can expect the
-  // other processors will be ok as well
-  if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
-    {
-      prm.parse_input_from_string(input_as_string);
+          // If the root failed, terminate the current non-root process.
+          // Otherwise, we can assume that reading the program will
+          // succeed here as well:
+          if (success == false)
+            throw aspect::QuietException();
+          else
+            prm.parse_input_from_string(input_as_string);
+        }
     }
 }
 
