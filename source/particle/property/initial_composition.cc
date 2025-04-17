@@ -48,6 +48,15 @@ namespace aspect
 
 
       template <int dim>
+      unsigned int
+      InitialComposition<dim>::compositional_index_for_boundary_initialization (const unsigned int property_component) const
+      {
+        return property_component;
+      }
+
+
+
+      template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
       InitialComposition<dim>::get_property_information() const
       {

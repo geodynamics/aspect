@@ -343,6 +343,19 @@ namespace aspect
 
 
       template <int dim>
+      unsigned int
+      Interface<dim>::compositional_index_for_boundary_initialization (const unsigned int /*property_component*/) const
+      {
+        AssertThrow (false,
+                     ExcMessage("The function compositional_index_for_boundary_evaluation() is not implemented "
+                                "in this particle property plugin. This function is required if the plugin makes use "
+                                "of the compositional field boundary conditions to initialize the particle properties."));
+        return 0;
+      }
+
+
+
+      template <int dim>
       void
       Interface<dim>::set_data_position (const unsigned int index)
       {
@@ -587,29 +600,12 @@ namespace aspect
                     {
                       const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
                       const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
-                      const std::string particle_property_name = property_information.get_field_name_by_index(property_index);
 
                       for (unsigned int particle_property_component = 0; particle_property_component < n_property_components; ++particle_property_component)
                         {
-                          // search through all particle properties that are mapped to compositional fields to find the one that
-                          // matches the current particle property, throw an exception if there isnt one
-                          unsigned int composition_field_index = numbers::invalid_unsigned_int;
-                          for (const std::pair<unsigned int,std::pair<std::string,unsigned int>> field_and_particle : this->get_parameters().mapped_particle_properties)
-                            {
-                              // field_and_particle.first is the index of the compositional field
-                              // field_and_particle.second.first is the name of the particle property
-                              // field_and_particle.second.second is the component of the particle property (one property can have multiple components)
-                              if (field_and_particle.second.first == particle_property_name && field_and_particle.second.second == particle_property_component)
-                                composition_field_index = field_and_particle.first;
-                            }
-
-                          Assert(composition_field_index != numbers::invalid_unsigned_int,
-                                 ExcMessage("Could not find particle property index " + std::to_string(property_index)
-                                            + " with name " + particle_property_name + " in the list of compositions."));
-
                           const double field_boundary_value = manager.boundary_composition(boundary_id,
                                                                                            particle_location,
-                                                                                           composition_field_index);
+                                                                                           (*p)->compositional_index_for_boundary_initialization(particle_property_component));
 
                           particle_properties.push_back(field_boundary_value);
                         }

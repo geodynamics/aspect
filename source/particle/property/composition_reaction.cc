@@ -109,6 +109,15 @@ namespace aspect
 
 
       template <int dim>
+      unsigned int
+      CompositionReaction<dim>::compositional_index_for_boundary_initialization (const unsigned int property_component) const
+      {
+        return property_component;
+      }
+
+
+
+      template <int dim>
       UpdateTimeFlags
       CompositionReaction<dim>::need_update() const
       {
