@@ -112,6 +112,9 @@ namespace aspect
       unsigned int
       CompositionReaction<dim>::compositional_index_for_boundary_initialization (const unsigned int property_component) const
       {
+        Assert (property_component < this->n_compositional_fields(),
+                ExcInternalError());
+
         return property_component;
       }
 

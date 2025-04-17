@@ -603,9 +603,19 @@ namespace aspect
 
                       for (unsigned int particle_property_component = 0; particle_property_component < n_property_components; ++particle_property_component)
                         {
+                          // Ask the particle property which field index to use to evaluate boundary condition
+                          const unsigned int field_index_to_use = (*p)->compositional_index_for_boundary_initialization(particle_property_component);
+
+                          Assert(field_index_to_use < this->n_compositional_fields(),
+                                 ExcMessage("The field index specified in the function"
+                                            "compositional_index_for_boundary_initialization() by the particle property "
+                                            "<" + property_information.get_field_name_by_index(property_index) +"> is "
+                                            "larger than the number of compositional fields. This is not possible "
+                                            "and likely a bug in the particle property plugin."));
+
                           const double field_boundary_value = manager.boundary_composition(boundary_id,
                                                                                            particle_location,
-                                                                                           (*p)->compositional_index_for_boundary_initialization(particle_property_component));
+                                                                                           field_index_to_use);
 
                           particle_properties.push_back(field_boundary_value);
                         }
