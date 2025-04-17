@@ -1,0 +1,7 @@
+Fixed: The grain size material model would locally compute a
+wrong grain size growth term if the grain size was reset by
+a phase transition, and was reduced below the minimum grain
+size (by the phase reset or otherwise) in the same time step.
+This is fixed now.
+<br>
+(Rene Gassmoeller, 2025/04/17)

@@ -1,0 +1,16 @@
+# A test for the grain size material model to see if the grain
+# size is reset correctly after crossing a phase transition.
+# This test is a variation of the test grain_size_crossed_transition
+# with an additional minimum grain size.
+
+include $ASPECT_SOURCE_DIR/tests/grain_size_crossed_transition.prm
+
+subsection Material model
+  set Model name = grain size
+  set Material averaging = none
+
+  subsection Grain size model
+    set Recrystallized grain size            = 1e-3
+    set Minimum grain size                   = 1.5e-3
+  end
+end
