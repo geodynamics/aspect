@@ -51,7 +51,7 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = true
+    set Use limiter for discontinuous composition solution = false, false, false, true
     set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0
     set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0
   end
@@ -69,6 +69,10 @@ subsection Boundary velocity model
 end
 
 # Number and name of compositional fields
+# Note that although compositional fields are set with names corresponding to the
+# stress tensor, elasticity is not actually enabled. Since the field types are
+# set to generic, these fields do not contribute to material properties, neither
+# as stresses, nor as chemical compositions.
 subsection Compositional fields
   set Number of fields = 4
   set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam

@@ -61,7 +61,7 @@ subsection Boundary velocity model
 end
 
 # Spatial domain of different compositional fields:
-# ve_stress_xx, ve_stress_yy, ve_stress_xy
+# ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
 subsection Initial composition model
   set Model name = function
 
@@ -69,6 +69,9 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function constants  = eta = 1e22, mu = 1e10, eps = 1e-14, t = 250000, yinsec = 31557600
     set Function expression = 2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
+                              -2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
+                              0 ;\
+                              2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
                               -2.*eta*eps*(1.-exp(-mu*t*yinsec/eta)); \
                               0
   end
