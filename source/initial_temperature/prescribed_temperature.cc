@@ -59,7 +59,7 @@ namespace aspect
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         in.composition[0][c] = initial_composition->initial_composition(position, c);
 
-      in.strain_rate.resize(0);
+      in.strain_rate[0] = SymmetricTensor<2,dim>();
 
       this->get_material_model().create_additional_named_outputs(out);
       this->get_material_model().evaluate(in, out);
