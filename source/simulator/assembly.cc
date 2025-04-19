@@ -19,6 +19,7 @@
 */
 
 
+#include "aspect/global.h"
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
 #include <aspect/compat.h>
@@ -475,8 +476,10 @@ namespace aspect
     // sense to use AMG instead of ILU:
     if (parameters.include_melt_transport)
       Mp_preconditioner = std::make_unique<LinearAlgebra::PreconditionAMG>();
-    else
+    else if (!parameters.use_bfbt)
       Mp_preconditioner = std::make_unique<LinearAlgebra::PreconditionILU>();
+    else
+      Mp_preconditioner = std::make_unique<LinearAlgebra::PreconditionAMG>();
 
     Amg_preconditioner = std::make_unique<LinearAlgebra::PreconditionAMG>();
 
@@ -513,9 +516,18 @@ namespace aspect
 
     if (parameters.include_melt_transport == false)
       {
-        LinearAlgebra::PreconditionILU *Mp_preconditioner_ILU
-          = dynamic_cast<LinearAlgebra::PreconditionILU *> (Mp_preconditioner.get());
-        Mp_preconditioner_ILU->initialize (system_preconditioner_matrix.block(1,1));
+        if (!parameters.use_bfbt)
+          {
+            LinearAlgebra::PreconditionILU *Mp_preconditioner_ILU
+              = dynamic_cast<LinearAlgebra::PreconditionILU *> (Mp_preconditioner.get());
+            Mp_preconditioner_ILU->initialize (system_preconditioner_matrix.block(1,1));
+          }
+        else
+          {
+            LinearAlgebra::PreconditionAMG *Mp_preconditioner_AMG = dynamic_cast<LinearAlgebra::PreconditionAMG *> (Mp_preconditioner.get());
+            Mp_preconditioner_AMG->initialize (system_preconditioner_matrix.block(1,1));
+          }
+
       }
     else
       {
