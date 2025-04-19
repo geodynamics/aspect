@@ -309,17 +309,18 @@ namespace aspect
               }
 
             // TODO: recrystallize at correct time while doing grain size evolution instead of afterwards
-            double phase_grain_size_reduction = 0.0;
             if (this->get_timestep_number() > 0)
               {
                 // check if material has crossed any phase transition, if yes, reset grain size
                 if (crossed_transition != -1)
                   if (recrystallized_grain_size[crossed_transition] > 0.0)
-                    phase_grain_size_reduction = grain_sizes[i] - recrystallized_grain_size[crossed_transition];
+                    grain_sizes[i] = recrystallized_grain_size[crossed_transition];
               }
 
+            // Make sure new grain size respects minimum grain size
             grain_sizes[i] = std::max(grain_sizes[i], minimum_grain_size);
-            const double grain_size_change = grain_sizes[i] - in.composition[i][grain_size_index] - phase_grain_size_reduction;
+
+            const double grain_size_change = grain_sizes[i] - in.composition[i][grain_size_index];
 
             // this reaction model is only responsible for the grain size field
             reaction_terms[i][grain_size_index] = grain_size_change;
