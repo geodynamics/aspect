@@ -281,6 +281,21 @@ namespace aspect
     };
 
     template <int dim>
+    class NewtonStokesSimplePreconditioner : public NewtonInterface<dim>
+    {
+      public:
+        void
+        execute (internal::Assembly::Scratch::ScratchBase<dim>  &scratch_base,
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const override;
+
+        /**
+         * Create additional material models outputs for computing viscoelastic strain rate when
+         * elasticity is enabled.
+         */
+        void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const override;
+    };
+
+    template <int dim>
     class NewtonStokesSimpleIncompressibleTerms : public NewtonInterface<dim>
     {
       public:

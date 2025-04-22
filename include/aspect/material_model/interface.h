@@ -410,6 +410,12 @@ namespace aspect
         std::vector<SymmetricTensor<2,dim>> strain_rate;
 
         /**
+         * The products of the determinant of Jacobian and the quadrature weight
+         * at the points given in the #position vector.
+         */
+        std::vector<double> JxW;
+
+        /**
          * Optional cell object that contains these quadrature
          * points. This allows for evaluating properties at the cell vertices
          * and interpolating to the quadrature points, or to query the cell for

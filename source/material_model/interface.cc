@@ -232,6 +232,7 @@ namespace aspect
       velocity(n_points, numbers::signaling_nan<Tensor<1,dim>>()),
       composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
       strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
+      JxW(n_points, numbers::signaling_nan<double>()),
       current_cell(),
       requested_properties(MaterialProperties::all_properties)
     {}
@@ -250,6 +251,7 @@ namespace aspect
       velocity(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim>>()),
       composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim>>()),
+      JxW(input_data.solution_values.size(), numbers::signaling_nan<double>()),
       current_cell(input_data.template get_cell<dim>()),
       requested_properties(MaterialProperties::all_properties)
     {
@@ -272,6 +274,9 @@ namespace aspect
 
           for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             this->composition[q][c] = input_data.solution_values[q][introspection.component_indices.compositional_fields[c]];
+
+          // TODO: find a better approximation to the JxW values
+          this->JxW[q] = 1. / input_data.solution_values.size();
         }
     }
 
@@ -291,6 +296,7 @@ namespace aspect
       velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim>>()),
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
+      JxW(fe_values.n_quadrature_points, numbers::signaling_nan<double>()),
       current_cell (cell_x),
       requested_properties(MaterialProperties::all_properties)
     {
@@ -310,6 +316,7 @@ namespace aspect
       velocity(source.velocity),
       composition(source.composition),
       strain_rate(source.strain_rate),
+      JxW(source.JxW),
       current_cell(source.current_cell),
       requested_properties(source.requested_properties)
     {
@@ -351,6 +358,9 @@ namespace aspect
         {
           for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             this->composition[q][c] = composition_values[c][q];
+
+          // Store the JxW values
+          this->JxW[q] = fe_values.JxW(q);
         }
 
       // Finally also record quadrature point positions and the cell

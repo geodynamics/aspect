@@ -477,7 +477,7 @@ namespace aspect
         // elastic stresses stored from the last time step.
         // Note the parallels with the viscous part of the strain rate deviator,
         // which is equal to 0.5 * stress / viscosity.
-        return deviator(strain_rate) + 0.5 * deviator(stored_stress) /
+        return strain_rate + 0.5 * deviator(stored_stress) /
                calculate_elastic_viscosity(shear_modulus);
       }
     }

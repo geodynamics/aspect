@@ -22,6 +22,7 @@
 #include <aspect/newton.h>
 #include <aspect/simulator/assemblers/advection.h>
 #include <aspect/simulator/assemblers/stokes.h>
+#include <aspect/material_model/visco_plastic_simple.h>
 
 #include <aspect/simulator.h>
 
@@ -36,6 +37,8 @@ namespace aspect
       : viscosity_derivative_wrt_pressure(n_points, numbers::signaling_nan<double>())
       , viscosity_derivative_wrt_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
       , viscosity_derivative_averaging_weights(n_points, numbers::signaling_nan<double>())
+      , viscosity_derivative_wrt_average_strain_rate(numbers::signaling_nan<double>())
+      , viscosity_derivative_wrt_average_pressure(numbers::signaling_nan<double>())
     {}
   }
 
@@ -46,8 +49,16 @@ namespace aspect
   NewtonHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
   {
-    assemblers.stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::NewtonStokesPreconditioner<dim>>());
-    assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
+    if (dynamic_cast<const MaterialModel::ViscoPlasticSimple<dim> *>(&this->get_material_model()))
+      {
+        assemblers.stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::NewtonStokesSimplePreconditioner<dim>>());
+        assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesSimpleIncompressibleTerms<dim>>());
+      }
+    else
+      {
+        assemblers.stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::NewtonStokesPreconditioner<dim>>());
+        assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
+      }
 
     if (this->get_material_model().is_compressible())
       {

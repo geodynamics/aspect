@@ -31,8 +31,6 @@
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/friction_models.h>
 
-#include <deal.II/fe/fe_values.h>
-
 namespace aspect
 {
   namespace MaterialModel
@@ -57,14 +55,16 @@ namespace aspect
         create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
-        void
-        calculate_average_viscosity(const std::vector<std::vector<double>> &volume_fractions,
-                                    const double strain_rate,
-                                    const double pressure,
-                                    const double temperature,
-                                    const double plastic_strain,
-                                    const bool fill_reaction_terms_for_plastic_strain,
-                                    MaterialModel::MaterialModelOutputs<dim> &out) const;
+        std::pair<double, double>
+        calculate_viscosity_and_plastic_strain_rate(const unsigned int chemical_field,
+                                                    const double strain_rate,
+                                                    const double pressure,
+                                                    const double temperature,
+                                                    const double plastic_strain) const;
+
+        double 
+        cellwise_average(const MaterialAveraging::AveragingOperation operation,
+                         const std::vector<double> &values) const;
 
         double ref_strain_rate;
 
@@ -86,11 +86,7 @@ namespace aspect
 
         MaterialAveraging::AveragingOperation cellwise_viscosity_averaging;
 
-        bool use_adiabatic_pressure_in_viscosity;
-
         bool allow_negative_pressure_in_plasticity;
-
-        double adiabatic_temperature_gradient_for_viscosity;
 
         bool enable_plastic_strain_weakening;
 
@@ -122,8 +118,6 @@ namespace aspect
         Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
         Rheology::FrictionModels<dim> friction_models;
-
-        mutable std::unique_ptr<FEValues<dim>> fe_values;
     };
   }
 }

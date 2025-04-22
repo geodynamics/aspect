@@ -549,6 +549,7 @@ namespace aspect
             for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
               scratch.material_model_inputs.composition[q][c] = (scratch.old_composition_values[c][q] + scratch.old_old_composition_values[c][q]) / 2;
             scratch.material_model_inputs.strain_rate[q] = (scratch.old_strain_rates[q] + scratch.old_old_strain_rates[q]) / 2;
+            scratch.material_model_inputs.JxW[q] = scratch.finite_element_values.JxW(q);
           }
         scratch.material_model_inputs.current_cell = cell;
 
