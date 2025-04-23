@@ -23,6 +23,7 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/melt.h>
+#include <aspect/advection_field.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/stokes_matrix_free.h>
@@ -906,7 +907,7 @@ namespace aspect
     template <int dim>
     bool compositional_field_needs_matrix_block(const Introspection<dim> &introspection, const unsigned int composition_index)
     {
-      const typename Simulator<dim>::AdvectionField adv_field (Simulator<dim>::AdvectionField::composition(composition_index));
+      const AdvectionField adv_field (AdvectionField::composition(composition_index));
       switch (adv_field.advection_method(introspection))
         {
           case Parameters<dim>::AdvectionFieldMethod::fem_field:

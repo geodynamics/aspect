@@ -20,9 +20,11 @@
 
 
 #include <aspect/melt.h>
-#include <aspect/simulator.h>
+#include <aspect/advection_field.h>
 #include <aspect/utilities.h>
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/boundary_traction/interface.h>
 #include <aspect/simulator/assemblers/advection.h>
 #include <deal.II/base/signaling_nan.h>
 
@@ -1350,9 +1352,9 @@ namespace aspect
   template <int dim>
   bool
   MeltHandler<dim>::
-  is_porosity(const typename Simulator<dim>::AdvectionField &advection_field) const
+  is_porosity(const AdvectionField &advection_field) const
   {
-    if (advection_field.field_type != Simulator<dim>::AdvectionField::compositional_field)
+    if (advection_field.field_type != AdvectionField::compositional_field)
       return false;
     else
       return (this->introspection().name_for_compositional_index(advection_field.compositional_variable) == "porosity");

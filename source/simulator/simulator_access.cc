@@ -20,6 +20,7 @@
 
 
 #include <aspect/simulator.h>
+#include <aspect/advection_field.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/particle/manager.h>
@@ -304,7 +305,7 @@ namespace aspect
   SimulatorAccess<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,
                                                   const bool skip_interior_cells) const
   {
-    const typename Simulator<dim>::AdvectionField advection_field = Simulator<dim>::AdvectionField::temperature();
+    const AdvectionField advection_field = AdvectionField::temperature();
     simulator->get_artificial_viscosity(viscosity_per_cell, advection_field, skip_interior_cells);
   }
 
@@ -315,7 +316,7 @@ namespace aspect
   SimulatorAccess<dim>::get_artificial_viscosity_composition (Vector<float> &viscosity_per_cell,
                                                               const unsigned int compositional_variable) const
   {
-    const typename Simulator<dim>::AdvectionField advection_field = Simulator<dim>::AdvectionField::composition(compositional_variable);
+    const AdvectionField advection_field = AdvectionField::composition(compositional_variable);
     simulator->get_artificial_viscosity(viscosity_per_cell, advection_field);
   }
 

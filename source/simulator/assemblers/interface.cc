@@ -20,7 +20,7 @@
 
 #include <aspect/simulator/assemblers/interface.h>
 
-#include <aspect/simulator.h>
+#include <aspect/advection_field.h>
 #include <aspect/utilities.h>
 
 #include <deal.II/base/signaling_nan.h>
@@ -194,7 +194,7 @@ namespace aspect
                          const UpdateFlags         update_flags,
                          const UpdateFlags         face_update_flags,
                          const unsigned int        n_compositional_fields,
-                         const typename Simulator<dim>::AdvectionField &field)
+                         const AdvectionField &field)
           :
           ScratchBase<dim>(),
 

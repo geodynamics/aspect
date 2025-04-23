@@ -20,6 +20,7 @@
 
 #include <aspect/global.h>
 #include <aspect/parameters.h>
+#include <aspect/advection_field.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/mesh_refinement/volume_of_fluid_interface.h>
 #include <aspect/simulator/assemblers/interface.h>
@@ -495,7 +496,7 @@ namespace aspect
 
 
   template <int dim>
-  void VolumeOfFluidHandler<dim>::do_volume_of_fluid_update (const typename Simulator<dim>::AdvectionField &advection_field)
+  void VolumeOfFluidHandler<dim>::do_volume_of_fluid_update (const AdvectionField &advection_field)
   {
     const bool direction_order_descending = (this->get_timestep_number() % 2) == 1;
     const VolumeOfFluidField<dim> volume_of_fluid_field = data[volume_of_fluid_composition_map_index[advection_field.field_index()]];
