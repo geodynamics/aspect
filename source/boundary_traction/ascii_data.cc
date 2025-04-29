@@ -47,8 +47,8 @@ namespace aspect
       AssertThrow(boundary_ids.empty() == false,
                   ExcMessage("Did not find the boundary indicator for the traction ascii data plugin."));
 
-      Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids,
-                                                    1);
+      const unsigned int n_components = prescribe_pressure_instead_of_full_traction ? 1 : dim;
+      Utilities::AsciiDataBoundary<dim>::initialize(boundary_ids, n_components);
     }
 
 
@@ -59,10 +59,28 @@ namespace aspect
                        const Point<dim> &position,
                        const Tensor<1,dim> &normal_vector) const
     {
-      const double pressure = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
-                                                                                    position,
-                                                                                    0);
-      return -pressure * normal_vector;
+      Tensor<1,dim> traction;
+
+      if (prescribe_pressure_instead_of_full_traction)
+        {
+
+          const double pressure = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
+                                                                                        position,
+                                                                                        0);
+          traction = -pressure * normal_vector;
+        }
+      else
+        {
+          for (unsigned int i=0; i<dim; ++i)
+            traction[i] = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
+                                                                                position,
+                                                                                i);
+
+          if (use_spherical_unit_vectors)
+            traction = Utilities::Coordinates::spherical_to_cartesian_vector(traction, position);
+        }
+
+      return traction;
     }
 
 
@@ -84,6 +102,22 @@ namespace aspect
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
                                                               "$ASPECT_SOURCE_DIR/data/boundary-traction/ascii-data/test/",
                                                               "box_2d_%s.%d.txt");
+        prm.enter_subsection("Ascii data model");
+        {
+          prm.declare_entry ("Use spherical unit vectors", "false",
+                             Patterns::Bool (),
+                             "Specify traction as r, phi, and theta components "
+                             "instead of x, y, and z. Positive tractions point up, east, "
+                             "and north (in 3d) or out and clockwise (in 2d). "
+                             "This setting only makes sense for spherical geometries."
+                            );
+          prm.declare_entry ("Prescribe pressure instead of full traction", "true",
+                             Patterns::Bool (),
+                             "Whether to prescribe pressure (true) or full traction vector (false) "
+                             "at the boundary. If true, only 1 component will be used for the boundary condition."
+                            );
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
@@ -96,6 +130,16 @@ namespace aspect
       prm.enter_subsection("Boundary traction model");
       {
         Utilities::AsciiDataBoundary<dim>::parse_parameters(prm);
+        prm.enter_subsection("Ascii data model");
+        {
+          use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
+          if (use_spherical_unit_vectors)
+            AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                         ExcMessage ("Spherical unit vectors should not be used "
+                                     "when geometry model is not spherical."));
+          prescribe_pressure_instead_of_full_traction = prm.get_bool("Prescribe pressure instead of full traction");
+        }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }

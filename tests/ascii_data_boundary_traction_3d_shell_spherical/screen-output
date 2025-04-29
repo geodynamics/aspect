@@ -1,0 +1,83 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (fix_traction_ascii_data, f3aea2785)
+--     . using deal.II 9.6.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.6
+--     . using Geodynamic World Builder 1.0.0
+--     . running in OPTIMIZED mode
+--     . running with 6 MPI processes
+-----------------------------------------------------------------------------
+
+
+   Loading Ascii data boundary file /Users/tiannh/work/00-aspect/pull-request/aspect/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&geoid=1&mf=1&sha=f3aea2785&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 6,144 (on 3 levels)
+Number of degrees of freedom: 215,962 (156,774+6,930+52,258)
+
+Number of mesh deformation degrees of freedom: 20,790
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        2.89e+06
+     Temperature contrast across model domain (K):  1000
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3458.4
+     Reference thermal expansion coefficient (1/K): 3e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.125
+     Reference viscosity (Pa*s):                    1e+21
+     Reference thermal diffusivity (m^2/s):         9.54198e-07
+     Rayleigh number:                               2.62453e+07
+
+     RMS, max velocity:                2.11 m/year, 4.76 m/year
+     Pressure at top/bottom of domain: 2.789e+07 Pa, 9.513e+10 Pa
+     Density at top/bottom of domain:  3359 kg/m^3, 3260 kg/m^3
+     Computing dynamic topography      
+     Writing geoid anomaly:            output-ascii_data_boundary_traction_3d_shell_spherical/geoid_anomaly.00000
+     Writing graphical output:         output-ascii_data_boundary_traction_3d_shell_spherical/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      3.33s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |         1 |    0.0824s |       2.5% |
+| Assemble temperature system      |         1 |     0.101s |         3% |
+| Build Stokes preconditioner      |         1 |    0.0249s |      0.75% |
+| Build temperature preconditioner |         1 |    0.0288s |      0.86% |
+| Initialization                   |         1 |    0.0943s |       2.8% |
+| Mesh deformation                 |         1 |    0.0307s |      0.92% |
+| Mesh deformation initialize      |         1 |    0.0168s |      0.51% |
+| Postprocessing                   |         1 |      2.56s |        77% |
+| Setup dof systems                |         1 |    0.0849s |       2.6% |
+| Setup initial conditions         |         1 |    0.0317s |      0.95% |
+| Setup matrices                   |         1 |    0.0316s |      0.95% |
+| Solve Stokes system              |         1 |     0.228s |       6.9% |
+| Solve temperature system         |         1 |   0.00144s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 3s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&geoid=1&mf=1&sha=f3aea2785&src=code
+-----------------------------------------------------------------------------
