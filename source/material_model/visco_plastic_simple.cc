@@ -287,7 +287,7 @@ namespace aspect
                                                                             drucker_prager_parameters.max_yield_stress,
                                                                             non_yielding_viscosity);
 
-          plastic_strain_rate = strain_rate - yield_stress / non_yielding_viscosity;
+          plastic_strain_rate = strain_rate - yield_stress / (2. * non_yielding_viscosity);
         }
 
       const double viscosity = std::min(std::max(effective_viscosity, min_viscosity), max_viscosity);

@@ -649,6 +649,9 @@ const unsigned int n_points = outputs.n_evaluation_points();
       const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
       const double pressure_scaling = this->get_pressure_scaling();
 
+      const double eta = scratch.material_model_outputs.viscosities[0];
+      const double one_over_eta = 1. / eta;
+
       AssertThrow(dynamic_cast<const MaterialModel::ViscoPlasticSimple<dim> *>(&this->get_material_model()), ExcInternalError());
 
       // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
@@ -679,7 +682,6 @@ const unsigned int n_points = outputs.n_evaluation_points();
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
                   scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q);
-                  scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence(i, q);
                   scratch.phi_p[i_stokes]       = scratch.finite_element_values[introspection.extractors.pressure].value(i, q);
 
                   ++i_stokes;
@@ -687,8 +689,6 @@ const unsigned int n_points = outputs.n_evaluation_points();
               ++i;
             }
 
-          const double eta = scratch.material_model_outputs.viscosities[q];
-          const double one_over_eta = 1. / eta;
           const double JxW = scratch.finite_element_values.JxW(q);
 
           for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
@@ -735,16 +735,23 @@ const unsigned int n_points = outputs.n_evaluation_points();
           eps_avg = std::sqrt(eps_avg / cell_measure) * numbers::SQRT2;
           
           std::vector<double> eps_times_grads_phi_u_avg(stokes_dofs_per_cell, 0.);
+          std::vector<double> phi_p_avg(stokes_dofs_per_cell, 0.);
           for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
                   for (unsigned int q = 0; q < n_q_points; ++q)
-                    eps_times_grads_phi_u_avg[i_stokes] += effective_strain_rates[q] *
-                                                           scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q) *
-                                                           scratch.finite_element_values.JxW(q);
+                    {
+                      eps_times_grads_phi_u_avg[i_stokes] += effective_strain_rates[q] *
+                                                             scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i, q) *
+                                                             scratch.finite_element_values.JxW(q);
+                      phi_p_avg[i_stokes]                 += scratch.finite_element_values[introspection.extractors.pressure].value(i, q) *
+                                                             scratch.finite_element_values.JxW(q);
+                    }
 
                   eps_times_grads_phi_u_avg[i_stokes] /= cell_measure;
+                  phi_p_avg[i_stokes] /= cell_measure;
+
                   ++i_stokes;
                 }
               ++i;
@@ -753,6 +760,7 @@ const unsigned int n_points = outputs.n_evaluation_points();
           const double eta = scratch.material_model_outputs.viscosities[0];
           const double deta_deps = derivatives->viscosity_derivative_wrt_average_strain_rate
                                    * numbers::SQRT1_2;
+          const double deta_dp   = derivatives->viscosity_derivative_wrt_average_pressure;
 
           const Newton::Parameters::Stabilization velocity_block_stabilization
             = this->get_newton_handler().parameters.velocity_block_stabilization;
@@ -767,15 +775,22 @@ const unsigned int n_points = outputs.n_evaluation_points();
                 alpha = SPD_safety_factor * std::fabs(eta / deta_deps_times_eps);
             }
 
-          const double prefactor = 2. * alpha * derivative_scaling_factor *
-                                   cell_measure * deta_deps / eps_avg;
+          const double prefactor = 2. * derivative_scaling_factor * cell_measure;
+          const double prefactor_u = prefactor * alpha * deta_deps / eps_avg;
+          const double prefactor_p = prefactor * one_over_eta 
+                                     * pressure_scaling * pressure_scaling 
+                                     * deta_dp * eps_avg;
 
           for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
             for (unsigned int j = 0; j < stokes_dofs_per_cell; ++j)
               if (scratch.dof_component_indices[i] ==
                   scratch.dof_component_indices[j])
-                data.local_matrix(i, j)
-                += prefactor * eps_times_grads_phi_u_avg[i] * eps_times_grads_phi_u_avg[j];
+                data.local_matrix(i, j) += prefactor_u 
+                                           * eps_times_grads_phi_u_avg[i]
+                                           * eps_times_grads_phi_u_avg[j]
+                                           +
+                                           prefactor_p
+                                           * phi_p_avg[i] * phi_p_avg[j];
         }
     }
 
