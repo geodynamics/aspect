@@ -133,7 +133,7 @@ namespace aspect
                 std::vector<std::string> tmpNumber = Utilities::split_string_list(string,'-');
                 AssertThrow(tmpNumber.size() == 2,
                             ExcMessage("Could not convert value '" + string + "' to an int because it contains more than one '-' sign."));
-                return std::min(std::max(maximum_refinement_level-Utilities::string_to_int(tmpNumber[1]),minimum_refinement_level),maximum_refinement_level);
+                return std::min(std::max(static_cast<int>(maximum_refinement_level)-Utilities::string_to_int(tmpNumber[1]),static_cast<int>(minimum_refinement_level)),static_cast<int>(maximum_refinement_level));
               }
             else
               {
