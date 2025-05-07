@@ -19,7 +19,7 @@
  */
 
 #include <aspect/global.h>
-#include <aspect/simulator.h>
+#include <aspect/advection_field.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/volume_of_fluid/utilities.h>
 
@@ -55,7 +55,7 @@ namespace aspect
         sim.old_old_solution.block(volume_of_fluidLS_blockidx) = sim.solution.block(volume_of_fluidLS_blockidx);
 
         // Update associated composition field
-        const typename Simulator<dim>::AdvectionField composition_field = Simulator<dim>::AdvectionField::composition(data[f].composition_index);
+        const AdvectionField composition_field = AdvectionField::composition(data[f].composition_index);
         update_volume_of_fluid_composition (composition_field, data[f], sim.solution);
         const unsigned int volume_of_fluid_C_blockidx = composition_field.block_index(this->introspection());
         sim.old_solution.block(volume_of_fluid_C_blockidx) = sim.solution.block(volume_of_fluid_C_blockidx);

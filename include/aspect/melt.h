@@ -490,7 +490,7 @@ namespace aspect
       /**
        * Return whether this object refers to the porosity field.
        */
-      bool is_porosity (const typename Simulator<dim>::AdvectionField &advection_field) const;
+      bool is_porosity (const AdvectionField &advection_field) const;
 
       /**
        * Apply free surface stabilization to a cell of the system matrix when melt

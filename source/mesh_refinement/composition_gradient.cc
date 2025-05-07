@@ -19,8 +19,8 @@
 */
 
 
-#include <aspect/simulator.h>
 #include <aspect/mesh_refinement/composition_gradient.h>
+#include <aspect/advection_field.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -61,7 +61,7 @@ namespace aspect
 
                 for (const unsigned int c : this->introspection().get_compositional_field_indices_with_base_element(base_element_index))
                   {
-                    const typename Simulator<dim>::AdvectionField composition = Simulator<dim>::AdvectionField::composition(c);
+                    const AdvectionField composition = AdvectionField::composition(c);
                     fe_values[composition.scalar_extractor(this->introspection())].get_function_gradients (this->get_solution(),
                         composition_gradients);
 

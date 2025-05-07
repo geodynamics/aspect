@@ -22,7 +22,8 @@
 #include <aspect/postprocess/interface.h>
 #include <aspect/gravity_model/interface.h>
 #include <aspect/geometry_model/interface.h>
-#include <aspect/simulator.h>
+#include <aspect/introspection.h>
+#include <aspect/advection_field.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 
@@ -827,7 +828,7 @@ namespace aspect
       AssertThrow(this->introspection().compositional_name_exists("porosity"),
                   ExcMessage("Postprocessor Solitary Wave only works if there is a compositional field called porosity."));
       const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
-      const typename Simulator<dim>::AdvectionField porosity = Simulator<dim>::AdvectionField::composition(porosity_index);
+      const AdvectionField porosity = AdvectionField::composition(porosity_index);
 
       // create a quadrature formula based on the compositional element alone.
       AssertThrow (this->introspection().n_compositional_fields > 0,

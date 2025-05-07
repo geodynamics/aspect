@@ -21,8 +21,13 @@
 #include <aspect/simulator/assemblers/advection.h>
 
 #include <aspect/melt.h>
-#include <aspect/simulator.h>
+#include <aspect/advection_field.h>
 #include <aspect/utilities.h>
+#include <aspect/boundary_heat_flux/interface.h>
+#include <aspect/gravity_model/interface.h>
+#include <aspect/boundary_temperature/interface.h>
+#include <aspect/boundary_composition/interface.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 namespace aspect
 {
@@ -62,7 +67,7 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
@@ -263,7 +268,7 @@ namespace aspect
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points);
 
@@ -326,7 +331,7 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
 
       Assert(advection_field.advection_method(introspection)
              == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion,
@@ -434,7 +439,7 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
 
       if (!advection_field.is_temperature())
         return;
@@ -515,7 +520,7 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
 
       Assert(advection_field.advection_method(introspection)
              == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field,
@@ -629,7 +634,7 @@ namespace aspect
     DarcySystem<dim>::compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const Introspection<dim> &introspection = this->introspection();
       std::vector<double> residuals(n_q_points);
@@ -684,7 +689,7 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
 
       const unsigned int face_no = scratch.face_number;
       const typename DoFHandler<dim>::face_iterator face = scratch.cell->face(face_no);
@@ -902,7 +907,7 @@ namespace aspect
       const unsigned int face_no = scratch.face_number;
       const typename DoFHandler<dim>::face_iterator face = cell->face(face_no);
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
 
       const unsigned int n_q_points    = scratch.face_finite_element_values->n_quadrature_points;
 

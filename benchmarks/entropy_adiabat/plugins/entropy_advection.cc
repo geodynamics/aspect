@@ -40,7 +40,7 @@ namespace aspect
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
       const std::vector<CompositionalFieldDescription> &composition_descriptions = this->introspection().get_composition_descriptions();
       if (!advection_field.is_temperature()
           && composition_descriptions[advection_field.compositional_variable].type != CompositionalFieldDescription::entropy)
@@ -180,7 +180,7 @@ namespace aspect
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>&> (scratch_base);
 
-      const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
+      const AdvectionField advection_field = *scratch.advection_field;
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points,0.0);
 
