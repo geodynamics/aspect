@@ -24,7 +24,8 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
-#include <aspect/stokes_matrix_free.h>
+#include <aspect/simulator/solver/matrix_free_operators.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
