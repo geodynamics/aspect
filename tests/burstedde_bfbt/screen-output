@@ -6,18 +6,18 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG-BFBT)... 159+0 iterations.
+   Solving Stokes system (AMG-BFBT)... 26+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG-BFBT)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.87564e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.85018e-07
 
 
    Postprocessing:
      Writing graphical output:      output-burstedde_bfbt/solution/solution-00000
      RMS, max velocity:             4.3 m/s, 13.2 m/s
-     Errors u_L1, p_L1, u_L2, p_L2: 6.030147e-01, 1.447579e-03, 1.059175e+00, 3.017047e-03
+     Errors u_L1, p_L1, u_L2, p_L2: 6.029961e-01, 1.448014e-03, 1.059162e+00, 3.024046e-03
 
 Termination requested by criterion: end time
 
