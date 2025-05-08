@@ -21,7 +21,7 @@
 
 #include <aspect/postprocess/memory_statistics.h>
 #include <aspect/simulator.h>
-#include <aspect/stokes_matrix_free.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 
 namespace aspect

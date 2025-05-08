@@ -28,8 +28,7 @@
 
 #include <deal.II/numerics/vector_tools.h>
 
-#include <aspect/stokes_matrix_free.h>
-
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 namespace aspect
 {

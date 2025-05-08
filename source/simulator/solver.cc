@@ -22,7 +22,7 @@
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/melt.h>
-#include <aspect/stokes_matrix_free.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/stokes_direct.h>
 #include <aspect/mesh_deformation/interface.h>
 

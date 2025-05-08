@@ -31,7 +31,7 @@
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator/assemblers/advection.h>
 
-#include <aspect/stokes_matrix_free.h>
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/work_stream.h>
