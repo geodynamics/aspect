@@ -37,15 +37,27 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 250e3
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, single Stokes
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-5
-set Max nonlinear iterations               = 1
+set Max nonlinear iterations               = 100
 set CFL number                             = 0.5
 set Maximum time step                      = 1000
 set Output directory                       = output
-set Timing output frequency                = 1
 set Pressure normalization                 = surface
 set Surface pressure                       = 0.
+
+# To update the elastic stresses,
+# we do 1 operator splitting step.
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
 
 # Solver settings
 subsection Solver parameters
@@ -77,6 +89,7 @@ end
 
 # Element types
 subsection Discretization
+  set Use discontinuous composition discretization = true
   set Composition polynomial degree     = 2
   set Stokes velocity polynomial degree = 2
   set Temperature polynomial degree     = 1
@@ -101,8 +114,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+  set Types of fields  = stress, stress, stress, stress, stress, stress
 end
 
 # Spatial domain of different compositional fields
@@ -112,7 +126,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0;
+    set Function expression = 0; 0; 0; 0; 0; 0;
   end
 end
 

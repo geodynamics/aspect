@@ -6,11 +6,23 @@ set Dimension                              = 2
 set End time                               = 2e3
 set Use years in output instead of seconds = true
 set Output directory = output_ve
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 5
+
 set CFL number                             = 0.5
 set Maximum time step                      = 1e3
 
+# One operator splitting step to update the stresses
+set Use operator splitting                 = true
+
 # Solver settings
 subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 2000
   end
@@ -43,9 +55,9 @@ subsection Discretization
   set Use discontinuous composition discretization = true
 
   subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = true
-    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.0
-    set Global composition minimum = -1.e11, -1.e11, -1.e11, 0.0
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true
+    set Global composition maximum =  1.e11,  1.e11,  1.e11, 1.e11,  1.e11,  1.e11, 1.0
+    set Global composition minimum = -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, -1.e11, 0.0
   end
 end
 
@@ -62,8 +74,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam
+  set Number of fields = 7
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, beam
+  set Types of fields  = stress,       stress,       stress,       stress,           stress,           stress,           chemical composition
 end
 
 # Spatial domain of different compositional fields
@@ -73,7 +86,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; if (x>=3.5e3 && x<=4.0e3 && y>=3.0e3, 1, 0)
+    set Function expression = 0; 0; 0; 0; 0; 0; if (x>=3.5e3 && x<=4.0e3 && y>=3.0e3, 1, 0)
   end
 end
 
@@ -110,13 +123,13 @@ subsection Material model
   set Model name = visco plastic
 
   subsection Visco Plastic
-    set Densities            =  2800,  2800,  2800,  2800,  6000
+    set Densities            =  2800, 6000
     set Viscous flow law                          = dislocation
-    set Prefactors for dislocation creep          = 5.e-19, 5.e-19, 5.e-19, 5.e-19, 5.e-25
+    set Prefactors for dislocation creep          = 5.e-19, 5.e-25
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
-    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
+    set Elastic shear moduli = 1.e11, 1.e10
     set Fixed elastic time step     = 2e3
     set Use fixed elastic time step = true
     set Viscosity averaging scheme  = maximum composition

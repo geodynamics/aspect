@@ -70,7 +70,8 @@ namespace aspect
         std::vector<double> friction_angles;
 
         /**
-         * The plastic yield stress.
+         * The current plastic yield stress, depending on composition,
+         * pressure, and strain.
          */
         std::vector<double> yield_stresses;
 
@@ -243,14 +244,16 @@ namespace aspect
 
           /**
            * Enumeration for selecting which type of viscous flow law to use.
-           * Select between diffusion, dislocation, frank_kamenetskii or composite.
+           * Select between diffusion, dislocation, frank_kamenetskii, composite,
+           * or the minimum of the diffusion and dislocation viscosities.
            */
           enum ViscosityScheme
           {
             diffusion,
             dislocation,
             frank_kamenetskii,
-            composite
+            composite,
+            minimum_diffusion_dislocation
           } viscous_flow_law;
 
           /**
