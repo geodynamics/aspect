@@ -499,6 +499,17 @@ namespace aspect
           late_initialization_mode () const;
 
           /**
+           * A function that returns which compositional field index to be used
+           * when initializing the particle property at a boundary. This function
+           * is only needed for properties that use the late_initialization_mode()
+           * InitializationModeForLateParticles::interpolate_respect_boundary. This
+           * function will not be called otherwise.
+           */
+          virtual
+          unsigned int
+          compositional_index_for_boundary_initialization(const unsigned int property_component) const;
+
+          /**
            * Set up the information about the names and number of components
            * this property requires. Derived classes need to implement this
            * function.

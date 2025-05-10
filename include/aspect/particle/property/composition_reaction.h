@@ -79,6 +79,17 @@ namespace aspect
           late_initialization_mode () const override;
 
           /**
+           * A function that returns which compositional field index to be used
+           * when initializing the particle property at a boundary.
+           *
+           * For this property we use the compositional field index corresponding
+           * to the particle property component, which is consistent with how the
+           * particles are initialized in initialize_one_particle_property().
+           */
+          unsigned int
+          compositional_index_for_boundary_initialization(const unsigned int property_component) const override;
+
+          /**
            * @copydoc aspect::Particle::Property::Interface::need_update()
            */
           UpdateTimeFlags
