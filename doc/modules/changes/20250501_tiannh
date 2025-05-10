@@ -1,0 +1,8 @@
+Changed: Added support for prescribing either pressure-only or
+full traction vector boundary conditions in AsciiDataBoundary.
+Introduced the input parameter "Prescribe pressure instead of
+full traction" (default: true) to maintain backward compatibility.
+Traction components can now also be specified in spherical coordinates.
+This improves flexibility for boundary traction specifications.
+<br>
+(Ninghui Tian, Rene Gassmoeller, 2025/05/01)
