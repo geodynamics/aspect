@@ -1,0 +1,5 @@
+Fixed: Adds current cell to material model inputs
+in the cpo particle property to fix the Olivine: Karato
+2008 mineral type. Also added a test to test this feature.
+<br>
+(Menno Fraters and Daniel Douglas, 2025/02/25)
