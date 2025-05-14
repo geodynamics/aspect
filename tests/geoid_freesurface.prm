@@ -2,12 +2,13 @@
 # The perturbation is added to a constant density, i.e., degree 0 order 0 component.
 
 set Dimension                              = 3
-set Use years in output instead of seconds = true
+set Use years in output instead of seconds = false
 set Start time                             = 0
-set End time                               = 1
+set End time                               = 1e-6
 set Adiabatic surface temperature          = 0.0
-set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver scheme                = single Advection, single Stokes
 set Pressure normalization                 = no
+set Maximum time step                      = 1e-6
 
 subsection Material model
   set Model name = simple
@@ -22,16 +23,12 @@ subsection Material model
   end
 end
 
-subsection Discretization
-  set Stokes velocity polynomial degree = 2
-end
-
 subsection Geometry model
   set Model name = spherical shell
 
   subsection Spherical shell
-    set Inner radius = 200000
-    set Outer radius = 400000
+    set Inner radius = 0.5
+    set Outer radius = 1.0
   end
 end
 
@@ -58,7 +55,7 @@ subsection Gravity model
   set Model name = radial constant
 
   subsection Radial constant
-    set Magnitude = 9.8
+    set Magnitude = 1
   end
 end
 
@@ -77,7 +74,7 @@ subsection Mesh deformation
 end
 
 subsection Postprocess
-  set List of postprocessors = basic statistics, geoid, dynamic topography, topography
+  set List of postprocessors = geoid, dynamic topography, topography, velocity statistics, temperature statistics
 
   subsection Topography
     set Output to file = true
@@ -102,15 +99,4 @@ subsection Postprocess
     set Output density anomaly contribution coefficients = true
     set Output gravity anomaly = true
   end
-end
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-7
-  end
-end
-
-subsection Termination criteria
-  set Termination criteria = end step
-  set End step = 1
 end

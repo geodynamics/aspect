@@ -1,19 +1,23 @@
 # 1: Time step number
-# 2: Time (years)
-# 3: Time step size (years)
+# 2: Time (seconds)
+# 3: Time step size (seconds)
 # 4: Number of mesh cells
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
-# 7: Number of nonlinear iterations
-# 8: Iterations for temperature solver
-# 9: Iterations for Stokes solver
-# 10: Velocity iterations in Stokes preconditioner
-# 11: Schur complement iterations in Stokes preconditioner
-# 12: Minimum topography (m)
-# 13: Maximum topography (m)
-# 14: Density at top (kg/m^3)
-# 15: Density at bottom (kg/m^3)
-# 16: Pressure at top (Pa)
-# 17: Pressure at bottom (Pa)
-0 0.000000000000e+00 0.000000000000e+00 96 3060 970 2 0 1007 3424 1026 -5.82076609e-11 1.16415322e-10 1.00000000e+00 1.00000000e+00  2.66887804e+03 1.87122284e+06 
-1 4.550882293867e-14 4.550882293867e-14 96 3060 970 2 9 1020 4331 1049 -2.91459623e+04 5.63151312e+04 9.98952521e-01 1.08117252e+00 -6.35673188e+03 1.93213079e+06 
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Density at top (kg/m^3)
+# 19: Density at bottom (kg/m^3)
+# 20: Pressure at top (Pa)
+# 21: Pressure at bottom (Pa)
+0 0.000000000000e+00 0.000000000000e+00 96 3060 970 0 1007 2910 1026 -2.22044605e-16 0.00000000e+00 1.39571060e-02 2.23901853e-02 -3.15391565e+00 -5.94027475e-16 6.30783131e+00 1.00000000e+00 1.00000000e+00 6.80836224e-04 4.77352766e-01 
+1 1.000000000000e-06 1.000000000000e-06 96 3060 970 8   91   92   92 -1.29432007e-08 2.50085430e-08 1.39568976e-02 2.23897587e-02 -3.15393187e+00 -1.34808124e-05 6.30789171e+00 1.00000074e+00 1.00000320e+00 6.80823888e-04 4.77353468e-01 
