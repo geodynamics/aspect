@@ -1,25 +1,7 @@
------------------------------------------------------------------------------
---                             This is ASPECT                              --
--- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
------------------------------------------------------------------------------
---     . version 3.1.0-pre (fix_traction_ascii_data, f3aea2785)
---     . using deal.II 9.6.1
---     .       with 32 bit indices
---     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
---     . using Trilinos 14.4.0
---     . using p4est 2.3.6
---     . using Geodynamic World Builder 1.0.0
---     . running in OPTIMIZED mode
---     . running with 6 MPI processes
------------------------------------------------------------------------------
 
 
-   Loading Ascii data boundary file /Users/tiannh/work/00-aspect/pull-request/aspect/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&geoid=1&mf=1&sha=f3aea2785&src=code
------------------------------------------------------------------------------
 Number of active cells: 6,144 (on 3 levels)
 Number of degrees of freedom: 215,962 (156,774+6,930+52,258)
 
@@ -56,28 +38,4 @@ Number of mesh deformation degrees of freedom: 20,790
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      3.33s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         1 |    0.0824s |       2.5% |
-| Assemble temperature system      |         1 |     0.101s |         3% |
-| Build Stokes preconditioner      |         1 |    0.0249s |      0.75% |
-| Build temperature preconditioner |         1 |    0.0288s |      0.86% |
-| Initialization                   |         1 |    0.0943s |       2.8% |
-| Mesh deformation                 |         1 |    0.0307s |      0.92% |
-| Mesh deformation initialize      |         1 |    0.0168s |      0.51% |
-| Postprocessing                   |         1 |      2.56s |        77% |
-| Setup dof systems                |         1 |    0.0849s |       2.6% |
-| Setup initial conditions         |         1 |    0.0317s |      0.95% |
-| Setup matrices                   |         1 |    0.0316s |      0.95% |
-| Solve Stokes system              |         1 |     0.228s |       6.9% |
-| Solve temperature system         |         1 |   0.00144s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts: 3s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&geoid=1&mf=1&sha=f3aea2785&src=code
------------------------------------------------------------------------------
