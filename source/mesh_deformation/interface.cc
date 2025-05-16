@@ -1354,17 +1354,21 @@ namespace aspect
       // is because the numbering depends on the order the
       // cells are created.
       DoFRenumbering::hierarchical (mesh_deformation_dof_handler);
-      static bool first_time=true;
-      if (first_time)
+
+      // If necessary reset the mapping of the simulator to something
+      // that captures mesh deformation in time. This has to
+      // happen after we distribute the mesh_deformation DoFs
+      // above.
+      if (dynamic_cast<const MappingQEulerian<dim, LinearAlgebra::Vector>*>(&(this->get_mapping())) == nullptr)
         {
-          first_time = false;
-          // Now reset the mapping of the simulator to be something
-          // that captures mesh deformation in time. This has to
-          // happen after we distribute the mesh_deformation DoFs
-          // above.
-          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (4,
+          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (this->get_geometry_model().has_curved_elements() ? 4 : 1,
                                                                                mesh_deformation_dof_handler,
                                                                                mesh_displacements));
+
+          for (auto &pm : sim.particle_managers)
+            pm.get_particle_handler().initialize(this->get_triangulation(),
+                                                 this->get_mapping(),
+                                                 pm.get_property_manager().get_n_property_components());
         }
 
       if (this->is_stokes_matrix_free())
