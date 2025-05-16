@@ -34,26 +34,6 @@ namespace aspect
      * A class that implements prescribed traction boundary conditions from
      * data given in an AsciiData input file.
      *
-     * This class supports prescribing either:
-     * - Only pressure at the boundary (default behavior), where the traction is
-     *   computed as the negative pressure times the outward normal vector.
-     * - Full traction vector components on the boundary.
-     *
-     * The behavior is controlled by the input parameter
-     * "Prescribe pressure instead of full traction" (default: true).
-     * If true, only one component (pressure) is read from the input file and
-     * used to compute traction as -pressure * normal_vector.
-     * If false, the full traction vector components (equal to the spatial dimension)
-     * are read from the input file.
-     *
-     * Additionally, the traction vector components may be specified in either
-     * Cartesian coordinates or spherical coordinates, controlled by the
-     * "Use spherical unit vectors" parameter.
-     *
-     * This flexibility allows compatibility with existing models prescribing
-     * pressure boundary conditions, while enabling models requiring full traction
-     * vectors.
-     *
      * @ingroup BoundaryTractions
      */
     template <int dim>
