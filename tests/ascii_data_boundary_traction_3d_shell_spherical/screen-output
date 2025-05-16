@@ -1,0 +1,41 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
+
+Number of active cells: 6,144 (on 3 levels)
+Number of degrees of freedom: 215,962 (156,774+6,930+52,258)
+
+Number of mesh deformation degrees of freedom: 20,790
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 23+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        2.89e+06
+     Temperature contrast across model domain (K):  1000
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3458.4
+     Reference thermal expansion coefficient (1/K): 3e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.125
+     Reference viscosity (Pa*s):                    1e+21
+     Reference thermal diffusivity (m^2/s):         9.54198e-07
+     Rayleigh number:                               2.62453e+07
+
+     RMS, max velocity:                2.11 m/year, 4.76 m/year
+     Pressure at top/bottom of domain: 2.789e+07 Pa, 9.513e+10 Pa
+     Density at top/bottom of domain:  3359 kg/m^3, 3260 kg/m^3
+     Computing dynamic topography      
+     Writing geoid anomaly:            output-ascii_data_boundary_traction_3d_shell_spherical/geoid_anomaly.00000
+     Writing graphical output:         output-ascii_data_boundary_traction_3d_shell_spherical/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

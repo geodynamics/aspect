@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+# 13: Pressure at top (Pa)
+# 14: Pressure at bottom (Pa)
+# 15: Density at top (kg/m^3)
+# 16: Density at bottom (kg/m^3)
+# 17: Visualization file name
+# 18: Surface visualization file name
+0 0.000000000000e+00 0.000000000000e+00 6144 163704 52258 0 23 24 24 2.10917241e+00 4.75831973e+00 2.78903229e+07 9.51324012e+10 3.35940000e+03 3.26040000e+03 output-ascii_data_boundary_traction_3d_shell_spherical/solution/solution-00000 output-ascii_data_boundary_traction_3d_shell_spherical/solution_surface/solution_surface-00000 
