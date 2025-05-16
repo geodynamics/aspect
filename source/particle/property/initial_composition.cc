@@ -48,13 +48,13 @@ namespace aspect
 
 
       template <int dim>
-      unsigned int
-      InitialComposition<dim>::compositional_index_for_boundary_initialization (const unsigned int property_component) const
+      AdvectionField
+      InitialComposition<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
       {
         Assert (property_component < this->n_compositional_fields(),
                 ExcInternalError());
 
-        return property_component;
+        return AdvectionField::composition(property_component);
       }
 
 

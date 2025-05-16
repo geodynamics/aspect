@@ -19,7 +19,9 @@
  */
 
 #include <aspect/particle/property/interface.h>
+
 #include <aspect/utilities.h>
+#include <aspect/advection_field.h>
 
 #include <aspect/particle/integrator/euler.h>
 #include <aspect/particle/integrator/rk_2.h>
@@ -343,14 +345,14 @@ namespace aspect
 
 
       template <int dim>
-      unsigned int
-      Interface<dim>::compositional_index_for_boundary_initialization (const unsigned int /*property_component*/) const
+      AdvectionField
+      Interface<dim>::advection_field_for_boundary_initialization (const unsigned int /*property_component*/) const
       {
         AssertThrow (false,
                      ExcMessage("The function compositional_index_for_boundary_evaluation() is not implemented "
                                 "in this particle property plugin. This function is required if the plugin makes use "
                                 "of the compositional field boundary conditions to initialize the particle properties."));
-        return 0;
+        return AdvectionField::composition(0);
       }
 
 
@@ -604,18 +606,20 @@ namespace aspect
                       for (unsigned int particle_property_component = 0; particle_property_component < n_property_components; ++particle_property_component)
                         {
                           // Ask the particle property which field index to use to evaluate boundary condition
-                          const unsigned int field_index_to_use = (*p)->compositional_index_for_boundary_initialization(particle_property_component);
+                          const AdvectionField field_to_use = (*p)->advection_field_for_boundary_initialization(particle_property_component);
 
-                          Assert(field_index_to_use < this->n_compositional_fields(),
-                                 ExcMessage("The field index specified in the function"
-                                            "compositional_index_for_boundary_initialization() by the particle property "
+                          Assert(field_to_use.is_temperature() == false,
+                                 ExcMessage("Interpolating temperature boundary conditions to particles is not supported."));
+                          Assert(field_to_use.compositional_variable < this->n_compositional_fields(),
+                                 ExcMessage("The composition index specified in the function"
+                                            "advection_field_for_boundary_initialization() by the particle property "
                                             "<" + property_information.get_field_name_by_index(property_index) +"> is "
                                             "larger than the number of compositional fields. This is not possible "
                                             "and likely a bug in the particle property plugin."));
 
                           const double field_boundary_value = manager.boundary_composition(boundary_id,
                                                                                            particle_location,
-                                                                                           field_index_to_use);
+                                                                                           field_to_use.compositional_variable);
 
                           particle_properties.push_back(field_boundary_value);
                         }

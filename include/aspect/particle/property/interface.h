@@ -26,6 +26,7 @@
 
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/advection_field.h>
 
 #include <deal.II/particles/particle.h>
 #include <deal.II/particles/particle_handler.h>
@@ -499,15 +500,15 @@ namespace aspect
           late_initialization_mode () const;
 
           /**
-           * A function that returns which compositional field index to be used
+           * A function that returns which advection field should be used
            * when initializing the particle property at a boundary. This function
            * is only needed for properties that use the late_initialization_mode()
            * InitializationModeForLateParticles::interpolate_respect_boundary. This
            * function will not be called otherwise.
            */
           virtual
-          unsigned int
-          compositional_index_for_boundary_initialization(const unsigned int property_component) const;
+          AdvectionField
+          advection_field_for_boundary_initialization(const unsigned int property_component) const;
 
           /**
            * Set up the information about the names and number of components

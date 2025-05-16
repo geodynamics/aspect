@@ -79,14 +79,14 @@ namespace aspect
           late_initialization_mode () const override;
 
           /**
-           * A function that returns which compositional field index to be used
+           * A function that returns which advection field to be used
            * when initializing the particle property at a boundary.
            *
-           * For this property we use the compositional field index of the grain
+           * For this property we use the compositional field of the grain
            * size field.
            */
-          unsigned int
-          compositional_index_for_boundary_initialization(const unsigned int property_component) const override;
+          AdvectionField
+          advection_field_for_boundary_initialization(const unsigned int property_component) const override;
 
           /**
            * @copydoc aspect::Particle::Property::Interface::need_update()

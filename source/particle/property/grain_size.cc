@@ -127,14 +127,14 @@ namespace aspect
 
 
       template <int dim>
-      unsigned int
-      GrainSize<dim>::compositional_index_for_boundary_initialization (const unsigned int property_component) const
+      AdvectionField
+      GrainSize<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
       {
         (void) property_component;
         Assert (property_component == 0,
                 ExcInternalError());
 
-        return grain_size_index;
+        return AdvectionField::composition(grain_size_index);
       }
 
 
