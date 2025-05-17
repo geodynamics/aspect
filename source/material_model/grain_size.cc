@@ -1079,7 +1079,13 @@ namespace aspect
           use_adiabatic_pressure_for_yielding = prm.get_bool ("Use adiabatic pressure for yield stress");
           drucker_prager_plasticity.initialize_simulator (this->get_simulator());
 
-          std::vector<unsigned int> n_phases = {n_phase_transitions[0]+1};
+          // drucker_prager_plasticity checks that n_phases has as many entries as the number of
+          // chemical compositions, however we do not support different rheologies for different
+          // compositions in this material model. Make sure the vector has the expected size, but
+          // also notify drucker_prager_plasticity that there should be no values for other compositions.
+          std::vector<unsigned int> n_phases = phase_function->n_phases_for_each_chemical_composition();
+          for (unsigned int i=1; i<n_phases.size(); ++i)
+            n_phases[i] = 0;
           drucker_prager_plasticity.parse_parameters(prm, std::make_unique<std::vector<unsigned int>> (n_phases));
 
           // Parse grain size evolution parameters
