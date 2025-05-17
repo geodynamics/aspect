@@ -7,15 +7,39 @@ include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_201
 #  Global parameters
 set End time                               = 500
 set Output directory                       = output_gerya_2019_vep
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+# One operator splitting step to update the stresses
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
 
 subsection Formulation
   set Enable elasticity = true
 end
 
+subsection Discretization
+  # DG for viscoelastic stresses
+  set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true, true, true
+    set Global composition maximum = 1.
+    set Global composition minimum = 0.
+  end
+end
+
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 6
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, block, air, inclusion
+  set Number of fields = 9
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, block, air, inclusion
+  set Types of fields  = stress, stress, stress, stress, stress, stress, chemical composition, chemical composition, chemical composition
 end
 
 # Spatial domain of different compositional fields
@@ -25,7 +49,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; \
+    set Function expression = 0; 0; 0; 0; 0; 0; \
                               if ( ( x<43.75e3 && y>25.e3 && y<75.e3) || (x>56.25e3 && y>25.e3 && y<75.e3) || (y>56.25e3 && y<75.e3 && x>=43.75e3 && x<=56.25e3) || (y<43.75e3 && y>25.e3 && x>=43.75e3 && x<=56.25e3), 1, 0); \
                               if (y<=25.e3 || y>=75.e3, 1, 0); \
                               if (y<=56.25e3 && y>=43.75e3 && x>=43.75e3 && x<=56.25e3, 1, 0);
@@ -38,9 +62,7 @@ subsection Material model
   set Model name = visco plastic
 
   subsection Visco Plastic
-    # For identification purposes, nonsensical Prefactor values (1e-50) are assigned to the compositional
-    # fields tracking elastic stresses, which are not included in the volume fractions computation.
-    set Prefactors for dislocation creep          = 5e-24, 1e-50, 1e-50, 1e-50, 5e-24, 5.e-18, 5e-18
+    set Prefactors for dislocation creep          = 5e-24, 5e-24, 5.e-18, 5e-18
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
@@ -49,9 +71,8 @@ subsection Material model
     set Fixed elastic time step     = 20
     set Viscosity averaging scheme  = harmonic
 
-    # Nonsensical cohesion values (1e50) are assigned to the compositional fields tracking elastic stresses
-    set Angles of internal friction = 37.,       0.,    0.,    0.,    37.,    0.,    0.
-    set Cohesions                   = 100.e6, 1.e50, 1.e50, 1.e50, 100.e6, 10.e6, 10.e6
+    set Angles of internal friction = 37.,    37.,    0.,    0.
+    set Cohesions                   = 100.e6, 100.e6, 10.e6, 10.e6
   end
 end
 

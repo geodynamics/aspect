@@ -40,8 +40,20 @@ namespace aspect
       const ShearHeatingOutputs<dim> *shear_heating_out =
         material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
 
+      const PrescribedShearHeatingOutputs<dim> *prescribed_shear_heating_out =
+        material_model_outputs.template get_additional_output<PrescribedShearHeatingOutputs<dim>>();
+
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
+          // If the viscous dissipation rate was precomputed by the material model,
+          // use it and skip the rest of the calculation.
+          if (prescribed_shear_heating_out != nullptr)
+            {
+              heating_model_outputs.heating_source_terms[q] = prescribed_shear_heating_out->prescribed_shear_heating_rates[q];
+              heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
+              continue;
+            }
+
           const SymmetricTensor<2,dim> deviatoric_strain_rate =
             (this->get_material_model().is_compressible()
              ?
@@ -72,8 +84,10 @@ namespace aspect
 
           heating_model_outputs.heating_source_terms[q] = stress * deviatoric_strain_rate;
 
-          // If shear heating work fractions are provided, reduce the
-          // overall heating by this amount (which is assumed to be converted into other forms of energy)
+          // If shear heating work fractions are provided, multiply the
+          // overall shear heating by this factor. Work fractions are usually smaller than
+          // one, and the reduction in shear heating is assumed to be work converted into
+          // other forms of energy).
           if (shear_heating_out != nullptr)
             {
               heating_model_outputs.heating_source_terms[q] *= shear_heating_out->shear_heating_work_fractions[q];
@@ -188,6 +202,27 @@ namespace aspect
 
       return shear_heating_work_fractions;
     }
+
+
+
+    template <int dim>
+    PrescribedShearHeatingOutputs<dim>::PrescribedShearHeatingOutputs (const unsigned int n_points)
+      :
+      MaterialModel::NamedAdditionalMaterialOutputs<dim>({"prescribed_shear_heating_rates"}),
+                  prescribed_shear_heating_rates(n_points, numbers::signaling_nan<double>())
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    PrescribedShearHeatingOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      (void) idx;
+      AssertIndexRange (idx, 1);
+
+      return prescribed_shear_heating_rates;
+    }
   }
 }
 
@@ -206,7 +241,8 @@ namespace aspect
                                   "right-hand side of the temperature equation.")
 
 #define INSTANTIATE(dim) \
-  template class ShearHeatingOutputs<dim>;
+  template class ShearHeatingOutputs<dim>; \
+  template class PrescribedShearHeatingOutputs<dim>;
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 
