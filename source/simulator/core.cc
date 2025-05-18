@@ -135,14 +135,15 @@ namespace aspect
     typename parallel::distributed::Triangulation<dim>::Settings
     settings(const Parameters<dim> &parameters)
     {
-      return (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
-              parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
-             ?
-             static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
-             (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
-              parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy)
-             :
-             parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
+      // Only local smoothing GMG needs a mesh hierarchy to be constructed:
+      if ((parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg ||
+           parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::default_solver)
+          && parameters.stokes_gmg_type == Parameters<dim>::StokesGMGType::local_smoothing)
+        return static_cast<typename parallel::distributed::Triangulation<dim>::Settings>
+               (parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning |
+                parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy);
+      else
+        return parallel::distributed::Triangulation<dim>::mesh_reconstruction_after_repartitioning;
     }
   }
 
