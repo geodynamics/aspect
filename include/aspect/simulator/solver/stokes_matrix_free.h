@@ -28,6 +28,8 @@
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
 #include <deal.II/multigrid/mg_transfer_global_coarsening.templates.h>
 
+#include <deal.II/lac/solver_bicgstab.h>
+
 /**
  * Typedef for the number type for the multigrid operators. Can be either float or double.
  */
@@ -37,7 +39,7 @@ namespace aspect
 {
   /**
    * Base class for the matrix free GMG solver for the Stokes system. The
-   * actual implementation is found inside StokesMatrixFreeHandlerImplementation below.
+   * actual implementation is found inside StokesMatrixFreeHandlerLocalSmoothingImplementation.
    */
   template <int dim>
   class StokesMatrixFreeHandler: public StokesSolver::Interface<dim>

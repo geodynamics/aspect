@@ -92,7 +92,7 @@ namespace aspect
   }
 
   template <int dim, int velocity_degree>
-  class StokesMatrixFreeHandlerImplementation;
+  class StokesMatrixFreeHandlerLocalSmoothingImplementation;
 
   namespace MeshDeformation
   {
@@ -2050,11 +2050,10 @@ namespace aspect
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;
-      friend class MeshDeformation::MeshDeformationHandler<dim>;   // MeshDeformationHandler needs access to the internals of the Simulator
-      friend class VolumeOfFluidHandler<dim>; // VolumeOfFluidHandler needs access to the internals of the Simulator
+      friend class MeshDeformation::MeshDeformationHandler<dim>;
+      friend class VolumeOfFluidHandler<dim>;
       friend class StokesMatrixFreeHandler<dim>;
-      template <int dimension, int velocity_degree>
-      friend class StokesMatrixFreeHandlerImplementation;
+      template <int dimension, int velocity_degree> friend class StokesMatrixFreeHandlerLocalSmoothingImplementation;
       friend struct Parameters<dim>;
   };
 }
