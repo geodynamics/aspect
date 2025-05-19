@@ -126,7 +126,7 @@ namespace aspect
         * Whether to prescribe pressure (default: true) or full traction vector (false)
         * at the boundary. If true, only 1 component will be used for the boundary condition.
         */
-        bool prescribe_pressure_instead_of_full_traction=true;
+        bool prescribe_pressure_instead_of_full_traction;
 
     };
   }
