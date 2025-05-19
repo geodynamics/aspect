@@ -446,7 +446,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     CrystalPreferredOrientation<dim>::get_property_information() const
+      CrystalPreferredOrientation<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
         property_information.reserve(n_minerals * n_grains * (1+Tensor<2,3>::n_independent_components));
