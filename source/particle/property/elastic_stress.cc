@@ -66,6 +66,8 @@ namespace aspect
 
         // Get the indices of those compositions that correspond to stress tensor elements.
         stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
+        AssertThrow((stress_field_indices.size() == 2*SymmetricTensor<2,dim>::n_independent_components),
+                    ExcMessage("The number of stress tensor element fields in the 'elastic stress' plugin does not equal twice the number of independent components."));
 
         // Get the indices of all compositions that do not correspond to stress tensor elements.
         std::vector<unsigned int> all_field_indices(this->n_compositional_fields());
@@ -216,10 +218,18 @@ namespace aspect
                       // Fill the non-stress composition inputs with the old_solution.
                       for (const unsigned int &n : non_stress_field_indices)
                         material_inputs.composition[0][n] = old_solution[i][this->introspection().component_indices.compositional_fields[n]];
-                      // Fill the ve_stress_* composition inputs with the values on the particles.
+
+                      // Retrieve the ve_stress_* values from the particles and fields and
+                      // fill the material model inputs with a weigthed average of the two.
+                      // In some cases, using the field value leads to more stable results.
                       // After the particles have been restored, their properties have the values of the previous timestep.
                       for (unsigned int n = 0; n < 2*SymmetricTensor<2,dim>::n_independent_components; ++n)
-                        material_inputs.composition[0][stress_field_indices[n]] = particle->get_properties()[data_position + n];
+                        {
+                          const double particle_stress_value = particle->get_properties()[data_position + n];
+                          const double field_stress_value = old_solution[i][this->introspection().component_indices.compositional_fields[stress_field_indices[n]]];
+                          const double stress_value = particle_weight * particle_stress_value + (1-particle_weight) * field_stress_value;
+                          material_inputs.composition[0][stress_field_indices[n]] = stress_value;
+                        }
 
                       Tensor<2,dim> grad_u;
                       for (unsigned int d=0; d<dim; ++d)
@@ -232,7 +242,7 @@ namespace aspect
                       // Add the reaction_rates * timestep = update to the corresponding stress
                       // tensor components
                       for (unsigned int p = 0; p < 2*SymmetricTensor<2,dim>::n_independent_components ; ++p)
-                        particle->get_properties()[data_position + p] += reaction_rate_outputs->reaction_rates[0][stress_field_indices[p]] * this->get_timestep();
+                        particle->get_properties()[data_position + p] = material_inputs.composition[0][stress_field_indices[p]] + reaction_rate_outputs->reaction_rates[0][stress_field_indices[p]] * this->get_timestep();
                     }
                 }
             }
@@ -390,6 +400,41 @@ namespace aspect
           }
 
         return property_information;
+      }
+
+
+
+      template <int dim>
+      void
+      ElasticStress<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Elastic stress");
+        {
+          prm.declare_entry ("Particle stress value weight", "1.0",
+                             Patterns::Double(0.),
+                             "The weight given to the value of the stress tensor components "
+                             "stored on the particles in the weighted average of those "
+                             "values and the values of the compositional fields evaluated on the "
+                             "particle location. The average is used in the Material Model inputs "
+                             "used to compute the reaction rates and to update the particle property "
+                             "with the reaction rates. In some cases, using the field values "
+                             "leads to more stable results.");
+
+        }
+        prm.leave_subsection();
+      }
+
+
+
+      template <int dim>
+      void
+      ElasticStress<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Elastic stress");
+        {
+          particle_weight = prm.get_double("Particle stress value weight");
+        }
+        prm.leave_subsection();
       }
     }
   }

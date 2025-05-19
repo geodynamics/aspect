@@ -91,6 +91,19 @@ namespace aspect
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const override;
 
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          void
+          parse_parameters (ParameterHandler &prm) override;
+
         private:
           /**
            * Objects that are used to compute the particle property. Since the
@@ -111,10 +124,18 @@ namespace aspect
           std::vector<unsigned int> stress_field_indices;
 
           /**
-          * The indices of the compositional fields that do not represent components of the
-          * viscoelastic stress tensors.
-          */
+           * The indices of the compositional fields that do not represent components of the
+           * viscoelastic stress tensors.
+           */
           std::vector<unsigned int> non_stress_field_indices;
+
+          /**
+           * The weight given to the stress values stored on the particles in the
+           * weigthed average with the stress values interpolated from the compositional
+           * fields to the particle location. The default value of 1 is more accurate,
+           * but can be less stable.
+           */
+          double particle_weight;
       };
     }
   }
