@@ -22,8 +22,10 @@
 #include <aspect/geometry_model/interface.h>
 #include <aspect/utilities.h>
 
+#ifdef ASPECT_WITH_WORLD_BUILDER
 #include <world_builder/grains.h>
 #include <world_builder/world.h>
+#endif
 
 namespace aspect
 {
@@ -145,6 +147,10 @@ namespace aspect
         //
         // The rotation matrix is a direction cosine matrix, representing the orientation of the grain in the domain.
         // The fabric is determined later in the computations, so initialize it to -1.
+
+#ifndef ASPECT_WITH_WORLD_BUILDER
+        (void)position;
+#endif
         std::vector<double> deformation_type(n_minerals, -1.0);
         std::vector<std::vector<double >>volume_fractions_grains(n_minerals);
         std::vector<std::vector<Tensor<2,3>>> rotation_matrices_grains(n_minerals);
@@ -440,7 +446,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-      CrystalPreferredOrientation<dim>::get_property_information() const
+                                                     CrystalPreferredOrientation<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
         property_information.reserve(n_minerals * n_grains * (1+Tensor<2,3>::n_independent_components));
