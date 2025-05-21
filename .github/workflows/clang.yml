@@ -6,6 +6,7 @@ on:
      - 'main'
      - 'aspect-*'
   # pull_request: disable testing of PRs because it is too slow
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
