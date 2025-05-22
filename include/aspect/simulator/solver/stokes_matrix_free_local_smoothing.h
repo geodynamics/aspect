@@ -51,7 +51,7 @@ namespace aspect
    * velocity degree at runtime.
    */
   template <int dim, int velocity_degree>
-  class StokesMatrixFreeHandlerImplementation: public StokesMatrixFreeHandler<dim>
+  class StokesMatrixFreeHandlerLocalSmoothingImplementation: public StokesMatrixFreeHandler<dim>
   {
     public:
       /**
@@ -59,13 +59,13 @@ namespace aspect
        * Simulator that owns it, since it needs to make fairly extensive
        * changes to the internals of the simulator.
        */
-      StokesMatrixFreeHandlerImplementation(Simulator<dim> &simulator,
-                                            const Parameters<dim> &parameters);
+      StokesMatrixFreeHandlerLocalSmoothingImplementation(Simulator<dim> &simulator,
+                                                          const Parameters<dim> &parameters);
 
       /**
        * Destructor.
        */
-      ~StokesMatrixFreeHandlerImplementation() override = default;
+      ~StokesMatrixFreeHandlerLocalSmoothingImplementation() override = default;
 
       /**
        * Initialize the matrix-free solver.

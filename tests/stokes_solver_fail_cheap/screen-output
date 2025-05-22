@@ -20,7 +20,8 @@ The violated condition was:
     false
 Additional information: 
     The iterative Stokes solver in
-    StokesMatrixFreeHandlerImplementation::solve did not converge.
+    StokesMatrixFreeHandlerLocalSmoothingImplementation::solve did not
+    converge.
     
     The initial residual was: 1.169088e+14
     The final residual is: 2.024014e+10

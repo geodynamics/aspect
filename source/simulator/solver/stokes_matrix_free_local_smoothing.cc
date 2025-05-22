@@ -292,7 +292,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   void
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Solver parameters");
     prm.enter_subsection ("Matrix Free");
@@ -315,7 +315,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
+  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
   {
     prm.enter_subsection ("Solver parameters");
     prm.enter_subsection ("Matrix Free");
@@ -330,7 +330,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::StokesMatrixFreeHandlerImplementation (Simulator<dim> &simulator, const Parameters<dim> &parameters)
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::StokesMatrixFreeHandlerLocalSmoothingImplementation (Simulator<dim> &simulator, const Parameters<dim> &parameters)
     : sim(simulator),
 
       dof_handler_v(simulator.triangulation),
@@ -358,7 +358,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   void
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::initialize ()
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::initialize ()
   {
     CitationInfo::add("mf");
 
@@ -394,7 +394,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   std::string
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::name () const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::name () const
   {
     return "GMG";
   }
@@ -402,7 +402,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::assemble ()
+  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::assemble ()
   {
     if (this->get_parameters().mesh_deformation_enabled)
       {
@@ -422,7 +422,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::evaluate_material_model ()
+  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
                                                                                this->get_triangulation().get_communicator());
@@ -919,7 +919,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::correct_stokes_rhs()
+  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
     // Therefore, we don't need to include Newton terms here.
@@ -1060,11 +1060,11 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   StokesSolver::SolverOutputs
-  StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::solve(const LinearAlgebra::BlockSparseMatrix &/*system_matrix*/,
-                                                                    const LinearAlgebra::BlockVector &system_rhs,
-                                                                    const bool solve_newton_system,
-                                                                    const double last_pressure_normalization_adjustment,
-                                                                    LinearAlgebra::BlockVector &solution_vector)
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,velocity_degree>::solve(const LinearAlgebra::BlockSparseMatrix &/*system_matrix*/,
+                                                                                  const LinearAlgebra::BlockVector &system_rhs,
+                                                                                  const bool solve_newton_system,
+                                                                                  const double last_pressure_normalization_adjustment,
+                                                                                  LinearAlgebra::BlockVector &solution_vector)
   {
     StokesSolver::SolverOutputs outputs;
 
@@ -1644,7 +1644,7 @@ namespace aspect
               solver_controls.push_back(solver_control_expensive);
 
             Utilities::throw_linear_solver_failure_exception("iterative Stokes solver",
-                                                             "StokesMatrixFreeHandlerImplementation::solve",
+                                                             "StokesMatrixFreeHandlerLocalSmoothingImplementation::solve",
                                                              solver_controls,
                                                              exc,
                                                              this->get_mpi_communicator(),
@@ -1712,7 +1712,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::setup_dofs()
+  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::setup_dofs()
   {
     // Periodic boundary conditions with hanging nodes on the boundary currently
     // cause the GMG not to converge. We catch this case early to provide the
@@ -2040,7 +2040,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::build_preconditioner()
+  void StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::build_preconditioner()
   {
     TimerOutput::Scope timer (this->get_computing_timer(), "Build Stokes preconditioner");
 
@@ -2055,7 +2055,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const DoFHandler<dim> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_v () const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_dof_handler_v () const
   {
     return dof_handler_v;
   }
@@ -2064,7 +2064,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const DoFHandler<dim> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_p () const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_dof_handler_p () const
   {
     return dof_handler_p;
   }
@@ -2073,7 +2073,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const DoFHandler<dim> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_projection () const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_dof_handler_projection () const
   {
     return dof_handler_projection;
   }
@@ -2082,7 +2082,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const AffineConstraints<double> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_v() const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_constraints_v() const
   {
     return constraints_v;
   }
@@ -2091,7 +2091,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const AffineConstraints<double> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_p() const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_constraints_p() const
   {
     return constraints_p;
   }
@@ -2100,7 +2100,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const MGTransferMF<dim,GMGNumberType> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_A() const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_mg_transfer_A() const
   {
     return mg_transfer_A_block;
   }
@@ -2109,7 +2109,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   const MGTransferMF<dim,GMGNumberType> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_S() const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_mg_transfer_S() const
   {
     return mg_transfer_Schur_complement;
   }
@@ -2118,7 +2118,7 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   std::size_t
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>:: get_cell_data_memory_consumption() const
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>:: get_cell_data_memory_consumption() const
   {
     std::size_t total = active_cell_data.memory_consumption();
 
@@ -2132,8 +2132,8 @@ namespace aspect
 
 // explicit instantiation of the functions we implement in this file
 #define INSTANTIATE(dim) \
-  template class StokesMatrixFreeHandlerImplementation<dim,2>; \
-  template class StokesMatrixFreeHandlerImplementation<dim,3>;
+  template class StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,2>; \
+  template class StokesMatrixFreeHandlerLocalSmoothingImplementation<dim,3>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 
