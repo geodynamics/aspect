@@ -13,22 +13,22 @@ Number of degrees of freedom: 948 (578+81+289)
      Heat fluxes through boundary parts: 8.837e-12 W, 0 W, 0 W, 2.014 W
      Writing depth average:              output-minimum_refinement_function_cartesian/depth_average
 
-Number of active cells: 190 (on 5 levels)
-Number of degrees of freedom: 2,813 (1,722+230+861)
+Number of active cells: 184 (on 5 levels)
+Number of degrees of freedom: 2,695 (1,650+220+825)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 16+0 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function_cartesian/solution/solution-00001
      RMS, max velocity:                  3.8e-06 m/year, 6.03e-06 m/year
      Temperature min/avg/max:            1623 K, 1745 K, 1873 K
-     Heat fluxes through boundary parts: 1.527e-11 W, 0 W, 0 W, 1.002 W
+     Heat fluxes through boundary parts: 1.42e-11 W, 0 W, 0 W, 1.002 W
      Writing depth average:              output-minimum_refinement_function_cartesian/depth_average
 
-Number of active cells: 478 (on 6 levels)
-Number of degrees of freedom: 6,975 (4,282+552+2,141)
+Number of active cells: 472 (on 6 levels)
+Number of degrees of freedom: 6,857 (4,210+542+2,105)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -38,11 +38,11 @@ Number of degrees of freedom: 6,975 (4,282+552+2,141)
      Writing graphical output:           output-minimum_refinement_function_cartesian/solution/solution-00002
      RMS, max velocity:                  3.8e-06 m/year, 6.03e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
-     Heat fluxes through boundary parts: 1.527e-11 W, 0 W, 0 W, 0.4995 W
+     Heat fluxes through boundary parts: 1.42e-11 W, 0 W, 0 W, 0.4995 W
      Writing depth average:              output-minimum_refinement_function_cartesian/depth_average
 
-Number of active cells: 805 (on 7 levels)
-Number of degrees of freedom: 11,556 (7,100+906+3,550)
+Number of active cells: 799 (on 7 levels)
+Number of degrees of freedom: 11,438 (7,028+896+3,514)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -67,11 +67,11 @@ Number of degrees of freedom: 11,556 (7,100+906+3,550)
      Writing graphical output:           output-minimum_refinement_function_cartesian/solution/solution-00003
      RMS, max velocity:                  3.8e-06 m/year, 6.04e-06 m/year
      Temperature min/avg/max:            1623 K, 1747 K, 1873 K
-     Heat fluxes through boundary parts: 1.527e-11 W, 0 W, 0 W, 0.4997 W
+     Heat fluxes through boundary parts: 1.42e-11 W, 0 W, 0 W, 0.4997 W
      Writing depth average:              output-minimum_refinement_function_cartesian/depth_average
 
-Number of active cells: 901 (on 7 levels)
-Number of degrees of freedom: 13,227 (8,128+1,035+4,064)
+Number of active cells: 895 (on 7 levels)
+Number of degrees of freedom: 13,109 (8,056+1,025+4,028)
 
 Termination requested by criterion: end time
 

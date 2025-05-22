@@ -9,11 +9,9 @@ Number of degrees of freedom: 400 (240+40+120)
    Postprocessing:
      Writing graphical output: output-cells_in_circumference/solution/solution-00000
 
-Number of active cells: 26 (on 2 levels)
-Number of degrees of freedom: 518 (312+50+156)
+Skipping mesh refinement, because the mesh did not change.
 
-Number of active cells: 32 (on 2 levels)
-Number of degrees of freedom: 636 (384+60+192)
+Skipping mesh refinement, because the mesh did not change.
 
 Termination requested by criterion: end time
 *** Snapshot created!
