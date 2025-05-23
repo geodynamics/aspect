@@ -604,6 +604,19 @@ namespace aspect
         if (reaction_rate_out == nullptr)
           return;
 
+        // Set all reaction rates to zero
+        // TODO Should this only set those rates to zero
+        // that are used to update the stresses instead of all rates?
+        // What if other rheologies also fill reaction rates?
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+            reaction_rate_out->reaction_rates[i][c] = 0.0;
+
+        // It doesn't make sense to update the stresses at time zero;
+        // return reaction rates of zero.
+        if (this->get_timestep_number() == 0)
+          return;
+
         // At the moment when the reaction rates are required (at the beginning of the timestep),
         // the solution vector 'solution' holds the stress from the previous timestep,
         // advected into the new position of the previous timestep, so $\tau^{t}_{0adv}$.
@@ -656,10 +669,6 @@ namespace aspect
 
             for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               {
-                // Set all reaction rates to zero
-                for (unsigned int c = 0; c < in.composition[i].size(); ++c)
-                  reaction_rate_out->reaction_rates[i][c] = 0.0;
-
                 // Get $\tau^{0adv}$ of the previous timestep t from the compositional fields.
                 // This stress includes the rotation and advection of the previous timestep,
                 // i.e., the reaction term (which prescribes the change in stress due to rotation
