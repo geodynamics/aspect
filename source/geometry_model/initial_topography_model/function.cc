@@ -196,5 +196,3 @@ namespace aspect
                                              "is described by a function in Cartesian or spherical coordinates. ")
   }
 }
-
-
