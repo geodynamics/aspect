@@ -19,7 +19,6 @@
 */
 
 
-#include "aspect/utilities.h"
 #include <aspect/geometry_model/initial_topography_model/function.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/geometry_model/box.h>
