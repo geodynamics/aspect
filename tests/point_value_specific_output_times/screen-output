@@ -10,15 +10,13 @@ Number of degrees of freedom: 220 (132+22+66)
      Writing graphical output: output-point_value_specific_output_times/solution/solution-00000
      Writing point values:     output-point_value_specific_output_times/point_values.txt
 
-Number of active cells: 17 (on 2 levels)
-Number of degrees of freedom: 338 (204+32+102)
+Skipping mesh refinement, because the mesh did not change.
 
-Number of active cells: 26 (on 2 levels)
-Number of degrees of freedom: 463 (280+43+140)
+Skipping mesh refinement, because the mesh did not change.
 
 *** Timestep 1:  t=3e+16 seconds, dt=3e+16 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system (GMG)... 32+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-point_value_specific_output_times/solution/solution-00001
