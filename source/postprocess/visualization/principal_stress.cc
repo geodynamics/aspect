@@ -21,6 +21,8 @@
 #include <aspect/postprocess/visualization/principal_stress.h>
 
 #include <deal.II/base/symmetric_tensor.h>
+#include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
@@ -107,44 +109,39 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        // We do not need to compute anything but the viscosity
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+        // We do not need to compute anything but the viscosity and ElasticAdditionalOutputs
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
 
-        // Compute the viscosity...
+        this->get_material_model().create_additional_named_outputs(out);
+
+        // Compute the viscosity and additional outputs
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             SymmetricTensor<2,dim> stress;
 
+            const double eta = out.viscosities[q];
+
+            const SymmetricTensor<2, dim> deviatoric_strain_rate = (this->get_material_model().is_compressible()
+                                                                    ? in.strain_rate[q] - 1. / 3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
+                                                                    : in.strain_rate[q]);
+
             // Add elastic stresses if existent
             if (this->get_parameters().enable_elasticity == false)
               {
-                const SymmetricTensor<2,dim> deviatoric_strain_rate
-                  = (this->get_material_model().is_compressible()
-                     ?
-                     in.strain_rate[q] - 1./3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
-                     :
-                     in.strain_rate[q]);
-
                 // Compressive stress is positive in geoscience applications
-                stress = -2. * out.viscosities[q] * deviatoric_strain_rate;
+                stress = -2. * eta * deviatoric_strain_rate;
               }
             else
               {
-                // Compressive stress is positive in geoscience applications
-                stress[0][0] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress[1][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress[0][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                // Get the total deviatoric stress from the material model.
+                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                if (dim == 3)
-                  {
-                    stress[2][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress[0][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress[1][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
-                  }
+                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
+
+                stress = -(elastic_additional_out->deviatoric_stress[q]);
               }
-
 
             if (use_deviatoric_stress == false)
               stress += in.pressure[q] * unit_symmetric_tensor<dim>();
