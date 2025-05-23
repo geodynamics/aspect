@@ -77,7 +77,7 @@ namespace aspect
                Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) )
         {
           std::array<double, dim> spherical_point;
-          
+
           // This value does not affect the actual topography.
           spherical_point[0] = 6371000.0;
           for (unsigned int d=0; d<dim-1; ++d)
@@ -101,9 +101,9 @@ namespace aspect
         }
       else
         AssertThrow(false, ExcMessage("Unsupported coordinate system in initial topography function"));
-      
+
       const double topo = initial_topography_function.value(function_point);
-      
+
       return topo;
     }
 
@@ -196,9 +196,5 @@ namespace aspect
                                              "is described by a function in Cartesian or spherical coordinates. ")
   }
 }
-
-
-
-
 
 
