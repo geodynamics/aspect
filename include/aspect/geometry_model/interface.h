@@ -120,6 +120,15 @@ namespace aspect
         double depth(const Point<dim> &position) const = 0;
 
         /**
+         * Function that calculates and returns the depth of point @p position
+         * also considering the effect of mesh deformation. This function is not implemented
+         * for all geometry models and the default implementation will throw an exception if
+         * it is called.
+         */
+        virtual
+        double depth_including_mesh_deformation(const Point<dim> &position) const;
+
+        /**
          * Return the height of the given position relative to the reference
          * surface of the model. Positive returned value means that the point
          * is above (i.e., farther from the center of the model) the reference
