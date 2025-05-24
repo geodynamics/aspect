@@ -1,0 +1,109 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 2.6.0-pre (add_prescribed_dilation_to_visco_plastic, 8bb195ccb)
+--     . using deal.II 9.5.1
+--     .       with 32 bit indices and vectorization level 2 (256 bits)
+--     . using Trilinos 13.2.0
+--     . using p4est 2.3.2
+--     . using Geodynamic World Builder 0.6.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&particles=1&sha=8bb195ccb&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 5,014 (2,210+297+297+1,105+1,105)
+
+Number of mesh deformation degrees of freedom: 594
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0197761
+
+
+   Postprocessing:
+     Compositions min/max/mass:    0/0/0 // 0/0.3265/6.378e+05
+     Number of advected particles: 12544
+     RMS, max velocity:            0.000769 m/year, 0.00126 m/year
+     Writing graphical output:     output_visco_plastic_prescribed_plastic_dilation/solution/solution-00000
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |       3.8s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |     0.669s |        18% |
+| Assemble temperature system      |         1 |     0.258s |       6.8% |
+| Build Stokes preconditioner      |         2 |     0.256s |       6.7% |
+| Build temperature preconditioner |         1 |  0.000402s |         0% |
+| Initialization                   |         1 |     0.631s |        17% |
+| Mesh deformation                 |         1 |    0.0939s |       2.5% |
+| Mesh deformation initialize      |         1 |    0.0784s |       2.1% |
+| Particles: Advect                |         2 |    0.0818s |       2.2% |
+| Particles: Copy                  |         1 |   0.00106s |         0% |
+| Particles: Generate              |         1 |     0.149s |       3.9% |
+| Particles: Initialization        |         1 |  0.000195s |         0% |
+| Particles: Initialize properties |         1 |    0.0535s |       1.4% |
+| Particles: Interpolate           |         1 |    0.0202s |      0.53% |
+| Particles: Sort                  |         2 |    0.0311s |      0.82% |
+| Particles: Update properties     |         1 |      0.17s |       4.5% |
+| Postprocessing                   |         1 |     0.194s |       5.1% |
+| Setup dof systems                |         1 |     0.129s |       3.4% |
+| Setup initial conditions         |         1 |     0.642s |        17% |
+| Setup matrices                   |         1 |     0.134s |       3.5% |
+| Solve Stokes system              |         2 |     0.119s |       3.1% |
+| Solve temperature system         |         1 |  0.000714s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 4s
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |       3.8s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |     0.669s |        18% |
+| Assemble temperature system      |         1 |     0.258s |       6.8% |
+| Build Stokes preconditioner      |         2 |     0.256s |       6.7% |
+| Build temperature preconditioner |         1 |  0.000402s |         0% |
+| Initialization                   |         1 |     0.631s |        17% |
+| Mesh deformation                 |         1 |    0.0939s |       2.5% |
+| Mesh deformation initialize      |         1 |    0.0784s |       2.1% |
+| Particles: Advect                |         2 |    0.0818s |       2.2% |
+| Particles: Copy                  |         1 |   0.00106s |         0% |
+| Particles: Generate              |         1 |     0.149s |       3.9% |
+| Particles: Initialization        |         1 |  0.000195s |         0% |
+| Particles: Initialize properties |         1 |    0.0535s |       1.4% |
+| Particles: Interpolate           |         1 |    0.0202s |      0.53% |
+| Particles: Sort                  |         2 |    0.0311s |      0.82% |
+| Particles: Update properties     |         1 |      0.17s |       4.5% |
+| Postprocessing                   |         1 |     0.194s |       5.1% |
+| Setup dof systems                |         1 |     0.129s |       3.4% |
+| Setup initial conditions         |         1 |     0.642s |        17% |
+| Setup matrices                   |         1 |     0.134s |       3.5% |
+| Solve Stokes system              |         2 |     0.119s |       3.1% |
+| Solve temperature system         |         1 |  0.000714s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 4s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.6.0-pre&particles=1&sha=8bb195ccb&src=code
+-----------------------------------------------------------------------------
