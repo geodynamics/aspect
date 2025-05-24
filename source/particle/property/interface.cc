@@ -19,7 +19,9 @@
  */
 
 #include <aspect/particle/property/interface.h>
+
 #include <aspect/utilities.h>
+#include <aspect/advection_field.h>
 
 #include <aspect/particle/integrator/euler.h>
 #include <aspect/particle/integrator/rk_2.h>
@@ -343,6 +345,19 @@ namespace aspect
 
 
       template <int dim>
+      AdvectionField
+      Interface<dim>::advection_field_for_boundary_initialization (const unsigned int /*property_component*/) const
+      {
+        AssertThrow (false,
+                     ExcMessage("The function compositional_index_for_boundary_evaluation() is not implemented "
+                                "in this particle property plugin. This function is required if the plugin makes use "
+                                "of the compositional field boundary conditions to initialize the particle properties."));
+        return AdvectionField::composition(0);
+      }
+
+
+
+      template <int dim>
       void
       Interface<dim>::set_data_position (const unsigned int index)
       {
@@ -575,21 +590,38 @@ namespace aspect
                                                                                         std::vector<Point<dim>> (1,particle_location),
                                                                                         ComponentMask(property_information.n_components(),true),
                                                                                         found_cell);
-                      for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
-                        particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
+
+                      const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
+                      const unsigned int start_index = property_information.get_position_by_plugin_index(property_index);
+
+                      for (unsigned int property_component = 0; property_component < n_property_components; ++property_component)
+                        particle_properties.push_back(interpolated_properties[0][start_index+property_component]);
                     }
-                  // Otherwise use the boundary condition
+                  // Otherwise use the value of the boundary condition of the corresponding compositional field
                   else
                     {
-                      Assert(property_information.get_components_by_plugin_index(property_index) == this->n_compositional_fields(),
-                             ExcInternalError());
-
                       const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
+                      const unsigned int n_property_components = property_information.get_components_by_plugin_index(property_index);
 
-                      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                      for (unsigned int particle_property_component = 0; particle_property_component < n_property_components; ++particle_property_component)
                         {
-                          const double composition = manager.boundary_composition(boundary_id,particle_location,c);
-                          particle_properties.push_back(composition);
+                          // Ask the particle property which field index to use to evaluate boundary condition
+                          const AdvectionField field_to_use = (*p)->advection_field_for_boundary_initialization(particle_property_component);
+
+                          Assert(field_to_use.is_temperature() == false,
+                                 ExcMessage("Interpolating temperature boundary conditions to particles is not supported."));
+                          Assert(field_to_use.compositional_variable < this->n_compositional_fields(),
+                                 ExcMessage("The composition index specified in the function"
+                                            "advection_field_for_boundary_initialization() by the particle property "
+                                            "<" + property_information.get_field_name_by_index(property_index) +"> is "
+                                            "larger than the number of compositional fields. This is not possible "
+                                            "and likely a bug in the particle property plugin."));
+
+                          const double field_boundary_value = manager.boundary_composition(boundary_id,
+                                                                                           particle_location,
+                                                                                           field_to_use.compositional_variable);
+
+                          particle_properties.push_back(field_boundary_value);
                         }
                     }
 

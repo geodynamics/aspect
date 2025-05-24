@@ -109,6 +109,18 @@ namespace aspect
 
 
       template <int dim>
+      AdvectionField
+      CompositionReaction<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
+      {
+        Assert (property_component < this->n_compositional_fields(),
+                ExcInternalError());
+
+        return AdvectionField::composition(property_component);
+      }
+
+
+
+      template <int dim>
       UpdateTimeFlags
       CompositionReaction<dim>::need_update() const
       {
