@@ -67,29 +67,19 @@ namespace aspect
           // Now for the vertical component:
           global_point[dim-1] = 0;
 
-          // The point as it is would have to be translated into a different
-          // coordinate system if that was requested in the input file.
-          // This is not currently implemented.
           Assert (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian,
-                  ExcNotImplemented());
+                  ExcMessage("While using a box geometry, use cartesian coordinate system."));
         }
       else if (Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
                Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
                Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) )
         {
-          std::array<double, dim> point;
-          point[0] = 6371000.0;
+          global_point[0] = 6371000.0;
           for (unsigned int d=0; d<dim-1; ++d)
-            point[d+1] = surface_point[d];
+            global_point[d+1] = surface_point[d];
 
-          global_point = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(point);
-
-          // The point as it is would have to be translated into a different
-          // coordinate system (or, perhaps, better just left in the spherical
-          // coordinates we received) if that was requested in the input file.
-          // This is not currently implemented.
-          Assert (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian,
-                  ExcNotImplemented());
+          Assert (coordinate_system == Utilities::Coordinates::CoordinateSystem::spherical,
+                  ExcMessage("Make sure that you are using a spherical coordinate system While using a spherical geometry."));
         }
       else
         AssertThrow(false, ExcNotImplemented());
