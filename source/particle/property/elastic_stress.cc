@@ -71,9 +71,9 @@ namespace aspect
         // Get the indices of all compositions that do not correspond to stress tensor elements.
         std::vector<unsigned int> all_field_indices(this->n_compositional_fields());
         std::iota (std::begin(all_field_indices), std::end(all_field_indices), 0);
-        set_difference(all_field_indices.begin(), all_field_indices.end(),
-                       stress_field_indices.begin(), stress_field_indices.end(),
-                       std::inserter(non_stress_field_indices, non_stress_field_indices.begin()));
+        std::set_difference(all_field_indices.begin(), all_field_indices.end(),
+                            stress_field_indices.begin(), stress_field_indices.end(),
+                            std::inserter(non_stress_field_indices, non_stress_field_indices.begin()));
 
         // Connect to the signal after particles are restored at the beginning of
         // a nonlinear iteration of iterative advection schemes.

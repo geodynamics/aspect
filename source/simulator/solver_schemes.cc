@@ -993,22 +993,22 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-
-        if (nonlinear_iteration > 0)
-          for (auto &particle_manager : particle_managers)
-            particle_manager.restore_particles();
-
-        // Apply a particle update if required by the particle properties.
-        // Apply the update even if nonlinear_iteration == 0,
-        // because the signal could be used, for example, to apply operator
-        // splitting on the particles, and this would need to be
-        // applied at the beginning of the timestep and after
-        // every restore_particles().
         for (auto &particle_manager : particle_managers)
-          signals.post_restore_particles(particle_manager);
+          {
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_manager.restore_particles();
+
+            // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal could be used, for example, to apply operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
+            signals.post_restore_particles(particle_manager);
+          }
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
@@ -1163,22 +1163,22 @@ namespace aspect
 
     do
       {
-        // Restore particles through stored copy of particle handler,
-        // but only if they have already been displaced in a nonlinear
-        // iteration (in the assemble_and_solve_composition call).
-
-        if (nonlinear_iteration > 0)
-          for (auto &particle_manager : particle_managers)
-            particle_manager.restore_particles();
-
-        // Apply a particle update if required by the particle properties.
-        // Apply the update even if nonlinear_iteration == 0,
-        // because the signal could be used, for example, to apply operator
-        // splitting on the particles, and this would need to be
-        // applied at the beginning of the timestep and after
-        // every restore_particles().
         for (auto &particle_manager : particle_managers)
-          signals.post_restore_particles(particle_manager);
+          {
+            // Restore particles through stored copy of particle handler,
+            // but only if they have already been displaced in a nonlinear
+            // iteration (in the assemble_and_solve_composition call).
+            if (nonlinear_iteration > 0)
+              particle_manager.restore_particles();
+
+            // Apply a particle update if required by the particle properties.
+            // Apply the update even if nonlinear_iteration == 0,
+            // because the signal could be used, for example, to apply operator
+            // splitting on the particles, and this would need to be
+            // applied at the beginning of the timestep and after
+            // every restore_particles().
+            signals.post_restore_particles(particle_manager);
+          }
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(initial_temperature_residual,
