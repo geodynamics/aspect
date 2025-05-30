@@ -69,7 +69,7 @@ namespace aspect
           // Average the viscous viscosity and the shear modulus over the compositions
           average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
-          // If we have multiple compositions, we need to first compute their respective their viscoelastic viscosities,
+          // If we have multiple compositions, we need to first compute their respective viscoelastic viscosities,
           // based on their respective viscous viscosities and the averaged shear modulus, before averaging them
           // into the final effective viscosity.
           std::vector<double> viscoelastic_viscosities(volume_fractions.size());

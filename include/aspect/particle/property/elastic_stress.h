@@ -137,7 +137,7 @@ namespace aspect
 
           /**
            * The weight given to the stress values stored on the particles in the
-           * weigthed average with the stress values interpolated from the compositional
+           * weighted average with the stress values interpolated from the compositional
            * fields to the particle location. The default value of 1 is more accurate,
            * but can be less stable.
            */

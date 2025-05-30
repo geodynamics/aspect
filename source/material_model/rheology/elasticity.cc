@@ -627,8 +627,9 @@ namespace aspect
         // when calling the MaterialModel for the reaction rates. When particles are used, MaterialModelInputs
         // for this function are filled with the old_solution (including for the strain rate), except for the
         // compositions that represent the stress tensor components, these are taken directly from the
-        // particles. As the particles are restored to their pre-advection location at the beginning of
-        // each nonlinear iteration, their values and positions correspond to the old solution.
+        // particles in the property plugin by default (although this can be changed from the input file).
+        // As the particles are restored to their pre-advection location at the beginning of each nonlinear iteration,
+        // their values and positions correspond to the old solution.
         // This means that in both cases we can use 'in' to get to the $\tau^{t}_{0adv}$ and velocity/strain rate of the
         // previous timestep.
         // TODO The additional outputs include the reaction rates, so we also have to fill the reaction_rates
