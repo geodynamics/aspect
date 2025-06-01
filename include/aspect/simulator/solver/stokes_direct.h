@@ -48,6 +48,9 @@ namespace aspect
          * solved is the normal linear system or the Newton system. If the Newton
          * system is solved, some operations have to change, e.g. the residual
          * is computed differently.
+         * @param last_pressure_normalization_adjustment The amount by which the
+         * pressure was adjusted to satisfy the chosen pressure normalization. This
+         * information is used to undo the normalization before the solve.
          * @param solution_vector The existing solution vector that will be
          * updated with the new solution. This vector is expected to have the
          * block structure of the full solution vector, and the blocks that
