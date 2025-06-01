@@ -270,8 +270,8 @@ namespace aspect
 
       MGLevelObject<MGTwoLevelTransfer<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> transfers_v;
       MGLevelObject<MGTwoLevelTransfer<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> transfers_p;
-      std::unique_ptr<MGTransferMF<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> mg_transfer_A_block;
-      std::unique_ptr<MGTransferMF<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> mg_transfer_Schur_complement;
+      std::unique_ptr<MGTransferMF<dim, GMGNumberType>> mg_transfer_A_block;
+      std::unique_ptr<MGTransferMF<dim, GMGNumberType>> mg_transfer_Schur_complement;
 
   };
 }

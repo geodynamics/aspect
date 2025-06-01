@@ -950,7 +950,7 @@ namespace aspect
     // ABlock GMG
     Multigrid<VectorType> mg_A(mg_matrix_A,
                                mg_coarse_A,
-                               mg_transfer_A_block,
+                               *mg_transfer_A_block,
                                mg_smoother_A,
                                mg_smoother_A);
     mg_A.set_edge_matrices(mg_interface_A, mg_interface_A);
@@ -958,7 +958,7 @@ namespace aspect
     // Schur complement matrix GMG
     Multigrid<VectorType> mg_Schur(mg_matrix_Schur,
                                    mg_coarse_Schur,
-                                   mg_transfer_Schur_complement,
+                                   *mg_transfer_Schur_complement,
                                    mg_smoother_Schur,
                                    mg_smoother_Schur);
     mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
@@ -1509,36 +1509,36 @@ namespace aspect
     mg_matrices_Schur_complement.resize(min_level, max_level);
 
 
-{ 
-  for (auto l = min_level; l <= max_level; ++l)
-  {
-    const auto &tria = *trias[l];
-
-    // velocity:
     {
-      auto &dof_handler = dofhandlers_v[l];
-      auto &constraint  = constraints_v[l];
-
-      dof_handler.reinit(tria);
-      dof_handler.distribute_dofs(fe_v);
-
-      DoFRenumbering::hierarchical(dof_handler);
-      IndexSet locally_relevant_dofs;
-      DoFTools::extract_locally_relevant_dofs(dof_handler,
-                                              locally_relevant_dofs);
-      constraint.reinit(locally_relevant_dofs);
-      sim.compute_initial_velocity_boundary_constraints(constraint); // TODO: this can't work
-      sim.compute_current_velocity_boundary_constraints(constraint); // TODO: this can't work
-
-      for (const auto &p : sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators())
+      for (auto l = min_level; l <= max_level; ++l)
         {
-          VectorTools::interpolate_boundary_values (mapping,
-                                                    dof_handler,
-                                                    p,
-                                                    Functions::ZeroFunction<dim>(dim),
-                                                    constraint);
+          const auto &tria = *trias[l];
 
-        }
+          // velocity:
+          {
+            auto &dof_handler = dofhandlers_v[l];
+            auto &constraint  = constraints_v[l];
+
+            dof_handler.reinit(tria);
+            dof_handler.distribute_dofs(fe_v);
+
+            DoFRenumbering::hierarchical(dof_handler);
+            IndexSet locally_relevant_dofs;
+            DoFTools::extract_locally_relevant_dofs(dof_handler,
+                                                    locally_relevant_dofs);
+            constraint.reinit(locally_relevant_dofs);
+            sim.compute_initial_velocity_boundary_constraints(constraint); // TODO: this can't work
+            sim.compute_current_velocity_boundary_constraints(constraint); // TODO: this can't work
+
+            for (const auto &p : sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators())
+              {
+                VectorTools::interpolate_boundary_values (mapping,
+                                                          dof_handler,
+                                                          p,
+                                                          Functions::ZeroFunction<dim>(dim),
+                                                          constraint);
+
+              }
 
 
 //            VectorTools::interpolate_boundary_values(
@@ -1548,11 +1548,11 @@ namespace aspect
 //                Functions::ZeroFunction<dim, typename LevelOperatorType::value_type>(
 //                    dof_handler_in.get_fe().n_components()),
 //                constraint);
-      Assert(sim.boundary_velocity_manager.get_active_boundary_velocity_conditions().size() == 0,
-             ExcNotImplemented());
+            Assert(sim.boundary_velocity_manager.get_active_boundary_velocity_conditions().size() == 0,
+                   ExcNotImplemented());
 
-      Assert(sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators().size() == 0,
-             ExcNotImplemented());
+            Assert(sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators().size() == 0,
+                   ExcNotImplemented());
 //            VectorTools::compute_no_normal_flux_constraints (dof_handler_v,
 //                                                            /* first_vector_component= */
 //                                                            0,
@@ -1560,40 +1560,47 @@ namespace aspect
 //                                                            constraints_v,
 //                                                            *sim.mapping);
 
-      DoFTools::make_hanging_node_constraints(dof_handler, constraint);
-      constraint.close();
+            DoFTools::make_hanging_node_constraints(dof_handler, constraint);
+            constraint.close();
+          }
+
+          // pressure:
+          {
+            auto &dof_handler = dofhandlers_p[l];
+            auto &constraint  = constraints_p[l];
+            dof_handler.reinit(tria);
+            dof_handler.distribute_dofs(fe_p);
+
+            DoFRenumbering::hierarchical(dof_handler);
+            IndexSet locally_relevant_dofs;
+            DoFTools::extract_locally_relevant_dofs(dof_handler,
+                                                    locally_relevant_dofs);
+            constraint.reinit(locally_relevant_dofs);
+            DoFTools::make_hanging_node_constraints(dof_handler, constraint);
+            constraint.close();
+          }
+
+          std::shared_ptr<MatrixFree<dim,double>> matrix_free;
+
+          matrix_free = std::make_shared<MatrixFree<dim,double>>();
+          matrix_free_objects.push_back(matrix_free);
+          mg_matrices_A_block[l].reinit(mapping, global_coarsening.dofhandlers_v[l], global_coarsening.dofhandlers_p[l], global_coarsening.constraints_v[l], matrix_free);
+
+          matrix_free = std::make_shared<MatrixFree<dim,double>>();
+          matrix_free_objects.push_back(matrix_free);
+          mg_matrices_Schur_complement[l].reinit(mapping, global_coarsening.dofhandlers_p[l], global_coarsening.dofhandlers_v[l], global_coarsening.constraints_p[l]), matrix_free;
+
+          // Coefficient transfer objects:
+          {
+            auto &dof_handler_projection = dofhandlers_projection[l];
+
+            dof_handler_projection.reinit(tria);
+            dof_handler_projection.distribute_dofs(fe_projection);
+
+            DoFRenumbering::hierarchical(dof_handler_projection);
+          }
+        }
     }
-
-    // pressure:
-    {
-      auto &dof_handler = dofhandlers_p[l];
-      auto &constraint  = constraints_p[l];
-      dof_handler.reinit(tria);
-      dof_handler.distribute_dofs(fe_p);
-
-      DoFRenumbering::hierarchical(dof_handler);
-      IndexSet locally_relevant_dofs;
-      DoFTools::extract_locally_relevant_dofs(dof_handler,
-                                              locally_relevant_dofs);
-      constraint.reinit(locally_relevant_dofs);
-      DoFTools::make_hanging_node_constraints(dof_handler, constraint);
-      constraint.close();
-    }
-
-    mg_matrices_A_block[l].reinit(mapping, global_coarsening.dofhandlers_v[l], global_coarsening.dofhandlers_p[l], global_coarsening.constraints_v[l]);
-    mg_matrices_Schur_complement[l].reinit(mapping, global_coarsening.dofhandlers_p[l], global_coarsening.dofhandlers_v[l], global_coarsening.constraints_p[l]);
-
-    // Coefficient transfer objects:
-    {
-      auto &dof_handler_projection = global_coarsening.dofhandlers_projection[l];
-
-      dof_handler_projection.reinit(tria);
-      dof_handler_projection.distribute_dofs(fe_projection);
-
-      DoFRenumbering::hierarchical(dof_handler_projection);
-    }
-  }
-}
 
 
 
@@ -1790,42 +1797,34 @@ namespace aspect
     }
 
     // Build MG transfer
+    {
+      using transfer_t = MGTransferMF<dim, GMGNumberType>;
       {
-        using transfer_t = MGTransferMF<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>;
+        for (unsigned int l = min_level; l < max_level; ++l)
+          transfers_v[l + 1].reinit(dofhandlers_v[l + 1],
+                                    dofhandlers_v[l],
+                                    constraints_v[l + 1],
+                                    constraints_v[l]);
+
+        mg_transfer_A_block = std::make_unique<transfer_t>(transfers_v, [&](const auto l, auto &vec)
         {
-          for (unsigned int l = min_level; l < max_level; ++l)
-            transfers_v[l + 1].reinit(dofhandlers_v[l + 1],
-                                                        dofhandlers_v[l],
-                                                        constraints_v[l + 1],
-                                                        constraints_v[l]);
+          mg_matrices_A_block[l].initialize_dof_vector(vec);
+        });
 
-          mg_transfer_A_block = std::make_unique<transfer_t>(transfers_v, [&](const auto l, auto &vec)
-          {
-            mg_matrices_A_block[l].initialize_dof_vector(vec);
-          });
-
-        }
-        {
-          for (unsigned int l = min_level; l < max_level; ++l)
-            transfers_p[l + 1].reinit(dofhandlers_p[l + 1],
-                                                        dofhandlers_p[l],
-                                                        constraints_p[l + 1],
-                                                        constraints_p[l]);
-
-          mg_transfer_Schur_complement  = std::make_unique<transfer_t>(transfers_p, [&](const auto l, auto &vec)
-          {
-            mg_matrices_Schur_complement[l].initialize_dof_vector(vec);
-          });
-        }
       }
+      {
+        for (unsigned int l = min_level; l < max_level; ++l)
+          transfers_p[l + 1].reinit(dofhandlers_p[l + 1],
+                                    dofhandlers_p[l],
+                                    constraints_p[l + 1],
+                                    constraints_p[l]);
 
-    mg_transfer_A_block.clear();
-    mg_transfer_A_block.initialize_constraints(mg_constrained_dofs_A_block);
-    mg_transfer_A_block.build(dof_handler_v);
-
-    mg_transfer_Schur_complement.clear();
-    mg_transfer_Schur_complement.initialize_constraints(mg_constrained_dofs_Schur_complement);
-    mg_transfer_Schur_complement.build(dof_handler_p);
+        mg_transfer_Schur_complement  = std::make_unique<transfer_t>(transfers_p, [&](const auto l, auto &vec)
+        {
+          mg_matrices_Schur_complement[l].initialize_dof_vector(vec);
+        });
+      }
+    }
   }
 
 
@@ -1893,7 +1892,7 @@ namespace aspect
   const MGTransferMF<dim,GMGNumberType> &
   StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_mg_transfer_A() const
   {
-    return mg_transfer_A_block;
+    return *mg_transfer_A_block;
   }
 
 
@@ -1902,7 +1901,7 @@ namespace aspect
   const MGTransferMF<dim,GMGNumberType> &
   StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_mg_transfer_S() const
   {
-    return mg_transfer_Schur_complement;
+    return *mg_transfer_Schur_complement;
   }
 
 
