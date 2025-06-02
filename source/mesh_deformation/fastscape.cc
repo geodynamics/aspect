@@ -1327,6 +1327,16 @@ namespace aspect
               unsigned int op_side = index_top;
               int jj = fastscape_nx;
 
+              // Set top ghost node
+              velocity_x[index_top] = velocity_x[index_bot + 2*fastscape_nx];
+              velocity_y[index_top] = velocity_y[index_bot + 2*fastscape_nx];
+              velocity_z[index_top] = velocity_z[index_bot + 2*fastscape_nx] + (elevation[index_bot + 2*fastscape_nx] - elevation[index_top])/fastscape_timestep_in_years;
+
+              // Set bottom ghost node
+              velocity_x[index_bot] = velocity_x[index_top - 2*fastscape_nx];
+              velocity_y[index_bot] = velocity_y[index_top - 2*fastscape_nx];
+              velocity_z[index_bot] = velocity_z[index_top - 2*fastscape_nx] + (elevation[index_top - 2*fastscape_nx] - elevation[index_bot])/fastscape_timestep_in_years;
+
               if (velocity_y[index_bot+fastscape_nx-1] > 0 && velocity_y[index_top-fastscape_nx-1] >= 0)
                 {
                   side = index_top;
@@ -1341,16 +1351,6 @@ namespace aspect
                 }
               else
                 continue;
-
-              // Set top ghost node
-              velocity_x[index_top] = velocity_x[index_bot + 2*fastscape_nx];
-              velocity_y[index_top] = velocity_y[index_bot + 2*fastscape_nx];
-              velocity_z[index_top] = velocity_z[index_bot + 2*fastscape_nx] + (elevation[index_bot + 2*fastscape_nx] - elevation[index_top])/fastscape_timestep_in_years;
-
-              // Set bottom ghost node
-              velocity_x[index_bot] = velocity_x[index_top - 2*fastscape_nx];
-              velocity_y[index_bot] = velocity_y[index_top - 2*fastscape_nx];
-              velocity_z[index_bot] = velocity_z[index_top - 2*fastscape_nx] + (elevation[index_top - 2*fastscape_nx] - elevation[index_bot])/fastscape_timestep_in_years;
 
               // Set opposing ASPECT boundary so it's periodic.
               elevation[op_side-jj] = elevation[side+jj];
