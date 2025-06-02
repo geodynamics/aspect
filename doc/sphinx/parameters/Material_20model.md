@@ -964,7 +964,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with the pressure in the &rsquo;p-T-dependent&rsquo; thermal conductivity formulation. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
+**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
 
 (parameters:Material_20model/Entropy_20model/Reference_20temperatures_20for_20thermal_20conductivity)=
 ### __Parameter name:__ Reference temperatures for thermal conductivity
@@ -972,7 +972,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity in the &rsquo;p-T-dependent&rsquo; thermal conductivity formulation. Units: \si{\kelvin}.
+**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: \si{\kelvin}.
 
 (parameters:Material_20model/Entropy_20model/Reference_20thermal_20conductivities)=
 ### __Parameter name:__ Reference thermal conductivities
@@ -980,7 +980,7 @@ A typical example would be to set this runtime parameter to &lsquo;pi=3.14159265
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers in the &rsquo;p-T-dependent&rsquo; thermal conductivity formulation. Pressure- and temperature-dependence will be appliedon top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: \si{\watt\per\meter\per\kelvin}
+**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: \si{\watt\per\meter\per\kelvin}
 
 (parameters:Material_20model/Entropy_20model/Reference_20viscosity)=
 ### __Parameter name:__ Reference viscosity
@@ -998,7 +998,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...1 (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values that indicate how a given layer in the conductivity formulation should take into account the effects of saturation on the temperature-dependence of the thermal conducitivity. This factor is multiplied with a saturation function based on the theory of Roufosse and Klemens, 1974. A value of 1 reproduces the formulation of Stackhouse et al. (2015), a value of 0 reproduces the formulation of Tosi et al., (2013). Units: none.
+**Documentation:** A list of values that indicate how a given layer should take into account the effects of saturation on the temperature-dependence of the thermal conductivity. This factor is multiplied with a saturation function based on the theory of Roufosse and Klemens, 1974. A value of 1 reproduces the formulation of Stackhouse et al. (2015), a value of 0 reproduces the formulation of Tosi et al., (2013). Units: none.
 
 (parameters:Material_20model/Entropy_20model/Thermal_20conductivity)=
 ### __Parameter name:__ Thermal conductivity
@@ -1014,7 +1014,7 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of exponents in the temperature-dependent term of the &rsquo;p-T-dependent&rsquo; thermal conductivity formulation. Note that this exponent is not used (and should have a value of 1) in the formulation of Stackhouse et al. (2015). Units: none.
+**Documentation:** A list of exponents in the temperature-dependent term of the conductivity formulation. Note that this exponent is not used (and should have a value of 1) in the formulation of Stackhouse et al. (2015). Units: none.
 
 (parameters:Material_20model/Entropy_20model/Thermal_20conductivity_20formulation)=
 ### __Parameter name:__ Thermal conductivity formulation
@@ -1030,10 +1030,26 @@ Units: \si{\pascal\second}
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur in the &rsquo;p-T-dependent&rsquo; Thermal conductivity formulation (in most cases, this will be the depths of major mantle phase transitions). Units: \si{\meter}.
+**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: \si{\meter}.
 
 (parameters:Material_20model/Grain_20size_20model)=
 ## **Subsection:** Material model / Grain size model
+(parameters:Material_20model/Grain_20size_20model/ARKode_20initial_20step_20size)=
+### __Parameter name:__ ARKode initial step size
+**Default value:** 1e-3
+
+**Pattern:** [Double 1e-12...1 (inclusive)]
+
+**Documentation:** The initial step size that the ODE solver uses when solving the grain size evolution equation. The step size is relative to the ASPECT time step, i.e. the default value of 1e-3 means the initial step size will be 1e-3 times the current ASPECT time step.
+
+(parameters:Material_20model/Grain_20size_20model/ARKode_20minimum_20step_20size)=
+### __Parameter name:__ ARKode minimum step size
+**Default value:** 1e-6
+
+**Pattern:** [Double 1e-12...1 (inclusive)]
+
+**Documentation:** The minimum step size that the ODE solver uses when solving the grain size evolution equation. The step size is relative to the ASPECT time step, i.e. the default value of 1e-6 means the step size will never be smaller than 1e-6 times the current ASPECT time step.
+
 (parameters:Material_20model/Grain_20size_20model/Advect_20logarithm_20of_20grain_20size)=
 ### __Parameter name:__ Advect logarithm of grain size
 **Default value:** false
@@ -3292,38 +3308,6 @@ Also note that the fluid reaction time scale has to be larger than or equal to t
 
 **Documentation:** Upper cutoff for the compaction viscosity. Units: \si{\pascal\second}.
 
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Maximum_20weight_20percent_20water_20in_20MORB)=
-### __Parameter name:__ Maximum weight percent water in MORB
-**Default value:** 2
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
-
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Maximum_20weight_20percent_20water_20in_20gabbro)=
-### __Parameter name:__ Maximum weight percent water in gabbro
-**Default value:** 1
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
-
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Maximum_20weight_20percent_20water_20in_20peridotite)=
-### __Parameter name:__ Maximum weight percent water in peridotite
-**Default value:** 8
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
-
-(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Maximum_20weight_20percent_20water_20in_20sediment)=
-### __Parameter name:__ Maximum weight percent water in sediment
-**Default value:** 3
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
-
 (parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Minimum_20compaction_20viscosity)=
 ### __Parameter name:__ Minimum compaction viscosity
 **Default value:** 0
@@ -3593,6 +3577,40 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 **Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
 
 **Documentation:** Prefactor of the linear pressure term in the linear function that approximates the clinopyroxene reaction coefficient. Units: \si{\per\pascal}.
+
+(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model)=
+## **Subsection:** Material model / Reactive Fluid Transport Model / Tian 2019 model
+(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20MORB)=
+### __Parameter name:__ Maximum weight percent water in MORB
+**Default value:** 2
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+
+(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20gabbro)=
+### __Parameter name:__ Maximum weight percent water in gabbro
+**Default value:** 1
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+
+(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20peridotite)=
+### __Parameter name:__ Maximum weight percent water in peridotite
+**Default value:** 8
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
+
+(parameters:Material_20model/Reactive_20Fluid_20Transport_20Model/Tian_202019_20model/Maximum_20weight_20percent_20water_20in_20sediment)=
+### __Parameter name:__ Maximum weight percent water in sediment
+**Default value:** 3
+
+**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
+
+**Documentation:** The maximum allowed weight percent that the sediment composition can hold.
 
 (parameters:Material_20model/Replace_20lithosphere_20viscosity)=
 ## **Subsection:** Material model / Replace lithosphere viscosity
@@ -3954,7 +3972,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with the pressure in the &rsquo;p-T-dependent&rsquo; Thermal conductivity formulation. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
+**Documentation:** A list of values that determine the linear scaling of the thermal conductivity with pressure. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
 
 (parameters:Material_20model/Steinberger_20model/Radial_20viscosity_20file_20name)=
 ### __Parameter name:__ Radial viscosity file name
@@ -3970,7 +3988,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity in the &rsquo;p-T-dependent&rsquo; Thermal conductivity formulation. Units: \si{\kelvin}.
+**Documentation:** A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity. Units: \si{\kelvin}.
 
 (parameters:Material_20model/Steinberger_20model/Reference_20thermal_20conductivities)=
 ### __Parameter name:__ Reference thermal conductivities
@@ -3978,7 +3996,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers in the &rsquo;p-T-dependent&rsquo; Thermal conductivity formulation. Pressure- and temperature-dependence will be appliedon top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: \si{\watt\per\meter\per\kelvin}
+**Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers. Pressure- and temperature-dependence will be applied on top of this base value, according to the parameters &rsquo;Pressure dependencies of thermal conductivity&rsquo; and &rsquo;Reference temperatures for thermal conductivity&rsquo;. Units: \si{\watt\per\meter\per\kelvin}
 
 (parameters:Material_20model/Steinberger_20model/Saturation_20prefactors)=
 ### __Parameter name:__ Saturation prefactors
@@ -3986,7 +4004,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...1 (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of values that indicate how a given layer in the conductivity formulation should take into account the effects of saturation on the temperature-dependence of the thermal conducitivity. This factor is multiplied with a saturation function based on the theory of Roufosse and Klemens, 1974. A value of 1 reproduces the formulation of Stackhouse et al. (2015), a value of 0 reproduces the formulation of Tosi et al., (2013). Units: none.
+**Documentation:** A list of values that indicate how a given layer should take into account the effects of saturation on the temperature-dependence of the thermal conductivity. This factor is multiplied with a saturation function based on the theory of Roufosse and Klemens, 1974. A value of 1 reproduces the formulation of Stackhouse et al. (2015), a value of 0 reproduces the formulation of Tosi et al., (2013). Units: none.
 
 (parameters:Material_20model/Steinberger_20model/Thermal_20conductivity)=
 ### __Parameter name:__ Thermal conductivity
@@ -3994,7 +4012,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
-**Documentation:** The value of the thermal conductivity $k$. Only used in case the &rsquo;constant&rsquo; Thermal conductivity formulation is selected. Units: \si{\watt\per\meter\per\kelvin}.
+**Documentation:** The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
 
 (parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20exponents)=
 ### __Parameter name:__ Thermal conductivity exponents
@@ -4002,7 +4020,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of exponents in the temperature-dependent term of the &rsquo;p-T-dependent&rsquo; Thermal conductivity formulation. Note that this exponent is not used (and should have a value of 1) in the formulation of Stackhouse et al. (2015). Units: none.
+**Documentation:** A list of exponents in the temperature-dependent term of the conductivity formulation. Note that this exponent is not used (and should have a value of 1) in the formulation of Stackhouse et al. (2015). Units: none.
 
 (parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20formulation)=
 ### __Parameter name:__ Thermal conductivity formulation
@@ -4018,7 +4036,7 @@ Note that melt does not freeze unless the &rsquo;Freezing rate&rsquo; parameter 
 
 **Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
-**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur in the &rsquo;p-T-dependent&rsquo; Thermal conductivity formulation (in most cases, this will be the depths of major mantle phase transitions). Units: \si{\meter}.
+**Documentation:** A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur (in most cases, these will be the depths of major phase transitions). Units: \si{\meter}.
 
 (parameters:Material_20model/Steinberger_20model/Use_20lateral_20average_20temperature_20for_20viscosity)=
 ### __Parameter name:__ Use lateral average temperature for viscosity

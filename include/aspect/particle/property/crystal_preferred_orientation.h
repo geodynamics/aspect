@@ -201,7 +201,8 @@ namespace aspect
            * @param mineral_i The mineral for which to compute the derivatives for.
            * @param strain_rate_3d The 3D strain rate at the location where the derivative is requested.
            * @param velocity_gradient_tensor The velocity gradient tensor at the location where the derivative is requested.
-           * @param position the location for which the derivative is requested.
+           * @param position The location for which the derivative is requested.
+           * @param cell The cell that contains the point @p position.
            * @param temperature The temperature at the location where the derivative is requested.
            * @param pressure The pressure at the location where the derivative is requested.
            * @param velocity The veloicty at the location where the derivative is requested.

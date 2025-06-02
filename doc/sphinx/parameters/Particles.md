@@ -57,13 +57,15 @@ Select one of the following models:
 ### __Parameter name:__ List of particle properties
 **Default value:**
 
-**Pattern:** [MultipleSelection composition|cpo bingham average|cpo elastic tensor|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
+**Pattern:** [MultipleSelection composition|composition reaction|cpo bingham average|cpo elastic tensor|crystal preferred orientation|elastic stress|elastic tensor decomposition|function|grain size|initial composition|initial position|integrated strain|integrated strain invariant|melt particle|pT path|position|reference position|strain rate|velocity|viscoplastic strain invariants ]
 
 **Documentation:** A comma separated list of particle properties that should be tracked. By default none is selected, which means only position, velocity and id of the particles are output.
 
 The following properties are available:
 
 &lsquo;composition&rsquo;: Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
+
+&lsquo;composition reaction&rsquo;: Implementation of a plugin in which the particle property is given as the initial composition at the particle&rsquo;s initial position, and is updated during the simulation time according to reactions that are specified as functions in the input file. Each reaction has exactly one reactant and one product. Each particle gets as many properties as there are compositional fields. The reactions are described by two functions, and the change in each composition at the time a reaction occurs is computed as the product of the two functions. The &rsquo;Reaction area function&rsquo; describes the area where the reaction takes place. It can be spatially variable, but does not depend on time. The &rsquo;Reaction rate function&rsquo; describes how the change in composition depends on these compositions themselves and on time. To use this particle property for a given compositional field, set the &rsquo;Mapped particle properties&rsquo; to &rsquo;name_of_field:name_of_field reaction&rsquo;, i.e., the name of the particle property for each field is the name of the compositional field with the word &rsquo;reaction&rsquo; added at the end.
 
 &lsquo;cpo bingham average&rsquo;: This is a particle property plugin which computes the Bingham average for the Crystal Preferred Orientation particle property plugin so that it can be visualized.
 
@@ -188,6 +190,98 @@ The following properties are available:
 **Pattern:** [Integer range 0...2147483647 (inclusive)]
 
 **Documentation:** The seed used to generate random numbers. This will make sure that results are reproducible as long as the problem is run with the same amount of MPI processes. It is implemented as final seed = Random number seed + MPI Rank.
+
+(parameters:Particles/Composition_20reaction)=
+## **Subsection:** Particles / Composition reaction
+(parameters:Particles/Composition_20reaction/List_20of_20products)=
+### __Parameter name:__ List of products
+**Default value:**
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Select the compositional fields that are the reaction outputs. Each entry represents the output of one reaction. The parameter should contain a list of compositional field names, one per reaction. &rsquo;background&rsquo; can be selected to set up a reaction without products. Needs to have as many entries as the &rsquo;List of reactants&rsquo;.
+
+(parameters:Particles/Composition_20reaction/List_20of_20reactants)=
+### __Parameter name:__ List of reactants
+**Default value:**
+
+**Pattern:** [List of <[Anything]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** Select the compositional fields that are the reaction inputs. Each entry represents the input for one reaction. The parameter should contain a list of compositional field names, one per reaction. &rsquo;background&rsquo; can be selected to set up a reaction without reactants. The length of this list determines the number of components in the reaction function.
+
+(parameters:Particles/Composition_20reaction/List_20of_20reaction_20times)=
+### __Parameter name:__ List of reaction times
+**Default value:**
+
+**Pattern:** [List of <[Double 0...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
+
+**Documentation:** List a specific point in time when each reaction should occur during the simulation. If set to zero, the reaction occurs throughout the whole simulation.Units: yr or s, depending on the &ldquo;Use years in output instead of seconds&rdquo; parameter.
+
+(parameters:Particles/Composition_20reaction/Reaction_20area_20function)=
+## **Subsection:** Particles / Composition reaction / Reaction area function
+(parameters:Particles/Composition_20reaction/Reaction_20area_20function/Coordinate_20system)=
+### __Parameter name:__ Coordinate system
+**Default value:** cartesian
+
+**Pattern:** [Selection depth|cartesian|spherical ]
+
+**Documentation:** A selection that determines the assumed coordinate system for the function variables. Allowed values are &lsquo;depth&rsquo;, &lsquo;cartesian&rsquo; and &lsquo;spherical&rsquo;. &lsquo;depth&rsquo; will create a function with only the first variable being is non-zero, and this first variable is interpreted as the depth of the point. &lsquo;spherical&rsquo; coordinates are interpreted as r,phi or r,phi,theta in 2d/3d, respectively, with theta being the polar angle.
+
+(parameters:Particles/Composition_20reaction/Reaction_20area_20function/Function_20constants)=
+### __Parameter name:__ Function constants
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
+
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+
+(parameters:Particles/Composition_20reaction/Reaction_20area_20function/Function_20expression)=
+### __Parameter name:__ Function expression
+**Default value:** 0
+
+**Pattern:** [Anything]
+
+**Documentation:** The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as &lsquo;sin&rsquo; or &lsquo;cos&rsquo;. In addition, it may contain expressions like &lsquo;if(x>0, 1, -1)&rsquo; where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+(parameters:Particles/Composition_20reaction/Reaction_20area_20function/Variable_20names)=
+### __Parameter name:__ Variable names
+**Default value:** x,y,t
+
+**Pattern:** [Anything]
+
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are &lsquo;x&rsquo; (in 1d), &lsquo;x,y&rsquo; (in 2d) or &lsquo;x,y,z&rsquo; (in 3d) for spatial coordinates and &lsquo;t&rsquo; for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to &lsquo;r,phi,theta,t&rsquo; and then use these variable names in your function expression.
+
+(parameters:Particles/Composition_20reaction/Reaction_20rate_20function)=
+## **Subsection:** Particles / Composition reaction / Reaction rate function
+(parameters:Particles/Composition_20reaction/Reaction_20rate_20function/Function_20constants)=
+### __Parameter name:__ Function constants
+**Default value:**
+
+**Pattern:** [Anything]
+
+**Documentation:** Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form &lsquo;var1=value1, var2=value2, ...&rsquo;.
+
+A typical example would be to set this runtime parameter to &lsquo;pi=3.1415926536&rsquo; and then use &lsquo;pi&rsquo; in the expression of the actual formula. (That said, for convenience this class actually defines both &lsquo;pi&rsquo; and &lsquo;Pi&rsquo; by default, but you get the idea.)
+
+(parameters:Particles/Composition_20reaction/Reaction_20rate_20function/Function_20expression)=
+### __Parameter name:__ Function expression
+**Default value:** 1.
+
+**Pattern:** [Anything]
+
+**Documentation:** Expression for the change in value of the reactant and reaction product for each reaction, in dependence of the current values of reactant and reaction product. One expression for each reaction should be listed, separated by semicolons.
+
+(parameters:Particles/Composition_20reaction/Reaction_20rate_20function/Variable_20names)=
+### __Parameter name:__ Variable names
+**Default value:** reactant,product,t
+
+**Pattern:** [Anything]
+
+**Documentation:** The names of the variables as they will be used in the function, separated by commas. Instead of spatial coordinates, the inputs for this function represent the value of the &lsquo;reactant&rsquo; and &lsquo;product&rsquo; compositions so that the value of the current composition can be used to calculate the change due to the reaction. Additionally, &lsquo;t&rsquo; represents the time. You can use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression.
 
 (parameters:Particles/Crystal_20Preferred_20Orientation)=
 ## **Subsection:** Particles / Crystal Preferred Orientation
