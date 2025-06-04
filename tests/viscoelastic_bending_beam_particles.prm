@@ -11,6 +11,7 @@ set Use operator splitting                 = false
 
 set End time         = 2e3
 set Output directory = viscoelastic_bending_beam_particles
+set Max nonlinear iterations               = 5
 
 # Significantly reduce resolution
 subsection Geometry model
