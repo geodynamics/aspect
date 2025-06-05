@@ -5,14 +5,17 @@
 #  Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 2
+set End time                               = 0.5
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set CFL number                             = 0.001
-set Maximum time step                      = 1
+set CFL number                             = 0.01
+set Maximum time step                      = 0.2
 set Output directory                       = output_free_surface_VE_cylinder_2D_loading-repeat
 set Timing output frequency                = 10
 set Pressure normalization                 = no
+set Max nonlinear iterations               = 2
+set Nonlinear solver failure strategy      = cut timestep size
+set Nonlinear solver tolerance             = 2e-5
 
 # One operator splitting step to update the stresses
 set Use operator splitting                 = true
@@ -27,11 +30,11 @@ subsection Solver parameters
 end
 
 subsection Time stepping
-  set List of model names = convection time step, repeat on cutback
-  set Minimum time step size = 0.5
+  set List of model names = convection time step, repeat on nonlinear solver failure
+  set Minimum time step size = 0.3
 
-  subsection Repeat on cutback
-    set Relative repeat threshold = 0.99
+  subsection Repeat on nonlinear solver failure
+    set Cut back factor = 0.1
   end
 end
 
@@ -187,5 +190,6 @@ end
 
 # Termination criteria
 subsection Termination criteria
-  set Termination criteria = end time
+  set Termination criteria = end step
+  set End step = 1
 end
