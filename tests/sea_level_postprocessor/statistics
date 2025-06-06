@@ -4,17 +4,18 @@
 # 4: Number of mesh cells
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
-# 7: Number of nonlinear iterations
-# 8: Minimal temperature (K)
-# 9: Average temperature (K)
-# 10: Maximal temperature (K)
-# 11: Average nondimensional temperature (K)
-# 12: RMS velocity (m/year)
-# 13: Max. velocity (m/year)
-# 14: Minimum topography (m)
-# 15: Maximum topography (m)
-# 16: Density at top (kg/m^3)
-# 17: Density at bottom (kg/m^3)
-# 18: Minimum non-uniform sea_level change (m)
-# 19: Maximum non-uniform sea_level change (m)
-0 0.000000000000e+00 0.000000000000e+00 96 3060 150 0 2.93000000e+02 2.93000000e+02 2.93000000e+02 4.51975236e-17 0.00000000e+00 0.00000000e+00 -2.79396772e-09 0.00000000e+00 3.30000000e+03 3.30000000e+03 -1.59018958e-10 2.87385445e-09 
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Minimal temperature (K)
+# 10: Average temperature (K)
+# 11: Maximal temperature (K)
+# 12: Average nondimensional temperature (K)
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Minimum topography (m)
+# 16: Maximum topography (m)
+# 17: Density at top (kg/m^3)
+# 18: Density at bottom (kg/m^3)
+# 19: Minimum non-uniform sea_level change (m)
+# 20: Maximum non-uniform sea_level change (m)
+0 0.000000000000e+00 0.000000000000e+00 96 3060 150 11640 0 2.93000000e+02 2.93000000e+02 2.93000000e+02 4.51975236e-17 0.00000000e+00 0.00000000e+00 -2.79396772e-09 0.00000000e+00 3.30000000e+03 3.30000000e+03 -1.59018958e-10 2.87385445e-09 

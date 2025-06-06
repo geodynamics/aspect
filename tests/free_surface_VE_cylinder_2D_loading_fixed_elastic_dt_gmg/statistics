@@ -5,32 +5,45 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: Iterations for composition solver 2
-# 11: Iterations for composition solver 3
-# 12: Iterations for Stokes solver
-# 13: Velocity iterations in Stokes preconditioner
-# 14: Schur complement iterations in Stokes preconditioner
-# 15: Minimal value for composition ve_stress_xx
-# 16: Maximal value for composition ve_stress_xx
-# 17: Global mass for composition ve_stress_xx
-# 18: Minimal value for composition ve_stress_yy
-# 19: Maximal value for composition ve_stress_yy
-# 20: Global mass for composition ve_stress_yy
-# 21: Minimal value for composition ve_stress_xy
-# 22: Maximal value for composition ve_stress_xy
-# 23: Global mass for composition ve_stress_xy
-# 24: Minimal temperature (K)
-# 25: Average temperature (K)
-# 26: Maximal temperature (K)
-# 27: Average nondimensional temperature (K)
-# 28: Minimum topography (m)
-# 29: Maximum topography (m)
-# 30: RMS velocity (m/year)
-# 31: Max. velocity (m/year)
-# 32: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 547 5283 607 7014 0  0  0  0 41 42 42  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 0.00000000e+00  0.00000000e+00 0.00000000e+00 1.42218005e-01 4.48332505e-01 output-free_surface_VE_cylinder_2D_loading_fixed_elastic_dt_gmg/solution/solution-00000 
-1 1.000000000000e+01 1.000000000000e+01 520 5055 581 6711 0 16 16 16 43 44 44 -1.53301271e+05 2.68750439e+05  6.21254069e+10 -2.68750439e+05 1.53301271e+05 -6.21254069e+10 -6.32901813e+04 3.27735742e+05 1.17849464e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02 9.03950472e-17 -4.48835356e+00 2.02809078e+00 1.23970723e-01 3.93371136e-01                                                                                      "" 
-2 2.000000000000e+01 1.000000000000e+01 508 4949 569 6570 0 15 15 15 43 44 44 -2.87502827e+05 4.91874891e+05 -1.37215794e+12 -4.91874891e+05 2.87502827e+05  1.37215794e+12 -1.19383279e+05 6.09831643e+05 2.14043018e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02 6.02633648e-17 -8.42646412e+00 3.77851427e+00 1.10386181e-01 3.51666310e-01                                                                                      "" 
-3 3.000000000000e+01 1.000000000000e+01 499 4870 560 6465 0 14 14 15 42 43 43 -4.08212556e+05 6.87199773e+05 -2.54038259e+12 -6.87199773e+05 4.08212556e+05  2.54038259e+12 -1.70464437e+05 8.61331068e+05 2.97641135e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02 1.50658412e-17 -1.19470506e+01 5.32759493e+00 9.85181581e-02 3.15113260e-01                                                                                      "" 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Minimal value for composition ve_stress_xx
+# 20: Maximal value for composition ve_stress_xx
+# 21: Global mass for composition ve_stress_xx
+# 22: Minimal value for composition ve_stress_yy
+# 23: Maximal value for composition ve_stress_yy
+# 24: Global mass for composition ve_stress_yy
+# 25: Minimal value for composition ve_stress_xy
+# 26: Maximal value for composition ve_stress_xy
+# 27: Global mass for composition ve_stress_xy
+# 28: Minimal value for composition ve_stress_xx_old
+# 29: Maximal value for composition ve_stress_xx_old
+# 30: Global mass for composition ve_stress_xx_old
+# 31: Minimal value for composition ve_stress_yy_old
+# 32: Maximal value for composition ve_stress_yy_old
+# 33: Global mass for composition ve_stress_yy_old
+# 34: Minimal value for composition ve_stress_xy_old
+# 35: Maximal value for composition ve_stress_xy_old
+# 36: Global mass for composition ve_stress_xy_old
+# 37: Minimal temperature (K)
+# 38: Average temperature (K)
+# 39: Maximal temperature (K)
+# 40: Average nondimensional temperature (K)
+# 41: Minimum topography (m)
+# 42: Maximum topography (m)
+# 43: RMS velocity (m/year)
+# 44: Max. velocity (m/year)
+# 45: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 547 5283 607 29538 2 0 0 0 0 0 0 0 50 52 52  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02  0.00000000e+00  0.00000000e+00 0.00000000e+00 1.42218008e+00 4.48332513e+00 output-free_surface_VE_cylinder_2D_loading_fixed_elastic_dt_gmg/solution/solution-00000 
+1 1.000000000000e+01 1.000000000000e+01 520 5055 581 28080 3 0 8 8 8 7 7 8 89 92 92 -1.65908742e+06 2.68769087e+06 1.10915735e+13 -2.68769087e+06 1.65908742e+06 -1.10915735e+13 -1.67447013e+06 3.73671968e+06 1.17849886e+17 -1.65915401e+06 2.68769087e+06 8.16611237e+12 -2.68769087e+06 1.65915401e+06 -8.16611237e+12 -1.67445218e+06 3.73676015e+06 1.17849483e+17 2.93000000e+02 2.93000000e+02 2.93000000e+02 -4.51975236e-17 -4.48835365e+01 2.02809084e+01 3.22049159e-01 8.54534516e-01                                                                                      "" 
+2 2.000000000000e+01 1.000000000000e+01 517 5028 578 27918 3 0 5 5 5 5 5 5 89 92 92 -1.80703260e+06 2.22513918e+06 1.81528377e+13 -2.22513918e+06 1.80703260e+06 -1.81528377e+13 -2.35431501e+06 3.82736954e+06 9.04078509e+16 -1.80705518e+06 2.22513918e+06 1.74043266e+13 -2.22513918e+06 1.80705518e+06 -1.74043266e+13 -2.35432582e+06 3.82739942e+06 9.04077604e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02 -6.02633648e-17 -3.63272737e+01 1.47420525e+01 4.75873601e-02 1.23147223e-01                                                                                      "" 
+3 3.000000000000e+01 1.000000000000e+01 514 5001 575 27756 3 0 5 5 5 5 5 5 82 85 85 -2.37380550e+06 2.48367671e+06 1.86246743e+13 -2.48367671e+06 2.37380550e+06 -1.86246743e+13 -2.86422968e+06 4.00449151e+06 9.34391843e+16 -2.37352566e+06 2.48395802e+06 1.84146390e+13 -2.48395802e+06 2.37352566e+06 -1.84146390e+13 -2.86423124e+06 4.00446993e+06 9.34391440e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02  1.95855936e-16 -3.75597393e+01 1.55891814e+01 4.31598222e-03 2.48272552e-02                                                                                      "" 
