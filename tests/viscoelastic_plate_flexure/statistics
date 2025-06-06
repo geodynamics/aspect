@@ -5,21 +5,25 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: Iterations for composition solver 2
-# 11: Iterations for composition solver 3
-# 12: Iterations for composition solver 4
-# 13: Iterations for composition solver 5
-# 14: Iterations for Stokes solver
-# 15: Velocity iterations in Stokes preconditioner
-# 16: Schur complement iterations in Stokes preconditioner
-# 17: Average density (kg/m^3)
-# 18: Average viscosity (Pa s)
-# 19: Total mass (kg)
-# 20: RMS velocity (m/year)
-# 21: Max. velocity (m/year)
-# 22: Minimum topography (m)
-# 23: Maximum topography (m)
-0 0.000000000000e+00 0.000000000000e+00 140 1650 168 6300 0 0 0 0 0 0 35 36 35 2.67222482e+03 1.55625631e+18 2.33819671e+12 1.88288940e+00 3.90505734e+00  0.00000000e+00 0.00000000e+00 
-1 5.000000000000e+00 5.000000000000e+00 140 1650 168 6300 0 3 3 3 2 2 34 35 35 2.67221961e+03 1.55637870e+18 2.33819216e+12 1.62268998e+00 3.11104413e+00 -9.00400918e+00 1.74218510e+01 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for composition solver 7
+# 17: Iterations for composition solver 8
+# 18: Iterations for Stokes solver
+# 19: Velocity iterations in Stokes preconditioner
+# 20: Schur complement iterations in Stokes preconditioner
+# 21: Average density (kg/m^3)
+# 22: Average viscosity (Pa s)
+# 23: Total mass (kg)
+# 24: RMS velocity (m/year)
+# 25: Max. velocity (m/year)
+# 26: Minimum topography (m)
+# 27: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 140 1650 168 10080 2 0 0 0 0 0 0 0 1 1 35 36 35 2.67222482e+03 1.55625631e+18 2.33819671e+12 1.88288940e+00 3.90505734e+00  0.00000000e+00 0.00000000e+00 
+1 5.000000000000e+00 5.000000000000e+00 140 1650 168 10080 4 0 8 8 7 8 8 8 8 8 78 82 82 2.67222218e+03 1.55637870e+18 2.33819441e+12 1.57368273e+00 3.00877783e+00 -9.00400918e+00 1.74218510e+01 

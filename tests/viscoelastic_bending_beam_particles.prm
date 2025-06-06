@@ -5,8 +5,13 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
+# For particles, the stress update is done by the particle property elastic stress,
+# so we do not use the operator splitting.
+set Use operator splitting                 = false
+
 set End time         = 2e3
 set Output directory = viscoelastic_bending_beam_particles
+set Max nonlinear iterations               = 5
 
 # Significantly reduce resolution
 subsection Geometry model
@@ -20,10 +25,11 @@ end
 
 # Compositional field names and methods
 subsection Compositional fields
-  set Number of fields = 4
-  set Compositional field methods =           particles,           particles,           particles,         particles
-  set Names of fields             =           ve_stress_xx,        ve_stress_yy,        ve_stress_xy,      beam
-  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, beam:initial beam
+  set Number of fields = 7
+  set Compositional field methods =           particles,           particles,           particles,         particles,           particles,           particles,         particles
+  set Names of fields             =           ve_stress_xx,        ve_stress_yy,        ve_stress_xy,      ve_stress_xx_old,    ve_stress_yy_old,    ve_stress_xy_old,  beam
+  set Types of fields             =           stress,              stress,              stress,            stress,              stress,              stress,            chemical composition
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, ve_stress_xx_old:ve_stress_xx_old, ve_stress_yy_old:ve_stress_yy_old, ve_stress_xy_old:ve_stress_xy_old, beam:initial beam
 end
 
 # Post processing

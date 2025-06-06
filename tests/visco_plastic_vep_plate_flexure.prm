@@ -27,16 +27,16 @@ subsection Material model
 
   subsection Visco Plastic
     set Viscous flow law                          = dislocation
-    set Prefactors for dislocation creep          = 5.e-18, 5.e-18, 5.e-18, 5.e-18, 5.e-36, 5.e-36
+    set Prefactors for dislocation creep          = 5.e-18, 5.e-18, 5.e-18, 5.e-18, 5.e-18, 5.e-18, 5.e-18, 5.e-36, 5.e-36
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0
-    set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
+    set Elastic shear moduli        = 1.e50, 1.e50, 1.e50, 1.e50, 1.e50, 1.e50, 1.e50, 3.e10, 3.e10
     set Fixed elastic time step     = 5
     set Use fixed elastic time step = false
     set Viscosity averaging scheme  = maximum composition
     set Cohesions                   = 1.e50
-    set Densities                   = 2700,  2700,  2700,  2700,  2700,  1890
+    set Densities                   = 2700,  2700,  2700,  2700,  2700,  2700,  2700,  2700,  1890
   end
 end
 

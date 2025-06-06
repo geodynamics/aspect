@@ -1,68 +1,116 @@
 
 Number of active cells: 1,024 (on 5 levels)
-Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+4,225+4,225)
+Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+9,216+9,216+9,216+9,216+9,216)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving block system ... 0 iterations.
    Solving air system ... 0 iterations.
    Solving inclusion system ... 0 iterations.
-   Initial Newton Stokes residual = 4.43603e+13, v = 4.43528e+13, p = 8.14956e+11
+   Initial Newton Stokes residual = 4.27918e+13, v = 4.27886e+13, p = 5.23754e+11
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+46 iterations.
-      Newton system information: Norm of the rhs: 4.43603e+13
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+   Solving Stokes system (AMG)... 0+23 iterations.
+      Newton system information: Norm of the rhs: 4.27918e+13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.129 m/year, 0.221 m/year
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.131 m/year, 0.221 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0000
 
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving block system ... 1 iterations.
+   Solving air system ... 1 iterations.
+   Solving inclusion system ... 1 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+62 iterations.
-      Newton system information: Norm of the rhs: 8.77888e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0197899
+   Solving Stokes system (AMG)... 0+25 iterations.
+      Newton system information: Norm of the rhs: 9.19463e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.92761e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0214869
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.0214869
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.131 m/year, 0.221 m/year
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.133 m/year, 0.22 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0001
 
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving block system ... 1 iterations.
+   Solving air system ... 1 iterations.
+   Solving inclusion system ... 1 iterations.
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 6.44873e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0145372
+      Newton system information: Norm of the rhs: 7.48612e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52391e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0174943
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.0174943
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.13 m/year, 0.221 m/year
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.135 m/year, 0.22 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0002
 
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving block system ... 1 iterations.
+   Solving air system ... 1 iterations.
+   Solving inclusion system ... 1 iterations.
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+1 iterations.
-      Newton system information: Norm of the rhs: 5.84163e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0131686
+      Newton system information: Norm of the rhs: 7.43475e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.52391e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0173742
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 0.0173742
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.132 m/year, 0.221 m/year
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.139 m/year, 0.22 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0003
 
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving block system ... 1 iterations.
+   Solving air system ... 1 iterations.
+   Solving inclusion system ... 1 iterations.
    The linear solver tolerance is set to 0.1. 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 0+4 iterations.
-      Newton system information: Norm of the rhs: 5.99087e+11, Derivative scaling factor: 0
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.013505
+   Solving Stokes system (AMG)... 0+1 iterations.
+      Newton system information: Norm of the rhs: 7.42874e+11, Derivative scaling factor: 0
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36302e-17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0173602
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 0.0173602
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.135 m/year, 0.22 m/year
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.141 m/year, 0.22 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0004
 
 

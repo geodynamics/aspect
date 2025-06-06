@@ -5,21 +5,31 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for Stokes solver
-# 10: Velocity iterations in Stokes preconditioner
-# 11: Schur complement iterations in Stokes preconditioner
-# 12: Minimal value for composition ve_stress_xx
-# 13: Maximal value for composition ve_stress_xx
-# 14: Global mass for composition ve_stress_xx
-# 15: Minimal value for composition ve_stress_yy
-# 16: Maximal value for composition ve_stress_yy
-# 17: Global mass for composition ve_stress_yy
-# 18: Minimal value for composition ve_stress_xy
-# 19: Maximal value for composition ve_stress_xy
-# 20: Global mass for composition ve_stress_xy
-# 21: Number of advected particles
-# 22: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 400 3803 441 5043 0 53 54 54 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 11971 output-viscoelastic_numerical_elastic_time_step_particles/particles/particles-00000 
-1 1.000000000000e+03 1.000000000000e+03 400 3803 441 5043 0  0  0  0 4.79487647e+06 4.79488675e+06 4.79488154e+16 -4.79488675e+06 -4.79487647e+06 -4.79488154e+16 -5.60216005e+00 6.25848943e+00 1.85867930e+08 11974                                                                                  "" 
-2 2.000000000000e+03 1.000000000000e+03 400 3803 441 5043 0  0  0  0 8.43959006e+06 8.43960993e+06 8.43960079e+16 -8.43960993e+06 -8.43959006e+06 -8.43960079e+16 -9.58450360e+00 1.17485974e+01 4.70684634e+08 11971                                                                                  "" 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition ve_stress_xx
+# 14: Maximal value for composition ve_stress_xx
+# 15: Global mass for composition ve_stress_xx
+# 16: Minimal value for composition ve_stress_yy
+# 17: Maximal value for composition ve_stress_yy
+# 18: Global mass for composition ve_stress_yy
+# 19: Minimal value for composition ve_stress_xy
+# 20: Maximal value for composition ve_stress_xy
+# 21: Global mass for composition ve_stress_xy
+# 22: Minimal value for composition ve_stress_xx_old
+# 23: Maximal value for composition ve_stress_xx_old
+# 24: Global mass for composition ve_stress_xx_old
+# 25: Minimal value for composition ve_stress_yy_old
+# 26: Maximal value for composition ve_stress_yy_old
+# 27: Global mass for composition ve_stress_yy_old
+# 28: Minimal value for composition ve_stress_xy_old
+# 29: Maximal value for composition ve_stress_xy_old
+# 30: Global mass for composition ve_stress_xy_old
+# 31: Number of advected particles
+# 32: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 400 3803 441 21600 2 0 53 54 54 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 11971 output-viscoelastic_numerical_elastic_time_step_particles/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 400 3803 441 21600 1 0  0  0  0 4.79487591e+06 4.79488729e+06 4.79488153e+16 -4.79488729e+06 -4.79487591e+06 -4.79488153e+16 -6.34853673e+00 6.27291371e+00 2.30505929e+08 4.79487591e+06 4.79488729e+06 4.79488153e+16 -4.79488729e+06 -4.79487591e+06 -4.79488153e+16 -6.34748861e+00 6.27061105e+00 2.30432679e+08 11973                                                                                  "" 
+2 2.000000000000e+03 1.000000000000e+03 400 3803 441 21600 1 0  2  3  3 8.43959084e+06 8.43961090e+06 8.43960077e+16 -8.43961090e+06 -8.43959084e+06 -8.43960077e+16 -1.11755913e+01 1.10659681e+01 4.10957214e+08 8.43959084e+06 8.43961090e+06 8.43960077e+16 -8.43961090e+06 -8.43959084e+06 -8.43960077e+16 -1.11737674e+01 1.10618996e+01 4.10806631e+08 11969                                                                                  "" 

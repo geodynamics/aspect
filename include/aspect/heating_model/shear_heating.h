@@ -100,6 +100,9 @@ namespace aspect
      * Additional output fields for the shear heating computation
      * to be added to the MaterialModel::MaterialModelOutputs structure
      * and filled in the MaterialModel::evaluate() function.
+     *
+     * This structure allows to modify the shear heating term by
+     * multiplying it with a factor computed by the material model.
      */
     template <int dim>
     class ShearHeatingOutputs : public MaterialModel::NamedAdditionalMaterialOutputs<dim>
@@ -116,6 +119,31 @@ namespace aspect
          * work will go into shear heating.
          */
         std::vector<double> shear_heating_work_fractions;
+    };
+
+    /**
+     * Additional output fields for the shear heating computation
+     * to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::evaluate() function.
+     *
+     * This structure allows to prescribe the full shear heating term from
+     * the material model.
+     */
+    template <int dim>
+    class PrescribedShearHeatingOutputs : public MaterialModel::NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PrescribedShearHeatingOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * The viscous dissipation rate contributing to shear heating.
+         * If this object is created and filled by the material model
+         * it will replace the default viscous dissipation rate
+         * computed by the shear heating model.
+        */
+        std::vector<double> prescribed_shear_heating_rates;
     };
   }
 }

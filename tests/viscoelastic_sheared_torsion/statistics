@@ -13,27 +13,51 @@
 # 13: Iterations for composition solver 4
 # 14: Iterations for composition solver 5
 # 15: Iterations for composition solver 6
-# 16: Iterations for Stokes solver
-# 17: Velocity iterations in Stokes preconditioner
-# 18: Schur complement iterations in Stokes preconditioner
-# 19: Minimal value for composition ve_stress_xx
-# 20: Maximal value for composition ve_stress_xx
-# 21: Global mass for composition ve_stress_xx
-# 22: Minimal value for composition ve_stress_yy
-# 23: Maximal value for composition ve_stress_yy
-# 24: Global mass for composition ve_stress_yy
-# 25: Minimal value for composition ve_stress_zz
-# 26: Maximal value for composition ve_stress_zz
-# 27: Global mass for composition ve_stress_zz
-# 28: Minimal value for composition ve_stress_xy
-# 29: Maximal value for composition ve_stress_xy
-# 30: Global mass for composition ve_stress_xy
-# 31: Minimal value for composition ve_stress_xz
-# 32: Maximal value for composition ve_stress_xz
-# 33: Global mass for composition ve_stress_xz
-# 34: Minimal value for composition ve_stress_yz
-# 35: Maximal value for composition ve_stress_yz
-# 36: Global mass for composition ve_stress_yz
-0 0.000000000000e+00 0.000000000000e+00 125 4209 1331 7986 2 0  0  0  0  0  0  0 20 21 21  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 
-1 1.000000000000e-02 1.000000000000e-02 125 4209 1331 7986 1 0 13 13 13 13 12 13  0  0  0 -7.39409005e-06 6.57201182e-06 -1.79074100e-09 -5.94512628e-06 5.79718107e-06 8.93484196e-10 -4.50329173e-06  4.59880565e-06  8.97256801e-10 -5.17837301e-06 4.78882039e-06 3.22583911e-11 2.97025134e-01 2.97036346e-01 2.97029703e-01 -6.26135807e-06 6.36346496e-06 3.35350841e-10 
-2 2.000000000000e-02 1.000000000000e-02 125 4209 1331 7986 1 0 12 11 12 11 10 12  1  2  2  1.16182524e-03 1.18872802e-03  1.17635055e-03 -1.16142870e-05 1.12423999e-05 2.34766472e-09 -1.18515289e-03 -1.16735011e-03 -1.17635290e-03 -9.99462408e-06 9.40683622e-06 9.26591970e-11 5.90129151e-01 5.90151051e-01 5.90138222e-01  4.45378936e-04 4.69816143e-04 4.57472372e-04 
+# 16: Iterations for composition solver 7
+# 17: Iterations for composition solver 8
+# 18: Iterations for composition solver 9
+# 19: Iterations for composition solver 10
+# 20: Iterations for composition solver 11
+# 21: Iterations for composition solver 12
+# 22: Iterations for Stokes solver
+# 23: Velocity iterations in Stokes preconditioner
+# 24: Schur complement iterations in Stokes preconditioner
+# 25: Minimal value for composition ve_stress_xx
+# 26: Maximal value for composition ve_stress_xx
+# 27: Global mass for composition ve_stress_xx
+# 28: Minimal value for composition ve_stress_yy
+# 29: Maximal value for composition ve_stress_yy
+# 30: Global mass for composition ve_stress_yy
+# 31: Minimal value for composition ve_stress_zz
+# 32: Maximal value for composition ve_stress_zz
+# 33: Global mass for composition ve_stress_zz
+# 34: Minimal value for composition ve_stress_xy
+# 35: Maximal value for composition ve_stress_xy
+# 36: Global mass for composition ve_stress_xy
+# 37: Minimal value for composition ve_stress_xz
+# 38: Maximal value for composition ve_stress_xz
+# 39: Global mass for composition ve_stress_xz
+# 40: Minimal value for composition ve_stress_yz
+# 41: Maximal value for composition ve_stress_yz
+# 42: Global mass for composition ve_stress_yz
+# 43: Minimal value for composition ve_stress_xx_old
+# 44: Maximal value for composition ve_stress_xx_old
+# 45: Global mass for composition ve_stress_xx_old
+# 46: Minimal value for composition ve_stress_yy_old
+# 47: Maximal value for composition ve_stress_yy_old
+# 48: Global mass for composition ve_stress_yy_old
+# 49: Minimal value for composition ve_stress_zz_old
+# 50: Maximal value for composition ve_stress_zz_old
+# 51: Global mass for composition ve_stress_zz_old
+# 52: Minimal value for composition ve_stress_xy_old
+# 53: Maximal value for composition ve_stress_xy_old
+# 54: Global mass for composition ve_stress_xy_old
+# 55: Minimal value for composition ve_stress_xz_old
+# 56: Maximal value for composition ve_stress_xz_old
+# 57: Global mass for composition ve_stress_xz_old
+# 58: Minimal value for composition ve_stress_yz_old
+# 59: Maximal value for composition ve_stress_yz_old
+# 60: Global mass for composition ve_stress_yz_old
+0 0.000000000000e+00 0.000000000000e+00 125 4209 1331 40500 2 0 0 0 0 0 0 0 0 0 0 0 0 0 20 21 21 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e-02 1.000000000000e-02 125 4209 1331 40500 2 0 3 3 3 3 2 3 3 3 3 3 2 3  0  0  0 8.83514375e-04 8.99393882e-04 8.91087838e-04 -6.89337516e-06 6.31332257e-06 6.47088340e-10 -8.97160958e-04 -8.85434565e-04 -8.91088485e-04 -4.76566565e-06 6.05122671e-06 -1.63708691e-11 2.97021929e-01 2.97035264e-01 2.97029703e-01 3.39635954e-04 3.53313564e-04 3.46534963e-04 -7.56546252e-06 8.31317816e-06 -1.27065641e-09 -6.89666075e-06 6.30888963e-06 6.47129002e-10 -6.09065462e-06  5.63433464e-06  6.23527412e-10 -4.75882509e-06 6.05246066e-06 -1.41331484e-11 2.97021931e-01 2.97035258e-01 2.97029703e-01 -6.89523136e-06 6.78256339e-06 3.09226113e-10 
+2 2.000000000000e-02 1.000000000000e-02 125 4209 1331 40500 2 0 5 5 5 5 3 5 3 4 3 4 1 3  1  2  2 2.34699844e-03 2.37798688e-03 2.36152980e-03 -1.37370461e-05 1.22586341e-05 1.72425598e-09 -2.37363256e-03 -2.35056552e-03 -2.36153152e-03 -8.42974074e-06 1.30537551e-05  1.02926097e-06 5.91100979e-01 5.91127548e-01 5.91116486e-01 9.04636899e-04 9.31834165e-04 9.18374835e-04  8.67749321e-04 8.98735601e-04  8.82263059e-04 -1.37423815e-05 1.22637112e-05 1.72433243e-09 -8.94372285e-04 -8.71306455e-04 -8.82264783e-04 -9.44757403e-06 1.20254186e-05 -4.58192201e-11 5.91103014e-01 5.91129569e-01 5.91118518e-01  3.29368409e-04 3.56565753e-04 3.43104437e-04 
