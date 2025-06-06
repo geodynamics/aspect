@@ -35,7 +35,7 @@ namespace aspect
       MulticomponentIncompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                const unsigned int input_index,
-               MaterialModel::EquationOfStateOutputs<dim> &out) const
+               MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const
       {
 
 
@@ -47,14 +47,14 @@ namespace aspect
                                               :
                                               reference_T);
 
-        for (unsigned int c=0; c < out.densities.size(); ++c)
+        for (unsigned int c=0; c < eos_outputs.densities.size(); ++c)
           {
-            out.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[input_index] - reference_temperature));
-            out.thermal_expansion_coefficients[c] = thermal_expansivities[c];
-            out.specific_heat_capacities[c] = specific_heats[c];
-            out.compressibilities[c] = 0.0;
-            out.entropy_derivative_pressure[c] = 0.0;
-            out.entropy_derivative_temperature[c] = 0.0;
+            eos_outputs.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[input_index] - reference_temperature));
+            eos_outputs.thermal_expansion_coefficients[c] = thermal_expansivities[c];
+            eos_outputs.specific_heat_capacities[c] = specific_heats[c];
+            eos_outputs.compressibilities[c] = 0.0;
+            eos_outputs.entropy_derivative_pressure[c] = 0.0;
+            eos_outputs.entropy_derivative_temperature[c] = 0.0;
           }
       }
 
