@@ -232,13 +232,6 @@ namespace aspect
             }
         }
 
-<<<<<<< HEAD
-
-
-   
->>>>>>> 04498182a (tried ito interpolate to higher resolution)
-=======
->>>>>>> 0601980b2 (clean-up)
       // int array_size = healpix_grid.Npix();
       std::vector<double> V(n_grid_nodes);
 
