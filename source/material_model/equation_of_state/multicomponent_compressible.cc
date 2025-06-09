@@ -34,28 +34,28 @@ namespace aspect
       MulticomponentCompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                const unsigned int q,
-               MaterialModel::EquationOfStateOutputs<dim> &out) const
+               MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const
       {
 
         const double pressure = in.pressure[q];
         const double temperature = std::max(in.temperature[q], 1.); // temperature can't be zero for correct evaluation
 
-        for (unsigned int c=0; c < out.densities.size(); ++c)
+        for (unsigned int c=0; c < eos_outputs.densities.size(); ++c)
           {
             const double ak = reference_thermal_expansivities[c]/reference_isothermal_compressibilities[c];
             const double f = (1. + (pressure - ak*(temperature - reference_temperatures[c])) *
                               isothermal_bulk_modulus_pressure_derivatives[c] *
                               reference_isothermal_compressibilities[c]);
 
-            out.densities[c] = reference_densities[c]*std::pow(f, 1./isothermal_bulk_modulus_pressure_derivatives[c]);
-            out.thermal_expansion_coefficients[c] = reference_thermal_expansivities[c] / f;
-            out.specific_heat_capacities[c] = (isochoric_specific_heats[c] +
-                                               (temperature*reference_thermal_expansivities[c] *
-                                                ak * std::pow(f, -1.-(1./isothermal_bulk_modulus_pressure_derivatives[c]))
-                                                / reference_densities[c]));
-            out.compressibilities[c] = reference_isothermal_compressibilities[c]/f;
-            out.entropy_derivative_pressure[c] = 0.;
-            out.entropy_derivative_temperature[c] = 0.;
+            eos_outputs.densities[c] = reference_densities[c]*std::pow(f, 1./isothermal_bulk_modulus_pressure_derivatives[c]);
+            eos_outputs.thermal_expansion_coefficients[c] = reference_thermal_expansivities[c] / f;
+            eos_outputs.specific_heat_capacities[c] = (isochoric_specific_heats[c] +
+                                                       (temperature*reference_thermal_expansivities[c] *
+                                                        ak * std::pow(f, -1.-(1./isothermal_bulk_modulus_pressure_derivatives[c]))
+                                                        / reference_densities[c]));
+            eos_outputs.compressibilities[c] = reference_isothermal_compressibilities[c]/f;
+            eos_outputs.entropy_derivative_pressure[c] = 0.;
+            eos_outputs.entropy_derivative_temperature[c] = 0.;
           }
       }
 

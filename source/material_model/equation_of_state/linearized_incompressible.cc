@@ -33,28 +33,28 @@ namespace aspect
       LinearizedIncompressible<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                const unsigned int q,
-               MaterialModel::EquationOfStateOutputs<dim> &out) const
+               MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const
       {
 
-        Assert(maximum_number_of_compositions+1 >= out.densities.size(),
+        Assert(maximum_number_of_compositions+1 >= eos_outputs.densities.size(),
                ExcMessage("Error: You are trying to evaluate the equation of state with "
-                          + Utilities::to_string(out.densities.size()-1) +
+                          + Utilities::to_string(eos_outputs.densities.size()-1) +
                           " compositional fields, which is larger than "
                           + Utilities::to_string(maximum_number_of_compositions) +
                           ", the number of fields the equation of state was set up with."));
 
 
-        for (unsigned int c=0; c < out.densities.size(); ++c)
+        for (unsigned int c=0; c < eos_outputs.densities.size(); ++c)
           {
-            out.densities[c] = reference_rho * (1 - thermal_alpha * (in.temperature[q] - reference_T));
+            eos_outputs.densities[c] = reference_rho * (1 - thermal_alpha * (in.temperature[q] - reference_T));
             if (c>0)
-              out.densities[c] += compositional_delta_rhos[c-1];
+              eos_outputs.densities[c] += compositional_delta_rhos[c-1];
 
-            out.thermal_expansion_coefficients[c] = thermal_alpha;
-            out.specific_heat_capacities[c] = reference_specific_heat;
-            out.compressibilities[c] = 0.0;
-            out.entropy_derivative_pressure[c] = 0.0;
-            out.entropy_derivative_temperature[c] = 0.0;
+            eos_outputs.thermal_expansion_coefficients[c] = thermal_alpha;
+            eos_outputs.specific_heat_capacities[c] = reference_specific_heat;
+            eos_outputs.compressibilities[c] = 0.0;
+            eos_outputs.entropy_derivative_pressure[c] = 0.0;
+            eos_outputs.entropy_derivative_temperature[c] = 0.0;
           }
       }
 
