@@ -551,14 +551,6 @@ namespace aspect
           }
 
         // TODO: Remove deprecated parameters in next release.
-        const double pv_grain_size_scaling         = prm.get_double ("Lower mantle grain size scaling");
-        AssertThrow(pv_grain_size_scaling == 1.0,
-                    ExcMessage("Error: The 'Lower mantle grain size scaling' parameter "
-                               "has been removed. Please remove it from your input file. For models "
-                               "with large spatial variations in grain size, please advect your "
-                               "grain size on particles."));
-
-        // TODO: Remove deprecated parameters in next release.
         const bool advect_log_grainsize            = prm.get_bool ("Advect logarithm of grain size");
         AssertThrow(advect_log_grainsize == false,
                     ExcMessage("Error: The 'Advect logarithm of grain size' parameter "
