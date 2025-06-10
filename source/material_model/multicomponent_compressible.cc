@@ -22,6 +22,8 @@
 #include <aspect/material_model/multicomponent_compressible.h>
 #include <aspect/utilities.h>
 #include <deal.II/base/parameter_handler.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 
 #include <numeric>
 
@@ -37,6 +39,11 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs_all_phases (n_phases);
+
+      // Store the phase function value for each phase and composition
+      // While the number of phases is fixed, the value of the phase function is updated for every point
+      std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
 
       unsigned int density_field_index = numbers::invalid_unsigned_int;
 
@@ -45,10 +52,39 @@ namespace aspect
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          equation_of_state.evaluate(in, i, eos_outputs);
+          equation_of_state.evaluate(in, i, eos_outputs_all_phases);
+
+          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          const double reference_density = (this->get_adiabatic_conditions().is_initialized())
+                                           ?
+                                           this->get_adiabatic_conditions().density(in.position[i])
+                                           :
+                                           eos_outputs_all_phases.densities[0];
+
+          // The phase index is set to invalid_unsigned_int, because it is only used internally
+          // in phase_average_equation_of_state_outputs to loop over all existing phases
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
+                                                                   in.pressure[i],
+                                                                   this->get_geometry_model().depth(in.position[i]),
+                                                                   gravity_norm*reference_density,
+                                                                   numbers::invalid_unsigned_int);
+
+          // Compute value of phase functions
+          for (unsigned int j=0; j < phase_function.n_phase_transitions(); ++j)
+            {
+              phase_inputs.phase_transition_index = j;
+              phase_function_values[j] = phase_function.compute_value(phase_inputs);
+            }
+
+          // Average by value of gamma function to get value of compositions
+          phase_average_equation_of_state_outputs(eos_outputs_all_phases,
+                                                  phase_function_values,
+                                                  n_phase_transitions_for_each_chemical_composition,
+                                                  eos_outputs);
 
           // Calculate volume fractions from mass fractions
-          const std::vector<double> mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
+          const std::vector<double> mass_fractions = MaterialUtilities::compute_only_composition_fractions(in.composition[i],
+                                                     this->introspection().chemical_composition_field_indices());
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
                                                        eos_outputs.densities,
                                                        true);
@@ -66,10 +102,33 @@ namespace aspect
           // Arithmetic volume fraction averaging of thermal conductivities
           // This may not be the most reasonable thing, but for most Earth materials we hope
           // that they do not vary so much that it is a big problem.
-          out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+          std::vector<double> phase_averaged_thermal_conductivities(volume_fractions.size());
+          for (unsigned int c=0; c<volume_fractions.size(); ++c)
+            phase_averaged_thermal_conductivities[c] = MaterialUtilities::phase_average_value(phase_function_values,
+                                                       n_phase_transitions_for_each_chemical_composition,
+                                                       thermal_conductivities,
+                                                       c);
+          out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, phase_averaged_thermal_conductivities, MaterialUtilities::arithmetic);
+
 
           // User-defined volume fraction averaging of viscosities
-          out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
+          if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs) ||
+              (this->get_parameters().enable_elasticity && in.requests_property(MaterialProperties::reaction_rates) ) ||
+              (this->get_adiabatic_conditions().is_initialized()))
+            {
+              std::vector<double> phase_averaged_viscosities(volume_fractions.size());
+              for (unsigned int c=0; c<volume_fractions.size(); ++c)
+                phase_averaged_viscosities[c] = MaterialUtilities::phase_average_value(phase_function_values,
+                                                                                       n_phase_transitions_for_each_chemical_composition,
+                                                                                       viscosities,
+                                                                                       c);
+
+              out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, phase_averaged_viscosities, viscosity_averaging);
+            }
+          else
+            {
+              out.viscosities[i] = numbers::signaling_nan<double>();
+            }
 
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
@@ -103,6 +162,8 @@ namespace aspect
       {
         prm.enter_subsection("Multicomponent compressible");
         {
+          MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
+
           EquationOfState::MulticomponentCompressible<dim>::declare_parameters (prm);
 
           prm.declare_entry ("Viscosities", "1.e21",
@@ -138,16 +199,35 @@ namespace aspect
       {
         prm.enter_subsection("Multicomponent compressible");
         {
+
+          // Phase transition parameters
+          phase_function.initialize_simulator (this->get_simulator());
+          phase_function.parse_parameters (prm);
+
+          const std::vector<unsigned int> n_phases_for_each_chemical_composition = phase_function.n_phases_for_each_chemical_composition();
+          n_phase_transitions_for_each_chemical_composition = phase_function.n_phase_transitions_for_each_chemical_composition();
+          n_phases = phase_function.n_phases_over_all_chemical_compositions();
+
           equation_of_state.initialize_simulator (this->get_simulator());
-          equation_of_state.parse_parameters (prm);
+          equation_of_state.parse_parameters (prm,
+                                              std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
 
+          // Make options file for parsing maps to double arrays
+          std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
+          chemical_field_names.insert(chemical_field_names.begin(),"background");
+
           std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
-          // Establish that a background field is required here
           compositional_field_names.insert(compositional_field_names.begin(),"background");
-          Utilities::MapParsing::Options options(compositional_field_names, "");
+
+          Utilities::MapParsing::Options options(chemical_field_names, "Thermal conductivities");
+          options.list_of_allowed_keys = compositional_field_names;
+          options.allow_multiple_values_per_key = true;
+          options.n_values_per_key = n_phases_for_each_chemical_composition;
+          options.check_values_per_key = (options.n_values_per_key.size() != 0);
+          options.store_values_per_key = (options.n_values_per_key.size() == 0);
 
           options.property_name = "Viscosities";
           viscosities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
