@@ -57,7 +57,7 @@ file:
     end
 
 
-**[Description of benchmark files](../README)**
+**[Description of benchmark files](https://github.com/geodynamics/aspect/blob/main/benchmarks/rayleigh_taylor_instability/README.md)**
 
 ```{figure-md} fig:RTi_grids_a
 <img src="grid.*" style="width:44.0%" />
