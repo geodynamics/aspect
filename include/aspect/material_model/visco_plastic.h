@@ -272,9 +272,15 @@ namespace aspect
         EquationOfState::MulticomponentCompressible<dim> equation_of_state_compressible;
 
         /**
-         * Whether to use a compressible or incompressible equation of state.
+         * Enumeration for selecting which type of Equation of State
+         * model to use. Select between multicomponent incompressible
+         * or multicomponent incompressible.
          */
-        bool use_compressible_equation_of_state;
+        enum EquationOfStateScheme
+        {
+          multicomponent_incompressible,
+          multicomponent_compressible
+        } equation_of_state;
 
         /**
          * Object that handles phase transitions.

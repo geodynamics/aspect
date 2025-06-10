@@ -352,12 +352,10 @@ namespace aspect
 
           EquationOfState::MulticomponentCompressible<dim>::declare_parameters (prm);
 
-          prm.declare_entry ("Use compressible equation of state","false",
-                             Patterns::Bool (),
-                             "Whether to use an incompressible or compressible equation of state. "
-                             "If set to true, the material model will switch from using the "
-                             "multicomponent incompressible multicomponent compressible equation "
-                             "of state model. ");
+          prm.declare_entry ("Equation of state", "multicomponent incompressible",
+                             Patterns::Selection("multicomponent incompressible|multicomponent compresssible"),
+                             "Select the equation of state model to use between the options "
+                             "multicomponent incompressible and multicomponent incompressible.");
 
           Rheology::ViscoPlastic<dim>::declare_parameters(prm);
 
@@ -406,8 +404,14 @@ namespace aspect
           n_phases = phase_function.n_phases_over_all_chemical_compositions();
 
           // Equation of state parameters
-          use_compressible_equation_of_state = prm.get_bool ("Use compressible equation of state");
-          if (use_compressible_equation_of_state == false)
+          if (prm.get ("Equation of state") == "multicomponent incompressible")
+            equation_of_state = multicomponent_incompressible;
+          else if (prm.get ("Equation of state") == "multicomponent compressible")
+            equation_of_state = multicomponent_compressible;
+          else
+            AssertThrow(false, ExcMessage("Not a valid equation of state model"));
+
+          if (equation_of_state == multicomponent_incompressible)
             {
               equation_of_state_incompressible.initialize_simulator (this->get_simulator());
               equation_of_state_incompressible.parse_parameters (prm,
