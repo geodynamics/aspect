@@ -316,7 +316,7 @@ namespace aspect
 
                     MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
                       = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
-                    const double Vp = seismic_outputs->vs[0];
+                    const double Vp = seismic_outputs->vp[0];
 
                     // Find the depth of the zeroth quadrature point in the cell and work out
                     // the depth slice which has its center just above that point
