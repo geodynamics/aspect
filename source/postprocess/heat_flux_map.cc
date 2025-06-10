@@ -348,6 +348,9 @@ namespace aspect
         const std::set<types::boundary_id> &fixed_temperature_boundaries =
           simulator_access.get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
 
+        const std::set<types::boundary_id> &robin_temperature_boundaries =
+          simulator_access.get_boundary_convective_heating_manager().get_convective_heating_boundary_indicators();
+
         const std::set<types::boundary_id> &fixed_heat_flux_boundaries =
           simulator_access.get_parameters().fixed_heat_flux_boundary_indicators;
 
@@ -379,6 +382,7 @@ namespace aspect
                     // Determine the type of boundary
                     const unsigned int boundary_id = cell->face(f)->boundary_id();
                     const bool prescribed_temperature = fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end();
+                    const bool robin_temperature = robin_temperature_boundaries.find(boundary_id) != robin_temperature_boundaries.end();
                     const bool prescribed_heat_flux = fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end();
                     const bool non_tangential_velocity =
                       tangential_velocity_boundaries.find(boundary_id) == tangential_velocity_boundaries.end() &&
@@ -391,7 +395,7 @@ namespace aspect
                       heat_flux_and_area[cell->active_cell_index()][f].second += fe_face_values.JxW(q);
 
                     // Compute heat flux through Dirichlet boundaries by integrating the CBF solution vector
-                    if (prescribed_temperature)
+                    if (prescribed_temperature || robin_temperature)
                       {
                         fe_face_values[simulator_access.introspection().extractors.temperature].get_function_values(heat_flux_vector, heat_flux_values);
 

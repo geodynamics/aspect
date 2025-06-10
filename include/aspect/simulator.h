@@ -53,6 +53,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_heat_flux/interface.h>
+#include <aspect/boundary_convective_heating/interface.h>
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
@@ -1821,7 +1822,9 @@ namespace aspect
       const IntermediaryConstructorAction                                    post_geometry_model_creation_action;
       const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;
       const std::unique_ptr<GravityModel::Interface<dim>>                    gravity_model;
+
       BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
+      BoundaryConvectiveHeating::Manager<dim>                                boundary_convective_heating_manager;
       BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
       const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
 

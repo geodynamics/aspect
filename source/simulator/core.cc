@@ -347,6 +347,10 @@ namespace aspect
     boundary_temperature_manager.initialize_simulator (*this);
     boundary_temperature_manager.parse_parameters (prm);
 
+    // Create a boundary convective flux manager
+    boundary_convective_heating_manager.initialize_simulator (*this);
+    boundary_convective_heating_manager.parse_parameters (prm);
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_heat_flux.get()))
       sim->initialize_simulator (*this);
     boundary_heat_flux->parse_parameters (prm);
@@ -697,6 +701,7 @@ namespace aspect
     // If there is a fixed boundary temperature or heat flux,
     // update the temperature boundary condition.
     boundary_temperature_manager.update();
+    boundary_convective_heating_manager.update();
     boundary_heat_flux->update();
 
     // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,

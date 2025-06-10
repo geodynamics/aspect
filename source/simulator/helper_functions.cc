@@ -2565,6 +2565,7 @@ namespace aspect
         //   - Periodic boundaries
         //   - Stokes velocity degree not 2 or 3
         //   - Material averaging explicitly disabled
+        //   - Robin boundary conditions
         if (parameters.include_melt_transport == true ||
             dynamic_cast<const GeometryModel::EllipsoidalChunk<dim>*>(geometry_model.get()) != nullptr ||
             parameters.use_locally_conservative_discretization == true ||
@@ -2572,7 +2573,8 @@ namespace aspect
              Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile) ||
             (geometry_model->get_periodic_boundary_pairs().size()) > 0 ||
             (parameters.stokes_velocity_degree < 2 || parameters.stokes_velocity_degree > 3) ||
-            parameters.material_averaging == MaterialModel::MaterialAveraging::none)
+            parameters.material_averaging == MaterialModel::MaterialAveraging::none ||
+            boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().size() != 0)
           {
             // GMG is not supported (yet), by default fall back to AMG.
             parameters.stokes_solver_type = Parameters<dim>::StokesSolverType::block_amg;
