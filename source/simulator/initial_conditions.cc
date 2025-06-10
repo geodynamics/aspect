@@ -363,86 +363,104 @@ namespace aspect
 
     particle_solution.reinit(system_rhs, false);
 
-    const unsigned int base_element_index = advection_fields[0].base_element(introspection);
-
-    // We can only combine the interpolation of properties into fields
-    // that share the same base element. Otherwise the element support points
-    // are not guaranteed to be identical.
-    for (const auto &advection_field: advection_fields)
+    // Fields that share a base element can be interpolated together because they
+    // have identical support points. Group by base element when that is not true
+    // (e.g. mixed continuous/discontinuous composition discretizations).
+    std::map<unsigned int, std::vector<unsigned int>> base_element_to_field_indices;
+    for (unsigned int advection_field_index=0; advection_field_index<advection_fields.size(); ++advection_field_index)
       {
-        (void) advection_field;
-        Assert (advection_field.base_element(introspection) == base_element_index, ExcInternalError());
+        const unsigned int base_element_index = advection_fields[advection_field_index].base_element(introspection);
+        base_element_to_field_indices[base_element_index].push_back(advection_field_index);
       }
 
-    // get the temperature/composition support points
-    const std::vector<Point<dim>> support_points
-      = finite_element.base_element(base_element_index).get_unit_support_points();
-    Assert (support_points.size() != 0,
-            ExcInternalError());
+    for (const auto &data : base_element_to_field_indices)
+      {
+        const unsigned int base_element_index = data.first;
+        const std::vector<unsigned int> &advection_field_indices = data.second;
 
-    // create an FEValues object with just the temperature/composition element
-    FEValues<dim> fe_values (*mapping, finite_element,
-                             support_points,
-                             update_quadrature_points);
+        // Restrict particle-property pairs to fields that use this base element
+        std::vector<std::vector<std::pair<unsigned int, unsigned int>>>
+        property_indices_for_base_element(particle_managers.size());
+        for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
+          for (const std::pair<unsigned int, unsigned int> &field_and_particle_property:
+               particle_property_indices[particle_manager])
+            if (std::find(advection_field_indices.begin(),
+                          advection_field_indices.end(),
+                          field_and_particle_property.first)
+                != advection_field_indices.end())
+              property_indices_for_base_element[particle_manager].push_back(field_and_particle_property);
 
-    std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+        // get the temperature/composition support points
+        const std::vector<Point<dim>> support_points
+          = finite_element.base_element(base_element_index).get_unit_support_points();
+        Assert (support_points.size() != 0,
+                ExcInternalError());
 
-    for (const auto &cell : dof_handler.active_cell_iterators())
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          const std::vector<Point<dim>> quadrature_points = fe_values.get_quadrature_points();
+        // create an FEValues object with just the temperature/composition element
+        FEValues<dim> fe_values (*mapping, finite_element,
+                                 support_points,
+                                 update_quadrature_points);
 
-          std::vector<std::vector<double>> particle_properties;
-          for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
+        std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+        const unsigned int n_dofs_per_cell = finite_element.base_element(base_element_index).dofs_per_cell;
+
+        for (const auto &cell : dof_handler.active_cell_iterators())
+          if (cell->is_locally_owned())
             {
-              try
+              fe_values.reinit (cell);
+              const std::vector<Point<dim>> quadrature_points = fe_values.get_quadrature_points();
+
+              std::vector<std::vector<double>> particle_properties;
+              for (unsigned int particle_manager = 0; particle_manager < particle_managers.size(); ++particle_manager)
                 {
-                  particle_properties =
-                    particle_managers[particle_manager].get_interpolator().properties_at_points(particle_managers[particle_manager].get_particle_handler(),
-                                                                                                quadrature_points,
-                                                                                                property_mask[particle_manager],
-                                                                                                cell);
+                  try
+                    {
+                      particle_properties =
+                        particle_managers[particle_manager].get_interpolator().properties_at_points(particle_managers[particle_manager].get_particle_handler(),
+                                                                                                    quadrature_points,
+                                                                                                    property_mask[particle_manager],
+                                                                                                    cell);
+                    }
+                  // interpolators that throw exceptions usually do not result in
+                  // anything good, because they result in an unwinding of the stack
+                  // and, if only one processor triggers an exception, the
+                  // destruction of objects often causes a deadlock or completely
+                  // unrelated MPI error messages. Thus, if an exception is
+                  // generated, catch it, print an error message, and abort the program.
+                  catch (std::exception &exc)
+                    {
+                      std::cerr << std::endl << std::endl
+                                << "----------------------------------------------------"
+                                << std::endl;
+                      std::cerr << "Exception on MPI process <"
+                                << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                                << "> while interpolating particle properties: "
+                                << std::endl
+                                << exc.what() << std::endl
+                                << "Aborting!" << std::endl
+                                << "----------------------------------------------------"
+                                << std::endl;
+
+                      // terminate the program!
+                      MPI_Abort (MPI_COMM_WORLD, 1);
+                    }
+
+                  // go through the composition dofs and set their global values
+                  // to the particle field interpolated at these points
+                  cell->get_dof_indices (local_dof_indices);
+                  for (const std::pair<unsigned int, unsigned int> &field_and_particle_property:
+                       property_indices_for_base_element[particle_manager])
+                    for (unsigned int i=0; i<n_dofs_per_cell; ++i)
+                      {
+                        const unsigned int system_local_dof
+                          = finite_element.component_to_system_index(advection_fields[field_and_particle_property.first].component_index(introspection),
+                                                                     /*dof index within component=*/i);
+
+                        particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][field_and_particle_property.second];
+                      }
                 }
-              // interpolators that throw exceptions usually do not result in
-              // anything good, because they result in an unwinding of the stack
-              // and, if only one processor triggers an exception, the
-              // destruction of objects often causes a deadlock or completely
-              // unrelated MPI error messages. Thus, if an exception is
-              // generated, catch it, print an error message, and abort the program.
-              catch (std::exception &exc)
-                {
-                  std::cerr << std::endl << std::endl
-                            << "----------------------------------------------------"
-                            << std::endl;
-                  std::cerr << "Exception on MPI process <"
-                            << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
-                            << "> while interpolating particle properties: "
-                            << std::endl
-                            << exc.what() << std::endl
-                            << "Aborting!" << std::endl
-                            << "----------------------------------------------------"
-                            << std::endl;
-
-                  // terminate the program!
-                  MPI_Abort (MPI_COMM_WORLD, 1);
-                }
-
-              // go through the composition dofs and set their global values
-              // to the particle field interpolated at these points
-              cell->get_dof_indices (local_dof_indices);
-              const unsigned int n_dofs_per_cell = finite_element.base_element(base_element_index).dofs_per_cell;
-              for (const std::pair<unsigned int, unsigned int> &field_and_particle_property: particle_property_indices[particle_manager])
-                for (unsigned int i=0; i<n_dofs_per_cell; ++i)
-                  {
-                    const unsigned int system_local_dof
-                      = finite_element.component_to_system_index(advection_fields[field_and_particle_property.first].component_index(introspection),
-                                                                 /*dof index within component=*/i);
-
-                    particle_solution(local_dof_indices[system_local_dof]) = particle_properties[i][field_and_particle_property.second];
-                  }
             }
-        }
+      }
 
     particle_solution.compress(VectorOperation::insert);
 
