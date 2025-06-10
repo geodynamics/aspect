@@ -49,8 +49,7 @@ namespace aspect
             if (n_particles > 0)
               {
                 typename ParticleHandler<dim>::particle_iterator nearest_neighbor;
-                for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
-                     particle != particle_range.end(); ++particle)
+                for (const auto particle : particle_range)
                   {
                     const double dist = (positions[pos_idx] - particle->get_location()).norm_square();
                     if (dist < minimum_distance)
