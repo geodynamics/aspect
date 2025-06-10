@@ -673,7 +673,11 @@ namespace aspect
     double
     SphericalShell<dim>::depth(const Point<dim> &position) const
     {
-      return std::min (std::max (R1-position.norm(), 0.), maximal_depth());
+      if (this->simulator_is_past_initialization() &&
+          !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+        return std::min(std::max (R1 + manifold->topography_for_point(position) - position.norm(), 0.), maximal_depth());
+      else
+        return std::min (std::max (R1-position.norm(), 0.), maximal_depth());
     }
 
 
@@ -763,14 +767,15 @@ namespace aspect
                   this->simulator_is_past_initialization() == false,
                   ExcMessage("After displacement of the free surface, this function can no longer be used to determine whether a point lies in the domain or not."));
 
-      AssertThrow(Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()),
-                  ExcMessage("After adding topography, this function can no longer be used to determine whether a point lies in the domain or not."));
-
       const std::array<double, dim> spherical_point = Utilities::Coordinates::cartesian_to_spherical_coordinates(point);
 
       std::array<double, dim> point1, point2;
       point1[0] = R0;
-      point2[0] = R1;
+      if (this->simulator_is_past_initialization() &&
+          !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+        point2[0] =  R1 + manifold->topography_for_point(point);
+      else
+        point2[0] = R1;
       point1[1] = 0.0;
       point2[1] = phi * constants::degree_to_radians;
       if (dim == 3)
@@ -789,8 +794,6 @@ namespace aspect
         if (spherical_point[d] > point2[d]+std::numeric_limits<double>::epsilon()*std::abs(point2[d]) ||
             spherical_point[d] < point1[d]-std::numeric_limits<double>::epsilon()*std::abs(point2[d]))
           return false;
-
-      // TODO: Take into account topography
 
       return true;
     }

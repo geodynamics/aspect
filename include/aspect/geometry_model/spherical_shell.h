@@ -147,6 +147,11 @@ namespace aspect
           virtual Point<dim>
           get_new_point(const ArrayView<const Point<dim>> &vertices,
                         const ArrayView<const double>          &weights) const override;
+          /**
+           * Return the topography of the surface directly above the point given
+           * by the coordinates stored in the argument.
+           */
+          double topography_for_point (const Point<dim> &x_y_z) const;
 
         private:
           /**
@@ -158,12 +163,6 @@ namespace aspect
            * Inner and outer radii of the spherical shell.
            */
           const double R0, R1;
-
-          /**
-           * Return the topography of the surface directly above the point given
-           * by the coordinates stored in the argument.
-           */
-          double topography_for_point (const Point<dim> &x_y_z) const;
       };
 
     }
