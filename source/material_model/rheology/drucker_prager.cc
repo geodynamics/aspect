@@ -54,8 +54,6 @@ namespace aspect
       {
         DruckerPragerParameters drucker_prager_parameters;
 
-        // drucker_prager_parameters.max_yield_stress = max_yield_stress;
-
         if (phase_function_values == std::vector<double>())
           {
             // no phases
@@ -204,7 +202,8 @@ namespace aspect
                            "exceeding the yield stress. Units: \\si{\\pascal}.");
         prm.declare_entry ("Maximum yield stress", "1e12",
                            Patterns::Anything(),
-                           "Limits the maximum value of the yield stress determined by the "
+                           "List of maximum yield stresses, for background material and compositional fields, "
+                           ", which limits the maximum value of the yield stress determined by the "
                            "Drucker-Prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
                            "in previous models. Units: \\si{\\pascal}.");
