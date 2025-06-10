@@ -50,7 +50,7 @@ int f()
 
   command = ("cd output-checkpoint_04_particles_no_output ; "
              " rm -rf output2.tmp ; mkdir output2.tmp ; "
-             " cp output1.tmp/restart* output2.tmp/");
+             " mv output1.tmp/restart output2.tmp/");
   std::cout << "Executing the following command:\n"
             << command
             << std::endl;

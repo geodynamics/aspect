@@ -35,7 +35,7 @@ int f()
   std::string command;
 
   command = ("mkdir -p output-checkpoint_07_enable_free_surface_resume; "
-             "cp -r output-checkpoint_07_enable_free_surface_create/restart* output-checkpoint_07_enable_free_surface_resume/");
+             "mv output-checkpoint_07_enable_free_surface_create/restart output-checkpoint_07_enable_free_surface_resume/");
   std::cout << "Executing the following command:\n"
             << command
             << std::endl;

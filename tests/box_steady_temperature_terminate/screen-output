@@ -1006,7 +1006,7 @@ Skipping mesh refinement, because the mesh did not change.
      RMS, max velocity:       1.56e-06 m/s, 2.48e-06 m/s
 
 Termination requested by criterion: steady state temperature
-*** Snapshot created!
+*** Snapshot output-box_steady_temperature_terminate/restart/01/ created!
 
 
 

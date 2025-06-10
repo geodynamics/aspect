@@ -46,9 +46,7 @@ int f()
   ret = system ("cd output-checkpoint_02_direct ; "
                 " rm -rf output2.tmp ; cp -r output1.tmp output2.tmp ;"
                 " rm -f output1.tmp/log.txt; "
-                " cp output1.tmp/restart.mesh.old output1.tmp/restart.mesh;"
-                " cp output1.tmp/restart.mesh.info.old output1.tmp/restart.mesh.info;"
-                " cp output1.tmp/restart.resume.z.old output1.tmp/restart.resume.z;");
+                " echo 1 > output1.tmp/restart/last_good_checkpoint.txt");
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;
 
@@ -81,8 +79,8 @@ int f()
     std::cout << "system() returned error " << ret << std::endl;
 
   ret = system ("cd output-checkpoint_02_direct ; "
-                "diff -c output?.tmp/restart.resume.z;"
-                "diff -c output?.tmp/restart.mesh;"
+                "diff -c output?.tmp/restart/02/resume.z;"
+                "diff -c output?.tmp/restart/02/mesh;"
                 "");
   if (ret!=0)
     std::cout << "system() returned error " << ret << std::endl;

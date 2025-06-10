@@ -42,7 +42,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.003 K, 1.041 K, 1.096 K
      RMS, max velocity:        5.4e-09 m/s, 1.34e-08 m/s
 
-*** Snapshot created!
+*** Snapshot output1.tmp/restart/01/ created!
 
 *** Timestep 4:  t=4.39059e+06 seconds, dt=1.17022e+06 seconds
    Solving temperature system... 19 iterations.
@@ -84,7 +84,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.006 K, 1.041 K, 1.09 K
      RMS, max velocity:        4.65e-09 m/s, 1.11e-08 m/s
 
-*** Snapshot created!
+*** Snapshot output1.tmp/restart/02/ created!
 
 *** Timestep 8:  t=9.63611e+06 seconds, dt=1.40452e+06 seconds
    Solving temperature system... 20 iterations.

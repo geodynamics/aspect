@@ -53,7 +53,7 @@ Number of degrees of freedom: 77,231 (15,058+1,941+7,529+7,529+7,529+7,529+7,529
      RMS temperature for compositions, combined selected fields and whole domain: 49.2 C // 35.67 C // 448.8 C // 350.7 C // 1013 C // 993.3 C // 843.7 C // 839.1 C // 1308 C
 
 Termination requested by criterion: end time
-*** Snapshot created!
+*** Snapshot output-kinematically_driven_subduction_2d_case2b/restart/01/ created!
 
 
 

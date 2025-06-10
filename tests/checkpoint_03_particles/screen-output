@@ -4,7 +4,7 @@ Loading shared library <./libcheckpoint_03_particles.debug.so>
 Executing the following command:
 cd output-checkpoint_03_particles ; (cat ASPECT_DIR/tests/checkpoint_03_particles.prm  ;  echo 'set Output directory = output1.tmp'  ;  rm -rf output1.tmp ; mkdir output1.tmp ) | ../../aspect -- > /dev/null
 Executing the following command:
-cd output-checkpoint_03_particles ;  rm -rf output2.tmp ; mkdir output2.tmp ;  cp output1.tmp/restart* output2.tmp/
+cd output-checkpoint_03_particles ;  rm -rf output2.tmp ; mkdir output2.tmp ;  mv output1.tmp/restart output2.tmp/
 * now resuming:
 Executing the following command:
 cd output-checkpoint_03_particles ; (cat ASPECT_DIR/tests/checkpoint_03_particles.prm  ;  echo 'set Output directory = output2.tmp'  ;  echo 'set Resume computation = true' ) | ../../aspect -- > /dev/null

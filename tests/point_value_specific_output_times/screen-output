@@ -23,7 +23,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing point values:     output-point_value_specific_output_times/point_values.txt
 
 Termination requested by criterion: end time
-*** Snapshot created!
+*** Snapshot output-point_value_specific_output_times/restart/01/ created!
 
 
 

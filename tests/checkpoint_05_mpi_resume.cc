@@ -35,7 +35,7 @@ int f()
   std::string command;
 
   command = ("mkdir -p output-checkpoint_05_mpi_resume; "
-             "cp -r output-checkpoint_05_mpi_create/restart* output-checkpoint_05_mpi_resume/");
+             "mv output-checkpoint_05_mpi_create/restart output-checkpoint_05_mpi_resume/");
   std::cout << "Executing the following command:\n"
             << command
             << std::endl;

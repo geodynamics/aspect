@@ -41,7 +41,7 @@ Number of mesh deformation degrees of freedom: 5,346
      RMS, max velocity:        0.0981 m/year, 0.283 m/year
      Writing graphical output: output1.tmp/solution/solution-00001
 
-*** Snapshot created!
+*** Snapshot output1.tmp/restart/01/ created!
 
 *** Timestep 2:  t=9251.13 years, dt=5480.62 years
    Solving mesh displacement system... 4 iterations.
@@ -63,7 +63,7 @@ Number of mesh deformation degrees of freedom: 5,346
      RMS, max velocity:        0.0351 m/year, 0.137 m/year
      Writing graphical output: output1.tmp/solution/solution-00003
 
-*** Snapshot created!
+*** Snapshot output1.tmp/restart/02/ created!
 
 *** Timestep 4:  t=29009.2 years, dt=11413.6 years
    Solving mesh displacement system... 4 iterations.

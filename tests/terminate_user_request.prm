@@ -62,7 +62,7 @@ subsection Termination criteria
   set Termination criteria      = user request
 
   subsection User request
-    set File name = restart.mesh
+    set File name = restart/last_good_checkpoint.txt
   end
 end
 

@@ -3,4 +3,4 @@ Loading shared library <./libcheckpoint_02.debug.so>
 * starting from beginning:
 * now resuming:
 * now comparing:
-Binary files output1.tmp/restart.resume.z and output2.tmp/restart.resume.z differ
+Binary files output1.tmp/restart/02/resume.z and output2.tmp/restart/02/resume.z differ
