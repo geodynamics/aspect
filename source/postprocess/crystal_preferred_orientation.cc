@@ -863,11 +863,11 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(CrystalPreferredOrientation,
                                   "crystal preferred orientation",
-                                  "A Postprocessor that writes out CPO specific particle data."
-                                  "It can write out the CPO data as it is stored (raw) and/or as a"
-                                  "random draw volume weighted representation. The latter one"
-                                  "is recommended for plotting against real data. For both representations"
-                                  "the specific output fields and their order can be set."
+                                  "A Postprocessor that writes out CPO specific particle data. "
+                                  "It can write out the CPO data as it is stored (raw) and/or as a "
+                                  "random draw volume weighted representation. The latter one "
+                                  "is recommended for plotting against real data. For both representations "
+                                  "the specific output fields and their order can be set. "
                                   "The work of this postprocessor should better be done by the main particles "
                                   "postprocessor, however we need to be able to process the data before outputting it, "
                                   "which does not work with that postprocessor. If this is added to the other "
