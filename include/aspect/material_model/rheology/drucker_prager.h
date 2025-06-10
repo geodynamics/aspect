@@ -157,7 +157,7 @@ namespace aspect
           /**
            * The yield stress is limited to a constant value, stored in Pa.
            */
-          double max_yield_stress;
+          std::vector<double> max_yield_stresses;
 
           /**
            * Whether to add a plastic damper in the computation

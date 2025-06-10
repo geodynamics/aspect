@@ -54,13 +54,14 @@ namespace aspect
       {
         DruckerPragerParameters drucker_prager_parameters;
 
-        drucker_prager_parameters.max_yield_stress = max_yield_stress;
+        // drucker_prager_parameters.max_yield_stress = max_yield_stress;
 
         if (phase_function_values == std::vector<double>())
           {
             // no phases
             drucker_prager_parameters.angle_internal_friction = angles_internal_friction[composition];
             drucker_prager_parameters.cohesion = cohesions[composition];
+            drucker_prager_parameters.max_yield_stress = max_yield_stresses[composition];
           }
         else
           {
@@ -69,6 +70,8 @@ namespace aspect
                                                                 angles_internal_friction, composition);
             drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  cohesions, composition);
+            drucker_prager_parameters.max_yield_stress = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
+                                                         max_yield_stresses, composition);
           }
         return drucker_prager_parameters;
       }
@@ -199,7 +202,8 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
                            "exceeding the yield stress. Units: \\si{\\pascal}.");
-        prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double (0.),
+        prm.declare_entry ("Maximum yield stress", "1e12",
+                           Patterns::Anything(),
                            "Limits the maximum value of the yield stress determined by the "
                            "Drucker-Prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
@@ -258,7 +262,9 @@ namespace aspect
                                                                      options);
 
         // Limit maximum value of the Drucker-Prager yield stress
-        max_yield_stress = prm.get_double("Maximum yield stress");
+        options.property_name = "Maximum yield stress";
+        max_yield_stresses = Utilities::MapParsing::parse_map_to_double_array(prm.get("Maximum yield stress"),
+                                                                              options);
 
         // Whether to include a plastic damper when computing the Drucker-Prager plastic viscosity
         use_plastic_damper = prm.get_bool("Use plastic damper");
