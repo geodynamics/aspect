@@ -170,6 +170,19 @@ else()
 endif()
 
 
+# Python
+set(ASPECT_WITH_PYTHON OFF CACHE BOOL "If enabled, ASPECT is configured with Python support.")
+message(STATUS "Using ASPECT_WITH_PYTHON = '${ASPECT_WITH_PYTHON}'")
+if(ASPECT_WITH_PYTHON)
+  find_package(Python3 COMPONENTS Interpreter Development NumPy)
+  if(Python3_FOUND)
+    message(STATUS "  PYTHON_EXECUTABLE: ${Python3_EXECUTABLE}")
+  else()
+    message(FATAL_ERROR "Python not found. Consider disabling ASPECT_WITH_PYTHON.")
+  endif()
+endif()
+
+
 # PerpleX
 find_package(PerpleX QUIET
   HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})
@@ -853,6 +866,16 @@ if(${ZLIB_FOUND})
   include_directories(${ZLIB_INCLUDE_DIR})
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${ZLIB_LIBRARY})
+  endforeach()
+endif()
+
+# Python3
+if(${Python3_FOUND})
+  message(STATUS "Linking ASPECT against Python3")
+  include_directories(${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
+
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${Python3_LIBRARIES})
   endforeach()
 endif()
 
