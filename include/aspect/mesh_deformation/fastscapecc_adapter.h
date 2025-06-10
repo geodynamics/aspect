@@ -139,7 +139,11 @@ namespace fastscapelib
     // - TODO: periodic boundary conditions (if any) should be handled in `compute_connectivity`
     //   (there is no need to label nodes as periodic boundaries since the grid connectivity
     //   is computed explicitly here)
-    m_nodes_status = node_status::core;
+    // m_nodes_status = node_status::core;
+    m_nodes_status = xt::xarray<node_status>::from_shape({m_size});
+    std::fill(m_nodes_status.begin(), m_nodes_status.end(), node_status::core);
+
+
   }
 
   template <class T, class S>
@@ -153,44 +157,102 @@ namespace fastscapelib
     m_nodes_status = nodes_status;
   }
 
-  template <class T, class S>
-  void dealii_grid<T, S>::compute_connectivity()
-  {
-    m_neighbors_count.resize(m_size);
-    m_neighbors_indices.resize(m_size);
-    m_neighbors_distances.resize(m_size);
-    unsigned int counter = 0;
-    std::unordered_map<unsigned int, unsigned int> global_to_local_index;
-    for (const auto &cell : m_triangulation->get_dof_handler().active_cell_iterators())
-      {
-        m_neighbors_count[counter] = cell->n_faces();
-        auto center = cell.center();
-        for (auto face_i = 0; face_i < m_neighbors_count[counter]; ++face_i)
-          {
-            unsigned int global_neighbor_index = 0;
-            for (const auto &neighbor_cell : cell.neighbor(face_i))
-              {
-                global_neighbor_index = neighbor_cell.global_active_cell_index();
-                m_neighbors_distances[counter][face_i] = center.distance(neighbor_cell.center());
-                // TODO: I assume we only have one neighbor per face, since we start with a uniform grid, we will only have one, but cwe could generatlize this
-              }
-            // TODO: add assert to check if neighbor_index is correclty set
-            global_to_local_index.emplace(global_neighbor_index, counter);
-          }
+//   template <class T, class S>
+//   void dealii_grid<T, S>::compute_connectivity()
+//   {
+//     m_neighbors_count.resize(m_size);
+//     m_neighbors_indices.resize(m_size);
+//     m_neighbors_distances.resize(m_size);
+//     unsigned int counter = 0;
+//     std::unordered_map<unsigned int, unsigned int> global_to_local_index;
+//     unsigned int local_index = 0;
+//     // for (const auto &cell : m_triangulation.get_dof_handler().active_cell_iterators())
+//     for (const auto &cell : m_triangulation.active_cell_iterators())
+//       {
+//         m_neighbors_count[counter] = cell->n_faces();
+//         auto center = cell.center();
+//         for (auto face_i = 0; face_i < m_neighbors_count[counter]; ++face_i)
+//           {
+//             unsigned int global_neighbor_index = 0;
+//             for (const auto &neighbor_cell : cell.neighbor(face_i))
+//               {
+//                 global_neighbor_index = neighbor_cell.global_active_cell_index();
+//                 m_neighbors_distances[counter][face_i] = center.distance(neighbor_cell.center());
+//                 // TODO: I assume we only have one neighbor per face, since we start with a uniform grid, we will only have one, but cwe could generatlize this
+//               }
+//             // TODO: add assert to check if neighbor_index is correclty set
+//             global_to_local_index.emplace(global_neighbor_index, counter);
+//           }
 
-        counter++;
-      }
-    counter = 0;
-    for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-      {
-        for (auto k = 0; k <= m_neighbors_count[counter]; k++)
-          {
-            auto global_nb_index = m_neighbors_indices[counter][k];
-            m_neighbors_indices[counter][k] = global_to_local_index.at(global_nb_index);
-          }
-        counter++;
-      }
-  }
+//         counter++;
+//       }
+//     counter = 0;
+//     // for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+//     for (const auto &cell : m_triangulation.active_cell_iterators())
+//       {
+//         for (auto k = 0; k <= m_neighbors_count[counter]; k++)
+//           {
+//             auto global_nb_index = m_neighbors_indices[counter][k];
+//             m_neighbors_indices[counter][k] = global_to_local_index.at(global_nb_index);
+//           }
+//         counter++;
+//       }
+//   }
+
+
+        template <class T, class S>
+        void fastscapelib::dealii_grid<T, S>::compute_connectivity()
+        {
+        // Resize internal storage for neighbor counts, indices, and distances
+        m_neighbors_count.resize(m_size);
+        m_neighbors_indices.resize(m_size);
+        m_neighbors_distances.resize(m_size);
+
+        // Step 1: Map global active cell indices to local indices
+        // This is necessary to translate global indices into local array indices
+        std::unordered_map<unsigned int, unsigned int> global_to_local_index;
+        unsigned int local_index = 0;
+        for (const auto &cell : m_triangulation.active_cell_iterators())
+        {
+            global_to_local_index[cell->global_active_cell_index()] = local_index++;
+        }
+
+        // Step 2: Loop through each active cell and determine valid neighbors
+        local_index = 0;
+        for (const auto &cell : m_triangulation.active_cell_iterators())
+        {
+            const auto &center = cell->center();  // Get cell center for distance computation
+            unsigned int valid_neighbors = 0;
+
+            for (unsigned int face_i = 0; face_i < cell->n_faces(); ++face_i)
+            {
+            // Only consider internal faces with valid neighbor
+            // if (!cell->at_boundary(face_i) && cell->neighbor_index_is_valid(face_i))
+            if (!cell->at_boundary(face_i) && cell->neighbor(face_i).state() == dealii::IteratorState::valid)
+            {
+                const auto &neighbor = cell->neighbor(face_i);
+                const unsigned int global_nb_index = neighbor->global_active_cell_index();
+
+                auto it = global_to_local_index.find(global_nb_index);
+                    AssertThrow(it != global_to_local_index.end(),
+                                aspect::ExcMessage("Neighbor index not found in global_to_local_index map."));
+
+
+                // Fill neighbor index and distance arrays
+                m_neighbors_indices[local_index][valid_neighbors] = it->second;
+                m_neighbors_distances[local_index][valid_neighbors] = center.distance(neighbor->center());
+
+                ++valid_neighbors;
+            }
+            }
+
+            // Save how many neighbors this node has
+            m_neighbors_count[local_index] = valid_neighbors;
+
+            ++local_index;
+        }
+        }
+
 
   template <class T, class S>
   inline auto dealii_grid<T, S>::nodes_areas_impl() const -> container_type

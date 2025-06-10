@@ -27,6 +27,8 @@
 #include <aspect/simulator_access.h>
 
 #include <fastscapelib/flow/flow_graph.hpp>
+#include <fastscapelib/flow/flow_router.hpp>
+
 #include <fastscapelib/eroders/spl.hpp>
 
 #include <deal.II/grid/tria.h>
@@ -83,6 +85,7 @@ namespace aspect
          * Parse parameters for the FastScape plugin.
          */
         void parse_parameters (ParameterHandler &prm) override;
+        
 
       private:
         /**
@@ -113,6 +116,7 @@ namespace aspect
         std::unique_ptr<GridAdapterType> grid;
         std::unique_ptr<FlowGraphType> flow_graph;
         std::unique_ptr<fastscapelib::spl_eroder<FlowGraphType>> spl_eroder;
+        
 
         void project_surface_solution(const std::set<types::boundary_id> &boundary_ids);
 

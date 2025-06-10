@@ -168,6 +168,30 @@ namespace aspect
       //     quadrature,
       //     fe_function, 
       //     surface_solution);
+
+
+    /**
+     * A function that creates constraints for the velocity of certain mesh
+     * vertices (e.g. the surface vertices) for a specific boundary.
+     * The calling class will respect
+     * these constraints when computing the new vertex positions.
+     */
+    // template <int dim>
+    // void
+    // BoundaryFunction<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
+    //                                                                 AffineConstraints<double> &mesh_velocity_constraints,
+    //                                                                 const std::set<types::boundary_id> &boundary_ids) const
+    // {
+    //   // Loop over all boundary indicators to set the velocity constraints
+    //   for (const auto boundary_id : boundary_ids)
+    //     VectorTools::interpolate_boundary_values (this->get_mapping(),
+    //                                               mesh_deformation_dof_handler,
+    //                                               boundary_id,
+    //                                               function,
+    //                                               mesh_velocity_constraints);
+    // }
+
+
     }
 
 
@@ -277,6 +301,9 @@ namespace aspect
               h_old[i] = h[i];
             }
 
+          auto elevation = xt::adapt(h);
+          auto elevation_old = xt::adapt(h_old);
+
           const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
 
           unsigned int fastscape_iterations = fastscape_steps_per_aspect_step;
@@ -286,6 +313,65 @@ namespace aspect
               fastscape_iterations *= 2;
               fastscape_timestep_in_years *= 0.5;
             }
+
+          double cell_area = surface_mesh.begin_active()->measure();
+
+          // Create the FastScape grid adapter
+          // grid = std::make_unique<GridAdapterType>(surface_mesh_dof_handler, cell_area);
+          // auto grid = GridAdapterType(surface_mesh_dof_handler, cell_area);
+          // auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
+
+          // Set node statuses (optional: adjust if needed)
+
+
+          auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
+
+          auto flow_graph = FlowGraphType(
+              grid,
+              // std::vector{ fastscapelib::single_flow_router() }
+              fastscapelib::single_flow_router()
+          );
+
+          auto spl_eroder = fastscapelib::spl_eroder<FlowGraphType>(
+              fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd)
+          );
+
+          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
+          grid.set_nodes_status(node_status_array);
+          // Create the flow graph
+
+          // flow_graph = std::make_unique<FlowGraphType>(*grid, std::vector{ fastscapelib::single_flow_router() });
+
+          // Create data arrays using grid->shape()
+          auto uplift_rate = xt::adapt(vz);
+          xt::xarray<double> drainage_area = xt::zeros<double>(grid.shape());
+          xt::xarray<double> sediment_flux = xt::zeros<double>(grid.shape());
+
+          // Initialize the spl_eroder (store in class member)
+          // spl_eroder = fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd);
+
+          // Start erosion loop
+          xt::xarray<double> uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
+
+          for (unsigned int i = 0; i < fastscape_iterations; ++i)
+          {
+            uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
+            flow_graph.update_routes(uplifted_elevation);
+            flow_graph.accumulate(drainage_area, 1.0);
+
+            auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
+            sediment_flux = flow_graph.accumulate(spl_erosion);
+
+            elevation = uplifted_elevation - spl_erosion;
+          }
+
+          // Compute erosion velocities
+          for (unsigned int i = 0; i < n_grid_nodes; ++i)
+            V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
+
+          // Broadcast V to all processes
+          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
+
 
           // xt::xarray<fastscapelib::node_status> node_status_array = xt::zeros<fastscapelib::node_status>({ array_size });
           // // TODO: replace Healpix grid by dealii grid adapter
