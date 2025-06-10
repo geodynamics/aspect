@@ -2015,11 +2015,15 @@ namespace aspect
                                         parameters.initial_adaptive_refinement;
     pre_refinement_step = 0;
 
+    // shall we start at id=0 when not resuming??
+
     // if we want to resume a computation from an earlier point
     // then reload it from a snapshot. otherwise do the basic
     // start-up
     if (parameters.resume_computation == true)
       {
+        last_checkpoint_id = determine_last_good_snapshot();
+
         resume_from_snapshot();
         // we need to remove additional_refinement_times that are in the past
         // and adjust max_refinement_level which is not written to file
@@ -2034,6 +2038,8 @@ namespace aspect
       }
     else
       {
+        last_checkpoint_id = 0;
+
         time = parameters.start_time;
 
         // Instead of calling global_refine(n) we flag all cells for

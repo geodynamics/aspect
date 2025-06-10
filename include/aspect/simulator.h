@@ -860,6 +860,13 @@ namespace aspect
        * restarting from a saved state
        * @{
        */
+
+      /**
+       * Determine the id of the last good snapshot that was written by reading
+       * the last_good_checkpoint.txt file from the output/checkpoint/ folder.
+       */
+      unsigned int determine_last_good_snapshot();
+
       /**
        * Save the state of this program to a set of files in the output
        * directory. In reality, however, only some variables are stored (in
@@ -1798,6 +1805,11 @@ namespace aspect
        * that was created.
        */
       double total_walltime_until_last_snapshot;
+
+      /**
+       *
+       */
+      unsigned int last_checkpoint_id;
 
       /**
        * In output_statistics(), where we output the statistics object above,

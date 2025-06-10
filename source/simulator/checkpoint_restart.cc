@@ -25,6 +25,7 @@
 #include <aspect/melt.h>
 
 #include <deal.II/base/mpi.h>
+#include <deal.II/base/utilities.h>
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/distributed/solution_transfer.h>
 #include <deal.II/fe/mapping_q_cache.h>
@@ -37,43 +38,6 @@
 
 namespace aspect
 {
-  namespace
-  {
-    /**
-     * Move/rename a file from the given old to the given new name.
-     */
-    void move_file (const std::string &old_name,
-                    const std::string &new_name)
-    {
-      int error = std::system (("mv " + old_name + " " + new_name).c_str());
-
-      // If the above call failed, e.g. because there is no command-line
-      // available, try with internal functions.
-      if (error != 0)
-        {
-          if (Utilities::fexists(new_name))
-            {
-              error = remove(new_name.c_str());
-              AssertThrow (error == 0, ExcMessage(std::string ("Unable to remove file: "
-                                                               + new_name
-                                                               + ", although it seems to exist. "
-                                                               + "The error code is "
-                                                               + Utilities::to_string(error) + ".")));
-            }
-
-          error = rename(old_name.c_str(),new_name.c_str());
-          AssertThrow (error == 0, ExcMessage(std::string ("Unable to rename files: ")
-                                              +
-                                              old_name + " -> " + new_name
-                                              + ". The error code returned by rename() "
-                                              + "is " + Utilities::to_string(error)
-                                              + ", with errno=" + Utilities::to_string(errno)
-                                              + " (corresponding to " + std::strerror(errno)
-                                              + ")."));
-        }
-    }
-  }
-
 
   namespace
   {
@@ -287,6 +251,11 @@ namespace aspect
     total_walltime_until_last_snapshot += wall_timer.wall_time();
     wall_timer.restart();
 
+    const unsigned int n_checkpoints_to_keep = 3;
+    const unsigned int checkpoint_id = (last_checkpoint_id % n_checkpoints_to_keep) + 1;
+    const std::string path = parameters.output_directory + "restart/" + Utilities::int_to_string(checkpoint_id, 2) + "/";
+    Utilities::create_directory(path, mpi_communicator, true);
+
     const unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
 
     // save Triangulation and Solution vectors:
@@ -322,7 +291,7 @@ namespace aspect
 
       signals.pre_checkpoint_store_user_data(triangulation);
 
-      triangulation.save (parameters.output_directory + "restart.mesh.new");
+      triangulation.save (path + "mesh");
     }
 
     // save general information This calls the serialization functions on all
@@ -363,7 +332,7 @@ namespace aspect
                 static_cast<uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((parameters.output_directory + "restart.resume.z.new"));
+          std::ofstream f ((path + "/resume.z"));
           f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
           f.write(reinterpret_cast<char *>(&compressed_data[0]), compressed_data_length);
           f.close();
@@ -374,8 +343,8 @@ namespace aspect
           // or one of the write() commands fails, as the fail state is
           // "sticky".
           if (!f)
-            AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + parameters.output_directory
-                                           + "restart.resume.z.new' with size "
+            AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + path
+                                           + "/resume.z' with size "
                                            + Utilities::to_string(4 * sizeof(compression_header[0])+compressed_data_length)
                                            + " failed on processor 0."));
         }
@@ -397,57 +366,35 @@ namespace aspect
     // can be slow, and the model might be cancelled during writing.
     // This way restart remains usable even if restart.new is not completely
     // written.
+    last_checkpoint_id = checkpoint_id;
     if (my_id == 0)
       {
-        // if we have previously written a snapshot, then keep the last
-        // snapshot in case this one fails to save. Note: static variables
-        // will only be initialized once per model run.
-        static bool previous_snapshot_exists = (parameters.resume_computation == true);
-
-        if (previous_snapshot_exists == true)
-          {
-            move_file (parameters.output_directory + "restart.mesh",
-                       parameters.output_directory + "restart.mesh.old");
-            move_file (parameters.output_directory + "restart.mesh.info",
-                       parameters.output_directory + "restart.mesh.info.old");
-            move_file (parameters.output_directory + "restart.resume.z",
-                       parameters.output_directory + "restart.resume.z.old");
-
-            move_file (parameters.output_directory + "restart.mesh_fixed.data",
-                       parameters.output_directory + "restart.mesh_fixed.data.old");
-
-            if (Utilities::fexists(parameters.output_directory + "restart.mesh_variable.data"))
-              {
-                move_file (parameters.output_directory + "restart.mesh_variable.data",
-                           parameters.output_directory + "restart.mesh_variable.data.old");
-              }
-
-          }
-
-        move_file (parameters.output_directory + "restart.mesh.new",
-                   parameters.output_directory + "restart.mesh");
-        move_file (parameters.output_directory + "restart.mesh.new.info",
-                   parameters.output_directory + "restart.mesh.info");
-        move_file (parameters.output_directory + "restart.resume.z.new",
-                   parameters.output_directory + "restart.resume.z");
-
-        move_file (parameters.output_directory + "restart.mesh.new_fixed.data",
-                   parameters.output_directory + "restart.mesh_fixed.data");
-
-        if (Utilities::fexists(parameters.output_directory + "restart.mesh.new_variable.data"))
-          {
-            move_file (parameters.output_directory + "restart.mesh.new_variable.data",
-                       parameters.output_directory + "restart.mesh_variable.data");
-          }
-
-
-        // from now on, we know that if we get into this
-        // function again that a snapshot has previously
-        // been written
-        previous_snapshot_exists = true;
+        std::ofstream f (parameters.output_directory + "restart/last_good_checkpoint.txt");
+        f << last_checkpoint_id;
+        f.close();
       }
 
-    pcout << "*** Snapshot created!" << std::endl << std::endl;
+    pcout << "*** Snapshot " << path << " created!" << std::endl << std::endl;
+  }
+
+
+
+  template <int dim>
+  unsigned int Simulator<dim>::determine_last_good_snapshot()
+  {
+    unsigned int last_checkpoint_id = 0;
+
+    if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+      {
+        std::ifstream f (parameters.output_directory + "restart/last_good_checkpoint.txt");
+        f >> last_checkpoint_id;
+        f.close();
+        AssertThrow((last_checkpoint_id > 0) && (last_checkpoint_id < 100),
+                    ExcMessage("Could not parse the last good checkpoint from last_good_checkpoint.txt"));
+      }
+
+    dealii::Utilities::MPI::broadcast (mpi_communicator, last_checkpoint_id, 0);
+    return last_checkpoint_id;
   }
 
 
@@ -469,31 +416,34 @@ namespace aspect
 #endif
 
     // Then start with the actual deserialization.
+
+    const std::string path = parameters.output_directory + "restart/" + Utilities::int_to_string(last_checkpoint_id, 2) + "/";
+
     // First check existence of the two restart files
-    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.mesh", mpi_communicator),
+    AssertThrow (Utilities::fexists(path + "mesh", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +
-                             parameters.output_directory + "restart.mesh"
+                             path + "mesh"
                              +
                              "> does not appear to exist!"));
 
-    AssertThrow (Utilities::fexists(parameters.output_directory + "restart.resume.z", mpi_communicator),
+    AssertThrow (Utilities::fexists(path + "resume.z", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +
-                             parameters.output_directory + "restart.resume.z"
+                             path + ".resume.z"
                              +
                              "> does not appear to exist!"));
 
-    pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
+    pcout << "*** Resuming from snapshot " << path << std::endl << std::endl;
 
     // Read resume.z to set up the state of the model
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
         const std::string restart_data
-          = Utilities::read_and_distribute_file_content (parameters.output_directory + "restart.resume.z",
+          = Utilities::read_and_distribute_file_content (path + "resume.z",
                                                          mpi_communicator);
 
         std::istringstream ifs (restart_data);
@@ -542,7 +492,7 @@ namespace aspect
     // now that we have resumed from the snapshot load the mesh and solution vectors
     try
       {
-        triangulation.load (parameters.output_directory + "restart.mesh");
+        triangulation.load (path + "mesh");
       }
     catch (...)
       {
@@ -660,6 +610,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
+  template unsigned int Simulator<dim>::determine_last_good_snapshot(); \
   template void Simulator<dim>::create_snapshot(); \
   template void Simulator<dim>::resume_from_snapshot();
 
