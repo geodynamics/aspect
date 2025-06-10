@@ -335,6 +335,7 @@ namespace aspect
 
     // Store viscosity tables and other data into the active level matrix-free objects.
     stokes_matrix.set_cell_data(active_cell_data);
+    BT_block.set_cell_data(active_cell_data);
 
     if (this->get_parameters().n_expensive_stokes_solver_steps > 0)
       {
@@ -1118,8 +1119,8 @@ namespace aspect
     solver_control_expensive.enable_history_data();
 
     // create a cheap preconditioner that consists of only a single V-cycle
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
-    preconditioner_cheap (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
+    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType,SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
+    preconditioner_cheap (stokes_matrix, A_block_matrix, BT_block, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
                           /*do_solve_A*/false,
                           /*do_solve_Schur*/false,
@@ -1128,8 +1129,9 @@ namespace aspect
                           this->get_parameters().linear_solver_S_block_tolerance);
 
     // create an expensive preconditioner that solves for the A block with CG
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
-    preconditioner_expensive (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
+    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
+    preconditioner_expensive (stokes_matrix, A_block_matrix, BT_block,
+                              Schur_complement_block_matrix,
                               prec_A, prec_Schur,
                               /*do_solve_A*/true,
                               /*do_solve_Schur*/true,
@@ -1661,6 +1663,12 @@ namespace aspect
       A_block_matrix.clear();
       std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
       A_block_matrix.initialize(matrix_free, selected);
+    }
+
+    //B^T Block matrix
+    {
+      BT_block.clear();
+      BT_block.initialize(matrix_free);
     }
 
     // Schur complement block matrix

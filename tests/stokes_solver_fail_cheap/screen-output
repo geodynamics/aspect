@@ -40,6 +40,7 @@ Additional information:
     double>; PreconditionerType =
     aspect::internal::BlockSchurGMGPreconditioner<aspect::MatrixFreeStokesOperators::StokesOperator<2,
     2, double>, aspect::MatrixFreeStokesOperators::ABlockOperator<2, 2,
+    double>, aspect::MatrixFreeStokesOperators::BTBlockOperator<2, 2,
     double>, aspect::MatrixFreeStokesOperators::MassMatrixOperator<2, 1,
     double>, dealii::PreconditionMG<2,
     dealii::LinearAlgebra::distributed::Vector<double>,
