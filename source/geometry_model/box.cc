@@ -325,19 +325,22 @@ namespace aspect
 
         // Combine all local_surfaces and broadcast back.
         std::vector<std::vector<double>> temp_surface =
-          Utilities::MPI::compute_set_union(local_surface_height,this->get_mpi_communicator());
+          Utilities::MPI::compute_set_union(local_surface_height, this->get_mpi_communicator());
 
+        // Sort the vector so that it ascends in X.
+        std::sort(temp_surface.begin(), temp_surface.end(), [](const std::vector<double>& a, const std::vector<double>& b) {
+            return a[0] < b[0];
+        });
 
         // Define a comparison to remove duplicate surface points.
         bool (*compareRows)(const std::vector<double> &, const std::vector<double> &) = [](const std::vector<double> &row1, const std::vector<double> &row2)
         {
           return row1 == row2;
-        };
+        };   
 
         // Remove non-unique rows from the sorted 2D vector
         auto last = std::unique(temp_surface.begin(), temp_surface.end(), compareRows);
         temp_surface.erase(last, temp_surface.end());
-
 
         // Resize data table.
         TableIndices<dim-1> size_idx;
@@ -360,7 +363,9 @@ namespace aspect
         // Fill the coordinates with the x-values used for the data table.
         std::array<std::vector<double>, dim-1> coordinates;
         for (unsigned int i=0; i<temp_surface.size(); ++i)
+        {
           coordinates[0].push_back(temp_surface[i][0]);
+        }
 
         surface_function = std::make_unique<Functions::InterpolatedTensorProductGridData<dim-1>>(coordinates, data_table);
 
