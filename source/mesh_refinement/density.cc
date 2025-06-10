@@ -36,7 +36,7 @@ namespace aspect
     {
       indicators = 0;
 
-//TODO: if the density doesn't actually depend on the solution
+      //TODO: if the density doesn't actually depend on the solution
       // then we can get away with simply interpolating it spatially
 
 
