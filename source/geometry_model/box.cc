@@ -62,7 +62,7 @@ namespace aspect
           }
           );
         }
-        
+
 
       this->get_signals().post_mesh_deformation.connect(
         [&](const SimulatorAccess<dim> &/*simulator_access*/)
@@ -282,94 +282,95 @@ namespace aspect
     Box<dim>::
     update ()
     {
-      if(dim==2 && this->get_parameters().mesh_deformation_enabled && need_surface_function_update)
-      {
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
-
-        // loop over all of the surface cells and save the elevation to a stored value.
-        // This needs to be sent to 1 processor, sorted, and broadcast so that every processor knows the entire surface.
-        std::vector<std::vector<double>> local_surface_height;
-        Table<dim-1, double> data_table;
-        const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
-        const QTrapezoid<dim-1> face_corners;
-        FEFaceValues<dim> fe_face_values(this->get_mapping(),
-                                        this->get_fe(),
-                                        face_corners,
-                                        update_quadrature_points);
-
-        // Loop over all corners at the surface and save their position.
-        // TODO: Update this to work in 3D. Spherical?
-        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-          if (cell->is_locally_owned() && cell->at_boundary())
-            for (const unsigned int face_no : cell->face_indices())
-              if (cell->face(face_no)->at_boundary())
-                {
-                  if ( cell->face(face_no)->boundary_id() != relevant_boundary)
-                    continue;
-
-                  fe_face_values.reinit(cell, face_no);
-
-                  for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
-                    {
-                      const Point<dim> vertex = fe_face_values.quadrature_point(corner);
-
-                      // We can't push back a point so we convert it into a vector.
-                      // This is needed later to keep the vertices together when sorting.
-                      std::vector<double> vertex_row;
-                      for (unsigned int i=0; i<dim; ++i)
-                        vertex_row.push_back(vertex[i]);
-
-                      local_surface_height.push_back(vertex_row);
-                    }
-                }
-
-        // Combine all local_surfaces and broadcast back.
-        std::vector<std::vector<double>> temp_surface =
-          Utilities::MPI::compute_set_union(local_surface_height, this->get_mpi_communicator());
-
-        // Sort the vector so that it ascends in X.
-        std::sort(temp_surface.begin(), temp_surface.end(), [](const std::vector<double>& a, const std::vector<double>& b) {
-            return a[0] < b[0];
-        });
-
-        // Define a comparison to remove duplicate surface points.
-        bool (*compareRows)(const std::vector<double> &, const std::vector<double> &) = [](const std::vector<double> &row1, const std::vector<double> &row2)
+      if (dim==2 && this->get_parameters().mesh_deformation_enabled && need_surface_function_update)
         {
-          return row1 == row2;
-        };   
+          TimerOutput::Scope timer_section(this->get_computing_timer(), "Geometry model surface update");
 
-        // Remove non-unique rows from the sorted 2D vector
-        auto last = std::unique(temp_surface.begin(), temp_surface.end(), compareRows);
-        temp_surface.erase(last, temp_surface.end());
+          // loop over all of the surface cells and save the elevation to a stored value.
+          // This needs to be sent to 1 processor, sorted, and broadcast so that every processor knows the entire surface.
+          std::vector<std::vector<double>> local_surface_height;
+          Table<dim-1, double> data_table;
+          const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
+          const QTrapezoid<dim-1> face_corners;
+          FEFaceValues<dim> fe_face_values(this->get_mapping(),
+                                           this->get_fe(),
+                                           face_corners,
+                                           update_quadrature_points);
 
-        // Resize data table.
-        TableIndices<dim-1> size_idx;
-        for (unsigned int d=0; d<dim-1; ++d)
-          size_idx[d] = temp_surface.size();
+          // Loop over all corners at the surface and save their position.
+          // TODO: Update this to work in 3D. Spherical?
+          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            if (cell->is_locally_owned() && cell->at_boundary())
+              for (const unsigned int face_no : cell->face_indices())
+                if (cell->face(face_no)->at_boundary())
+                  {
+                    if ( cell->face(face_no)->boundary_id() != relevant_boundary)
+                      continue;
 
-        data_table.TableBase<dim-1,double>::reinit(size_idx);
-        TableIndices<dim-1> idx;
+                    fe_face_values.reinit(cell, face_no);
 
-        // Fill the data table with the y-values that correspond to the surface.
-        if (dim==2)
+                    for (unsigned int corner = 0; corner < face_corners.size(); ++corner)
+                      {
+                        const Point<dim> vertex = fe_face_values.quadrature_point(corner);
+
+                        // We can't push back a point so we convert it into a vector.
+                        // This is needed later to keep the vertices together when sorting.
+                        std::vector<double> vertex_row;
+                        for (unsigned int i=0; i<dim; ++i)
+                          vertex_row.push_back(vertex[i]);
+
+                        local_surface_height.push_back(vertex_row);
+                      }
+                  }
+
+          // Combine all local_surfaces and broadcast back.
+          std::vector<std::vector<double>> temp_surface =
+            Utilities::MPI::compute_set_union(local_surface_height, this->get_mpi_communicator());
+
+          // Sort the vector so that it ascends in X.
+          std::sort(temp_surface.begin(), temp_surface.end(), [](const std::vector<double> &a, const std::vector<double> &b)
           {
-            for (unsigned int x=0; x<(data_table.size()[0]); ++x)
-              {
-                idx[0] = x;
-                data_table(idx) = temp_surface[x][1];
-              }
-          }
+            return a[0] < b[0];
+          });
 
-        // Fill the coordinates with the x-values used for the data table.
-        std::array<std::vector<double>, dim-1> coordinates;
-        for (unsigned int i=0; i<temp_surface.size(); ++i)
-        {
-          coordinates[0].push_back(temp_surface[i][0]);
-        }
+          // Define a comparison to remove duplicate surface points.
+          bool (*compareRows)(const std::vector<double> &, const std::vector<double> &) = [](const std::vector<double> &row1, const std::vector<double> &row2)
+          {
+            return row1 == row2;
+          };
 
-        surface_function = std::make_unique<Functions::InterpolatedTensorProductGridData<dim-1>>(coordinates, data_table);
+          // Remove non-unique rows from the sorted 2D vector
+          auto last = std::unique(temp_surface.begin(), temp_surface.end(), compareRows);
+          temp_surface.erase(last, temp_surface.end());
 
-        need_surface_function_update = false;
+          // Resize data table.
+          TableIndices<dim-1> size_idx;
+          for (unsigned int d=0; d<dim-1; ++d)
+            size_idx[d] = temp_surface.size();
+
+          data_table.TableBase<dim-1,double>::reinit(size_idx);
+          TableIndices<dim-1> idx;
+
+          // Fill the data table with the y-values that correspond to the surface.
+          if (dim==2)
+            {
+              for (unsigned int x=0; x<(data_table.size()[0]); ++x)
+                {
+                  idx[0] = x;
+                  data_table(idx) = temp_surface[x][1];
+                }
+            }
+
+          // Fill the coordinates with the x-values used for the data table.
+          std::array<std::vector<double>, dim-1> coordinates;
+          for (unsigned int i=0; i<temp_surface.size(); ++i)
+            {
+              coordinates[0].push_back(temp_surface[i][0]);
+            }
+
+          surface_function = std::make_unique<Functions::InterpolatedTensorProductGridData<dim-1>>(coordinates, data_table);
+
+          need_surface_function_update = false;
 
         }
     }
@@ -386,7 +387,7 @@ namespace aspect
                   ExcMessage("Depth with mesh deformation currently only works with a 2D box geometry model."));
 
       AssertThrow (this->get_parameters().mesh_deformation_enabled,
-                  ExcMessage("Depth with mesh deformation must be used with mesh deformation activated."));
+                   ExcMessage("Depth with mesh deformation must be used with mesh deformation activated."));
 
       // Convert the point to dim-1, as we aren't interested in the vertical component
       // for the function.
