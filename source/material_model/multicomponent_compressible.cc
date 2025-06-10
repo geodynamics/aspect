@@ -37,6 +37,11 @@ namespace aspect
     {
       EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
 
+      unsigned int density_field_index = numbers::invalid_unsigned_int;
+
+      if (this->introspection().compositional_name_exists("density_field"))
+        density_field_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           equation_of_state.evaluate(in, i, eos_outputs);
@@ -65,9 +70,14 @@ namespace aspect
           // User-defined volume fraction averaging of viscosities
           out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
 
+          // Prescribe the density field to the current value of the density. The actual projection
+          // only happens inside Simulator<dim>::interpolate_material_output_into_compositional_field,
+          // and this just sets the correct term the field will be set to.
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
+          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
+            prescribed_field_out->prescribed_field_outputs[i][density_field_index] = out.densities[i];
         }
     }
 
@@ -153,6 +163,19 @@ namespace aspect
       this->model_dependence.specific_heat = NonlinearDependence::temperature
                                              | NonlinearDependence::pressure
                                              | NonlinearDependence::compositional_fields;
+    }
+
+    template <int dim>
+    void
+    MulticomponentCompressible<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+      {
+        const unsigned int n_points = out.n_evaluation_points();
+        out.additional_outputs.push_back(
+          std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>
+          (n_points, this->n_compositional_fields()));
+      }
     }
   }
 }
