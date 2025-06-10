@@ -1451,14 +1451,6 @@ namespace aspect
     if (solve_newton_system == false)
       outputs.pressure_normalization_adjustment = this->normalize_pressure(solution_vector);
 
-    // convert melt pressures
-    // TODO: We assert in the StokesMatrixFreeHandler constructor that we
-    //       are not including melt transport.
-    // TODO: We have to const_cast, because the compute_melt_variables
-    //       function assembles and solves an equation. To avoid this we either
-    //       have to hand over non-const references to the current function, or
-    //       call the compute_melt_variables function after finishing the current function.
-
     return outputs;
   }
 
