@@ -1293,12 +1293,9 @@ namespace aspect
                             "but all boundaries of the domain. ");
 
           // Finally also construct a string for Patterns::MultipleSelection that
-          // contains the names of all registered visualization postprocessors.
-          // Also add a number of removed plugins that are now combined in 'material properties'
-          // to keep compatibility with input files. These will be filtered out in parse_parameters().
+          // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
-            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ()
-              + "|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity";
+            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ();
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -1418,23 +1415,6 @@ namespace aspect
                    p = std::get<dim>(registered_visualization_plugins).plugins->begin();
                    p != std::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
                 viz_names.push_back (std::get<0>(*p));
-            }
-
-          // TODO: Remove deprecated options
-          const std::set<std::string> deprecated_postprocessors = {"density",
-                                                                   "specific heat",
-                                                                   "thermal conductivity",
-                                                                   "thermal diffusivity",
-                                                                   "thermal expansivity",
-                                                                   "viscosity"
-                                                                  };
-
-          for (const auto &viz_name: viz_names)
-            {
-              // Check if the current name is in the set of the deprecated names
-              AssertThrow(deprecated_postprocessors.count(viz_name) == 0,
-                          ExcMessage("The visualization postprocessor '" + viz_name + "' has been removed. "
-                                     "Please use the 'material properties' postprocessor instead."));
             }
         }
         prm.leave_subsection();
