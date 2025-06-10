@@ -502,12 +502,6 @@ namespace aspect
         AssertThrow((grain_size_evolution_formulation != Formulation::paleopiezometer || !this->get_heating_model_manager().shear_heating_enabled()),
                     ExcMessage("Shear heating output should not be used with the Paleopiezometer grain damage formulation."));
 
-        // TODO: Remove deprecated parameter in next release.
-        const std::string use_paleowattmeter  = prm.get ("Use paleowattmeter");
-        Assert(use_paleowattmeter == "default",
-               ExcMessage("The parameter 'Use paleowattmeter' has been removed. "
-                          "Use the parameter 'Grain size evolution formulation instead'."));
-
         const double volume_fraction_phase_one = prm.get_double ("Phase volume fraction");
 
         AssertThrow(volume_fraction_phase_one != 0. && volume_fraction_phase_one != 1.,
