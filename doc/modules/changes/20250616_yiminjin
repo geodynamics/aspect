@@ -1,0 +1,11 @@
+Changed: The prescribed dilation is now split into two parts: a
+pressure-dependent part that is moved to the left-hand side of the mass
+conservation equation, and a pressure-independent part that stays on the
+right-hand side. In addition, the effect of dilation on the momentum
+conservation equation for incompressible models is no longer represented by
+the dilation term on the right-hand side, but by the volumetric strain rate
+term on the left-hand side. These changes enable the Drucker-Prager model
+to produce associated plastic flows, in which the shear bands develop along
+the Coulomb angle.
+<br>
+(Yimin Jin, 2025/06/16)
