@@ -1,0 +1,151 @@
+# A test for the grain size particle property to make sure
+# it is interpolating correctly to newly created particles.
+
+set Dimension                              = 2
+set End time                               = 10000
+set Use years in output instead of seconds = true
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100000
+    set Y extent = 100000
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top,bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 1600
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+  set Prescribed velocity boundary indicators = left:function, right:function
+
+  subsection Function
+    set Function expression = 1.0; 0.0
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+  set Fixed composition boundary indicators = left
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 1400 + 0.004 * x
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  =
+    set Function expression = 1000; 1e-3
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields   = anomaly, grain_size
+  set Types of fields = chemical composition, grain size
+  set Compositional field methods =  field,  particles
+  set Mapped particle properties = grain_size:grain_size
+end
+
+subsection Material model
+  set Model name = grain size
+
+  subsection Grain size model
+    set Reference density                    = 1000
+    set Thermal conductivity                 = 0
+    set Thermal expansion coefficient        = 0
+    set Reference compressibility            = 0
+    set Viscosity                            = 1e19
+    set Minimum viscosity                    = 1e16
+    set Reference temperature                = 1600
+    set Grain growth activation energy       = 0
+    set Grain growth activation volume       = 0
+    set Grain growth rate constant           = 0
+    set Grain growth exponent                = 3
+    set Average specific grain boundary energy = 1
+    set Work fraction for boundary area change = 0.1
+    set Geometric constant                   = 3
+    set Grain size evolution formulation     = paleowattmeter
+    set Reciprocal required strain           = 10
+
+    # Faul and Jackson 2007
+    # Diffusion creep
+    # new scaled prefactors to match vertical viscosity profile
+    set Diffusion creep prefactor            = 3.0e-016
+    set Diffusion creep exponent             = 1
+    set Diffusion creep grain size exponent  = 3
+    set Diffusion activation energy          = 3.75e5
+    set Diffusion activation volume          = 0
+    set Dislocation viscosity iteration threshold = 1e-3
+
+    # No dislocation creep
+    set Dislocation creep prefactor          = 1e-200
+    set Dislocation creep exponent           = 1
+    set Dislocation activation energy        = 0
+    set Dislocation activation volume        = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+subsection Particles
+  set List of particle properties = grain size
+  set Minimum particles per cell = 10
+  set Load balancing strategy = add particles
+  set Particle generator name = reference cell
+
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 4
+    end
+  end
+
+  subsection Generator
+    subsection Random uniform
+      set Number of particles = 4000
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, particles, material statistics, ODE statistics
+
+  subsection Visualization
+    set List of output variables  = material properties
+    set Time between graphical output = 0
+  end
+
+  subsection Particles
+    set Time between data output = 0
+  end
+end
