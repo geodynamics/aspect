@@ -437,7 +437,7 @@ namespace aspect
 
         /**
          * Given an additional material model input class as explicitly specified
-         * template argument, returns a pointer to this additional material model
+         * by the template argument, return a pointer to this additional material model
          * input object if it is used in the current simulation. Ownership
          * of the pointed-to object remains with the current object.
          *
@@ -622,10 +622,13 @@ namespace aspect
 
         /**
          * Given an additional material model output class as explicitly specified
-         * template argument, returns a pointer to this additional material model
+         * by the template argument, return a pointer to this additional material model
          * output object if it is used in the current simulation.
          * The output can then be filled in the MaterialModels::Interface::evaluate()
-         * function. If the output does not exist, a null pointer is returned.
+         * function. Ownership
+         * of the pointed-to object remains with the current object.
+         *
+         * If the output does not exist, a null pointer is returned.
          */
         template <class AdditionalOutputType>
         AdditionalOutputType *get_additional_output();
