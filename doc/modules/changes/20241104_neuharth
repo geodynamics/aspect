@@ -1,6 +1,6 @@
-New: In 2D, the 'box' geometry model can now account for changes
-to depth due to mesh deformation. This can be visualized using
-the new 'depth with mesh deformation' postprocessor. 
-Note: This change would need to be added to material models if needed.
-<br>
+New: The 'box' geometry model has a new function 'depth_including_mesh_deformation'
+that can account for changes
+to depth due to mesh deformation. This quantity can be visualized using
+the new 'depth with mesh deformation' postprocessor. This function is
+currently only available in 2D.
 (Derek Neuharth, 2024/11/04)
