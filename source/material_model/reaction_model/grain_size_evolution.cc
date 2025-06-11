@@ -544,14 +544,6 @@ namespace aspect
             prm.leave_subsection();
           }
 
-        // TODO: Remove deprecated parameters in next release.
-        const bool advect_log_grainsize            = prm.get_bool ("Advect logarithm of grain size");
-        AssertThrow(advect_log_grainsize == false,
-                    ExcMessage("Error: The 'Advect logarithm of grain size' parameter "
-                               "has been removed. Please remove it from your input file. For models "
-                               "with large spatial variations in grain size, please advect your "
-                               "grain size on particles."));
-
         arkode_initial_step_size = prm.get_double ("ARKode initial step size");
         arkode_minimum_step_size = prm.get_double ("ARKode minimum step size");
 
