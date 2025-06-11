@@ -132,7 +132,6 @@ namespace aspect
            * Vector for isochoric specific heats, read from parameter file.
            */
           std::vector<double> isochoric_specific_heats;
-
       };
     }
   }

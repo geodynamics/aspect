@@ -1,0 +1,58 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 39 (18+3+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70128e-16, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70128e-16, 0, 3.8189e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.8189e-11
+
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70128e-16, 0, 2.10758e-15
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.10758e-15
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3822 kg/m^3, 1e+21 Pa s, 3822 kg
+     Compositions min/max/mass:                         3822/3822/3822
+
+*** Timestep 1:  t=1e+06 years, dt=1e+06 years
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.34999e-17, 0, 2.5951e-14
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.5951e-14
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3822 kg/m^3, 1e+21 Pa s, 3822 kg
+     Compositions min/max/mass:                         3822/3822/3822
+
+Termination requested by criterion: end time
+
+
++------------------------------------------------+------------+------------+
++------------------------------------+-----------+------------+------------+
++------------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

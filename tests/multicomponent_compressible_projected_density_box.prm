@@ -1,0 +1,145 @@
+# This model tests the projected density approximation within 
+# The multicomponent compressible material model.
+# The model is 1x1 m on 2x2 element grid where we apply a surface pressure equal 
+# to 50 GPa with gravity disabled. This creates uniform pressure and density fields 
+# This surface pressure and free-slip on all sides does not allow material to flow 
+# into/out of the model, while allowing density to accommodate the increased pressure.
+# 
+# The density within multicomponent compressible is determined using the following parameters:
+
+# reference_thermal_expansivities              = 2e-5
+# reference_isothermal_compressibilities       = 4e-12
+# temperature                                  = 1600
+# reference_temperatures                       = 1600
+# isothermal_bulk_modulus_pressure_derivatives = 4
+# reference_densities                          = 3300
+# pressure                                     = 5e10
+# These values are used in the following expression for the density:
+#
+# import numpy as np 
+# ak = reference_thermal_expansivities/reference_isothermal_compressibilities
+# f  = (1. + (pressure - ak*(temperature - reference_temperatures)) *
+#                    isothermal_bulk_modulus_pressure_derivatives   *
+#                          reference_isothermal_compressibilities)
+# densities = reference_densities*np.pow(f, 1./isothermal_bulk_modulus_pressure_derivatives)
+# print(densities)
+
+# The resulting spatially-uniform density is 3822.3642114512877.
+
+set Dimension = 2 
+set End time                               = 1e6
+set Use years in output instead of seconds = true
+set Adiabatic surface temperature          = 1600
+set Surface pressure                       = 5e10
+set Pressure normalization                 = surface
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-12
+set Max nonlinear iterations               = 25
+set Output directory                       = multicomponent_compressible_projected_density_box
+
+# This calculates the adiabatic temperature profile down the model and is used
+# by the initial temperature and composition models.
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Number of points              = 100
+    set Composition reference profile = function
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-12
+  end
+end
+
+# The projected density approximation requires prescribed fields
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = density_field
+  set Compositional field methods = prescribed field
+  set Types of fields             = density
+end
+
+# This section contains the functionality tested by this model. The projected density approximation
+# is the preferred compressibility formulation, as demonstrated by
+# the compressibility formulations benchmark (Gassmoeller et al.).
+# Use the projected density approximation for the compressibility formation,
+# which is the key functionality being tested by this model.
+subsection Formulation
+  set Mass conservation    = projected density field
+  set Temperature equation = real density
+end
+
+subsection Initial composition model
+  set Model name = adiabatic density
+end
+
+# 1x1 m box with a 2x2 grid (which is the minimum)
+# there are no global or adaptive refinement steps
+# so this is the initial and end resolution.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set Y extent = 1
+    set X extent = 1
+    set X repetitions = 2
+    set Y repetitions = 2
+  end
+end
+
+# We only want to evaluate the density resulting from the applied surface
+# pressure, so we disable gravity.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+############### Boundary conditions
+# We fix the temperature on all boundaries, and as our model is so small this
+# prescribes the temperature throughout the model.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = left, right, top, bottom
+  set List of model names = initial temperature
+end
+
+# We allow free slip on all sides
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom,top, left, right
+end
+
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 1600
+  end
+end
+
+subsection Material model
+  set Model name = multicomponent compressible
+
+  subsection Multicomponent compressible
+    set Reference temperatures                       = 1600
+    set Reference densities                          = 3300
+    set Reference isothermal compressibilities       = 4e-12
+    set Isothermal bulk modulus pressure derivatives = 4
+    set Reference thermal expansivities              = 2.e-5
+    set Isochoric specific heats                     = 1250
+    set Thermal conductivities                       = 0.0
+  end
+end
+
+# We want to keep the mesh static
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = material statistics, composition statistics
+end
