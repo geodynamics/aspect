@@ -1,0 +1,4 @@
+Added: ParticleDistributionScore postprocessor which scores how clustered
+particles are within cells on a scale from 0-1, with 1 being most clustered.
+<br>
+(Jarett Baker-Dunn, 2025/06/13)
