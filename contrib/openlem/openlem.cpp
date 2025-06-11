@@ -576,6 +576,15 @@ class Grid
     setKeys();
   }    
 
+  // adds a new key to the key map (km)
+  // key is the key in the map. This is a max of 4 charachters which are turned into a unique int.
+  // varname is the name of the variable for output prurposes and has a maximum of 15 charachers.
+  // p is the variable linked to the key. This is a variable in the Node class. It internally computes a offset from the start of the first variable in the node class. 
+  // size is the size of the type (double or float)
+  // fsize is I think the number of neighbours.
+  // grid is whether this variable is a grid variable (e.g., surface elevation, catchment size, sediment flux) which are typically updated during the simulation.
+  // readonly is whether this key is readonly
+  // array seems to have to do with layers
   void addKey ( const char *key, const char *varname, void *p, unsigned int size, unsigned int fsize, unsigned int grid, int readonly = 0, int array = 1 )
   {
     Keymapentry e;  
@@ -598,6 +607,7 @@ class Grid
     return  km[keyint];
   }
 
+  // gets a key from a string.
   Keymapentry getKey ( const char *keystring )
   {
     unsigned int  keyint;
@@ -666,16 +676,16 @@ class Grid
     addKey ( "acr", "a", &a, sizeof(a), 4, 0 );
 
     Node  *p = getNode(0,0);
-    addKey ( "H", "h", &p->h, sizeof(p->h), 8, 1 );
-    addKey ( "H8", "h", &p->h, sizeof(p->h), 8, 1 );
-    addKey ( "H4", "h", &p->h, sizeof(p->h), 4, 1 );
-    addKey ( "L", "l", &p->l, sizeof(p->l), 8, 1 );
-    addKey ( "L8", "l", &p->l, sizeof(p->l), 8, 1 );
-    addKey ( "L4", "l", &p->l, sizeof(p->l), 4, 1 );
+    addKey ( "H", "h", &p->h, sizeof(p->h), 8, 1 );  // surface elevation (double: defaults to H8
+    addKey ( "H8", "h", &p->h, sizeof(p->h), 8, 1 ); // surface elevation (double), 8 neighbours
+    addKey ( "H4", "h", &p->h, sizeof(p->h), 4, 1 ); // surface elevation (double), 4 neighours
+    addKey ( "L", "l", &p->l, sizeof(p->l), 8, 1 );  // water level (double): default to L8
+    addKey ( "L8", "l", &p->l, sizeof(p->l), 8, 1 ); // water level (double), 8 neighbours
+    addKey ( "L4", "l", &p->l, sizeof(p->l), 4, 1 ); // water level (double), 4 neighbours
     addKey ( "WL", "l", &p->l, sizeof(p->l), 8, 1, 1 );
     addKey ( "WL8", "l", &p->l, sizeof(p->l), 8, 1, 1 );
     addKey ( "WL4", "l", &p->l, sizeof(p->l), 4, 1, 1 );
-    addKey ( "U", "u", &p->u, sizeof(p->u), 4, 1 );
+    addKey ( "U", "u", &p->u, sizeof(p->u), 4, 1 );      // uplift (float), 4 neighbours
 #ifdef TRANSPORT		
     addKey ( "QS", "qs", &p->qs, sizeof(p->qs), 4, 1 );
 #endif		     
@@ -2547,6 +2557,8 @@ class Grid
     fclose(fp);
   }
 
+  // Reads from a binary file, given a keymapentry and a number of layers 
+  // and writes it into 
   void read ( FILE *fp, Keymapentry e, int arr = 1 )
   {
     if ( e.size == 8 && e.fsize == 4 )
@@ -2558,7 +2570,11 @@ class Grid
             fread ( &buf, 4, arr, fp );
             double  bufd = buf;
             if ( k < e.array )
-              memcpy ( (char*)&getNode(i,j)->h+e.offset+8*k, &bufd, 8 );   
+	    {
+	      // copies from the buffer into correct variable of the node: 
+	      // the location of the first variable h + the offset to the correct variable + the layer the variable is in (8 bits per layer). The layers is ofcourse only available for variables which are arrays[LAYERS]
+              memcpy ( (char*)&getNode(i,j)->h+e.offset+8*k, &bufd, 8 );  
+	    }
           }
     else 
       if ( e.size > 0 )
@@ -2575,9 +2591,14 @@ class Grid
         fseek ( fp, m*n*e.fsize*arr, SEEK_CUR );    
   }
 
+  // reads a binary file (flt?) with info to be written to the grid
+  // filename: the name of the file to be read
+  // mask: a label which tells openLEM how the info is stored
+  // arr: I think this has to do with layers
+  // calls the above function
   void read ( string filename, string mask, int arr = 0 )
   {
-    Keymapentry  e = getKey(mask.c_str());
+    Keymapentry  e = getKey(mask.c_str()); // get what kind of info is stored in this file and how it is stored.
     if ( e.grid )
     {
       FILE *fp = fopen ( filename.c_str(), "rb" );

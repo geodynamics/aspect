@@ -262,6 +262,8 @@ else()
   message(STATUS "Using ASPECT_WITH_NETCDF = 'OFF'")
 endif()
 
+# openLEM
+include_directories("${CMAKE_SOURCE_DIR}/contrib/openlem/")
 
 # WorldBuilder
 set(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
