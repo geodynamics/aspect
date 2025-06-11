@@ -153,11 +153,12 @@ namespace aspect
            */
           double topography_for_point (const Point<dim> &x_y_z) const;
 
-        private:
           /**
            * A pointer to the topography model.
            */
           const InitialTopographyModel::Interface<dim> *topo;
+
+        private:
 
           /**
            * Inner and outer radii of the spherical shell.
@@ -302,7 +303,7 @@ namespace aspect
         /**
          * Return whether the given point lies within the domain specified
          * by the geometry. This function does not take into account
-         * initial or dynamic surface topography.
+         * dynamic surface topography.
          */
         bool
         point_is_in_domain(const Point<dim> &point) const override;

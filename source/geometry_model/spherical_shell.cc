@@ -703,10 +703,9 @@ namespace aspect
       // Choose a point along the axes toward the north pole, at the
       // requested depth.
       Point<dim> p;
-      p[dim-1] = std::min (std::max(R1 - depth, R0), R1);
 
-      // Return this point. This ignores the surface topography,
-      // but that is as documented.
+      p[dim-1] = std::min (std::max(R1 + manifold->topography_for_point(p) - depth, R0), R1);
+
       return p;
     }
 
@@ -716,12 +715,7 @@ namespace aspect
     double
     SphericalShell<dim>::maximal_depth() const
     {
-      // The depth is defined as relative to a reference surface (without
-      // topography) and since we don't apply topography on the CMB,
-      // the maximal depth really is R1-R0 unless one applies a
-      // topography that is always strictly below zero (i.e., where the
-      // actual surface lies strictly below the reference surface).
-      return R1-R0;
+      return R1 + manifold->topo->max_topography() - R0;
     }
 
 
@@ -804,7 +798,6 @@ namespace aspect
     std::array<double,dim>
     SphericalShell<dim>::cartesian_to_natural_coordinates(const Point<dim> &position) const
     {
-      // TODO: Take into account topography
       return Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(position);
     }
 
@@ -823,7 +816,6 @@ namespace aspect
     Point<dim>
     SphericalShell<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position) const
     {
-      // TODO: Take into account topography
       return Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(position);
     }
 
