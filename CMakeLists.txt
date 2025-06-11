@@ -913,6 +913,7 @@ if (${fastscapelib_FOUND})
   foreach(_T ${TARGET_EXECUTABLES})
     target_include_directories(${_T} PRIVATE ${fastscapelib_INCLUDE_DIRS})
     target_include_directories(${_T} PRIVATE ${xtensor_INCLUDE_DIRS})
+    target_include_directories(${_T} PRIVATE ${xtl_INCLUDE_DIRS})
   endforeach()
 endif()
 
