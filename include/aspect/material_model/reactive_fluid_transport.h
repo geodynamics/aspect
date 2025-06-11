@@ -70,7 +70,8 @@ namespace aspect
          * allowable free fluid fraction for each given input conditions.
          */
         void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions) const override;
+                             std::vector<double> &melt_fractions,
+                             MaterialModel::MaterialModelOutputs<dim> out = MaterialModel::MaterialModelOutputs<dim> (0, 0)) const override;
 
         /**
          * Initialize the base model at the beginning of the model run

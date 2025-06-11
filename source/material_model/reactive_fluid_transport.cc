@@ -58,7 +58,8 @@ namespace aspect
     void
     ReactiveFluidTransport<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    MaterialModel::MaterialModelOutputs<dim> /*out*/) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {

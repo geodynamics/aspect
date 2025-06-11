@@ -155,7 +155,8 @@ namespace aspect
          * equilibrium melt fraction for each given input conditions.
          */
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const = 0;
+                                     std::vector<double> &melt_fractions, 
+                                     MaterialModel::MaterialModelOutputs<dim> out = MaterialModel::MaterialModelOutputs<dim> (0, 0)) const = 0;
 
         /**
          * Return whether an object provided as argument is of a class that is

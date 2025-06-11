@@ -69,7 +69,8 @@ namespace aspect
          * equilibrium melt fraction for each given input conditions.
          */
         void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions) const override;
+                             std::vector<double> &melt_fractions,
+                             MaterialModel::MaterialModelOutputs<dim> out = MaterialModel::MaterialModelOutputs<dim> (0, 0)) const override;
 
         /**
          * @name Reference quantities
