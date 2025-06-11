@@ -1851,16 +1851,16 @@ namespace aspect
        * after this point, it needs to keep its own shared pointer
        * to it.
        */
-      std::shared_ptr<WorldBuilder::World>                                   world_builder;
+      std::shared_ptr<WorldBuilder::World>                      world_builder;
 #endif
-      BoundaryVelocity::Manager<dim>                                         boundary_velocity_manager;
-      BoundaryTraction::Manager<dim>                                         boundary_traction_manager;
-      const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
+      BoundaryVelocity::Manager<dim>                            boundary_velocity_manager;
+      BoundaryTraction::Manager<dim>                            boundary_traction_manager;
+      const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>   boundary_heat_flux;
 
       /**
        * The managers holding different sets of particles
        */
-      std::vector<Particle::Manager<dim>> particle_managers;
+      std::vector<Particle::Manager<dim>>                       particle_managers;
 
       /**
        * @}
@@ -1917,7 +1917,7 @@ namespace aspect
        * a MappingQ1Eulerian object to describe the mesh deformation,
        * swapping it in for the original MappingQ or MappingCartesian object.
        */
-      std::unique_ptr<Mapping<dim>>                            mapping;
+      std::unique_ptr<Mapping<dim>>                             mapping;
 
       const FESystem<dim>                                       finite_element;
 
@@ -1936,8 +1936,8 @@ namespace aspect
        * 'constraints' is computed in setup_dofs(), 'current_constraints' is
        * done in compute_current_constraints().
        */
-      AffineConstraints<double>                                          constraints;
-      AffineConstraints<double>                                          current_constraints;
+      AffineConstraints<double>                                 constraints;
+      AffineConstraints<double>                                 current_constraints;
 
       /**
        * A place to store the latest correction computed by normalize_pressure().
