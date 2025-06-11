@@ -66,7 +66,7 @@ namespace aspect
            */
           double
           melt_fraction (const MaterialModel::MaterialModelInputs<dim> &in,
-                         const unsigned int porosity_idx,
+                         const double mass_frac_porosity,
                          unsigned int q) const;
 
           /**

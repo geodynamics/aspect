@@ -35,7 +35,7 @@ namespace aspect
       double
       Tian2019Solubility<dim>::
       melt_fraction (const MaterialModel::MaterialModelInputs<dim> &in,
-                     const unsigned int porosity_idx,
+                     const double mass_frac_porosity,
                      unsigned int q) const
       {
         double melt_fractions;
@@ -63,9 +63,9 @@ namespace aspect
         double average_eq_bound_water_content = MaterialUtilities::average_value (tracked_rock_mass_fractions, tian_eq_bound_water_content, MaterialUtilities::arithmetic);
 
         // The fluid volume fraction in equilibrium with the solid (stored in the melt_fractions vector)
-        // is equal to the sum of the porosity and the change in bound fluid content
+        // is equal to the sum of the porosity (as a mass fraction) and the change in bound fluid content
         // (current bound fluid - updated average bound fluid).
-        melt_fractions = std::max(in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx] - average_eq_bound_water_content, 0.0);
+        melt_fractions = std::max(in.composition[q][bound_fluid_idx] + mass_frac_porosity - average_eq_bound_water_content, 0.0);
 
         return melt_fractions;
       }

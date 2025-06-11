@@ -53,7 +53,7 @@ namespace aspect
     MeltSimple<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions,
-                    MaterialModel::MaterialModelOutputs<dim> /*out*/) const
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
