@@ -98,9 +98,9 @@ namespace aspect
          * @note Implementations of this function in derived classes can
          * only compute the depth with regard to the <i>reference
          * configuration</i> of the geometry, i.e., the geometry initially
-         * created. If you are using a dynamic topography in your models
-         * that changes in every time step, or if you apply initial
-         * topography to your model, then the <i>actual</i> depth
+         * created with initial topography or not.
+         * If you are using a dynamic topography in your models
+         * that changes in every time step, then the <i>actual</i> depth
          * of a point with regard to this dynamic topography will not
          * match the value this function returns. This is so because
          * computing the actual depth is difficult: In parallel computations,

@@ -147,23 +147,23 @@ namespace aspect
           virtual Point<dim>
           get_new_point(const ArrayView<const Point<dim>> &vertices,
                         const ArrayView<const double>          &weights) const override;
-
-        private:
-          /**
-           * A pointer to the topography model.
-           */
-          const InitialTopographyModel::Interface<dim> *topo;
-
-          /**
-           * Inner and outer radii of the spherical shell.
-           */
-          const double R0, R1;
-
           /**
            * Return the topography of the surface directly above the point given
            * by the coordinates stored in the argument.
            */
           double topography_for_point (const Point<dim> &x_y_z) const;
+
+          /**
+           * A pointer to the topography model.
+           */
+          const InitialTopographyModel::Interface<dim> *topo;
+
+        private:
+
+          /**
+           * Inner and outer radii of the spherical shell.
+           */
+          const double R0, R1;
       };
 
     }
@@ -303,7 +303,7 @@ namespace aspect
         /**
          * Return whether the given point lies within the domain specified
          * by the geometry. This function does not take into account
-         * initial or dynamic surface topography.
+         * dynamic surface topography.
          */
         bool
         point_is_in_domain(const Point<dim> &point) const override;
