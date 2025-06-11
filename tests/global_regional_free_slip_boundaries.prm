@@ -1,0 +1,22 @@
+# A model which utilizes the S20RTS temperature model within a 3D
+# regional chunk with free slip boundary conditions on all sides.
+# The output of this model is used to investigate the effect of boundary
+# conditions on the regional model, and is compared with the output from
+# `cookbooks/global_regional_coupling.prm`. Besides specifying a different
+# geometry, this model is identical to `cookbooks/initial-condition-S20RTS.prm`.
+
+# Include the S20RTS model from the initial condition cookbook, and change
+# the output directory.
+include $ASPECT_SOURCE_DIR/cookbooks/global_regional_coupling/free_slip_boundaries.prm
+
+# For the regional calculation we do 5 global refinement steps, 3 more than the
+# global S20RTS model in the `initial-condition-S20RTS` cookbook. This showcases
+# how the 'extract_local_velocity' python script allows the user to interpolate
+# coarser global models for higher resolution regional models.
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end

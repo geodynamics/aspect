@@ -1,0 +1,6 @@
+Added: A cookbook which demonstrates how to use the
+extract_local_velocity.py script to take the output of
+a global convection model and apply the velocity as
+boundary conditions within a 3D regional spherical chunk.
+<br>
+(Daniel Douglas, 2025/02/11)

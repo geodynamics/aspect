@@ -95,6 +95,7 @@ cookbooks/shell_simple_2d/doc/shell_simple_2d.md
 cookbooks/shell_simple_3d/doc/shell_simple_3d.md
 cookbooks/shell_3d_postprocess/doc/shell_3d_postprocess.md
 cookbooks/initial-condition-S20RTS/doc/initial-condition-S20RTS.md
+cookbooks/global_regional_coupling/doc/global_regional_coupling.md
 cookbooks/gplates/doc/gplates.md
 cookbooks/burnman/doc/burnman.md
 cookbooks/steinberger/doc/steinberger.md

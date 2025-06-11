@@ -1,0 +1,71 @@
+# A model which utilizes the S20RTS temperature model within a 3D
+# regional chunk with free slip boundary conditions on all sides.
+# The output of this model is used to investigate the effect of boundary
+# conditions on the regional model, and is compared with the output from
+# `cookbooks/global_regional_coupling.prm`. Besides specifying a different
+# geometry, this model is identical to `cookbooks/initial-condition-S20RTS.prm`.
+
+# Include the S20RTS model from the initial condition cookbook, and change
+# the output directory.
+include $ASPECT_SOURCE_DIR/cookbooks/initial-condition-S20RTS/S20RTS.prm
+set Output directory = output-chunk-free-slip-S20RTS
+
+# Here we specify the geometry of the regional mode
+# domain, which is a spherical chunk with inner radius
+# of 4770 km and outer radius of 6370 km, spanning from
+# -20 to -55 degrees latitude and 152 to 210 degrees
+# longitude.
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk inner radius  = 4770e3
+    set Chunk outer radius  = 6370e3
+
+    set Chunk maximum latitude = -20
+    set Chunk minimum latitude = -55
+
+    set Chunk maximum longitude = 210
+    set Chunk minimum longitude = 152
+  end
+end
+
+# For the regional calculation we do 5 global refinement steps, 3 more than the
+# global S20RTS model in the `initial-condition-S20RTS` cookbook. This showcases
+# how the 'extract_local_velocity' python script allows the user to interpolate
+# coarser global models for higher resolution regional models.
+subsection Mesh refinement
+  set Initial global refinement = 5
+end
+
+# We also modify the boundary temperature model, since the
+# bottom boundary in the initial temperature model defined
+# in the S20RTS cookbook reaches the core-mantle boundary.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = initial temperature
+end
+
+# We apply free slip boundary conditions in this model for comparison with the
+# case where global velocities are prescribed on the boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = outer, east, west, south, north, inner
+end
+
+# We output the velocity and the material properties for visualization.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, visualization
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = material properties, depth
+    set Time between graphical output = 0
+    set Number of grouped files       = 1
+  end
+end
+
+# The S20RTS is a spherical shell, and so removes a rotational nullspace.
+# Here, the model is a chunk so we do not remove the nullspace.
+subsection Nullspace removal
+  set Remove nullspace =
+end

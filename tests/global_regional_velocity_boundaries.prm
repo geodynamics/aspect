@@ -1,0 +1,22 @@
+# A model that utilizes the python script `contrib/python/scripts/extract_local_velocity.py`
+# to take the output of the global convection cookbook `initial-condition-S20RTS`
+# and apply the velocity as boundary conditions in a regional 3D spherical chunk.
+# With the exception of the velocity boundary conditions and the geometry model, the
+# .prm file for this cookbook is identical to the `initial-condition-S20RTS`
+# cookbook .prm file.
+
+include $ASPECT_SOURCE_DIR/cookbooks/global_regional_coupling/global_regional_coupling.prm
+
+subsection Boundary velocity model
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/test/cookbook_files/
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics
+end

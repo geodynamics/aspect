@@ -1,0 +1,59 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_south.0.txt.
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_west.0.txt.
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_east.0.txt.
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/test/cookbook_files/chunk_3d_north.0.txt.
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 116 (81+8+27)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 20+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity: 2.24 m/year, 6.83 m/year
+
+Termination requested by criterion: end time
+
+
+

@@ -1,0 +1,33 @@
+# A model that utilizes the python script `contrib/python/scripts/extract_local_velocity.py`
+# to take the output of the global convection cookbook `initial-condition-S20RTS`
+# and apply the velocity as boundary conditions in a regional 3D spherical chunk.
+# With the exception of the velocity boundary conditions and the geometry model, the
+# .prm file for this cookbook is identical to the `initial-condition-S20RTS`
+# cookbook .prm file.
+
+include $ASPECT_SOURCE_DIR/cookbooks/global_regional_coupling/free_slip_boundaries.prm
+set Output directory = output-chunk-global-S20RTS
+
+# When applying the velocities from global convection models as boundary conditions
+# on regional models, enabling an open boundary dramatically improves convergence.
+# In the global convection models, mass is conserved across the entire domain, but
+# within any given subset of the domain, mass may not be conserved. Opening a boundary
+# allows the regional model to dynamically conserve mass based on the prescribed velocities
+# on the other boundaries of the regional model. Here, we prescribe a free slip boundary on
+# the surface of the model, global velocities on the four lateral boundaries, and then leave
+# the basal boundary open.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = outer
+  set Prescribed velocity boundary indicators = south:ascii data, west:ascii data, east:ascii data, north:ascii data
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/contrib/python/scripts/regional_velocity_files/
+    set Data file name = chunk_3d_%s.%d.txt
+  end
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = inner: initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point = 6370e3, 210, -20
+  end
+end
