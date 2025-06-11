@@ -457,6 +457,26 @@ namespace aspect
         get_additional_input_object() const;
 
         /**
+         * @deprecated This is a version of the functions above that returns a bare pointer,
+         * rather than a managed pointer object. This function is deprecated,
+         * use the functions above.
+         */
+        template <class AdditionalInputType>
+        DEAL_II_DEPRECATED
+        AdditionalInputType *
+        get_additional_input();
+
+        /**
+         * @deprecated This is a version of the functions above that returns a bare pointer,
+         * rather than a managed pointer object. This function is deprecated,
+         * use the functions above.
+         */
+        template <class AdditionalInputType>
+        DEAL_II_DEPRECATED
+        const AdditionalInputType *
+        get_additional_input() const;
+
+        /**
          * Vector of shared pointers to additional material model input
          * objects that can be added to MaterialModelInputs. By default,
          * no inputs are added.
@@ -643,6 +663,26 @@ namespace aspect
         template <class AdditionalOutputType>
         std::shared_ptr<const AdditionalOutputType>
         get_additional_output_object() const;
+
+        /**
+         * @deprecated This is a version of the functions above that returns a bare pointer,
+         * rather than a managed pointer object. This function is deprecated,
+         * use the functions above.
+         */
+        template <class AdditionalOutputType>
+        DEAL_II_DEPRECATED
+        AdditionalOutputType *
+        get_additional_output();
+
+        /**
+         * @deprecated This is a version of the functions above that returns a bare pointer,
+         * rather than a managed pointer object. This function is deprecated,
+         * use the functions above.
+         */
+        template <class AdditionalOutputType>
+        DEAL_II_DEPRECATED
+        const AdditionalOutputType *
+        get_additional_output() const;
 
         /**
          * Steal the additional outputs from @p other. The destination (@p
@@ -1509,6 +1549,43 @@ namespace aspect
           return std::dynamic_pointer_cast<const AdditionalOutputType>(additional_outputs[i]);
 
       return nullptr;
+    }
+
+
+    // The following four functions are deprecated:
+    template <int dim>
+    template <class AdditionalInputType>
+    AdditionalInputType *
+    MaterialModelInputs<dim>::get_additional_input()
+    {
+      return get_additional_input_object<AdditionalInputType>().get();
+    }
+
+
+    template <int dim>
+    template <class AdditionalInputType>
+    const AdditionalInputType *
+    MaterialModelInputs<dim>::get_additional_input() const
+    {
+      return get_additional_input_object<AdditionalInputType>().get();
+    }
+
+
+    template <int dim>
+    template <class AdditionalOutputType>
+    AdditionalOutputType *
+    MaterialModelOutputs<dim>::get_additional_output()
+    {
+      return get_additional_output_object<AdditionalOutputType>().get();
+    }
+
+
+    template <int dim>
+    template <class AdditionalOutputType>
+    const AdditionalOutputType *
+    MaterialModelOutputs<dim>::get_additional_output() const
+    {
+      return get_additional_output_object<AdditionalOutputType>().get();
     }
 
 
