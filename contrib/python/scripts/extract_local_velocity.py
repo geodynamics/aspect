@@ -169,8 +169,10 @@ output_directory = "./regional_velocity_files/"
 os.system("mkdir -p " + output_directory) # Create the output directory if it does not exist
 
 refinement_level = 2
-output_radius_resolution = 10e3 # 10 km radial resolution
-output_lateral_resolution = 0.25 # 0.25 degree lateral resolution
+# output_radius_resolution = 10e3 # 10 km radial resolution
+# output_lateral_resolution = 0.25 # 0.25 degree lateral resolution
+output_radius_resolution = 100e3 # 10 km radial resolution
+output_lateral_resolution = 2.5 # 0.25 degree lateral resolution
 radius_bounds = np.array([4770e3, 6360e3]) # Radius bounds of the regional model
 latitude_bounds = np.array([-20, -55]) # Latitude bounds of the regional model
 longitude_bounds = np.array([152, 210]) # Longitude bounds of the regional model
