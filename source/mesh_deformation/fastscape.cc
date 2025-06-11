@@ -1458,7 +1458,7 @@ namespace aspect
             }
         }
 
-      return data_table;
+      return std::move(data_table);
     }
 
 
