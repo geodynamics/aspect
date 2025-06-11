@@ -91,7 +91,7 @@ namespace aspect
           create_additional_material_model_outputs (const unsigned int n_points,
                                                     MaterialModel::MaterialModelOutputs<dim> &outputs) const override
           {
-            if (outputs.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
+            if (outputs.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
               {
                 outputs.additional_outputs.push_back(
                   std::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
@@ -104,8 +104,8 @@ namespace aspect
                           const LinearAlgebra::BlockVector &,
                           std::vector<double> &output) override
           {
-            const MaterialModel::UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_outputs
-              = out.template get_additional_output<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
+            const std::shared_ptr<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_outputs
+              = out.template get_additional_output_object<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
             Assert(unscaled_viscosity_outputs != nullptr,ExcInternalError());
 
@@ -297,11 +297,13 @@ namespace aspect
     TomographyBasedPlateMotions<dim>::compute_equilibrium_grain_size(const typename Interface<dim>::MaterialModelInputs &in,
                                                                      typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
-      DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
+      const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+        = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>();
+      const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
+        = out.template get_additional_output_object<DislocationViscosityOutputs<dim>>();
 
-      UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_out =
-        out.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
+      const std::shared_ptr<UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_out
+        = out.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
         initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
@@ -965,13 +967,15 @@ namespace aspect
               new_temperature = initial_temperature + (mantle_temperature - initial_temperature) * sigmoid;
             }
 
-          if (PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim>>())
+          if (const std::shared_ptr<PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
+              = out.template get_additional_output_object<PrescribedTemperatureOutputs<dim>>())
             prescribed_temperature_out->prescribed_temperature_outputs[i] = new_temperature;
 
           if (use_table_properties)
             {
               // fill seismic velocities outputs if they exist
-              if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
+              if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
+                  = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>())
                 {
                   seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
                   seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
@@ -1066,7 +1070,8 @@ namespace aspect
                   material_type = 4;
                 }
 
-              if (MaterialTypeAdditionalOutputs<dim> *material_type_out = out.template get_additional_output<MaterialTypeAdditionalOutputs<dim>>())
+              if (const std::shared_ptr<MaterialTypeAdditionalOutputs<dim>> material_type_out
+                  = out.template get_additional_output_object<MaterialTypeAdditionalOutputs<dim>>())
                 material_type_out->output_values[0][i] = material_type;
             }
         }
@@ -1632,7 +1637,7 @@ namespace aspect
       // These properties are useful as output, but will also be used by the
       // heating model to reduce shear heating by the amount of work done to
       // reduce grain size.
-      if (out.template get_additional_output<DislocationViscosityOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<DislocationViscosityOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -1640,7 +1645,7 @@ namespace aspect
         }
 
       // We need the prescribed field outputs to interpolate the grain size onto a compositional field.
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -1649,7 +1654,7 @@ namespace aspect
 
       // These properties are only output properties. But we should only create them if they are filled.
       if (use_table_properties
-          && out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
+          && out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -1657,7 +1662,7 @@ namespace aspect
         }
 
       if (this->get_parameters().temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field &&
-          out.template get_additional_output<PrescribedTemperatureOutputs<dim>>() == nullptr)
+          out.template get_additional_output_object<PrescribedTemperatureOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -1665,14 +1670,14 @@ namespace aspect
         }
 
       // We need additional field outputs for the unscaled viscosity
-      if (out.template get_additional_output<UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<UnscaledViscosityAdditionalOutputs<dim>> (n_points));
         }
 
-      if (out.template get_additional_output<MaterialTypeAdditionalOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<MaterialTypeAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

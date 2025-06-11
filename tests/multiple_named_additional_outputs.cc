@@ -55,7 +55,8 @@ namespace aspect
       Simple<dim>::evaluate(in, out);
 
       // set up variable to interpolate prescribed field outputs onto compositional fields
-      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
+      const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+        = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>();
 
       if (prescribed_field_out != nullptr)
         for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -64,7 +65,8 @@ namespace aspect
             prescribed_field_out->prescribed_field_outputs[i][1] = std::exp(-y*y/2.0);
           }
 
-      SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>();
+      const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
+        = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>();
 
       if (seismic_out != nullptr)
         for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -80,14 +82,14 @@ namespace aspect
     void
     PrescribedFieldMaterial<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points,this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

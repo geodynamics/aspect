@@ -64,7 +64,7 @@ namespace aspect
         create_additional_material_model_outputs (const unsigned int n_points,
                                                   MaterialModel::MaterialModelOutputs<dim> &outputs) const override
         {
-          if (outputs.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
+          if (outputs.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
             {
               outputs.additional_outputs.push_back(
                 std::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
@@ -77,8 +77,8 @@ namespace aspect
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output) override
         {
-          const MaterialModel::UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_outputs
-            = out.template get_additional_output<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
+          const std::shared_ptr<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_outputs
+            = out.template get_additional_output_object<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
           Assert(unscaled_viscosity_outputs != nullptr,ExcInternalError());
 
@@ -176,8 +176,8 @@ namespace aspect
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
-          UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_out =
-            out.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
+          const std::shared_ptr<UnscaledViscosityAdditionalOutputs<dim>> unscaled_viscosity_out =
+            out.template get_additional_output_object<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -213,7 +213,7 @@ namespace aspect
         void
         create_additional_named_outputs (MaterialModelOutputs<dim> &outputs) const override
         {
-          if (outputs.template get_additional_output<UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
+          if (outputs.template get_additional_output_object<UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
             {
               const unsigned int n_points = outputs.n_evaluation_points();
               outputs.additional_outputs.push_back(
