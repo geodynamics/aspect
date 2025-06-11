@@ -309,8 +309,6 @@ namespace aspect
                                       "particle ids."));
             }
 
-          std::mt19937 random_number_generator;
-
           // Loop over all cells and generate or remove the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
