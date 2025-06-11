@@ -399,6 +399,8 @@ namespace aspect
        * be averaged cell-wise.
        */
       bool average_melt_velocity;
+
+      double regularization;
     };
   }
 
