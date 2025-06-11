@@ -83,8 +83,6 @@ namespace aspect
           return 0;
         else
           {
-            Assert (dim==3, ExcNotImplemented());
-
             // The natural coordinate system of the sphere geometry is r/phi/theta.
             // This is what we need to query the topography with. So start by
             // converting into this coordinate system
