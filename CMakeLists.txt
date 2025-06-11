@@ -238,6 +238,13 @@ if(ASPECT_WITH_FASTSCAPE)
     if(${FASTSCAPE_VERSION} VERSION_LESS 2.8)
       message(FATAL_ERROR "The linked FastScape version is ${FASTSCAPE_VERSION}, however at least 2.8.0 is required.")
     endif()
+
+    # FastScape is written in Fortran 90, and as a consequence we will have
+    # to link against the Fortran 90 support libraries. This is necessary
+    # because FastScape-lib-fortran is only a static library that does not
+    # record which support library it needs to link against when we form
+    # the executable.
+    enable_language(Fortran)
   else()
      message(FATAL_ERROR "Trying to link with FastScape but libfastscapelib_fortran.so was not found in ${FASTSCAPE_DIR}")
   endif()
@@ -916,6 +923,14 @@ if (FASTSCAPE)
   message(STATUS "Linking ASPECT against Fastscape")
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${FASTSCAPE})
+  endforeach()
+
+  # Also link against the compiler support library because fastscapelib_fortran
+  # is only a static library that doesn't record that it needs the compiler
+  # support library.
+  message(STATUS "Linking ASPECT against gfortran support library")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} gfortran)
   endforeach()
 endif()
 
