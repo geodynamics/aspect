@@ -91,23 +91,53 @@ namespace aspect
         /**
          * Surface mesh and solution.
          */
-        using SurfaceMeshType = Triangulation<dim-1, dim>;
+        // using SurfaceMeshType = Triangulation<dim-1, dim>;
+
+        // SurfaceMeshType surface_mesh;
+        // DoFHandler<SurfaceMeshType::dimension, SurfaceMeshType::space_dimension> surface_mesh_dof_handler;
+        // LinearAlgebra::Vector surface_solution;
+        // mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
+        // dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
+
+
+        using SurfaceMeshType = Triangulation<dim - 1, dim>;
 
         SurfaceMeshType surface_mesh;
-        DoFHandler<SurfaceMeshType::dimension, SurfaceMeshType::space_dimension> surface_mesh_dof_handler;
+        DoFHandler<dim - 1, dim> surface_mesh_dof_handler;
+        mutable AffineConstraints<double> surface_constraints;
+        std::shared_ptr<FiniteElement<dim - 1, dim>> surface_fe;
+
         LinearAlgebra::Vector surface_solution;
-        mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
         dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
-        template <class M>
-        void init_surface_mesh(M &geom_model);
 
-        template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::Box<3>>::value>>
-        void init_surface_mesh(M &geom_model);
 
-        template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::SphericalShell<3>>::value>>
-        void init_surface_mesh(M &geom_model);
 
+        // template <class M>
+        // void init_surface_mesh(M &geom_model);
+
+        // template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::Box<3>>::value>>
+        // void init_surface_mesh(M &geom_model);
+
+        // template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::SphericalShell<3>>::value>>
+        // void init_surface_mesh(M &geom_model);
+
+        /**
+         * Initialize the surface mesh based on the given geometry model.
+         * This is a fallback that always throws.
+         */
+        void init_surface_mesh(const GeometryModel::Interface<dim> &);
+
+        /**
+         * Specialization for Box geometry model.
+         */
+        void init_surface_mesh(const GeometryModel::Box<dim> &);
+
+        /**
+         * Specialization for Spherical Shell geometry model.
+         */
+        void init_surface_mesh(const GeometryModel::SphericalShell<dim> &);
+        
         /**
          * Pointers to Fastscapelib objects
          */
@@ -133,9 +163,9 @@ namespace aspect
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
          */
-        Table<dim,double> fill_data_table(std::vector<double> &values,
-                                          TableIndices<dim> &size_idx,
-                                          const int &array_size) const;
+        // Table<dim,double> fill_data_table(std::vector<double> &values,
+        //                                   TableIndices<dim> &size_idx,
+        //                                   const int &array_size) const;
 
         /**
          * Suggestion for the number of FastScape steps to run for every ASPECT timestep,
