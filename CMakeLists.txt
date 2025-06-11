@@ -232,7 +232,8 @@ endif()
 
 
 # Fastscapelib (C++)
-set(ASPECT_WITH_FASTSCAPELIB OFF CACHE BOOL "Whether the user wants to compile ASPECT with the landscape evolution C++ code Fastscape(lib), or not.")
+set(ASPECT_WITH_FASTSCAPELIB OFF CACHE BOOL
+    "Whether to compile ASPECT with the landscape evolution C++ code Fastscape(lib), or not.")
 message(STATUS "Using ASPECT_WITH_FASTSCAPELIB = '${ASPECT_WITH_FASTSCAPE}'")
 if(ASPECT_WITH_FASTSCAPELIB)
   find_package(fastscapelib CONFIG)
