@@ -474,7 +474,7 @@ namespace aspect
 
     if (parameters.include_melt_transport)
       {
-        // Note that the compaction pressure is in the fluid pressure block
+        // Note that the total pressure is in the fluid pressure block
         // and will therefore be updated as well.
         const unsigned int fluid_velocity_block = introspection.variable("fluid velocity").block_index;
         const unsigned int fluid_pressure_block = introspection.variable("fluid pressure").block_index;
@@ -504,7 +504,7 @@ namespace aspect
     Assert(pressure_block_index == 1, ExcNotImplemented());
     (void) pressure_block_index;
     Assert(!parameters.include_melt_transport
-           || introspection.variable("compaction pressure").block_index == 1, ExcNotImplemented());
+           || introspection.variable("total pressure").block_index == 1, ExcNotImplemented());
 
     // Re-compute the pressure scaling factor for the Stokes assembly
     pressure_scaling = compute_pressure_scaling_factor();

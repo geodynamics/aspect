@@ -219,28 +219,6 @@ namespace aspect
          * permeability divided by fluid viscosity. Units: m^2/Pa/s.
          */
         virtual double reference_darcy_coefficient () const = 0;
-
-        /**
-         * Returns the cell-averaged and cut-off value of p_c_scale,
-         * the factor we use to rescale the compaction pressure and to
-         * decide if a cell is a melt cell.
-         * The last input argument @p consider_is_melt_cell determines if
-         * this computation takes into account if a cell is a "melt cell".
-         * Melt cells are cells where we solve the melt transport equations,
-         * as indicated by the entries stored in the is_melt_cell vector of
-         * the melt handler. In case @p consider_is_melt_cell is set to true,
-         * this function returns a value of zero if the cell is not a melt cell.
-         * If @p consider_is_melt_cell is set to false the computation
-         * disregards the information about which cells are melt cells,
-         * and computes p_c_scale from the cell-averaged Darcy coefficient
-         * for all cells. This is needed for example when we want to update
-         * the is_melt_cell vector and need to find out which cells should be
-         * marked as melt cells.
-         */
-        double p_c_scale (const MaterialModel::MaterialModelInputs<dim> &inputs,
-                          const MaterialModel::MaterialModelOutputs<dim> &outputs,
-                          const MeltHandler<dim> &melt_handler,
-                          const bool consider_is_melt_cell) const;
     };
 
 

@@ -748,7 +748,7 @@ namespace aspect
                          Patterns::Bool (),
                          "Whether to include the transport of melt into the model or not. If this "
                          "is set to true, two additional pressures (the fluid pressure and the "
-                         "compaction pressure) will be added to the finite element. "
+                         "total pressure) will be added to the finite element. "
                          "Including melt transport in the simulation also requires that there is "
                          "one compositional field that has the name `porosity'. This field will "
                          "be used for computing the additional pressures and the melt velocity, "

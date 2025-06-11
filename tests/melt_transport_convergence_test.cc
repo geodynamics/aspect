@@ -111,27 +111,22 @@ namespace aspect
       virtual void vector_value (const Point<dim>   &p,
                                  Vector<double>   &values) const
       {
-        double x = p(0);
-        double z = p(1);
+        const double x = p(0);
+        const double z = p(1);
+
+        const double p_c = -std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1)));
 
         values[0] = x + std::sin(z);
         values[1] = x;
         values[2] = -std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) + std::exp(0.5000000000e-1 * z);
-        values[3] = -std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1)));
+
+        // P_t is p_c + p_f
+        values[3] = p_c + values[2];
         values[4] = x + std::sin(z) - (0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * (0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * std::pow(-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) - 0.5e0 * (0.1166666666e0 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * (std::cos(z) + 0.1e1) + 0.100e1 * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * std::sin(z) + 0.5e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * std::pow(-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1))) / (0.95e0 + 0.25e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))));
         values[5] = x - (0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * (0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * std::pow(-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * std::exp(0.5000000000e-1 * z) - 0.5e0 * (0.1666666667e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) + 0.500e-1 * (0.2e1 * x + 0.40e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * (std::cos(z) + 0.1e1) + 0.5e-1 * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) / (-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) - 0.5e-1 * std::exp(0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))) * std::pow(-0.9e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1)), -0.2e1) * (0.40e1 * x + 0.800e1 * z) / (0.1e1 + std::pow(x + 0.20e1 * z, 0.4e1)) + 0.5000000000e-1 * std::exp(0.5000000000e-1 * z)) / (0.95e0 + 0.25e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1))));
         values[6] = std::exp(0.5000000000e-1 * z);
         values[7] = 0;
         values[8] = 0.1e0 - 0.5e-1 * std::atan(std::pow(x + 0.20e1 * z, 0.2e1));
-
-        // We have to scale the compaction pressure solution to p_c_bar using sqrt(K_D / ref_K_D).
-        // K_D is equal to the porosity (as defined in the material model).
-        const double K_D = values[8] * values[8];
-        const double ref_K_D = 0.01 * 0.01;
-        const double p_c_scale = std::sqrt(K_D / ref_K_D);
-
-        if (p_c_scale > 0)
-          values[3] /= p_c_scale;
       }
   };
 
@@ -223,41 +218,11 @@ namespace aspect
                                        VectorTools::L2_norm,
                                        &comp_u_f);
 
-
-    // Loop over all cells to compute the error for p_c from p_c_bar
-    const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
-    FEValues<dim> fe_values (this->get_mapping(),
-                             this->get_fe(),
-                             quadrature,
-                             update_quadrature_points | update_values | update_gradients | update_JxW_values);
-
-    MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
-    MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
-
-    MeltHandler<dim>::create_material_model_outputs(out);
-
-    typename DoFHandler<dim>::active_cell_iterator
-    cell = this->get_dof_handler().begin_active(),
-    endc = this->get_dof_handler().end();
-    for (; cell!=endc; ++cell)
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          in.reinit(fe_values, cell, this->introspection(), this->get_solution());
-
-          this->get_material_model().evaluate(in, out);
-
-          const double p_c_scale = dynamic_cast<const MaterialModel::MeltInterface<dim>*>(&this->get_material_model())->p_c_scale(in, out, this->get_melt_handler(), true);
-
-          const unsigned int i = cell->active_cell_index();
-          cellwise_errors_p_c[i] = cellwise_errors_p_c_bar[i] * p_c_scale;
-        }
-
     const double u_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u, VectorTools::L2_norm);
     const double p_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p, VectorTools::L2_norm);
     const double p_f_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p_f, VectorTools::L2_norm);
     const double p_c_bar_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p_c_bar, VectorTools::L2_norm);
-    const double p_c_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p_c, VectorTools::L2_norm);
+    const double p_c_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_p_c_bar, VectorTools::L2_norm);
     const double poro_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_porosity, VectorTools::L2_norm);
     const double u_f_l2 = VectorTools::compute_global_error(this->get_triangulation(), cellwise_errors_u_f, VectorTools::L2_norm);
 

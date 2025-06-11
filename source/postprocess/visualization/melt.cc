@@ -59,9 +59,9 @@ namespace aspect
           if (property_name == "fluid density gradient")
             for (unsigned int i=0; i<dim; ++i)
               solution_names.emplace_back("fluid_density_gradient");
-          else if (property_name == "compaction pressure")
+          else if (property_name == "total pressure")
             {
-              solution_names.emplace_back("p_c");
+              solution_names.emplace_back("p_t");
             }
           else
             {
@@ -130,11 +130,6 @@ namespace aspect
         AssertThrow(melt_outputs != nullptr,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 
-        const double p_c_scale = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(this->get_material_model()).p_c_scale(in,
-                                 out,
-                                 this->get_melt_handler(),
-                                 true);
-
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             unsigned output_index = 0;
@@ -156,16 +151,14 @@ namespace aspect
                       }
                     --output_index;
                   }
-                else if (property_names[i] == "compaction pressure")
+                else if (property_names[i] == "total pressure")
                   {
-                    const unsigned int pc_comp_idx = this->introspection().variable("compaction pressure").first_component_index;
-                    const double p_c_bar = input_data.solution_values[q][pc_comp_idx];
-
-                    computed_quantities[q][output_index] = p_c_scale * p_c_bar;
+                    const unsigned int pc_comp_idx = this->introspection().variable("total pressure").first_component_index;
+                    computed_quantities[q][output_index] = input_data.solution_values[q][pc_comp_idx];
                   }
                 else if (property_names[i] == "darcy coefficient")
                   {
-                    const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q], p_c_scale > 0);
+                    const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
                     computed_quantities[q][output_index] = K_D;
                   }
                 else if (property_names[i] == "darcy coefficient no cutoff")
@@ -241,8 +234,8 @@ namespace aspect
                                      "'Postprocess/Visualization/Melt material properties/List of properties' contains entries more than once. "
                                      "This is not allowed. Please check your parameter file."));
 
-              // Always output compaction pressure
-              property_names.insert(property_names.begin(),"compaction pressure");
+              // Always output total pressure
+              property_names.insert(property_names.begin(),"total pressure");
             }
             prm.leave_subsection();
           }
