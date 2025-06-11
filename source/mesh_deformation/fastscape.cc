@@ -1041,7 +1041,7 @@ namespace aspect
               // stacking controls, apply the factor if the wind barrier was not applied to this point.
               if (elevation[fastscape_nx*i+j] > flat_elevation)
                 {
-                  if ( stack_controls==true || !stack_controls && (control_applied[fastscape_nx*i+j]==0) )
+                  if ( stack_controls==true || (!stack_controls && (control_applied[fastscape_nx*i+j]==0)) )
                     {
                       bedrock_river_incision_rate_array[fastscape_nx*i+j] *= flat_erosional_factor;
                       bedrock_transport_coefficient_array[fastscape_nx*i+j] *= flat_erosional_factor;
@@ -1186,7 +1186,7 @@ namespace aspect
           // model, and set the ghost node according to the direction of flow. As FastScape will
           // receive all velocities it will have a direction, and we only need to look at the (non-ghost)
           // nodes directly to the left and right.
-          if (left == 0 && right == 0 || leftright_ghost_nodes_periodic == true)
+          if ((left == 0 && right == 0) || leftright_ghost_nodes_periodic == true)
             {
               // First we assume that flow is going to the left.
               unsigned int side = index_left;
@@ -1321,7 +1321,7 @@ namespace aspect
                 elevation[index_bot] = elevation[index_bot + fastscape_nx];
             }
 
-          if (bottom == 0 && top == 0 || topbottom_ghost_nodes_periodic == true)
+          if ((bottom == 0 && top == 0) || topbottom_ghost_nodes_periodic == true)
             {
               unsigned int side = index_bot;
               unsigned int op_side = index_top;
