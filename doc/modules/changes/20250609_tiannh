@@ -1,0 +1,7 @@
+Changed: Added support for specifying initial topography in
+spherical coordinates in the 'function' initial topography plugin.
+This enables users to prescribe initial surface perturbations
+naturally on spherical geometries. The new feature extends the
+plugin's flexibility for global-scale mantle convection models.
+<br>
+(Ninghui Tian, Rene Gassmoeller, 2025/06/09)
