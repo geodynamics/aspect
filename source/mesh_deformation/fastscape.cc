@@ -1390,10 +1390,9 @@ namespace aspect
       // Create data table based off of the given size.
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(size_idx);
-      TableIndices<dim> idx;
 
       // Loop through the data table and fill it with the velocities from FastScape.
-      if (dim == 2)
+      if constexpr (dim == 2)
         {
           std::vector<double> values_2d(fastscape_nx);
 
@@ -1423,39 +1422,18 @@ namespace aspect
             }
 
           for (unsigned int x=0; x<data_table.size()[0]; ++x)
-            {
-              idx[0] = x;
-
-              for (unsigned int y=0; y<(data_table.size()[1]); ++y)
-                {
-                  idx[1] = y;
-
-                  // Convert back to m/s.
-                  data_table(idx) = values_2d[x] / year_in_seconds;
-                }
-            }
+            for (unsigned int y=0; y<(data_table.size()[1]); ++y)
+              // Convert back to m/s.
+              data_table(x,y) = values_2d[x] / year_in_seconds;
         }
       else
         {
           // Indexes through x, y, and z.
           for (unsigned int x=0; x<data_table.size()[0]; ++x)
-            {
-              idx[0] = x;
-
-              for (unsigned int y=0; y<data_table.size()[1]; ++y)
-                {
-                  idx[1] = y;
-
-                  for (unsigned int z=0; z<data_table.size()[2]; ++z)
-                    {
-                      idx[2] = z;
-
-                      // Convert back to m/s.
-                      data_table(idx) = values[(fastscape_nx+1)*use_ghost_nodes+fastscape_nx*y+x] / year_in_seconds;
-
-                    }
-                }
-            }
+            for (unsigned int y=0; y<data_table.size()[1]; ++y)
+              for (unsigned int z=0; z<data_table.size()[2]; ++z)
+                // Convert back to m/s.
+                data_table(x,y,z) = values[(fastscape_nx+1)*use_ghost_nodes+fastscape_nx*y+x] / year_in_seconds;
         }
 
       return data_table;
