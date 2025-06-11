@@ -99,6 +99,7 @@ namespace aspect
         // mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
         // dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
+        unsigned int vertex_index(const Point<dim> &p) const;
 
         using SurfaceMeshType = Triangulation<dim - 1, dim>;
 
@@ -109,8 +110,6 @@ namespace aspect
 
         LinearAlgebra::Vector surface_solution;
         dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
-
-
 
 
         // template <class M>
@@ -295,6 +294,18 @@ namespace aspect
          * FastScape X extent (ASPECT X extent + 2*dx for ghost nodes).
          */
         double precision;
+
+
+        // Grid extent in each direction [min, max]
+        std::array<std::pair<double, double>, 2> grid_extent;
+
+        // Grid resolution (spacing between points)
+        double dx;
+        double dy;
+
+        // Number of grid cells in x and y directions
+        unsigned int nx;
+        unsigned int ny;
     };
   }
 }

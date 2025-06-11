@@ -66,13 +66,6 @@ namespace aspect
       n_grid_nodes = surface_mesh.n_active_cells();
     }
 
-    // Fallback
-    template <int dim>
-    void FastScapecc<dim>::init_surface_mesh(const GeometryModel::Interface<dim> &)
-    {
-      AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
-    }
-
     template <int dim>
     void FastScapecc<dim>::init_surface_mesh(const GeometryModel::Box<dim> &geom_model)
     {
@@ -87,17 +80,26 @@ namespace aspect
       auto rep = geom_model.get_repetitions();
       std::vector<unsigned int> repetitions(rep.begin(), rep.begin() + (dim - 1));
 
+      // Store for indexing
+      grid_extent[0] = std::make_pair(origin[0], origin[0] + extent[0]);
+      grid_extent[1] = std::make_pair(origin[1], origin[1] + extent[1]);
+      nx = repetitions[0];
+      ny = repetitions[1];
+      dx = (grid_extent[0].second - grid_extent[0].first) / static_cast<double>(nx);
+      dy = (grid_extent[1].second - grid_extent[1].first) / static_cast<double>(ny);
+
+      // Generate surface mesh
       GridGenerator::subdivided_hyper_rectangle(surface_mesh, repetitions, p1, p2);
 
       surface_fe = std::make_shared<FE_Q<dim - 1, dim>>(1);
       surface_mesh_dof_handler.reinit(surface_mesh);
-
       surface_mesh_dof_handler.distribute_dofs(*surface_fe);
 
       surface_constraints.clear();
       DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
       surface_constraints.close();
 }
+
 
 
     template <int dim>
@@ -166,15 +168,33 @@ namespace aspect
 
       boundary_solution.compress(VectorOperation::insert);
 
-
     }
 
 
+    template <int dim>
+    unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
+    {
+      if constexpr (dim == 3)
+        {
+          const unsigned int i = static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5);
+          const unsigned int j = static_cast<unsigned int>((p[1] - grid_extent[1].first) / dy + 0.5);
+          return j * nx + i;
+        }
+      else if constexpr (dim == 2)
+        {
+          const unsigned int i = static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5);
+          return i;
+        }
+      else
+        AssertThrow(false, ExcMessage("Unsupported dimension in vertex_index()."));
+    }
+
 
     template <int dim>
-    void FastScapecc<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                                    AffineConstraints<double> &mesh_velocity_constraints,
-                                                                    const std::set<types::boundary_id> &boundary_ids) const
+    void FastScapecc<dim>::compute_velocity_constraints_on_boundary(
+        const DoFHandler<dim> &mesh_deformation_dof_handler,
+        AffineConstraints<double> &mesh_velocity_constraints,
+        const std::set<types::boundary_id> &boundary_ids) const
     {
       if (this->get_timestep_number() == 0)
         return;
@@ -183,44 +203,47 @@ namespace aspect
 
       const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
 
-      // Temporary storage for computation
+      // Identify geometry model type
+      const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+      const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+
+      AssertThrow(spherical_model || box_model, ExcMessage("Unsupported geometry model in FastScapecc."));
+
+      // Temporary storage: elevation, vertex_index, and vertical/radial velocity
       std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
 
-      // Iterate over active cells of the surface mesh
       for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
         {
-          for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<2>::vertices_per_cell; ++vertex_index)
+          for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
             {
-              const Point<dim> vertex = cell->vertex(vertex_index); // Access the vertex
+              const Point<dim> vertex = cell->vertex(v);
+              const unsigned int dof_index = cell->vertex_dof_index(v, 0);
+              const double surface_value = surface_solution[dof_index];
 
-              // Access the DoF index for the current vertex
-              unsigned int vertex_dof_index = cell->vertex_dof_index(vertex_index, 0); // Assume component 0
-
-              // Retrieve the solution value at the DoF index
-              double surface_value_at_vertex = surface_solution[vertex_dof_index];
-
-              // Compute radial velocity
-              double radial_velocity = (vertex(0) * surface_value_at_vertex +
-                                        vertex(1) * surface_value_at_vertex +
-                                        vertex(2) * surface_value_at_vertex) /
-                                       vertex.norm();
-
-              // Surface elevation
-              double elevation = vertex(2);
-
-              auto spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim>*>(&this->get_geometry_model());
-              if (spherical_model != nullptr)
-                {
+              // Compute elevation
+              double elevation = vertex[2];
+              if (spherical_model)
                 elevation -= spherical_model->outer_radius();
-                }
 
-              // Store results
+              // Compute velocity (radial or vertical)
+              double velocity = 0.0;
+              if (spherical_model)
+                velocity = (vertex[0] * surface_value +
+                            vertex[1] * surface_value +
+                            vertex[2] * surface_value) / vertex.norm();
+              else if (box_model)
+                velocity = surface_value;
+
+              // Get 1D or 2D grid index from physical position
+              const unsigned int index = this->vertex_index(vertex);
+
+              // Fill temporary variables
               temporary_variables[0].push_back(elevation);
-              temporary_variables[2].push_back(radial_velocity * year_in_seconds);
+              temporary_variables[1].push_back(static_cast<double>(index));
+              temporary_variables[2].push_back(velocity * year_in_seconds);
             }
         }
-
-      // int array_size = healpix_grid.Npix();
+    
       std::vector<double> V(n_grid_nodes);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -228,6 +251,7 @@ namespace aspect
           // Initialize the variables that will be sent to FastScape.
           std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
           std::vector<double> vz(n_grid_nodes);
+          std::vector<double> vy(n_grid_nodes);
           std::vector<double> h_old(n_grid_nodes);
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
@@ -235,6 +259,7 @@ namespace aspect
               int index = static_cast<int>(temporary_variables[1][i]);
               h[index] = temporary_variables[0][i];
               vz[index] = temporary_variables[2][i];
+              vy[index] = temporary_variables[3][i];
             }
 
           for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
@@ -256,7 +281,7 @@ namespace aspect
                 {
                   int index = static_cast<int>(temporary_variables[1][i]);
                   h[index] = temporary_variables[0][i];
-                  vz[index] = temporary_variables[2][i];
+                  vz[index] = temporary_variables[dim+1][i];
                 }
             }
 
