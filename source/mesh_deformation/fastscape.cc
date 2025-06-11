@@ -1436,7 +1436,7 @@ namespace aspect
                 data_table(x,y,z) = values[(fastscape_nx+1)*use_ghost_nodes+fastscape_nx*y+x] / year_in_seconds;
         }
 
-      return data_table;
+      return std::move(data_table);
     }
 
 
