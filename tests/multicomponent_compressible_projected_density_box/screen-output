@@ -1,0 +1,32 @@
+
+Number of active cells: 4 (on 1 levels)
+Number of degrees of freedom: 109 (50+9+25+25)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77409e-16, 0, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.77409e-16
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3822 kg/m^3, 1e+21 Pa s, 3822 kg
+     Compositions min/max/mass:                         3822/3822/3822
+
+*** Timestep 1:  t=1e+06 years, dt=1e+06 years
+   Solving temperature system... 0 iterations.
+   Copying properties into prescribed compositional field density_field... done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77409e-16, 0, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.77409e-16
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3822 kg/m^3, 1e+21 Pa s, 3822 kg
+     Compositions min/max/mass:                         3822/3822/3822
+
+Termination requested by criterion: end time
+
+
+

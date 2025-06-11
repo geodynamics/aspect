@@ -106,11 +106,11 @@ namespace aspect
          * @}
          */
 
-         /**
-         * Creates additional output objects of type PrescribedFieldOutput filled with
-         * the densities (necessary for the projected density approximation of
-         * the Stokes equation).
-         */
+        /**
+        * Creates additional output objects of type PrescribedFieldOutput filled with
+        * the densities (necessary for the projected density approximation of
+        * the Stokes equation).
+        */
         void
         create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
 

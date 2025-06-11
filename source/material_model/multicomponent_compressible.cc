@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/multicomponent_compressible.h>
 #include <aspect/utilities.h>
+#include <deal.II/base/parameter_handler.h>
 
 #include <numeric>
 
@@ -39,7 +40,7 @@ namespace aspect
 
       unsigned int density_field_index = numbers::invalid_unsigned_int;
 
-      if (this->introspection().compositional_name_exists("density_field"))
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density))
         density_field_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
@@ -70,16 +71,19 @@ namespace aspect
           // User-defined volume fraction averaging of viscosities
           out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
 
-          // Prescribe the density field to the current value of the density. The actual projection
-          // only happens inside Simulator<dim>::interpolate_material_output_into_compositional_field,
-          // and this just sets the correct term the field will be set to.
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
-          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
-            prescribed_field_out->prescribed_field_outputs[i][density_field_index] = out.densities[i];
+          // set up variable to interpolate prescribed field outputs onto compositional fields
+          if (const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+              = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>())
+            {
+              prescribed_field_out->prescribed_field_outputs[i][density_field_index] = out.densities[i];
+            }
         }
     }
+
+
 
     template <int dim>
     bool
@@ -88,6 +92,8 @@ namespace aspect
     {
       return equation_of_state.is_compressible();
     }
+
+
 
     template <int dim>
     void
@@ -121,6 +127,8 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
+
 
     template <int dim>
     void
@@ -165,17 +173,19 @@ namespace aspect
                                              | NonlinearDependence::compositional_fields;
     }
 
+
+
     template <int dim>
     void
     MulticomponentCompressible<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
-      {
-        const unsigned int n_points = out.n_evaluation_points();
-        out.additional_outputs.push_back(
-          std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>
-          (n_points, this->n_compositional_fields()));
-      }
+      if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>
+            (n_points, this->n_compositional_fields()));
+        }
     }
   }
 }
