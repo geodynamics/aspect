@@ -73,45 +73,6 @@ namespace aspect
       AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
     }
 
-
-    // For Box geometry
-    // template <int dim>
-    // void FastScapecc<dim>::init_surface_mesh(const GeometryModel::Box<dim> &geom_model)
-    // {
-    //   this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
-
-    //   const auto origin = geom_model.get_origin();
-    //   const auto extent = geom_model.get_extents();
-
-    //   const Point<dim - 1> p1(origin[0], origin[1]);
-    //   const Point<dim - 1> p2(origin[0] + extent[0], origin[1] + extent[1]);
-
-    //   auto rep = geom_model.get_repetitions();
-    //   std::vector<unsigned int> repetitions(rep.begin(), rep.begin() + (dim - 1));
-
-    //   GridGenerator::subdivided_hyper_rectangle(surface_mesh, repetitions, p1, p2);
-    // }
-
-
-    // For SphericalShell geometry
-    // template <int dim>
-    // void FastScapecc<dim>::init_surface_mesh(const GeometryModel::SphericalShell<dim> &geom_model)
-    // {
-    //   this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
-
-    //   const Point<dim> center; // default (0, 0, 0)
-    //   GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
-
-    //   surface_mesh.refine_global(3);
-
-    //   surface_fe = dealii::FE_Q<dim - 1>(1);  // Use linear FE on surface
-
-    //   surface_mesh_dof_handler.distribute_dofs(surface_fe);
-
-    //   DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-    //   surface_constraints.close();
-    // }
-
     template <int dim>
     void FastScapecc<dim>::init_surface_mesh(const GeometryModel::Box<dim> &geom_model)
     {
@@ -160,71 +121,6 @@ namespace aspect
     }
 
 
-
-
-
-    // template <int dim>
-    // void FastScapecc<dim>::initialize()
-    // {
-    //   const auto &geom_model = this->get_geometry_model();
-
-    //   this->get_pcout() << "Geometry model type: " << typeid(geom_model).name() << std::endl;
-
-    //   // Runtime dispatch to correct overload based on actual geometry type
-    //   if (const auto *box = dynamic_cast<const GeometryModel::Box<dim> *>(&geom_model))
-    //     init_surface_mesh(*box);
-    //   else if (const auto *sphere = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geom_model))
-    //     init_surface_mesh(*sphere);
-    //   else
-    //     AssertThrow(false, ExcMessage("FastScapecc plugin only supports 3D Box or Spherical Shell geometries."));
-
-    //   n_grid_nodes = surface_mesh.n_active_cells();
-    // }
-
-    // // Generic fallback — triggers if unsupported geometry type
-    // template <int dim>
-    // template <class M>
-    // void FastScapecc<dim>::init_surface_mesh(M &)
-    // {
-    //   AssertThrow(false, ExcMessage("FastScapecc plugin only supports 3D Box or Spherical Shell geometries."));
-    // }
-
-    // // Specialization for Box<3>
-    // template <int dim>
-    // template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::Box<3>>::value>>
-    // void FastScapecc<dim>::init_surface_mesh(M &geom_model)
-    // {
-    //   this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
-
-    //   const auto origin = geom_model.get_origin();
-    //   const auto extent = geom_model.get_extents();
-
-    //   const Point<2> p1(origin[0], origin[1]);
-    //   const Point<2> p2(origin[0] + extent[0], origin[1] + extent[1]);
-
-    //   auto rep = geom_model.get_repetitions();
-    //   std::vector<unsigned int> repetitions(rep.begin(), rep.end());
-
-    //   GridGenerator::subdivided_hyper_rectangle(surface_mesh, repetitions, p1, p2);
-    // }
-
-    // // Specialization for SphericalShell<3>
-    // template <int dim>
-    // template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::SphericalShell<3>>::value>>
-    // void FastScapecc<dim>::init_surface_mesh(M &geom_model)
-    // {
-    //   this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
-
-    //   const Point<3> center(0, 0, 0); // Origin
-    //   GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
-
-    //   surface_mesh.refine_global(3);
-
-    //   DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-    //   surface_constraints.close();
-    // }
-
-
     template <int dim>
     void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &boundary_ids)
     {
@@ -270,52 +166,6 @@ namespace aspect
 
       boundary_solution.compress(VectorOperation::insert);
 
-      // dealii::Functions::FEFieldFunction<2, dealii::LinearAlgebra::distributed::Vector<double>,3> 
-      //       fe_function(this->get_dof_handler(), boundary_solution, this->get_mapping());
-
-      // VectorTools::interpolate_boundary_values (surface_mesh_dof_handler,
-      //                                           *boundary_ids.begin(),
-      //                                           boundary_solution,
-      //                                           surface_constraints);
-
-      // VectorTools::interpolate_to_different_mesh(
-      //     this->get_dof_handler(),         // Source DoFHandler
-      //     this->get_solution(),            // Source solution vector
-      //     surface_mesh_dof_handler,        // Target DoFHandler
-      //     surface_solution                 // Target solution vector
-      // );
-
-      // Project the boundary solution onto the 2D surface mesh
-      // VectorTools::project(
-      //     this->template get_mapping<2,3>(), 
-      //     surface_mesh_dof_handler,
-      //     surface_constraints,
-      //     quadrature,
-      //     fe_function, 
-      //     surface_solution);
-
-
-    /**
-     * A function that creates constraints for the velocity of certain mesh
-     * vertices (e.g. the surface vertices) for a specific boundary.
-     * The calling class will respect
-     * these constraints when computing the new vertex positions.
-     */
-    // template <int dim>
-    // void
-    // BoundaryFunction<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-    //                                                                 AffineConstraints<double> &mesh_velocity_constraints,
-    //                                                                 const std::set<types::boundary_id> &boundary_ids) const
-    // {
-    //   // Loop over all boundary indicators to set the velocity constraints
-    //   for (const auto boundary_id : boundary_ids)
-    //     VectorTools::interpolate_boundary_values (this->get_mapping(),
-    //                                               mesh_deformation_dof_handler,
-    //                                               boundary_id,
-    //                                               function,
-    //                                               mesh_velocity_constraints);
-    // }
-
 
     }
 
@@ -333,17 +183,6 @@ namespace aspect
 
       const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
 
-      // VectorTools::interpolate_to_different_mesh(
-      //     this->get_dof_handler(),         // Source DoFHandler
-      //     this->get_solution(),            // Source solution vector
-      //     surface_mesh_dof_handler,        // Target DoFHandler
-      //     surface_solution                 // Target solution vector
-      // );
-
-      // Apply hanging node constraints to ensure continuity
-      // TODO: this yields a link error
-      // surface_constraints.distribute(surface_solution);
-
       // Temporary storage for computation
       std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
 
@@ -358,12 +197,12 @@ namespace aspect
               unsigned int vertex_dof_index = cell->vertex_dof_index(vertex_index, 0); // Assume component 0
 
               // Retrieve the solution value at the DoF index
-              double interpolated_value = surface_solution[vertex_dof_index];
+              double surface_value_at_vertex = surface_solution[vertex_dof_index];
 
               // Compute radial velocity
-              double radial_velocity = (vertex(0) * interpolated_value +
-                                        vertex(1) * interpolated_value +
-                                        vertex(2) * interpolated_value) /
+              double radial_velocity = (vertex(0) * surface_value_at_vertex +
+                                        vertex(1) * surface_value_at_vertex +
+                                        vertex(2) * surface_value_at_vertex) /
                                        vertex.norm();
 
               // Surface elevation
@@ -441,20 +280,28 @@ namespace aspect
 
           double cell_area = surface_mesh.begin_active()->measure();
 
-          // Create the FastScape grid adapter
+          // 1. Create the FastScape grid adapter
           auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
 
+          // 2. Define the node status array BEFORE creating the flow graph //Benoit
+          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
+          grid.set_nodes_status(node_status_array);
+
+          // 3. Create the flow graph 
           auto flow_graph = FlowGraphType(
               grid,
-              fastscapelib::single_flow_router()
+              { fastscapelib::single_flow_router() }
           );
 
+          // Pick an arbitrary base node for the flow to be computed
+          std::vector<std::size_t> base_level_nodes = {0};
+          // Set base level nodes
+          flow_graph.set_base_levels(base_level_nodes);
+          // 4. Now you can build the erosion model
           auto spl_eroder = fastscapelib::spl_eroder<FlowGraphType>(
               fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd)
           );
 
-          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
-          grid.set_nodes_status(node_status_array);
 
           // Create data arrays using grid->shape()
           auto uplift_rate = xt::adapt(vz);
@@ -528,57 +375,7 @@ namespace aspect
 
       this->get_pcout() << "Applying erosion velocities to mesh boundary." << std::endl;
 
-      // auto healpix_velocity_function = [&](const Point<dim> &p) -> double
-      // {
-      //   int index = healpix_grid.vec2pix({p(0), p(1), p(2)});
-      //   return V[index];
-      // };
-
-      // VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-      //   healpix_velocity_function,
-      //   dim - 1,
-      //   dim);
-
-      // VectorTools::interpolate_boundary_values (mesh_deformation_dof_handler,
-      //                                           *boundary_ids.begin(),
-      //                                           vector_function_object,
-      //                                           mesh_velocity_constraints);
     }
-
-
-    // template <int dim>
-    // Table<dim,double>
-    // FastScapecc<dim>::fill_data_table(std::vector<double> &values,
-    //                                   TableIndices<dim> &size_idx,
-    //                                   const int &array_size) const
-    // {
-    //   // Create data table based off of the given size.
-    //   Table<dim,double> data_table;
-    //   data_table.TableBase<dim,double>::reinit(size_idx);
-    //   TableIndices<dim> idx;
-
-    //   // Loop through the data table and fill it with the velocities from FastScape.
-
-    //   // Indexes through z, y, and then x.
-    //   for (unsigned int k=0; k<data_table.size()[2]; ++k)
-    //     {
-    //       idx[2] = k;
-
-    //       for (unsigned int i=0; i<data_table.size()[1]; ++i)
-    //         {
-    //           idx[1] = i;
-
-    //           for (unsigned int j=0; j<data_table.size()[0]; ++j)
-    //             {
-    //               idx[0] = j;
-
-    //               // Convert back to m/s.
-    //               data_table(idx) = values[array_size*i+j] / year_in_seconds;
-    //             }
-    //         }
-    //     }
-    //   return data_table;
-    // }
 
     template <int dim>
     bool
