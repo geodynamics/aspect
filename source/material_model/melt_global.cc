@@ -78,7 +78,7 @@ namespace aspect
     MeltGlobal<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions,
-                    MaterialModel::MaterialModelOutputs<dim> /*out*/) const
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       double depletion = 0.0;
 

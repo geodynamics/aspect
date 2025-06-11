@@ -153,10 +153,11 @@ namespace aspect
          * @param in Object that contains the current conditions.
          * @param melt_fractions Vector of doubles that is filled with the
          * equilibrium melt fraction for each given input conditions.
+         * @param out Optional pointer to the MaterialModelOutputs object
          */
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions, 
-                                     MaterialModel::MaterialModelOutputs<dim> out = MaterialModel::MaterialModelOutputs<dim> (0, 0)) const = 0;
+                                     std::vector<double> &melt_fractions,
+                                     const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const = 0;
 
         /**
          * Return whether an object provided as argument is of a class that is
