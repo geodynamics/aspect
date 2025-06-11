@@ -1382,8 +1382,8 @@ namespace aspect
 
     template <int dim>
     Table<dim,double>
-    FastScape<dim>::fill_data_table(std::vector<double> &values,
-                                    TableIndices<dim> &size_idx,
+    FastScape<dim>::fill_data_table(const std::vector<double> &values,
+                                    const TableIndices<dim> &size_idx,
                                     const unsigned int &fastscape_nx,
                                     const unsigned int &fastscape_ny) const
     {
