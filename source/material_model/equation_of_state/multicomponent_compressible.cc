@@ -36,7 +36,6 @@ namespace aspect
                const unsigned int q,
                MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const
       {
-
         const double pressure = in.pressure[q];
         const double temperature = std::max(in.temperature[q], 1.); // temperature can't be zero for correct evaluation
 
