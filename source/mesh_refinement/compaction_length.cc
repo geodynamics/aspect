@@ -68,7 +68,7 @@ namespace aspect
             this->get_material_model().evaluate(in, out);
 
             const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_out
-              = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+              = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
             AssertThrow(melt_out != nullptr,
                         ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 

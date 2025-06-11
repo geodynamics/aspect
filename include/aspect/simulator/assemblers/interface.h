@@ -560,7 +560,8 @@ namespace aspect
          * and allows the assembler to attach AdditionalOutputs. The
          * function might be called more than once for a
          * MaterialModelOutput, so it is recommended to check if
-         * get_additional_output() returns an instance before adding a new
+         * MaterialModelOutputs<dim>::get_additional_output_object()
+         * returns an instance before adding a new
          * one to the additional_outputs vector. By default this function does
          * not create additional outputs.
          *

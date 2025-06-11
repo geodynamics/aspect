@@ -386,7 +386,7 @@ namespace aspect
               this->get_material_model().create_additional_named_outputs(out);
 
               const bool material_model_provides_seismic_output =
-                (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
+                (out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
 
               const bool output_vs = std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end();
               const bool output_vp = std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end();

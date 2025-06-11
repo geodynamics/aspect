@@ -181,7 +181,7 @@ namespace aspect
       // the rates of temperature change. To make sure these (incorrect) values are never used anywhere,
       // overwrite them with signaling_NaNs.
       const std::shared_ptr<const MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
-        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+        = material_model_outputs.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
       if (reaction_rate_outputs == nullptr)
         for (double &q : heating_model_outputs.rates_of_temperature_change)

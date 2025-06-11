@@ -422,16 +422,16 @@ namespace aspect
       {
         // fill seismic velocity outputs if they exist
         if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
-            = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
+            = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>())
           fill_seismic_velocities(in, out.densities, volume_fractions, *seismic_out);
 
         // fill phase volume outputs if they exist
         if (const std::shared_ptr<NamedAdditionalMaterialOutputs<dim>> phase_volume_fractions_out
-            = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim>>())
+            = out.template get_additional_output_object<NamedAdditionalMaterialOutputs<dim>>())
           fill_phase_volume_fractions(in, volume_fractions, *phase_volume_fractions_out);
 
         if (const std::shared_ptr<PhaseOutputs<dim>> dominant_phases_out
-            = out.template get_additional_output<PhaseOutputs<dim>>())
+            = out.template get_additional_output_object<PhaseOutputs<dim>>())
           fill_dominant_phases(in, volume_fractions, *dominant_phases_out);
       }
 
@@ -528,21 +528,21 @@ namespace aspect
       void
       ThermodynamicTableLookup<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (out.template get_additional_output<NamedAdditionalMaterialOutputs<dim>>() == nullptr)
+        if (out.template get_additional_output_object<NamedAdditionalMaterialOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
               std::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
           }
 
-        if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
+        if (out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
               std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
           }
 
-        if (out.template get_additional_output<PhaseOutputs<dim>>() == nullptr
+        if (out.template get_additional_output_object<PhaseOutputs<dim>>() == nullptr
             && material_lookup[0]->has_dominant_phase())
           {
             const unsigned int n_points = out.n_evaluation_points();

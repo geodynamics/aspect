@@ -237,7 +237,7 @@ namespace aspect
 
               // Compute viscosity derivatives if they are requested
               if (const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives =
-                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
+                    out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
 
                 rheology->compute_viscosity_derivatives(i, volume_fractions,
                                                         isostrain_viscosities.composition_viscosities,
@@ -256,7 +256,7 @@ namespace aspect
               out.viscosities[i] = numbers::signaling_nan<double>();
 
               if (const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives =
-                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
+                    out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
                 {
                   derivatives->viscosity_derivative_wrt_strain_rate[i] = numbers::signaling_nan<SymmetricTensor<2,dim>>();
                   derivatives->viscosity_derivative_wrt_pressure[i] = numbers::signaling_nan<double>();

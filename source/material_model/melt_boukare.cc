@@ -579,10 +579,10 @@ namespace aspect
     MeltBoukare<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
-      const std::shared_ptr<MeltOutputs<dim>> melt_out = out.template get_additional_output<MeltOutputs<dim>>();
-      const std::shared_ptr<BoukareOutputs<dim>> boukare_out = out.template get_additional_output<BoukareOutputs<dim>>();
-      const std::shared_ptr<EnthalpyOutputs<dim>> enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<MeltOutputs<dim>> melt_out = out.template get_additional_output_object<MeltOutputs<dim>>();
+      const std::shared_ptr<BoukareOutputs<dim>> boukare_out = out.template get_additional_output_object<BoukareOutputs<dim>>();
+      const std::shared_ptr<EnthalpyOutputs<dim>> enthalpy_out = out.template get_additional_output_object<EnthalpyOutputs<dim>>();
 
       const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
       unsigned int Fe_melt_idx = numbers::invalid_unsigned_int;
@@ -1249,13 +1249,13 @@ namespace aspect
     MeltBoukare<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
+          && out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
         {
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (out.n_evaluation_points(), this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output<BoukareOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<BoukareOutputs<dim>>() == nullptr)
         {
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::BoukareOutputs<dim>> (out.n_evaluation_points()));

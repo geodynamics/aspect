@@ -323,7 +323,7 @@ namespace aspect
       {
         // Create the ElasticAdditionalOutputs that include the average shear modulus, elastic
         // viscosity, timestep ratio and total deviatoric stress of the current timestep.
-        if (out.template get_additional_output<ElasticAdditionalOutputs<dim>>() == nullptr)
+        if (out.template get_additional_output_object<ElasticAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -331,7 +331,7 @@ namespace aspect
           }
 
         // We need to modify the shear heating outputs to correctly account for elastic stresses.
-        if (out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>() == nullptr)
+        if (out.template get_additional_output_object<HeatingModel::PrescribedShearHeatingOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -342,7 +342,7 @@ namespace aspect
         // step (either on the fields or directly on the particles)
         // that sets both sets of stresses to the total stress of the
         // previous timestep.
-        if (out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr &&
+        if (out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr &&
             (this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
           {
             const unsigned int n_points = out.n_evaluation_points();
@@ -362,12 +362,12 @@ namespace aspect
         // Create a reference to the structure for the elastic outputs.
         // The structure is created during the Stokes assembly.
         const std::shared_ptr<MaterialModel::ElasticOutputs<dim>>
-        elastic_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+        elastic_out = out.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
 
         // Create a reference to the structure for the prescribed shear heating outputs.
         // The structure is created during the advection assembly.
         const std::shared_ptr<HeatingModel::PrescribedShearHeatingOutputs<dim>>
-        heating_out = out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>();
+        heating_out = out.template get_additional_output_object<HeatingModel::PrescribedShearHeatingOutputs<dim>>();
 
         if (elastic_out == nullptr && heating_out == nullptr)
           return;
@@ -485,7 +485,7 @@ namespace aspect
       {
         // Create a reference to the structure for the elastic additional outputs
         const std::shared_ptr<MaterialModel::ElasticAdditionalOutputs<dim>>
-        elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+        elastic_additional_out = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
         if (elastic_additional_out == nullptr || !in.requests_property(MaterialProperties::additional_outputs))
           return;
@@ -600,7 +600,7 @@ namespace aspect
                                             MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
-          = out.template get_additional_output<ReactionRateOutputs<dim>>();
+          = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
         if (reaction_rate_out == nullptr)
           return;

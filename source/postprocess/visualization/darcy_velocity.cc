@@ -74,7 +74,7 @@ namespace aspect
         MeltHandler<dim>::create_material_model_outputs(out);
         this->get_material_model().evaluate(in, out);
         const std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out
-          = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+          = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
         AssertThrow(std::isfinite(fluid_out->fluid_viscosities[0]),
                     ExcMessage("To compute the Darcy velocity the material model needs to provide the melt material model "
                                "outputs. At least the fluid viscosity was not computed, or is not a number."));

@@ -851,7 +851,7 @@ namespace aspect
         // store the original viscosities if we need to compute the
         // system jacobian later on
         const std::shared_ptr<MaterialModelDerivatives<dim>> derivatives =
-          values_out.template get_additional_output<MaterialModelDerivatives<dim>>();
+          values_out.template get_additional_output_object<MaterialModelDerivatives<dim>>();
 
         std::vector<double> viscosity_before_averaging;
         if (derivatives != nullptr)

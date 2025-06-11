@@ -40,10 +40,10 @@ namespace aspect
       const bool use_operator_split = (this->get_parameters().use_operator_splitting);
 
       const std::shared_ptr<const MaterialModel::ReactionRateOutputs<dim>> reaction_rate_out
-        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+        = material_model_outputs.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
       const std::shared_ptr<const MaterialModel::EnthalpyOutputs<dim>> enthalpy_out
-        = material_model_outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>();
+        = material_model_outputs.template get_additional_output_object<MaterialModel::EnthalpyOutputs<dim>>();
 
       double enthalpy_change;
 
@@ -181,7 +181,7 @@ namespace aspect
     LatentHeatMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       if (this->include_melt_transport() && retrieve_entropy_change_from_material_model
-          && outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>() == nullptr)
+          && outputs.template get_additional_output_object<MaterialModel::EnthalpyOutputs<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::EnthalpyOutputs<dim>> (outputs.n_evaluation_points()));

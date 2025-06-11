@@ -446,7 +446,7 @@ namespace aspect
          */
         template <class AdditionalInputType>
         const std::shared_ptr<AdditionalInputType>
-        get_additional_input();
+        get_additional_input_object();
 
         /**
          * A version of the previous function that is used when the object
@@ -454,7 +454,7 @@ namespace aspect
          */
         template <class AdditionalInputType>
         const std::shared_ptr<const AdditionalInputType>
-        get_additional_input() const;
+        get_additional_input_object() const;
 
         /**
          * Vector of shared pointers to additional material model input
@@ -634,14 +634,15 @@ namespace aspect
          */
         template <class AdditionalOutputType>
         const std::shared_ptr<AdditionalOutputType>
-        get_additional_output();
+        get_additional_output_object();
 
         /**
-         * Constant version of get_additional_output() returning a const pointer.
+         * Constant version of get_additional_output_object()
+         * returning a const pointer.
          */
         template <class AdditionalOutputType>
         const std::shared_ptr<const AdditionalOutputType>
-        get_additional_output() const;
+        get_additional_output_object() const;
 
         /**
          * Steal the additional outputs from @p other. The destination (@p
@@ -1462,7 +1463,7 @@ namespace aspect
     template <int dim>
     template <class AdditionalInputType>
     const std::shared_ptr<AdditionalInputType>
-    MaterialModelInputs<dim>::get_additional_input()
+    MaterialModelInputs<dim>::get_additional_input_object()
     {
       for (unsigned int i=0; i<additional_inputs.size(); ++i)
         if (dynamic_cast<AdditionalInputType *> (additional_inputs[i].get()))
@@ -1475,7 +1476,7 @@ namespace aspect
     template <int dim>
     template <class AdditionalInputType>
     const std::shared_ptr<const AdditionalInputType>
-    MaterialModelInputs<dim>::get_additional_input() const
+    MaterialModelInputs<dim>::get_additional_input_object() const
     {
       for (unsigned int i=0; i<additional_inputs.size(); ++i)
         if (dynamic_cast<AdditionalInputType *> (additional_inputs[i].get()))
@@ -1488,7 +1489,7 @@ namespace aspect
     template <int dim>
     template <class AdditionalOutputType>
     const std::shared_ptr<AdditionalOutputType>
-    MaterialModelOutputs<dim>::get_additional_output()
+    MaterialModelOutputs<dim>::get_additional_output_object()
     {
       for (unsigned int i=0; i<additional_outputs.size(); ++i)
         if (dynamic_cast<AdditionalOutputType *> (additional_outputs[i].get()))
@@ -1501,7 +1502,7 @@ namespace aspect
     template <int dim>
     template <class AdditionalOutputType>
     const std::shared_ptr<const AdditionalOutputType>
-    MaterialModelOutputs<dim>::get_additional_output() const
+    MaterialModelOutputs<dim>::get_additional_output_object() const
     {
       for (unsigned int i=0; i<additional_outputs.size(); ++i)
         if (dynamic_cast<const AdditionalOutputType *> (additional_outputs[i].get()))

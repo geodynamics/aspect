@@ -1664,7 +1664,7 @@ namespace aspect
     material_model->create_additional_named_outputs(out);
 
     const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
-      = out.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+      = out.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
     AssertThrow(reaction_rate_outputs != nullptr,
                 ExcMessage("You are trying to use the operator splitting solver scheme, "
@@ -1992,9 +1992,9 @@ namespace aspect
     material_model->create_additional_named_outputs(out);
 
     const std::shared_ptr<MaterialModel::PrescribedFieldOutputs<dim>> prescribed_field_out
-      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim>>();
+      = out.template get_additional_output_object<MaterialModel::PrescribedFieldOutputs<dim>>();
     const std::shared_ptr<MaterialModel::PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
-      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
+      = out.template get_additional_output_object<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
     // Make a loop first over all cells, and then over all degrees of freedom in each element
     // to interpolate material properties onto a solution vector.

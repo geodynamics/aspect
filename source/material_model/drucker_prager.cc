@@ -37,7 +37,7 @@ namespace aspect
     {
       // set up additional output for the derivatives
       const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
-        = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+        = out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
       EquationOfStateOutputs<dim> eos_outputs (1);
 

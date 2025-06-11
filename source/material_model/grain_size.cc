@@ -610,7 +610,7 @@ namespace aspect
                     }
 
                   const std::shared_ptr<PlasticAdditionalOutputs<dim>> plastic_out
-                    = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+                    = out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>();
 
                   if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
@@ -624,7 +624,7 @@ namespace aspect
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
               if (const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
-                  = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
+                  = out.template get_additional_output_object<DislocationViscosityOutputs<dim>>())
                 if (in.requests_property(MaterialProperties::additional_outputs))
                   {
                     disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
@@ -636,7 +636,7 @@ namespace aspect
           // fill seismic velocities outputs if they exist
           if (use_table_properties)
             if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
-                = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
+                = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>())
               if (in.requests_property(MaterialProperties::additional_outputs))
                 {
                   seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
@@ -645,7 +645,7 @@ namespace aspect
         }
 
       const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
-        = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
+        = out.template get_additional_output_object<DislocationViscosityOutputs<dim>>();
       if (in.requests_property(MaterialProperties::additional_outputs))
         grain_size_evolution->fill_additional_outputs(in,out,phase_indices,
                                                       disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
@@ -1144,7 +1144,7 @@ namespace aspect
     GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // These properties are useful as output.
-      if (out.template get_additional_output<DislocationViscosityOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<DislocationViscosityOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -1155,14 +1155,14 @@ namespace aspect
       grain_size_evolution->create_additional_named_outputs(out);
 
       // These properties are only output properties.
-      if (use_table_properties && out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
+      if (use_table_properties && out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-      if (enable_drucker_prager_rheology && out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+      if (enable_drucker_prager_rheology && out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

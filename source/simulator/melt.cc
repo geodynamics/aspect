@@ -123,7 +123,7 @@ namespace aspect
         return 0.0;
 
       const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
-        = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+        = outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
       const double ref_K_D = this->reference_darcy_coefficient();
 
       double K_D = 0.0;
@@ -188,7 +188,7 @@ namespace aspect
       MeltHandler<dim>::create_material_model_outputs(outputs);
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
+          && outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(outputs.n_evaluation_points()));
@@ -196,7 +196,7 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
+             outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
              == outputs.n_evaluation_points(), ExcInternalError());
     }
 
@@ -227,7 +227,7 @@ namespace aspect
                                                                        true);
 
       const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
-        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
@@ -337,7 +337,7 @@ namespace aspect
 
         const Introspection<dim> &introspection = simulator_access->introspection();
         const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_out
-          = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+          = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
         Assert(melt_out != nullptr, ExcInternalError());
 
@@ -418,9 +418,9 @@ namespace aspect
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
 
       const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
-        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
       const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
-        = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
       const double pressure_scaling = this->get_pressure_scaling();
 
@@ -594,7 +594,7 @@ namespace aspect
       const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
 
       const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
-        = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+        = scratch.face_material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
       std::vector<double> grad_p_f(n_face_q_points);
       this->get_melt_handler().get_boundary_fluid_pressure().fluid_pressure_gradient(
@@ -705,7 +705,7 @@ namespace aspect
       const FEValuesExtractors::Scalar solution_field = scratch.advection_field->scalar_extractor(introspection);
 
       const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
-        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
       Assert(melt_outputs->fluid_densities[0] > 0.0,
              ExcMessage ("MeltOutputs have to be filled for models with melt transport. "
@@ -1179,7 +1179,7 @@ namespace aspect
             const bool is_melt_cell = this->get_melt_handler().is_melt_cell(in.current_cell);
 
             const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
-              = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+              = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
             Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
             const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
 
@@ -1855,7 +1855,7 @@ namespace aspect
   MeltHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim>>() != nullptr)
+    if (output.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>() != nullptr)
       return;
 
     const unsigned int n_comp = output.reaction_terms[0].size();

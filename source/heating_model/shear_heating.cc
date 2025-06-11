@@ -38,10 +38,10 @@ namespace aspect
 
       // Check if the material model has additional outputs relevant for the shear heating.
       const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out
-        = material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
+        = material_model_outputs.template get_additional_output_object<ShearHeatingOutputs<dim>>();
 
       const std::shared_ptr<const PrescribedShearHeatingOutputs<dim>> prescribed_shear_heating_out
-        = material_model_outputs.template get_additional_output<PrescribedShearHeatingOutputs<dim>>();
+        = material_model_outputs.template get_additional_output_object<PrescribedShearHeatingOutputs<dim>>();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {

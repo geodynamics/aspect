@@ -165,7 +165,7 @@ namespace aspect
                   this->get_material_model().create_additional_named_outputs(material_outputs_cell);
 
                   const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
-                    = material_outputs_cell.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+                    = material_outputs_cell.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
                   // Collect the values of the old solution restricted to the current cell's DOFs
                   small_vector<double> old_solution_values(this->get_fe().dofs_per_cell);
