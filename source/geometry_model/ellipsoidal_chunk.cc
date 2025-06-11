@@ -632,14 +632,6 @@ namespace aspect
 
     template <int dim>
     double
-    EllipsoidalChunk<dim>::get_radius(const Point<dim> &position) const
-    {
-      const Point<dim> long_lat_depth = manifold->pull_back(position);
-      return semi_major_axis_a / (std::sqrt(1 - eccentricity * eccentricity * std::sin(long_lat_depth[1]) * std::sin(long_lat_depth[1])));
-    }
-
-    template <int dim>
-    double
     EllipsoidalChunk<dim>::get_eccentricity() const
     {
       return eccentricity;

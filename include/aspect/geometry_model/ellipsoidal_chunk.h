@@ -257,12 +257,6 @@ namespace aspect
         parse_parameters(ParameterHandler &prm) override;
 
         /**
-         * Calculate radius at current position.
-         */
-        double
-        get_radius(const Point<dim> &position) const;
-
-        /**
          * Retrieve the semi minor axis b value.
          */
         double
