@@ -1,6 +1,6 @@
 Fixed: The random number generator used to create and delete particles was
 being redeclared for every cell, causing particle indexes to be deleted in
-the same order in every cell. Declaring the random number generator as a 
+the same order in every cell. Declaring the random number generator as a
 member variable of the particle manager fixed this problem.
 <br>
 (Jarett Baker-Dunn, Rene Gassmoeller, 2025/06/10)

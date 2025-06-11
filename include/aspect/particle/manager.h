@@ -317,7 +317,6 @@ namespace aspect
          */
         std::mt19937 random_number_generator;
 
-
         /**
          * Interpolation scheme for moving particles in this manager
          */
