@@ -445,7 +445,7 @@ namespace aspect
          * object of the specified type, then a null pointer is returned.
          */
         template <class AdditionalInputType>
-        const std::shared_ptr<AdditionalInputType>
+        std::shared_ptr<AdditionalInputType>
         get_additional_input_object();
 
         /**
@@ -453,7 +453,7 @@ namespace aspect
          * being queried is `const`.
          */
         template <class AdditionalInputType>
-        const std::shared_ptr<const AdditionalInputType>
+        std::shared_ptr<const AdditionalInputType>
         get_additional_input_object() const;
 
         /**
@@ -633,7 +633,7 @@ namespace aspect
          * If the output does not exist, a null pointer is returned.
          */
         template <class AdditionalOutputType>
-        const std::shared_ptr<AdditionalOutputType>
+        std::shared_ptr<AdditionalOutputType>
         get_additional_output_object();
 
         /**
@@ -641,7 +641,7 @@ namespace aspect
          * returning a const pointer.
          */
         template <class AdditionalOutputType>
-        const std::shared_ptr<const AdditionalOutputType>
+        std::shared_ptr<const AdditionalOutputType>
         get_additional_output_object() const;
 
         /**
@@ -1462,7 +1462,7 @@ namespace aspect
 
     template <int dim>
     template <class AdditionalInputType>
-    const std::shared_ptr<AdditionalInputType>
+    std::shared_ptr<AdditionalInputType>
     MaterialModelInputs<dim>::get_additional_input_object()
     {
       for (unsigned int i=0; i<additional_inputs.size(); ++i)
@@ -1475,7 +1475,7 @@ namespace aspect
 
     template <int dim>
     template <class AdditionalInputType>
-    const std::shared_ptr<const AdditionalInputType>
+    std::shared_ptr<const AdditionalInputType>
     MaterialModelInputs<dim>::get_additional_input_object() const
     {
       for (unsigned int i=0; i<additional_inputs.size(); ++i)
@@ -1488,7 +1488,7 @@ namespace aspect
 
     template <int dim>
     template <class AdditionalOutputType>
-    const std::shared_ptr<AdditionalOutputType>
+    std::shared_ptr<AdditionalOutputType>
     MaterialModelOutputs<dim>::get_additional_output_object()
     {
       for (unsigned int i=0; i<additional_outputs.size(); ++i)
@@ -1501,7 +1501,7 @@ namespace aspect
 
     template <int dim>
     template <class AdditionalOutputType>
-    const std::shared_ptr<const AdditionalOutputType>
+    std::shared_ptr<const AdditionalOutputType>
     MaterialModelOutputs<dim>::get_additional_output_object() const
     {
       for (unsigned int i=0; i<additional_outputs.size(); ++i)
