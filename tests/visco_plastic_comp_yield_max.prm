@@ -1,0 +1,41 @@
+# This test checks that the compositionally dependent 
+# maximum yield stress is causing the effective viscosity to change by 
+# the correct amount. The velocity boundary conditions create a constant 
+# applied strain rate 3.1709e-16 1/s (0.0005 m/y / 50e3 m / sec2yr). 
+# The drucker prager parameters create a constant yield stress of 1e6 Pa, 
+# which would give a viscosity of 1e6/2/3.17e-16 = 1.57e21 Pa s (this is the visco_plastic_yield test).
+# In the visco_plastic_yield_max test, the maximum yield stress is limited to 0.5e6 Pa,
+# reducing the effective viscosity to 0.5e6/2/3.17e-16 = 7.88e20. In this test, we have
+# two compositions which divide the domain into halves: one which has a maximum yield stress that is 
+# 0.5e6 Pa, and another which has a maximum yield stress that is 1e50. This results in a viscosity
+# that is 7.88e20 Pa s in the left half of the domain and 1.57e21 Pa s in the right half.
+
+# Global parameters
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_max.prm 
+set Output directory = comp_max_yield
+
+subsection Discretization
+  set Use locally conservative discretization = true
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields  = weak, strong
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y,t
+    set Function expression = if(x<=50e3, 1, 0);if(x>50e3, 1, 0)
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Material averaging = geometric average only viscosity               
+
+  subsection Visco Plastic
+    set Maximum yield stress = 1.0e50, 5.0e5, 1.0e50
+  end
+end
