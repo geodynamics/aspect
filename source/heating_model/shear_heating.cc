@@ -70,6 +70,7 @@ namespace aspect
               const double pressure = std::max(material_model_inputs.pressure[q], 0.0);
               const double yield_stress = drucker_prager_plasticity.compute_yield_stress(cohesion,
                                                                                          friction_angle,
+                                                                                         1.0, // yield_stress_prefactor
                                                                                          pressure,
                                                                                          std::numeric_limits<double>::max());
 

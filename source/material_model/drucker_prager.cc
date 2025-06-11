@@ -110,6 +110,7 @@ namespace aspect
                   // plasticity
                   const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
                                                                                          angle_of_internal_friction,
+                                                                                         1.0, // yield_stress_prefactor 
                                                                                          pressure,
                                                                                          std::sqrt(strain_rate_effective),
                                                                                          std::numeric_limits<double>::infinity());

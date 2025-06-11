@@ -49,10 +49,14 @@ namespace aspect
         double cohesion;
 
         /**
+         * The prefactor for the yield stress for Byerlee yielding.
+         */
+        double yield_stress_prefactor;
+
+        /**
          * Limit maximum yield stress from drucker prager yield criterion.
          */
         double max_yield_stress;
-
         /**
          * Constructor. Initializes all values to NaN.
          */
@@ -103,6 +107,7 @@ namespace aspect
           double
           compute_yield_stress (const double cohesion,
                                 const double angle_internal_friction,
+                                const double yield_stress_prefactor, // not sure if this is would create problems should you not want to add the prefactors
                                 const double pressure,
                                 const double max_yield_stress) const;
 
@@ -115,6 +120,7 @@ namespace aspect
           double
           compute_viscosity (const double cohesion,
                              const double angle_internal_friction,
+                             const double yield_stress_prefactor, // not sure if this is would create problems should you not want to add the prefactors
                              const double pressure,
                              const double effective_strain_rate,
                              const double max_yield_stress,
@@ -133,7 +139,7 @@ namespace aspect
            * Compute the derivative of the plastic viscosity with respect to pressure.
            */
           double
-          compute_derivative (const double angle_internal_friction,
+          compute_derivative (const double angle_internal_friction, //add prefactos here too?
                               const double effective_strain_rate) const;
 
         private:
@@ -153,6 +159,11 @@ namespace aspect
            * The cohesion is provided and stored in Pa.
            */
           std::vector<double> cohesions;
+
+           /**
+           * Prefactors for yield stress for brittle failure/byerlee law
+           */
+          std::vector<double> yield_stress_prefactors;
 
           /**
            * The yield stress is limited to a constant value, stored in Pa.

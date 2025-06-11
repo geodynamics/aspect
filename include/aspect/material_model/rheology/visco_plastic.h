@@ -107,6 +107,11 @@ namespace aspect
        * The current cohesion.
        */
       std::vector<double> current_cohesions;
+
+      /**
+       * The current yield stress prefactor.
+       */
+      std::vector<double> current_yield_stress_prefactor;
     };
 
     namespace Rheology
