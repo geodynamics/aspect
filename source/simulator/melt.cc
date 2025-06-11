@@ -432,8 +432,9 @@ namespace aspect
 
           const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
           const double viscosity_c = melt_outputs->compaction_viscosities[q];
-          const double e = 1.e-5 / viscosity_c;
-          const double regularization = 1./std::sqrt(1./(viscosity_c*viscosity_c)+e*e);
+
+          const double e = this->get_melt_handler().melt_parameters.regularization / viscosity_c;
+          const double viscosity_e_inverse = std::sqrt(1./(viscosity_c*viscosity_c) + e*e);
           const Tensor<1,dim> density_gradient_f = melt_outputs->fluid_density_gradients[q];
           const double density_f = melt_outputs->fluid_densities[q];
           const double p_f_RHS = compute_fluid_pressure_rhs(this,
@@ -487,7 +488,7 @@ namespace aspect
 
                                                 + pressure_scaling * pressure_scaling / viscosity_c
                                                 * scratch.phi_p[i] * scratch.phi_p_c[j]
-                                                - pressure_scaling * pressure_scaling / regularization
+                                                - pressure_scaling * pressure_scaling * viscosity_e_inverse
                                                 * scratch.phi_p[i] * scratch.phi_p[j]
                                                 - K_D * pressure_scaling * pressure_scaling *
                                                 (scratch.grad_phi_p[i] * scratch.grad_phi_p[j])
@@ -1705,6 +1706,9 @@ namespace aspect
                            "accuracy and convergence behavior of the melt velocity is important "
                            "(like in benchmark cases with an analytical solution), this parameter "
                            "should probably be set to 'false'.");
+        prm.declare_entry ("Compaction viscosity regularization factor", "1e-10",
+                           Patterns::Double (),
+                           "After Lu, May, Huismans");
       }
       prm.leave_subsection();
 
@@ -1722,6 +1726,7 @@ namespace aspect
         heat_advection_by_melt = prm.get_bool("Heat advection by melt");
         use_discontinuous_p_c = prm.get_bool("Use discontinuous compaction pressure");
         average_melt_velocity = prm.get_bool("Average melt velocity");
+        regularization = prm.get_double("Compaction viscosity regularization factor");
       }
       prm.leave_subsection();
     }
