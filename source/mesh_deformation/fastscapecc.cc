@@ -308,24 +308,25 @@ namespace aspect
           // 1. Create the FastScape grid adapter
           auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
 
-          // 2. Define the node status array BEFORE creating the flow graph //Benoit
+          // 2. Define the node status array BEFORE creating the flow graph
           auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
           grid.set_nodes_status(node_status_array);
 
-          // 3. Create the flow graph 
+          // 3. Create the flow graph
           auto flow_graph = FlowGraphType(
               grid,
               { fastscapelib::single_flow_router() }
           );
 
-          // Pick an arbitrary base node for the flow to be computed
+          // 4. Set base level nodes
           std::vector<std::size_t> base_level_nodes = {0};
-          // Set base level nodes
           flow_graph.set_base_levels(base_level_nodes);
-          // 4. Now you can build the erosion model
+
+          // 5. Build the erosion model
           auto spl_eroder = fastscapelib::spl_eroder<FlowGraphType>(
               fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd)
           );
+
 
 
           // Create data arrays using grid->shape()

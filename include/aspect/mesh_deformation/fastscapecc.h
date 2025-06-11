@@ -137,9 +137,11 @@ namespace aspect
          */
         void init_surface_mesh(const GeometryModel::SphericalShell<dim> &);
         
+
+
         /**
          * Pointers to Fastscapelib objects
-         */
+         */  
         using GridAdapterType = typename fastscapelib::dealii_grid<SurfaceMeshType>;
         using FlowGraphType = typename fastscapelib::flow_graph<GridAdapterType>;
         std::unique_ptr<GridAdapterType> grid;
