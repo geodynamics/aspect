@@ -393,7 +393,7 @@ namespace aspect
                     ExcMessage("Could not parse the last good checkpoint from last_good_checkpoint.txt"));
       }
 
-    dealii::Utilities::MPI::broadcast (mpi_communicator, last_checkpoint_id, 0);
+    MPI_Bcast(&last_checkpoint_id, 1, MPI_INT, 0, mpi_communicator);
     return last_checkpoint_id;
   }
 

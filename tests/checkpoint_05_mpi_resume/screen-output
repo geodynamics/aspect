@@ -2,10 +2,10 @@
 Loading shared library <./libcheckpoint_05_mpi_resume.debug.so>
 * Copying checkpoint files.
 Executing the following command:
-mkdir -p output-checkpoint_05_mpi_resume; cp -r output-checkpoint_05_mpi_create/restart* output-checkpoint_05_mpi_resume/
+mkdir -p output-checkpoint_05_mpi_resume; cp -r output-checkpoint_05_mpi_create/restart/ output-checkpoint_05_mpi_resume/
 * Finished copying files. Now resuming model.
 
-*** Resuming from snapshot!
+*** Resuming from snapshot output-checkpoint_05_mpi_resume/restart/02/
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
