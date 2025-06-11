@@ -152,8 +152,8 @@ namespace aspect
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
          */
-        Table<dim,double> fill_data_table(std::vector<double> &values,
-                                          TableIndices<dim> &size_idx,
+        Table<dim,double> fill_data_table(const std::vector<double> &values,
+                                          const TableIndices<dim> &size_idx,
                                           const unsigned int &fastscape_nx,
                                           const unsigned int &fastscape_ny) const;
 
