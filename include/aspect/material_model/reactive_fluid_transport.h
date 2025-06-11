@@ -71,7 +71,7 @@ namespace aspect
          */
         void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                              std::vector<double> &melt_fractions,
-                             MaterialModel::MaterialModelOutputs<dim> out = MaterialModel::MaterialModelOutputs<dim> (0, 0)) const override;
+                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         /**
          * Initialize the base model at the beginning of the model run
