@@ -609,7 +609,8 @@ namespace aspect
                                                                                         effective_viscosity);
                     }
 
-                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+                  const std::shared_ptr<PlasticAdditionalOutputs<dim>> plastic_out
+                    = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
 
                   if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
@@ -622,7 +623,8 @@ namespace aspect
 
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
-              if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
+              if (const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
+                  = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
                 if (in.requests_property(MaterialProperties::additional_outputs))
                   {
                     disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
@@ -633,7 +635,8 @@ namespace aspect
 
           // fill seismic velocities outputs if they exist
           if (use_table_properties)
-            if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
+            if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
+                = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
               if (in.requests_property(MaterialProperties::additional_outputs))
                 {
                   seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
@@ -641,9 +644,11 @@ namespace aspect
                 }
         }
 
-      DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
+      const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
+        = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
       if (in.requests_property(MaterialProperties::additional_outputs))
-        grain_size_evolution->fill_additional_outputs(in,out,phase_indices,disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
+        grain_size_evolution->fill_additional_outputs(in,out,phase_indices,
+                                                      disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
 
       if (in.requests_property(MaterialProperties::reaction_terms))
         {

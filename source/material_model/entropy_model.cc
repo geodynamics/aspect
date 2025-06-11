@@ -191,13 +191,15 @@ namespace aspect
             out.reaction_terms[i][c]            = 0.;
 
           // set up variable to interpolate prescribed field outputs onto compositional fields
-          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
+          if (const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+              = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
             {
               prescribed_field_out->prescribed_field_outputs[i][projected_density_index] = out.densities[i];
             }
 
           // set up variable to interpolate prescribed field outputs onto temperature field
-          if (PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim>>())
+          if (const std::shared_ptr<PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
+              = out.template get_additional_output<PrescribedTemperatureOutputs<dim>>())
             {
               prescribed_temperature_out->prescribed_temperature_outputs[i] = adjusted_inputs.temperature[i];
             }
@@ -234,7 +236,8 @@ namespace aspect
 
                   const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
 
-                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+                  const std::shared_ptr<PlasticAdditionalOutputs<dim>>
+                  plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
                   if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
                       plastic_out->cohesions[i] = cohesion;
@@ -267,7 +270,8 @@ namespace aspect
             }
 
           // fill seismic velocities outputs if they exist
-          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
+          if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
+              = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             if (in.requests_property(MaterialProperties::additional_outputs))
               {
 

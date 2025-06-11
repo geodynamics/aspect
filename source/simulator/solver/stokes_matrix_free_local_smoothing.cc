@@ -491,14 +491,14 @@ namespace aspect
                          ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                     "not filled by the caller."));
 
-                  const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+                  const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
                     = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
                   Assert(derivatives != nullptr,
                          ExcMessage ("Error: The Newton method requires the material to "
                                      "compute derivatives."));
 
-                  const MaterialModel::ElasticOutputs<dim> *elastic_out
+                  const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out
                     = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
                   for (unsigned int q=0; q<n_q_points; ++q)

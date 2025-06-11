@@ -610,7 +610,7 @@ namespace aspect
                                                         const typename MaterialModel::MaterialModelOutputs<dim> &out,
                                                         const std::vector<unsigned int> &phase_indices,
                                                         const std::vector<double> &dislocation_viscosities,
-                                                        std::vector<std::unique_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
+                                                        std::vector<std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
       {
         for (auto &additional_output: additional_outputs)
           if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))

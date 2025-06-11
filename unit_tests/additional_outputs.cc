@@ -58,9 +58,7 @@ namespace
       void evaluate(const MaterialModel::MaterialModelInputs<dim> &/*in*/,
                     MaterialModel::MaterialModelOutputs<dim> &out) const override
       {
-        AdditionalOutputs1<dim> *additional;
-
-        additional = out.template get_additional_output<AdditionalOutputs1<dim>>();
+        const auto additional = out.template get_additional_output<AdditionalOutputs1<dim>>();
         additional->additional_material_output1[0] = 42.0;
       }
   };
@@ -92,7 +90,7 @@ TEST_CASE("AdditionalOutputs works")
   {
     const MaterialModelOutputs<dim> &const_out = out;
     REQUIRE(const_out.get_additional_output<AdditionalOutputs1<dim>>() != nullptr);
-    const AdditionalOutputs1<dim> *a = const_out.get_additional_output<AdditionalOutputs1<dim>>();
+    const auto a = const_out.get_additional_output<AdditionalOutputs1<dim>>();
     REQUIRE(a != nullptr);
   }
 }

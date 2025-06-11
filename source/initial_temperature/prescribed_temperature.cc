@@ -66,7 +66,7 @@ namespace aspect
 
       // set up variable to interpolate prescribed field outputs onto temperature field
       double temperature = in.temperature[0];
-      if (MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
+      if (const std::shared_ptr<const MaterialModel::PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
           = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>())
         {
           temperature = prescribed_temperature_out->prescribed_temperature_outputs[0];

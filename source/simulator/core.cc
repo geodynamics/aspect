@@ -316,7 +316,8 @@ namespace aspect
 
         material_model->create_additional_named_outputs(out);
 
-        MaterialModel::ElasticAdditionalOutputs<dim> *elastic_outputs = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+        const std::shared_ptr<MaterialModel::ElasticAdditionalOutputs<dim>> elastic_outputs
+          = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
         // Throw if the elastic_outputs do not exist
         AssertThrow(elastic_outputs != nullptr,

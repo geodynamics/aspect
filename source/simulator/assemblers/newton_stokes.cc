@@ -61,7 +61,7 @@ namespace aspect
 
       // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
       // strain rate.
-      const MaterialModel::ElasticOutputs<dim> *elastic_out =
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out =
         scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
       if (this->get_parameters().enable_elasticity)
         AssertThrow(elastic_out != nullptr,
@@ -79,7 +79,7 @@ namespace aspect
           ++i;
         }
 
-      const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+      const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
         = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
       std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
@@ -313,29 +313,30 @@ namespace aspect
 
       const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
 
-      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> *force = enable_additional_stokes_rhs ?
-                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
-                                                                            : nullptr;
+      const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
+        = enable_additional_stokes_rhs ?
+          scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
+          : nullptr;
 
       // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
       // strain rate and the elastic force.
       const bool enable_elasticity = this->get_parameters().enable_elasticity;
-      const MaterialModel::ElasticOutputs<dim> *elastic_out =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out
+        = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
       if (enable_elasticity)
         AssertThrow(elastic_out != nullptr,
                     ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
 
       const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
 
-      const MaterialModel::PrescribedPlasticDilation<dim>
-      *prescribed_dilation = enable_prescribed_dilation ?
-                             scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
-                             : nullptr;
+      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+        = enable_prescribed_dilation ?
+          scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
+          : nullptr;
 
       const bool material_model_is_compressible = (this->get_material_model().is_compressible());
 
-      const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+      const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
         = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
 
@@ -685,7 +686,8 @@ namespace aspect
                 }
               else
                 {
-                  const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+                  const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
+                    = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
                   // This one is only available in debug mode, because normally
                   // the AssertThrow in the preconditioner should already have

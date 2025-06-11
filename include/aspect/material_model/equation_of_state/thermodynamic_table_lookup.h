@@ -196,7 +196,7 @@ namespace aspect
           void fill_seismic_velocities (const MaterialModel::MaterialModelInputs<dim> &in,
                                         const std::vector<double> &composite_densities,
                                         const std::vector<std::vector<double>> &volume_fractions,
-                                        SeismicAdditionalOutputs<dim> *seismic_out) const;
+                                        SeismicAdditionalOutputs<dim> &seismic_out) const;
 
           /**
            * This function uses the MaterialModelInputs &in to fill the output_values
@@ -211,7 +211,7 @@ namespace aspect
            */
           void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                             const std::vector<std::vector<double>> &volume_fractions,
-                                            NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
+                                            NamedAdditionalMaterialOutputs<dim> &phase_volume_fractions_out) const;
 
           /**
            * This function uses the MaterialModelInputs &in to fill the output_values

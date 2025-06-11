@@ -39,10 +39,10 @@ namespace aspect
 
       const bool use_operator_split = (this->get_parameters().use_operator_splitting);
 
-      const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_out
+      const std::shared_ptr<const MaterialModel::ReactionRateOutputs<dim>> reaction_rate_out
         = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
-      const MaterialModel::EnthalpyOutputs<dim> *enthalpy_out
+      const std::shared_ptr<const MaterialModel::EnthalpyOutputs<dim>> enthalpy_out
         = material_model_outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>();
 
       double enthalpy_change;

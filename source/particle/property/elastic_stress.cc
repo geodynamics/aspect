@@ -163,7 +163,8 @@ namespace aspect
                   material_outputs_cell = MaterialModel::MaterialModelOutputs<dim>(n_particles_in_cell, this->n_compositional_fields());
                   // The reaction rates are stored in additional outputs
                   this->get_material_model().create_additional_named_outputs(material_outputs_cell);
-                  MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
+
+                  const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
                     = material_outputs_cell.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
                   // Collect the values of the old solution restricted to the current cell's DOFs

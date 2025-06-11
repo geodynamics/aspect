@@ -361,13 +361,13 @@ namespace aspect
       {
         // Create a reference to the structure for the elastic outputs.
         // The structure is created during the Stokes assembly.
-        MaterialModel::ElasticOutputs<dim>
-        *elastic_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+        const std::shared_ptr<MaterialModel::ElasticOutputs<dim>>
+        elastic_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
         // Create a reference to the structure for the prescribed shear heating outputs.
         // The structure is created during the advection assembly.
-        HeatingModel::PrescribedShearHeatingOutputs<dim>
-        *heating_out = out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>();
+        const std::shared_ptr<HeatingModel::PrescribedShearHeatingOutputs<dim>>
+        heating_out = out.template get_additional_output<HeatingModel::PrescribedShearHeatingOutputs<dim>>();
 
         if (elastic_out == nullptr && heating_out == nullptr)
           return;
@@ -484,8 +484,8 @@ namespace aspect
                                                         MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         // Create a reference to the structure for the elastic additional outputs
-        MaterialModel::ElasticAdditionalOutputs<dim>
-        *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+        const std::shared_ptr<MaterialModel::ElasticAdditionalOutputs<dim>>
+        elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
         if (elastic_additional_out == nullptr || !in.requests_property(MaterialProperties::additional_outputs))
           return;
@@ -599,7 +599,8 @@ namespace aspect
                                             const std::vector<double> &average_elastic_shear_moduli,
                                             MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+        const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+          = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
         if (reaction_rate_out == nullptr)
           return;

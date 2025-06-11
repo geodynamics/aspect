@@ -65,7 +65,8 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
 
-        const MaterialModel::MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+        const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
+          = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {

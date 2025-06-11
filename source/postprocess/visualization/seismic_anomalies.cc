@@ -104,11 +104,11 @@ namespace aspect
 
 
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
                       = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vs = seismic_outputs->vs[0];
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *adiabatic_seismic_outputs
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> adiabatic_seismic_outputs
                       = adiabatic_out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double adiabatic_Vs = adiabatic_seismic_outputs->vs[0];
 
@@ -150,7 +150,7 @@ namespace aspect
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, out);
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
                       = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vs = seismic_outputs->vs[0];
 
@@ -246,11 +246,11 @@ namespace aspect
 
 
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
                       = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vp = seismic_outputs->vp[0];
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *adiabatic_seismic_outputs
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> adiabatic_seismic_outputs
                       = adiabatic_out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double adiabatic_Vp = adiabatic_seismic_outputs->vp[0];
 
@@ -314,7 +314,7 @@ namespace aspect
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, out);
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
+                    const std::shared_ptr<const MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
                       = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vp = seismic_outputs->vp[0];
 

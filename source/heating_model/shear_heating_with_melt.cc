@@ -44,7 +44,8 @@ namespace aspect
                         "is a compositional field called porosity."));
 
       // get the melt velocity
-      const MaterialModel::MeltInputs<dim> *melt_in = material_model_inputs.template get_additional_input<MaterialModel::MeltInputs<dim>>();
+      const std::shared_ptr<const MaterialModel::MeltInputs<dim>> melt_in
+        = material_model_inputs.template get_additional_input<MaterialModel::MeltInputs<dim>>();
       AssertThrow(melt_in != nullptr,
                   ExcMessage ("Need MeltInputs from the material model for shear heating with melt!"));
 
@@ -52,7 +53,8 @@ namespace aspect
       if (material_model_inputs.current_cell.state() == IteratorState::valid)
         is_melt_cell = this->get_melt_handler().is_melt_cell(material_model_inputs.current_cell);
 
-      const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+      const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
+        = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)

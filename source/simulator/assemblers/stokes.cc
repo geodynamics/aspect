@@ -296,17 +296,16 @@ namespace aspect
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
 
-      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+      const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
+        = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
-      const MaterialModel::ElasticOutputs<dim>
-      *elastic_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_outputs
+        = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
-      const MaterialModel::PrescribedPlasticDilation<dim>
-      *prescribed_dilation =
-        (this->get_parameters().enable_prescribed_dilation)
-        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
-        : nullptr;
+      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+        = (this->get_parameters().enable_prescribed_dilation)
+          ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
+          : nullptr;
 
       const bool material_model_is_compressible = (this->get_material_model().is_compressible());
 

@@ -147,7 +147,8 @@ namespace aspect
           // Fill the melt outputs if they exist. Note that the MeltOutputs class was originally
           // designed for two-phase flow material models in ASPECT that model the flow of melt,
           // but can be reused for a geofluid of arbitrary composition.
-          MeltOutputs<dim> *fluid_out = out.template get_additional_output<MeltOutputs<dim>>();
+          const std::shared_ptr<MeltOutputs<dim>> fluid_out
+            = out.template get_additional_output<MeltOutputs<dim>>();
 
           if (fluid_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
             {
@@ -172,7 +173,8 @@ namespace aspect
                 }
             }
 
-          ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+          const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+            = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
           // Fill reaction rate outputs if the model uses operator splitting.
           // Specifically, change the porosity (representing the amount of free fluid)

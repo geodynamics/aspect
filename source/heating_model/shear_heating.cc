@@ -37,11 +37,11 @@ namespace aspect
              ExcMessage ("Heating outputs need to have the same number of entries as the material model inputs."));
 
       // Check if the material model has additional outputs relevant for the shear heating.
-      const ShearHeatingOutputs<dim> *shear_heating_out =
-        material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
+      const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out
+        = material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
 
-      const PrescribedShearHeatingOutputs<dim> *prescribed_shear_heating_out =
-        material_model_outputs.template get_additional_output<PrescribedShearHeatingOutputs<dim>>();
+      const std::shared_ptr<const PrescribedShearHeatingOutputs<dim>> prescribed_shear_heating_out
+        = material_model_outputs.template get_additional_output<PrescribedShearHeatingOutputs<dim>>();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {

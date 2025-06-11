@@ -108,7 +108,7 @@ namespace aspect
                                    const typename MaterialModel::MaterialModelOutputs<dim> &out,
                                    const std::vector<unsigned int> &phase_indices,
                                    const std::vector<double> &dislocation_viscosities,
-                                   std::vector<std::unique_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const;
+                                   std::vector<std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const;
 
           /**
            * Declare the parameters this function takes through input files.

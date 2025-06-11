@@ -543,7 +543,8 @@ namespace aspect
                                                      (time_step + old_time_step)) : 1.0;
       const unsigned int solution_component = advection_field.component_index(introspection);
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+      const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
+        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -644,7 +645,8 @@ namespace aspect
         }
 
 
-      const MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+      const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
+        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       for (unsigned int q=0; q < n_q_points; ++q)
         {
 

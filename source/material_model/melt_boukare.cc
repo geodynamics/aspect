@@ -579,10 +579,10 @@ namespace aspect
     MeltBoukare<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
-      BoukareOutputs<dim> *boukare_out = out.template get_additional_output<BoukareOutputs<dim>>();
-      EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<MeltOutputs<dim>> melt_out = out.template get_additional_output<MeltOutputs<dim>>();
+      const std::shared_ptr<BoukareOutputs<dim>> boukare_out = out.template get_additional_output<BoukareOutputs<dim>>();
+      const std::shared_ptr<EnthalpyOutputs<dim>> enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim>>();
 
       const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
       unsigned int Fe_melt_idx = numbers::invalid_unsigned_int;

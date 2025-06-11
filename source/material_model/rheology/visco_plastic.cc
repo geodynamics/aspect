@@ -434,8 +434,8 @@ namespace aspect
                                     const std::vector<double> &phase_function_values,
                                     const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
-        MaterialModel::MaterialModelDerivatives<dim> *derivatives =
-          out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+        const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
+          = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
         if (derivatives != nullptr)
           {
@@ -849,7 +849,8 @@ namespace aspect
                            MaterialModel::MaterialModelOutputs<dim> &out,
                            const IsostrainViscosities &isostrain_viscosities) const
       {
-        PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+        const std::shared_ptr<PlasticAdditionalOutputs<dim>> plastic_out
+          = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
 
         if (plastic_out != nullptr)
           {
