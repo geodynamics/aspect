@@ -433,26 +433,6 @@ namespace aspect
 
         return r_phi_theta;
       }
-
-
-
-      template <int dim>
-      double
-      ChunkGeometry<dim>::
-      get_radius(const Point<dim> &x_y_z) const
-      {
-        const Point<dim> r_phi_theta = pull_back(x_y_z);
-        Point<dim-1> surface_point;
-        for (unsigned int d=0; d<dim-1; ++d)
-          surface_point[d] = r_phi_theta[d+1];
-        // Convert latitude to colatitude
-        if (dim == 3)
-          surface_point[1] = 0.5*numbers::PI - surface_point[1];
-        const double topography = topo->value(surface_point);
-
-        // return the outer radius at this phi, theta point including topography
-        return topography + inner_radius + max_depth;
-      }
     }
 
 
