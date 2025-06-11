@@ -737,8 +737,11 @@ namespace aspect
       // The chunk manifold uses (radius, longitude, latitude).
       // This is exactly what we need.
 
-      // Ignore the topography to avoid a loop when calling the
-      // AsciiDataBoundary for topography which uses this function....
+      // We want to transform the current point from (x,y,z) into spherical
+      // coordinates. Whether or not we have applied topography, or whether
+      // topography has developed since the initial time, does not matter:
+      // We just have to do the Cartesian to spherical transformation, and
+      // that is exactly what pull_back_sphere() does.
       const Point<dim> transformed_point = manifold->pull_back_sphere(position_point);
       std::array<double,dim> position_array;
       for (unsigned int i = 0; i < dim; ++i)
@@ -774,14 +777,16 @@ namespace aspect
     Point<dim>
     Chunk<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
     {
-      // Ignore the topography to avoid a loop when calling the
-      // AsciiDataBoundary for topography which uses this function....
+      // We want to transform the current point from spherical into (x,y,z)
+      // coordinates. Whether or not we have applied topography, or whether
+      // topography has developed since the initial time, does not matter:
+      // We just have to do the spherical to Cartesian transformation, and
+      // that is exactly what push_forward_sphere() does.
       Point<dim> position_point;
       for (unsigned int i = 0; i < dim; ++i)
         position_point[i] = position_tensor[i];
-      const Point<dim> transformed_point = manifold->push_forward_sphere(position_point);
 
-      return transformed_point;
+      return manifold->push_forward_sphere(position_point);
     }
 
 
