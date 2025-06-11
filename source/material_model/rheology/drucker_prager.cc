@@ -35,6 +35,7 @@ namespace aspect
       DruckerPragerParameters::DruckerPragerParameters()
         : angle_internal_friction (numbers::signaling_nan<double>()),
           cohesion  (numbers::signaling_nan<double>()),
+          yield_stress_prefactor (numbers::signaling_nan<double>()),
           max_yield_stress (numbers::signaling_nan<double>())
       {}
 
@@ -61,6 +62,7 @@ namespace aspect
             // no phases
             drucker_prager_parameters.angle_internal_friction = angles_internal_friction[composition];
             drucker_prager_parameters.cohesion = cohesions[composition];
+            drucker_prager_parameters.yield_stress_prefactor = yield_stress_prefactors[composition];
           }
         else
           {
@@ -69,6 +71,8 @@ namespace aspect
                                                                 angles_internal_friction, composition);
             drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  cohesions, composition);
+            drucker_prager_parameters.yield_stress_prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
+                                                  yield_stress_prefactors, composition);                                     
           }
         return drucker_prager_parameters;
       }
@@ -77,6 +81,7 @@ namespace aspect
       double
       DruckerPrager<dim>::compute_yield_stress (const double cohesion,
                                                 const double angle_internal_friction,
+                                                const double yield_stress_prefactor,
                                                 const double pressure,
                                                 const double max_yield_stress) const
       {
@@ -95,25 +100,24 @@ namespace aspect
         // Initial yield stress (no stabilization terms)
         const double yield_stress = ( (dim==3)
                                       ?
-                                      ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part
+                                      (( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part) * yield_stress_prefactor
                                       :
-                                      cohesion * cos_phi + pressure * sin_phi);
+                                      (cohesion * cos_phi + pressure * sin_phi)) * yield_stress_prefactor; //added yield_stress_prefactor to calculte the yield stress
 
         return std::min(yield_stress, max_yield_stress);
       }
-
-
-
+      
       template <int dim>
       double
       DruckerPrager<dim>::compute_viscosity (const double cohesion,
                                              const double angle_internal_friction,
+                                             const double yield_stress_prefactor,
                                              const double pressure,
                                              const double effective_strain_rate,
                                              const double max_yield_stress,
                                              const double non_yielding_viscosity) const
       {
-        const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure, max_yield_stress);
+        const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, yield_stress_prefactor, pressure, max_yield_stress);
 
         // If there is no damper, the yielding plastic element accommodates all the strain
         double apparent_viscosity = yield_stress / (2. * effective_strain_rate);
@@ -144,7 +148,7 @@ namespace aspect
                                                               const DruckerPragerParameters &p) const
       {
 
-        const double yield_stress = compute_yield_stress(p.cohesion, p.angle_internal_friction, pressure, p.max_yield_stress);
+        const double yield_stress = compute_yield_stress(p.cohesion, p.angle_internal_friction, p.yield_stress_prefactor, pressure, p.max_yield_stress); //added yield_stress_prefactor to calculate the yield stress
 
         if (stress > yield_stress)
           {
@@ -192,6 +196,9 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "For a value of zero, in 2d the von Mises criterion is retrieved. "
                            "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+        prm.declare_entry ("Prefactors for yield stress", "1.0",
+                            Patterns::List(Patterns::Double(0)),
+                            "Prefactors for Byerlee-type yield stress. Units: None.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::Anything(),
                            "List of cohesions, $C$, for background material and compositional fields, "
@@ -248,6 +255,10 @@ namespace aspect
 
         angles_internal_friction = Utilities::MapParsing::parse_map_to_double_array(prm.get("Angles of internal friction"),
                                                                                     options);
+
+        yield_stress_prefactors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for yield stress"),
+                                                                                    options);   
+                                                                                    
 
         // Convert angles from degrees to radians
         for (double &angle : angles_internal_friction)

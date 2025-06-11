@@ -337,6 +337,7 @@ namespace aspect
                                                                       in.position[i]);
             output_parameters.current_friction_angles[j] = current_friction;
             output_parameters.current_cohesions[j] = current_cohesion;
+            output_parameters.current_cohesions[j] = drucker_prager_parameters.yield_stress_prefactor;
 
             // Step 5: plastic yielding
 
@@ -355,6 +356,7 @@ namespace aspect
             // Step 5a: calculate the Drucker-Prager yield stress
             const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
                                                                                        current_friction,
+                                                                                       drucker_prager_parameters.yield_stress_prefactor,
                                                                                        pressure_for_plasticity,
                                                                                        drucker_prager_parameters.max_yield_stress);
 
@@ -883,6 +885,7 @@ namespace aspect
                 plastic_out->friction_angles[i] += constants::radians_to_degree * volume_fractions[j] * friction_angles_RAD[j];
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(cohesions[j],
                                                   friction_angles_RAD[j],
+                                                  isostrain_viscosities.current_yield_stress_prefactor[j],
                                                   pressure_for_plasticity,
                                                   max_yield_stress);
               }

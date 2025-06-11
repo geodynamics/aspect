@@ -242,6 +242,7 @@ namespace aspect
                       plastic_out->yielding[i] = 0;
                       plastic_out->yield_stresses[i] = drucker_prager_plasticity.compute_yield_stress(cohesion,
                                                                                                       angle_of_internal_friction,
+                                                                                                      1.0, // yield_stress_prefactor
                                                                                                       pressure,
                                                                                                       std::numeric_limits<double>::infinity());
                     }
@@ -252,6 +253,7 @@ namespace aspect
                     {
                       const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
                                                                                              angle_of_internal_friction,
+                                                                                             1.0, // yield_stress_prefactor
                                                                                              pressure,
                                                                                              std::sqrt(strain_rate_effective),
                                                                                              std::numeric_limits<double>::infinity());

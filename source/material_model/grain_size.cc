@@ -593,6 +593,7 @@ namespace aspect
 
                   const double yield_stress = drucker_prager_plasticity.compute_yield_stress(drucker_prager_parameters.cohesion,
                                                                                              drucker_prager_parameters.angle_internal_friction,
+                                                                                             drucker_prager_parameters.yield_stress_prefactor,
                                                                                              pressure_for_yielding,
                                                                                              drucker_prager_parameters.max_yield_stress);
 
