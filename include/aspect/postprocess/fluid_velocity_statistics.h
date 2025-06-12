@@ -32,7 +32,7 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the velocity.
+     * A postprocessor that computes the maximum fluid velocity.
      *
      * @ingroup Postprocessing
      */
@@ -41,7 +41,7 @@ namespace aspect
     {
       public:
         /**
-         * Evaluate the solution for some velocity statistics.
+         * Evaluate the solution for the maximum fluid velocity.
          */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
