@@ -690,7 +690,8 @@ namespace aspect
      * @param comm MPI communicator, used to limit creation of directory to
      * processor 0.
      * @param silent Print a nicely formatted message on processor 0 if set
-     * to true.
+     * to false and the directory does not exist yet and is therefore created
+     * in this function.
      */
     void create_directory(const std::string &pathname,
                           const MPI_Comm comm,
