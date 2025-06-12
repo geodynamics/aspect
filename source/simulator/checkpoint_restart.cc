@@ -252,9 +252,11 @@ namespace aspect
     wall_timer.restart();
 
     const unsigned int n_checkpoints_to_keep = 3;
+    // This will rotate from 01 to n_checkpoints_to_keep including:
     const unsigned int checkpoint_id = (last_checkpoint_id % n_checkpoints_to_keep) + 1;
-    const std::string path = parameters.output_directory + "restart/" + Utilities::int_to_string(checkpoint_id, 2) + "/";
-    Utilities::create_directory(path, mpi_communicator, true);
+
+    const std::string checkpoint_path = parameters.output_directory + "restart/" + Utilities::int_to_string(checkpoint_id, 2) + "/";
+    Utilities::create_directory(checkpoint_path, mpi_communicator, true);
 
     const unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
 
@@ -291,7 +293,7 @@ namespace aspect
 
       signals.pre_checkpoint_store_user_data(triangulation);
 
-      triangulation.save (path + "mesh");
+      triangulation.save (checkpoint_path + "mesh");
     }
 
     // save general information This calls the serialization functions on all
@@ -332,7 +334,7 @@ namespace aspect
                 static_cast<uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
-          std::ofstream f ((path + "/resume.z"));
+          std::ofstream f (checkpoint_path + "/resume.z");
           f.write(reinterpret_cast<const char *>(compression_header), 4 * sizeof(compression_header[0]));
           f.write(reinterpret_cast<char *>(&compressed_data[0]), compressed_data_length);
           f.close();
@@ -343,7 +345,7 @@ namespace aspect
           // or one of the write() commands fails, as the fail state is
           // "sticky".
           if (!f)
-            AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + path
+            AssertThrow(false, ExcMessage ("Writing of the checkpoint file '" + checkpoint_path
                                            + "/resume.z' with size "
                                            + Utilities::to_string(4 * sizeof(compression_header[0])+compressed_data_length)
                                            + " failed on processor 0."));
@@ -374,23 +376,25 @@ namespace aspect
         f.close();
       }
 
-    pcout << "*** Snapshot " << path << " created!" << std::endl << std::endl;
+    pcout << "*** Snapshot " << checkpoint_path << " created!" << std::endl << std::endl;
   }
 
 
 
   template <int dim>
-  unsigned int Simulator<dim>::determine_last_good_snapshot()
+  unsigned int Simulator<dim>::determine_last_good_snapshot() const
   {
-    unsigned int last_checkpoint_id = 0;
+    unsigned int last_checkpoint_id = numbers::invalid_unsigned_int;
 
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         std::ifstream f (parameters.output_directory + "restart/last_good_checkpoint.txt");
-        f >> last_checkpoint_id;
-        f.close();
-        AssertThrow((last_checkpoint_id > 0) && (last_checkpoint_id < 100),
-                    ExcMessage("Could not parse the last good checkpoint from last_good_checkpoint.txt"));
+        if (f)
+          {
+            f >> last_checkpoint_id;
+            AssertThrow((last_checkpoint_id > 0) && (last_checkpoint_id < 100),
+                        ExcMessage("Could not parse the last good checkpoint from last_good_checkpoint.txt"));
+          }
       }
 
     MPI_Bcast(&last_checkpoint_id, 1, MPI_INT, 0, mpi_communicator);
@@ -417,33 +421,33 @@ namespace aspect
 
     // Then start with the actual deserialization.
 
-    const std::string path = parameters.output_directory + "restart/" + Utilities::int_to_string(last_checkpoint_id, 2) + "/";
+    const std::string checkpoint_path = parameters.output_directory + "restart/" + Utilities::int_to_string(last_checkpoint_id, 2) + "/";
 
     // First check existence of the two restart files
-    AssertThrow (Utilities::fexists(path + "mesh", mpi_communicator),
+    AssertThrow (Utilities::fexists(checkpoint_path + "mesh", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +
-                             path + "mesh"
+                             checkpoint_path + "mesh"
                              +
                              "> does not appear to exist!"));
 
-    AssertThrow (Utilities::fexists(path + "resume.z", mpi_communicator),
+    AssertThrow (Utilities::fexists(checkpoint_path + "resume.z", mpi_communicator),
                  ExcMessage ("You are trying to restart a previous computation, "
                              "but the restart file <"
                              +
-                             path + ".resume.z"
+                             checkpoint_path + ".resume.z"
                              +
                              "> does not appear to exist!"));
 
-    pcout << "*** Resuming from snapshot " << path << std::endl << std::endl;
+    pcout << "*** Resuming from snapshot " << checkpoint_path << std::endl << std::endl;
 
     // Read resume.z to set up the state of the model
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
         const std::string restart_data
-          = Utilities::read_and_distribute_file_content (path + "resume.z",
+          = Utilities::read_and_distribute_file_content (checkpoint_path + "resume.z",
                                                          mpi_communicator);
 
         std::istringstream ifs (restart_data);
@@ -492,7 +496,7 @@ namespace aspect
     // now that we have resumed from the snapshot load the mesh and solution vectors
     try
       {
-        triangulation.load (path + "mesh");
+        triangulation.load (checkpoint_path + "mesh");
       }
     catch (...)
       {
@@ -610,7 +614,7 @@ namespace aspect
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template unsigned int Simulator<dim>::determine_last_good_snapshot(); \
+  template unsigned int Simulator<dim>::determine_last_good_snapshot() const; \
   template void Simulator<dim>::create_snapshot(); \
   template void Simulator<dim>::resume_from_snapshot();
 
