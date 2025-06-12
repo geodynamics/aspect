@@ -1,0 +1,113 @@
+# This test is a dummy that actually does not use fastscape right now,
+# but requires fastscape to be configured with.
+#
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+set Dimension = 2
+set End time                               = 2e5
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+
+subsection Heating model
+  set List of model names = constant heating
+
+  subsection Constant heating
+    set Radiogenic heating rate = 1
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+end
+
+subsection Discretization
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+    set beta  = 0.078
+    set cR    = 0.5
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 100.e2
+    set Y extent = 1000.e2
+    set X repetitions = 10
+    set Y repetitions = 100
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0.0
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0; if(y>500e2,1,0)
+    set Variable names      = x,y
+  end
+end
+
+subsection Material model
+  set Model name = simple compressible
+
+  subsection Simple compressible model
+    set Reference density             = 3300
+    set Reference specific heat       = 0.0
+    set Thermal conductivity          = 0.0
+    set Thermal expansion coefficient = 0.0
+    set Viscosity                     = 1.e20
+    set Reference compressibility     = 1e-11
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function
+  set Tangential velocity boundary indicators = left, right
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0.0;-0.01
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization,velocity statistics,
+
+  subsection Visualization
+    set Interpolate output = false
+    set Time between graphical output = 1
+    set List of output variables      = material properties, nonadiabatic temperature, nonadiabatic pressure, strain rate
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+  end
+end
