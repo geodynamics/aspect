@@ -122,7 +122,7 @@ namespace aspect
           }
         catch (const std::string &error)
           {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed temperature "
+            AssertThrow (false, ExcMessage ("While parsing the entry <Boundary temperature model/Fixed temperature "
                                             "boundary indicators>, there was an error. Specifically, "
                                             "the conversion function complained as follows:\n\n"
                                             + error));
