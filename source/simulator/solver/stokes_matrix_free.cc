@@ -58,7 +58,7 @@ namespace aspect
           }
       }
     else
-      Assert(false, ExcNotImplemented());
+      AssertThrow(false, ExcNotImplemented());
   }
 
   template <int dim>
