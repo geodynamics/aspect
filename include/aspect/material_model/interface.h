@@ -1206,8 +1206,8 @@ namespace aspect
      * This is typically used in a MaterialModel to add dilation when plastic
      * failure occurs. When plastic dilation is included, a term
      * $\bar\alpha\gamma$ should be added to the right-hand side of the
-     * mass conservation equation, where $\bar\alpha$ is the negative 
-     * derivative of plastic potential with respect to the pressure 
+     * mass conservation equation, where $\bar\alpha$ is the negative
+     * derivative of plastic potential with respect to the pressure
      * ($\sin\psi$ in 2D case), and $\gamma$ is the plastic multiplier.
      * The plastic multiplier is given by
      * $\gamma = (\tau_{II} - \alpha p - k) / \eta^{ve}$,

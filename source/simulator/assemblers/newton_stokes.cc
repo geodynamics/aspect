@@ -224,7 +224,7 @@ namespace aspect
                  - prescribed_dilation->dilation_lhs_term[q])
                 :
                 0.0;
-                                                    
+
               // symmetrize when the stabilization is symmetric or SPD
               const bool symmetrize = ((preconditioner_stabilization & Newton::Parameters::Stabilization::symmetric)
                                        != Newton::Parameters::Stabilization::none);
@@ -465,7 +465,7 @@ namespace aspect
                 data.local_rhs(i) += (
                                        - pressure_scaling
                                        * (prescribed_dilation->dilation_rhs_term[q] -
-                                          prescribed_dilation->dilation_lhs_term[q] * 
+                                          prescribed_dilation->dilation_lhs_term[q] *
                                           scratch.material_model_inputs.pressure[q])
                                        * scratch.phi_p[i]
                                      ) * JxW;

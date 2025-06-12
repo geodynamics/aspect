@@ -168,7 +168,7 @@ namespace aspect
        * $\bar\alpha\alpha / \eta^{ve}$, which is always on the left-hand
        * side no matter if the Newton method is applied.
        */
-      Table<2, VectorizedArray<number>> 
+      Table<2, VectorizedArray<number>>
       dilation_derivative_wrt_pressure_table;
 
       /**

@@ -432,7 +432,7 @@ namespace aspect
           || this->get_parameters().enable_prescribed_dilation)
         {
           active_cell_data.enable_newton_derivatives = (Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver)
-                                                       && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0);
+                                                        && this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0);
           active_cell_data.enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
 
           // TODO: these are not implemented yet

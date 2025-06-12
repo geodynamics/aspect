@@ -210,7 +210,7 @@ namespace aspect
            * tau_II - pressure * sin_psi in 2D, where tau_II is the second invariant
            * of the deviatoric stress.
            * Psi is an angle of dilation, that is input by the user in degrees,
-           * but stored as radians. Note that the dilation angle must not be larger 
+           * but stored as radians. Note that the dilation angle must not be larger
            * than the internal friction angle.
            */
           std::vector<double> angles_dilation;

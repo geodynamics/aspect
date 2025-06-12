@@ -285,7 +285,7 @@ namespace aspect
             }
 
           if (PrescribedPlasticDilation<dim> *plastic_dilation =
-              out.template get_additional_output<PrescribedPlasticDilation<dim>>())
+                out.template get_additional_output<PrescribedPlasticDilation<dim>>())
             {
               plastic_dilation->dilation_lhs_term[i]
                 = MaterialUtilities::average_value(volume_fractions,

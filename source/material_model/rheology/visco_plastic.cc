@@ -460,7 +460,7 @@ namespace aspect
           {
             // compute derivatives if necessary
             const unsigned int n_compositions = volume_fractions.size();
-            
+
             std::vector<SymmetricTensor<2,dim>> composition_viscosity_derivatives_wrt_strain_rate(n_compositions);
             std::vector<double> composition_viscosity_derivatives_wrt_pressure(n_compositions);
 
@@ -507,13 +507,13 @@ namespace aspect
                         composition_dilation_derivatives_wrt_strain_rate[composition_index][strain_rate_indices]
                           = (
                               ( forward_isostrain_values.dilation_rhs_terms[composition_index] -
-                                current_isostrain_values.dilation_rhs_terms[composition_index] 
-                              ) 
+                                current_isostrain_values.dilation_rhs_terms[composition_index]
+                              )
                               -
                               ( forward_isostrain_values.dilation_lhs_terms[composition_index] -
-                                current_isostrain_values.dilation_lhs_terms[composition_index] 
+                                current_isostrain_values.dilation_lhs_terms[composition_index]
                               ) * in.pressure[i]
-                            ) 
+                            )
                             / strain_rate_difference;
                       }
                   }
@@ -544,9 +544,9 @@ namespace aspect
                 if (enable_dilation)
                   {
                     composition_dilation_derivatives_wrt_pressure[composition_index]
-                      = pressure_difference > 0.0 
+                      = pressure_difference > 0.0
                         ?
-                        ( 
+                        (
                           ( forward_isostrain_values.dilation_rhs_terms[composition_index] -
                             current_isostrain_values.dilation_rhs_terms[composition_index]
                           )
@@ -554,7 +554,7 @@ namespace aspect
                           ( forward_isostrain_values.dilation_lhs_terms[composition_index] -
                             current_isostrain_values.dilation_lhs_terms[composition_index]
                           ) * in.pressure[i]
-                        ) 
+                        )
                         / pressure_difference
                         :
                         0.0;
