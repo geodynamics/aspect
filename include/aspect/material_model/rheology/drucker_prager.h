@@ -99,6 +99,9 @@ namespace aspect
 
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
+           *
+           * @deprecated This function is deprecated, use the other function with the same name
+           * that takes DruckerPragerParameters as input.
            */
           DEAL_II_DEPRECATED
           double
@@ -126,6 +129,9 @@ namespace aspect
            * If the non_yielding_viscosity is not infinite
            * (i.e., if there are other rheological elements accommodating strain), the returned
            * value is the effective composite viscosity, not the pure "plastic" viscosity.
+           *
+           * @deprecated This function is deprecated, use the other function with the same name
+           * that takes DruckerPragerParameters as input.
            */
           DEAL_II_DEPRECATED
           double

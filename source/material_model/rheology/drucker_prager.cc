@@ -88,6 +88,8 @@ namespace aspect
         p.cohesion = cohesion;
         p.max_yield_stress = max_yield_stress;
 
+        // Call the new version of the function that takes
+        // DruckerPragerParameters as input.
         return compute_yield_stress(pressure, p);
       }
 
@@ -136,6 +138,8 @@ namespace aspect
         p.cohesion = cohesion;
         p.max_yield_stress = max_yield_stress;
 
+        // Call the new version of this function that takes
+        // DruckerPragerParameters as input.
         return compute_viscosity(pressure, effective_strain_rate, p, non_yielding_viscosity);
       }
 
