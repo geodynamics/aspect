@@ -332,11 +332,6 @@ namespace aspect
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
 
-          /*
-           * Input parameters for the drucker prager plasticity.
-           */
-          Rheology::DruckerPragerParameters drucker_prager_parameters;
-
       };
     }
   }

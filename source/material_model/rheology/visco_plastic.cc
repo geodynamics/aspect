@@ -380,7 +380,7 @@ namespace aspect
                       // is used, we need to iterate on the yield stress.
                       effective_viscosity = drucker_prager_plasticity.compute_viscosity(pressure_for_plasticity,
                                                                                         effective_edot_ii,
-                                                                                        drucker_prager_parameters,
+                                                                                        output_parameters.drucker_prager_parameters[j],
                                                                                         non_yielding_viscosity);
                       output_parameters.composition_yielding[j] = true;
                     }
