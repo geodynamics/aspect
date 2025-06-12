@@ -201,10 +201,8 @@ namespace aspect
                      "all") != this->plugin_names.end())
         {
           this->plugin_names.clear();
-          for (typename std::list<typename aspect::internal::Plugins::PluginList<Interface<dim>>::PluginInfo>::const_iterator
-               p = std::get<dim>(registered_plugins).plugins->begin();
-               p != std::get<dim>(registered_plugins).plugins->end(); ++p)
-            this->plugin_names.push_back (std::get<0>(*p));
+          for (const auto &p : *std::get<dim>(registered_plugins).plugins)
+            this->plugin_names.push_back (std::get<0>(p));
         }
 
       // see if the user specified "global statistics" somewhere; if so, remove

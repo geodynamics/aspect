@@ -1413,10 +1413,8 @@ namespace aspect
                          "all") != viz_names.end())
             {
               viz_names.clear();
-              for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim>>::PluginInfo>::const_iterator
-                   p = std::get<dim>(registered_visualization_plugins).plugins->begin();
-                   p != std::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
-                viz_names.push_back (std::get<0>(*p));
+              for (const auto &p : *std::get<dim>(registered_visualization_plugins).plugins)
+                viz_names.push_back (std::get<0>(p));
             }
         }
         prm.leave_subsection();
