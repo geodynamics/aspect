@@ -126,9 +126,6 @@ namespace aspect
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
 
-        // Define the quadrature rule for projection
-        QGauss<2> quadrature(surface_mesh_dof_handler.get_fe().degree + 1);
-
         // Initialize the surface solution vector
         IndexSet locally_relevant_dofs_surface;
         DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs_surface);
@@ -140,32 +137,54 @@ namespace aspect
         IndexSet locally_relevant_dofs_main;
         DoFTools::extract_locally_relevant_dofs(this->get_dof_handler(), locally_relevant_dofs_main);
         boundary_solution.reinit(this->get_dof_handler().locally_owned_dofs(),
-                                 locally_relevant_dofs_main,
-                                 this->get_mpi_communicator());
+                                locally_relevant_dofs_main,
+                                this->get_mpi_communicator());
 
         const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
+        const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+        const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+
+        AssertThrow(spherical_model || box_model,
+                    ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
+
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        {
+          if (!cell->is_locally_owned())
+            continue;
+
+          for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
           {
-            if (cell->is_locally_owned())
+            if (!cell->face(face)->at_boundary() || cell->face(face)->boundary_id() != relevant_boundary)
+              continue;
+
+            for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_face; ++v)
+            {
+              const Point<dim> pos = cell->face(face)->vertex(v);
+              const unsigned int base_index = cell->face(face)->vertex_dof_index(v, 0);
+
+              Tensor<1, dim> velocity;
+              for (unsigned int d = 0; d < dim; ++d)
+                velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, d)];
+
+              double projected_velocity = 0.0;
+              if (spherical_model)
               {
-                for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
-                  {
-                    if (cell->face(face)->at_boundary() &&
-                        cell->face(face)->boundary_id() == relevant_boundary)
-                      {
-                        for (unsigned int vertex = 0; vertex < GeometryInfo<dim - 1>::vertices_per_face; ++vertex)
-                          {
-                            const unsigned int dof_index = cell->face(face)->vertex_dof_index(vertex, 0);
-                            boundary_solution[dof_index] = this->get_solution()[dof_index];
-                          }
-                      }
-                  }
+                projected_velocity = velocity * (pos / pos.norm()); // radial
               }
+              else if (box_model)
+              {
+                projected_velocity = velocity[dim - 1]; // vertical
+              }
+
+              boundary_solution[base_index] = projected_velocity;
+            }
           }
+        }
 
         boundary_solution.compress(VectorOperation::insert);
       }
+
 
 
     template <int dim>
@@ -232,6 +251,7 @@ namespace aspect
                         topography = vertex.norm() - spherical_model->outer_radius();
                     else if (box_model)
                         topography = vertex[dim - 1] - grid_extent[dim - 1].second;
+                        std::cout<<"here it works 1"<<std::endl;
                     
                     // Get vertical or radial velocity
                     double velocity = 0.0;
