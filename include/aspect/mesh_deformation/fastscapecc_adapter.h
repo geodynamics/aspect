@@ -27,11 +27,26 @@
 #include <unordered_map>
 #include <vector>
 
-#include <xtensor/xbroadcast.hpp>
-#include <xtensor/xmath.hpp>
+// Include the Xtensor configuration file so that we can query the
+// Xtensor version number below to address the fact that between
+// 0.25.0 and 0.26.0, all Xtensor include files were moved around,
+// see https://github.com/xtensor-stack/xtensor/pull/2829 and the
+// complaints therein.
+#if __has_include(<xtensor/core/xtensor_config.hpp>)  // 0.26.0 and later
+#  include <xtensor/core/xtensor_config.hpp>
+#else // 0.25.0 and earlier
+#  include <xtensor/xtensor_config.hpp>
+#endif
 
-#include "fastscapelib/grid/base.hpp"
-#include "fastscapelib/utils/xtensor_utils.hpp"
+#if XTENSOR_VERSION_MAJOR ==0 && XTENSOR_VERSION_MINOR <= 25
+#  include <xtensor/xbroadcast.hpp>
+#  include <xtensor/xmath.hpp>
+#else
+#  include <xtensor/views/xbroadcast.hpp>
+#  include <xtensor/core/xmath.hpp>
+#endif
+
+#include <fastscapelib/grid/base.hpp>
 
 
 namespace fastscapelib
