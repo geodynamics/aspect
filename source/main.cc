@@ -30,6 +30,7 @@
 #include <string>
 #include <thread>
 #include <regex>
+#include <utility>
 
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
@@ -514,12 +515,12 @@ parse_parameters (const std::string &input_as_string,
             }
           catch (const dealii::ExceptionBase &e)
             {
-              dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
-                                                 /* reading failed: */ false,
-                                                 root_process);
+              std::ignore = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
+                                                               /* reading failed: */ false,
+                                                               root_process);
               throw;
             }
-          dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD, true, root_process);
+          std::ignore = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD, true, root_process);
         }
       else
         {
