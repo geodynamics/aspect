@@ -284,6 +284,27 @@ namespace aspect
                                                                                  rheology->elastic_rheology.get_elastic_shear_moduli(),
                                                                                  rheology->viscosity_averaging);
             }
+
+          // Prescribed dilation
+          double average_friction_angle = 0.;
+          double dilation_rate = 0.;
+          if (this->get_parameters().enable_prescribed_dilation)
+            {
+              MaterialModel::PrescribedPlasticDilation<dim>
+              *prescribed_dilation = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>();
+
+              if (prescribed_dilation)
+                {
+                  average_friction_angle = MaterialUtilities::average_value(volume_fractions,
+                                                                            isostrain_viscosities.current_friction_angles,
+                                                                            rheology->viscosity_averaging);
+
+                  if (plastic_yielding)
+                    dilation_rate = 2. * std::sin(average_friction_angle) * isostrain_viscosities.strain_rate_invariant;
+
+                  prescribed_dilation->dilation[i] = dilation_rate;
+                }
+            }
         }
 
       // If we use the full strain tensor, compute the change in the individual tensor components.

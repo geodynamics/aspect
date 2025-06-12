@@ -155,6 +155,8 @@ namespace aspect
           edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
                              min_strain_rate);
 
+        output_parameters.strain_rate_invariant = edot_ii;
+
         // Calculate viscosities for each of the individual compositional phases
         for (unsigned int j=0; j < volume_fractions.size(); ++j)
           {
