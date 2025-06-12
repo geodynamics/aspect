@@ -218,7 +218,7 @@ namespace aspect
 
               // pre-compute the Newton factor for plastic dilation
               const double dilation_newton_factor =
-                prescribed_dilation != nullptr
+                (prescribed_dilation != nullptr)
                 ?
                 (derivatives->dilation_derivative_wrt_pressure[q] * derivative_scaling_factor
                  - prescribed_dilation->dilation_lhs_term[q])
