@@ -70,8 +70,6 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
         in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
 
-        std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
-
         switch (average_velocity_scheme)
           {
             case reference_profile:
@@ -213,8 +211,6 @@ namespace aspect
         MaterialModel::MaterialModelInputs<dim> in(n_q_points, this->n_compositional_fields());
         MaterialModel::MaterialModelOutputs<dim> out(n_q_points, this->n_compositional_fields());
         in.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
-
-        std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
         switch (average_velocity_scheme)
           {
