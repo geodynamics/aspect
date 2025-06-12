@@ -66,7 +66,7 @@ namespace aspect
 
             std::vector<double> melt_fractions(n_quadrature_points);
             MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-            .melt_fractions(in, melt_fractions);
+            .melt_fractions(in, melt_fractions, &out);
 
             for (unsigned int q=0; q<n_quadrature_points; ++q)
               computed_quantities[q](0) = melt_fractions[q];
