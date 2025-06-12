@@ -1214,15 +1214,15 @@ namespace aspect
      * where $\tau_{II}$ is the second invariant of the deviatoric stress,
      * $\alpha$ is the negative derivative of yield function with respect to
      * the pressure ($\sin\phi$ in 2D case), $k$ is cohesion, and $\eta^{ve}$,
-     * is the pre-yielding viscosity. When Picard method or Defection
-     * Correction Method is applied, the term $\bar\alpha\gamma$ should be
-     * split into two terms:
+     * is the pre-yielding viscosity. When Picard method or Defect  Correction
+     * Method is applied, the term $\bar\alpha\gamma$ should be split into two
+     * terms:
      * $\bar\alpha\gamma = \bar\alpha\alpha p / \eta^{ve} +
-     * (\tau_{II} - k) / \eta^{ve}$,
+     * \bar\alpha(\tau_{II} - k) / \eta^{ve}$,
      * the former of which should be moved to the left-hand side in order to
      * guarantee the stability of the nonlinear solver. Therefore, this output
      * provides two terms: dilation_lhs_term corresponds to
-     * $\bar\alpha\alpha/ \eta^{ve}$ (p is replaced by the shape function),
+     * $\bar\alpha\alpha / \eta^{ve}$ (p is replaced by the shape function),
      * and dilation_rhs_term corresponds to $(\tau_{II} - k) / \eta^{ve}$.
      */
     template <int dim>

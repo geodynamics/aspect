@@ -61,6 +61,19 @@ namespace aspect
          * derivatives when material averaging is applied.
          */
         std::vector<double> viscosity_derivative_averaging_weights;
+
+        /**
+         * The derivatives of the plastic dilation with respect to pressure.
+         * Note that this term does not include $\bar\alpha\alpha / \eta^{ve}$,
+         * which is always on the left-hand side no matter if the Newton method
+         * is applied or not.
+         */
+        std::vector<double> dilation_derivative_wrt_pressure;
+
+        /**
+         * The derivatives of the plastic dilation with respect to strain rate.
+         */
+        std::vector<SymmetricTensor<2,dim>> dilation_derivative_wrt_strain_rate;
     };
   }
 

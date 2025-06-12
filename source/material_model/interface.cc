@@ -1023,9 +1023,20 @@ namespace aspect
     template <int dim>
     std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
     {
-      (void)idx;
-      Assert(idx==0, ExcInternalError());
-      return dilation;
+      AssertIndexRange (idx, 2);
+      switch (idx)
+        {
+          case 0:
+            return dilation_lhs_term;
+
+          case 1:
+            return dilation_rhs_term;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // we will never get here, so just return something
+      return std::vector<double>();
     }
 
 

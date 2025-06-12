@@ -43,6 +43,12 @@ namespace aspect
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
 
+      const MaterialModel::PrescribedPlasticDilation<dim> 
+      *prescribed_dilation =
+        (this->get_parameters().enable_prescribed_dilation)
+        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
+        : nullptr;
+
       // First loop over all dofs and find those that are in the Stokes system
       // save the component (pressure and dim velocities) each belongs to.
       for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
@@ -182,7 +188,7 @@ namespace aspect
                       data.local_matrix(i, j) += (
                                                    one_over_eta * pressure_scaling
                                                    * pressure_scaling
-                                                   * (scratch.phi_p[i]
+                                                   * (scratch.phi_p[i] 
                                                       * scratch.phi_p[j]))
                                                  * JxW;
                     }
@@ -211,7 +217,40 @@ namespace aspect
                                               * JxW;
                   }
             }
+
+          if (prescribed_dilation != nullptr)
+            {
+              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                  data.local_matrix(i,j) += prescribed_dilation->dilation_lhs_term[q]
+                                            * pressure_scaling * pressure_scaling
+                                            * scratch.phi_p[i] * scratch.phi_p[j]
+                                            * JxW;
+            }
         }
+    }
+
+
+
+    template <int dim>
+    void
+    StokesPreconditioner<dim>::
+    create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
+    {
+      const unsigned int n_points = outputs.n_evaluation_points();
+
+      if (this->get_parameters().enable_prescribed_dilation
+          && outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
+        {
+          outputs.additional_outputs.push_back(
+            std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>>(n_points));
+        }
+
+      Assert(!this->get_parameters().enable_prescribed_dilation
+             ||
+             outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_lhs_term.size()
+             == n_points, ExcInternalError());
+
     }
 
 
