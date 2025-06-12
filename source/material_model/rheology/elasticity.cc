@@ -323,7 +323,7 @@ namespace aspect
       {
         // Create the ElasticAdditionalOutputs that include the average shear modulus, elastic
         // viscosity, timestep ratio and total deviatoric stress of the current timestep.
-        if (out.template get_additional_output_object<ElasticAdditionalOutputs<dim>>() == nullptr)
+        if (out.template has_additional_output_object<ElasticAdditionalOutputs<dim>>() == false)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -331,7 +331,7 @@ namespace aspect
           }
 
         // We need to modify the shear heating outputs to correctly account for elastic stresses.
-        if (out.template get_additional_output_object<HeatingModel::PrescribedShearHeatingOutputs<dim>>() == nullptr)
+        if (out.template has_additional_output_object<HeatingModel::PrescribedShearHeatingOutputs<dim>>() == false)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -342,7 +342,7 @@ namespace aspect
         // step (either on the fields or directly on the particles)
         // that sets both sets of stresses to the total stress of the
         // previous timestep.
-        if (out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr &&
+        if (out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false &&
             (this->get_parameters().use_operator_splitting || (this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
           {
             const unsigned int n_points = out.n_evaluation_points();

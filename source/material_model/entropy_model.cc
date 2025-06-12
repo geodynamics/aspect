@@ -436,14 +436,14 @@ namespace aspect
     void
     EntropyModel<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<SeismicAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-      if (out.template get_additional_output_object<PrescribedFieldOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -451,7 +451,7 @@ namespace aspect
             (n_points, this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output_object<PrescribedTemperatureOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PrescribedTemperatureOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -459,7 +459,7 @@ namespace aspect
             (n_points));
         }
 
-      if (out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PlasticAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

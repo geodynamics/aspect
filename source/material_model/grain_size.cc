@@ -1144,7 +1144,7 @@ namespace aspect
     GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // These properties are useful as output.
-      if (out.template get_additional_output_object<DislocationViscosityOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<DislocationViscosityOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -1155,14 +1155,14 @@ namespace aspect
       grain_size_evolution->create_additional_named_outputs(out);
 
       // These properties are only output properties.
-      if (use_table_properties && out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
+      if (use_table_properties && out.template has_additional_output_object<SeismicAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-      if (enable_drucker_prager_rheology && out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>() == nullptr)
+      if (enable_drucker_prager_rheology && out.template has_additional_output_object<PlasticAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

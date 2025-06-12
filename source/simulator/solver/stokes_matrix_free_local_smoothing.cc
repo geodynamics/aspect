@@ -452,7 +452,7 @@ namespace aspect
           MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->introspection().n_compositional_fields);
           this->get_newton_handler().create_material_model_outputs(out);
           if (this->get_parameters().enable_elasticity &&
-              out.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == nullptr)
+              out.template has_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == false)
             out.additional_outputs.push_back(std::make_unique<MaterialModel::ElasticOutputs<dim>>(out.n_evaluation_points()));
 
           const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();

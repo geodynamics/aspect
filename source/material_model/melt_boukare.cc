@@ -1249,13 +1249,13 @@ namespace aspect
     MeltBoukare<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
+          && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (out.n_evaluation_points(), this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output_object<BoukareOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<BoukareOutputs<dim>>() == false)
         {
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::BoukareOutputs<dim>> (out.n_evaluation_points()));

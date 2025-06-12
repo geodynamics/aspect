@@ -188,7 +188,7 @@ namespace aspect
       MeltHandler<dim>::create_material_model_outputs(outputs);
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
+          && outputs.template has_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(outputs.n_evaluation_points()));
@@ -1855,7 +1855,7 @@ namespace aspect
   MeltHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>() != nullptr)
+    if (output.template has_additional_output_object<MaterialModel::MeltOutputs<dim>>())
       return;
 
     const unsigned int n_comp = output.reaction_terms[0].size();

@@ -115,7 +115,7 @@ namespace aspect
   NewtonHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>() != nullptr)
+    if (output.template has_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
       return;
 
     output.additional_outputs.push_back(

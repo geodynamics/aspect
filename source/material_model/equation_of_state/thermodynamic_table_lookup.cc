@@ -528,21 +528,21 @@ namespace aspect
       void
       ThermodynamicTableLookup<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (out.template get_additional_output_object<NamedAdditionalMaterialOutputs<dim>>() == nullptr)
+        if (out.template has_additional_output_object<NamedAdditionalMaterialOutputs<dim>>() == false)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
               std::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
           }
 
-        if (out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>() == nullptr)
+        if (out.template has_additional_output_object<SeismicAdditionalOutputs<dim>>() == false)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
               std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
           }
 
-        if (out.template get_additional_output_object<PhaseOutputs<dim>>() == nullptr
+        if (out.template has_additional_output_object<PhaseOutputs<dim>>() == false
             && material_lookup[0]->has_dominant_phase())
           {
             const unsigned int n_points = out.n_evaluation_points();
