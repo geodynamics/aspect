@@ -101,30 +101,44 @@ namespace aspect
     }
 
 
-      template <int dim>
-      void FastScapecc<dim>::init_surface_mesh(const GeometryModel::SphericalShell<dim> &geom_model)
-      {
-        this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
+    template <int dim>
+    void FastScapecc<dim>::init_surface_mesh(const GeometryModel::SphericalShell<dim> &geom_model)
+    {
+      this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-        const Point<dim> center;
-        GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
-        surface_mesh.refine_global(3);
+      const Point<dim> center;
+      GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
+      surface_mesh.refine_global(3); // Adjust as needed
 
+      surface_fe = std::make_shared<FE_Q<dim - 1, dim>>(1);
+      surface_mesh_dof_handler.reinit(surface_mesh);
+      surface_mesh_dof_handler.distribute_dofs(*surface_fe);
 
-        surface_fe = std::make_shared<FE_Q<dim - 1, dim>>(1);
-        surface_mesh_dof_handler.reinit(surface_mesh);
+      surface_constraints.clear();
+      DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+      surface_constraints.close();
 
-        surface_mesh_dof_handler.distribute_dofs(*surface_fe);
+      // Create a unique index for each surface vertex
+      unsigned int counter = 0;
+      for (const auto &cell : surface_mesh.active_cell_iterators())
+        for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
+          {
+            const Point<dim> &vertex = cell->vertex(v);
+            if (spherical_vertex_index_map.find(vertex) == spherical_vertex_index_map.end())
+              {
+                spherical_vertex_index_map[vertex] = counter++;
+              }
+          }
 
-        surface_constraints.clear();
-        DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-        surface_constraints.close();
-      }
+      n_grid_nodes = spherical_vertex_index_map.size();
+    }
+
   
       template <int dim>
       void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &boundary_ids)
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
+        std::cout<<"here it works 1a"<<std::endl;
 
         // Initialize the surface solution vector
         IndexSet locally_relevant_dofs_surface;
@@ -178,32 +192,47 @@ namespace aspect
               }
 
               boundary_solution[base_index] = projected_velocity;
+              std::cout<<"here it works 1b"<<std::endl;
+
             }
           }
         }
-
         boundary_solution.compress(VectorOperation::insert);
       }
 
 
 
-    template <int dim>
-    unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
-    {
-      if constexpr (dim == 3)
-        {
-          const unsigned int i = static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5);
-          const unsigned int j = static_cast<unsigned int>((p[1] - grid_extent[1].first) / dy + 0.5);
-          return j * nx + i;
-        }
-      else if constexpr (dim == 2)
-        {
-          const unsigned int i = static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5);
-          return i;
-        }
-      else
-        AssertThrow(false, ExcMessage("Unsupported dimension in vertex_index()."));
-    }
+      template <int dim>
+      unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
+      {
+        const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+        const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+
+        if (box_model)
+          {
+            if constexpr (dim == 3)
+              {
+                const unsigned int i = static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5);
+                const unsigned int j = static_cast<unsigned int>((p[1] - grid_extent[1].first) / dy + 0.5);
+                return j * nx + i;
+              }
+            else if constexpr (dim == 2)
+              {
+                const unsigned int i = static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5);
+                return i;
+              }
+          }
+        else if (spherical_model)
+          {
+            auto it = spherical_vertex_index_map.find(p);
+            AssertThrow(it != spherical_vertex_index_map.end(),
+                        ExcMessage("Point not found in spherical_vertex_index_map."));
+            return it->second;
+          }
+
+        AssertThrow(false, ExcMessage("Unsupported geometry in vertex_index()."));
+      }
+
 
       template <int dim>
       void FastScapecc<dim>::compute_velocity_constraints_on_boundary(
@@ -215,8 +244,11 @@ namespace aspect
           return;
 
         TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+        
+        std::cout<<"here it works 1"<<std::endl;
 
         const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
+        std::cout<<"here it works 2"<<std::endl;
 
         const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
         const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
@@ -251,7 +283,7 @@ namespace aspect
                         topography = vertex.norm() - spherical_model->outer_radius();
                     else if (box_model)
                         topography = vertex[dim - 1] - grid_extent[dim - 1].second;
-                        std::cout<<"here it works 1"<<std::endl;
+                        std::cout<<"here it works 20"<<std::endl;
                     
                     // Get vertical or radial velocity
                     double velocity = 0.0;
@@ -323,6 +355,7 @@ namespace aspect
 
           auto elevation = xt::adapt(h);
           auto elevation_old = xt::adapt(h_old);
+          std::cout<<"here it works 11"<<std::endl;
 
           const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
 
@@ -357,6 +390,7 @@ namespace aspect
           auto spl_eroder = fastscapelib::spl_eroder<FlowGraphType>(
               fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd)
           );
+          std::cout<<"here it works 12"<<std::endl;
 
 
 
@@ -381,6 +415,7 @@ namespace aspect
           // Compute erosion velocities
           for (unsigned int i = 0; i < n_grid_nodes; ++i)
             V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
+          std::cout<<"here it works 13"<<std::endl;
 
           // Broadcast V to all processes
           MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
@@ -411,6 +446,7 @@ namespace aspect
                 best_index = i;
               }
           }
+          std::cout<<"here it works 14"<<std::endl;
 
       return V[best_index];
       };

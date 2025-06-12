@@ -45,6 +45,31 @@ namespace aspect
 
   namespace MeshDeformation
   {
+  // A comparator for dealii::Point<dim> to use in std::map
+  // ------------------------------------------------------
+  // std::map requires a way to compare keys (i.e., define a "less than" relation)
+  // dealii::Point<dim> does not provide operator< by default,
+  // so we must define one ourselves.
+  //
+  // This comparator compares two Point<dim> objects lexicographically:
+  // First compares x, then y (and z if dim == 3).
+  //
+  // This is required to allow using std::map<Point<dim>, T>
+  // to uniquely index surface vertices on unstructured spherical meshes.
+    // Comparator for Point<dim> to use in std::map
+    template <int dim>
+    struct PointComparator
+    {
+      bool operator()(const dealii::Point<dim> &a, const dealii::Point<dim> &b) const
+      {
+        for (unsigned int d = 0; d < dim; ++d)
+        {
+          if (a[d] < b[d]) return true;
+          if (a[d] > b[d]) return false;
+        }
+        return false;
+      }
+    };
 
     /**
      * A plugin that utilizes the landscape evolution code Fastscapelib (C++)
@@ -104,6 +129,7 @@ namespace aspect
         // dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
         unsigned int vertex_index(const Point<dim> &p) const;
+        std::map<dealii::Point<dim>, unsigned int, PointComparator<dim>> spherical_vertex_index_map;
 
         using SurfaceMeshType = Triangulation<dim - 1, dim>;
 
