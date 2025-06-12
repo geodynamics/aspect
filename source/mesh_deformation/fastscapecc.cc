@@ -218,22 +218,9 @@ namespace aspect
             for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
               {
                 const Point<dim> vertex = cell->vertex(v);
-                const unsigned int dof_index = cell->vertex_dof_index(v, 0);
                   
                   const unsigned int dof_index = cell->vertex_dof_index(v, 0);
-
-                  pout << "surface_solution size: " << surface_solution.size() << std::endl;
-                  pout << "n_dofs in surface_mesh_dof_handler: "
-                       << surface_mesh_dof_handler.n_dofs() << std::endl;
-
-                  
-                  if (dof_index >= surface_solution.size())
-                    {
-                      pout << "ERROR: dof_index out of bounds: " << dof_index
-                           << " >= surface_solution.size(): " << surface_solution.size() << std::endl;
-                      AssertThrow(false, ExcMessage("dof_index out of bounds"));
-                    }
-
+                
                   const double surface_value = surface_solution[dof_index];
 
                   
@@ -256,15 +243,6 @@ namespace aspect
 
                 // Get 1D or 2D grid index from physical position
                 const unsigned int index = this->vertex_index(vertex);
-
-                // Debug output
-                pout << "Vertex: " << vertex
-                     << ", Dof Index: " << dof_index
-                     << ", Surface Value: " << surface_value
-                     << ", Elevation: " << elevation
-                     << ", Velocity: " << velocity
-                     << ", Grid Index: " << index
-                     << std::endl;
 
                 // Fill temporary variables
                 temporary_variables[0].push_back(elevation);
