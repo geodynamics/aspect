@@ -1,0 +1,30 @@
+# This test checks that the addition of phase transitions with no change 
+# in material properties across phases boundaries does not change the
+# results of the test multicomponent_compressible_averaging.prm
+include $ASPECT_SOURCE_DIR/tests/multicomponent_compressible_averaging.prm
+
+set Output directory = multicomponent_compressible_averaging_phases_no-change
+
+
+# Provide a name for the compositional field, which will be
+# used to define change in material properties across phase
+# change boundaries in the material model section
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = composition_1
+end
+
+
+subsection Material model
+  set Model name         = multicomponent compressible
+
+  subsection Multicomponent compressible
+
+    # Add a single phase transition approximately the model mid-depth,
+    # but do not change any of the material properties.
+    set Phase transition depths = composition_1: 1500e3, background: 1500e3
+    set Phase transition widths = composition_1: 1e3,background: 1e3
+    set Phase transition temperatures = composition_1: 2000, background: 2000
+    set Phase transition Clapeyron slopes = composition_1: 0, background: 0
+  end
+end
