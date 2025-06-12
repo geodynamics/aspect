@@ -64,8 +64,6 @@ namespace aspect
         AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
 
       n_grid_nodes = surface_mesh.n_active_cells();
-//        n_grid_nodes = surface_mesh.n_vertices();
-
     }
 
     template <int dim>
@@ -100,104 +98,75 @@ namespace aspect
       surface_constraints.clear();
       DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
       surface_constraints.close();
-}
-
-
-
-    template <int dim>
-    void FastScapecc<dim>::init_surface_mesh(const GeometryModel::SphericalShell<dim> &geom_model)
-    {
-      this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
-
-      const Point<dim> center;
-      GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
-      surface_mesh.refine_global(3);
-
-
-      surface_fe = std::make_shared<FE_Q<dim - 1, dim>>(1);
-      surface_mesh_dof_handler.reinit(surface_mesh);
-
-      surface_mesh_dof_handler.distribute_dofs(*surface_fe);
-
-      surface_constraints.clear();
-      DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-      surface_constraints.close();
     }
 
 
-    template <int dim>
-    void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &boundary_ids)
-    {
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
+      template <int dim>
+      void FastScapecc<dim>::init_surface_mesh(const GeometryModel::SphericalShell<dim> &geom_model)
+      {
+        this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-      // Define the quadrature rule for projection
-      QGauss<2> quadrature(surface_mesh_dof_handler.get_fe().degree + 1);
+        const Point<dim> center;
+        GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
+        surface_mesh.refine_global(3);
 
-      // Initialize the surface solution vector
-      IndexSet locally_relevant_dofs_surface;
-      DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs_surface);
-      surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-                              locally_relevant_dofs_surface,
-                              this->get_mpi_communicator());
 
-      // Initialize the boundary solution vector
-      IndexSet locally_relevant_dofs_main;
-      DoFTools::extract_locally_relevant_dofs(this->get_dof_handler(), locally_relevant_dofs_main);
-      boundary_solution.reinit(this->get_dof_handler().locally_owned_dofs(),
-                               locally_relevant_dofs_main,
-                               this->get_mpi_communicator());
+        surface_fe = std::make_shared<FE_Q<dim - 1, dim>>(1);
+        surface_mesh_dof_handler.reinit(surface_mesh);
 
-      const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+        surface_mesh_dof_handler.distribute_dofs(*surface_fe);
 
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        {
-          if (cell->is_locally_owned())
-            {
-              for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
-                {
-                  if (cell->face(face)->at_boundary() &&
-                      cell->face(face)->boundary_id() == relevant_boundary)
-                    {
-                      for (unsigned int vertex = 0; vertex < GeometryInfo<dim - 1>::vertices_per_face; ++vertex)
-                        {
-                          const unsigned int dof_index = cell->face(face)->vertex_dof_index(vertex, 0);
-                          boundary_solution[dof_index] = this->get_solution()[dof_index];
-                        }
-                    }
-                }
-            }
-        }
-
-      boundary_solution.compress(VectorOperation::insert);
-
-    }
-
-//      template <int dim>
-//      void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &)
-//      {
-//        TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
-//
-//        IndexSet locally_relevant_dofs;
-//        DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs);
-//
-//        surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-//                                locally_relevant_dofs,
-//                                this->get_mpi_communicator());
-//
-//        const unsigned int velocity_component = dim - 1;
-//
-//        // Radial velocity if spherical, vertical otherwise
-//        Functions::FEFieldFunction<dim> velocity_field(this->get_dof_handler(),
-//                                                       this->get_solution(),
-//                                                       this->get_mapping(),
-//                                                       velocity_component);
-//
-//        VectorTools::interpolate(surface_mesh_dof_handler,
-//                                 velocity_field,
-//                                 surface_solution);
-//      }
-
+        surface_constraints.clear();
+        DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+        surface_constraints.close();
+      }
   
+      template <int dim>
+      void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &boundary_ids)
+      {
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
+
+        // Define the quadrature rule for projection
+        QGauss<2> quadrature(surface_mesh_dof_handler.get_fe().degree + 1);
+
+        // Initialize the surface solution vector
+        IndexSet locally_relevant_dofs_surface;
+        DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs_surface);
+        surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                                locally_relevant_dofs_surface,
+                                this->get_mpi_communicator());
+
+        // Initialize the boundary solution vector
+        IndexSet locally_relevant_dofs_main;
+        DoFTools::extract_locally_relevant_dofs(this->get_dof_handler(), locally_relevant_dofs_main);
+        boundary_solution.reinit(this->get_dof_handler().locally_owned_dofs(),
+                                 locally_relevant_dofs_main,
+                                 this->get_mpi_communicator());
+
+        const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+          {
+            if (cell->is_locally_owned())
+              {
+                for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
+                  {
+                    if (cell->face(face)->at_boundary() &&
+                        cell->face(face)->boundary_id() == relevant_boundary)
+                      {
+                        for (unsigned int vertex = 0; vertex < GeometryInfo<dim - 1>::vertices_per_face; ++vertex)
+                          {
+                            const unsigned int dof_index = cell->face(face)->vertex_dof_index(vertex, 0);
+                            boundary_solution[dof_index] = this->get_solution()[dof_index];
+                          }
+                      }
+                  }
+              }
+          }
+
+        boundary_solution.compress(VectorOperation::insert);
+      }
+
 
     template <int dim>
     unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
@@ -217,98 +186,69 @@ namespace aspect
         AssertThrow(false, ExcMessage("Unsupported dimension in vertex_index()."));
     }
 
+      template <int dim>
+      void FastScapecc<dim>::compute_velocity_constraints_on_boundary(
+          const DoFHandler<dim> &mesh_deformation_dof_handler,
+          AffineConstraints<double> &mesh_velocity_constraints,
+          const std::set<types::boundary_id> &boundary_ids) const
+      {
+        if (this->get_timestep_number() == 0)
+          return;
 
-    template <int dim>
-    void FastScapecc<dim>::compute_velocity_constraints_on_boundary(
-        const DoFHandler<dim> &mesh_deformation_dof_handler,
-        AffineConstraints<double> &mesh_velocity_constraints,
-        const std::set<types::boundary_id> &boundary_ids) const
-    {
-      if (this->get_timestep_number() == 0)
-        return;
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
 
-      TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+        const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
 
-      const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
+        const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+        const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
 
-      // Identify geometry model type
-      const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-      const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+        AssertThrow(spherical_model || box_model, ExcMessage("Unsupported geometry model in FastScapecc."));
 
-      AssertThrow(spherical_model || box_model, ExcMessage("Unsupported geometry model in FastScapecc."));
-
-      // Temporary storage: elevation, vertex_index, and vertical/radial velocity
         std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
-//      std::vector<std::vector<double>> temporary_variables(dim, std::vector<double>());
 
-        for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
-          {
-            for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
-              {
-                const Point<dim> vertex = cell->vertex(v);
-                  
-                  const unsigned int dof_index = cell->vertex_dof_index(v, 0);
+        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        {
+            if (!cell->is_locally_owned())
+                continue;
+            
+            for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+            {
+                if (!cell->face(face_no)->at_boundary())
+                    continue;
                 
-                  const double surface_value = surface_solution[dof_index];
-
-                  double topography = 0.0;
-
-                  if (spherical_model)
-                      topography = vertex.norm() - spherical_model->outer_radius();  // Radial distance from outer surface
-                  else if (box_model)
-                      topography = vertex[dim - 1] - grid_extent[dim - 1].second;     // Height relative to top
-
-                // Compute velocity (radial or vertical)
-                double velocity = 0.0;
-                if (spherical_model)
-                  velocity = (vertex[0] * surface_value +
-                              vertex[1] * surface_value +
-                              vertex[2] * surface_value) / vertex.norm();
-                else if (box_model)
-                  velocity = surface_value;
-
-                // Get 1D or 2D grid index from physical position
-                const unsigned int index = this->vertex_index(vertex);
-
-                // Fill temporary variables
-                temporary_variables[0].push_back(topography);
-                temporary_variables[1].push_back(static_cast<double>(index));
-                temporary_variables[2].push_back(velocity * year_in_seconds);
-              }
-          }
-
-//      for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
-//        {
-//          for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
-//            {
-//              const Point<dim> vertex = cell->vertex(v);
-//              const unsigned int dof_index = cell->vertex_dof_index(v, 0);
-//              const double surface_value = surface_solution[dof_index];
-//
-//              // Compute elevation
-//              double elevation = vertex[2];
-//              if (spherical_model)
-//                elevation -= spherical_model->outer_radius();
-//
-//              // Compute velocity (radial or vertical)
-//              double velocity = 0.0;
-//              if (spherical_model)
-//                velocity = (vertex[0] * surface_value +
-//                            vertex[1] * surface_value +
-//                            vertex[2] * surface_value) / vertex.norm();
-//              else if (box_model)
-//                velocity = surface_value;
-//
-//              // Get 1D or 2D grid index from physical position
-//              const unsigned int index = this->vertex_index(vertex);
-//
-//              // Fill temporary variables
-//              temporary_variables[0].push_back(elevation);
-//              temporary_variables[1].push_back(static_cast<double>(index));
-//              temporary_variables[2].push_back(velocity * year_in_seconds);
-//            }
-//        }
-    
+                const types::boundary_id face_boundary = cell->face(face_no)->boundary_id();
+                if (boundary_ids.find(face_boundary) == boundary_ids.end())
+                    continue;
+                
+                for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_face; ++v)
+                {
+                    const Point<dim> vertex = cell->face(face_no)->vertex(v);
+                    const unsigned int dof_index = cell->face(face_no)->vertex_dof_index(v, 0);
+                    const double surface_value = surface_solution[dof_index];
+                    
+                    // Get elevation (z or radial)
+                    double topography = 0.0;
+                    if (spherical_model)
+                        topography = vertex.norm() - spherical_model->outer_radius();
+                    else if (box_model)
+                        topography = vertex[dim - 1] - grid_extent[dim - 1].second;
+                    
+                    // Get vertical or radial velocity
+                    double velocity = 0.0;
+                    if (spherical_model)
+                        velocity = surface_value; // radial already computed in projection
+                    else if (box_model)
+                        velocity = surface_value;
+                    
+                    const unsigned int index = this->vertex_index(vertex);
+                    
+                    temporary_variables[0].push_back(topography);
+                    temporary_variables[1].push_back(static_cast<double>(index));
+                    temporary_variables[2].push_back(velocity * year_in_seconds);
+                }
+            }
+        }
+        
       std::vector<double> V(n_grid_nodes);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
