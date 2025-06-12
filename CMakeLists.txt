@@ -402,8 +402,24 @@ endif()
 
 # Generate compile_commands.json for tooling (VS Code, etc.)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+# Also set a flag that we query when deciding whether to drive
+# compilers and linkers in such a way that error and warning messages
+# use colors.
 set(FORCE_COLORED_OUTPUT ON
     CACHE BOOL "Forces colored output when compiling with gcc and clang.")
+
+if (${FORCE_COLORED_OUTPUT})
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER MATCHES "AppleClang")
+    string(APPEND DEAL_II_CXX_FLAGS_DEBUG " -fcolor-diagnostics")
+    string(APPEND DEAL_II_CXX_FLAGS_RELEASE " -fcolor-diagnostics")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    string(APPEND DEAL_II_CXX_FLAGS_DEBUG " -fdiagnostics-color=always")
+    string(APPEND DEAL_II_CXX_FLAGS_RELEASE " -fdiagnostics-color=always")
+  endif()
+endif()
+
 
 # Query the current git commit so we can put it into the start-up
 # message of ASPECT.
@@ -445,11 +461,15 @@ endif()
 #
 # While there, also set up the variable to use "unity" builds.
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-  set(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
-  set(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
+  set(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL
+      "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
+  set(ASPECT_UNITY_BUILD ON CACHE BOOL
+      "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions.")
 else()
-  set(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
-  set(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
+  set(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL
+      "Precompile external header files to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
+  set(ASPECT_UNITY_BUILD OFF CACHE BOOL
+      "Combine source files into less compile targets to speedup compile time. Currently only supported for CMake 3.16 and newer versions." FORCE)
 endif()
 
 if(ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
@@ -789,16 +809,6 @@ if(NOT _HAVE_LINK_H)
 endif()
 if(ASPECT_HAVE_LINK_H)
   message(STATUS "Enabling checking of compatible deal.II library when loading plugins")
-endif()
-
-if (${FORCE_COLORED_OUTPUT})
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER MATCHES "AppleClang")
-    string(APPEND DEAL_II_CXX_FLAGS_DEBUG " -fcolor-diagnostics")
-    string(APPEND DEAL_II_CXX_FLAGS_RELEASE " -fcolor-diagnostics")
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    string(APPEND DEAL_II_CXX_FLAGS_DEBUG " -fdiagnostics-color=always")
-    string(APPEND DEAL_II_CXX_FLAGS_RELEASE " -fdiagnostics-color=always")
-  endif()
 endif()
 
 # deal.II versions >=9.5 disable deprecation warnings in user code. Enable
