@@ -1267,20 +1267,19 @@ namespace aspect
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "the temperature field gains its values:"
-                         "\\begin{itemize}"
-                         "\\item ``field'': If the temperature is marked with this "
+                         "* ``field'': If the temperature is marked with this "
                          "method, then its values are computed in each time step by "
                          "solving the temperature advection-diffusion equation. In other words, "
                          "this corresponds to the usual notion of a temperature. "
                          "\n"
-                         "\\item ``prescribed field'': The value of the temperature is determined "
+                         "* ``prescribed field'': The value of the temperature is determined "
                          "in each time step from the material model. If a compositional field is "
                          "marked with this method, then the value of a specific additional material "
                          "model output, called the `PrescribedTemperatureOutputs' is interpolated "
                          "onto the temperature. This field does not change otherwise, it is not "
                          "advected with the flow. "
                          "\n"
-                         "\\item ``prescribed field with diffusion'': If the temperature field is "
+                         "* ``prescribed field with diffusion'': If the temperature field is "
                          "marked this way, the value of a specific additional material model output, "
                          "called the `PrescribedTemperatureOutputs' is interpolated onto the field, as in "
                          "the ``prescribed field'' method. Afterwards, the field is diffused based on "
@@ -1291,11 +1290,10 @@ namespace aspect
                          "of diffusion is independent of the time step size, and that the field is not "
                          "advected with the flow."
                          "\n"
-                         "\\item ``static'': If a temperature field is marked "
+                         "* ``static'': If a temperature field is marked "
                          "this way, then it does not evolve at all. Its values are "
                          "simply set to the initial conditions, and will then "
-                         "never change."
-                         "\\end{itemize}");
+                         "never change.");
     }
     prm.leave_subsection();
 
