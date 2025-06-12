@@ -591,21 +591,17 @@ namespace aspect
                                                        :
                                                        std::max(in.pressure[i],0.0);
 
-                  const double yield_stress = drucker_prager_plasticity.compute_yield_stress(drucker_prager_parameters.cohesion,
-                                                                                             drucker_prager_parameters.angle_internal_friction,
-                                                                                             pressure_for_yielding,
-                                                                                             drucker_prager_parameters.max_yield_stress);
+                  const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure_for_yielding,
+                                                                                             drucker_prager_parameters);
 
                   // Apply plastic yielding:
                   // If the non-yielding stress is greater than the yield stress,
                   // rescale the viscosity back to yield surface
                   if (non_yielding_stress >= yield_stress)
                     {
-                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(drucker_prager_parameters.cohesion,
-                                                                                        drucker_prager_parameters.angle_internal_friction,
-                                                                                        pressure_for_yielding,
+                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(pressure_for_yielding,
                                                                                         second_strain_rate_invariant,
-                                                                                        drucker_prager_parameters.max_yield_stress,
+                                                                                        drucker_prager_parameters,
                                                                                         effective_viscosity);
                     }
 

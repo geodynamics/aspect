@@ -107,12 +107,15 @@ namespace aspect
                 }
               else
                 {
+                  MaterialModel::Rheology::DruckerPragerParameters drucker_prager_parameters;
+                  drucker_prager_parameters.cohesion = cohesion;
+                  drucker_prager_parameters.angle_internal_friction = angle_of_internal_friction;
+                  drucker_prager_parameters.max_yield_stress = std::numeric_limits<double>::infinity();
+
                   // plasticity
-                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
-                                                                                         angle_of_internal_friction,
-                                                                                         pressure,
+                  const double eta_plastic = drucker_prager_plasticity.compute_viscosity(pressure,
                                                                                          std::sqrt(strain_rate_effective),
-                                                                                         std::numeric_limits<double>::infinity());
+                                                                                         drucker_prager_parameters);
 
                   const double viscosity_pressure_derivative = drucker_prager_plasticity.compute_derivative(angle_of_internal_friction,std::sqrt(strain_rate_effective));
 

@@ -100,11 +100,41 @@ namespace aspect
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
            */
+          DEAL_II_DEPRECATED
           double
           compute_yield_stress (const double cohesion,
                                 const double angle_internal_friction,
                                 const double pressure,
                                 const double max_yield_stress) const;
+
+          /**
+           * Compute the plastic yield stress based on the Drucker Prager yield criterion for
+           * the given pressure, and drucker prager parameters.
+           *
+           * @param pressure The current pressure.
+           * @param p The parameters of the drucker prager plasticity. This can either be
+           * manually created, or computed by compute_drucker_prager_parameters().
+           *
+           * @return The yield stress for the given conditions.
+           */
+          double
+          compute_yield_stress (const double pressure,
+                                const DruckerPragerParameters &p) const;
+
+          /**
+           * Compute the apparent viscosity using the yield stress and effective strain rate.
+           * If the non_yielding_viscosity is not infinite
+           * (i.e., if there are other rheological elements accommodating strain), the returned
+           * value is the effective composite viscosity, not the pure "plastic" viscosity.
+           */
+          DEAL_II_DEPRECATED
+          double
+          compute_viscosity (const double cohesion,
+                             const double angle_internal_friction,
+                             const double pressure,
+                             const double effective_strain_rate,
+                             const double max_yield_stress,
+                             const double non_yielding_viscosity = std::numeric_limits<double>::infinity()) const;
 
           /**
            * Compute the apparent viscosity using the yield stress and effective strain rate.
@@ -113,11 +143,9 @@ namespace aspect
            * value is the effective composite viscosity, not the pure "plastic" viscosity.
            */
           double
-          compute_viscosity (const double cohesion,
-                             const double angle_internal_friction,
-                             const double pressure,
+          compute_viscosity (const double pressure,
                              const double effective_strain_rate,
-                             const double max_yield_stress,
+                             const DruckerPragerParameters &p,
                              const double non_yielding_viscosity = std::numeric_limits<double>::infinity()) const;
 
           /**

@@ -236,28 +236,30 @@ namespace aspect
 
                   const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
 
+                  MaterialModel::Rheology::DruckerPragerParameters drucker_prager_parameters;
+                  drucker_prager_parameters.cohesion = cohesion;
+                  drucker_prager_parameters.angle_internal_friction = angle_of_internal_friction;
+                  drucker_prager_parameters.max_yield_stress = std::numeric_limits<double>::infinity();
+
                   const std::shared_ptr<PlasticAdditionalOutputs<dim>>
                   plastic_out = out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>();
+
                   if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
                       plastic_out->cohesions[i] = cohesion;
                       plastic_out->friction_angles[i] = angle_of_internal_friction;
                       plastic_out->yielding[i] = 0;
-                      plastic_out->yield_stresses[i] = drucker_prager_plasticity.compute_yield_stress(cohesion,
-                                                                                                      angle_of_internal_friction,
-                                                                                                      pressure,
-                                                                                                      std::numeric_limits<double>::infinity());
+                      plastic_out->yield_stresses[i] = drucker_prager_plasticity.compute_yield_stress(pressure,
+                                                                                                      drucker_prager_parameters);
                     }
 
                   const double strain_rate_effective = std::fabs(second_invariant(deviator(in.strain_rate[i])));
 
                   if (std::sqrt(strain_rate_effective) >= std::numeric_limits<double>::min())
                     {
-                      const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
-                                                                                             angle_of_internal_friction,
-                                                                                             pressure,
+                      const double eta_plastic = drucker_prager_plasticity.compute_viscosity(pressure,
                                                                                              std::sqrt(strain_rate_effective),
-                                                                                             std::numeric_limits<double>::infinity());
+                                                                                             drucker_prager_parameters);
 
                       effective_viscosity = 1.0 / ( ( 1.0 /  eta_plastic  ) + ( 1.0 / (vis_lateral * viscosity_profile) ) );
 
