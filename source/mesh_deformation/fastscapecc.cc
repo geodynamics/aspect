@@ -210,39 +210,100 @@ namespace aspect
       AssertThrow(spherical_model || box_model, ExcMessage("Unsupported geometry model in FastScapecc."));
 
       // Temporary storage: elevation, vertex_index, and vertical/radial velocity
-      std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
+        std::vector<std::vector<double>> temporary_variables(dim + 2, std::vector<double>());
+//      std::vector<std::vector<double>> temporary_variables(dim, std::vector<double>());
 
-      for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
-        {
-          for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
-            {
-              const Point<dim> vertex = cell->vertex(v);
-              const unsigned int dof_index = cell->vertex_dof_index(v, 0);
-              const double surface_value = surface_solution[dof_index];
+        for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
+          {
+            for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
+              {
+                const Point<dim> vertex = cell->vertex(v);
+                const unsigned int dof_index = cell->vertex_dof_index(v, 0);
+                  
+                  const unsigned int dof_index = cell->vertex_dof_index(v, 0);
 
-              // Compute elevation
-              double elevation = vertex[2];
-              if (spherical_model)
-                elevation -= spherical_model->outer_radius();
+                  pout << "surface_solution size: " << surface_solution.size() << std::endl;
+                  pout << "n_dofs in surface_mesh_dof_handler: "
+                       << surface_mesh_dof_handler.n_dofs() << std::endl;
 
-              // Compute velocity (radial or vertical)
-              double velocity = 0.0;
-              if (spherical_model)
-                velocity = (vertex[0] * surface_value +
-                            vertex[1] * surface_value +
-                            vertex[2] * surface_value) / vertex.norm();
-              else if (box_model)
-                velocity = surface_value;
+                  
+                  if (dof_index >= surface_solution.size())
+                    {
+                      pout << "ERROR: dof_index out of bounds: " << dof_index
+                           << " >= surface_solution.size(): " << surface_solution.size() << std::endl;
+                      AssertThrow(false, ExcMessage("dof_index out of bounds"));
+                    }
 
-              // Get 1D or 2D grid index from physical position
-              const unsigned int index = this->vertex_index(vertex);
+                  const double surface_value = surface_solution[dof_index];
 
-              // Fill temporary variables
-              temporary_variables[0].push_back(elevation);
-              temporary_variables[1].push_back(static_cast<double>(index));
-              temporary_variables[2].push_back(velocity * year_in_seconds);
-            }
-        }
+                  
+
+                  double elevation = 0.0;
+
+                  if (spherical_model)
+                    elevation = vertex.norm() - spherical_model->outer_radius();  // Radial distance from outer surface
+                  else if (box_model)
+                    elevation = vertex[dim - 1] - grid_extent[dim - 1].second;     // Height relative to top
+
+                // Compute velocity (radial or vertical)
+                double velocity = 0.0;
+                if (spherical_model)
+                  velocity = (vertex[0] * surface_value +
+                              vertex[1] * surface_value +
+                              vertex[2] * surface_value) / vertex.norm();
+                else if (box_model)
+                  velocity = surface_value;
+
+                // Get 1D or 2D grid index from physical position
+                const unsigned int index = this->vertex_index(vertex);
+
+                // Debug output
+                pout << "Vertex: " << vertex
+                     << ", Dof Index: " << dof_index
+                     << ", Surface Value: " << surface_value
+                     << ", Elevation: " << elevation
+                     << ", Velocity: " << velocity
+                     << ", Grid Index: " << index
+                     << std::endl;
+
+                // Fill temporary variables
+                temporary_variables[0].push_back(elevation);
+                temporary_variables[1].push_back(static_cast<double>(index));
+                temporary_variables[2].push_back(velocity * year_in_seconds);
+              }
+          }
+
+//      for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
+//        {
+//          for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
+//            {
+//              const Point<dim> vertex = cell->vertex(v);
+//              const unsigned int dof_index = cell->vertex_dof_index(v, 0);
+//              const double surface_value = surface_solution[dof_index];
+//
+//              // Compute elevation
+//              double elevation = vertex[2];
+//              if (spherical_model)
+//                elevation -= spherical_model->outer_radius();
+//
+//              // Compute velocity (radial or vertical)
+//              double velocity = 0.0;
+//              if (spherical_model)
+//                velocity = (vertex[0] * surface_value +
+//                            vertex[1] * surface_value +
+//                            vertex[2] * surface_value) / vertex.norm();
+//              else if (box_model)
+//                velocity = surface_value;
+//
+//              // Get 1D or 2D grid index from physical position
+//              const unsigned int index = this->vertex_index(vertex);
+//
+//              // Fill temporary variables
+//              temporary_variables[0].push_back(elevation);
+//              temporary_variables[1].push_back(static_cast<double>(index));
+//              temporary_variables[2].push_back(velocity * year_in_seconds);
+//            }
+//        }
     
       std::vector<double> V(n_grid_nodes);
 
@@ -251,7 +312,9 @@ namespace aspect
           // Initialize the variables that will be sent to FastScape.
           std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
           std::vector<double> vz(n_grid_nodes);
-          std::vector<double> vy(n_grid_nodes);
+//          std::vector<double> vy(n_grid_nodes);
+//          std::vector<double> vx(n_grid_nodes);
+
           std::vector<double> h_old(n_grid_nodes);
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
@@ -259,7 +322,9 @@ namespace aspect
               int index = static_cast<int>(temporary_variables[1][i]);
               h[index] = temporary_variables[0][i];
               vz[index] = temporary_variables[2][i];
-              vy[index] = temporary_variables[3][i];
+//              vy[index] = temporary_variables[3][i];
+//              vx[index] = temporary_variables[2][i];
+
             }
 
           for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
@@ -281,7 +346,9 @@ namespace aspect
                 {
                   int index = static_cast<int>(temporary_variables[1][i]);
                   h[index] = temporary_variables[0][i];
-                  vz[index] = temporary_variables[dim+1][i];
+                  vz[index] = temporary_variables[2][i];
+//                  vy[index] = temporary_variables[3][i];
+//                  vx[index] = temporary_variables[2][i];
                 }
             }
 
