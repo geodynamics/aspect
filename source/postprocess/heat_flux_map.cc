@@ -25,6 +25,7 @@
 #include <aspect/heating_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_heat_flux/interface.h>
+#include <aspect/boundary_convective_heating/interface.h>
 #include <aspect/boundary_velocity/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -121,6 +122,9 @@ namespace aspect
 
         const std::set<types::boundary_id> &fixed_heat_flux_boundaries =
           simulator_access.get_parameters().fixed_heat_flux_boundary_indicators;
+
+        const std::set<types::boundary_id> &robin_temperature_boundaries =
+          simulator_access.get_boundary_convective_heating_manager().get_convective_heating_boundary_indicators();
 
         Vector<float> artificial_viscosity(simulator_access.get_triangulation().n_active_cells());
         simulator_access.get_artificial_viscosity(artificial_viscosity, true);
@@ -238,7 +242,8 @@ namespace aspect
                   const unsigned int boundary_id = cell->face(f)->boundary_id();
 
                   // Compute heat flux through Dirichlet boundary using CBF method
-                  if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
+                  if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end()
+                      || robin_temperature_boundaries.find(boundary_id) != robin_temperature_boundaries.end())
                     {
                       // Assemble the mass matrix for cell face. Because the quadrature
                       // formula is chosen as co-located with the nodes of shape functions,
@@ -250,7 +255,8 @@ namespace aspect
                                                   fe_face_values.JxW(q);
                     }
                   // Compute heat flux through Neumann boundary by integrating the heat flux
-                  else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
+                  else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end()
+                           || robin_temperature_boundaries.find(boundary_id) != robin_temperature_boundaries.end())
                     {
                       face_in.reinit(fe_face_values, cell, simulator_access.introspection(), simulator_access.get_solution());
                       simulator_access.get_material_model().evaluate(face_in, face_out);
@@ -265,12 +271,21 @@ namespace aspect
                         }
 
                       std::vector<Tensor<1,dim>> heat_flux(n_face_q_points);
-                      heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
-                                    boundary_id,
-                                    face_in,
-                                    face_out,
-                                    fe_face_values.get_normal_vectors()
-                                  );
+
+                      if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end())
+                        heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
+                                      boundary_id,
+                                      face_in,
+                                      face_out,
+                                      fe_face_values.get_normal_vectors()
+                                    );
+                      else if (robin_temperature_boundaries.find(boundary_id) != robin_temperature_boundaries.end())
+                        heat_flux = simulator_access.get_boundary_convective_heating_manager().heat_flux(
+                                      boundary_id,
+                                      face_in,
+                                      face_out,
+                                      fe_face_values.get_normal_vectors()
+                                    );
 
                       // For inhomogeneous Neumann boundaries we know the heat flux across the boundary at each point,
                       // and can thus simply integrate it for each cell. However, we still need to assemble the
@@ -425,6 +440,25 @@ namespace aspect
                       {
                         std::vector<Tensor<1,dim>> heat_flux(n_face_q_points);
                         heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
+                                      boundary_id,
+                                      face_in,
+                                      face_out,
+                                      fe_face_values.get_normal_vectors()
+                                    );
+
+                        for (unsigned int q=0; q < n_face_q_points; ++q)
+                          {
+                            const double normal_heat_flux = heat_flux[q] * fe_face_values.normal_vector(q);
+                            const double JxW = fe_face_values.JxW(q);
+                            heat_flux_and_area[cell->active_cell_index()][f].first += normal_heat_flux * JxW;
+                          }
+                      }
+
+                    // Compute heat flux through Robin boundary by integrating the heat flux
+                    if (robin_temperature)
+                      {
+                        std::vector<Tensor<1,dim>> heat_flux(n_face_q_points);
+                        heat_flux = simulator_access.get_boundary_convective_heating_manager().heat_flux(
                                       boundary_id,
                                       face_in,
                                       face_out,

@@ -82,9 +82,9 @@ namespace aspect
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
       if (this->convert_output_to_years())
-      boundary_convective_heating_function.set_time (this->get_time() / year_in_seconds);
+        boundary_convective_heating_function.set_time (this->get_time() / year_in_seconds);
       else
-      boundary_convective_heating_function.set_time (this->get_time());
+        boundary_convective_heating_function.set_time (this->get_time());
     }
 
 
@@ -153,30 +153,30 @@ namespace aspect
   namespace BoundaryConvectiveHeating
   {
     ASPECT_REGISTER_BOUNDARY_CONVECTIVE_HEATING_MODEL(Function,
-                                             "function",
-                                             "Implementation of a model in which the boundary heat "
-                                             "transfer coefficient is given in terms of an explicit formula "
-                                             "that is elaborated in the parameters in section "
-                                             "``Boundary convective heating model|Function''. The format of "
-                                             "these functions follows the syntax understood by the "
-                                             "muparser library, see "
-                                             "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`."
-                                             "\n\n"
-                                             "The formula you describe in the mentioned "
-                                             "section is a scalar value for the heat transfer coefficient "
-                                             "across the boundary that has the unit W/(m$^2$)/K (in 3d) "
-                                             "or W/m/K (in 2d). The heat flux across the boundary is then "
-                                             "computed as the sum of a term that is proportional to the "
-                                             "product of the heat transfer coefficient and the difference "
-                                             "between the temperature given by the boundary temperature "
-                                             "model and the current temperature at the boundary and a term "
-                                             "that prescribes a fixed heat flux across the boundary."
-                                             "\n\n"
-                                             "The symbol $t$ indicating time that "
-                                             "may appear in the formulas for the prescribed "
-                                             "heat flux is interpreted as having units "
-                                             "seconds unless the global parameter ``Use "
-                                             "years in output instead of seconds'' has "
-                                             "been set.")
+                                                      "function",
+                                                      "Implementation of a model in which the boundary heat "
+                                                      "transfer coefficient is given in terms of an explicit formula "
+                                                      "that is elaborated in the parameters in section "
+                                                      "``Boundary convective heating model|Function''. The format of "
+                                                      "these functions follows the syntax understood by the "
+                                                      "muparser library, see "
+                                                      "{ref}\\`sec:run-aspect:parameters-overview:muparser-format\\`."
+                                                      "\n\n"
+                                                      "The formula you describe in the mentioned "
+                                                      "section is a scalar value for the heat transfer coefficient "
+                                                      "across the boundary that has the unit W/(m$^2$)/K (in 3d) "
+                                                      "or W/m/K (in 2d). The heat flux across the boundary is then "
+                                                      "computed as the sum of a term that is proportional to the "
+                                                      "product of the heat transfer coefficient and the difference "
+                                                      "between the temperature given by the boundary temperature "
+                                                      "model and the current temperature at the boundary and a term "
+                                                      "that prescribes a fixed heat flux across the boundary."
+                                                      "\n\n"
+                                                      "The symbol $t$ indicating time that "
+                                                      "may appear in the formulas for the prescribed "
+                                                      "heat flux is interpreted as having units "
+                                                      "seconds unless the global parameter ``Use "
+                                                      "years in output instead of seconds'' has "
+                                                      "been set.")
   }
 }

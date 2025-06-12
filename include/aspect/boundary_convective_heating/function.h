@@ -33,8 +33,8 @@ namespace aspect
   namespace BoundaryConvectiveHeating
   {
     /**
-     * A class that implements heat flux boundary conditions based on a
-     * functional description provided in the input file.
+     * A class that implements boundary convective heating (Robin) boundary
+     * conditions based on a functional description provided in the input file.
      *
      * @ingroup BoundaryConvectiveHeating
      */

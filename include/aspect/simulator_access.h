@@ -586,7 +586,7 @@ namespace aspect
       bool has_boundary_temperature () const;
 
       /**
-       * Return an reference to the manager of the boundary temperature models.
+       * Return a reference to the manager of the boundary temperature models.
        * This can then, for example, be used to get the names of the boundary temperature
        * models used in a computation, or to compute the boundary temperature
        * for a given position.
@@ -595,7 +595,7 @@ namespace aspect
       get_boundary_temperature_manager () const;
 
       /**
-       * Return an reference to the manager of the boundary convective heating models.
+       * Return a reference to the manager of the boundary convective heating models.
        * This can then, for example, be used to get the names of the boundary convective
        * heating models used in a computation, or to compute the boundary conditions
        * for a given position.

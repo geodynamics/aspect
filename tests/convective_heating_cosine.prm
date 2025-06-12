@@ -1,0 +1,156 @@
+# 1-D time-dependent analytical solution:
+# Domain size [0, L] with L=0.1 m
+# Conductivity k=10 W/m^2
+# Bottom boundary T=293
+# Top boundary: Robin boundary with k dT/dz(L) + h (T(L) - T_inf) = 0
+# Heat transfer coefficient h = 100 W/m^2/K
+# Bottom and top "fluid" temperature T_inf = 293 K
+# no other heat sources, only diffusion
+
+# Solution: T(z,t) = 293 + 80 sin(lambda * z/L) exp(- beta t) [K]
+# with beta = alpha lambda^2/L^2 = 1.0553483e-3 1/s
+
+# Some check values
+# t(s)	T(K)	
+# 0	360.93
+# 250	345.18
+# 500	333.08
+# 1000	316.65
+# 2000	301.23
+# Can be compared to output from the point values postprocessor.
+
+# The heat flux is 
+# qout​(t) = 7175.64495 exp(- beta t) [W/m^2] * 0.01
+
+# Some check values
+# t(s)	T(K)	
+# 0	71.756
+# 250	55.116
+# 500	42.335
+# 1000	24.976
+# 2000	 8.694
+# Can be compared to output from the heat flux postprocessor.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = false
+set End time                               = 2000
+set Maximum time step                      = 10
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+# Do not apply artificial diffusion because it will
+# change the solution!
+subsection Discretization
+  subsection Stabilization parameters
+    set beta = 0
+    set cR = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 0.01
+    set Y extent = 0.1
+    set Y repetitions = 10
+  end
+end
+
+# Set velocity to zero: no convection
+subsection Prescribed Stokes solution
+  set Model name = function
+  
+  subsection Pressure function
+    set Variable names      = x,z
+    set Function expression = 1e4*(1-z)
+  end
+  
+  subsection Velocity function
+    set Function expression = 0; 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = DeltaT=80, L=0.1, lambda=2.028757838, pi=3.1415926536
+    set Function expression = 293 + DeltaT * sin(lambda*z/L)
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom
+  set List of model names = box
+  
+  subsection Box
+    set Bottom temperature = 293
+    set Top temperature    = 293
+  end
+end
+
+subsection Boundary convective heating model
+  set Convective heating boundary indicators = top
+
+  set List of heat transfer coefficient model names = function
+  set List of boundary temperature model names = box
+  set List of boundary heat flux model names = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression = 100
+  end
+end
+
+subsection Boundary heat flux model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = 
+    set Function expression = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e4   # = Ra
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 7800
+    set Reference specific heat       = 500
+    set Reference temperature         = 0
+    set Thermal conductivity          = 10
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, heat flux statistics, visualization, point values
+
+  subsection Visualization
+    set Time between graphical output = 0
+  end
+  
+  subsection Point values
+    set Evaluation points = 0.005, 0.05
+    set Time between point values output = 250
+  end
+end

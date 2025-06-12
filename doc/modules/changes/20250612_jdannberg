@@ -1,0 +1,6 @@
+New: There is now a new type of boundary condition for the
+temperature equation: Robin boundary conditions, which allow
+for prescribing a linear combination of a prescribed
+temperature (Dirichlet) and a prescribed heat flux (Neumann).
+<br>
+(Juliane Dannberg, 2025/06/12)

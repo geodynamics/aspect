@@ -35,7 +35,7 @@ namespace aspect
 
   /**
    * A namespace for the definition of things that have to do with describing
-   * the boundary heat flux values.
+   * the boundary convective heating for Robin boundaries.
    *
    * @ingroup BoundaryConvectiveHeating
    */
@@ -53,7 +53,20 @@ namespace aspect
         /**
          * Compute the heat transfer coefficient for a list of quadrature points.
          *
-         * TODO
+         * The heat transfer coefficient characterises convective heat exchange
+         * between the solid model interior and an adjacent fluid. It is defined as
+         *
+         * heat flux = heat transfer coefficient (T_wall − T_infinity),
+         *
+         * where T_wall​ is the local surface temperature of the solid computed
+         * by the solver and T_infinity​ is the temperature of the fluid outside
+         * of the model.
+         * In the context of a Robin boundary condition, the heat transfer
+         * coefficient governs the strength of the convective coupling:
+         * For heat transfer coefficient --> zero, the boundary approaches
+         * adiabatic (pure Neumann) behaviour;
+         * For heat transfer coefficient --> infinity, the boundary approaches
+         * a prescribed-temperature (Dirichlet) condition with T = T_infinity.
          *
          * @param boundary_indicator The boundary indicator of the part of the
          * boundary of the domain on which the point is located at which we
@@ -109,9 +122,8 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
         /**
-         * A function that calls the boundary_temperature functions of all the
-         * individual boundary temperature objects and uses the stored operators
-         * to combine them.
+         * A function that calls the boundary_temperature functions of the
+         * individual boundary temperature object.
          */
         double
         boundary_temperature (const types::boundary_id boundary_indicator,
@@ -137,21 +149,23 @@ namespace aspect
                                    const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs) const;
 
         /**
-         * A function that is used to register boundary convective heating objects in such
-         * a way that the Manager can deal with all of them without having to
-         * know them by name. This allows the files in which individual
+         * Functions that are used to register boundary convective heating/
+         * temperature/heat flux objects in such a way that the Manager can
+         * deal with all of them without having to know them by name.
+         * This allows the files in which individual
          * plugins are implemented to register these plugins, rather than also
          * having to modify the Manager class by adding the new boundary
          * convective heating plugin class.
          *
-         * @param name A string that identifies the boundary temperature model
+         * @param name A string that identifies the boundary convective heating/
+         * temperature/heat flux model.
          * @param description A text description of what this model does and that
          * will be listed in the documentation of the parameter file.
          * @param declare_parameters_function A pointer to a function that can be
-         * used to declare the parameters that this boundary temperature model
-         * wants to read from input files.
+         * used to declare the parameters that this boundary model wants to read
+         * from input files.
          * @param factory_function A pointer to a function that can create an
-         * object of this boundary temperature model.
+         * object of this boundary model.
          */
         static
         void
@@ -199,22 +213,14 @@ namespace aspect
         /**
          * Exception.
          */
-        DeclException1 (ExcBoundaryTemperatureNameNotFound,
+        DeclException1 (ExcBoundaryConvectiveHeatingNameNotFound,
                         std::string,
                         << "Could not find entry <"
                         << arg1
-                        << "> among the names of registered boundary temperature objects.");
+                        << "> among the names of registered boundary convective heating objects.");
       private:
         /**
-         * A list of enums of boundary temperature operators that have been
-         * requested in the parameter file. Each name is associated
-         * with a model_name, and is used to modify the temperature
-         * boundary with the values from the current plugin.
-         */
-        std::vector<aspect::Utilities::Operator> model_operators;
-
-        /**
-         * A set of boundary ids on which the boundary_temperature_objects
+         * A set of boundary ids on which the boundary_convective_heating_objects
          * will be applied.
          */
         std::set<types::boundary_id> convective_heating_boundary_indicators;

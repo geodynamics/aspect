@@ -144,7 +144,7 @@ namespace aspect
                                               x_convective_heating_boundary_indicators.end());
 
             // If no fixed convective heating boundary indicators have been set, there should be no model_names chosen either.
-            // If that is indeed the case, clear the model_operators vector. Otherwise, raise an exception.
+            // If that not the case, raise an exception.
             if (convective_heating_boundary_indicators.size() == 0)
               {
                 AssertThrow(this->plugin_names.size() == 0,
@@ -152,14 +152,12 @@ namespace aspect
                                         "model, but the <Convective heating boundary indicators> parameter "
                                         "is empty. Please use this parameter to specify the boundaries "
                                         "on which the model(s) should be applied."));
-
-                model_operators.clear();
               }
           }
         catch (const std::string &error)
           {
-            AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed temperature "
-                                            "boundary indicators>, there was an error. Specifically, "
+            AssertThrow (false, ExcMessage ("While parsing the entry <Boundary convective heating model/"
+                                            "Convective heating boundary indicators>, there was an error. Specifically, "
                                             "the conversion function complained as follows:\n\n"
                                             + error));
           }
@@ -170,7 +168,7 @@ namespace aspect
       // their own parameters
       for (auto &model_name : this->plugin_names)
         {
-          // create boundary temperature objects
+          // create boundary convective heating objects
           this->plugin_objects.emplace_back (std::get<dim>(registered_plugins)
                                              .create_plugin (model_name,
                                                              "Boundary convective heating model::Model names"));
@@ -300,9 +298,15 @@ namespace aspect
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma-separated list of boundary convective heating models that "
                           "will be used to determine the heat transfer coefficient across the boundary. "
-                          "These plugins are loaded in the order given, and modify the "
-                          "existing temperature field via the operators listed "
-                          "in 'List of model operators'.\n\n"
+                          "The heat transfer coefficient characterises the heat exchange "
+                          "between the solid model interior and an adjacent fluid. "
+                          "In the context of a Robin boundary condition, the heat transfer "
+                          "coefficient governs the strength of the convective coupling: "
+                          "For heat transfer coefficient --> zero, the boundary approaches "
+                          "insulating (Neumann) behaviour; "
+                          "For heat transfer coefficient --> infinity, the boundary approaches "
+                          "a prescribed-temperature (Dirichlet) condition."
+                          "At the moment, this list can only have one entry. \n\n"
                           "The following heat transfer coefficient models are available:\n\n"
                           +
                           std::get<dim>(registered_plugins).get_description_string());
@@ -311,9 +315,7 @@ namespace aspect
                           Patterns::MultipleSelection(pattern_of_temperature_names),
                           "A comma-separated list of boundary temperature models that "
                           "will be used to determine the temperature boundary conditions. "
-                          "These plugins are loaded in the order given, and modify the "
-                          "existing temperature field via the operators listed "
-                          "in 'List of model operators'.\n\n"
+                          "At the moment, this list can only have one entry. \n\n"
                           "The following boundary temperature models are available:\n\n"
                           +
                           std::get<dim>(registered_temperature_plugins).get_description_string());
@@ -322,9 +324,7 @@ namespace aspect
                           Patterns::MultipleSelection(pattern_of_heat_flux_names),
                           "A comma-separated list of boundary heat flux models that "
                           "will be used to determine the temperature boundary conditions. "
-                          "These plugins are loaded in the order given, and modify the "
-                          "existing temperature field via the operators listed "
-                          "in 'List of model operators'.\n\n"
+                          "At the moment, this list can only have one entry. \n\n"
                           "The following boundary heat flux models are available:\n\n"
                           +
                           std::get<dim>(registered_heat_flux_plugins).get_description_string());

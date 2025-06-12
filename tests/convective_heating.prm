@@ -1,0 +1,132 @@
+# Analytical solution for steady-state:
+# Domain size [0, L] with L=0.1 m
+# Conductivity k=10 W/m/K
+# Bottom boundary T=373
+# Top boundary: Robin boundary with k dT/dz(L) + h (T(L) - T_inf) = 0
+# Heat transfer coefficient h = 100 W/m^2/K
+# Bottom "fluid" temperature T_inf = 293 K
+# no other heat sources, only diffusion
+
+# Solution: T(z) = 373 - 400 z [K]
+# Temperature at the top should be 333 K 
+# and can be compared to min value from temperature statistics postprocessor.
+
+# The heat flux through the top boundary should be
+# q = k * dT/dz * Ltop = 10 W/m/K * 400 K/m * 0.01 = 40 W
+
+set Dimension                              = 2
+set Use years in output instead of seconds = false
+set End time                               = 0.01
+set Maximum time step                      = 0.0001
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+# Do not apply artificial diffusion because it will
+# change the solution!
+subsection Discretization
+  subsection Stabilization parameters
+    set beta = 0
+    set cR = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 0.01
+    set Y extent = 0.1
+    set Y repetitions = 10
+  end
+end
+
+# Set velocity to zero: no convection
+subsection Prescribed Stokes solution
+  set Model name = function
+  
+  subsection Pressure function
+    set Variable names      = x,z
+    set Function expression = 1e4*(1-z)
+  end
+  
+  subsection Velocity function
+    set Function expression = 0; 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 273
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom
+  set List of model names = box
+  
+  subsection Box
+    set Bottom temperature = 373
+    set Top temperature    = 293
+  end
+end
+
+subsection Boundary convective heating model
+  set Convective heating boundary indicators = top
+  
+  set List of heat transfer coefficient model names = function
+  set List of boundary temperature model names = box
+  set List of boundary heat flux model names = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression = 100
+  end
+end
+
+subsection Boundary heat flux model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = 
+    set Function expression = 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e4   # = Ra
+  end
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 10
+    set Thermal expansion coefficient = 0
+    set Viscosity                     = 1
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = temperature statistics, heat flux statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0
+  end
+end

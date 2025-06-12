@@ -571,6 +571,11 @@ namespace aspect
                   ++i;
                 }
 
+              Assert (heat_transfer_coefficients[q] >= 0,
+                      ExcMessage ("The heat transfer coefficient needs to be a "
+                                  "non-negative quantity but instead it is " +
+                                  std::to_string(heat_transfer_coefficients[q]) + "."));
+
               const double boundary_temperature
                 = this->get_boundary_convective_heating_manager().boundary_temperature(
                     face->boundary_id(),
