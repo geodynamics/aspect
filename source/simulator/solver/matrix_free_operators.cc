@@ -19,7 +19,7 @@
  */
 
 
-#include "aspect/simulator/solver/stokes_matrix_free.h"
+#include <aspect/simulator/solver/stokes_matrix_free.h>
 #include <aspect/simulator/solver/matrix_free_operators.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/mesh_deformation/free_surface.h>
@@ -331,6 +331,104 @@ namespace aspect
     else
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
       data->cell_loop(&StokesOperator::local_apply, this, dst, src);
+  }
+
+  template <int dim, int degree_v, typename number>
+  MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>::BTBlockOperator ()
+    :
+    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>()
+  {}
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>::clear ()
+  {
+    this->cell_data = nullptr;
+    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::BlockVector<number>>::clear();
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>::
+  set_cell_data (const OperatorCellData<dim,number> &data)
+  {
+    this->cell_data = &data;
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>
+  ::compute_diagonal ()
+  {
+    // There no need in the code for this diagonal.
+    Assert(false, ExcNotImplemented());
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>
+  ::local_apply (const dealii::MatrixFree<dim, number>                         &data,
+                 dealii::LinearAlgebra::distributed::BlockVector<number>       &dst,
+                 const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                 const std::pair<unsigned int, unsigned int>                   &cell_range) const
+  {
+    FEEvaluation<dim,degree_v,degree_v+1,dim,number> u_eval(data, 0);
+    FEEvaluation<dim,degree_v-1,degree_v+1,1,number> p_eval(data, /*dofh*/1);
+
+    for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
+      {
+        u_eval.reinit(cell);
+
+        p_eval.reinit(cell);
+        p_eval.gather_evaluate(src.block(1), EvaluationFlags::values);
+
+        for (const unsigned int q : u_eval.quadrature_point_indices())
+          {
+            const VectorizedArray<number> val_p = p_eval.get_value(q);
+
+
+            SymmetricTensor<2,dim,VectorizedArray<number>>
+            velocity_terms;
+
+            for (unsigned int d=0; d<dim; ++d)
+              velocity_terms[d][d] -= cell_data->pressure_scaling * val_p;
+            u_eval.submit_symmetric_gradient(velocity_terms, q);
+          }
+
+        u_eval.integrate_scatter(EvaluationFlags::gradients, dst.block(0));
+      }
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::BTBlockOperator<dim, degree_v, number>
+  ::local_apply_face(const dealii::MatrixFree<dim, number> &,
+                     dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                     const dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                     const std::pair<unsigned int, unsigned int> &) const
+  {
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::BTBlockOperator<dim,degree_v,number>
+  ::apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+               const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
+  {
+    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
+    data->cell_loop(&BTBlockOperator::local_apply, this, dst, src);
   }
 
   /**
@@ -685,6 +783,8 @@ namespace aspect
   template class MatrixFreeStokesOperators::ABlockOperator<dim,3,GMGNumberType>; \
   template class MatrixFreeStokesOperators::StokesOperator<dim,2,GMGNumberType>; \
   template class MatrixFreeStokesOperators::StokesOperator<dim,3,GMGNumberType>; \
+  template class MatrixFreeStokesOperators::BTBlockOperator<dim,2,GMGNumberType>; \
+  template class MatrixFreeStokesOperators::BTBlockOperator<dim,3,GMGNumberType>; \
   template class MatrixFreeStokesOperators::MassMatrixOperator<dim,1,GMGNumberType>; \
   template class MatrixFreeStokesOperators::MassMatrixOperator<dim,2,GMGNumberType>; \
   template class MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>;
