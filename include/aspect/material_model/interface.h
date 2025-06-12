@@ -1214,7 +1214,7 @@ namespace aspect
      * where $\tau_{II}$ is the second invariant of the deviatoric stress,
      * $\alpha$ is the negative derivative of yield function with respect to
      * the pressure ($\sin\phi$ in 2D case), $k$ is cohesion, and $\eta^{ve}$,
-     * is the pre-yielding viscosity. When Picard method or Defect  Correction
+     * is the pre-yielding viscosity. When the Picard method or Defect Correction
      * Method is applied, the term $\bar\alpha\gamma$ should be split into two
      * terms:
      * $\bar\alpha\gamma = \bar\alpha\alpha p / \eta^{ve} +
