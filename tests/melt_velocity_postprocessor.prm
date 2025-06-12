@@ -1,0 +1,6 @@
+include $ASPECT_SOURCE_DIR/tests/melt_and_traction.prm
+
+# Output the melt velocity
+subsection Postprocess
+  set List of postprocessors = fluid velocity statistics
+end
