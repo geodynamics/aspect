@@ -767,7 +767,7 @@ namespace aspect
             fastscape_mesh_filled = false;
         }
 
-      Utilities::MPI::broadcast(this->get_mpi_communicator(), fastscape_mesh_filled, 0);
+      fastscape_mesh_filled = Utilities::MPI::broadcast(this->get_mpi_communicator(), fastscape_mesh_filled, 0);
       AssertThrow (fastscape_mesh_filled == true,
                    ExcMessage("The FastScape mesh is missing data. A likely cause for this is that the "
                               "maximum surface refinement or surface refinement difference are improperly set."));
