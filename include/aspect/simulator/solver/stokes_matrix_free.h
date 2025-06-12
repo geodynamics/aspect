@@ -76,53 +76,19 @@ namespace aspect
       void declare_parameters (ParameterHandler &prm);
 
       /**
-       * Return a reference to the DoFHandler that is used for velocity in
-       * the block GMG solver.
+       * Return memory consumption in bytes for all DoFHandler objects.
        */
-      virtual const DoFHandler<dim> &
-      get_dof_handler_v () const = 0;
+      virtual std::size_t get_dof_handler_memory_consumption() const = 0;
 
       /**
-       * Return a reference to the DoFHandler that is used for pressure in
-       * the block GMG solver.
+       * Return memory consumption in bytes for all transfer objects.
        */
-      virtual const DoFHandler<dim> &
-      get_dof_handler_p () const = 0;
+      virtual std::size_t get_mg_transfer_memory_consumption() const = 0;
 
       /**
-       * Return a reference to the DoFHandler that is used for the coefficient
-       * projection in the block GMG solver.
+       * Return memory consumption in bytes for all transfer objects.
        */
-      virtual const DoFHandler<dim> &
-      get_dof_handler_projection () const = 0;
-
-      /**
-       * Return a pointer to the object that describes the velocity DoF
-       * constraints for the block GMG Stokes solver.
-       */
-      virtual const AffineConstraints<double> &
-      get_constraints_v () const = 0;
-
-      /**
-       * Return a pointer to the object that describes the pressure DoF
-       * constraints for the block GMG Stokes solver.
-       */
-      virtual const AffineConstraints<double> &
-      get_constraints_p () const = 0;
-
-      /**
-       * Return a pointer to the MGTransfer object used for the A block
-       * of the block GMG Stokes solver.
-       */
-      virtual const MGTransferMF<dim,GMGNumberType> &
-      get_mg_transfer_A () const = 0;
-
-      /**
-       * Return a pointer to the MGTransfer object used for the Schur
-       * complement block of the block GMG Stokes solver.
-       */
-      virtual const MGTransferMF<dim,GMGNumberType> &
-      get_mg_transfer_S () const = 0;
+      virtual std::size_t get_constraint_memory_consumption() const = 0;
 
       /**
        * Return the memory consumption in bytes that are used to store

@@ -1807,64 +1807,28 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  const DoFHandler<dim> &
-  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_dof_handler_v () const
+  std::size_t
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_dof_handler_memory_consumption() const
   {
-    return dof_handler_v;
+    return dof_handler_v.memory_consumption() + dof_handler_p.memory_consumption() + dof_handler_projection.memory_consumption();
   }
 
 
 
   template <int dim, int velocity_degree>
-  const DoFHandler<dim> &
-  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_dof_handler_p () const
+  std::size_t
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_mg_transfer_memory_consumption() const
   {
-    return dof_handler_p;
+    return mg_transfer_A_block.memory_consumption() + mg_transfer_Schur_complement.memory_consumption();
   }
 
 
 
   template <int dim, int velocity_degree>
-  const DoFHandler<dim> &
-  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_dof_handler_projection () const
+  std::size_t
+  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_constraint_memory_consumption() const
   {
-    return dof_handler_projection;
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  const AffineConstraints<double> &
-  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_constraints_v() const
-  {
-    return constraints_v;
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  const AffineConstraints<double> &
-  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_constraints_p() const
-  {
-    return constraints_p;
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  const MGTransferMF<dim,GMGNumberType> &
-  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_mg_transfer_A() const
-  {
-    return mg_transfer_A_block;
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  const MGTransferMF<dim,GMGNumberType> &
-  StokesMatrixFreeHandlerLocalSmoothingImplementation<dim, velocity_degree>::get_mg_transfer_S() const
-  {
-    return mg_transfer_Schur_complement;
+    return constraints_v.memory_consumption() + constraints_p.memory_consumption();
   }
 
 
