@@ -87,7 +87,7 @@ namespace aspect
              ||
              (this->get_parameters().include_melt_transport
               && this->introspection().variable("fluid pressure").block_index == 0
-              && this->introspection().variable("compaction pressure").block_index == 0),
+              && this->introspection().variable("total pressure").block_index == 0),
              ExcNotImplemented());
 
       // Clarify that we only use one block for the direct solver

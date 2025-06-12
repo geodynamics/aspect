@@ -842,7 +842,7 @@ namespace aspect
 
         Assert (distributed_stokes_solution.n_blocks() == 2, ExcInternalError());
         Assert(!parameters.include_melt_transport
-               || introspection.variable("compaction pressure").block_index == 1,
+               || introspection.variable("total pressure").block_index == 1,
                ExcNotImplemented());
 
         // Many parts of the solver depend on the block layout (velocity = 0,
@@ -851,7 +851,7 @@ namespace aspect
         Assert(velocity_block_index == 0, ExcNotImplemented());
         Assert(pressure_block_index == 1, ExcNotImplemented());
         Assert(!parameters.include_melt_transport
-               || introspection.variable("compaction pressure").block_index == 1,
+               || introspection.variable("total pressure").block_index == 1,
                ExcNotImplemented());
 
         const internal::StokesBlock stokes_block(system_matrix);

@@ -991,7 +991,7 @@ namespace aspect
     Assert(block_vel == 0, ExcNotImplemented());
     Assert(block_p == 1, ExcNotImplemented());
     Assert(!this->get_parameters().include_melt_transport
-           || this->introspection().variable("compaction pressure").block_index == 1, ExcNotImplemented());
+           || this->introspection().variable("total pressure").block_index == 1, ExcNotImplemented());
 
     // create a completely distributed vector that will be used for
     // the scaled and denormalized solution and later used as a
