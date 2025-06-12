@@ -787,7 +787,7 @@ namespace aspect
   template class MatrixFreeStokesOperators::BTBlockOperator<dim,3,GMGNumberType>; \
   template class MatrixFreeStokesOperators::MassMatrixOperator<dim,1,GMGNumberType>; \
   template class MatrixFreeStokesOperators::MassMatrixOperator<dim,2,GMGNumberType>; \
-  template class MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>;
+  template struct MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 
