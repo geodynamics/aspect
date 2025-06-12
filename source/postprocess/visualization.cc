@@ -434,8 +434,8 @@ namespace aspect
                                        (is_cell_data_output ? "solution.visit" : "solution_surface.visit"));
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
-      const auto n = output_history.times_and_pvtu_names.size();
-      times_and_output_file_names.reserve(n);
+      const auto n_file_names = output_history.times_and_pvtu_names.size();
+      times_and_output_file_names.reserve(n_file_names);
       for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
         times_and_output_file_names.push_back(std::make_pair(output_history.times_and_pvtu_names[timestep].first,
                                                              output_history.output_file_names_by_timestep[timestep]));

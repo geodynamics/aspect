@@ -309,8 +309,7 @@ namespace aspect
                                        description_file_prefix + ".visit");
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
-      auto &vec = times_and_pvtu_file_names[description_file_prefix];
-      times_and_output_file_names.reserve(vec.size());
+      times_and_output_file_names.reserve(times_and_pvtu_file_names[description_file_prefix].size());
       for (unsigned int timestep=0; timestep<times_and_pvtu_file_names[description_file_prefix].size(); ++timestep)
         times_and_output_file_names.emplace_back(times_and_pvtu_file_names[description_file_prefix][timestep].first,
                                                  output_file_names_by_timestep[description_file_prefix][timestep]);
