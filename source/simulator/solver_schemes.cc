@@ -279,6 +279,37 @@ namespace aspect
 
               current_residual[c] = solve_advection(adv_field);
 
+              // When using the entropy formulation (See Dannberg et al., 2022 and the entropy_adiabat benchmark),
+              // each components have their own entropy fields.
+              // In each nonlinear iteration, we need to interpolate the temperature field again
+              // after all entropy fields are solved to ensure the temperature is consistent
+              // with the entropy in the output.
+              if (introspection.composition_type_exists(CompositionalFieldDescription::entropy))
+                {
+                  // There are multiple entropy fields if the model has multiple chemical components.
+                  // The temperature is solved before all entropy fields, and it does not change
+                  // when solving the entropies. After updating all of these entropies,
+                  // we want to update the temperature.
+                  // We compute the updated temperature using the multi-component averaging method
+                  // (implemented in the entropy material model). This calculation is based on
+                  // all of the components' entropies, so it is done only after all entropy fields are solved.
+                  // Thus, here we first determine which of the compositional fields
+                  // are in fact entropies:
+                  const std::vector<unsigned int> &entropy_indices = introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
+
+                  // Then determine which entropy field is the one that was computed last:
+                  const unsigned int last_entropy_field_index = *std::max_element(entropy_indices.begin(), entropy_indices.end());
+
+                  // If the field we are currently considering (with index 'c')
+                  // is that last entropy field, then update the temperature
+                  // based on all elements of the entropy fields:
+                  if (c == last_entropy_field_index)
+                    {
+                      const AdvectionField T_field (AdvectionField::temperature());
+                      interpolate_material_output_into_advection_field({T_field});
+                    }
+                }
+
               // Release the contents of the matrix block we used again:
               const unsigned int block_idx = adv_field.block_index(introspection);
               if (adv_field.sparsity_pattern_block_index(introspection)!=block_idx)
