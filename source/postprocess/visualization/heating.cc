@@ -153,14 +153,14 @@ namespace aspect
           AssertThrow(false, ExcNotImplemented());
 
         unsigned int index = 0;
-        for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim>>>::const_iterator
-             heating_model = heating_model_objects.begin();
-             heating_model != heating_model_objects.end(); ++heating_model, ++index)
+        for (const auto &heating_model : heating_model_objects)
           {
-            (*heating_model)->evaluate(in, out, heating_model_outputs);
+            heating_model->evaluate(in, out, heating_model_outputs);
 
             for (unsigned int q=0; q<n_quadrature_points; ++q)
               computed_quantities[q][index] = heating_model_outputs.heating_source_terms[q];
+
+            ++index;
           }
 
       }
