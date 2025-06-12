@@ -63,7 +63,7 @@ namespace aspect
       public:
 
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                              MaterialModel::MaterialModelOutputs<dim> &out) const
+                              MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
           MaterialModel::Simple<dim>::evaluate(in, out);
 
@@ -104,7 +104,7 @@ namespace aspect
   {
     public:
 
-      virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const
+      virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
