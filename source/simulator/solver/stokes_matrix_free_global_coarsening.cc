@@ -334,6 +334,7 @@ namespace aspect
 
     // Store viscosity tables and other data into the active level matrix-free objects.
     stokes_matrix.set_cell_data(active_cell_data);
+    BT_block.set_cell_data(active_cell_data);
 
     if (this->get_parameters().n_expensive_stokes_solver_steps > 0)
       {
@@ -414,10 +415,10 @@ namespace aspect
               {
                 typename DoFHandler<dim>::active_cell_iterator FEQ_cell =
                   mg_matrices_A_block[level].get_matrix_free()->get_cell_iterator(cell,i);
-                typename DoFHandler<dim>::active_cell_iterator DG_cell(&(global_coarsening.dofhandlers_projection[level].get_triangulation()),
+                typename DoFHandler<dim>::active_cell_iterator DG_cell(&(dofhandlers_projection[level].get_triangulation()),
                                                                        FEQ_cell->level(),
                                                                        FEQ_cell->index(),
-                                                                       &global_coarsening.dofhandlers_projection[level]);
+                                                                       &dofhandlers_projection[level]);
                 DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
 
                 // For DGQ0, we simply use the viscosity at the single
@@ -930,13 +931,11 @@ namespace aspect
       }
 
 
-    // Coarse Solver is just an application of the Chebyshev smoother setup
-    // in such a way to be a solver
-    //ABlock GMG
+    // Coarse Solver is just an application of the Chebyshev smoother set up
+    // in such a way to be a solver:
     MGCoarseGridApplySmoother<VectorType> mg_coarse_A;
     mg_coarse_A.initialize(mg_smoother_A);
 
-    //Schur complement matrix GMG
     MGCoarseGridApplySmoother<VectorType> mg_coarse_Schur;
     mg_coarse_Schur.initialize(mg_smoother_Schur);
 
@@ -946,48 +945,26 @@ namespace aspect
         this->get_pcout() << std::endl
                           << "    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
                           << "    GMG n_levels: " << this->get_triangulation().n_global_levels() << std::endl
-                          << "    Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl;
-
-        const double imbalance = MGTools::workload_imbalance(this->get_triangulation());
-        this->get_pcout() << "    GMG workload imbalance: " << imbalance << std::endl
+                          << "    Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl
                           << "    Stokes solver: " << std::flush;
       }
-
-    // Interface matrices
-    // Ablock GMG
-    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGABlockMatrixType>> mg_interface_matrices_A;
-    mg_interface_matrices_A.resize(0, this->get_triangulation().n_global_levels()-1);
-    for (unsigned int level=0; level<this->get_triangulation().n_global_levels(); ++level)
-      mg_interface_matrices_A[level].initialize(mg_matrices_A_block[level]);
-    mg::Matrix<VectorType> mg_interface_A(mg_interface_matrices_A);
-
-    // Schur complement matrix GMG
-    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGSchurComplementMatrixType>> mg_interface_matrices_Schur;
-    mg_interface_matrices_Schur.resize(0, this->get_triangulation().n_global_levels()-1);
-    for (unsigned int level=0; level<this->get_triangulation().n_global_levels(); ++level)
-      mg_interface_matrices_Schur[level].initialize(mg_matrices_Schur_complement[level]);
-    mg::Matrix<VectorType> mg_interface_Schur(mg_interface_matrices_Schur);
 
     // MG Matrix
     mg::Matrix<VectorType> mg_matrix_A(mg_matrices_A_block);
     mg::Matrix<VectorType> mg_matrix_Schur(mg_matrices_Schur_complement);
 
     // MG object
-    // ABlock GMG
     Multigrid<VectorType> mg_A(mg_matrix_A,
                                mg_coarse_A,
                                *mg_transfer_A_block,
                                mg_smoother_A,
                                mg_smoother_A);
-    mg_A.set_edge_matrices(mg_interface_A, mg_interface_A);
 
-    // Schur complement matrix GMG
     Multigrid<VectorType> mg_Schur(mg_matrix_Schur,
                                    mg_coarse_Schur,
                                    *mg_transfer_Schur_complement,
                                    mg_smoother_Schur,
                                    mg_smoother_Schur);
-    mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement
     using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
@@ -1615,7 +1592,7 @@ namespace aspect
 
           matrix_free = std::make_shared<MatrixFree<dim,double>>();
           matrix_free_objects.push_back(matrix_free);
-          mg_matrices_Schur_complement[l].reinit(mapping, dofhandlers_p[l], dofhandlers_v[l], constraints_p[l], matrix_free);
+          mg_matrices_Schur_complement[l].reinit(mapping, dofhandlers_v[l], dofhandlers_p[l], constraints_v[l], constraints_p[l], matrix_free);
 
           // Coefficient transfer objects:
           {
@@ -1710,14 +1687,20 @@ namespace aspect
     {
       A_block_matrix.clear();
       std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
-      A_block_matrix.initialize(matrix_free, selected);
+      A_block_matrix.initialize(matrix_free, selected, selected);
+    }
+
+    //B^T Block matrix
+    {
+      BT_block.clear();
+      BT_block.initialize(matrix_free);
     }
 
     // Schur complement block matrix
     {
       Schur_complement_block_matrix.clear();
       std::vector< unsigned int > selected = {1}; // select pressure DoFHandler
-      Schur_complement_block_matrix.initialize(matrix_free, selected , selected);
+      Schur_complement_block_matrix.initialize(matrix_free, selected, selected);
     }
 
 
@@ -1759,10 +1742,10 @@ namespace aspect
   {
     TimerOutput::Scope timer (this->get_computing_timer(), "Build Stokes preconditioner");
 
-    for (unsigned int level=0; level < this->get_triangulation().n_global_levels(); ++level)
+    for (auto l = min_level; l <= max_level; ++l)
       {
-        mg_matrices_Schur_complement[level].compute_diagonal();
-        mg_matrices_A_block[level].compute_diagonal();
+        mg_matrices_Schur_complement[l].compute_diagonal();
+        mg_matrices_A_block[l].compute_diagonal();
       }
   }
 

@@ -333,9 +333,10 @@ namespace aspect
         *
          */
         void reinit(const Mapping<dim>              &mapping,
-                    const DoFHandler<dim>           &dof_handler,
-                    const DoFHandler<dim>           &dof_handler_other,
-                    const AffineConstraints<number> &constraints,
+                    const DoFHandler<dim>           &dof_handler_v,
+                    const DoFHandler<dim>           &dof_handler_p,
+                    const AffineConstraints<number> &constraints_v,
+                    const AffineConstraints<number> &constraints_p,
                     std::shared_ptr<MatrixFree<dim,double>> mf_storage);
 
         /**

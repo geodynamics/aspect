@@ -455,9 +455,10 @@ namespace aspect
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::reinit(const Mapping<dim>              &mapping,
-                                                                             const DoFHandler<dim>           &dof_handler,
-                                                                             const DoFHandler<dim>           &dof_handler_other,
-                                                                             const AffineConstraints<number> &constraints,
+                                                                             const DoFHandler<dim>           &dof_handler_v,
+                                                                             const DoFHandler<dim>           &dof_handler_p,
+                                                                             const AffineConstraints<number> &constraints_v,
+                                                                             const AffineConstraints<number> &constraints_p,
                                                                              std::shared_ptr<MatrixFree<dim,double>> mf_storage)
   {
     typename MatrixFree<dim, number>::AdditionalData data;
@@ -468,12 +469,13 @@ namespace aspect
     data.tasks_parallel_scheme =
       MatrixFree<dim,double>::AdditionalData::none;
     AffineConstraints<number> dummy;
+
     mf_storage->reinit(mapping,
-    std::vector< const DoFHandler< dim > *> {&dof_handler, &dof_handler_other},
-    std::vector< const AffineConstraints< number > *> {&constraints, &dummy} ,
+    std::vector< const DoFHandler< dim > *> {&dof_handler_v, &dof_handler_p},
+    std::vector< const AffineConstraints< number > *> {&constraints_v, &constraints_p} ,
     QGauss<1>(degree_p+2), data);
 
-    this->initialize(mf_storage, std::vector< unsigned int > {0}, std::vector< unsigned int > {0});
+    this->initialize(mf_storage, std::vector< unsigned int > {1}, std::vector< unsigned int > {1});
   }
 
 
