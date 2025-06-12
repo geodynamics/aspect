@@ -1,0 +1,136 @@
+# This test verifies the input sea level function for the Fastscape Plugin.
+# Sea level can be specified either as a constant or as a time-dependent function.
+# In this case, sea level decreases linearly with time during 500 kyrs.
+# The results can be visualized in the Fastscape sea level VTK output file.
+# Enable if: ASPECT_WITH_FASTSCAPE
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 500e3
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = no Advection, single Stokes 
+set Nonlinear solver tolerance             = 1e-3 
+set Maximum time step                      = 20e3
+set Output directory                       = fastscape_sea_level_function
+set Pressure normalization                 = no
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Linear solver tolerance             = 1e-5
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 50e3
+    set Y extent      = 10e3
+  end
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+      set Function expression = 0
+    end
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: fastscape
+  set Additional tangential mesh velocity boundary indicators = left, right 
+
+  subsection Fastscape
+    set Additional fastscape refinement = 1
+    set Average out of plane surface topography in 2d = true
+    set Fastscape seed = 1000
+    set Maximum surface refinement level = 2
+    set Surface refinement difference = 0
+    set Y extent in 2d = 20e3
+    set Uplift and advect with fastscape = true
+    set Use marine component = true
+    set Use ghost nodes = true
+
+
+   subsection Boundary conditions    
+      set Front = 1 
+      set Right  = 0 
+      set Back = 1
+      set Left   = 0
+   end
+   
+   subsection Erosional parameters
+    set Bedrock river incision rate = 1e-5
+     set Sediment river incision rate = 1e-5
+     set Bedrock diffusivity = -1    
+     set Sediment diffusivity = -1
+   end
+
+   subsection Marine parameters
+    set Use sea level function = true
+    subsection Sea level function
+      set Function expression = -1e-3*t
+    end 
+   end
+ end
+end  
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, right, left
+end 
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1e24
+  end
+end
+
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Time between graphical output = 500e3
+    set Interpolate output = false
+    set Output format =  gnuplot
+  end
+end
+
+
+
+
+
