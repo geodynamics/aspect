@@ -37,8 +37,6 @@ namespace aspect
                const unsigned int input_index,
                MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const
       {
-
-
         // If adiabatic heating is used, the reference temperature used to calculate density should be the adiabatic
         // temperature at the current position. This definition is consistent with the Extended Boussinesq Approximation.
         const double reference_temperature = (this->include_adiabatic_heating()
@@ -125,9 +123,20 @@ namespace aspect
             // if they are to be used for all phases associated with a given key.
             options.check_values_per_key = true;
           }
+        else
+          {
+            // If the material model does not tell us how many phases per composition to expect,
+            // at least check that the parameters parsed below have the same number of values.
+            options.store_values_per_key = true;
+          }
 
         // Parse multicomponent properties
         densities = Utilities::MapParsing::parse_map_to_double_array(prm.get("Densities"), options);
+
+        // Now that we know we have stored the number of phases per composition, we can check them for subsequent properties.
+        options.store_values_per_key = false;
+        options.check_values_per_key = true;
+
         options.property_name = "Thermal expansivities";
         thermal_expansivities = Utilities::MapParsing::parse_map_to_double_array(prm.get("Thermal expansivities"), options);
         options.property_name = "Heat capacities";
