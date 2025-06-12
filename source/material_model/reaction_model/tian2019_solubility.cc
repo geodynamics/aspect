@@ -59,7 +59,7 @@ namespace aspect
         // The bound water content (water within the solid phase) for the four different rock types
         std::vector<double> tian_eq_bound_water_content = tian_equilibrium_bound_water_content(in, q);
 
-        // average the water content between the four different rock types
+        // average the water content (mass fraction) between the four different rock types
         double average_eq_bound_water_content = MaterialUtilities::average_value (tracked_rock_mass_fractions, tian_eq_bound_water_content, MaterialUtilities::arithmetic);
 
         // The fluid volume fraction in equilibrium with the solid (stored in the melt_fractions vector)

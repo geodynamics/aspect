@@ -1,0 +1,41 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 85 (18+4+9+9+9+9+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping porosity composition solve because RHS is zero.
+   Solving bound_fluid system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Skipping gabbro composition solve because RHS is zero.
+   Skipping MORB composition solve because RHS is zero.
+   Skipping sediment composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 2.36094e-16, 1.97326e-16, 0, 0, 0, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.36094e-16
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0.11/0.11/4.4e+09 // 1/1/4e+10 // 0/0/0 // 0/0/0 // 0/0/0
+
+*** Timestep 1:  t=100 years, dt=100 years
+   Solving composition reactions... in 10 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving bound_fluid system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Skipping gabbro composition solve because RHS is zero.
+   Skipping MORB composition solve because RHS is zero.
+   Skipping sediment composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.0408e-16, 1.29048e-17, 1.97326e-16, 0, 0, 0, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.97326e-16
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0.03261/0.03261/1.304e+09 // 0.1/0.1/4e+09 // 1/1/4e+10 // 0/0/0 // 0/0/0 // 0/0/0
+
+Termination requested by criterion: end time
+
+
+
