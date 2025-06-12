@@ -1584,11 +1584,11 @@ namespace aspect
 
           matrix_free = std::make_shared<MatrixFree<dim,double>>();
           matrix_free_objects.push_back(matrix_free);
-          mg_matrices_A_block[l].reinit(mapping, global_coarsening.dofhandlers_v[l], global_coarsening.dofhandlers_p[l], global_coarsening.constraints_v[l], matrix_free);
+          mg_matrices_A_block[l].reinit(mapping, dofhandlers_v[l], dofhandlers_p[l], constraints_v[l], matrix_free);
 
           matrix_free = std::make_shared<MatrixFree<dim,double>>();
           matrix_free_objects.push_back(matrix_free);
-          mg_matrices_Schur_complement[l].reinit(mapping, global_coarsening.dofhandlers_p[l], global_coarsening.dofhandlers_v[l], global_coarsening.constraints_p[l]), matrix_free;
+          mg_matrices_Schur_complement[l].reinit(mapping, dofhandlers_p[l], dofhandlers_v[l], constraints_p[l], matrix_free);
 
           // Coefficient transfer objects:
           {
@@ -1605,6 +1605,7 @@ namespace aspect
 
 
     // Multigrid DoF setup
+#if 0
     {
       //Ablock GMG
       dof_handler_v.distribute_mg_dofs();
@@ -1645,6 +1646,7 @@ namespace aspect
 
       dof_handler_projection.distribute_mg_dofs();
     }
+#endif
 
     // Setup the matrix-free operators
     std::shared_ptr<MatrixFree<dim,double>> matrix_free = std::make_shared<MatrixFree<dim,double>>();
@@ -1701,6 +1703,9 @@ namespace aspect
           AffineConstraints<double> level_constraints_p;
           const Mapping<dim> &mapping =
             (this->get_parameters().mesh_deformation_enabled) ? this->get_mesh_deformation_handler().get_level_mapping(level) : this->get_mapping();
+
+          auto &dof_handler_v = dofhandlers_v[level];
+          auto &dof_handler_p = dofhandlers_p[level];
 
           {
 #if DEAL_II_VERSION_GTE(9,7,0)
@@ -1775,7 +1780,7 @@ namespace aspect
             additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
             additional_data.mg_level = level;
 
-            std::vector<const DoFHandler<dim>*> stokes_dofs {&dof_handler_v, &dof_handler_p};
+            std::vector<const DoFHandler<dim>*> stokes_dofs = {&dof_handler_v, &dof_handler_p};
             std::vector<const AffineConstraints<double> *> stokes_constraints {&level_constraints_v,&level_constraints_p};
 
             matrix_free_level->reinit(mapping,
