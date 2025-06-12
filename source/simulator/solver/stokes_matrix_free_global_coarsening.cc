@@ -350,15 +350,40 @@ namespace aspect
     // Project the active level viscosity vector to multilevel vector representations
     // using MG transfer objects. This transfer is based on the same linear operator used to
     // transfer data inside a v-cycle.
-    MGTransferMF<dim,GMGNumberType> transfer;
+    MGLevelObject<MGTwoLevelTransfer<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>>
+    transfers(min_level, max_level);
 
-    transfer.build(dof_handler_projection);
+    for (unsigned int l = min_level; l < max_level; ++l)
+      transfers[l + 1].reinit(dofhandlers_projection[l + 1], dofhandlers_projection[l]);
 
-    transfer.interpolate_to_mg(dof_handler_projection,
-                               level_viscosity_vector,
-                               active_viscosity_vector);
+    Assert(dof_handler_projection.get_fe().degree == 0,
+           ExcNotImplemented());
+    const int degree = 0;
 
-    for (unsigned int level=0; level<n_levels; ++level)
+    MGLevelObject<MatrixFreeOperators::MassOperator<dim, degree>> temp_ops;
+    temp_ops.resize(min_level, max_level);
+
+    for (auto l = min_level; l <= max_level; ++l)
+      {
+        AffineConstraints<double> cs;
+        std::shared_ptr<MatrixFree<dim,double>>
+        mf(new MatrixFree<dim,double>());
+        mf->reinit(*sim.mapping, dofhandlers_projection[l], cs, QGauss<1>(degree+1));
+        temp_ops[l].initialize(mf);
+      }
+
+    MGTransferGlobalCoarsening<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>> transfer(transfers, [&](const auto l, auto &vec)
+    {
+      (void) l;
+      (void) vec;
+      temp_ops[l].initialize_dof_vector(vec);
+    });
+
+    transfer.template interpolate_to_mg(dof_handler_projection,
+                                        level_viscosity_vector,
+                                        active_viscosity_vector);
+
+    for (unsigned int level=min_level; level<=max_level; ++level)
       {
         level_cell_data[level].is_compressible = this->get_material_model().is_compressible();
         level_cell_data[level].pressure_scaling = this->get_pressure_scaling();
@@ -387,12 +412,12 @@ namespace aspect
 
             for (unsigned int i=0; i<n_components_filled; ++i)
               {
-                typename DoFHandler<dim>::level_cell_iterator FEQ_cell =
+                typename DoFHandler<dim>::active_cell_iterator FEQ_cell =
                   mg_matrices_A_block[level].get_matrix_free()->get_cell_iterator(cell,i);
-                typename DoFHandler<dim>::level_cell_iterator DG_cell(&(this->get_triangulation()),
-                                                                      FEQ_cell->level(),
-                                                                      FEQ_cell->index(),
-                                                                      &dof_handler_projection);
+                typename DoFHandler<dim>::active_cell_iterator DG_cell(&(global_coarsening.dofhandlers_projection[level].get_triangulation()),
+                                                                       FEQ_cell->level(),
+                                                                       FEQ_cell->index(),
+                                                                       &global_coarsening.dofhandlers_projection[level]);
                 DG_cell->get_active_or_mg_dof_indices(local_dof_indices);
 
                 // For DGQ0, we simply use the viscosity at the single
@@ -414,6 +439,7 @@ namespace aspect
                         = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(minimum_viscosity)),
                                    static_cast<GMGNumberType>(maximum_viscosity));
                   }
+
               }
           }
 
@@ -1117,8 +1143,8 @@ namespace aspect
     solver_control_expensive.enable_history_data();
 
     // create a cheap preconditioner that consists of only a single V-cycle
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
-    preconditioner_cheap (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
+    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType,SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
+    preconditioner_cheap (stokes_matrix, A_block_matrix, BT_block, Schur_complement_block_matrix,
                           prec_A, prec_Schur,
                           /*do_solve_A*/false,
                           /*do_solve_Schur*/false,
@@ -1127,8 +1153,9 @@ namespace aspect
                           this->get_parameters().linear_solver_S_block_tolerance);
 
     // create an expensive preconditioner that solves for the A block with CG
-    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
-    preconditioner_expensive (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,
+    const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, BTBlockOperatorType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
+    preconditioner_expensive (stokes_matrix, A_block_matrix, BT_block,
+                              Schur_complement_block_matrix,
                               prec_A, prec_Schur,
                               /*do_solve_A*/true,
                               /*do_solve_Schur*/true,
@@ -1548,7 +1575,7 @@ namespace aspect
 //                Functions::ZeroFunction<dim, typename LevelOperatorType::value_type>(
 //                    dof_handler_in.get_fe().n_components()),
 //                constraint);
-            Assert(sim.boundary_velocity_manager.get_active_boundary_velocity_conditions().size() == 0,
+            Assert(sim.boundary_velocity_manager.get_active_plugins().size() == 0,
                    ExcNotImplemented());
 
             Assert(sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators().size() == 0,
@@ -1693,113 +1720,6 @@ namespace aspect
       Schur_complement_block_matrix.initialize(matrix_free, selected , selected);
     }
 
-    // GMG matrices
-    {
-      const unsigned int n_levels = this->get_triangulation().n_global_levels();
-
-      for (unsigned int level=0; level<n_levels; ++level)
-        {
-          AffineConstraints<double> level_constraints_v;
-          AffineConstraints<double> level_constraints_p;
-          const Mapping<dim> &mapping =
-            (this->get_parameters().mesh_deformation_enabled) ? this->get_mesh_deformation_handler().get_level_mapping(level) : this->get_mapping();
-
-          auto &dof_handler_v = dofhandlers_v[level];
-          auto &dof_handler_p = dofhandlers_p[level];
-
-          {
-#if DEAL_II_VERSION_GTE(9,7,0)
-            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level);
-#else
-            IndexSet relevant_dofs;
-            DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
-#endif
-
-#if DEAL_II_VERSION_GTE(9,6,0)
-            level_constraints_v.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
-            for (const auto index : mg_constrained_dofs_A_block.get_boundary_indices(level))
-              level_constraints_v.constrain_dof_to_zero(index);
-#else
-            level_constraints_v.reinit(relevant_dofs);
-            level_constraints_v.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
-#endif
-            level_constraints_v.close();
-
-            std::set<types::boundary_id> no_flux_boundary
-              = this->get_boundary_velocity_manager().get_tangential_boundary_velocity_indicators();
-            if (!no_flux_boundary.empty())
-              {
-                AffineConstraints<double> user_level_constraints;
-#if DEAL_II_VERSION_GTE(9,6,0)
-                user_level_constraints.reinit(dof_handler_v.locally_owned_mg_dofs(level), relevant_dofs);
-#else
-                user_level_constraints.reinit(relevant_dofs);
-#endif
-                const IndexSet &refinement_edge_indices =
-                  mg_constrained_dofs_A_block.get_refinement_edge_indices(level);
-                dealii::VectorTools::compute_no_normal_flux_constraints_on_level(
-                  dof_handler_v,
-                  0,
-                  no_flux_boundary,
-                  user_level_constraints,
-                  mapping,
-                  refinement_edge_indices,
-                  level);
-
-                user_level_constraints.close();
-                mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
-
-                // let Dirichlet values win over no normal flux:
-                level_constraints_v.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
-                level_constraints_v.close();
-              }
-          }
-          {
-#if DEAL_II_VERSION_GTE(9,7,0)
-            const IndexSet relevant_dofs = DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level);
-#else
-            IndexSet relevant_dofs;
-            DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
-#endif
-
-#if DEAL_II_VERSION_GTE(9,6,0)
-            level_constraints_p.reinit(dof_handler_p.locally_owned_mg_dofs(level), relevant_dofs);
-#else
-            level_constraints_p.reinit(relevant_dofs);
-#endif
-
-            level_constraints_p.close();
-          }
-
-          std::shared_ptr<MatrixFree<dim,GMGNumberType>> matrix_free_level = std::make_shared<MatrixFree<dim,GMGNumberType>>();
-          matrix_free_objects.push_back(matrix_free_level);
-
-          {
-            typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
-            additional_data.tasks_parallel_scheme = MatrixFree<dim,GMGNumberType>::AdditionalData::none;
-            additional_data.mapping_update_flags = (update_gradients | update_JxW_values);
-            additional_data.mg_level = level;
-
-            std::vector<const DoFHandler<dim>*> stokes_dofs = {&dof_handler_v, &dof_handler_p};
-            std::vector<const AffineConstraints<double> *> stokes_constraints {&level_constraints_v,&level_constraints_p};
-
-            matrix_free_level->reinit(mapping,
-                                      stokes_dofs, stokes_constraints,
-                                      QGauss<1>(this->get_parameters().stokes_velocity_degree+1),
-                                      additional_data);
-          }
-          {
-            mg_matrices_A_block[level].clear();
-            std::vector<unsigned int> selected = {0}; // select velocity DoFHandler
-            mg_matrices_A_block[level].initialize(matrix_free_level, mg_constrained_dofs_A_block, level, selected);
-          }
-          {
-            mg_matrices_Schur_complement[level].clear();
-            std::vector<unsigned int> selected = {1}; // select pressure DoFHandler
-            mg_matrices_Schur_complement[level].initialize(matrix_free_level, mg_constrained_dofs_Schur_complement, level, selected);
-          }
-        }
-    }
 
     // Build MG transfer
     {
