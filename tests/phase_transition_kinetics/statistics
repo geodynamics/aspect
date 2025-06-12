@@ -1,0 +1,28 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: RMS velocity (m/year)
+# 17: Max. velocity (m/year)
+# 18: Minimal temperature (K)
+# 19: Average temperature (K)
+# 20: Maximal temperature (K)
+# 21: Average nondimensional temperature (K)
+# 22: Minimal pressure (Pa)
+# 23: Average pressure (Pa)
+# 24: Maximal pressure (Pa)
+# 25: Average density (kg/m^3)
+# 26: Average viscosity (Pa s)
+# 27: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 24576 271618 221184 442368 3 0 0 0 55 58 58 output-phase_transition_kinetics/solution/solution-00000 1.14267022e-02 1.41421356e-02 1.20600498e+03 1.72321493e+03 1.77930473e+03 1.37081883e-01 9.98544164e+09 1.37208274e+10 1.75929517e+10 3.79643332e+03 1.00000000e+21 2.27785999e+14 

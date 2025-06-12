@@ -1,0 +1,183 @@
+# This cookbook illustrates the effect of a thermodynamic driving force on
+# the olivine --> wadsleyite phase transition. It features a simplified
+# subducting slab, induced by cold material entering the model with a
+# prescribed temperature. Due to pressure and a phase transition the
+# material compresses and the velocity changes to conserve mass.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 75e6
+set Output directory                       = results/simple_subduction_Q_1e-9
+set Adiabatic surface temperature          = 1706
+set Surface pressure                       = 1e10
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-4
+set Use operator splitting                 = true
+set Max nonlinear iterations               = 100
+set CFL number                             = 0.7
+set Resume computation                     = auto
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/phase_transition_kinetics/libphase-transition-kinetics.so
+
+subsection Formulation
+  set Mass conservation    = projected density field
+  set Temperature equation = real density
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance             = 1e-6
+    set GMRES solver restart length         = 200
+    set Number of cheap Stokes solver steps = 5000
+  end
+
+  subsection Operator splitting parameters
+    set Reaction time step                 = 5e-4
+  end
+end
+
+subsection Discretization
+  set Use locally conservative discretization      = true
+  set Use discontinuous composition discretization = true
+  set Use discontinuous temperature discretization = true
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 300e3
+    set Y extent      = 200e3
+    set X repetitions = 3
+    set Y repetitions = 2
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 6
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function, right x:function, left x:function, bottom x:function
+
+  subsection Function
+    set Function expression = 1e-2; -1e-2
+    set Variable names      = x, y
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = top, right, bottom, left
+  set List of model names = function
+
+  subsection Function
+    set Function expression = if(y<112e3, 1, 0); 3300
+    set Variable names      = x, y
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names                   = initial temperature
+  set Fixed temperature boundary indicators = top, left
+end
+
+subsection Initial temperature model
+  set List of model names = adiabatic, function
+
+  subsection Function
+    set Function expression = -500 * exp(-((y-200e3)*(y-200e3)+(x-10e3)*(x-10e3))/(2*35e3*35e3))
+    set Variable names      = x, y
+  end
+
+  subsection Adiabatic
+    subsection Function
+      set Function expression = 0; 3500
+    end
+  end
+end
+
+subsection Heating model
+  set List of model names =  adiabatic heating, shear heating
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right y:initial lithostatic pressure, left y:initial lithostatic pressure, bottom y:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Representative point = 300e3, 0
+  end
+end
+
+subsection Gravity model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.0; -10.0
+  end
+end
+
+subsection Adiabatic conditions model
+  subsection Compute profile
+    set Number of points = 10000
+  end
+end
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = if(y<112e3, 1, 0); 3300
+    set Variable names      = x, y
+  end
+end
+
+subsection Compositional fields
+  set Number of fields            = 2
+  set Names of fields             = X_field, density_field
+  set Compositional field methods = field, prescribed field
+end
+
+subsection Material model
+  set Model name = phase transition kinetics
+
+  subsection Phase transition kinetics
+    set Kinetic prefactor Q  = 1e-9
+
+    set Transition depths    = 112e3
+    set Viscosity prefactors = 1, 1
+    set Minimum viscosity    = 1e19
+    set Maximum viscosity    = 1e24
+
+    set Data directory = $ASPECT_SOURCE_DIR/cookbooks/phase_transition_kinetics/
+    set Data file name = thermodynamic-driving-force-profile-olivine-wadsleyite.txt
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, pressure statistics, material statistics, depth average
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 0
+    set List of output variables      = material properties, adiabat, nonadiabatic temperature, nonadiabatic pressure, stress, shear stress, strain rate, stress second invariant
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, compressibility, specific heat, viscosity
+    end
+
+    subsection Principal stress
+      set Use deviatoric stress = true
+    end
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1e6
+    set Number of zones               = 50
+  end
+end
+
+subsection Checkpointing
+  set Time between checkpoint  = 1800
+end
