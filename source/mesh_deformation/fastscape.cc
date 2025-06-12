@@ -141,6 +141,7 @@ namespace aspect
        */
       void fastscape_execute_step_();
 
+#ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
       /**
        * Create a .VTK file for the FastScape surface within the FastScape folder of the
        * ASPECT output folder.
@@ -150,6 +151,7 @@ namespace aspect
                                 unsigned int *astep,
                                 const char *c,
                                 const unsigned int *length);
+#endif
 
       /**
        * Copy the current FastScape topography.
@@ -860,6 +862,7 @@ namespace aspect
         // If it is the first timestep, write an initial VTK file.
         if (current_timestep == 1)
           {
+#ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
             this->get_pcout() << "      Writing initial VTK..." << std::endl;
             // FastScape by default visualizes a field called HHHHH,
             // and the parameter this shows will be whatever is given as the first
@@ -869,6 +872,16 @@ namespace aspect
                                  &visualization_step,
                                  dirname_char,
                                  &dirname_length);
+#else
+            (void)extra_vtk_field;
+            (void)vexp;
+            (void)visualization_step;
+            (void)dirname_char;
+            (void)dirname_length;
+
+            this->get_pcout() << "      Not writing initial VTK because the FastScape library does not support this functionality."
+                              << std::endl;
+#endif
           }
 
         for (unsigned int fastscape_iteration = 0; fastscape_iteration < fastscape_iterations; ++fastscape_iteration)
@@ -926,6 +939,7 @@ namespace aspect
 
         if (write_vtk)
           {
+#ifdef ASPECT_HAVE_FASTSCAPE_NAMED_VTK
             this->get_pcout() << "      Writing FastScape VTK..." << std::endl;
             visualization_step = current_timestep;
             fastscape_named_vtk_(extra_vtk_field.data(),
@@ -933,6 +947,16 @@ namespace aspect
                                  &visualization_step,
                                  dirname_char,
                                  &dirname_length);
+#else
+            (void)extra_vtk_field;
+            (void)vexp;
+            (void)visualization_step;
+            (void)dirname_char;
+            (void)dirname_length;
+
+            this->get_pcout() << "      Not writing FastScape VTK because the FastScape library does not support this functionality."
+                              << std::endl;
+#endif
           }
       }
     }
