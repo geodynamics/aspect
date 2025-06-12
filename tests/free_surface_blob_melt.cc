@@ -139,7 +139,8 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
+      const std::shared_ptr<MeltOutputs<dim>> melt_out
+        = out.template get_additional_output_object<MeltOutputs<dim>>();
 
       if (melt_out != nullptr)
         {

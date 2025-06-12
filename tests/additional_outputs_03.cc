@@ -67,9 +67,8 @@ namespace aspect
         {
           MaterialModel::Simple<dim>::evaluate(in, out);
 
-          AdditionalOutputs1<dim> *additional;
-
-          additional = out.template get_additional_output<AdditionalOutputs1<dim>>();
+          const std::shared_ptr<AdditionalOutputs1<dim>> additional
+            = out.template get_additional_output_object<AdditionalOutputs1<dim>>();
           if (additional)
             ++counter_with;
           else
@@ -108,7 +107,7 @@ namespace aspect
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
-        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim>>() != nullptr)
+        if (out.template get_additional_output_object<MaterialModel::AdditionalOutputs1<dim>>() != nullptr)
           return;
 
         std::cout << "   creating additional output!" << std::endl;
@@ -121,8 +120,8 @@ namespace aspect
       {
         internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
 
-        MaterialModel::AdditionalOutputs1<dim> *additional
-          = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim>>();
+        const std::shared_ptr<MaterialModel::AdditionalOutputs1<dim>> additional
+          = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalOutputs1<dim>>();
 
         std::cout << "* local_assemble_stokes call, have additional? " << (additional!=nullptr) << std::endl;
         if (additional!=nullptr)

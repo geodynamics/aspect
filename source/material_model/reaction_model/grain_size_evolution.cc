@@ -594,7 +594,7 @@ namespace aspect
       {
         // These properties will be used by the heating model to reduce
         // shear heating by the amount of work done to reduce grain size.
-        if (out.template get_additional_output<HeatingModel::ShearHeatingOutputs<dim>>() == nullptr)
+        if (out.template get_additional_output_object<HeatingModel::ShearHeatingOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -610,7 +610,7 @@ namespace aspect
                                                         const typename MaterialModel::MaterialModelOutputs<dim> &out,
                                                         const std::vector<unsigned int> &phase_indices,
                                                         const std::vector<double> &dislocation_viscosities,
-                                                        std::vector<std::unique_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
+                                                        std::vector<std::shared_ptr<MaterialModel::AdditionalMaterialOutputs<dim>>> &additional_outputs) const
       {
         for (auto &additional_output: additional_outputs)
           if (HeatingModel::ShearHeatingOutputs<dim> *shear_heating_out = dynamic_cast<HeatingModel::ShearHeatingOutputs<dim> *>(additional_output.get()))

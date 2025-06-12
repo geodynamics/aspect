@@ -103,7 +103,8 @@ namespace aspect
     {
       std::vector<double> old_porosity(in.n_evaluation_points());
 
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
       // we want to get the porosity field from the old solution here,
       // because we need a field that is not updated in the nonlinear iterations
@@ -253,7 +254,8 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
+      const std::shared_ptr<MeltOutputs<dim>> melt_out
+        = out.template get_additional_output_object<MeltOutputs<dim>>();
 
       if (melt_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
         {
@@ -527,7 +529,7 @@ namespace aspect
     MeltGlobal<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
+          && out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

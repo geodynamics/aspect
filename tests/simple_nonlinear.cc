@@ -137,7 +137,7 @@ namespace aspect
     MaterialModelOutputs<dim> out_base(5,3);
     MaterialModelOutputs<dim> out_dviscositydstrainrate(5,3);
 
-    if (out_base.template get_additional_output<MaterialModelDerivatives<dim>>() != nullptr)
+    if (out_base.template get_additional_output_object<MaterialModelDerivatives<dim>>() != nullptr)
       throw "error";
 
     out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim>> (5));
@@ -169,8 +169,8 @@ namespace aspect
     mat.evaluate(in_base, out_base);
 
     // set up additional output for the derivatives
-    MaterialModelDerivatives<dim> *derivatives;
-    derivatives = out_base.template get_additional_output<MaterialModelDerivatives<dim>>();
+    const std::shared_ptr<MaterialModelDerivatives<dim>> derivatives
+      = out_base.template get_additional_output_object<MaterialModelDerivatives<dim>>();
     double temp;
 
     // have a bool so we know whether the test has succeed or not.

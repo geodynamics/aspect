@@ -104,12 +104,12 @@ namespace aspect
 
 
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-                      = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
+                      = out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vs = seismic_outputs->vs[0];
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *adiabatic_seismic_outputs
-                      = adiabatic_out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> adiabatic_seismic_outputs
+                      = adiabatic_out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double adiabatic_Vs = adiabatic_seismic_outputs->vs[0];
 
                     // Compute the percentage deviation from the average
@@ -150,8 +150,8 @@ namespace aspect
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, out);
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-                      = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
+                      = out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vs = seismic_outputs->vs[0];
 
                     // Find the depth of the zeroth quadrature point in the cell and work out
@@ -246,12 +246,12 @@ namespace aspect
 
 
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-                      = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
+                      = out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vp = seismic_outputs->vp[0];
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *adiabatic_seismic_outputs
-                      = adiabatic_out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
+                    const std::shared_ptr<MaterialModel::SeismicAdditionalOutputs<dim>> adiabatic_seismic_outputs
+                      = adiabatic_out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double adiabatic_Vp = adiabatic_seismic_outputs->vp[0];
 
                     // Compute the percentage deviation from the average
@@ -293,8 +293,8 @@ namespace aspect
                       std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
                     this->get_material_model().evaluate(in, out);
 
-                    MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-                      = out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>();
+                    const std::shared_ptr<const MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
+                      = out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>();
                     const double Vp = seismic_outputs->vp[0];
 
                     // Find the depth of the zeroth quadrature point in the cell and work out
@@ -369,7 +369,7 @@ namespace aspect
         this->get_material_model().create_additional_named_outputs(out);
 
         const bool material_model_provides_seismic_output =
-          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
+          (out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
 
         AssertThrow(material_model_provides_seismic_output,
                     ExcMessage("You requested the 'Vs anomaly' postprocessor, "
@@ -448,7 +448,7 @@ namespace aspect
         this->get_material_model().create_additional_named_outputs(out);
 
         const bool material_model_provides_seismic_output =
-          (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
+          (out.template get_additional_output_object<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
 
         AssertThrow(material_model_provides_seismic_output,
                     ExcMessage("You requested the 'Vp anomaly' postprocessor, "

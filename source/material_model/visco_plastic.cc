@@ -236,8 +236,8 @@ namespace aspect
               plastic_yielding = isostrain_viscosities.composition_yielding[std::distance(volume_fractions.begin(), max_composition)];
 
               // Compute viscosity derivatives if they are requested
-              if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
-                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
+              if (const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives =
+                    out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
 
                 rheology->compute_viscosity_derivatives(i, volume_fractions,
                                                         isostrain_viscosities.composition_viscosities,
@@ -255,8 +255,8 @@ namespace aspect
 
               out.viscosities[i] = numbers::signaling_nan<double>();
 
-              if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
-                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
+              if (const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives =
+                    out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
                 {
                   derivatives->viscosity_derivative_wrt_strain_rate[i] = numbers::signaling_nan<SymmetricTensor<2,dim>>();
                   derivatives->viscosity_derivative_wrt_pressure[i] = numbers::signaling_nan<double>();

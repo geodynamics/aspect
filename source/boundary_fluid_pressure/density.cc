@@ -34,16 +34,15 @@ namespace aspect
     template <int dim>
     void
     Density<dim>::
-    fluid_pressure_gradient (
-      const types::boundary_id /*boundary_indicator*/,
-      const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-      const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-      const std::vector<Tensor<1,dim>> &normal_vectors,
-      std::vector<double> &fluid_pressure_gradient_outputs
-    ) const
+    fluid_pressure_gradient (const types::boundary_id /*boundary_indicator*/,
+                             const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                             const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                             const std::vector<Tensor<1,dim>> &normal_vectors,
+                             std::vector<double> &fluid_pressure_gradient_outputs) const
     {
-      const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
-      Assert(melt_outputs!=nullptr, ExcMessage("Error, MeltOutputs are missing in fluid_pressure_gradient()"));
+      const std::shared_ptr<const MaterialModel::MeltOutputs<dim>> melt_outputs
+        = material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+      Assert(melt_outputs != nullptr, ExcMessage("Error, MeltOutputs are missing in fluid_pressure_gradient()"));
       for (unsigned int q=0; q<fluid_pressure_gradient_outputs.size(); ++q)
         {
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(material_model_inputs.position[q]);

@@ -160,9 +160,6 @@ namespace aspect
       HeatingModel::HeatingModelOutputs individual_heating_outputs(material_model_inputs.n_evaluation_points(),
                                                                    this->n_compositional_fields());
 
-      const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
-        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
-
       for (const auto &heating_model : this->plugin_objects)
         {
           heating_model->evaluate(material_model_inputs, material_model_outputs, individual_heating_outputs);
@@ -183,6 +180,9 @@ namespace aspect
       // If the heating model does not get the reaction rate outputs, it can not correctly compute
       // the rates of temperature change. To make sure these (incorrect) values are never used anywhere,
       // overwrite them with signaling_NaNs.
+      const std::shared_ptr<const MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
+        = material_model_outputs.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
+
       if (reaction_rate_outputs == nullptr)
         for (double &q : heating_model_outputs.rates_of_temperature_change)
           q = numbers::signaling_nan<double>();

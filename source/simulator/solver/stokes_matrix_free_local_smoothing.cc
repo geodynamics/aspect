@@ -452,7 +452,7 @@ namespace aspect
           MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->introspection().n_compositional_fields);
           this->get_newton_handler().create_material_model_outputs(out);
           if (this->get_parameters().enable_elasticity &&
-              out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>() == nullptr)
+              out.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == nullptr)
             out.additional_outputs.push_back(std::make_unique<MaterialModel::ElasticOutputs<dim>>(out.n_evaluation_points()));
 
           const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
@@ -492,15 +492,15 @@ namespace aspect
                          ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                     "not filled by the caller."));
 
-                  const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-                    = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+                  const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
+                    = out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
                   Assert(derivatives != nullptr,
                          ExcMessage ("Error: The Newton method requires the material to "
                                      "compute derivatives."));
 
-                  const MaterialModel::ElasticOutputs<dim> *elastic_out
-                    = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+                  const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out
+                    = out.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
 
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {

@@ -168,11 +168,11 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          MaterialModel::PrescribedPlasticDilation<dim>
-          *prescribed_dilation = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>();
+          const std::shared_ptr<MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+            = out.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>();
 
-          MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+          const std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
+            = out.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

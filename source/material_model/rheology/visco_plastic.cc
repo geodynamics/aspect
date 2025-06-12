@@ -434,8 +434,8 @@ namespace aspect
                                     const std::vector<double> &phase_function_values,
                                     const std::vector<unsigned int> &n_phase_transitions_per_composition) const
       {
-        MaterialModel::MaterialModelDerivatives<dim> *derivatives =
-          out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+        const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
+          = out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
         if (derivatives != nullptr)
           {
@@ -831,7 +831,7 @@ namespace aspect
       void
       ViscoPlastic<dim>::create_plastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+        if (out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -849,7 +849,8 @@ namespace aspect
                            MaterialModel::MaterialModelOutputs<dim> &out,
                            const IsostrainViscosities &isostrain_viscosities) const
       {
-        PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+        const std::shared_ptr<PlasticAdditionalOutputs<dim>> plastic_out
+          = out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>();
 
         if (plastic_out != nullptr)
           {

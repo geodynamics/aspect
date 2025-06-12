@@ -115,7 +115,8 @@ namespace aspect
           out.reaction_terms[q][c] = 0.0;
 
       // fill melt reaction rates if they exist
-      ReactionRateOutputs<dim> *reaction_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
       if (reaction_out != nullptr)
         {
@@ -194,7 +195,7 @@ namespace aspect
     void
     ExponentialDecay<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
+      if (out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

@@ -1,0 +1,16 @@
+Changed: The MaterialModel::MaterialModelInputs and
+MaterialModel::MaterialModelOutputs classes had member functions
+`get_additional_input()` and `get_additional_output()` functions that
+simply returned C-style pointers. The use of such pointers leaves it
+entirely unclear who now owns the object pointed to. As a consequence,
+these functions have now been deprecated and replaced by functions
+`get_additional_input_object()` and `get_additional_output_object()`
+that return their results in the form of `std::shared_ptr` values that
+make clear that the calling place receiving the pointer now shares
+ownership of the input or output object with the place that the object
+is requested from.
+
+The old functions have been retained for backward compatibility
+purposes, but they are now deprecated.
+<br>
+(Wolfgang Bangerth, 2025/06/11)

@@ -312,8 +312,8 @@ namespace aspect
                         const LinearAlgebra::BlockVector &,
                         std::vector<double> &output) override
         {
-          const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-            = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim>>();
+          const std::shared_ptr<const MaterialModel::SeismicAdditionalOutputs<dim>> seismic_outputs
+            = out.template get_additional_output_object<const MaterialModel::SeismicAdditionalOutputs<dim>>();
 
           Assert(seismic_outputs != nullptr,ExcInternalError());
 

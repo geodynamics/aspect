@@ -995,8 +995,8 @@ namespace aspect
         !(introspection.compositional_name_exists("ve_stress_xx") && parameters.mapped_particle_properties.count(introspection.compositional_index_for_name("ve_stress_xx"))))
       {
         material_model->create_additional_named_outputs(scratch.material_model_outputs);
-        MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
-          = scratch.material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+        const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
+          = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
         Assert(reaction_rate_outputs == nullptr,
                ExcMessage("You are using a material model where the reaction rate outputs "

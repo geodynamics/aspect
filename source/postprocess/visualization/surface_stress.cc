@@ -82,7 +82,8 @@ namespace aspect
             if (this->get_parameters().enable_elasticity == true)
               {
                 // Get the total deviatoric stress from the material model.
-                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+                const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out
+                  = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
                 Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
 

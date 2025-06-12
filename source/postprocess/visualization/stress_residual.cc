@@ -81,7 +81,8 @@ namespace aspect
             if (this->get_parameters().enable_elasticity == true)
               {
                 // Get the total deviatoric stress from the material model.
-                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+                const std::shared_ptr<const MaterialModel::ElasticAdditionalOutputs<dim>> elastic_additional_out
+                  = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
                 Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
 
@@ -92,8 +93,8 @@ namespace aspect
             const double stress_invariant = std::sqrt(std::fabs(second_invariant(deviatoric_stress)));
 
             // Get the current yield_stress
-            const MaterialModel::PlasticAdditionalOutputs<dim> *plastic_output =
-              out.template get_additional_output<MaterialModel::PlasticAdditionalOutputs<dim>>();
+            const std::shared_ptr<const MaterialModel::PlasticAdditionalOutputs<dim>> plastic_output
+              = out.template get_additional_output_object<MaterialModel::PlasticAdditionalOutputs<dim>>();
             const double yield_stress = plastic_output->yield_stresses[q];
 
             // Compute the difference between the second stress invariant and the yield stress

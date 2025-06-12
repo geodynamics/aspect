@@ -61,8 +61,8 @@ namespace aspect
 
       // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
       // strain rate.
-      const MaterialModel::ElasticOutputs<dim> *elastic_out =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out =
+        scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
       if (this->get_parameters().enable_elasticity)
         AssertThrow(elastic_out != nullptr,
                     ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
@@ -79,8 +79,8 @@ namespace aspect
           ++i;
         }
 
-      const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+      const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
       std::vector<double> deta_deps_times_grads_phi_u(stokes_dofs_per_cell);
       std::vector<double> eps_times_grads_phi_u(stokes_dofs_per_cell);
@@ -282,7 +282,7 @@ namespace aspect
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       if (this->get_parameters().enable_elasticity &&
-          outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>() == nullptr)
+          outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::ElasticOutputs<dim>> (outputs.n_evaluation_points()));
@@ -313,30 +313,31 @@ namespace aspect
 
       const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
 
-      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> *force = enable_additional_stokes_rhs ?
-                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
-                                                                            : nullptr;
+      const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
+        = enable_additional_stokes_rhs ?
+          scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
+          : nullptr;
 
       // If elasticity is enabled, then we need ElasticOutputs to get the viscoelastic
       // strain rate and the elastic force.
       const bool enable_elasticity = this->get_parameters().enable_elasticity;
-      const MaterialModel::ElasticOutputs<dim> *elastic_out =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+      const std::shared_ptr<const MaterialModel::ElasticOutputs<dim>> elastic_out
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>();
       if (enable_elasticity)
         AssertThrow(elastic_out != nullptr,
                     ExcMessage("Error: The Newton method requires ElasticOutputs when elasticity is enabled."));
 
       const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
 
-      const MaterialModel::PrescribedPlasticDilation<dim>
-      *prescribed_dilation = enable_prescribed_dilation ?
-                             scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
-                             : nullptr;
+      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+        = enable_prescribed_dilation ?
+          scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
+          : nullptr;
 
       const bool material_model_is_compressible = (this->get_material_model().is_compressible());
 
-      const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-        = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+      const std::shared_ptr<const MaterialModel::MaterialModelDerivatives<dim>> derivatives
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
 
 
@@ -589,7 +590,7 @@ namespace aspect
       const unsigned int n_points = outputs.n_evaluation_points();
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
+          && outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
@@ -597,11 +598,11 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
+             outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
              == n_points, ExcInternalError());
 
       if ((this->get_parameters().enable_elasticity) &&
-          outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>() == nullptr)
+          outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
@@ -609,12 +610,12 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_elasticity
              ||
-             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
+             outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
              == n_points, ExcInternalError());
 
       // prescribed dilation:
       if (this->get_parameters().enable_prescribed_dilation
-          && outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
+          && outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>> (n_points));
@@ -622,7 +623,7 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_prescribed_dilation
              ||
-             outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation.size()
+             outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation.size()
              == n_points, ExcInternalError());
 
       if (this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
@@ -685,7 +686,8 @@ namespace aspect
                 }
               else
                 {
-                  const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+                  const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
+                    = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
                   // This one is only available in debug mode, because normally
                   // the AssertThrow in the preconditioner should already have

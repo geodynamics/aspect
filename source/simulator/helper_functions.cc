@@ -1663,8 +1663,8 @@ namespace aspect
     // add reaction rate outputs
     material_model->create_additional_named_outputs(out);
 
-    MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
-      = out.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+    const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
+      = out.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
     AssertThrow(reaction_rate_outputs != nullptr,
                 ExcMessage("You are trying to use the operator splitting solver scheme, "
@@ -1723,7 +1723,7 @@ namespace aspect
       return;
     };
 
-    auto copy_rates_into_one_vector = [n_q_points,n_fields](const MaterialModel::ReactionRateOutputs<dim> *reaction_out,
+    auto copy_rates_into_one_vector = [n_q_points,n_fields](const MaterialModel::ReactionRateOutputs<dim> &reaction_out,
                                                             const HeatingModel::HeatingModelOutputs &heating_out,
                                                             VectorType &rates)
     {
@@ -1732,7 +1732,7 @@ namespace aspect
           if (f==0)
             rates[j*n_fields+f] = heating_out.rates_of_temperature_change[j];
           else
-            rates[j*n_fields+f] = reaction_out->reaction_rates[j][f-1];
+            rates[j*n_fields+f] = reaction_out.reaction_rates[j][f-1];
       return;
     };
 
@@ -1781,7 +1781,7 @@ namespace aspect
                 material_model->fill_additional_material_model_inputs(in, solution, fe_values, introspection);
                 material_model->evaluate(in, out);
                 heating_model_manager.evaluate(in, out, heating_model_outputs);
-                copy_rates_into_one_vector (reaction_rate_outputs, heating_model_outputs, ydot);
+                copy_rates_into_one_vector (*reaction_rate_outputs, heating_model_outputs, ydot);
               };
 
               // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
@@ -1991,10 +1991,10 @@ namespace aspect
     // add the prescribed field outputs that will be used for interpolating
     material_model->create_additional_named_outputs(out);
 
-    MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_out
-      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim>>();
-    MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
-      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
+    const std::shared_ptr<MaterialModel::PrescribedFieldOutputs<dim>> prescribed_field_out
+      = out.template get_additional_output_object<MaterialModel::PrescribedFieldOutputs<dim>>();
+    const std::shared_ptr<MaterialModel::PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
+      = out.template get_additional_output_object<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
     // Make a loop first over all cells, and then over all degrees of freedom in each element
     // to interpolate material properties onto a solution vector.

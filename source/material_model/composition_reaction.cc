@@ -35,7 +35,8 @@ namespace aspect
     evaluate(const MaterialModelInputs<dim> &in,
              MaterialModelOutputs<dim> &out) const
     {
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
       // The Composition reaction model has up to two compositional fields (plus one background field)
       // that can influence the density
@@ -223,7 +224,7 @@ namespace aspect
     CompositionReaction<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
+          && out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
