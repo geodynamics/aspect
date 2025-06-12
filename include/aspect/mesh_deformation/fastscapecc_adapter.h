@@ -41,12 +41,68 @@
 #if XTENSOR_VERSION_MAJOR ==0 && XTENSOR_VERSION_MINOR <= 25
 #  include <xtensor/xbroadcast.hpp>
 #  include <xtensor/xmath.hpp>
+#  include <xtensor/xarray.hpp>
+#  include <xtensor/xtensor.hpp>
 #else
 #  include <xtensor/views/xbroadcast.hpp>
 #  include <xtensor/core/xmath.hpp>
+#  include <xtensor/containers/xarray.hpp>
+#  include <xtensor/containers/xtensor.hpp>
 #endif
 
 #include <fastscapelib/grid/base.hpp>
+
+// Up until FastScape++ 0.2.2, there was a file xtensor_utils.hpp that declared
+// alias types that are used elsewhere. After that, the file went away, see
+//   https://github.com/fastscape-lem/fastscapelib/pull/155
+// but we still need the contents and so have to declare them ourselves.
+#include <fastscapelib/version.hpp>
+#if FASTSCAPELIB_VERSION_MAJOR*10000 + FASTSCAPELIB_VERSION_MINOR*100 + FASTSCAPELIB_VERSION_PATCH <= 202
+#  include <fastscapelib/utils/xtensor_utils.hpp>
+#else
+
+namespace fastscapelib
+{
+    /**
+     * Used to get the actual xtensor container type from a given selector.
+     *
+     * @tparam S The xtensor selector type.
+     * @tparam T The container value type.
+     * @tparam N The number of dimensions (only for static dimension containers)
+     */
+    template <class S, class T, std::size_t N = 0>
+    struct xt_container
+    {
+    };
+
+    template <class T, std::size_t N>
+    struct xt_container<xt_selector, T, N>
+    {
+        using tensor_type = xt::xtensor<T, N>;
+        using array_type = xt::xarray<T>;
+    };
+
+    /**
+     * Alias for the selected (static dimension) xtensor container type.
+     *
+     * @tparam S The xtensor selector type.
+     * @tparam T The container value type.
+     * @tparam N The fixed number of dimensions.
+     */
+    template <class S, class T, std::size_t N>
+    using xt_tensor_t = typename xt_container<S, T, N>::tensor_type;
+
+    /**
+     * Alias for the selected (dynamic dimension) xtensor container type.
+     *
+     * @tparam S The xtensor selector type.
+     * @tparam T The container value type.
+     */
+    template <class S, class T>
+    using xt_array_t = typename xt_container<S, T>::array_type;
+
+}  // namespace fastscapelib
+#endif
 
 
 namespace fastscapelib
