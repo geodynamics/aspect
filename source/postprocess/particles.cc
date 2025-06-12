@@ -308,6 +308,7 @@ namespace aspect
                                        description_file_prefix + ".visit");
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
+      times_and_output_file_names.reserve(times_and_pvtu_file_names[description_file_prefix].size());
       for (unsigned int timestep=0; timestep<times_and_pvtu_file_names[description_file_prefix].size(); ++timestep)
         times_and_output_file_names.emplace_back(times_and_pvtu_file_names[description_file_prefix][timestep].first,
                                                  output_file_names_by_timestep[description_file_prefix][timestep]);
@@ -431,6 +432,7 @@ namespace aspect
                       std::vector<std::string> filenames;
                       const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
                       const unsigned int n_files = (group_files == 0) ? n_processes : std::min(group_files,n_processes);
+                      filenames.reserve(n_files);
                       for (unsigned int i=0; i<n_files; ++i)
                         filenames.push_back (particle_file_prefix
                                              + "." + Utilities::int_to_string(i, 4)

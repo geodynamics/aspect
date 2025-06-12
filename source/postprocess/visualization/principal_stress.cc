@@ -46,7 +46,7 @@ namespace aspect
       get_names () const
       {
         std::vector<std::string> solution_names;
-
+        solution_names.reserve(dim * (dim + 1));
         // dim principal stress values
         for (unsigned int i=0; i<dim; ++i)
           solution_names.push_back("principal_stress_" + std::to_string(i+1));
@@ -69,6 +69,7 @@ namespace aspect
         std::vector<DataComponentInterpretation::DataComponentInterpretation> solution_components;
 
         // dim principal stress values
+        solution_components.reserve(dim * (dim + 1));
         for (unsigned int i=0; i<dim; ++i)
           solution_components.push_back(DataComponentInterpretation::component_is_scalar);
 
