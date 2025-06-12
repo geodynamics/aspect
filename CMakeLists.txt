@@ -253,7 +253,7 @@ if(ASPECT_WITH_FASTSCAPE)
     # the executable.
     enable_language(Fortran)
   else()
-     message(FATAL_ERROR "Trying to link with FastScape but libfastscapelib_fortran.so was not found in ${FASTSCAPE_DIR}")
+     message(FATAL_ERROR "Trying to link with FastScape but neither libfastscapelib_fortran.so nor libfastscapelib_fortran.a was found in ${FASTSCAPE_DIR} or its subdirectories.")
   endif()
 endif()
 
