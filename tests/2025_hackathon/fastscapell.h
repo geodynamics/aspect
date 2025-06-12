@@ -18,8 +18,16 @@
   <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_mesh_deformation_fastscape_h
-#define _aspect_mesh_deformation_fastscape_h
+/*
+include guards:They prevent the file from being included (i.e., compiled)
+ more than once in the same translation unit. This is important because including 
+ the same header multiple times without guards would cause redefinition errors during compilation.
+ #ifndef stands for "if not defined"
+ _aspect_mesh_deformation_fastscapell_h is a macro name, usually unique to the file
+ */ 
+
+#ifndef _aspect_mesh_deformation_fastscapell_h
+#define _aspect_mesh_deformation_fastscapell_h
 
 #include <aspect/global.h>
 
@@ -39,19 +47,22 @@ namespace aspect
      *
      * @ingroup MeshDeformation
      */
-    template <int dim>
-    class FastScape : public Interface<dim>, public SimulatorAccess<dim>
+    template <int dim> //template class, meaning it works for multiple dimensions (2D or 3D).
+    class FastScapeLL : public Interface<dim>, public SimulatorAccess<dim> //This class inherits from these k,m jtwo base classes
     {
       public:
         /**
          * Initialize variables for FastScape.
          */
+        //This function is called once at the beginning of the simulation to initialize plugin
+        //Override: It overrides the virtual function from the Interface<dim> base class.
         virtual void initialize () override;
 
         /**
          * Destructor for FastScape.
          */
-        ~FastScape() override;
+        //Called when the object is destroyed—typically at the end of a simulation.
+        ~FastScapeLL() override;
 
         /**
          * A function that creates constraints for the velocity of certain mesh
@@ -59,8 +70,15 @@ namespace aspect
          * The calling class will respect
          * these constraints when computing the new vertex positions.
          */
-        virtual
-        void
+        virtual //tells C++ that this method can be overridden in a subclass.
+        void //function returns nothing
+        /*
+        std: standard library, std::set use the set type deinfed in teh C++ standard library
+        &: pass by reference, If the function changes x, it changes the original value outside the function.
+        const: this function will not change this object
+        <>:  type of data a class 
+        set: multiple unique values of boundary id
+        */
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const override;
@@ -152,8 +170,8 @@ namespace aspect
         /**
          * Fill velocity data table to be interpolated back onto the ASPECT mesh.
          */
-        Table<dim,double> fill_data_table(const std::vector<double> &values,
-                                          const TableIndices<dim> &size_idx,
+        Table<dim,double> fill_data_table(std::vector<double> &values,
+                                          TableIndices<dim> &size_idx,
                                           const unsigned int &fastscape_nx,
                                           const unsigned int &fastscape_ny) const;
 
@@ -478,14 +496,15 @@ namespace aspect
          * a sea level of zero will represent the initial maximum unperturbed
          * Y (2D) or Z (3D) extent of the ASPECT domain. A negative value of
          * the sea level means the sea level lies below the initial unperturbed
-         * top boundary of the domain. The sea level curve can be either constant
-         * value or a function of time based on the format setup.
+         * top boundary of the domain.
          */
+        // mutable double sea_level;
+        // // function of sea level 
+        // Functions::ParsedFunction<1> sea_level_function;
         mutable double sea_level_constant_value =0.0; 
         mutable double sea_level;                  
         Functions::ParsedFunction<1> sea_level_function;           
         bool sea_level_is_function = false;    
-
         /**
          * Parameters to set an extra erosional base level
          * on the ghost nodes that differs from sea level.
