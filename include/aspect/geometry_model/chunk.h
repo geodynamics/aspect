@@ -83,14 +83,6 @@ namespace aspect
           push_forward(const Point<dim> &chart_point) const override;
 
           /**
-           * This function provides the derivatives of the push_forward
-           * function to the spherical coordinates, which are needed
-           * in the computation of vectors tangential to the domain boundaries.
-           */
-          DerivativeForm<1, dim, dim>
-          push_forward_gradient(const Point<dim> &chart_point) const override;
-
-          /**
            * This function receives a point in cartesian coordinates x, y and z,
            * and returns radius, longitude, latitude.
            */
