@@ -50,6 +50,7 @@ namespace aspect
                                update_JxW_values);
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::ostringstream output;
       output.precision(4);
@@ -65,6 +66,7 @@ namespace aspect
             // fill material model inputs
             fe_values.reinit (cell);
             in.reinit(fe_values, cell, this->introspection(), this->get_solution());
+            this->get_material_model().evaluate(in, out);
 
             // we can only postprocess melt fractions if the material model that is used
             // in the simulation has implemented them
@@ -72,7 +74,7 @@ namespace aspect
             std::vector<double> melt_fractions(n_q_points, 0.0);
             if (MaterialModel::MeltFractionModel<dim>::is_melt_fraction_model(this->get_material_model()))
               MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-              .melt_fractions(in, melt_fractions);
+              .melt_fractions(in, melt_fractions, &out);
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {

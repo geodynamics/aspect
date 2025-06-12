@@ -44,7 +44,7 @@ Skipping mesh refinement, because the mesh did not change.
 *** Timestep 2:  t=2000 years, dt=1000 years
    Solving composition reactions... in 1 substep(s).
    Solving temperature system... 7 iterations.
-   Solving porosity system ... 10 iterations.
+   Solving porosity system ... 11 iterations.
    Solving bound_fluid system ... 11 iterations.
    Solving peridotite system ... 7 iterations.
    Solving gabbro system ... 10 iterations.
@@ -53,10 +53,10 @@ Skipping mesh refinement, because the mesh did not change.
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -1.354e-07/4.978e-05/8418 // -0.002357/0.02/1.081e+06 // 0/1.015/9.908e+09 // -0.1184/1/1.362e+07 // -0.1178/1/5.446e+07 // 0/0/0
+     Compositions min/max/mass: -0.0003567/0.004737/8.236e+05 // -0.0007449/0.02/1.37e+06 // 0/1.015/9.908e+09 // -0.1184/1/1.362e+07 // -0.1178/1/5.446e+07 // 0/0/0
 
-Number of active cells: 25 (on 3 levels)
-Number of degrees of freedom: 1,199 (258+38+129+129+129+129+129+129+129)
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 2,682 (578+81+289+289+289+289+289+289+289)
 
 Termination requested by criterion: end time
 
