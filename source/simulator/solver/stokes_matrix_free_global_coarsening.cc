@@ -1849,64 +1849,38 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  const DoFHandler<dim> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_dof_handler_v () const
+  std::size_t
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_dof_handler_memory_consumption() const
   {
-    return dof_handler_v;
+    std::size_t total = 0;
+
+    for (auto l = min_level; l <= max_level; ++l)
+      total += dofhandlers_v[l].memory_consumption() + dofhandlers_p[l].memory_consumption() + dofhandlers_projection[l].memory_consumption();
+
+    return total;
   }
 
 
 
   template <int dim, int velocity_degree>
-  const DoFHandler<dim> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_dof_handler_p () const
+  std::size_t
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_mg_transfer_memory_consumption() const
   {
-    return dof_handler_p;
+    return mg_transfer_A_block->memory_consumption() + mg_transfer_Schur_complement->memory_consumption();
   }
 
 
 
   template <int dim, int velocity_degree>
-  const DoFHandler<dim> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_dof_handler_projection () const
+  std::size_t
+  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_constraint_memory_consumption() const
   {
-    return dof_handler_projection;
-  }
+    std::size_t total = 0;
 
+    for (auto l = min_level; l <= max_level; ++l)
+      total += constraints_v[l].memory_consumption() + constraints_p[l].memory_consumption();
 
-
-  template <int dim, int velocity_degree>
-  const AffineConstraints<double> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_constraints_v() const
-  {
-    return constraints_v;
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  const AffineConstraints<double> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_constraints_p() const
-  {
-    return constraints_p;
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  const MGTransferMF<dim,GMGNumberType> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_mg_transfer_A() const
-  {
-    return *mg_transfer_A_block;
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  const MGTransferMF<dim,GMGNumberType> &
-  StokesMatrixFreeHandlerGlobalCoarseningImplementation<dim, velocity_degree>::get_mg_transfer_S() const
-  {
-    return *mg_transfer_Schur_complement;
+    return total;
   }
 
 
