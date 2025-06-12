@@ -64,6 +64,8 @@ namespace aspect
         AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
 
       n_grid_nodes = surface_mesh.n_active_cells();
+//        n_grid_nodes = surface_mesh.n_vertices();
+
     }
 
     template <int dim>
@@ -170,6 +172,32 @@ namespace aspect
 
     }
 
+//      template <int dim>
+//      void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> &)
+//      {
+//        TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
+//
+//        IndexSet locally_relevant_dofs;
+//        DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs);
+//
+//        surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+//                                locally_relevant_dofs,
+//                                this->get_mpi_communicator());
+//
+//        const unsigned int velocity_component = dim - 1;
+//
+//        // Radial velocity if spherical, vertical otherwise
+//        Functions::FEFieldFunction<dim> velocity_field(this->get_dof_handler(),
+//                                                       this->get_solution(),
+//                                                       this->get_mapping(),
+//                                                       velocity_component);
+//
+//        VectorTools::interpolate(surface_mesh_dof_handler,
+//                                 velocity_field,
+//                                 surface_solution);
+//      }
+
+  
 
     template <int dim>
     unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
@@ -223,14 +251,12 @@ namespace aspect
                 
                   const double surface_value = surface_solution[dof_index];
 
-                  
-
-                  double elevation = 0.0;
+                  double topography = 0.0;
 
                   if (spherical_model)
-                    elevation = vertex.norm() - spherical_model->outer_radius();  // Radial distance from outer surface
+                      topography = vertex.norm() - spherical_model->outer_radius();  // Radial distance from outer surface
                   else if (box_model)
-                    elevation = vertex[dim - 1] - grid_extent[dim - 1].second;     // Height relative to top
+                      topography = vertex[dim - 1] - grid_extent[dim - 1].second;     // Height relative to top
 
                 // Compute velocity (radial or vertical)
                 double velocity = 0.0;
@@ -245,7 +271,7 @@ namespace aspect
                 const unsigned int index = this->vertex_index(vertex);
 
                 // Fill temporary variables
-                temporary_variables[0].push_back(elevation);
+                temporary_variables[0].push_back(topography);
                 temporary_variables[1].push_back(static_cast<double>(index));
                 temporary_variables[2].push_back(velocity * year_in_seconds);
               }
