@@ -529,11 +529,7 @@ namespace aspect
           // Find out our velocities from the change in height.
           // Where mesh_velocity_z is a vector of array size that exists on all processes.
           for (unsigned int i=0; i<fastscape_array_size; ++i)
-            {
-              mesh_velocity_z[i] = (elevation[i] - elevation_old[i])/aspect_timestep_in_years;
-            }
-
-          Utilities::MPI::broadcast(this->get_mpi_communicator(), mesh_velocity_z, 0);
+            mesh_velocity_z[i] = (elevation[i] - elevation_old[i])/aspect_timestep_in_years;
         }
       else
         {
@@ -553,19 +549,23 @@ namespace aspect
                             mesh_velocity_z,
                             aspect_timestep_in_years,
                             fastscape_steps_per_aspect_step);
-
-          mesh_velocity_z = Utilities::MPI::broadcast(this->get_mpi_communicator(), mesh_velocity_z, 0);
         }
 
-      // Get the sizes needed for a data table of the mesh velocities.
+      // At this point, the root process will have filled the mesh_velocity_z array,
+      // and we should convert that into a table to hold all velocity values
+      // that will be interpolated back to ASPECT. We need this table on all
+      // processes, and can achieve this goal by first filling it on the root process,
+      // and then replicating it on all processes (if possible using shared memory).
       TableIndices<dim> size_idx;
       for (unsigned int d=0; d<dim; ++d)
-        {
-          size_idx[d] = table_intervals[d]+1;
-        }
+        size_idx[d] = table_intervals[d]+1;
 
-      // Initialize a table to hold all velocity values that will be interpolated back to ASPECT.
-      const Table<dim,double> velocity_table = fill_data_table(mesh_velocity_z, size_idx, fastscape_nx, fastscape_ny);
+      Table<dim,double> velocity_table;
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        velocity_table = fill_data_table(mesh_velocity_z, size_idx, fastscape_nx, fastscape_ny);
+
+      velocity_table.replicate_across_communicator (this->get_mpi_communicator(),
+                                                    /*root_process=*/0);
 
       // As our grid_extent variable end points do not account for the change related to an origin
       // not at 0, we adjust this here into an interpolation extent.
@@ -576,10 +576,12 @@ namespace aspect
           interpolation_extent[d].second = (grid_extent[d].second + grid_extent[d].first);
         }
 
-      //Functions::InterpolatedUniformGridData<dim> *velocities;
-      Functions::InterpolatedUniformGridData<dim> velocities (interpolation_extent,
-                                                              table_intervals,
-                                                              velocity_table);
+      // Then create a function that can be interpolated from the data table.
+      // Use move semantics to ensure that we keep using the replicated
+      // table:
+      Functions::InterpolatedUniformGridData<dim> velocities (std::move(interpolation_extent),
+                                                              std::move(table_intervals),
+                                                              std::move(velocity_table));
 
       VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
         [&](const Point<dim> &p) -> double
