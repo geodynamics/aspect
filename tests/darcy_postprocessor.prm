@@ -1,0 +1,6 @@
+include $ASPECT_SOURCE_DIR/tests/darcy_convection_step.prm
+
+# Output the darcy velocity
+subsection Postprocess
+  set List of postprocessors = fluid velocity statistics
+end

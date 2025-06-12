@@ -1,0 +1,60 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 134 (50+9+25+25+25)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.2054e-17, 1.34414e-16, 0, 1.00007
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.00007
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Writing graphical output: output-darcy_convection_step/solution/solution-00000
+
+*** Timestep 1:  t=100.017 years, dt=100.017 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24886e-16, 1.30786e-16, 0, 1.54323e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.54323e-08
+
+
+   Postprocessing:
+
+*** Timestep 2:  t=200 years, dt=99.9833 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5766e-16, 4.62514e-16, 0, 1.54323e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.54323e-08
+
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
