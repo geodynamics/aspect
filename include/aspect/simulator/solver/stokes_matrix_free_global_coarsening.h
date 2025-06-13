@@ -234,11 +234,15 @@ namespace aspect
       MGLevelObject<AffineConstraints<double>> constraints_v;
       MGLevelObject<AffineConstraints<double>> constraints_p;
 
+#if DEAL_II_VERSION_GTE(9,6,0)
+      using transfer_t = MGTransferMF<dim, GMGNumberType>;
+#else
+      using transfer_t = MGTransferGlobalCoarsening<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>;
+#endif
       MGLevelObject<MGTwoLevelTransfer<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> transfers_v;
       MGLevelObject<MGTwoLevelTransfer<dim, dealii::LinearAlgebra::distributed::Vector<GMGNumberType>>> transfers_p;
-      std::unique_ptr<MGTransferMF<dim, GMGNumberType>> mg_transfer_A_block;
-      std::unique_ptr<MGTransferMF<dim, GMGNumberType>> mg_transfer_Schur_complement;
-
+      std::unique_ptr<transfer_t> mg_transfer_A_block;
+      std::unique_ptr<transfer_t> mg_transfer_Schur_complement;
   };
 }
 

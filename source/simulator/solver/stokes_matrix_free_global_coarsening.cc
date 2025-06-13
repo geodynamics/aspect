@@ -967,7 +967,7 @@ namespace aspect
                                    mg_smoother_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement
-    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMF<dim,GMGNumberType>>;
+    using GMGPreconditioner = PreconditionMG<dim, VectorType, transfer_t>;
     GMGPreconditioner prec_A(dofhandlers_v.back(), mg_A, *mg_transfer_A_block);
     GMGPreconditioner prec_Schur(dofhandlers_p.back(), mg_Schur, *mg_transfer_Schur_complement);
 
@@ -1706,7 +1706,6 @@ namespace aspect
 
     // Build MG transfer
     {
-      using transfer_t = MGTransferMF<dim, GMGNumberType>;
       {
         for (unsigned int l = min_level; l < max_level; ++l)
           transfers_v[l + 1].reinit(dofhandlers_v[l + 1],
