@@ -82,7 +82,7 @@ Initial randomized CPO at time zero.
 By changing "Olivine: A-fabric" to "Olivine: B-fabric" you can generate olivine fabric results for B-type and other types as well shown below.
 
 ```{figure-md} fig:olivinefabrics
-<img src="Olivine_fabrics.svg" style="width:60.0%" />
+<img src="Olivine_fabrics.png" style="width:60.0%" />
 
 Olivine A-E type fabrics under simple shear with a shear strain of 1.5
 at 3e5 seconds of model time under constant shear strain rate:
@@ -101,9 +101,9 @@ Some ideas for adapting the model setup:
 
 -   Setup high pressure and temperature lab experiments for olivine CPO.
     After benchmarking against the lab experiment results, it could then be
-    extended beyond parameter space limited by lab experiment.
+    extended beyond the parameter space limited by the lab experiment.
 
--   Add CPO calculations in large scale geodynamic models like mantle plume,
+-   Add CPO calculations in large scale geodynamic models like mantle plumes,
     lower crust delamination and mid-ocean ridges.
 
 -   Include anisotropic viscosity to feed this CPO back to influence the stokes solution.

@@ -1,4 +1,5 @@
-set CFL number = 0.01 ##Annotation CFL number
+# A simple model of CPO development in a unit cube under simple shear.
+set CFL number = 0.01
 set Timing output frequency  = 1000
 set Dimension                = 3
 set Pressure normalization   = surface

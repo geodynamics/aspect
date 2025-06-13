@@ -1,4 +1,4 @@
-#specify posstprocessor objects that will be run at the end of each time step
+# Specify postprocessor objects that will be run at the end of each time step
 #The statistics is important for cpo plotter for reading the data
 #The particles and crystal preferred orientation are required for CPO calculations
 subsection Postprocess
