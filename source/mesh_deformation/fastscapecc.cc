@@ -46,7 +46,9 @@ namespace aspect
   {
     template <int dim>
     FastScapecc<dim>::FastScapecc()
-      // : surface_mesh_dof_handler(surface_mesh) // Link DoFHandler to surface_mesh
+    :
+    surface_fe(1)  // Use a Q1 element for the surface mesh
+      // , surface_mesh_dof_handler(surface_mesh) // Link DoFHandler to surface_mesh
     {}
 
     template <int dim>
@@ -114,13 +116,12 @@ namespace aspect
       dx = (grid_extent_surface[0].second - grid_extent_surface[0].first) / static_cast<double>(nx);
       dy = (grid_extent_surface[1].second - grid_extent_surface[1].first) / static_cast<double>(ny);
 
-      // Generate the surface mesh
+      // Create refined surface mesh
       GridGenerator::subdivided_hyper_rectangle(surface_mesh, surface_repetitions, p1, p2);
 
-      // Finite element and DoF setup
-      surface_fe = std::make_shared<FE_Q<dim - 1, dim>>(1);
+      // FE and DoF setup
       surface_mesh_dof_handler.reinit(surface_mesh);
-      surface_mesh_dof_handler.distribute_dofs(*surface_fe);
+      surface_mesh_dof_handler.distribute_dofs(surface_fe);
 
       surface_constraints.clear();
       DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
@@ -141,9 +142,8 @@ namespace aspect
       GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
       surface_mesh.refine_global(3); // Adjust as needed
 
-      surface_fe = std::make_shared<FE_Q<dim - 1, dim>>(1);
       surface_mesh_dof_handler.reinit(surface_mesh);
-      surface_mesh_dof_handler.distribute_dofs(*surface_fe);
+      surface_mesh_dof_handler.distribute_dofs(surface_fe);
 
       surface_constraints.clear();
       DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);

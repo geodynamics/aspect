@@ -140,8 +140,7 @@ namespace aspect
         DoFHandler<dim - 1, dim> surface_mesh_dof_handler;
         mutable AffineConstraints<double> surface_constraints;
 
-//TODO: Why a shared pointer?
-        std::shared_ptr<FiniteElement<dim - 1, dim>> surface_fe;
+        FE_Q<dim - 1, dim> surface_fe;
 
         LinearAlgebra::Vector surface_solution;
         LinearAlgebra::Vector surface_elevation;
