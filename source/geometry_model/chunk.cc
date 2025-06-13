@@ -583,7 +583,7 @@ namespace aspect
     Chunk<dim>::depth(const Point<dim> &position) const
     {
       // depth is defined wrt the reference surface point2[0]
-      // plus topography. Negative depth is not allowed.
+      // plus initial topography. Negative depth is not allowed.
       if (this->simulator_is_past_initialization() &&
           !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
         return std::min(std::max(point2[0]+ manifold->topography_for_point(position) - position.norm(), 0.), maximal_depth());
@@ -694,7 +694,7 @@ namespace aspect
       // the maximal depth really is the formula below, unless one applies a
       // topography that is always strictly below zero (i.e., where the
       // actual surface lies strictly below the reference surface).
-      return point2[0] + manifold->topo->max_topography() - point1[0];
+      return point2[0] + this->get_initial_topography_model().max_topography() - point1[0];
     }
 
 

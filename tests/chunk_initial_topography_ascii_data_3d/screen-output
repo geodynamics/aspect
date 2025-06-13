@@ -11,7 +11,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
 
    Postprocessing:
 
-     Model domain depth (m):                        3e+06
+     Model domain depth (m):                        3.009e+06
      Temperature contrast across model domain (K):  3500
      Reference depth (m):                           0
      Reference temperature (K):                     1613
@@ -23,7 +23,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
      Reference thermal conductivity (W/(m*K)):      4.7
      Reference viscosity (Pa*s):                    1e+21
      Reference thermal diffusivity (m^2/s):         1.22101e-06
-     Rayleigh number:                               7.4479e+07
+     Rayleigh number:                               7.51513e+07
 
      RMS, max velocity:       0.0442 m/year, 0.113 m/year
      Temperature min/avg/max: 1613 K, 1613 K, 1613 K
