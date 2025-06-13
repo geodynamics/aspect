@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Maximum velocity residual magnitude on boundary with indicator 1 ("top") (m/year)
+# 20: Minimum velocity residual magnitude on boundary with indicator 1 ("top") (m/year)
+# 21: RMS velocity residual on boundary with indicator 1 ("top") (m/year)
+# 22: Visualization file name
+# 23: Surface visualization file name
+# 24: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 25: Outward heat flux through boundary with indicator 1 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 192 1968 864 5184 1 0 0 0 0 0 0 0 87 88 88 7.94949750e-01 6.27811714e-04 2.80675193e-01 output-tomography_based_plate_motions_cookbook-2/solution/solution-00000 output-tomography_based_plate_motions_cookbook-2/solution_surface/solution_surface-00000 -3.20682221e+06 5.90454391e+07 

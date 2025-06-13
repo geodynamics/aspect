@@ -1,0 +1,21 @@
+# This is a test for the cookbook described in
+# $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/models
+
+include $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/2D_slice_with_faults_slabs_and_topo.prm
+
+set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/plugins/libtomography_based_plate_motions.release.so
+set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/world_builder_smac_cratons_faults_2D.json
+set Max nonlinear iterations               = 1
+
+subsection Mesh refinement
+  set Initial adaptive refinement = 1
+  set Initial global refinement = 1
+end
+
+subsection Postprocess
+  set List of postprocessors         = boundary velocity residual statistics, visualization, heat flux statistics, depth average
+
+  subsection Visualization
+    set Output format                = gnuplot
+  end
+end

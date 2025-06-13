@@ -1,0 +1,191 @@
+# This cookbook demonstrates how to set up instantaneous mantle flow models
+# using available geophysical constraints. To avoid a large computational cost,
+# this model is a 2D spherical shell with imposed zones of weakness at plate boundaries
+# and internal buoyancy forces arising from observed mantle heterogeneity that drive flow.
+# The generated mantle flow field at the surface can be compared with the observed
+# surface deformation and the fit can be used to constrain the physical state
+# of the mantle. However, a self-consistent comparison with observe plate velocities requires
+# transitioning from a 2D shell to a 3D sphere, following the approach in Saxena et al. (2023).
+# We define the location of plate boundaries and Cratons using the Geodynamic World Builder.
+# This .prm file is based on the existing .prm file, '2D_slice_with_faults_and_cratons.prm',
+# that describes the initial and boundary conditions, along with additional details on
+# the material model. In particular, this .prm file adds the detailed slab structures
+# and the initial topography in the models.
+include $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/2D_slice_with_faults_and_cratons.prm
+
+set Additional shared libraries            = ./plugins/libtomography_based_plate_motions.so
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set Output directory                       = 2D-slice-with-faults-slabs-topo
+set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/world_builder_smac_cratons_faults_2D.json
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+# We increase the maximum nonlinear iterations from the default value of 10 to 20
+# because our viscosity depends on several compositions, strain rate, and temperature.
+# Further increasing the complexity may require more nonlinear iterations.
+set Max nonlinear iterations               = 20
+set Start time                             = 0
+set End time                               = 0
+set Adiabatic surface temperature          = 1573.0
+
+
+# We use the matrix-free solver and geometric multigrid preconditioner
+# to reduce memory consumption.
+# We use a reduced value of 1e-4 in the Linear solver tolerance from the default
+# value of 1e-7. The low value is chosen after initial tests done on an equally
+# complex 3d spherical shell model. A higher linear solver tolerance would still
+# work for this cookbook.
+# We also use the full A block preconditioner to reduce the number of linear iterations since
+# the current setup already requires close to 2,000 linear iterations.
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance                         = 1e-4
+    set Stokes solver type                              = block GMG
+    set Number of cheap Stokes solver steps             = 5000
+    set GMRES solver restart length                     = 500
+    set Maximum number of expensive Stokes solver steps = 0
+    set Use full A block as preconditioner              = true
+    set Linear solver A block tolerance                 = 1e-2
+  end
+
+# The following diffusion parameters describes the length scale of diffusion
+# for the compositional value of slabs.
+  subsection Diffusion solver parameters
+    set Diffusion length scale = 30000
+  end
+
+end
+
+# The reference profile uses hydrostatic equations to define adiabatic pressure
+# and temperatures. The difference with existing compute profile plugin is that this
+# plugin uses reference densities from PREM below a certain depth defined by the
+# uppermost mantle thickness parameter to compute the adiabatic conditions.
+subsection Adiabatic conditions model
+  set Model name = reference profile
+
+  subsection Reference profile
+    subsection Ascii data model
+      set Data directory = $ASPECT_SOURCE_DIR/data/1D_reference_profiles/
+      set Data file name = prem.txt
+    end
+  end
+end
+
+# We use the spherical shell geometry using the real Earth radius values.
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+  end
+
+  subsection Initial topography model
+    set Model name = ascii data
+
+    subsection Ascii data model
+      set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
+      set Data file name       = input_topography_smooth_gauss.txt
+    end
+  end
+end
+
+# We use adaptive refinement to better resolve the upper-mantle
+# and the slab structure.
+# Increase the adaptive mesh refinement to 4 to reproduce the figure in
+# the documentation of the cookbook.
+subsection Mesh refinement
+  set Initial adaptive refinement = 1
+  set Initial global refinement = 4
+  set Strategy = minimum refinement function, composition threshold
+
+  subsection Minimum refinement function
+    set Variable names = depth, y
+    set Function expression = if (depth > 350000, 5, 7 )
+  end
+
+  subsection Composition threshold
+    set Compositional field thresholds = 1e6, 1e6, 1e6, 1e6, 1e6, 0.2
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = grain_size, Vp, Vs, vs_anomaly, faults, slabs
+  set Compositional field methods = prescribed field, static, static, static, static, prescribed field with diffusion
+end
+
+
+# We use world builder to define the complex geometry of plate boundaries ("faults")
+# and cratons ("continents") in our model.
+subsection Initial composition model
+  set List of model names = ascii data, world builder, slab model
+
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
+    set Data file name = LLNL_model_cropped_cratons_faults.txt.gz
+    set Slice dataset in 2D plane = true
+  end
+
+  subsection World builder
+    set List of relevant compositions = faults
+  end
+
+  subsection Slab model
+    set Data directory = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
+    set Data file name = slab2_depth_thickness_2D.txt.gz
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top
+end
+
+
+# The material model uses diffusion/dislocation creep with prefactors, activation
+# energies and volumes for each major mantle phase chosen to facilitate combined
+# diffusion/dislocation creep in the upper mantle and transition zone, and diffusion
+# creep as the dominant deformation mechanism in the lower mantle.
+# Additionally, all the viscosity variations are laterally averaged to a 1D viscosity
+# profile with an additional layer between 660 and 800 km depth, referred to as
+# the mid-mantle viscosity. We do not scale viscosity within the slabs to avoid
+# weak slabs in the asthenosphere using the parameter :
+# 'Use asthenosphere viscosity scaling in cold regions'. The trench zone weakness
+# defines the low-viscosity layer above the slabs.
+# More details on the chosen material model parameters are in
+# the accompanying file, '2D_slice_with_faults_and_cratons.prm'.
+# We do not use neutrally buoyant cratons in this model, but this can be
+# included by adding another compositional field named 'continents' and
+# setting 'set Use cratons = true'.
+# We add a weak mid-mantle viscosity layer that modifies the reference viscosity
+# profile to allow the slabs to subduct into the lower mantle
+subsection Material model
+  set Model name         = tomography based plate motions
+  set Material averaging = harmonic average only viscosity
+
+  subsection Tomography based plate motions model
+    set Use cratons                                         = false
+    set Use slab2 database                                  = true
+    set Slab viscosity                                      = 1e26
+    set Depth to the top of the mid-mantle viscosity layer  = 660e3
+    set Depth to the base of the mid-mantle viscosity layer = 800e3
+    set Mid-mantle layer viscosity                          = 1e20
+    set Use asthenosphere viscosity scaling in cold regions = false
+    set Uppermost mantle thickness                          = 200e3
+    set Trench weak zone thickness                          = 50e3
+  end
+end
+
+subsection Formulation
+  set Mass conservation = reference density profile
+end
+
+subsection Postprocess
+  set List of postprocessors         = boundary velocity residual statistics, velocity boundary statistics, visualization, heat flux statistics, depth average
+
+  subsection Visualization
+    set List of output variables     = adiabat, material properties, gravity, nonadiabatic temperature, heat flux map, strain rate, boundary velocity residual, named additional outputs, surface elevation
+    set Output format  = vtu
+    set Interpolate output = false
+  end
+end

@@ -1,0 +1,42 @@
+subsection Solver parameters
+  subsection Diffusion solver parameters
+    set Diffusion length scale = 30000
+  end
+end
+
+subsection Geometry model
+  subsection Initial topography model
+    set Model name = ascii data
+
+    subsection Ascii data model
+      set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
+      set Data file name       = input_topography_smooth_gauss.txt
+    end
+  end
+end
+
+subsection Initial composition model
+  set List of model names = ascii data, world builder, slab model
+
+  subsection Slab model
+    set Data directory = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
+    set Data file name = slab2_depth_thickness_2D.txt.gz
+  end
+end
+
+subsection Material model
+  set Model name         = tomography based plate motions
+  set Material averaging = harmonic average only viscosity
+
+  subsection Tomography based plate motions model
+    set Use cratons                                         = false
+    set Use slab2 database                                  = true
+    set Slab viscosity                                      = 1e26
+    set Depth to the top of the mid-mantle viscosity layer  = 660e3
+    set Depth to the base of the mid-mantle viscosity layer = 800e3
+    set Mid-mantle layer viscosity                          = 1e20
+    set Use asthenosphere viscosity scaling in cold regions = false
+    set Uppermost mantle thickness                          = 200e3
+    set Trench weak zone thickness                          = 50e3
+  end
+end

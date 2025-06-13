@@ -5,7 +5,6 @@ include $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/2D_slice_wit
 
 set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/plugins/libtomography_based_plate_motions.release.so
 set World builder file                     = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/world_builder_smac_cratons_faults_2D.json
-set Output directory                       = output
 set Max nonlinear iterations               = 1
 
 subsection Mesh refinement
