@@ -120,7 +120,7 @@ Number of degrees of freedom: 13,282 (8,156+1,048+4,078)
    Postprocessing:
 
 Termination requested by criterion: steady state velocity
-*** Snapshot created!
+*** Snapshot output-box_steady_state_terminate/restart/01/ created!
 
 
 

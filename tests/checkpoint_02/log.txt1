@@ -1,73 +1,83 @@
 
-*** Resuming from snapshot!
+*** Resuming from snapshot output1.tmp/restart/01/
 
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Timestep 5:  t=5.61338e+06 seconds, dt=1.2228e+06 seconds
    Solving temperature system... 19 iterations.
-   Solving Stokes system (GMG)... 14+0 iterations.
+   Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average
      Writing graphical output: output1.tmp/solution/solution-00005
-     Temperature min/avg/max:  1.009 K, 1.041 K, 1.085 K
-     RMS, max velocity:        4.09e-09 m/s, 9.62e-09 m/s
+     Temperature min/avg/max:  1.004 K, 1.041 K, 1.093 K
+     RMS, max velocity:        5.03e-09 m/s, 1.22e-08 m/s
 
-*** Timestep 6:  t=7.23779e+06 seconds, dt=1.62441e+06 seconds
-   Solving temperature system... 21 iterations.
+*** Timestep 6:  t=6.89231e+06 seconds, dt=1.27893e+06 seconds
+   Solving temperature system... 19 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average
      Writing graphical output: output1.tmp/solution/solution-00006
-     Temperature min/avg/max:  1.01 K, 1.041 K, 1.083 K
-     RMS, max velocity:        3.88e-09 m/s, 9.09e-09 m/s
+     Temperature min/avg/max:  1.005 K, 1.041 K, 1.091 K
+     RMS, max velocity:        4.84e-09 m/s, 1.17e-08 m/s
 
-*** Timestep 7:  t=8.95675e+06 seconds, dt=1.71896e+06 seconds
-   Solving temperature system... 22 iterations.
+*** Timestep 7:  t=8.23159e+06 seconds, dt=1.33928e+06 seconds
+   Solving temperature system... 19 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average
      Writing graphical output: output1.tmp/solution/solution-00007
-     Temperature min/avg/max:  1.011 K, 1.041 K, 1.081 K
-     RMS, max velocity:        3.68e-09 m/s, 8.57e-09 m/s
+     Temperature min/avg/max:  1.006 K, 1.041 K, 1.09 K
+     RMS, max velocity:        4.65e-09 m/s, 1.11e-08 m/s
 
-*** Timestep 8:  t=1.07783e+07 seconds, dt=1.82159e+06 seconds
-   Solving temperature system... 22 iterations.
+*** Timestep 8:  t=9.63611e+06 seconds, dt=1.40452e+06 seconds
+   Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average
      Writing graphical output: output1.tmp/solution/solution-00008
-     Temperature min/avg/max:  1.012 K, 1.041 K, 1.079 K
-     RMS, max velocity:        3.48e-09 m/s, 8.07e-09 m/s
+     Temperature min/avg/max:  1.007 K, 1.041 K, 1.088 K
+     RMS, max velocity:        4.45e-09 m/s, 1.06e-08 m/s
 
-*** Timestep 9:  t=1.27134e+07 seconds, dt=1.93503e+06 seconds
-   Solving temperature system... 22 iterations.
+*** Timestep 9:  t=1.11115e+07 seconds, dt=1.4754e+06 seconds
+   Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average
      Writing graphical output: output1.tmp/solution/solution-00009
-     Temperature min/avg/max:  1.013 K, 1.041 K, 1.077 K
-     RMS, max velocity:        3.28e-09 m/s, 7.58e-09 m/s
+     Temperature min/avg/max:  1.008 K, 1.041 K, 1.086 K
+     RMS, max velocity:        4.26e-09 m/s, 1.01e-08 m/s
 
-*** Snapshot created!
+*** Snapshot output1.tmp/restart/02/ created!
 
-*** Timestep 10:  t=1.4e+07 seconds, dt=1.28662e+06 seconds
-   Solving temperature system... 18 iterations.
+*** Timestep 10:  t=1.26639e+07 seconds, dt=1.55237e+06 seconds
+   Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
      Writing depth average:    output1.tmp/depth_average
      Writing graphical output: output1.tmp/solution/solution-00010
-     Temperature min/avg/max:  1.014 K, 1.041 K, 1.075 K
-     RMS, max velocity:        3.16e-09 m/s, 7.27e-09 m/s
+     Temperature min/avg/max:  1.009 K, 1.041 K, 1.084 K
+     RMS, max velocity:        4.06e-09 m/s, 9.55e-09 m/s
 
-Number of active cells: 973 (on 6 levels)
-Number of degrees of freedom: 13,200 (8,106+1,041+4,053)
+Number of active cells: 982 (on 6 levels)
+Number of degrees of freedom: 13,282 (8,156+1,048+4,078)
+
+*** Timestep 11:  t=1.4e+07 seconds, dt=1.33611e+06 seconds
+   Solving temperature system... 19 iterations.
+   Solving Stokes system (GMG)... 15+0 iterations.
+
+   Postprocessing:
+     Writing depth average:    output1.tmp/depth_average
+     Writing graphical output: output1.tmp/solution/solution-00011
+     Temperature min/avg/max:  1.01 K, 1.041 K, 1.083 K
+     RMS, max velocity:        3.9e-09 m/s, 9.13e-09 m/s
 
 Termination requested by criterion: end time
 

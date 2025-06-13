@@ -63,7 +63,7 @@ Number of degrees of freedom: 13,104 (8,038+1,047+4,019)
      Heat fluxes through boundary parts: -1.352e+05 W, -5.658e+04 W, 0 W, 0 W
 
 Termination requested by criterion: end step
-*** Snapshot created!
+*** Snapshot output-refine_vel/restart/01/ created!
 
 
 

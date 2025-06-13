@@ -34,7 +34,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
 
-*** Snapshot created!
+*** Snapshot output-terminate_user_request/restart/01/ created!
 
 *** Timestep 5:  t=5.61338e+06 seconds, dt=1.2228e+06 seconds
    Solving temperature system... 19 iterations.
@@ -43,7 +43,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
 
 Termination requested by criterion: user request
-*** Snapshot created!
+*** Snapshot output-terminate_user_request/restart/02/ created!
 
 
 

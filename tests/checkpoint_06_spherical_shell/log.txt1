@@ -38,7 +38,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
      RMS, max velocity:        0.0103 m/year, 0.024 m/year
 
-*** Snapshot created!
+*** Snapshot output1.tmp/restart/01/ created!
 
 *** Timestep 4:  t=2.7754e+07 years, dt=6.97728e+06 years
    Solving temperature system... 8 iterations.

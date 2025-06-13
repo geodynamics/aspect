@@ -52,7 +52,7 @@ Number of degrees of freedom: 35,586 (21,840+2,826+10,920)
      Writing depth average:              output-latent_heat_viscosity/depth_average
 
 Termination requested by criterion: end step
-*** Snapshot created!
+*** Snapshot output-latent_heat_viscosity/restart/01/ created!
 
 
 

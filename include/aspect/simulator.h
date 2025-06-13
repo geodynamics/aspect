@@ -860,6 +860,14 @@ namespace aspect
        * restarting from a saved state
        * @{
        */
+
+      /**
+       * Determine the id of the last good snapshot that was written by reading
+       * the last_good_checkpoint.txt file from the output/checkpoint/ folder.
+       * It will return numbers::invalid_unsigned_int if no snapshot exists.
+       */
+      unsigned int determine_last_good_snapshot() const;
+
       /**
        * Save the state of this program to a set of files in the output
        * directory. In reality, however, only some variables are stored (in
@@ -1798,6 +1806,13 @@ namespace aspect
        * that was created.
        */
       double total_walltime_until_last_snapshot;
+
+      /**
+       * Checkpointing happens in rotating folders /restart/01/, /restart/02/,
+       * etc.. This variable holds the last index used and as such should
+       * contain the last valid checkpoint written.
+       */
+      unsigned int last_checkpoint_id;
 
       /**
        * In output_statistics(), where we output the statistics object above,

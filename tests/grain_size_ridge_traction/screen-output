@@ -93,7 +93,7 @@ Number of degrees of freedom: 45,732 (16,770+2,145+8,385+18,432)
      Writing particle output:            output-grain_size_ridge_traction/particles/particles-00002
 
 Termination requested by criterion: end time
-*** Snapshot created!
+*** Snapshot output-grain_size_ridge_traction/restart/01/ created!
 
 
 
