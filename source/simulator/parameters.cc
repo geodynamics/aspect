@@ -1628,8 +1628,8 @@ namespace aspect
               const std::string command = "lst setstripe -c " + std::to_string(lfs_stripe_count)
                                           + ' ' + output_directory;
 
-              int error_code = system (command.c_str());
-              Utilities::MPI::broadcast(&error_code, 1, 0, mpi_communicator);
+              const int error_code = system (command.c_str());
+              std::ignore = Utilities::MPI::broadcast(mpi_communicator, error_code, /* root= */ 0);
 
               AssertThrow (error_code == 0,
                            ExcMessage ("Could not successfully execute the LFS file striping "
@@ -1639,8 +1639,7 @@ namespace aspect
             }
           else
             {
-              int error_code;
-              Utilities::MPI::broadcast(&error_code, 1, 0, mpi_communicator);
+              const int error_code = Utilities::MPI::broadcast(mpi_communicator, error_code, /* root = */ 0);
 
               if (error_code != 0)
                 throw QuietException();
