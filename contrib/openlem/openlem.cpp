@@ -191,7 +191,7 @@
 #include <map>
 
 namespace openlem {
-//#define SHAREDSP
+#define SHAREDSP
 //#define CHANNEL
 //#define DEPOS
 //#define LAYERS 3
@@ -1898,12 +1898,14 @@ class Grid
       for ( int j = 0; j < n; ++j )
       {
         int  tmp = computeFluxes ( i, j, dt );
+	printf("i:j = %i:%i, q = %i, tmp = %i, b=%i; ",i,j,q, tmp,getNode(i,j)->b);
 	if ( getNode(i,j)->b )  q += tmp;
       }	
 #ifndef PRECIP
     if ( q != m*n )
     {
       printf ( "Error: Total discharge is %i, should be %i\n", q, m*n );
+      assert(false);
       exit ( -1 );
     } 
 #endif
@@ -2583,6 +2585,7 @@ class Grid
 	      // copies from the buffer into correct variable of the node: 
 	      // the location of the first variable h + the offset to the correct variable + the layer the variable is in (8 bits per layer). The layers is ofcourse only available for variables which are arrays[LAYERS]
               memcpy ( (char*)&getNode(i,j)->h+e.offset+8*k, &bufd, 8 );  
+	       std::cout << "flag 09: " << i << ":" << j << ", h = " << getNode(i,j)->h << ", k = " << k << ", offset = " << e.offset << ", fsize = " << e.fsize << std::endl;
 	    }
           }
     else 
