@@ -1,0 +1,5 @@
+Fixed: The evaluation of the min/max melt fraction in
+melt_statistics were incorrectly being done at Gauss
+points.
+<br>
+(Daniel Douglas, 2025/06/12)
