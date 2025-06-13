@@ -25,7 +25,7 @@ with a 1:1 ratio corresponding to a $100 \times 100~\text{ m}$ block as shown in
 {numref}`fig:sinking-anhydrite-setups`.
 
 ```{figure-md} fig:sinking-anhydrite-setups
-<img src="setups.*" width="80%" />
+<img src="setups.*" width="90%" />
 
 Scaled sketches of model set-ups.
 Taken from {cite:t}`burchardt:etal:2012a`.
@@ -50,8 +50,8 @@ below the surface at the beginning of the simulation.
 
 In all three articles the authors use the Finite Difference code FDCON {cite:t}`weinberg:schmeling:1992`.
 In the current case the original resolution of the experiment is $200 \times 400$ cells,
-i.e. cells of $12.5 \times 12.5~\test{ m}$ in size. The particles are located
-every 10 to $12.5 m in vertical and horizontal direction, i.e. about 100,000 particles in total.
+i.e. cells of $12.5 \times 12.5~\text{ m}$ in size. The particles are located
+every 10 to $12.5~\text{ m}$ in vertical and horizontal direction, i.e. about 100,000 particles in total.
 We here make use of adaptive mesh refinement with a criterion based on the compositions interface and
 seed the system with 2,000,000 randomly distributed particles.
 Unfortunately the authors fail to mention the type of averaging that they use for the density and
@@ -79,7 +79,7 @@ Anhydrite) and the perfectly straight interface between the two salt
 types. Hence, pre-existing deformation caused by salt ascent and
 emplacement along with the entrainment of the Main Anhydrite layer is neglected.
 
-On {numref}`fig:sinking-anhydrite-results` panels of Fig.~6 of the paper
+On {numref}`fig:sinking-anhydrite-results` panels of Fig. 6 of the paper
 are placed next to ASPECT's results at three different times.
 We find a reasonable agreement between both codes, again
 acknowledging that the size of the sinking block probably requires an
@@ -87,7 +87,7 @@ even higher resolution that what is here used and that material
 averaging is also likely ot change results.
 
 ```{figure-md} fig:sinking-anhydrite-results
-<img src="results.*" width="80%" />
+<img src="results.*" width="90%" />
 
 Results obtained at three different times: a) $t=104~\text{ ka}$;
 b) $t=228~\text{ ka}$; c) $t=352~\text{ ka}$. Blue-green panels are
