@@ -208,7 +208,10 @@ namespace aspect
               if (prescribed_dilation)
                 {
                   prescribed_dilation->dilation_rhs_term[i] = x;
-                  prescribed_dilation->dilation_lhs_term[i] = 0.;
+                  prescribed_dilation->dilation_lhs_term[0][i] = 0.;
+                  prescribed_dilation->dilation_lhs_term[1][i] = 0.;
+                  if (dim == 3)
+                    prescribed_dilation->dilation_lhs_term[2][i] = 0.;
                 }
 
             }
