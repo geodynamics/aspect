@@ -78,10 +78,9 @@ namespace aspect
         const double unit_offset = 0.5;
         std::vector<double> property_minimums(n_particle_properties, std::numeric_limits<double>::max());
         std::vector<double> property_maximums(n_particle_properties, std::numeric_limits<double>::lowest());
-        for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
-             particle != particle_range.end(); ++particle, ++particle_index)
+        for (const auto &particle : particle_range)
           {
-            const ArrayView<double> particle_property_value = particle->get_properties();
+            const ArrayView<const double> particle_property_value = particle.get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               {
                 if (selected_properties[property_index] == true)
@@ -94,7 +93,7 @@ namespace aspect
                       }
                   }
               }
-            Point<dim> relative_particle_position = particle->get_reference_location();
+            Point<dim> relative_particle_position = particle.get_reference_location();
 
             // A is accessed by A[column][row] here since we will need to append
             // columns into the qr matrix
@@ -104,6 +103,8 @@ namespace aspect
                 relative_particle_position[i - 1] -= unit_offset;
                 A[i][particle_index] = relative_particle_position[i - 1];
               }
+
+            ++particle_index;
           }
 
         // If the limiter is enabled for at least one property then we know that we can access ghost cell
@@ -205,9 +206,9 @@ namespace aspect
                       }
                   }
                 std::size_t positions_index = 0;
-                for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++positions_index)
+                for (const auto &itr : positions)
                   {
-                    Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(cell, *itr);
+                    Point<dim> relative_support_point_location = this->get_mapping().transform_real_to_unit_cell(cell, itr);
                     double interpolated_value = c[property_index][0];
                     for (unsigned int i = 1; i < n_matrix_columns; ++i)
                       {
@@ -233,6 +234,8 @@ namespace aspect
                         interpolated_value = std::max(interpolated_value, property_minimums[property_index]);
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
+
+                    ++positions_index;
                   }
 
               }
