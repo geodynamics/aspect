@@ -1,0 +1,100 @@
+# This parameter file tests the gravity model plugin for a case where the
+# tidal potential by flattening and non-synchronnous rotation chages gravity with position and time.
+# 
+# The equation implemented in this heating model is from Tobie et al. (2025) (https://doi.org/10.1007/s11214-025-01136-y),
+# which is defined as:
+# g = -magnitude + gradient of tidal potential.
+# potential = 3 G M_p R_s^2 / 2 a_s^3 r^2 (Tstar + T0)
+# Tstar = 1/6 *(1-3*cos(theta)^2) and T0=1/2sin(theta)^2*cos(2*lambda + 2*b*t),
+# where G: gravitational constant, M_p: mass of planet, R_s: radius of satellite, a_s: semimajor axis of satellite's orbit, b = angular rate of nonsynchronous rotation.
+# r, theta and lambda are radial distance, polar angle and azimuthal angle, respectively.
+#
+# Model shows the Europa's icy shell without conduction in simpler model.
+# Visualization 'gravity' shows gravity distribution.
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 5e5
+
+set Output directory                       = gravity_tidal_potential
+
+set Maximum first time step                    = 5e4
+set CFL number                                 = 0.8
+set Maximum time step                          = 5e4
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Outer radius = 1560800
+    set Inner radius = 1460800
+    set Opening angle = 360
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r, phi,theta
+    set Function expression = 100
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom
+end
+
+
+subsection Gravity model
+  set Model name = radial linear with tidal potential
+  subsection Radial linear
+    set Magnitude at surface = 1.3
+    set Magnitude at bottom = 1.3
+  end
+  subsection Radial linear with tidal potnetial
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density = 917
+    set Reference specific heat = 2110
+    set Reference temperature = 100
+    set Thermal conductivity = 0 #1.93
+    set Thermal expansion coefficient = 0 #1.6e-4
+    set Viscosity = 1e20
+  end
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, visualization, basic statistics, \
+			       pressure statistics, material statistics
+
+  subsection Visualization
+    set Time between graphical output = 5e4
+    set Output format                 = vtu
+    set List of output variables      = material properties, strain rate, shear stress, stress, nonadiabatic pressure, gravity
+  end
+end

@@ -135,6 +135,52 @@ namespace aspect
         double magnitude_at_bottom;
 
     };
+
+
+
+    template <int dim>
+    class RadialLinearWithTidalPotential : public RadialLinear<dim>
+    {
+      public:
+        /**
+         * Return the gravity vector as a function of position.
+         */
+        Tensor<1,dim> gravity_vector (const Point<dim> &position) const override;
+
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        void
+        parse_parameters (ParameterHandler &prm) override;
+
+      private:
+        /**
+         * Mass of hosting planet
+         */
+        double M_p;
+
+        /**
+         * Semimajor axis of satellite's orbit
+         */
+        double a_s;
+
+        /**
+         * Rate of non-synchronous rotation in m/year
+         */
+        double b_NSR;
+
+        /**
+         * Radius of modelling satellite
+         */
+        double R1;
+    };
   }
 }
 
