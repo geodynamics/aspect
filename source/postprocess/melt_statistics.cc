@@ -35,7 +35,12 @@ namespace aspect
     std::pair<std::string,std::string>
     MeltStatistics<dim>::execute (TableHandler &statistics)
     {
-
+      // Use an iterated trapezodal quadrature formula based on the temperature
+      // element for computing the min/max, both of which may lie of the
+      // boundaries of the cell. Iterate 'degree' times to ensure the evaluation
+      // points are in fact the support points.
+      // Additionally, use a Gauss quadrature formula for evaluating the
+      // integrated melt fraction within the cell.
       const QIterated<dim> quadrature_formula_for_max (QTrapezoid<1>(),
                                                        this->get_parameters().temperature_degree);
       const unsigned int n_q_points_for_max = quadrature_formula_for_max.size();
@@ -47,6 +52,7 @@ namespace aspect
                                        this->get_fe(),
                                        quadrature_formula_for_max,
                                        update_values   |
+                                       update_gradients |
                                        update_quadrature_points |
                                        update_JxW_values);
 
@@ -54,6 +60,7 @@ namespace aspect
                                             this->get_fe(),
                                             quadrature_formula_for_integral,
                                             update_values   |
+                                            update_gradients |
                                             update_quadrature_points |
                                             update_JxW_values);
 
@@ -82,8 +89,8 @@ namespace aspect
             // we can only postprocess melt fractions if the material model that is used
             // in the simulation has implemented them
             // otherwise, set them to zero
-            std::vector<double> melt_fractions_for_max(n_q_points_for_max, 0.0);
-            std::vector<double> melt_fractions_for_integral(n_q_points_for_integral, 0.0);
+            std::vector<double> melt_fractions_for_max(n_q_points_for_max, numbers::signaling_nan<double>());
+            std::vector<double> melt_fractions_for_integral(n_q_points_for_integral, numbers::signaling_nan<double>());
 
             if (MaterialModel::MeltFractionModel<dim>::is_melt_fraction_model(this->get_material_model()))
               {
