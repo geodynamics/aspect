@@ -1,0 +1,5 @@
+New: A new prefactor has been added to the Drucker-Prager rheology model
+that makes it possible to reduce (or increase) the yield strength of specific
+compositions given in the input file
+<br>
+(Antoniette G. Grima, 2025/06/14)

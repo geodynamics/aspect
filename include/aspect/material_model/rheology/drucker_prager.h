@@ -54,6 +54,11 @@ namespace aspect
         double cohesion;
 
         /**
+         * Prefactor for the yield stress for the current composition and phase
+         */
+        double yield_stress_prefactor;
+
+        /**
          * Limit maximum yield stress from drucker prager yield criterion.
          */
         double max_yield_stress;
@@ -217,6 +222,11 @@ namespace aspect
            * The cohesion is provided and stored in Pa.
            */
           std::vector<double> cohesions;
+
+          /**
+           *The prefactors for the yield stress.
+           */
+          std::vector<double> yield_stress_prefactors;
 
           /**
            * The yield stress is limited to a constant value, stored in Pa.
