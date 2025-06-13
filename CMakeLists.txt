@@ -252,6 +252,23 @@ if(ASPECT_WITH_FASTSCAPE)
     # record which support library it needs to link against when we form
     # the executable.
     enable_language(Fortran)
+
+    # Our wrappers call a function fastscape_named_vtk() that does not
+    # exist in the upstream fastscapelib_fortran library, but has been
+    # added to Derek Neuharth's branch that is used by most of those
+    # who are using FastScape.  Check for the existence of this
+    # symbol, and if so set the ASPECT_HAVE_FASTSCAPE_NAMED_VTK
+    # variable that we can #define or not in config.h
+    include(CheckLibraryExists)
+    set(_required_libs "${CMAKE_REQUIRED_LIBRARIES}")
+    set(CMAKE_REQUIRED_LIBRARIES "gfortran")
+    check_library_exists(${FASTSCAPE} fastscape_named_vtk_ "" ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
+    if (ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
+      message(STATUS "Found fastscape_named_vtk -- enabling its use")
+    else()
+      message(STATUS "Did not find fastscape_named_vtk -- disabling its use")
+    endif()
+    set(CMAKE_REQUIRED_LIBRARIES "${_required_libs}")
   else()
      message(FATAL_ERROR "Trying to link with FastScape but neither libfastscapelib_fortran.so nor libfastscapelib_fortran.a was found in ${FASTSCAPE_DIR} or its subdirectories.")
   endif()
