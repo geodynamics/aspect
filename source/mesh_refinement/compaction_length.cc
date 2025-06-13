@@ -79,12 +79,10 @@ namespace aspect
 
                 // If the compaction length exceeds the cell diameter anywhere in the cell, cell is marked for refinement.
                 // Do not apply any refinement if the porosity is so small that melt can not migrate.
-                if (compaction_length < 2.0 * cells_per_compaction_length * cell->minimum_vertex_distance()
-                    && this->get_melt_handler().is_melt_cell(cell))
+                if (compaction_length < 2.0 * cells_per_compaction_length * cell->minimum_vertex_distance())
                   clear_coarsen = true;
 
-                if (compaction_length < cells_per_compaction_length * cell->minimum_vertex_distance()
-                    && this->get_melt_handler().is_melt_cell(cell))
+                if (compaction_length < cells_per_compaction_length * cell->minimum_vertex_distance())
                   {
                     refine = true;
                     break;

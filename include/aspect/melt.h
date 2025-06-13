@@ -482,31 +482,6 @@ namespace aspect
                                                        internal::Assembly::CopyData::StokesSystem<dim>      &data) const;
 
       /**
-       * Constrain the compaction pressure to zero in all cells that are not
-       * "melt cells" (cells where the porosity is above a given threshold).
-       * This reverts the system of equations we solve back to the Stokes
-       * system without melt transport for these cells.
-       */
-      void add_current_constraints(AffineConstraints<double> &constraints);
-
-      /**
-       * Returns the entry of the private variable is_melt_cell_vector for the
-       * cell given in the input, describing if we have melt transport in this
-       * cell or not.
-       */
-      bool is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const;
-
-      /**
-       * Given the Darcy coefficient @p K_D as computed by the material model,
-       * limit the coefficient to a minimum value (computed as the K_D
-       * variation threshold given in the input file times the reference Darcy
-       * coefficient) in melt cells and return this value. If @p is_melt_cell
-       * is false, return zero.
-       */
-      double limited_darcy_coefficient(const double K_D,
-                                       const bool is_melt_cell) const;
-
-      /**
        * Return a pointer to the boundary fluid pressure.
        */
       const BoundaryFluidPressure::Interface<dim> &

@@ -749,7 +749,6 @@ namespace aspect
 
           const double melt_transport_LHS =
             (this->get_melt_handler().is_porosity(*scratch.advection_field)
-             && this->get_melt_handler().is_melt_cell(scratch.material_model_inputs.current_cell)
              ?
              divergence_u
              + (this->get_material_model().is_compressible()
@@ -772,7 +771,7 @@ namespace aspect
           double density_c_P_solid = density_c_P;
           double density_c_P_melt = 0.0;
 
-          if (scratch.advection_field->is_temperature() && this->get_melt_handler().is_melt_cell(scratch.cell)
+          if (scratch.advection_field->is_temperature()
               && this->get_melt_handler().melt_parameters.heat_advection_by_melt)
             {
               density_c_P_solid = (1.0 - porosity) * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
@@ -1112,8 +1111,6 @@ namespace aspect
 
             this->get_material_model().evaluate(in, out);
 
-            const bool is_melt_cell = this->get_melt_handler().is_melt_cell(in.current_cell);
-
             MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
             Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
             const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
@@ -1153,7 +1150,7 @@ namespace aspect
 
                 if (!melt_parameters.average_melt_velocity)
                   {
-                    // use K_D without cutoff to compute u_f
+                    // use K_D to compute u_f
                     const double phi = std::max(0.0, porosity_values[q]);
                     const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
 
@@ -1161,21 +1158,12 @@ namespace aspect
                   }
 
                 // u_f =  u_s - K_D (nabla p_f - rho_f g) / phi  or = 0
-                if (is_melt_cell)
-                  {
-                    const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in.position[q]);
+                const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector(in.position[q]);
 
-
-                    for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
-                      cell_vector(i) += (u_s_values[q] - K_D_over_phi * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity))
-                                        * phi_u_f[i]
-                                        * JxW;
-                  }
-                else
-                  for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
-                    cell_vector(i) += (u_s_values[q])
-                                      * phi_u_f[i]
-                                      * JxW;
+                for (unsigned int i=0; i<fluid_velocity_dofs_per_cell; ++i)
+                  cell_vector(i) += (u_s_values[q] - K_D_over_phi * (grad_p_f_values[q] - melt_outputs->fluid_densities[q]*gravity))
+                                    * phi_u_f[i]
+                                    * JxW;
 
               }
 
@@ -1215,7 +1203,7 @@ namespace aspect
     }
 
     // compute solid pressure as
-    // p_s = p_t / (1-phi) + phi/(1-phi) p_f
+    // p_s = p_t / (1-phi) - phi/(1-phi) p_f
     {
       const unsigned int block_p = this->introspection().block_indices.pressure;
 
@@ -1293,259 +1281,6 @@ namespace aspect
       return false;
     else
       return (this->introspection().name_for_compositional_index(advection_field.compositional_variable) == "porosity");
-  }
-
-
-
-  namespace internal
-  {
-    // This is a scratch object for the setting the compaction pressure constraints
-    // in cells without melt (where we do not solve the melt transport equations,
-    // so we set the compaction pressure to zero).
-    template <int dim>
-    struct PcConstraintsAssembleData
-    {
-      // Standard constructor
-      PcConstraintsAssembleData (const FiniteElement<dim> &finite_element,
-                                 const Quadrature<dim>    &quadrature,
-                                 const Mapping<dim>       &mapping,
-                                 const UpdateFlags         update_flags,
-                                 const unsigned int        n_compositional_fields,
-                                 const unsigned int        stokes_dofs_per_cell)
-        :
-        finite_element_values (mapping, finite_element, quadrature,
-                               update_flags),
-        local_dof_indices (finite_element.dofs_per_cell),
-        dof_component_indices(stokes_dofs_per_cell),
-        material_model_inputs(quadrature.size(), n_compositional_fields),
-        material_model_outputs(quadrature.size(), n_compositional_fields)
-      {}
-
-
-      // Copy constructor
-      PcConstraintsAssembleData (const PcConstraintsAssembleData &scratch)
-        :
-        finite_element_values (scratch.finite_element_values.get_mapping(),
-                               scratch.finite_element_values.get_fe(),
-                               scratch.finite_element_values.get_quadrature(),
-                               scratch.finite_element_values.get_update_flags()),
-        local_dof_indices (scratch.local_dof_indices),
-        dof_component_indices( scratch.dof_component_indices),
-        material_model_inputs(scratch.material_model_inputs),
-        material_model_outputs(scratch.material_model_outputs)
-      {}
-
-      virtual ~PcConstraintsAssembleData () = default;
-
-      FEValues<dim>                            finite_element_values;
-
-      std::vector<types::global_dof_index>     local_dof_indices;
-      std::vector<unsigned int>                dof_component_indices;
-
-      MaterialModel::MaterialModelInputs<dim>  material_model_inputs;
-      MaterialModel::MaterialModelOutputs<dim> material_model_outputs;
-
-    };
-
-    template <int dim>
-    struct PcConstraintsCopyData
-    {
-      explicit PcConstraintsCopyData (const unsigned int stokes_dofs_per_cell)
-      {
-        nonzero_dof_indices.reserve(stokes_dofs_per_cell);
-      }
-
-      std::vector<types::global_dof_index>   nonzero_dof_indices;
-    };
-
-
-    // Assembler for setting the compaction pressure constraints in cells without melt.
-    // Note that the assembler does not actually assemble anything, it just uses the
-    // structure of an assembler to loop over all compaction pressure dofs and to insert
-    // the ones that are in melt cells into an IndexSet (nonzero_dof_indices) that is
-    // later needed for setting the constraints.
-    template <int dim>
-    class PcNonZeroDofsAssembler : public SimulatorAccess<dim>
-    {
-      public:
-        PcNonZeroDofsAssembler(const std::vector<bool> &is_melt_cell,
-                               IndexSet &nonzero_entries)
-          : is_melt_cell (is_melt_cell),
-            nonzero_entries (nonzero_entries)
-        {}
-
-
-        void
-        local_save_nonzero_pc_dofs (const typename DoFHandler<dim>::active_cell_iterator &cell,
-                                    PcConstraintsAssembleData<dim> &scratch,
-                                    PcConstraintsCopyData<dim> &data)
-        {
-          data.nonzero_dof_indices.clear();
-          cell->get_dof_indices (scratch.local_dof_indices);
-
-          const unsigned int pc_component_index = this->introspection().variable("total pressure").first_component_index;
-          const unsigned int pc_base_index = this->introspection().variable("total pressure").base_index;
-
-          Assert(cell.state() == IteratorState::valid,
-                 ExcMessage("You are trying to access the property of a cell (if it is "
-                            "a melt cell or not), but the cell iterator provided does not "
-                            "point to a cell."));
-          const bool is_melt_cell = this->get_melt_handler().is_melt_cell(cell);
-
-          if (is_melt_cell)
-            {
-              data.nonzero_dof_indices.resize(this->get_fe().base_element(pc_base_index).dofs_per_cell);
-              for (unsigned int j=0; j<this->get_fe().base_element(pc_base_index).dofs_per_cell; ++j)
-                {
-                  const unsigned int pressure_idx
-                    = this->get_fe().component_to_system_index(pc_component_index,
-                                                               /*dof index within component=*/ j);
-
-                  data.nonzero_dof_indices[j] = scratch.local_dof_indices[pressure_idx];
-                }
-            }
-        }
-
-        void
-        copy_local_to_global (const PcConstraintsCopyData<dim> &data)
-        {
-          nonzero_entries.add_indices(data.nonzero_dof_indices.begin(),
-                                      data.nonzero_dof_indices.end());
-        }
-
-      private:
-        const std::vector<bool> &is_melt_cell;
-        IndexSet &nonzero_entries;
-
-    };
-
-  }
-
-
-
-  template <int dim>
-  void
-  MeltHandler<dim>::
-  add_current_constraints(AffineConstraints<double> &constraints)
-  {
-    IndexSet nonzero_pc_dofs(this->introspection().index_sets.system_relevant_set.size());
-
-    const QTrapezoid<dim> quadrature_formula;
-    const UpdateFlags cell_update_flags = update_quadrature_points | update_values | update_gradients;
-    const FiniteElement<dim> &fe = this->get_fe();
-
-    is_melt_cell_vector.resize(this->get_dof_handler().get_triangulation().n_active_cells());
-
-    {
-      // find the "melt cells" by looking at p_c_scale
-
-      const unsigned int n_compositional_fields = this->introspection().n_compositional_fields;
-      FEValues<dim> finite_element_values(this->get_mapping(), fe, quadrature_formula, cell_update_flags);
-
-      MaterialModel::MaterialModelInputs<dim> material_model_inputs(quadrature_formula.size(), n_compositional_fields);
-      MaterialModel::MaterialModelOutputs<dim> material_model_outputs(quadrature_formula.size(), n_compositional_fields);
-
-      MeltHandler<dim>::create_material_model_outputs(material_model_outputs);
-      Assert(Plugins::plugin_type_matches<const MaterialModel::MeltInterface<dim>>(this->get_material_model()),
-             ExcMessage("Your material model does not derive from MaterialModel::MeltInterface, which is required."));
-
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            finite_element_values.reinit (cell);
-
-            material_model_inputs.reinit(finite_element_values,
-                                         cell,
-                                         this->introspection(),
-                                         this->get_current_linearization_point());
-
-            // We only need access to the MeltOutputs in p_c_scale().
-            material_model_inputs.requested_properties = MaterialModel::MaterialProperties::additional_outputs;
-
-            this->get_material_model().evaluate(material_model_inputs,
-                                                material_model_outputs);
-            const bool is_melt_cell = true;
-            is_melt_cell_vector[cell->active_cell_index()] = is_melt_cell;
-          }
-    }
-
-
-    internal::PcNonZeroDofsAssembler<dim> assembler(is_melt_cell_vector, nonzero_pc_dofs);
-    assembler.initialize_simulator(this->get_simulator());
-
-    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
-
-    const unsigned int stokes_dofs_per_cell = dim * fe.base_element(this->introspection().base_elements.velocities).dofs_per_cell
-                                              + fe.base_element(this->introspection().base_elements.pressure).dofs_per_cell
-                                              + fe.base_element(this->introspection().base_elements.pressure).dofs_per_cell;
-
-    auto worker = [&](const typename DoFHandler<dim>::active_cell_iterator &cell,
-                      internal::PcConstraintsAssembleData<dim> &scratch,
-                      internal::PcConstraintsCopyData<dim> &data)
-    {
-      assembler.local_save_nonzero_pc_dofs(cell, scratch, data);
-    };
-
-    auto copier = [&](const internal::PcConstraintsCopyData<dim> &data)
-    {
-      assembler.copy_local_to_global(data);
-    };
-
-    // Here we call the assembler in order to save all compaction pressure dofs
-    // that are in melt cells (and are nonzero) in the nonzero_pc_dofs index set.
-    WorkStream::
-    run (CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     this->get_dof_handler().begin_active()),
-         CellFilter (IteratorFilters::LocallyOwnedCell(),
-                     this->get_dof_handler().end()),
-         worker,
-         copier,
-         internal::PcConstraintsAssembleData<dim> (
-           fe,
-           quadrature_formula,
-           this->get_mapping(),
-           cell_update_flags,
-           this->introspection().n_compositional_fields,
-           stokes_dofs_per_cell),
-         internal::PcConstraintsCopyData<dim> (stokes_dofs_per_cell));
-
-    // For the constraints, first pick all relevant p_c dofs:
-    IndexSet for_constraints = this->introspection().index_sets.system_relevant_set
-                               & Utilities::extract_locally_active_dofs_with_component<dim>(this->get_dof_handler(),
-                                   this->introspection().variable("total pressure").component_mask);
-
-    // now subtract the ones that are nonzero as computed above:
-    for_constraints.subtract_set(nonzero_pc_dofs);
-
-    // and constrain the remaining dofs (that are not in melt cells).
-#if DEAL_II_VERSION_GTE(9,6,0)
-    for (const auto index : for_constraints)
-      constraints.constrain_dof_to_zero(index);
-#else
-    constraints.add_lines(for_constraints);
-#endif
-  }
-
-
-
-  template <int dim>
-  bool
-  MeltHandler<dim>::
-  is_melt_cell(const typename DoFHandler<dim>::active_cell_iterator &cell) const
-  {
-    return is_melt_cell_vector[cell->active_cell_index()];
-  }
-
-
-
-  template <int dim>
-  double
-  MeltHandler<dim>::
-  limited_darcy_coefficient(const double K_D,
-                            const bool is_melt_cell) const
-  {
-    const double ref_K_D = Plugins::get_plugin_as_type<const MaterialModel::MeltInterface<dim>>(this->get_material_model()).reference_darcy_coefficient();
-    return is_melt_cell ? std::max(K_D, melt_parameters.melt_scaling_factor_threshold*ref_K_D) : 0;
   }
 
 
@@ -1669,13 +1404,6 @@ namespace aspect
     {
       prm.enter_subsection ("Melt settings");
       {
-        prm.declare_entry ("Melt scaling factor threshold", "1e-7",
-                           Patterns::Double (),
-                           "The factor by how much the Darcy coefficient K\\_D in a cell can be smaller than "
-                           "the reference Darcy coefficient for this cell still to be considered a melt cell "
-                           "(for which the melt transport equations are solved). For smaller Darcy coefficients, "
-                           "the Stokes equations (without melt) are solved instead. Only used if "
-                           "``Include melt transport'' is true. ");
         prm.declare_entry ("Heat advection by melt", "false",
                            Patterns::Bool (),
                            "Whether to use a porosity weighted average of the melt and solid velocity "
@@ -1723,7 +1451,6 @@ namespace aspect
     {
       prm.enter_subsection ("Melt settings");
       {
-        melt_scaling_factor_threshold = prm.get_double("Melt scaling factor threshold");
         heat_advection_by_melt = prm.get_bool("Heat advection by melt");
         use_discontinuous_p_c = prm.get_bool("Use discontinuous compaction pressure");
         average_melt_velocity = prm.get_bool("Average melt velocity");

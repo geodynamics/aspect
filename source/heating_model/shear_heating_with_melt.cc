@@ -48,10 +48,6 @@ namespace aspect
       AssertThrow(melt_in != nullptr,
                   ExcMessage ("Need MeltInputs from the material model for shear heating with melt!"));
 
-      bool is_melt_cell = false;
-      if (material_model_inputs.current_cell.state() == IteratorState::valid)
-        is_melt_cell = this->get_melt_handler().is_melt_cell(material_model_inputs.current_cell);
-
       const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
 
@@ -59,20 +55,17 @@ namespace aspect
         {
           const double porosity = material_model_inputs.composition[q][this->introspection().compositional_index_for_name("porosity")];
 
-          if (is_melt_cell)
-            heating_model_outputs.heating_source_terms[q] = melt_outputs->compaction_viscosities[q]
-                                                            * std::pow(trace(material_model_inputs.strain_rate[q]),2)
-                                                            +
-                                                            (melt_outputs->permeabilities[q] > 0
-                                                             ?
-                                                             melt_outputs->fluid_viscosities[q] * porosity * porosity
-                                                             / melt_outputs->permeabilities[q]
-                                                             * (melt_in->fluid_velocities[q] - material_model_inputs.velocity[q])
-                                                             * (melt_in->fluid_velocities[q] - material_model_inputs.velocity[q])
-                                                             :
-                                                             0.0);
-          else
-            heating_model_outputs.heating_source_terms[q] = 0.0;
+          heating_model_outputs.heating_source_terms[q] = melt_outputs->compaction_viscosities[q]
+                                                          * std::pow(trace(material_model_inputs.strain_rate[q]),2)
+                                                          +
+                                                          (melt_outputs->permeabilities[q] > 0
+                                                           ?
+                                                           melt_outputs->fluid_viscosities[q] * porosity * porosity
+                                                           / melt_outputs->permeabilities[q]
+                                                           * (melt_in->fluid_velocities[q] - material_model_inputs.velocity[q])
+                                                           * (melt_in->fluid_velocities[q] - material_model_inputs.velocity[q])
+                                                           :
+                                                           0.0);
 
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }

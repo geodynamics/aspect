@@ -771,9 +771,6 @@ namespace aspect
     if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
       restore_outflow_boundary_ids(boundary_id_offset);
 
-    if (parameters.include_melt_transport)
-      melt_handler->add_current_constraints (new_current_constraints);
-
     // let plugins add more constraints if they so choose, then close the
     // constraints object
     signals.post_constraints_creation(*this, new_current_constraints);
