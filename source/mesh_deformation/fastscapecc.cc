@@ -109,8 +109,8 @@ namespace aspect
         surface_repetitions[i] *= refinement_factor;
 
       // Store grid dimensions for indexing and spacing
-      nx = surface_repetitions[0];
-      ny = surface_repetitions[1];
+      nx = surface_repetitions[0]+1;
+      ny = surface_repetitions[1]+1;
       dx = (grid_extent_surface[0].second - grid_extent_surface[0].first) / static_cast<double>(nx);
       dy = (grid_extent_surface[1].second - grid_extent_surface[1].first) / static_cast<double>(ny);
 
@@ -187,6 +187,11 @@ namespace aspect
                                 locally_relevant_dofs_surface,
                                 this->get_mpi_communicator());
 
+          // surface_index.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+          //                         locally_relevant_dofs_surface,
+          //                         this->get_mpi_communicator());
+          // int increment = 0;
+
         const types::boundary_id top_boundary =
           this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
@@ -228,12 +233,16 @@ namespace aspect
                 const unsigned int index = this->vertex_index(pos);
                 surface_solution[index] = projected_velocity;
                 surface_elevation[index] = projected_height; // New vector, same structure
+                // surface_index[index] = increment;
+                // increment = increment + 1;
+
 
                 // Optional debug
                 if (this->get_timestep_number() == 1 && index < 10)
                   this->get_pcout() << "Surface pos: " << pos
                                     << ", velocity: " << projected_velocity
-                                    << ", model surface height: " << projected_height << std::endl;
+                                    << ", model surface height: " << projected_height<<std::endl;
+                                    // << ", surface index: " << increment 
               
             }
           }
@@ -241,6 +250,7 @@ namespace aspect
 
         surface_solution.compress(VectorOperation::insert);
         surface_elevation.compress(VectorOperation::insert);
+        // surface_index.compress(VectorOperation::insert);
 
       }
   
@@ -311,6 +321,7 @@ namespace aspect
  //               this->get_pcout() << "Velocity at " << vertex
  //                                 << " (dof " << dof_index << ") = "
  //                                 << surface_uplift << " m/s" << std::endl;
+                
                 double topography = 0;
                 if (spherical_model)
                   topography = surface_height - spherical_model->outer_radius();
@@ -336,58 +347,6 @@ namespace aspect
                 temporary_variables[2].push_back(surface_uplift * year_in_seconds);  // to m/year
             }
           }
-
-        
-           //Tried to interpolate instead but not working
-          //     const MappingQ1<dim-1> mapping;
-          // Functions::FEFieldFunction<dim - 1, TrilinosWrappers::MPI::Vector, dim>
-          //   uplift_function(surface_mesh_dof_handler, surface_solution, mapping);
-
-          // Functions::FEFieldFunction<dim - 1, TrilinosWrappers::MPI::Vector, dim>
-          //   height_function(surface_mesh_dof_handler, surface_elevation, mapping);
-
-
-          //  // Step 2: Gather topography and uplift velocity from surface mesh
-
-          // for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
-          // {
-          //   for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<dim - 1>::vertices_per_cell; ++vertex_index)
-          //   {
-          //     const Point<dim> &vertex = cell->vertex(vertex_index);
-
-          //     // Interpolate uplift (from vector field)
-          //     Tensor<1, dim> uplift_vec = uplift_function.value(vertex);
-          //     double uplift_value = uplift_vec[dim - 1];  // vertical or radial component
-
-          //     // Interpolate elevation (from scalar field)
-          //     double surface_elevation_value = height_function.value(vertex);
-
-          //     // Compute topography
-          //     double topography = 0.0;
-          //     if (spherical_model)
-          //       topography = surface_elevation_value - spherical_model->outer_radius();
-          //     else
-          //       topography = surface_elevation_value - grid_extent[dim - 1].second;
-
-          //     // Map to FastScape index
-          //     const unsigned int index = this->vertex_index(vertex);
-
-          //     // Optional debug
-          //     static std::set<unsigned int> seen_indices;
-          //     this->get_pcout() << "Vertex at z=" << vertex[dim - 1]
-          //                       << ", uplift: " << uplift_value << " m/s"
-          //                       << ", elevation: " << surface_elevation_value << " m"
-          //                       << ", topo: " << topography << " m"
-          //                       << ", index: " << index << std::endl;
-          //     if (!seen_indices.insert(index).second)
-          //       this->get_pcout() << "⚠️ Duplicate index " << index << " at " << vertex << std::endl;
-
-          //     // Store in buffers
-          //     temporary_variables[0].push_back(topography);
-          //     temporary_variables[1].push_back(static_cast<double>(index));
-          //     temporary_variables[2].push_back(uplift_value * year_in_seconds); // to m/year
-          //   }
-          // }
         
       std::vector<double> V(n_grid_nodes);
 
@@ -603,9 +562,6 @@ namespace aspect
           prm.declare_entry("Additional fastscape refinement levels", "0",
                             Patterns::Integer(),
                             "How many levels above ASPECT FastScape should be refined.");
-          prm.declare_entry("Fastscape seed", "1000",
-                            Patterns::Integer(),
-                            "Seed used for adding an initial noise to FastScape topography based on the initial noise magnitude.");
           prm.declare_entry("Surface refinement level", "1",
                             Patterns::Integer(),
                             "This should be set to the highest ASPECT refinement level expected at the surface.");
@@ -658,10 +614,6 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::parse_parameters(ParameterHandler &prm)
     {
-      end_time = prm.get_double ("End time");
-      if (prm.get_bool ("Use years in output instead of seconds") == true)
-        end_time *= year_in_seconds;
-
         prm.enter_subsection("Geometry model");
         {
           prm.enter_subsection("Box");
@@ -687,10 +639,8 @@ namespace aspect
           fastscape_steps_per_aspect_step = prm.get_integer("Number of steps");
           maximum_fastscape_timestep = prm.get_double("Maximum timestep");
           additional_refinement_levels = prm.get_integer("Additional fastscape refinement levels");
-          fs_seed = prm.get_integer("Fastscape seed");
           surface_refinement_level = prm.get_integer("Surface refinement level");
           surface_refinement_difference = prm.get_integer("Surface refinement difference");
-          precision = prm.get_double("Precision");
           noise_h = prm.get_double("Initial noise magnitude");
 
           if (!this->convert_output_to_years())

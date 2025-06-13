@@ -140,7 +140,8 @@ namespace aspect
 
         LinearAlgebra::Vector surface_solution;
         LinearAlgebra::Vector surface_elevation;
- 
+        LinearAlgebra::Vector surface_index;
+
         dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
 
@@ -219,16 +220,6 @@ namespace aspect
          */
 
         /**
-         * Check whether FastScape needs to be restarted.
-         */
-        mutable bool restart;
-
-        /**
-         * ASPECT end time to check if we should destroy FastScape.
-         */
-        double end_time;
-
-        /**
          * Total number of Fastscapelib grid nodes.
          */
         unsigned int n_grid_nodes;
@@ -259,16 +250,6 @@ namespace aspect
         int surface_refinement_difference;
 
         /**
-         * Seed number for initial topography noise in FastScape.
-         */
-        int fs_seed;
-
-        /**
-         * Table for interpolating FastScape surface velocities back to ASPECT.
-         */
-        std::array< unsigned int, dim > table_intervals;
-
-        /**
          * Magnitude (m) of the initial noise applied to FastScape.
          * Applied as either a + or - value to the topography
          * such that the total difference can be up to 2*noise_h.
@@ -285,12 +266,6 @@ namespace aspect
          * Slope exponent for the steam power law (n variable in FastScape surface equation).
          */
         double n;
-
-        /**
-         * Slope exponent for multi-direction flow, where 0 is uniform, and 10 is steepest descent. (-1 varies with slope)
-         * (p variable in FastScape surface equation).
-         */
-        double p;
 
         /**
          * Bedrock river incision rate for the stream power law
@@ -316,18 +291,6 @@ namespace aspect
          * (kd in FastScape surface equation applied to sediment).
          */
         double kdsed;
-
-        /**
-         * Precision value for how close a ASPECT node must be to the FastScape node
-         * for the value to be transferred. This is only necessary if use_v is set to 0
-         * and the free surface is used to advect the surface with a normal projection.
-         */
-        double node_tolerance;
-
-        /**
-         * FastScape X extent (ASPECT X extent + 2*dx for ghost nodes).
-         */
-        double precision;
 
 
         // Grid extent in each direction [min, max]
