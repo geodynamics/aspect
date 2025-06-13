@@ -1131,35 +1131,6 @@ namespace aspect
                                      const bool skip_interior_cells = false) const;
 
       /**
-       * Compute the seismic shear wave speed, Vs anomaly per element. we
-       * compute the anomaly by computing a smoothed (over 200 km or so)
-       * laterally averaged temperature profile and associated seismic
-       * velocity that is then subtracted from the seismic velocity at the
-       * current pressure temperature conditions
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_Vs_anomaly(Vector<float> &values) const;
-
-      /**
-       * Compute the seismic pressure wave speed, Vp anomaly per element. we
-       * compute the anomaly by computing a smoothed (over 200 km or so)
-       * laterally averaged temperature profile and associated seismic
-       * velocity that is then subtracted from the seismic velocity at the
-       * current pressure temperature conditions
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_Vp_anomaly(Vector<float> &values) const;
-
-      /**
        * Adjust the pressure variable (which is only determined up to
        * a constant by the equations, though its value may enter
        * traction boundary conditions) by adding a constant to it in
