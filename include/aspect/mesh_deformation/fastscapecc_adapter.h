@@ -216,7 +216,7 @@ namespace fastscapelib
   {
 
     m_size = triangulation.n_global_active_cells();
-    m_shape = { static_cast<typename shape_type::value_type>(m_size) };
+    m_shape = {{ static_cast<typename shape_type::value_type>(m_size) }};
 
     // pre-compute explicit grid connectivity
     compute_connectivity();
