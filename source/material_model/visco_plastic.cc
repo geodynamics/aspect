@@ -250,8 +250,7 @@ namespace aspect
               // quantities we set above and that would otherwise remain uninitialized
               isostrain_viscosities.composition_yielding.clear();
               isostrain_viscosities.composition_viscosities.clear();
-              isostrain_viscosities.current_friction_angles.clear();
-              isostrain_viscosities.current_cohesions.clear();
+              isostrain_viscosities.drucker_prager_parameters.clear();
 
               out.viscosities[i] = numbers::signaling_nan<double>();
 

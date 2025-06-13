@@ -99,14 +99,9 @@ namespace aspect
       std::vector<bool> composition_yielding;
 
       /**
-       * The current friction angle.
+       * All the drucker prager plasticity parameters.
        */
-      std::vector<double> current_friction_angles;
-
-      /**
-       * The current cohesion.
-       */
-      std::vector<double> current_cohesions;
+      std::vector<Rheology::DruckerPragerParameters> drucker_prager_parameters;
     };
 
     namespace Rheology
@@ -336,11 +331,6 @@ namespace aspect
            * Object for computing plastic stresses, viscosities, and additional outputs
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
-
-          /*
-           * Input parameters for the drucker prager plasticity.
-           */
-          Rheology::DruckerPragerParameters drucker_prager_parameters;
 
       };
     }

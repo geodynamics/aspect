@@ -107,8 +107,7 @@ namespace aspect
         // Initialize or fill variables used to calculate viscosities
         output_parameters.composition_yielding.resize(volume_fractions.size(), false);
         output_parameters.composition_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
-        output_parameters.current_friction_angles.resize(volume_fractions.size(), numbers::signaling_nan<double>());
-        output_parameters.current_cohesions.resize(volume_fractions.size(), numbers::signaling_nan<double>());
+        output_parameters.drucker_prager_parameters.resize(volume_fractions.size());
 
         // Assemble current and old stress tensor if elastic behavior is enabled
         SymmetricTensor<2, dim> stress_0_advected = numbers::signaling_nan<SymmetricTensor<2, dim>>();
@@ -320,23 +319,21 @@ namespace aspect
             const double non_yielding_stress = 2. * non_yielding_viscosity * effective_edot_ii;
 
             // Step 4a: calculate the strain-weakened friction and cohesion
-            const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
-                                                                      phase_function_values,
-                                                                      n_phase_transitions_per_composition);
-            const double current_cohesion = drucker_prager_parameters.cohesion * weakening_factors[0];
-            double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
+            output_parameters.drucker_prager_parameters[j] = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
+                                                             phase_function_values,
+                                                             n_phase_transitions_per_composition);
+            output_parameters.drucker_prager_parameters[j].cohesion *= weakening_factors[0];
+            output_parameters.drucker_prager_parameters[j].angle_internal_friction *= weakening_factors[1];
 
             // Step 4b: calculate the friction angle dependent on strain rate if specified
             // apply the strain rate dependence to the friction angle (including strain weakening if present)
             // Note: Maybe this should also be turned around to first apply strain rate dependence and then
             // the strain weakening to the dynamic friction angle. Didn't come up with a clear argument for
             // one order or the other.
-            current_friction = friction_models.compute_friction_angle(effective_edot_ii,
-                                                                      j,
-                                                                      current_friction,
-                                                                      in.position[i]);
-            output_parameters.current_friction_angles[j] = current_friction;
-            output_parameters.current_cohesions[j] = current_cohesion;
+            output_parameters.drucker_prager_parameters[j].angle_internal_friction = friction_models.compute_friction_angle(effective_edot_ii,
+                                                                                     j,
+                                                                                     output_parameters.drucker_prager_parameters[j].angle_internal_friction,
+                                                                                     in.position[i]);
 
             // Step 5: plastic yielding
 
@@ -353,10 +350,8 @@ namespace aspect
               pressure_for_plasticity = std::max(pressure_for_plasticity,0.0);
 
             // Step 5a: calculate the Drucker-Prager yield stress
-            const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
-                                                                                       current_friction,
-                                                                                       pressure_for_plasticity,
-                                                                                       drucker_prager_parameters.max_yield_stress);
+            const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
+                                                                                       output_parameters.drucker_prager_parameters[j]);
 
             // Step 5b: select if the yield viscosity is based on Drucker Prager or a stress limiter rheology
             double effective_viscosity = non_yielding_viscosity;
@@ -383,11 +378,9 @@ namespace aspect
                       // assuming that the non-yielding viscosity is not strain rate dependent.
                       // TODO When dislocation creep or nonlinear plastic strain weakening
                       // is used, we need to iterate on the yield stress.
-                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(current_cohesion,
-                                                                                        current_friction,
-                                                                                        pressure_for_plasticity,
+                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(pressure_for_plasticity,
                                                                                         effective_edot_ii,
-                                                                                        drucker_prager_parameters.max_yield_stress,
+                                                                                        output_parameters.drucker_prager_parameters[j],
                                                                                         non_yielding_viscosity);
                       output_parameters.composition_yielding[j] = true;
                     }
@@ -862,12 +855,6 @@ namespace aspect
             plastic_out->yield_stresses[i] = 0;
             plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
 
-            const std::vector<double> friction_angles_RAD = isostrain_viscosities.current_friction_angles;
-            const std::vector<double> cohesions = isostrain_viscosities.current_cohesions;
-
-            // The max yield stress is the same for each composition, so we give the 0th field value.
-            const double max_yield_stress = drucker_prager_plasticity.compute_drucker_prager_parameters(0).max_yield_stress;
-
             double pressure_for_plasticity = in.pressure[i];
 
             if (use_adiabatic_pressure_in_plasticity)
@@ -879,13 +866,14 @@ namespace aspect
             // average over the volume volume fractions
             for (unsigned int j = 0; j < volume_fractions.size(); ++j)
               {
-                plastic_out->cohesions[i] += volume_fractions[j] * cohesions[j];
+                const Rheology::DruckerPragerParameters &drucker_prager_parameters = isostrain_viscosities.drucker_prager_parameters[j];
+
+                plastic_out->cohesions[i] += volume_fractions[j] * drucker_prager_parameters.cohesion;
                 // Also convert radians to degrees
-                plastic_out->friction_angles[i] += constants::radians_to_degree * volume_fractions[j] * friction_angles_RAD[j];
-                plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(cohesions[j],
-                                                  friction_angles_RAD[j],
-                                                  pressure_for_plasticity,
-                                                  max_yield_stress);
+                plastic_out->friction_angles[i] += constants::radians_to_degree * volume_fractions[j] * drucker_prager_parameters.angle_internal_friction;
+
+                plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(pressure_for_plasticity,
+                                                  drucker_prager_parameters);
               }
           }
       }

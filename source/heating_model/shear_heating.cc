@@ -67,11 +67,13 @@ namespace aspect
           if (limit_stress)
             {
               // Compute yield stress.
+              MaterialModel::Rheology::DruckerPragerParameters drucker_prager_parameters;
+              drucker_prager_parameters.cohesion = cohesion;
+              drucker_prager_parameters.angle_internal_friction = friction_angle;
+              drucker_prager_parameters.max_yield_stress = std::numeric_limits<double>::max();
               const double pressure = std::max(material_model_inputs.pressure[q], 0.0);
-              const double yield_stress = drucker_prager_plasticity.compute_yield_stress(cohesion,
-                                                                                         friction_angle,
-                                                                                         pressure,
-                                                                                         std::numeric_limits<double>::max());
+              const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure,
+                                                                                         drucker_prager_parameters);
 
               // Scale the stress accordingly.
               const double deviatoric_stress = 2 * material_model_outputs.viscosities[q] * std::sqrt(std::fabs(second_invariant(deviatoric_strain_rate)));
