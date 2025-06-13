@@ -153,12 +153,11 @@ namespace aspect
            */
           double topography_for_point (const Point<dim> &x_y_z) const;
 
+        private:
           /**
            * A pointer to the topography model.
            */
           const InitialTopographyModel::Interface<dim> *topo;
-
-        private:
 
           /**
            * Inner and outer radii of the spherical shell.
