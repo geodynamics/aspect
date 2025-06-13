@@ -50,7 +50,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000377 m/year, 0.000979 m/year
+     RMS, max velocity:                  0.000377 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3865 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4620 W, 4504 W
      Writing graphical output:           output-boukare_bulk_composition/solution/solution-00000
@@ -129,7 +129,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000389 m/year, 0.000971 m/year
+     RMS, max velocity:                  0.000389 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3850 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.422e+04 W, 42.39 W
      Compositions min/max/mass:          0/0.03978/8.123e+06 // 0.04553/0.07/5.04e+07 // 0.4218/0.5284/3.969e+08
@@ -168,7 +168,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000354 m/year, 0.00097 m/year
+     RMS, max velocity:                  0.000354 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3850 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.218e+04 W, -1492 W
      Compositions min/max/mass:          0/0.04813/8.935e+06 // 0.04149/0.07/4.985e+07 // 0.4051/0.5335/3.983e+08
@@ -207,7 +207,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000347 m/year, 0.000969 m/year
+     RMS, max velocity:                  0.000347 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3851 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -1.075e+04 W, 1430 W
      Compositions min/max/mass:          0/0.05302/9.417e+06 // 0.03937/0.07/4.956e+07 // 0.3947/0.5361/3.987e+08
@@ -246,7 +246,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000345 m/year, 0.000969 m/year
+     RMS, max velocity:                  0.000345 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3852 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9731 W, 1163 W
      Compositions min/max/mass:          0/0.0559/9.768e+06 // 0.03821/0.07/4.936e+07 // 0.3884/0.5373/3.985e+08
@@ -275,7 +275,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000345 m/year, 0.000969 m/year
+     RMS, max velocity:                  0.000345 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3853 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8981 W, 1427 W
      Compositions min/max/mass:          0/0.0576/1.005e+07 // 0.03756/0.07/4.921e+07 // 0.3846/0.5378/3.982e+08
@@ -304,7 +304,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000346 m/year, 0.00097 m/year
+     RMS, max velocity:                  0.000346 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3853 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8412 W, 1550 W
      Compositions min/max/mass:          0/0.05861/1.029e+07 // 0.03719/0.07/4.909e+07 // 0.3823/0.5381/3.978e+08
@@ -333,7 +333,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000348 m/year, 0.00097 m/year
+     RMS, max velocity:                  0.000348 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3854 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7969 W, 1640 W
      Compositions min/max/mass:          0/0.0592/1.049e+07 // 0.03697/0.07/4.898e+07 // 0.3809/0.5382/3.974e+08
@@ -362,7 +362,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00035 m/year, 0.000971 m/year
+     RMS, max velocity:                  0.00035 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3855 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7616 W, 1707 W
      Compositions min/max/mass:          0/0.05955/1.068e+07 // 0.03685/0.07/4.888e+07 // 0.3801/0.5383/3.971e+08
@@ -391,7 +391,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000352 m/year, 0.000971 m/year
+     RMS, max velocity:                  0.000352 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3856 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7328 W, 1758 W
      Compositions min/max/mass:          0/0.05975/1.084e+07 // 0.03677/0.07/4.879e+07 // 0.3796/0.5383/3.968e+08
@@ -420,7 +420,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000355 m/year, 0.000972 m/year
+     RMS, max velocity:                  0.000355 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3857 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7089 W, 1799 W
      Compositions min/max/mass:          0/0.05987/1.1e+07 // 0.03673/0.07/4.871e+07 // 0.3793/0.5383/3.966e+08
@@ -449,7 +449,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000357 m/year, 0.000972 m/year
+     RMS, max velocity:                  0.000357 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3857 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6887 W, 1832 W
      Compositions min/max/mass:          0/0.05993/1.114e+07 // 0.0367/0.07/4.863e+07 // 0.3791/0.5383/3.963e+08
@@ -478,7 +478,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00036 m/year, 0.000973 m/year
+     RMS, max velocity:                  0.00036 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3858 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6714 W, 1860 W
      Compositions min/max/mass:          0/0.05997/1.127e+07 // 0.03668/0.07/4.856e+07 // 0.379/0.5383/3.961e+08
@@ -507,7 +507,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000363 m/year, 0.000974 m/year
+     RMS, max velocity:                  0.000363 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3859 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6564 W, 1884 W
      Compositions min/max/mass:          0/0.05998/1.14e+07 // 0.03667/0.07/4.849e+07 // 0.3789/0.5383/3.96e+08
@@ -536,7 +536,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000366 m/year, 0.000974 m/year
+     RMS, max velocity:                  0.000366 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3859 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6433 W, 1905 W
      Compositions min/max/mass:          0/0.05999/1.152e+07 // 0.03667/0.07/4.842e+07 // 0.3789/0.5383/3.958e+08
@@ -565,7 +565,7 @@ Number of degrees of freedom: 9,182 (1,994+939+1,994+267+997+997+997+997)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000369 m/year, 0.000975 m/year
+     RMS, max velocity:                  0.000369 m/year, 0.001 m/year
      Temperature min/avg/max:            3731 K, 3860 K, 4000 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6366 W, 1852 W
      Writing graphical output:           output-boukare_bulk_composition/solution/solution-00001

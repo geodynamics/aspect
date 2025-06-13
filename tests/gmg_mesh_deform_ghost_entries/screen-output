@@ -115,7 +115,7 @@ Number of mesh deformation degrees of freedom: 1,162
      Compositions min/max/mass: -1.663e+06/2.687e+06/-4.603e+11 // -2.687e+06/1.663e+06/4.603e+11 // -1.687e+06/3.746e+06/1.178e+17 // -1.663e+06/2.687e+06/-3.03e+11 // -2.687e+06/1.663e+06/3.03e+11 // -1.687e+06/3.746e+06/1.178e+17
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -0.04 m, 0.01 m
-     RMS, max velocity:         0.0138 m/year, 0.0498 m/year
+     RMS, max velocity:         0.0138 m/year, 0.058 m/year
 
 Number of active cells: 505 (on 3 levels)
 Number of degrees of freedom: 32,758 (4,356+566+566+4,545+4,545+4,545+4,545+4,545+4,545)

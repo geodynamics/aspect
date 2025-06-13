@@ -9,7 +9,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Postprocessing:
      Writing graphical output: output-boundary_temperature_function/solution/solution-00000
      Temperature min/avg/max:  0 K, 79.29 K, 1920 K
-     RMS, max velocity:        2.79e-05 m/s, 0.00012 m/s
+     RMS, max velocity:        2.79e-05 m/s, 0.000131 m/s
 
 Termination requested by criterion: end time
 

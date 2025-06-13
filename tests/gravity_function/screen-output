@@ -8,7 +8,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Writing graphical output: output-gravity_function/solution/solution-00000
-     RMS, max velocity:        0.00394 m/s, 0.0067 m/s
+     RMS, max velocity:        0.00394 m/s, 0.00674 m/s
 
 Termination requested by criterion: end time
 

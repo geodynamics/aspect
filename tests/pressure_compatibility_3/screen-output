@@ -7,7 +7,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 9+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00987 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               -0.002306 Pa, 0.4999 Pa, 0.9979 Pa
      Temperature min/avg/max:            0 K, 0.8632 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -17,7 +17,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00987 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.001508 Pa, 0.4999 Pa, 0.9637 Pa
      Temperature min/avg/max:            0 K, 0.8978 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -27,7 +27,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.00584 Pa, 0.4999 Pa, 0.9324 Pa
      Temperature min/avg/max:            0 K, 0.9296 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -37,7 +37,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.01088 Pa, 0.4999 Pa, 0.9053 Pa
      Temperature min/avg/max:            0 K, 0.9592 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -47,7 +47,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00985 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.01652 Pa, 0.4999 Pa, 0.8831 Pa
      Temperature min/avg/max:            0 K, 0.9861 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -57,7 +57,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.02267 Pa, 0.4999 Pa, 0.8651 Pa
      Temperature min/avg/max:            0 K, 1.01 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -67,7 +67,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.02918 Pa, 0.4999 Pa, 0.8502 Pa
      Temperature min/avg/max:            0 K, 1.032 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -77,7 +77,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 7+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.03589 Pa, 0.4999 Pa, 0.8375 Pa
      Temperature min/avg/max:            0 K, 1.052 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s
@@ -87,7 +87,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 6+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00577 m/s, 0.00986 m/s
+     RMS, max velocity:                  0.00577 m/s, 0.01 m/s
      Pressure min/avg/max:               0.04266 Pa, 0.4999 Pa, 0.8267 Pa
      Temperature min/avg/max:            0 K, 1.07 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.003585 kg/s, 0 kg/s

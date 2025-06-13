@@ -23,7 +23,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Rayleigh number:                               266200
 
      Writing graphical output:           output-box_origin/solution/solution-00000
-     RMS, max velocity:                  4.74e-08 m/s, 1.78e-07 m/s
+     RMS, max velocity:                  4.74e-08 m/s, 1.81e-07 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.333e-07 W, 4.991e-05 W, 0 W, 0 W
 

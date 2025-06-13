@@ -45,7 +45,7 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
    Postprocessing:
      Writing graphical output:  output-shear_bands/solution/solution-00000
      Compositions min/max/mass: 0.04952/0.05046/2e-07
-     RMS, max velocity:         289 m/year, 493 m/year
+     RMS, max velocity:         289 m/year, 500 m/year
 
 *** Timestep 1:  t=3e-08 years, dt=3e-08 years
    Skipping temperature solve because RHS is zero.
@@ -88,7 +88,7 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
    Postprocessing:
      Writing graphical output:  output-shear_bands/solution/solution-00001
      Compositions min/max/mass: 0.04944/0.05051/2e-07
-     RMS, max velocity:         289 m/year, 493 m/year
+     RMS, max velocity:         289 m/year, 500 m/year
 
 Termination requested by criterion: end time
 

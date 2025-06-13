@@ -11,7 +11,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
@@ -31,7 +31,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
@@ -41,7 +41,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Skipping total_strain composition solve because RHS is zero.
@@ -51,7 +51,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -70,7 +70,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -80,7 +80,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -90,7 +90,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -100,7 +100,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -110,7 +110,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
@@ -129,7 +129,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.002/0.002/2e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -139,7 +139,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.002/0.002/2e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -149,7 +149,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.002/0.002/2e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -159,7 +159,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.002/0.002/2e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
@@ -169,7 +169,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
    Postprocessing:
      Compositions min/max/mass: 0.002/0.002/2e+07
-     RMS, max velocity:         0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:         0.000408 m/year, 0.000707 m/year
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.

@@ -25,7 +25,7 @@ Number of degrees of freedom: 9,183 (6,615+363+2,205)
    Solving Stokes system (GMG)... 27+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00859 m/year, 0.0206 m/year
+     RMS, max velocity:                  0.00859 m/year, 0.0239 m/year
      Temperature min/avg/max:            273 K, 1502 K, 1913 K
      Heat fluxes through boundary parts: -3.199e+12 W, 3.199e+12 W, 0 W, 0 W, -8.793e+09 W, -9.132e+11 W
 
@@ -34,7 +34,7 @@ Number of degrees of freedom: 9,183 (6,615+363+2,205)
    Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.00861 m/year, 0.0217 m/year
+     RMS, max velocity:                  0.00861 m/year, 0.0253 m/year
      Temperature min/avg/max:            273 K, 1497 K, 1927 K
      Heat fluxes through boundary parts: -3.199e+12 W, 3.197e+12 W, 0 W, 0 W, -3.593e+10 W, -4.651e+11 W
 

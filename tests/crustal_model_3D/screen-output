@@ -93,7 +93,7 @@ Number of mesh deformation degrees of freedom: 216
 
 
    Postprocessing:
-     RMS, max velocity:    0.00904 m/year, 0.0111 m/year
+     RMS, max velocity:    0.00904 m/year, 0.01 m/year
      Topography min/max:   0 m, 0 m
      Pressure min/avg/max: -1.005e+08 Pa, 1.869e+08 Pa, 5.418e+08 Pa
 

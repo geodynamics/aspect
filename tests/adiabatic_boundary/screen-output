@@ -11,11 +11,11 @@ Number of degrees of freedom: 20,381 (14,739+729+4,913)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0326625
 
    Solving Stokes system (GMG)... 8+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.80154e-09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.80156e-09
 
 
    Postprocessing:
-     RMS, max velocity:       1.37e-06 m/year, 5.15e-06 m/year
+     RMS, max velocity:       1.37e-06 m/year, 5.12e-06 m/year
      Temperature min/avg/max: 273.1 K, 1582 K, 1883 K
 
 Termination requested by criterion: end time

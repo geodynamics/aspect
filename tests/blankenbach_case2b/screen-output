@@ -9,7 +9,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  21.8 m/s, 69.8 m/s
+     RMS, max velocity:                  21.8 m/s, 70 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -2.5 W, 2.5 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -19,7 +19,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 20+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  94.2 m/s, 311 m/s
+     RMS, max velocity:                  94.2 m/s, 312 m/s
      Temperature min/avg/max:            0 K, 0.5001 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -2.578 W, 2.512 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -29,7 +29,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  167 m/s, 552 m/s
+     RMS, max velocity:                  167 m/s, 553 m/s
      Temperature min/avg/max:            0 K, 0.5001 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -2.756 W, 2.531 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -39,7 +39,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  245 m/s, 816 m/s
+     RMS, max velocity:                  245 m/s, 818 m/s
      Temperature min/avg/max:            0 K, 0.5001 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -3.025 W, 2.556 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -49,7 +49,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 22+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  335 m/s, 1.13e+03 m/s
+     RMS, max velocity:                  335 m/s, 1.14e+03 m/s
      Temperature min/avg/max:            0 K, 0.5002 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -3.376 W, 2.588 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -69,7 +69,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 24+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  579 m/s, 2.01e+03 m/s
+     RMS, max velocity:                  579 m/s, 2.02e+03 m/s
      Temperature min/avg/max:            0 K, 0.5003 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4.256 W, 2.662 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -79,7 +79,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 25+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  722 m/s, 2.98e+03 m/s
+     RMS, max velocity:                  722 m/s, 2.99e+03 m/s
      Temperature min/avg/max:            0 K, 0.5004 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4.747 W, 2.702 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -89,7 +89,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 26+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  817 m/s, 3.82e+03 m/s
+     RMS, max velocity:                  817 m/s, 3.84e+03 m/s
      Temperature min/avg/max:            0 K, 0.5004 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -5.145 W, 2.735 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -99,7 +99,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 26+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  861 m/s, 4.24e+03 m/s
+     RMS, max velocity:                  861 m/s, 4.28e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -5.475 W, 2.767 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -109,7 +109,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 27+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  868 m/s, 4.29e+03 m/s
+     RMS, max velocity:                  868 m/s, 4.35e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1.001 K
      Heat fluxes through boundary parts: 0 W, 0 W, -5.762 W, 2.8 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -119,7 +119,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 27+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  849 m/s, 4.11e+03 m/s
+     RMS, max velocity:                  849 m/s, 4.19e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1.001 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6.015 W, 2.837 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -129,7 +129,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 28+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  818 m/s, 3.82e+03 m/s
+     RMS, max velocity:                  818 m/s, 3.91e+03 m/s
      Temperature min/avg/max:            0 K, 0.5006 K, 1.001 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6.241 W, 2.881 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -139,7 +139,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 28+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  782 m/s, 3.52e+03 m/s
+     RMS, max velocity:                  782 m/s, 3.62e+03 m/s
      Temperature min/avg/max:            0 K, 0.5006 K, 1.002 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6.446 W, 2.934 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -149,7 +149,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 30+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  746 m/s, 3.27e+03 m/s
+     RMS, max velocity:                  746 m/s, 3.37e+03 m/s
      Temperature min/avg/max:            0 K, 0.5007 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6.639 W, 3.001 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -159,7 +159,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 31+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  713 m/s, 3.06e+03 m/s
+     RMS, max velocity:                  713 m/s, 3.16e+03 m/s
      Temperature min/avg/max:            0 K, 0.5007 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6.83 W, 3.082 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -169,7 +169,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 31+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  683 m/s, 2.9e+03 m/s
+     RMS, max velocity:                  683 m/s, 3e+03 m/s
      Temperature min/avg/max:            0 K, 0.5007 K, 1.015 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.02 W, 3.181 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -179,7 +179,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 33+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  656 m/s, 2.77e+03 m/s
+     RMS, max velocity:                  656 m/s, 2.88e+03 m/s
      Temperature min/avg/max:            0 K, 0.5007 K, 1.013 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.212 W, 3.3 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -189,7 +189,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 33+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  631 m/s, 2.68e+03 m/s
+     RMS, max velocity:                  631 m/s, 2.79e+03 m/s
      Temperature min/avg/max:            0 K, 0.5008 K, 1.008 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.411 W, 3.44 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -199,7 +199,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 35+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  608 m/s, 2.62e+03 m/s
+     RMS, max velocity:                  608 m/s, 2.72e+03 m/s
      Temperature min/avg/max:            0 K, 0.5008 K, 1.002 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.62 W, 3.605 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -209,7 +209,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  586 m/s, 2.57e+03 m/s
+     RMS, max velocity:                  586 m/s, 2.68e+03 m/s
      Temperature min/avg/max:            0 K, 0.5008 K, 1.005 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.832 W, 3.792 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -219,7 +219,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 40+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  566 m/s, 2.52e+03 m/s
+     RMS, max velocity:                  566 m/s, 2.64e+03 m/s
      Temperature min/avg/max:            0 K, 0.5007 K, 1.012 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8.041 W, 3.991 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -229,7 +229,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  546 m/s, 2.47e+03 m/s
+     RMS, max velocity:                  546 m/s, 2.59e+03 m/s
      Temperature min/avg/max:            0 K, 0.5006 K, 1.012 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8.247 W, 4.221 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -239,7 +239,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 39+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  526 m/s, 2.41e+03 m/s
+     RMS, max velocity:                  526 m/s, 2.53e+03 m/s
      Temperature min/avg/max:            0 K, 0.5006 K, 1.008 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8.452 W, 4.478 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -249,7 +249,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 61+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  506 m/s, 2.34e+03 m/s
+     RMS, max velocity:                  506 m/s, 2.46e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1.002 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8.653 W, 4.772 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -259,7 +259,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 64+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  486 m/s, 2.26e+03 m/s
+     RMS, max velocity:                  486 m/s, 2.39e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8.85 W, 5.073 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -269,7 +269,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 63+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  466 m/s, 2.18e+03 m/s
+     RMS, max velocity:                  466 m/s, 2.31e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9.041 W, 5.396 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -279,7 +279,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 65+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  447 m/s, 2.1e+03 m/s
+     RMS, max velocity:                  447 m/s, 2.23e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9.226 W, 5.786 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -289,7 +289,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 66+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  430 m/s, 2.03e+03 m/s
+     RMS, max velocity:                  430 m/s, 2.16e+03 m/s
      Temperature min/avg/max:            0 K, 0.5005 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9.408 W, 6.285 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -299,7 +299,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 67+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  413 m/s, 1.96e+03 m/s
+     RMS, max velocity:                  413 m/s, 2.09e+03 m/s
      Temperature min/avg/max:            0 K, 0.5004 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9.588 W, 6.828 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -309,7 +309,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 67+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  397 m/s, 1.89e+03 m/s
+     RMS, max velocity:                  397 m/s, 2.02e+03 m/s
      Temperature min/avg/max:            0 K, 0.5002 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9.766 W, 7.437 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -319,7 +319,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 67+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  382 m/s, 1.84e+03 m/s
+     RMS, max velocity:                  382 m/s, 1.96e+03 m/s
      Temperature min/avg/max:            0 K, 0.5001 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -9.943 W, 8.111 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -329,7 +329,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 67+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  368 m/s, 1.78e+03 m/s
+     RMS, max velocity:                  368 m/s, 1.91e+03 m/s
      Temperature min/avg/max:            0 K, 0.4999 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -10.12 W, 8.847 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -339,7 +339,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 67+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  356 m/s, 1.73e+03 m/s
+     RMS, max velocity:                  356 m/s, 1.86e+03 m/s
      Temperature min/avg/max:            0 K, 0.4997 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -10.29 W, 9.643 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -349,7 +349,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 66+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  343 m/s, 1.68e+03 m/s
+     RMS, max velocity:                  343 m/s, 1.81e+03 m/s
      Temperature min/avg/max:            0 K, 0.4995 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -10.46 W, 10.46 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -359,7 +359,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 66+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  332 m/s, 1.64e+03 m/s
+     RMS, max velocity:                  332 m/s, 1.76e+03 m/s
      Temperature min/avg/max:            0 K, 0.4992 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -10.63 W, 11.26 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -369,7 +369,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 63+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  321 m/s, 1.59e+03 m/s
+     RMS, max velocity:                  321 m/s, 1.72e+03 m/s
      Temperature min/avg/max:            0 K, 0.4989 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -10.8 W, 12.08 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -379,7 +379,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 63+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  310 m/s, 1.55e+03 m/s
+     RMS, max velocity:                  310 m/s, 1.67e+03 m/s
      Temperature min/avg/max:            0 K, 0.4987 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -10.96 W, 12.83 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -389,7 +389,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 64+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  301 m/s, 1.51e+03 m/s
+     RMS, max velocity:                  301 m/s, 1.63e+03 m/s
      Temperature min/avg/max:            0 K, 0.4984 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.12 W, 13.59 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -399,7 +399,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 61+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  291 m/s, 1.47e+03 m/s
+     RMS, max velocity:                  291 m/s, 1.59e+03 m/s
      Temperature min/avg/max:            0 K, 0.4981 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.28 W, 14.27 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -409,7 +409,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 61+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  282 m/s, 1.43e+03 m/s
+     RMS, max velocity:                  282 m/s, 1.55e+03 m/s
      Temperature min/avg/max:            0 K, 0.4977 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.44 W, 14.94 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -419,7 +419,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 59+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  274 m/s, 1.39e+03 m/s
+     RMS, max velocity:                  274 m/s, 1.51e+03 m/s
      Temperature min/avg/max:            0 K, 0.4974 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.6 W, 15.54 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -429,7 +429,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 64+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  266 m/s, 1.35e+03 m/s
+     RMS, max velocity:                  266 m/s, 1.47e+03 m/s
      Temperature min/avg/max:            0 K, 0.497 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.75 W, 16.09 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -439,7 +439,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 74+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  259 m/s, 1.31e+03 m/s
+     RMS, max velocity:                  259 m/s, 1.43e+03 m/s
      Temperature min/avg/max:            0 K, 0.4966 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.9 W, 16.59 W
      Heating rate (average/total):       0 W/kg, 0 W
@@ -449,7 +449,7 @@ Number of degrees of freedom: 8,716 (5,346+697+2,673)
    Solving Stokes system (GMG)... 74+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  257 m/s, 1.3e+03 m/s
+     RMS, max velocity:                  257 m/s, 1.42e+03 m/s
      Temperature min/avg/max:            0 K, 0.4965 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -11.95 W, 16.73 W
      Heating rate (average/total):       0 W/kg, 0 W

@@ -265,7 +265,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.01/0.01/1e+08
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.0017 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.0017 m/year, 0.00295 m/year
      Writing graphical output:                          output-grain_size_plunge/solution/solution-00000
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
@@ -292,7 +292,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009987/0.009987/9.987e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.0017 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.0017 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 2:  t=20.1 years, dt=10.1 years
@@ -318,7 +318,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009974/0.009974/9.974e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 3:  t=30.301 years, dt=10.201 years
@@ -344,7 +344,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009961/0.009961/9.961e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 4:  t=40.604 years, dt=10.303 years
@@ -370,7 +370,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009947/0.009947/9.947e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 5:  t=51.0101 years, dt=10.406 years
@@ -396,7 +396,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009934/0.009934/9.934e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 6:  t=61.5202 years, dt=10.5101 years
@@ -422,7 +422,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.00992/0.00992/9.92e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 7:  t=72.1354 years, dt=10.6152 years
@@ -448,7 +448,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009907/0.009907/9.907e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 8:  t=82.8567 years, dt=10.7214 years
@@ -474,7 +474,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009893/0.009893/9.893e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 9:  t=93.6853 years, dt=10.8286 years
@@ -500,7 +500,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009879/0.009879/9.879e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 *** Timestep 10:  t=100 years, dt=6.31473 years
@@ -526,7 +526,7 @@ Number of degrees of freedom: 40 (18+4+9+9)
    Postprocessing:
      Compositions min/max/mass:                         0.009871/0.009871/9.871e+07
      Temperature min/avg/max:                           1100 K, 1100 K, 1100 K
-     RMS, max velocity:                                 0.00171 m/year, 0.00229 m/year
+     RMS, max velocity:                                 0.00171 m/year, 0.00295 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 2.671e+22 Pa s, 3.4e+13 kg
 
 Termination requested by criterion: end time

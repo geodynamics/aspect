@@ -52,7 +52,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
    Postprocessing:
      Writing graphical output:           output-blankenbach_approximation/solution/solution-00004
-     RMS, max velocity:                  18.1 m/s, 26 m/s
+     RMS, max velocity:                  18.1 m/s, 26.1 m/s
      Temperature min/avg/max:            0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4.467 W, 4.467 W
      Heating rate (average/total):       0 W/kg, 0 W

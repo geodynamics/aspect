@@ -9,13 +9,13 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.621692
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.20433e-09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.20969e-09
 
 
    Postprocessing:
      Writing graphical output:              output-hollow_sphere_gmg/solution/solution-00000
-     RMS, max velocity:                     1.56 m/s, 4.23 m/s
-     Pressure at top/bottom of domain:      -1.015e-15 Pa, 499.9 Pa
+     RMS, max velocity:                     1.56 m/s, 5.02 m/s
+     Pressure at top/bottom of domain:      2.346e-14 Pa, 499.9 Pa
      Computing dynamic topography           
      Errors u_L1, p_L1, u_L2, p_L2 topo_L2: 1.307365e-01, 1.699214e+00, 5.712572e-02, 1.076640e+00, 2.486910e-03
 

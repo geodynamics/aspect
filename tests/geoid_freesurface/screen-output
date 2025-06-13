@@ -11,7 +11,7 @@ Number of mesh deformation degrees of freedom: 450
 
    Postprocessing:
      Topography min/max:               -2.22e-16 m, 0 m
-     RMS, max velocity:                0.014 m/s, 0.0224 m/s
+     RMS, max velocity:                0.014 m/s, 0.0222 m/s
      Temperature min/avg/max:          -3.154 K, -5.94e-16 K, 6.308 K
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
      Pressure at top/bottom of domain: 0.0006808 Pa, 0.4774 Pa
@@ -25,7 +25,7 @@ Number of mesh deformation degrees of freedom: 450
 
    Postprocessing:
      Topography min/max:               -1.294e-08 m, 2.501e-08 m
-     RMS, max velocity:                0.014 m/s, 0.0224 m/s
+     RMS, max velocity:                0.014 m/s, 0.0222 m/s
      Temperature min/avg/max:          -3.154 K, -1.348e-05 K, 6.308 K
      Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
      Pressure at top/bottom of domain: 0.0006808 Pa, 0.4774 Pa

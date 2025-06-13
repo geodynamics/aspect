@@ -8,8 +8,8 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
    Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  1.08 m/s, 2.15 m/s
-     Pressure at top/bottom of domain:   -1.022e-16 Pa, 1000 Pa
+     RMS, max velocity:                  1.08 m/s, 2.33 m/s
+     Pressure at top/bottom of domain:   -1.049e-17 Pa, 1000 Pa
      Computing dynamic topography        
      Writing graphical output:           output-annulus/solution/solution-00000
      Errors u_L2, p_L2, rho_L2, topo_L2: 1.106336e-02, 3.426667e-01, 0.000000e+00, 1.037264e-03

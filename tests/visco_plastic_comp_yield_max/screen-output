@@ -17,7 +17,7 @@ Number of degrees of freedom: 2,505 (882+300+441+441+441)
 
    Postprocessing:
      Writing graphical output:           output-visco_plastic_comp_yield_max/solution/solution-00000
-     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000707 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
 
 

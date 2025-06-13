@@ -31,7 +31,7 @@ Number of degrees of freedom: 5,936 (1,676+218+838+1,602+1,602)
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0089 m/year, 0.02 m/year
+     RMS, max velocity:         0.0089 m/year, 0.0199 m/year
      Compositions min/max/mass: -0.0003358/1.011/9.854e+09 // -0.0001204/2/4.241e+10
 
 Number of active cells: 187 (on 6 levels)
@@ -70,7 +70,7 @@ Number of degrees of freedom: 7,037 (1,988+257+994+1,899+1,899)
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.00907 m/year, 0.0205 m/year
+     RMS, max velocity:         0.00907 m/year, 0.0204 m/year
      Compositions min/max/mass: -0.02757/1.005/9.858e+09 // -0.02003/2.005/4.241e+10
 
 Skipping mesh refinement, because the mesh did not change.
@@ -94,7 +94,7 @@ Skipping mesh refinement, because the mesh did not change.
    Solving Stokes system (GMG)... 12+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.00913 m/year, 0.0207 m/year
+     RMS, max velocity:         0.00913 m/year, 0.0206 m/year
      Compositions min/max/mass: -0.0277/1.003/9.859e+09 // -0.02878/2.017/4.241e+10
 
 Skipping mesh refinement, because the mesh did not change.
