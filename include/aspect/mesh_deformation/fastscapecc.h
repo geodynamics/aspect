@@ -331,7 +331,10 @@ namespace aspect
 
 
         // Grid extent in each direction [min, max]
-        std::array<std::pair<double, double>, 2> grid_extent;
+        // std::array<std::pair<double, double>, 2> grid_extent_surface;
+
+        std::array<std::pair<double,double>,dim> grid_extent;
+
 
         // Grid resolution (spacing between points)
         double dx;
@@ -340,6 +343,13 @@ namespace aspect
         // Number of grid cells in x and y directions
         unsigned int nx;
         unsigned int ny;
+
+        /**
+         * The number of cells in each coordinate direction.
+         */
+        std::array<unsigned int, dim> repetitions;
+        std::array<std::pair<double, double>, dim - 1> grid_extent_surface;
+
     };
   }
 }
