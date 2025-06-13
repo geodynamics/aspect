@@ -139,6 +139,8 @@ namespace aspect
         std::shared_ptr<FiniteElement<dim - 1, dim>> surface_fe;
 
         LinearAlgebra::Vector surface_solution;
+        LinearAlgebra::Vector surface_elevation;
+ 
         dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
 

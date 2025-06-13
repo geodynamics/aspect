@@ -213,6 +213,10 @@ namespace aspect
         surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
                                 locally_relevant_dofs_surface,
                                 this->get_mpi_communicator());
+                                
+        surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                                locally_relevant_dofs_surface,
+                                this->get_mpi_communicator());
 
         const types::boundary_id top_boundary =
           this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
@@ -239,26 +243,37 @@ namespace aspect
 
               // Project to vertical (box) or radial (sphere)
               double projected_velocity = 0.0;
-              if (spherical_model)
-                projected_velocity = velocity * (pos / pos.norm());  // radial component
-              else
-                projected_velocity = velocity[dim - 1];               // vertical (z)
+              double projected_elevation = 0.0;
 
-              // Map to surface mesh index and assign
-              const unsigned int index = this->vertex_index(pos);
-              surface_solution[index] = projected_velocity;
-                
-//                Test if the velocity are properly projected
-//            if (this->get_timestep_number() == 1 && index < 10) // Only a few samples
-//              this->get_pcout() << "Surface velocity at " << pos
-//                                << " = " << projected_velocity << " m/s" << std::endl;
+                if (spherical_model)
+                {
+                  projected_velocity = velocity * (pos / pos.norm());  // radial
+                    projected_elevation = pos.norm();                              // radial distance
+                }
+                else
+                {
+                  projected_velocity = velocity[dim - 1];              // vertical (z)
+                    projected_elevation = pos[dim - 1];                            // z-coordinate
+                }
+
+                const unsigned int index = this->vertex_index(pos);
+                surface_solution[index] = projected_velocity;
+                surface_elevation[index] = projected_elevation; // New vector, same structure
+
+                // Optional debug
+                if (this->get_timestep_number() == 1 && index < 10)
+                  this->get_pcout() << "Surface pos: " << pos
+                                    << ", velocity: " << projected_velocity
+                                    << ", elevation: " << projected_elevation << std::endl;
+              
             }
           }
         }
 
         surface_solution.compress(VectorOperation::insert);
-      }
+        surface_elevation.compress(VectorOperation::insert);
 
+      }
   
       template <int dim>
       unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
@@ -315,12 +330,14 @@ namespace aspect
            // Step 2: Gather topography and uplift velocity from surface mesh
            for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
            {
-             for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<dim>::vertices_per_cell; ++vertex_index)
+//             for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<dim>::vertices_per_cell; ++vertex_index)
+               for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<dim-1>::vertices_per_cell; ++vertex_index)
              {
                const Point<dim> vertex = cell->vertex(vertex_index);
                const unsigned int dof_index = cell->vertex_dof_index(vertex_index, 0);
 
                double surface_uplift = surface_solution[dof_index];  // from ASPECT
+               double surface_height =  surface_elevation[dof_index];
                  
 //                 Test if we get the velocity
 //             if (this->get_timestep_number() == 1)
@@ -329,9 +346,9 @@ namespace aspect
 //                                 << surface_uplift << " m/s" << std::endl;
                double topography = 0.0;
                if (spherical_model)
-                 topography = vertex.norm() - spherical_model->outer_radius();
+                 topography = surface_height - spherical_model->outer_radius();
                else if (box_model)
-                 topography = vertex(dim-1) - grid_extent[dim-1].second;
+                   topography = surface_height - grid_extent[dim-1].second;
 
                const unsigned int index = this->vertex_index(vertex);
 
