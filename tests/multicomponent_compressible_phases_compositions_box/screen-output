@@ -1,0 +1,20 @@
+
+Number of active cells: 10 (on 1 levels)
+Number of degrees of freedom: 337 (126+22+63+63+63)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Compositions min/max/mass:                         0/1/1.833e+08 // 0/1/3e+08
+     Mass fluxes through boundary parts:                0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
+     Average density / Average viscosity / Total mass:  3105 kg/m^3, 1.878e+20 Pa s, 3.105e+12 kg
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Writing graphical output:                          output-multicomponent_compressible_phases_compositions_box/solution/solution-00000
+
+
+
+
+Termination requested by criterion: end time
+
+
+
