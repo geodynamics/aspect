@@ -21,6 +21,7 @@
 
 #include <aspect/material_model/multicomponent_compressible.h>
 #include <aspect/utilities.h>
+#include <deal.II/base/parameter_handler.h>
 
 #include <numeric>
 
@@ -73,11 +74,12 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
-          // Prescribe the density field to the current value of the density. The actual projection
-          // only happens inside Simulator<dim>::interpolate_material_output_into_compositional_field,
-          // and this just sets the correct term the field will be set to.
-          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
-            prescribed_field_out->prescribed_field_outputs[i][density_field_index] = out.densities[i];
+          // set up variable to interpolate prescribed field outputs onto compositional fields
+          if (const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+              = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>())
+            {
+              prescribed_field_out->prescribed_field_outputs[i][density_field_index] = out.densities[i];
+            }
         }
     }
 
@@ -177,7 +179,7 @@ namespace aspect
     void
     MulticomponentCompressible<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
