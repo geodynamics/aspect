@@ -433,6 +433,34 @@ namespace aspect
 
         return r_phi_theta;
       }
+
+
+
+      template <int dim>
+      double
+      ChunkGeometry<dim>::
+      topography_for_point(const Point<dim> &x_y_z) const
+      {
+        if (dynamic_cast<const InitialTopographyModel::ZeroTopography<dim>*>(topo) != nullptr)
+          return 0;
+        else
+          {
+            // The natural coordinate system in chunk geometry is r/lon/lat.
+            // So, after converting the point into the spherical system we need to
+            // change the theta (co-latitudes) into latitudes.
+            const std::array<double, dim> r_phi_theta = Utilities::Coordinates::cartesian_to_spherical_coordinates(x_y_z);
+
+            // Grab lon,lat coordinates
+            Point<dim-1> surface_point;
+            // Convert latitude to colatitude
+            if (dim == 3)
+              surface_point[1] = 0.5*numbers::PI - surface_point[1];
+
+            for (unsigned int d=0; d<dim-1; ++d)
+              surface_point[d] = r_phi_theta[d+1];
+            return topo->value(surface_point);
+          }
+      }
     }
 
 
@@ -555,8 +583,12 @@ namespace aspect
     Chunk<dim>::depth(const Point<dim> &position) const
     {
       // depth is defined wrt the reference surface point2[0]
-      // negative depth is not allowed
-      return std::max (0., std::min (point2[0]-position.norm(), maximal_depth()));
+      // plus initial topography. Negative depth is not allowed.
+      if (this->simulator_is_past_initialization() &&
+          !Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()))
+        return std::min(std::max(point2[0]+ manifold->topography_for_point(position) - position.norm(), 0.), maximal_depth());
+      else
+        return std::min(std::max(point2[0]-position.norm(), 0.), maximal_depth());
     }
 
 
@@ -582,10 +614,9 @@ namespace aspect
       // Choose a point at the mean longitude (and latitude)
       Point<dim> p = 0.5*(point2+point1);
       // at a depth beneath the top surface
-      p[0] = point2[0]-depth;
+      p[0] = point2[0]+manifold->topography_for_point(p) - depth;
 
-      // Now convert to Cartesian coordinates. This ignores the surface topography,
-      // but that is as documented.
+      // Now convert to Cartesian coordinates.
       return manifold->push_forward_sphere(p);
     }
 
@@ -658,12 +689,12 @@ namespace aspect
     double
     Chunk<dim>::maximal_depth() const
     {
-      // The depth is defined as relative to a reference surface (without
+      // The depth is defined as relative to a reference surface (with
       // topography) and since we don't apply topography on the CMB,
       // the maximal depth really is the formula below, unless one applies a
       // topography that is always strictly below zero (i.e., where the
       // actual surface lies strictly below the reference surface).
-      return point2[0]-point1[0];
+      return point2[0] + this->get_initial_topography_model().max_topography() - point1[0];
     }
 
 
