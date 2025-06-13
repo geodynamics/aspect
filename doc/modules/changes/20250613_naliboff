@@ -1,0 +1,4 @@
+New: The multicomponent compressible equation of state
+and material model now support the use of phase transitions.
+<br>
+(John Naliboff, 2025/06/13)
