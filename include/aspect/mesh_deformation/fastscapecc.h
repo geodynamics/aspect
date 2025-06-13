@@ -241,7 +241,7 @@ namespace aspect
          * This and resolution_difference are required to properly transfer node data from
          * ASPECT to FastScape.
          */
-        int maximum_surface_refinement_level;
+        unsigned int surface_refinement_level;
 
         /**
          * Difference in refinement levels expected at the ASPECT surface,
