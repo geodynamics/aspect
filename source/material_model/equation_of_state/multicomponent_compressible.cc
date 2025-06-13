@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/equation_of_state/multicomponent_compressible.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 
 
