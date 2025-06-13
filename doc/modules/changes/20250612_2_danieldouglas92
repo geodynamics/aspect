@@ -1,0 +1,5 @@
+Fixed: The velocity statistics postprocessor to use
+the correct quadrature formula when determining the
+maximum velocity within the model.
+<br>
+(Daniel Douglas, 2025/06/12)
