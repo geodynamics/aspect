@@ -1,0 +1,41 @@
+
+Number of active cells: 20 (on 2 levels)
+Number of degrees of freedom: 348 (210+33+105)
+
+Number of mesh deformation degrees of freedom: 66
+   Solving mesh displacement system... 0 iterations.
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Topography min/max: 0 m, 2500 m
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Initializing FastScape... 2 levels, cell size: 12500 m.
+   Executing FastScape... 1 timesteps of 100000 years.
+      Writing initial VTK...
+   Solving mesh displacement system... 4 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Topography min/max: 0 m, 2449 m
+
+*** Timestep 2:  t=200000 years, dt=100000 years
+   Executing FastScape... 1 timesteps of 100000 years.
+      Writing FastScape VTK...
+   Solving mesh displacement system... 4 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Topography min/max: 0 m, 2328 m
+
+Termination requested by criterion: end time
+
+
+
