@@ -1,3 +1,7 @@
+# This script can be used to convert a given list of friction coefficients
+# into angles of internal friction. This is necessary, because 
+# most ASPECT material models expect angles of internal friction as input.
+#
 # The friction coefficient is defined as tan(angle_of_internal_friction)
 # where angle_of_internal_friction is in radians.
 # To convert the friction coefficient to angle of internal friction in degrees:
