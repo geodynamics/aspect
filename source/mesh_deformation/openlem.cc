@@ -163,11 +163,11 @@ namespace aspect
                                        false);
 
           last_output_time = 0;
-  	  // preparte the openLEM variables
+          // preparte the openLEM variables
           grid_old = openlem::Grid<>(openlem_nx,openlem_ny);
           grid_new = openlem::Grid<>(openlem_nx,openlem_ny);
 
-	  // todo: fill the grid new
+          // todo: fill the grid new
 
           // Define all nodes with non-positive elevations (here, the ocean around the
           // island as boundary nodes
@@ -175,8 +175,8 @@ namespace aspect
             for ( int j = 0; j < grid_new.n; ++j )
               grid_new[i][j].b = grid_new[i][j].h <= 0;
 
-	  // Compute initial flow pattern and water level
-	  grid_new.fillLakes();
+          // Compute initial flow pattern and water level
+          grid_new.fillLakes();
 
         }
     }
@@ -206,8 +206,8 @@ namespace aspect
         }
 
       // Vector to hold the velocities that represent the change to the surface.
-      const unsigned int openlem_array_size = openlem_nx*openlem_ny;
-      std::vector<double> mesh_velocity_z(openlem_array_size);
+      //const unsigned int openlem_array_size = openlem_nx*openlem_ny;
+      std::vector<std::vector<double>> mesh_velocity_z(openlem_nx,std::vector<double>(openlem_ny));
 
       // openlem requires multiple specially defined and ordered variables sent to its functions. To make
       // the transfer of these down to one process easier, we first fill out a vector of local_aspect_values,
@@ -223,7 +223,7 @@ namespace aspect
           // received data from ASPECT, and if not throw an assert.
 
           fill_openlem_arrays(grid_new,
-                                 local_aspect_values);
+                              local_aspect_values);
 
           if (current_timestep == 1 || restart)
             {
@@ -257,41 +257,41 @@ namespace aspect
           // In later timesteps, we copy h directly from openlem.
           //std::mt19937 random_number_generator(openlem_seed);
           //std::uniform_real_distribution<double> random_distribution(-noise_elevation,noise_elevation);
-          for (unsigned int i=0; i<openlem_array_size; ++i)
-            {
-              //elevation_old[i] = elevation[i];
+          //for (unsigned int i=0; i<openlem_array_size; ++i)
+          {
+            //elevation_old[i] = elevation[i];
 
-              // Initialize random noise after elevation_old is set, so ASPECT sees this initial topography change.
-              // Changing boundary height directly on a fixed openlem boundary causes reproducibility issues,
-              // as such we do not add noise to the boundaries regardless of whether they are ghost nodes
-              // or not. However, the boundaries can be changed using the uplift velocity and not cause
-              // these issues.
-              // TODO: Should this be done through velocities instead of a flat height change?
-              // if (!is_ghost_node(i,true))
-              //   {
-              //     if (current_timestep == 1)
-              //       {
-              //         // + or - topography based on the initial noise magnitude.
-              //         //const double elevation_seed = random_distribution(random_number_generator);
-              //         //elevation[i] = elevation[i] + elevation_seed;
-              //       }
+            // Initialize random noise after elevation_old is set, so ASPECT sees this initial topography change.
+            // Changing boundary height directly on a fixed openlem boundary causes reproducibility issues,
+            // as such we do not add noise to the boundaries regardless of whether they are ghost nodes
+            // or not. However, the boundaries can be changed using the uplift velocity and not cause
+            // these issues.
+            // TODO: Should this be done through velocities instead of a flat height change?
+            // if (!is_ghost_node(i,true))
+            //   {
+            //     if (current_timestep == 1)
+            //       {
+            //         // + or - topography based on the initial noise magnitude.
+            //         //const double elevation_seed = random_distribution(random_number_generator);
+            //         //elevation[i] = elevation[i] + elevation_seed;
+            //       }
 
-              //     // Here we add the sediment rain (m/yr) as a flat increase in height.
-              //     // This is done because adding it as an uplift rate would affect the basement.
-              //     // if (sediment_rain > 0 && use_marine_component)
-              //     //   {
-              //     //     // Only apply sediment rain to areas below sea level.
-              //     //     if (elevation[i] < sea_level)
-              //     //       {
-              //     //         // If the rain would put us above sea level, set height to sea level.
-              //     //         if (elevation[i] + sediment_rain*aspect_timestep_in_years > sea_level)
-              //     //           elevation[i] = sea_level;
-              //     //         else
-              //     //           elevation[i] = std::min(sea_level,elevation[i] + sediment_rain*aspect_timestep_in_years);
-              //     //       }
-              //     //   }
-              //   }
-            }
+            //     // Here we add the sediment rain (m/yr) as a flat increase in height.
+            //     // This is done because adding it as an uplift rate would affect the basement.
+            //     // if (sediment_rain > 0 && use_marine_component)
+            //     //   {
+            //     //     // Only apply sediment rain to areas below sea level.
+            //     //     if (elevation[i] < sea_level)
+            //     //       {
+            //     //         // If the rain would put us above sea level, set height to sea level.
+            //     //         if (elevation[i] + sediment_rain*aspect_timestep_in_years > sea_level)
+            //     //           elevation[i] = sea_level;
+            //     //         else
+            //     //           elevation[i] = std::min(sea_level,elevation[i] + sediment_rain*aspect_timestep_in_years);
+            //     //       }
+            //     //   }
+            //   }
+          }
 
           // The ghost nodes are added as a single layer of points surrounding the entire model.
           // For example, if ASPECT's surface mesh is a 2D surface that is 3x3 (nx x ny) points,
@@ -340,28 +340,30 @@ namespace aspect
           //                  velocity_z,
           //                  openlem_timestep_in_years,
           //                  openlem_iterations);
+          execute_openlem(grid_new,openlem_timestep_in_years,openlem_iterations);
 
           // Write a file to store h, b & step for restarting.
           // TODO: It would be good to roll this into the general ASPECT checkpointing,
           // and when we do this needs to be changed.
-          if (((this->get_parameters().checkpoint_time_secs == 0) &&
-               (this->get_parameters().checkpoint_steps > 0) &&
-               ((current_timestep + 1) % this->get_parameters().checkpoint_steps == 0)) ||
-              (this->get_time() == this->get_end_time() && this->get_timestepping_manager().need_checkpoint_on_terminate()))
-            {
-              //save_restart_files(elevation,
-              //                   basement,
-              //                   silt_fraction);
-            }
+          //if (((this->get_parameters().checkpoint_time_secs == 0) &&
+          //     (this->get_parameters().checkpoint_steps > 0) &&
+          //     ((current_timestep + 1) % this->get_parameters().checkpoint_steps == 0)) ||
+          //    (this->get_time() == this->get_end_time() && this->get_timestepping_manager().need_checkpoint_on_terminate()))
+          //  {
+          //    //save_restart_files(elevation,
+          //    //                   basement,
+          //    //                   silt_fraction);
+          //  }
 
           // Find out our velocities from the change in height.
           // Where mesh_velocity_z is a vector of array size that exists on all processes.
           for (unsigned int ix=0; ix<openlem_nx; ++ix)
-          for (unsigned int iy=0; iy<openlem_ny; ++iy)
-            {
-	      openlem::Node* node = grid.getNode(index_x,index_y);
-              mesh_velocity_z[i] = (elevation[i] - elevation_old[i])/aspect_timestep_in_years;
-            }
+            for (unsigned int iy=0; iy<openlem_ny; ++iy)
+              {
+                openlem::Node *node_old = grid_old.getNode(ix,iy);
+                openlem::Node *node_new = grid_new.getNode(ix,iy);
+                mesh_velocity_z[ix][iy] = (node_new->h - node_old->h)/aspect_timestep_in_years;
+              }
 
           Utilities::MPI::broadcast(this->get_mpi_communicator(), mesh_velocity_z, 0);
         }
@@ -376,33 +378,50 @@ namespace aspect
             throw aspect::QuietException();
 
           // This is called solely so we can set the timer and will return immediately.
-          execute_openlem(mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            mesh_velocity_z,
-                            aspect_timestep_in_years,
-                            openlem_steps_per_aspect_step);
+          execute_openlem(grid_new,
+                          //mesh_velocity_z,
+                          //mesh_velocity_z,
+                          //mesh_velocity_z,
+                          //mesh_velocity_z,
+                          //mesh_velocity_z,
+                          aspect_timestep_in_years,
+                          openlem_steps_per_aspect_step);
 
           mesh_velocity_z = Utilities::MPI::broadcast(this->get_mpi_communicator(), mesh_velocity_z, 0);
+        }
+      // Get the sizes needed for a data table of the mesh velocities.
+      TableIndices<dim> size_idx;
+      for (unsigned int d=0; d<dim; ++d)
+        {
+          size_idx[d] = table_intervals[d]+1;
+        }
+
+      // Initialize a table to hold all velocity values that will be interpolated back to ASPECT.
+      //const Table<dim,double> velocity_table;// = fill_data_table(mesh_velocity_z, size_idx, openlem_nx, openlem_ny);
+      velocity_table.TableBase<dim,double>::reinit(size_idx);
+      // Indexes through x, y, and z.
+      if constexpr (dim == 2)
+        {
+          for (unsigned int x=0; x<velocity_table.size()[0]; ++x)
+            for (unsigned int y=0; y<(velocity_table.size()[1]); ++y)
+              // Convert back to m/s.
+              velocity_table(x,y) = mesh_velocity_z[x][y] / year_in_seconds;
+        }
+      else
+        {
+          for (unsigned int x=0; x<velocity_table.size()[0]; ++x)
+            for (unsigned int y=0; y<velocity_table.size()[1]; ++y)
+              for (unsigned int z=0; z<velocity_table.size()[2]; ++z)
+                // Convert back to m/s.
+                velocity_table(x,y,z) = mesh_velocity_z[x][y] / year_in_seconds;
         }
       // we get time passed as seconds (always) but may want
       // to reinterpret it in years
 
-      // update
-      // TODO: get velocity at surface from all processes.
-      const double dt = 1e-3; //year?
-      for(int i = 0; i < 100; ++i )
-      {
-        int nc = grid_new.computeFlowDirection();
-        printf("Changes in flow direction: %i\n",nc);  
-        double ch = grid_new.erode(dt);
-        printf("Maximum elevation change: %e\n",ch);
-      }
-       // Todo: height_diff = grid_new->height - grid_old->height;
-       // Todo: interpolate hight_diff to velocties on nodes
-       // Todo: move info to all other processes
-       // Todo: copy grid_new to grid_old
+      // Todo: height_diff = grid_new->height - grid_old->height;
+      // Todo: interpolate hight_diff to velocties on nodes
+      // Todo: move info to all other processes
+      // Todo: copy grid_new to grid_old
     }
 
 
@@ -426,17 +445,8 @@ namespace aspect
                                                   boundary_id,
                                                   function,
                                                   mesh_velocity_constraints);
-      */  
+      */
 
-      // Get the sizes needed for a data table of the mesh velocities.
-      TableIndices<dim> size_idx;
-      for (unsigned int d=0; d<dim; ++d)
-        {
-          size_idx[d] = table_intervals[d]+1;
-        }
-
-      // Initialize a table to hold all velocity values that will be interpolated back to ASPECT.
-      const Table<dim,double> velocity_table = fill_data_table(mesh_velocity_z, size_idx, openlem_nx, openlem_ny);
 
       // As our grid_extent variable end points do not account for the change related to an origin
       // not at 0, we adjust this here into an interpolation extent.
@@ -464,13 +474,13 @@ namespace aspect
                                                 *boundary_ids.begin(),
                                                 vector_function_object,
                                                 mesh_velocity_constraints);
-    
+
     }
 
     template <int dim>
     std::vector<std::vector<double>>
-    OpenLEM<dim>::get_aspect_values() const 
-{
+    OpenLEM<dim>::get_aspect_values() const
+    {
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
       std::vector<std::vector<double>> local_aspect_values(dim+2, std::vector<double>());
@@ -564,14 +574,15 @@ namespace aspect
       return local_aspect_values;
     }
     template <int dim>
-    void OpenLEM<dim>::execute_openlem(std::vector<double> &elevation,
-                                           std::vector<double> &extra_vtk_field,
-                                           std::vector<double> &velocity_x,
-                                           std::vector<double> &velocity_y,
-                                           std::vector<double> &velocity_z,
-                                           const double &openlem_timestep_in_years,
-                                           const unsigned int &openlem_iterations) const
-{
+    void OpenLEM<dim>::execute_openlem(openlem::Grid<openlem::Node> &grid,
+                                       //std::vector<double> &elevation,
+                                       //std::vector<double> &extra_vtk_field,
+                                       //std::vector<double> &velocity_x,
+                                       //std::vector<double> &velocity_y,
+                                       //std::vector<double> &velocity_z,
+                                       const double &openlem_timestep_in_years,
+                                       const unsigned int &openlem_iterations) const
+    {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Execute openlem");
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
         return;
@@ -604,6 +615,10 @@ namespace aspect
 
         for (unsigned int openlem_iteration = 0; openlem_iteration < openlem_iterations; ++openlem_iteration)
           {
+            int nc = grid.computeFlowDirection();
+            printf("Changes in flow direction: %i\n",nc);
+            double ch = grid.erode(openlem_timestep_in_years);
+            printf("Maximum elevation change: %e\n",ch);
             //openlem_execute_step_();
 
             //// If we are using the ghost nodes we want to reset them every openlem timestep.
@@ -671,23 +686,23 @@ namespace aspect
 
     template <int dim>
     void OpenLEM<dim>::fill_openlem_arrays(openlem::Grid<openlem::Node> &grid,
-					       // std::vector<double> &elevation,
-                                               // std::vector<double> &bedrock_transport_coefficient_array,
-                                               // std::vector<double> &bedrock_river_incision_rate_array,
-                                               // std::vector<double> &velocity_x,
-                                               // std::vector<double> &velocity_y,
-                                               // std::vector<double> &velocity_z,
-                                               std::vector<std::vector<double>> &local_aspect_values) 
-{
+                                           // std::vector<double> &elevation,
+                                           // std::vector<double> &bedrock_transport_coefficient_array,
+                                           // std::vector<double> &bedrock_river_incision_rate_array,
+                                           // std::vector<double> &velocity_x,
+                                           // std::vector<double> &velocity_y,
+                                           // std::vector<double> &velocity_z,
+                                           std::vector<std::vector<double>> &local_aspect_values)
+    {
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
 
           int index_x = local_aspect_values[1][i];
           int index_y = local_aspect_values[2][i];
-	  openlem::Node* node = grid.getNode(index_x,index_y);
-	  node->h = local_aspect_values[0][i];
-	  node->l = 0;
-	  node->u = local_aspect_values[dim+2][i];
+          openlem::Node *node = grid.getNode(index_x,index_y);
+          node->h = local_aspect_values[0][i];
+          node->l = 0;
+          node->u = local_aspect_values[dim+2][i];
           //elevation[index] = local_aspect_values[0][i];
           //velocity_x[index] = local_aspect_values[2][i];
           //velocity_z[index] = local_aspect_values[dim+1][i];
@@ -720,10 +735,10 @@ namespace aspect
             {
               int index_x = local_aspect_values[1][i];
               int index_y = local_aspect_values[2][i];
-	      openlem::Node* node = grid.getNode(index_x,index_y);
-	      node->h = local_aspect_values[0][i];
-	      node->l = 0;
-	      node->u = local_aspect_values[dim+2][i];
+              openlem::Node *node = grid.getNode(index_x,index_y);
+              node->h = local_aspect_values[0][i];
+              node->l = 0;
+              node->u = local_aspect_values[dim+2][i];
               //const unsigned int index = local_aspect_values[1][i];
               //elevation[index] = local_aspect_values[0][i];
               //velocity_x[index] = local_aspect_values[2][i];

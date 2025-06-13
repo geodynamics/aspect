@@ -88,42 +88,43 @@ namespace aspect
         /**
          * Execute openlem
          */
-        void execute_openlem(std::vector<double> &elevation,
-                               std::vector<double> &extra_vtk_field,
-                               std::vector<double> &velocity_x,
-                               std::vector<double> &velocity_y,
-                               std::vector<double> &velocity_z,
-                               const double &openlem_timestep_in_years,
-                               const unsigned int &openlem_iterations) const;
+        void execute_openlem(openlem::Grid<openlem::Node> &grid,
+                             //std::vector<double> &elevation,
+                             //std::vector<double> &extra_vtk_field,
+                             //std::vector<double> &velocity_x,
+                             //std::vector<double> &velocity_y,
+                             //std::vector<double> &velocity_z,
+                             const double &openlem_timestep_in_years,
+                             const unsigned int &openlem_iterations) const;
 
         /**
          * Function to fill the openlem arrays (height and velocities) with the data received from ASPECT in the correct index order.
          */
         void fill_openlem_arrays(openlem::Grid<openlem::Node> &grid,
-				   // std::vector<double> &elevation,
-                                   // std::vector<double> &bedrock_transport_coefficient_array,
-                                   // std::vector<double> &bedrock_river_incision_rate_array,
-                                   // std::vector<double> &velocity_x,
-                                   // std::vector<double> &velocity_y,
-                                   // std::vector<double> &velocity_z,
-                                   std::vector<std::vector<double>> &temporary_variables);
+                                 // std::vector<double> &elevation,
+                                 // std::vector<double> &bedrock_transport_coefficient_array,
+                                 // std::vector<double> &bedrock_river_incision_rate_array,
+                                 // std::vector<double> &velocity_x,
+                                 // std::vector<double> &velocity_y,
+                                 // std::vector<double> &velocity_z,
+                                 std::vector<std::vector<double>> &temporary_variables);
 
         /**
          * Function to get the ASPECT topography and velocities at the surface, and an index for transferring these to openlem.
          */
         std::vector<std::vector<double>> get_aspect_values() const;
-        
-	/**
-         * define a old and new grid, so that we can compute a difference
-         */
-	openlem::Grid<> grid_old;
-	openlem::Grid<> grid_new;
-	unsigned int openlem_nx;
-	unsigned int openlem_ny;
-	unsigned int openlem_dx; 
-	unsigned int openlem_dy;
-	unsigned int openlem_x_extent; 
-	unsigned int openlem_y_extent; 
+
+        /**
+               * define a old and new grid, so that we can compute a difference
+               */
+        openlem::Grid<> grid_old;
+        openlem::Grid<> grid_new;
+        unsigned int openlem_nx;
+        unsigned int openlem_ny;
+        unsigned int openlem_dx;
+        unsigned int openlem_dy;
+        unsigned int openlem_x_extent;
+        unsigned int openlem_y_extent;
         /**
          * Variable to hold ASPECT domain extents.
          */
@@ -207,6 +208,11 @@ namespace aspect
          * points in areas of high ASPECT resolution.
          */
         double node_tolerance;
+
+        /**
+        * The velocity interpolation data
+        */
+        Table<dim,double> velocity_table;
     };
   }
 }
