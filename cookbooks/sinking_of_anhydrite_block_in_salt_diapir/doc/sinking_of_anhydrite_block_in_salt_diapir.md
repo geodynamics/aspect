@@ -47,8 +47,7 @@ Note that the top edge of the block is always at distance $h=100~\text{ m}$
 below the surface at the beginning of the simulation.
 ```
 
-
-In all three articles the authors use the Finite Difference code FDCON {cite:t}`weinberg:schmeling:1992`.
+In all three articles the authors use the Finite Differences code FDCON {cite:t}`weinberg:schmeling:1992`.
 In the current case the original resolution of the experiment is $200 \times 400$ cells,
 i.e. cells of $12.5 \times 12.5~\text{ m}$ in size. The particles are located
 every 10 to $12.5~\text{ m}$ in vertical and horizontal direction, i.e. about 100,000 particles in total.
@@ -84,7 +83,7 @@ are placed next to ASPECT's results at three different times.
 We find a reasonable agreement between both codes, again
 acknowledging that the size of the sinking block probably requires an
 even higher resolution that what is here used and that material
-averaging is also likely ot change results.
+averaging is also likely to change results.
 
 ```{figure-md} fig:sinking-anhydrite-results
 <img src="results.*" width="90%" />
