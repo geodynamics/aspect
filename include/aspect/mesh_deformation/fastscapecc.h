@@ -45,18 +45,19 @@ namespace aspect
 
   namespace MeshDeformation
   {
-  // A comparator for dealii::Point<dim> to use in std::map
-  // ------------------------------------------------------
-  // std::map requires a way to compare keys (i.e., define a "less than" relation)
-  // dealii::Point<dim> does not provide operator< by default,
-  // so we must define one ourselves.
-  //
-  // This comparator compares two Point<dim> objects lexicographically:
-  // First compares x, then y (and z if dim == 3).
-  //
-  // This is required to allow using std::map<Point<dim>, T>
-  // to uniquely index surface vertices on unstructured spherical meshes.
-    // Comparator for Point<dim> to use in std::map
+    /**
+     * A comparator for dealii::Point<dim> to use in std::map
+     * ------------------------------------------------------
+     * std::map requires a way to compare keys (i.e., define a "less than" relation)
+     * dealii::Point<dim> does not provide operator< by default,
+     * so we must define one ourselves.
+     *
+     * This comparator compares two Point<dim> objects lexicographically:
+     * First compares x, then y (and z if dim == 3).
+     *
+     * This is required to allow using std::map<Point<dim>, T>
+     * to uniquely index surface vertices on unstructured spherical meshes.
+     */
     template <int dim>
     struct PointComparator
     {
@@ -74,12 +75,14 @@ namespace aspect
     /**
      * A plugin that utilizes the landscape evolution code Fastscapelib (C++)
      * to deform the ASPECT boundary through erosion.
-     *
      */
     template<int dim>
     class FastScapecc : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
+        /**
+         * Constructor.
+         */
         FastScapecc();
 
         /**
@@ -89,7 +92,7 @@ namespace aspect
 
         /**
           * A function that creates constraints for the velocity of certain mesh
-          * vertices (e.g. the surface vertices) for a specific boundary.
+          * vertices (namely, the surface vertices) for a specific boundary.
           * The calling class will respect
           * these constraints when computing the new vertex positions.
           */
@@ -100,7 +103,7 @@ namespace aspect
 
 
         /**
-         * Returns whether or not the plugin requires surface stabilization
+         * Returns whether or not the plugin requires surface stabilization.
          */
         bool needs_surface_stabilization () const override;
 
@@ -136,6 +139,8 @@ namespace aspect
         SurfaceMeshType surface_mesh;
         DoFHandler<dim - 1, dim> surface_mesh_dof_handler;
         mutable AffineConstraints<double> surface_constraints;
+
+//TODO: Why a shared pointer?
         std::shared_ptr<FiniteElement<dim - 1, dim>> surface_fe;
 
         LinearAlgebra::Vector surface_solution;
@@ -202,22 +207,21 @@ namespace aspect
         //                                   const int &array_size) const;
 
         /**
+         * Run-time parameters
+         * @{
+         */
+        /**
          * Suggestion for the number of FastScape steps to run for every ASPECT timestep,
-         * where the FastScape timestep is determined by ASPECT_timestep_length divided by
+         * where the FastScape time step is determined by ASPECT's time step length divided by
          * this parameter.
          */
         unsigned int fastscape_steps_per_aspect_step;
 
         /**
-         * Maximum timestep allowed for FastScape, if the suggested timestep exceeds this
-         * limit it is repeatedly divided by 2 until the final timestep is smaller than this parameter.
+         * Maximum time step allowed for FastScape. If the suggested time step exceeds this
+         * limit it is repeatedly divided by 2 until the final time step is smaller than this parameter.
          */
         double maximum_fastscape_timestep;
-
-        /**
-         * Maximum timestep allowed for FastScape, if the suggested timestep exceeds this
-         * limit it is repeatedly divided by 2 until the final timestep is smaller than this parameter.
-         */
 
         /**
          * Total number of Fastscapelib grid nodes.
@@ -238,7 +242,7 @@ namespace aspect
 
         /**
          * Difference in refinement levels expected at the ASPECT surface,
-         * where this would be set to 2 if 3 refinement leves are set at the surface.
+         * where this would be set to 2 if 3 refinement levels are set at the surface.
          * This and surface_resolution are required to properly transfer node data from
          * ASPECT to FastScape.
          *
@@ -291,6 +295,9 @@ namespace aspect
          * (kd in FastScape surface equation applied to sediment).
          */
         double kdsed;
+        /**
+         * @}
+         */
 
 
         // Grid extent in each direction [min, max]
