@@ -805,9 +805,6 @@ namespace aspect
         }
     }
 
-    if (parameters.include_melt_transport)
-      melt_handler->add_current_constraints (new_current_constraints);
-
     // Update and let the prescribed solution plugins constrain parts of the solution:
     prescribed_solution_manager.update();
     prescribed_solution_manager.constrain_solution(new_current_constraints);

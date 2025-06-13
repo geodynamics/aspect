@@ -1,0 +1,202 @@
+#########################################################
+# This is a test for the melt solver and in particular
+# the interafce between regions with melt (coupled Stokes
+# Darc flow) and regions with no melt (only Stokes flow).
+# The example is taken from
+# Arbogast, T., Hesse, M. A., & Taicher, A. L. (2017).
+# Mixed Methods for Two-Phase Darcy--Stokes Mixtures of
+# Partially Melted Materials with Regions of Zero Porosity.
+# SIAM Journal on Scientific Computing, 39(2), B375-B402.
+# (Equation (6.11) and section 6.1.3. Quadratic porosity
+# approximation.)
+
+# The parameter theta in the poynomial that represents the
+# permeability is set to theta = 0, this means that
+# k = k0 phi^2.
+# We set k0 = 1.
+
+# Compaction length: L_c = sqrt(k0 mu_s / mu_f)
+# rho_r = rho_f - rho_s
+
+# Pressure potentials:
+# q_f = p_f - rho_f g z
+# q_f(0) = 0 --> p_f(0) = 0
+# --> p_f = q_f + rho_f g z
+
+# g = -1
+# q_s = p_s - rho_f g z = p_s - z
+# q_s = z --> p_s(0) = 0
+# --> p_s = q_s + rho_f g z = z + rho_f g z = z (1 + rho_f g)
+
+# q   = phi q_f + (1 - phi) q_s = q_s + phi (q_f - q_s)
+
+# Darcy velocity:
+# u = phi (v_f - v_s)
+# u = -v_s --> v_f = u / phi + v_s
+
+
+############### Global parameters
+
+set Additional shared libraries = ./lib1d_arbogast_test.so
+
+set Output directory                       = output
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+#set Use direct solver for Stokes system    = true
+set Adiabatic surface temperature          = 1600
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 50
+set CFL number                             = 0.2
+
+set Pressure normalization                 = surface
+
+# We get the surface pressure from a model with high resolution, assuming that for
+# the region without melt, it should be exactly -rho_s * g * z
+# (which means that p_f = 2*z)
+# TODO: We could also try doing the pressure normalization at the bottom of the model (where there is no melt)
+set Surface pressure                       = 3.938869132
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+    set Use direct solver for Stokes system = false
+    set Number of cheap Stokes solver steps = 0
+  end
+end
+
+
+############### Parameters describing the model
+# Let us here choose again a box domain
+# where we fix the temperature at the bottom and top,
+# allow free slip along the boundaries
+# and include melt migration.
+
+subsection Melt settings
+#  set Melt transport threshold = 1e-5
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 4
+    set Box origin Y coordinate = -2
+    set Y repetitions = 5
+  end
+end
+
+
+subsection Melt settings
+  set Include melt transport                  = true
+  set Use discontinuous compaction pressure   = false
+end
+
+############### Compositional fields
+# We want to use two compositional fields, the porosity and
+# an additional field, to check if the melting rate functionality
+# has the same effect as the reaction term for the other
+# compositional fields. As the porosity field is advected by
+# a different mechanism, slight differences between the fields
+# are expected.
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 2, 3
+  set Model name = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 1
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = 0, 1, 2, 3
+  set Prescribed velocity boundary indicators =
+end
+
+
+# We then choose a vertical gravity model and describe the
+# initial temperature with a vertical gradient.
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = -1.0
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 1.0
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = phi_plus = 0.001
+    set Function expression = if(y>0,phi_plus*y*y,0)
+  end
+end
+
+
+subsection Material model
+  set Model name = 1d arbogast material
+end
+
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+subsection Boundary fluid pressure model
+#  set Plugin name = PressureBdry
+  set Plugin name = density
+  subsection Density
+    set Density formulation = fluid density
+  end
+end
+
+subsection Postprocess
+
+  set List of postprocessors = composition statistics, visualization, error calculation
+  set Run postprocessors on nonlinear iterations = false
+
+  subsection Visualization
+
+    set List of output variables      = material properties, melt material properties, volumetric strain rate, reference function
+
+    subsection Melt material properties
+      set List of properties = permeability, fluid density, compaction viscosity, fluid viscosity
+    end
+
+    set Number of grouped files       = 0
+
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    #set Write higher order output     = true
+    set Interpolate output            = false
+
+  end
+
+end
