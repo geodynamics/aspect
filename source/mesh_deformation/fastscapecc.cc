@@ -176,8 +176,8 @@ namespace aspect
                     ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
 
         // Initialize the surface solution vector on the FastScape surface mesh
-        IndexSet locally_relevant_dofs_surface;
-        DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler, locally_relevant_dofs_surface);
+        const IndexSet locally_relevant_dofs_surface
+        = DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
 
         surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
                                 locally_relevant_dofs_surface,
