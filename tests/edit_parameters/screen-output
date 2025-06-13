@@ -12,7 +12,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.159 K, 10 K
-     RMS, max velocity:       1.97e-08 m/s, 7.71e-08 m/s
+     RMS, max velocity:       1.97e-08 m/s, 8.32e-08 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -23,7 +23,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.233 K, 10 K
-     RMS, max velocity:       2.46e-08 m/s, 9.27e-08 m/s
+     RMS, max velocity:       2.46e-08 m/s, 9.85e-08 m/s
 
 Signal edit_parameters triggered!
 Number of active cells: 52 (on 4 levels)
@@ -36,7 +36,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.289 K, 10 K
-     RMS, max velocity:       2.83e-08 m/s, 1.04e-07 m/s
+     RMS, max velocity:       2.83e-08 m/s, 1.09e-07 m/s
 
 Signal edit_parameters triggered!
 Number of active cells: 49 (on 4 levels)
@@ -49,7 +49,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.328 K, 10 K
-     RMS, max velocity:       3.44e-08 m/s, 1.26e-07 m/s
+     RMS, max velocity:       3.44e-08 m/s, 1.39e-07 m/s
 
 Signal edit_parameters triggered!
 Number of active cells: 52 (on 4 levels)
@@ -62,7 +62,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.357 K, 10 K
-     RMS, max velocity:       3.67e-08 m/s, 1.32e-07 m/s
+     RMS, max velocity:       3.67e-08 m/s, 1.37e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -74,7 +74,7 @@ Reducing CFL number!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.382 K, 10 K
-     RMS, max velocity:       3.85e-08 m/s, 1.35e-07 m/s
+     RMS, max velocity:       3.85e-08 m/s, 1.41e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -85,7 +85,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.393 K, 10 K
-     RMS, max velocity:       3.94e-08 m/s, 1.37e-07 m/s
+     RMS, max velocity:       3.94e-08 m/s, 1.42e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -96,7 +96,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.404 K, 10 K
-     RMS, max velocity:       4.03e-08 m/s, 1.39e-07 m/s
+     RMS, max velocity:       4.03e-08 m/s, 1.44e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -107,7 +107,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.415 K, 10 K
-     RMS, max velocity:       4.12e-08 m/s, 1.4e-07 m/s
+     RMS, max velocity:       4.12e-08 m/s, 1.45e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -118,7 +118,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.425 K, 10 K
-     RMS, max velocity:       4.23e-08 m/s, 1.42e-07 m/s
+     RMS, max velocity:       4.23e-08 m/s, 1.47e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -129,7 +129,7 @@ Signal start_timestep triggered!
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 1.435 K, 10 K
-     RMS, max velocity:       4.36e-08 m/s, 1.44e-07 m/s
+     RMS, max velocity:       4.36e-08 m/s, 1.49e-07 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 

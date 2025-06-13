@@ -12,7 +12,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
 
    Postprocessing:
      Writing graphical output: output-maximum_horizontal_compressive_stress_case_one/solution/solution-00000
-     RMS, max velocity:        0.905 m/s, 1.49 m/s
+     RMS, max velocity:        0.905 m/s, 1.5 m/s
      Topography min/max:       0 m, 0 m
      Pressure min/avg/max:     -1.693 Pa, -0.8769 Pa, -0.3025 Pa
 

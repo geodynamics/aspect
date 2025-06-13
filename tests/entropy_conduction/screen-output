@@ -26,7 +26,7 @@ Number of degrees of freedom: 6,417 (2,406+402+1,203+1,203+1,203)
 
    Postprocessing:
      Writing graphical output:           output-entropy_conduction/solution/solution-00000
-     RMS, max velocity:                  7.16e-17 m/year, 8.26e-16 m/year
+     RMS, max velocity:                  7.16e-17 m/year, 1.29e-15 m/year
      Temperature min/avg/max:            1600 K, 1833 K, 2000 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2534/2534/4.282e+13 // 3363/4376/6.588e+13
@@ -128,7 +128,7 @@ Number of degrees of freedom: 6,417 (2,406+402+1,203+1,203+1,203)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  1.64e-07 m/year, 8.46e-07 m/year
+     RMS, max velocity:                  1.64e-07 m/year, 8.42e-07 m/year
      Temperature min/avg/max:            1600 K, 1833 K, 1997 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2527/2541/4.282e+13 // 3363/4377/6.588e+13

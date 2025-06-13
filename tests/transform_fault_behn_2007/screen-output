@@ -16,7 +16,7 @@ Number of degrees of freedom: 49,097 (35,547+1,701+11,849)
 
    Postprocessing:
      Writing graphical output:           output-transform_fault_behn_2007/solution/solution-00000
-     RMS, max velocity:                  0.0127 m/year, 0.0318 m/year
+     RMS, max velocity:                  0.0127 m/year, 0.03 m/year
      Mass fluxes through boundary parts: 2.417e+11 kg/yr, 3.102e+11 kg/yr, 0 kg/yr, 0 kg/yr, -5.519e+11 kg/yr, 0 kg/yr
 
 Termination requested by criterion: end time

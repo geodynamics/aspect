@@ -13,7 +13,7 @@ Number of degrees of freedom: 89,938 (65,142+3,082+21,714)
 
    Postprocessing:
      Writing graphical output:           output-shell_3d_gmg/solution/solution-00000
-     RMS, max velocity:                  0.00203 m/year, 0.00684 m/year
+     RMS, max velocity:                  0.00203 m/year, 0.00947 m/year
      Temperature min/avg/max:            973 K, 1462 K, 1973 K
      Heat fluxes through boundary parts: -4.777e+12 W, 8.853e+12 W
      Writing depth average:              output-shell_3d_gmg/depth_average

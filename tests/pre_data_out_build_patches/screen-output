@@ -13,14 +13,14 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 pre_data_out_build_patches:
      Writing graphical output: output-pre_data_out_build_patches/solution/solution-00000
-     RMS, max velocity:        9e-09 m/s, 3.23e-08 m/s
+     RMS, max velocity:        9e-09 m/s, 3.27e-08 m/s
 
 *** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
    Solving temperature system... 4 iterations.
    Solving Stokes system (GMG)... 3+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 9e-09 m/s, 3.23e-08 m/s
+     RMS, max velocity: 9e-09 m/s, 3.27e-08 m/s
 
 Termination requested by criterion: end time
 

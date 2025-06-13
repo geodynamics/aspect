@@ -40,7 +40,7 @@ Number of degrees of freedom: 9,679 (5,631+294+1,877+1,877)
      Rayleigh number:                               0
 
      Writing graphical output: output-stokes/solution/solution-00000
-     RMS, max velocity:        1.37e-10 m/s, 1.04e-09 m/s
+     RMS, max velocity:        1.37e-10 m/s, 1.15e-09 m/s
 
 Termination requested by criterion: end time
 

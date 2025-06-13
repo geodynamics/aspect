@@ -8,7 +8,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0 K, 0.3 K, 1.2 K
-     RMS, max velocity:       0.597 m/s, 1.04 m/s
+     RMS, max velocity:       0.597 m/s, 1.05 m/s
 
 *** Timestep 1:  t=0.0153125 seconds, dt=0.0153125 seconds
    Solving temperature system... 26 iterations.
@@ -16,7 +16,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.01775 K, 0.2992 K, 0.9476 K
-     RMS, max velocity:       0.551 m/s, 0.963 m/s
+     RMS, max velocity:       0.551 m/s, 0.966 m/s
 
 *** Timestep 2:  t=0.0310195 seconds, dt=0.015707 seconds
    Solving temperature system... 22 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.03597 K, 0.2985 K, 0.8166 K
-     RMS, max velocity:       0.506 m/s, 0.879 m/s
+     RMS, max velocity:       0.506 m/s, 0.881 m/s
 
 *** Timestep 3:  t=0.046931 seconds, dt=0.0159116 seconds
    Solving temperature system... 22 iterations.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.05435 K, 0.2981 K, 0.732 K
-     RMS, max velocity:       0.462 m/s, 0.796 m/s
+     RMS, max velocity:       0.462 m/s, 0.798 m/s
 
 *** Timestep 4:  t=0.0629748 seconds, dt=0.0160437 seconds
    Solving temperature system... 22 iterations.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.07272 K, 0.2977 K, 0.6679 K
-     RMS, max velocity:       0.421 m/s, 0.717 m/s
+     RMS, max velocity:       0.421 m/s, 0.719 m/s
 
 *** Timestep 5:  t=0.0791187 seconds, dt=0.0161439 seconds
    Solving temperature system... 21 iterations.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.09085 K, 0.2975 K, 0.6157 K
-     RMS, max velocity:       0.382 m/s, 0.645 m/s
+     RMS, max velocity:       0.382 m/s, 0.646 m/s
 
 *** Timestep 6:  t=0.0953442 seconds, dt=0.0162255 seconds
    Solving temperature system... 21 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.1085 K, 0.2973 K, 0.5719 K
-     RMS, max velocity:       0.346 m/s, 0.579 m/s
+     RMS, max velocity:       0.346 m/s, 0.581 m/s
 
 *** Timestep 7:  t=0.111638 seconds, dt=0.0162939 seconds
    Solving temperature system... 20 iterations.
@@ -64,7 +64,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.1255 K, 0.2971 K, 0.5347 K
-     RMS, max velocity:       0.313 m/s, 0.52 m/s
+     RMS, max velocity:       0.313 m/s, 0.521 m/s
 
 *** Timestep 8:  t=0.12799 seconds, dt=0.0163521 seconds
    Solving temperature system... 20 iterations.
@@ -72,7 +72,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.1416 K, 0.297 K, 0.5029 K
-     RMS, max velocity:       0.283 m/s, 0.467 m/s
+     RMS, max velocity:       0.283 m/s, 0.468 m/s
 
 *** Timestep 9:  t=0.144392 seconds, dt=0.0164017 seconds
    Solving temperature system... 20 iterations.
@@ -80,7 +80,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.1566 K, 0.2969 K, 0.4757 K
-     RMS, max velocity:       0.256 m/s, 0.419 m/s
+     RMS, max velocity:       0.256 m/s, 0.421 m/s
 
 *** Timestep 10:  t=0.160836 seconds, dt=0.0164442 seconds
    Solving temperature system... 20 iterations.
@@ -88,7 +88,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Temperature min/avg/max: 0.1706 K, 0.2969 K, 0.4524 K
-     RMS, max velocity:       0.231 m/s, 0.377 m/s
+     RMS, max velocity:       0.231 m/s, 0.378 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -98,7 +98,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.1835 K, 0.2968 K, 0.4324 K
-     RMS, max velocity:       0.208 m/s, 0.338 m/s
+     RMS, max velocity:       0.208 m/s, 0.339 m/s
 
 *** Timestep 12:  t=0.193829 seconds, dt=0.0165118 seconds
    Solving temperature system... 20 iterations.
@@ -106,7 +106,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.1952 K, 0.2968 K, 0.4152 K
-     RMS, max velocity:       0.188 m/s, 0.304 m/s
+     RMS, max velocity:       0.188 m/s, 0.305 m/s
 
 *** Timestep 13:  t=0.210367 seconds, dt=0.0165387 seconds
    Solving temperature system... 20 iterations.
@@ -114,7 +114,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2059 K, 0.2967 K, 0.4004 K
-     RMS, max velocity:       0.169 m/s, 0.273 m/s
+     RMS, max velocity:       0.169 m/s, 0.274 m/s
 
 *** Timestep 14:  t=0.226929 seconds, dt=0.0165618 seconds
    Solving temperature system... 19 iterations.
@@ -122,7 +122,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2155 K, 0.2967 K, 0.3876 K
-     RMS, max velocity:       0.152 m/s, 0.245 m/s
+     RMS, max velocity:       0.152 m/s, 0.246 m/s
 
 *** Timestep 15:  t=0.243511 seconds, dt=0.0165818 seconds
    Solving temperature system... 19 iterations.
@@ -130,7 +130,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2242 K, 0.2967 K, 0.3766 K
-     RMS, max velocity:       0.137 m/s, 0.22 m/s
+     RMS, max velocity:       0.137 m/s, 0.221 m/s
 
 *** Timestep 16:  t=0.26011 seconds, dt=0.0165991 seconds
    Solving temperature system... 19 iterations.
@@ -162,7 +162,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2508 K, 0.2966 K, 0.3449 K
-     RMS, max velocity:       0.0898 m/s, 0.143 m/s
+     RMS, max velocity:       0.0898 m/s, 0.144 m/s
 
 *** Timestep 20:  t=0.326639 seconds, dt=0.0166486 seconds
    Solving temperature system... 19 iterations.
@@ -196,7 +196,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2677 K, 0.2966 K, 0.3263 K
-     RMS, max velocity:       0.0586 m/s, 0.0933 m/s
+     RMS, max velocity:       0.0586 m/s, 0.0936 m/s
 
 *** Timestep 24:  t=0.39331 seconds, dt=0.0166776 seconds
    Solving temperature system... 18 iterations.
@@ -204,7 +204,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2708 K, 0.2966 K, 0.323 K
-     RMS, max velocity:       0.0527 m/s, 0.0838 m/s
+     RMS, max velocity:       0.0527 m/s, 0.0841 m/s
 
 *** Timestep 25:  t=0.409993 seconds, dt=0.0166828 seconds
    Solving temperature system... 18 iterations.
@@ -212,7 +212,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2736 K, 0.2966 K, 0.32 K
-     RMS, max velocity:       0.0473 m/s, 0.0753 m/s
+     RMS, max velocity:       0.0473 m/s, 0.0755 m/s
 
 *** Timestep 26:  t=0.426681 seconds, dt=0.0166874 seconds
    Solving temperature system... 18 iterations.
@@ -220,7 +220,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2761 K, 0.2966 K, 0.3174 K
-     RMS, max velocity:       0.0425 m/s, 0.0676 m/s
+     RMS, max velocity:       0.0425 m/s, 0.0678 m/s
 
 *** Timestep 27:  t=0.443372 seconds, dt=0.0166915 seconds
    Solving temperature system... 18 iterations.
@@ -228,7 +228,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2783 K, 0.2966 K, 0.3151 K
-     RMS, max velocity:       0.0382 m/s, 0.0608 m/s
+     RMS, max velocity:       0.0382 m/s, 0.0609 m/s
 
 *** Timestep 28:  t=0.460067 seconds, dt=0.0166951 seconds
    Solving temperature system... 18 iterations.
@@ -236,7 +236,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2803 K, 0.2966 K, 0.3131 K
-     RMS, max velocity:       0.0343 m/s, 0.0546 m/s
+     RMS, max velocity:       0.0343 m/s, 0.0547 m/s
 
 *** Timestep 29:  t=0.476765 seconds, dt=0.0166983 seconds
    Solving temperature system... 17 iterations.
@@ -244,7 +244,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2821 K, 0.2966 K, 0.3113 K
-     RMS, max velocity:       0.0308 m/s, 0.049 m/s
+     RMS, max velocity:       0.0308 m/s, 0.0492 m/s
 
 *** Timestep 30:  t=0.493467 seconds, dt=0.0167011 seconds
    Solving temperature system... 17 iterations.
@@ -252,7 +252,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2836 K, 0.2966 K, 0.3097 K
-     RMS, max velocity:       0.0277 m/s, 0.044 m/s
+     RMS, max velocity:       0.0277 m/s, 0.0441 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -262,7 +262,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.285 K, 0.2966 K, 0.3083 K
-     RMS, max velocity:       0.0249 m/s, 0.0395 m/s
+     RMS, max velocity:       0.0249 m/s, 0.0397 m/s
 
 *** Timestep 32:  t=0.526876 seconds, dt=0.0167058 seconds
    Solving temperature system... 17 iterations.
@@ -270,7 +270,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2863 K, 0.2966 K, 0.307 K
-     RMS, max velocity:       0.0223 m/s, 0.0355 m/s
+     RMS, max velocity:       0.0223 m/s, 0.0356 m/s
 
 *** Timestep 33:  t=0.543584 seconds, dt=0.0167078 seconds
    Solving temperature system... 17 iterations.
@@ -278,7 +278,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2874 K, 0.2966 K, 0.3059 K
-     RMS, max velocity:       0.0201 m/s, 0.0319 m/s
+     RMS, max velocity:       0.0201 m/s, 0.032 m/s
 
 *** Timestep 34:  t=0.560293 seconds, dt=0.0167095 seconds
    Solving temperature system... 17 iterations.
@@ -286,7 +286,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2884 K, 0.2966 K, 0.3049 K
-     RMS, max velocity:       0.018 m/s, 0.0286 m/s
+     RMS, max velocity:       0.018 m/s, 0.0287 m/s
 
 *** Timestep 35:  t=0.577004 seconds, dt=0.0167111 seconds
    Solving temperature system... 17 iterations.
@@ -294,7 +294,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2892 K, 0.2966 K, 0.304 K
-     RMS, max velocity:       0.0162 m/s, 0.0257 m/s
+     RMS, max velocity:       0.0162 m/s, 0.0258 m/s
 
 *** Timestep 36:  t=0.593717 seconds, dt=0.0167125 seconds
    Solving temperature system... 16 iterations.
@@ -302,7 +302,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.29 K, 0.2966 K, 0.3032 K
-     RMS, max velocity:       0.0145 m/s, 0.0231 m/s
+     RMS, max velocity:       0.0145 m/s, 0.0232 m/s
 
 *** Timestep 37:  t=0.610431 seconds, dt=0.0167137 seconds
    Solving temperature system... 16 iterations.
@@ -310,7 +310,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2907 K, 0.2966 K, 0.3025 K
-     RMS, max velocity:       0.0131 m/s, 0.0207 m/s
+     RMS, max velocity:       0.0131 m/s, 0.0208 m/s
 
 *** Timestep 38:  t=0.627145 seconds, dt=0.0167148 seconds
    Solving temperature system... 16 iterations.
@@ -318,7 +318,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2913 K, 0.2966 K, 0.3019 K
-     RMS, max velocity:       0.0117 m/s, 0.0186 m/s
+     RMS, max velocity:       0.0117 m/s, 0.0187 m/s
 
 *** Timestep 39:  t=0.643861 seconds, dt=0.0167158 seconds
    Solving temperature system... 16 iterations.
@@ -326,7 +326,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2919 K, 0.2966 K, 0.3013 K
-     RMS, max velocity:       0.0105 m/s, 0.0167 m/s
+     RMS, max velocity:       0.0105 m/s, 0.0168 m/s
 
 *** Timestep 40:  t=0.660578 seconds, dt=0.0167167 seconds
    Solving temperature system... 16 iterations.
@@ -334,7 +334,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2924 K, 0.2966 K, 0.3008 K
-     RMS, max velocity:       0.00946 m/s, 0.015 m/s
+     RMS, max velocity:       0.00946 m/s, 0.0151 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -352,7 +352,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2932 K, 0.2966 K, 0.3 K
-     RMS, max velocity:       0.00763 m/s, 0.0121 m/s
+     RMS, max velocity:       0.00763 m/s, 0.0122 m/s
 
 *** Timestep 43:  t=0.710732 seconds, dt=0.0167188 seconds
    Solving temperature system... 16 iterations.
@@ -368,7 +368,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2939 K, 0.2966 K, 0.2993 K
-     RMS, max velocity:       0.00616 m/s, 0.00977 m/s
+     RMS, max velocity:       0.00616 m/s, 0.0098 m/s
 
 *** Timestep 45:  t=0.744172 seconds, dt=0.0167198 seconds
    Solving temperature system... 16 iterations.
@@ -376,7 +376,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2942 K, 0.2966 K, 0.299 K
-     RMS, max velocity:       0.00553 m/s, 0.00878 m/s
+     RMS, max velocity:       0.00553 m/s, 0.0088 m/s
 
 *** Timestep 46:  t=0.760892 seconds, dt=0.0167203 seconds
    Solving temperature system... 16 iterations.
@@ -384,7 +384,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2944 K, 0.2966 K, 0.2988 K
-     RMS, max velocity:       0.00496 m/s, 0.00788 m/s
+     RMS, max velocity:       0.00496 m/s, 0.00791 m/s
 
 *** Timestep 47:  t=0.777613 seconds, dt=0.0167207 seconds
    Solving temperature system... 16 iterations.
@@ -392,7 +392,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2947 K, 0.2966 K, 0.2985 K
-     RMS, max velocity:       0.00446 m/s, 0.00708 m/s
+     RMS, max velocity:       0.00446 m/s, 0.0071 m/s
 
 *** Timestep 48:  t=0.794334 seconds, dt=0.016721 seconds
    Solving temperature system... 15 iterations.
@@ -400,7 +400,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2949 K, 0.2966 K, 0.2983 K
-     RMS, max velocity:       0.004 m/s, 0.00636 m/s
+     RMS, max velocity:       0.004 m/s, 0.00638 m/s
 
 *** Timestep 49:  t=0.811055 seconds, dt=0.0167213 seconds
    Solving temperature system... 15 iterations.
@@ -408,7 +408,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.295 K, 0.2966 K, 0.2982 K
-     RMS, max velocity:       0.0036 m/s, 0.00571 m/s
+     RMS, max velocity:       0.0036 m/s, 0.00573 m/s
 
 *** Timestep 50:  t=0.827777 seconds, dt=0.0167216 seconds
    Solving temperature system... 15 iterations.
@@ -416,7 +416,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2952 K, 0.2966 K, 0.298 K
-     RMS, max velocity:       0.00323 m/s, 0.00513 m/s
+     RMS, max velocity:       0.00323 m/s, 0.00514 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -426,7 +426,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2954 K, 0.2966 K, 0.2979 K
-     RMS, max velocity:       0.0029 m/s, 0.0046 m/s
+     RMS, max velocity:       0.0029 m/s, 0.00462 m/s
 
 *** Timestep 52:  t=0.861221 seconds, dt=0.0167221 seconds
    Solving temperature system... 15 iterations.
@@ -434,7 +434,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2955 K, 0.2966 K, 0.2977 K
-     RMS, max velocity:       0.0026 m/s, 0.00413 m/s
+     RMS, max velocity:       0.0026 m/s, 0.00415 m/s
 
 *** Timestep 53:  t=0.877943 seconds, dt=0.0167223 seconds
    Solving temperature system... 15 iterations.
@@ -442,7 +442,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2956 K, 0.2966 K, 0.2976 K
-     RMS, max velocity:       0.00234 m/s, 0.00371 m/s
+     RMS, max velocity:       0.00234 m/s, 0.00372 m/s
 
 *** Timestep 54:  t=0.894665 seconds, dt=0.0167225 seconds
    Solving temperature system... 15 iterations.
@@ -450,7 +450,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2957 K, 0.2966 K, 0.2975 K
-     RMS, max velocity:       0.0021 m/s, 0.00333 m/s
+     RMS, max velocity:       0.0021 m/s, 0.00335 m/s
 
 *** Timestep 55:  t=0.911388 seconds, dt=0.0167227 seconds
    Solving temperature system... 15 iterations.
@@ -458,7 +458,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2958 K, 0.2966 K, 0.2974 K
-     RMS, max velocity:       0.00189 m/s, 0.00299 m/s
+     RMS, max velocity:       0.00189 m/s, 0.003 m/s
 
 *** Timestep 56:  t=0.928111 seconds, dt=0.0167228 seconds
    Solving temperature system... 15 iterations.
@@ -466,7 +466,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2959 K, 0.2966 K, 0.2973 K
-     RMS, max velocity:       0.00169 m/s, 0.00269 m/s
+     RMS, max velocity:       0.00169 m/s, 0.0027 m/s
 
 *** Timestep 57:  t=0.944834 seconds, dt=0.0167229 seconds
    Solving temperature system... 15 iterations.
@@ -482,7 +482,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.296 K, 0.2966 K, 0.2972 K
-     RMS, max velocity:       0.00137 m/s, 0.00217 m/s
+     RMS, max velocity:       0.00137 m/s, 0.00218 m/s
 
 *** Timestep 59:  t=0.97828 seconds, dt=0.0167232 seconds
    Solving temperature system... 14 iterations.
@@ -508,7 +508,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2962 K, 0.2966 K, 0.297 K
-     RMS, max velocity:       0.000989 m/s, 0.00157 m/s
+     RMS, max velocity:       0.000989 m/s, 0.00158 m/s
 
 *** Timestep 62:  t=1.02845 seconds, dt=0.0167234 seconds
    Solving temperature system... 14 iterations.
@@ -516,7 +516,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2962 K, 0.2966 K, 0.297 K
-     RMS, max velocity:       0.000889 m/s, 0.00141 m/s
+     RMS, max velocity:       0.000889 m/s, 0.00142 m/s
 
 *** Timestep 63:  t=1.04517 seconds, dt=0.0167235 seconds
    Solving temperature system... 14 iterations.
@@ -548,7 +548,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
-     RMS, max velocity:       0.000578 m/s, 0.000918 m/s
+     RMS, max velocity:       0.000578 m/s, 0.00092 m/s
 
 *** Timestep 67:  t=1.11207 seconds, dt=0.0167237 seconds
    Solving temperature system... 13 iterations.
@@ -556,7 +556,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
-     RMS, max velocity:       0.000519 m/s, 0.000824 m/s
+     RMS, max velocity:       0.000519 m/s, 0.000827 m/s
 
 *** Timestep 68:  t=1.12879 seconds, dt=0.0167237 seconds
    Solving temperature system... 13 iterations.
@@ -564,7 +564,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
-     RMS, max velocity:       0.000466 m/s, 0.00074 m/s
+     RMS, max velocity:       0.000466 m/s, 0.000742 m/s
 
 *** Timestep 69:  t=1.14552 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
@@ -572,7 +572,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
-     RMS, max velocity:       0.000419 m/s, 0.000665 m/s
+     RMS, max velocity:       0.000419 m/s, 0.000667 m/s
 
 *** Timestep 70:  t=1.16224 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
@@ -580,7 +580,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2964 K, 0.2966 K, 0.2968 K
-     RMS, max velocity:       0.000376 m/s, 0.000597 m/s
+     RMS, max velocity:       0.000376 m/s, 0.000599 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -590,7 +590,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.000338 m/s, 0.000536 m/s
+     RMS, max velocity:       0.000338 m/s, 0.000538 m/s
 
 *** Timestep 72:  t=1.19569 seconds, dt=0.0167238 seconds
    Solving temperature system... 13 iterations.
@@ -598,7 +598,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.000303 m/s, 0.000481 m/s
+     RMS, max velocity:       0.000303 m/s, 0.000483 m/s
 
 *** Timestep 73:  t=1.21241 seconds, dt=0.0167239 seconds
    Solving temperature system... 13 iterations.
@@ -606,7 +606,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.000272 m/s, 0.000432 m/s
+     RMS, max velocity:       0.000272 m/s, 0.000434 m/s
 
 *** Timestep 74:  t=1.22913 seconds, dt=0.0167239 seconds
    Solving temperature system... 13 iterations.
@@ -614,7 +614,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.000244 m/s, 0.000388 m/s
+     RMS, max velocity:       0.000244 m/s, 0.000389 m/s
 
 *** Timestep 75:  t=1.24586 seconds, dt=0.0167239 seconds
    Solving temperature system... 13 iterations.
@@ -622,7 +622,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.00022 m/s, 0.000349 m/s
+     RMS, max velocity:       0.00022 m/s, 0.00035 m/s
 
 *** Timestep 76:  t=1.26258 seconds, dt=0.0167239 seconds
    Solving temperature system... 12 iterations.
@@ -630,7 +630,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.000197 m/s, 0.000313 m/s
+     RMS, max velocity:       0.000197 m/s, 0.000314 m/s
 
 *** Timestep 77:  t=1.27931 seconds, dt=0.0167239 seconds
    Solving temperature system... 12 iterations.
@@ -638,7 +638,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.000177 m/s, 0.000281 m/s
+     RMS, max velocity:       0.000177 m/s, 0.000282 m/s
 
 *** Timestep 78:  t=1.29603 seconds, dt=0.0167239 seconds
    Solving temperature system... 12 iterations.
@@ -646,7 +646,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2965 K, 0.2966 K, 0.2967 K
-     RMS, max velocity:       0.000159 m/s, 0.000252 m/s
+     RMS, max velocity:       0.000159 m/s, 0.000253 m/s
 
 *** Timestep 79:  t=1.31275 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
@@ -680,7 +680,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       0.000103 m/s, 0.000164 m/s
+     RMS, max velocity:       0.000103 m/s, 0.000165 m/s
 
 *** Timestep 83:  t=1.37965 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
@@ -688,7 +688,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       9.29e-05 m/s, 0.000147 m/s
+     RMS, max velocity:       9.29e-05 m/s, 0.000148 m/s
 
 *** Timestep 84:  t=1.39637 seconds, dt=0.016724 seconds
    Solving temperature system... 12 iterations.
@@ -696,7 +696,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       8.34e-05 m/s, 0.000132 m/s
+     RMS, max velocity:       8.34e-05 m/s, 0.000133 m/s
 
 *** Timestep 85:  t=1.4131 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
@@ -720,7 +720,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       6.04e-05 m/s, 9.59e-05 m/s
+     RMS, max velocity:       6.04e-05 m/s, 9.62e-05 m/s
 
 *** Timestep 88:  t=1.46327 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
@@ -728,7 +728,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       5.42e-05 m/s, 8.61e-05 m/s
+     RMS, max velocity:       5.42e-05 m/s, 8.64e-05 m/s
 
 *** Timestep 89:  t=1.47999 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
@@ -736,7 +736,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       4.87e-05 m/s, 7.73e-05 m/s
+     RMS, max velocity:       4.87e-05 m/s, 7.76e-05 m/s
 
 *** Timestep 90:  t=1.49672 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
@@ -744,7 +744,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       4.37e-05 m/s, 6.95e-05 m/s
+     RMS, max velocity:       4.37e-05 m/s, 6.97e-05 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -754,7 +754,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       3.93e-05 m/s, 6.24e-05 m/s
+     RMS, max velocity:       3.93e-05 m/s, 6.26e-05 m/s
 
 *** Timestep 92:  t=1.53017 seconds, dt=0.016724 seconds
    Solving temperature system... 11 iterations.
@@ -762,7 +762,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       3.53e-05 m/s, 5.6e-05 m/s
+     RMS, max velocity:       3.53e-05 m/s, 5.62e-05 m/s
 
 *** Timestep 93:  t=1.54689 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -770,7 +770,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       3.17e-05 m/s, 5.03e-05 m/s
+     RMS, max velocity:       3.17e-05 m/s, 5.05e-05 m/s
 
 *** Timestep 94:  t=1.56361 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -778,7 +778,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.85e-05 m/s, 4.52e-05 m/s
+     RMS, max velocity:       2.85e-05 m/s, 4.53e-05 m/s
 
 *** Timestep 95:  t=1.58034 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -786,7 +786,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.56e-05 m/s, 4.06e-05 m/s
+     RMS, max velocity:       2.56e-05 m/s, 4.07e-05 m/s
 
 *** Timestep 96:  t=1.59706 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -794,7 +794,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.29e-05 m/s, 3.64e-05 m/s
+     RMS, max velocity:       2.29e-05 m/s, 3.65e-05 m/s
 
 *** Timestep 97:  t=1.61379 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -802,7 +802,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.06e-05 m/s, 3.27e-05 m/s
+     RMS, max velocity:       2.06e-05 m/s, 3.28e-05 m/s
 
 *** Timestep 98:  t=1.63051 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -810,7 +810,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       1.85e-05 m/s, 2.94e-05 m/s
+     RMS, max velocity:       1.85e-05 m/s, 2.95e-05 m/s
 
 *** Timestep 99:  t=1.64723 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -818,7 +818,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       1.66e-05 m/s, 2.64e-05 m/s
+     RMS, max velocity:       1.66e-05 m/s, 2.65e-05 m/s
 
 *** Timestep 100:  t=1.66396 seconds, dt=0.016724 seconds
    Solving temperature system... 10 iterations.
@@ -826,7 +826,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       1.49e-05 m/s, 2.37e-05 m/s
+     RMS, max velocity:       1.49e-05 m/s, 2.38e-05 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -847,7 +847,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       1.2e-05 m/s, 1.91e-05 m/s
+     RMS, max velocity:       1.2e-05 m/s, 1.92e-05 m/s
 
 *** Timestep 103:  t=1.71413 seconds, dt=0.0167241 seconds
    Solving temperature system... 10 iterations.
@@ -863,7 +863,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       9.71e-06 m/s, 1.54e-05 m/s
+     RMS, max velocity:       9.71e-06 m/s, 1.55e-05 m/s
 
 *** Timestep 105:  t=1.74758 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -871,7 +871,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       8.72e-06 m/s, 1.38e-05 m/s
+     RMS, max velocity:       8.72e-06 m/s, 1.39e-05 m/s
 
 *** Timestep 106:  t=1.7643 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -879,7 +879,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       7.83e-06 m/s, 1.24e-05 m/s
+     RMS, max velocity:       7.83e-06 m/s, 1.25e-05 m/s
 
 *** Timestep 107:  t=1.78103 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -895,7 +895,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       6.31e-06 m/s, 1e-05 m/s
+     RMS, max velocity:       6.31e-06 m/s, 1.01e-05 m/s
 
 *** Timestep 109:  t=1.81447 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -903,7 +903,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       5.67e-06 m/s, 9e-06 m/s
+     RMS, max velocity:       5.67e-06 m/s, 9.03e-06 m/s
 
 *** Timestep 110:  t=1.8312 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -911,7 +911,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       5.09e-06 m/s, 8.08e-06 m/s
+     RMS, max velocity:       5.09e-06 m/s, 8.11e-06 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 
@@ -921,7 +921,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       4.57e-06 m/s, 7.26e-06 m/s
+     RMS, max velocity:       4.57e-06 m/s, 7.28e-06 m/s
 
 *** Timestep 112:  t=1.86465 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -929,7 +929,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       4.11e-06 m/s, 6.52e-06 m/s
+     RMS, max velocity:       4.11e-06 m/s, 6.54e-06 m/s
 
 *** Timestep 113:  t=1.88137 seconds, dt=0.0167241 seconds
    Solving temperature system... 9 iterations.
@@ -937,7 +937,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       3.69e-06 m/s, 5.85e-06 m/s
+     RMS, max velocity:       3.69e-06 m/s, 5.87e-06 m/s
 
 *** Timestep 114:  t=1.8981 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
@@ -945,7 +945,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       3.31e-06 m/s, 5.26e-06 m/s
+     RMS, max velocity:       3.31e-06 m/s, 5.27e-06 m/s
 
 *** Timestep 115:  t=1.91482 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
@@ -953,7 +953,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.97e-06 m/s, 4.72e-06 m/s
+     RMS, max velocity:       2.97e-06 m/s, 4.74e-06 m/s
 
 *** Timestep 116:  t=1.93154 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
@@ -961,7 +961,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.67e-06 m/s, 4.24e-06 m/s
+     RMS, max velocity:       2.67e-06 m/s, 4.25e-06 m/s
 
 *** Timestep 117:  t=1.94827 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
@@ -969,7 +969,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.4e-06 m/s, 3.81e-06 m/s
+     RMS, max velocity:       2.4e-06 m/s, 3.82e-06 m/s
 
 *** Timestep 118:  t=1.96499 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
@@ -977,7 +977,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       2.15e-06 m/s, 3.42e-06 m/s
+     RMS, max velocity:       2.15e-06 m/s, 3.43e-06 m/s
 
 *** Timestep 119:  t=1.98172 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
@@ -985,7 +985,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       1.93e-06 m/s, 3.07e-06 m/s
+     RMS, max velocity:       1.93e-06 m/s, 3.08e-06 m/s
 
 *** Timestep 120:  t=1.99844 seconds, dt=0.0167241 seconds
    Solving temperature system... 8 iterations.
@@ -993,7 +993,7 @@ Skipping mesh refinement, because the mesh did not change.
 
    Postprocessing:
      Temperature min/avg/max: 0.2966 K, 0.2966 K, 0.2966 K
-     RMS, max velocity:       1.74e-06 m/s, 2.76e-06 m/s
+     RMS, max velocity:       1.74e-06 m/s, 2.77e-06 m/s
 
 Skipping mesh refinement, because the mesh did not change.
 

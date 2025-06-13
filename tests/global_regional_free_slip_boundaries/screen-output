@@ -7,7 +7,7 @@ Number of degrees of freedom: 116 (81+8+27)
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 5.13 m/year, 12.3 m/year
+     RMS, max velocity: 5.13 m/year, 35.2 m/year
 
 Termination requested by criterion: end time
 

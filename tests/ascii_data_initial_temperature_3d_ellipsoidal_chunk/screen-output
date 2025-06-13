@@ -11,7 +11,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 35+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.97 m/year, 15.6 m/year
+     RMS, max velocity:                  6.97 m/year, 19.7 m/year
      Temperature min/avg/max:            0 K, 74.16 K, 100 K
      Heat fluxes through boundary parts: -1.432e+14 W, 0 W, -2.925e+13 W, 0 W, -3.261e+13 W, 2.643e+14 W
 
@@ -21,7 +21,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 22+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            8.435 K, 74.07 K, 100.6 K
      Heat fluxes through boundary parts: -1.446e+14 W, 0 W, -2.892e+13 W, 0 W, -3.692e+13 W, 2.892e+14 W
 
@@ -31,7 +31,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 19+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            15.29 K, 73.98 K, 101 K
      Heat fluxes through boundary parts: -1.457e+14 W, 0 W, -2.856e+13 W, 0 W, -4.079e+13 W, 3.037e+14 W
 
@@ -41,7 +41,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 19+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            20.98 K, 73.91 K, 101.6 K
      Heat fluxes through boundary parts: -1.467e+14 W, 0 W, -2.817e+13 W, 0 W, -4.449e+13 W, 3.103e+14 W
 
@@ -51,7 +51,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            25.87 K, 73.85 K, 102.1 K
      Heat fluxes through boundary parts: -1.474e+14 W, 0 W, -2.778e+13 W, 0 W, -4.809e+13 W, 3.127e+14 W
 
@@ -61,7 +61,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            30.11 K, 73.8 K, 102.2 K
      Heat fluxes through boundary parts: -1.48e+14 W, 0 W, -2.739e+13 W, 0 W, -5.154e+13 W, 3.13e+14 W
 
@@ -71,7 +71,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            33.77 K, 73.77 K, 102 K
      Heat fluxes through boundary parts: -1.486e+14 W, 0 W, -2.701e+13 W, 0 W, -5.477e+13 W, 3.124e+14 W
 
@@ -81,7 +81,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            36.93 K, 73.76 K, 101.6 K
      Heat fluxes through boundary parts: -1.491e+14 W, 0 W, -2.665e+13 W, 0 W, -5.771e+13 W, 3.114e+14 W
 
@@ -91,7 +91,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            39.67 K, 73.75 K, 101.1 K
      Heat fluxes through boundary parts: -1.496e+14 W, 0 W, -2.633e+13 W, 0 W, -6.037e+13 W, 3.1e+14 W
 
@@ -101,7 +101,7 @@ Number of degrees of freedom: 527 (375+27+125)
    Solving Stokes system (AMG)... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  6.96 m/year, 15.6 m/year
+     RMS, max velocity:                  6.96 m/year, 19.7 m/year
      Temperature min/avg/max:            40.87 K, 73.75 K, 100.9 K
      Heat fluxes through boundary parts: -1.499e+14 W, 0 W, -2.618e+13 W, 0 W, -6.157e+13 W, 3.093e+14 W
 

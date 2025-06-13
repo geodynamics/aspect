@@ -13,7 +13,7 @@ Number of degrees of freedom: 792 (480+72+240)
      Consider reducing the number of depth layers for averaging.
 
      Writing graphical output:           output-bunge_cookbook/solution/solution-00000
-     RMS, max velocity:                  0.000302 m/year, 0.000728 m/year
+     RMS, max velocity:                  0.000302 m/year, 0.000769 m/year
      Temperature min/avg/max:            1060 K, 2139 K, 3450 K
      Heat fluxes through boundary parts: -7.43e+04 W, 1.868e+05 W
      Writing depth average:              output-bunge_cookbook/depth_average
@@ -23,7 +23,7 @@ Number of degrees of freedom: 792 (480+72+240)
    Solving Stokes system (GMG)... 5+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.000302 m/year, 0.000728 m/year
+     RMS, max velocity:                  0.000302 m/year, 0.000769 m/year
      Temperature min/avg/max:            1060 K, 2139 K, 3450 K
      Heat fluxes through boundary parts: -6.129e+04 W, 1.681e+05 W
 

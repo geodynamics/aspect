@@ -8,7 +8,7 @@ Number of degrees of freedom: 2,266 (578+162+578+81+289+289+289)
    Skipping peridotite composition solve because RHS is zero.
 
    Postprocessing:
-     RMS, max velocity:             1.08 m/s, 1.97 m/s
+     RMS, max velocity:             1.08 m/s, 2 m/s
      Temperature min/avg/max:       0 K, 0.5014 K, 1 K
      Heating rate (average/total):  2.111 W/kg, 2.111 W
 

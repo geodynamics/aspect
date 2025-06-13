@@ -9,7 +9,7 @@ Number of degrees of freedom: 21,762 (12,675+637+4,225+4,225)
    Solving Stokes system (AMG)... 37+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        0.00358 m/year, 0.00759 m/year
+     RMS, max velocity:        0.00358 m/year, 0.00811 m/year
      Writing graphical output: output-lithosphere_boundary_indicator_3d_periodic/solution/solution-00000
 
 Termination requested by criterion: end time

@@ -9,7 +9,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00000
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0243 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0245 m/year
 
 *** Timestep 1:  t=6.89524e+06 years, dt=6.89524e+06 years
    Solving temperature system... 9 iterations.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00001
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0242 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0244 m/year
 
 *** Timestep 2:  t=1.38243e+07 years, dt=6.9291e+06 years
    Solving temperature system... 9 iterations.
@@ -27,7 +27,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00002
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0243 m/year
 
 *** Timestep 3:  t=2.07767e+07 years, dt=6.95238e+06 years
    Solving temperature system... 8 iterations.
@@ -36,7 +36,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00003
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.024 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0242 m/year
 
 *** Snapshot output1.tmp/restart/01/ created!
 
@@ -47,7 +47,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00004
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0239 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
 
 *** Timestep 5:  t=3e+07 years, dt=2.24601e+06 years
    Solving temperature system... 5 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output1.tmp/solution/solution-00005
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0239 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
 
 Termination requested by criterion: end time
 

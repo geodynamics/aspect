@@ -93,7 +93,7 @@ Number of mesh deformation degrees of freedom: 9,288
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -9.313e-10 m, 9.313e-10 m
-     RMS, max velocity:         3.44e-05 m/year, 0.000282 m/year
+     RMS, max velocity:         3.44e-05 m/year, 0.000527 m/year
 
 
 
