@@ -1560,10 +1560,7 @@ namespace aspect
         stokes_krylov_type = StokesKrylovType::parse(prm.get("Krylov method for cheap solver steps"));
         idr_s_parameter    = prm.get_integer("IDR(s) parameter");
 
-        if (stokes_solver_type == StokesSolverType::block_gmg)
-          {
-            stokes_gmg_type = StokesGMGType::parse(prm.get("Stokes GMG type"));
-          }
+        stokes_gmg_type = StokesGMGType::parse(prm.get("Stokes GMG type"));
 
         linear_stokes_solver_tolerance  = prm.get_double ("Linear solver tolerance");
         n_cheap_stokes_solver_steps     = prm.get_integer ("Number of cheap Stokes solver steps");
