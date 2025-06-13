@@ -35,34 +35,56 @@ namespace aspect
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
-      const unsigned int n_q_points = quadrature_formula.size();
+      const QIterated<dim> quadrature_formula_trapz (QTrapezoid<1>(),
+                                                     this->get_parameters().stokes_velocity_degree);
+      const unsigned int n_q_trapz_points = quadrature_formula_trapz.size();
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_quadrature_points |
-                               update_JxW_values);
-      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
+      const Quadrature<dim> &quadrature_formula_face = this->introspection().quadratures.velocities;
+      const unsigned int n_q_face_points = quadrature_formula_face.size();
 
+      FEValues<dim> fe_values_trapz (this->get_mapping(),
+                                     this->get_fe(),
+                                     quadrature_formula_trapz,
+                                     update_values   |
+                                     update_quadrature_points |
+                                     update_JxW_values);
+
+      FEValues<dim> face_fe_values (this->get_mapping(),
+                                    this->get_fe(),
+                                    quadrature_formula_face,
+                                    update_values   |
+                                    update_quadrature_points |
+                                    update_JxW_values);
+
+      std::vector<Tensor<1,dim>> face_velocity_values(n_q_face_points);
+      std::vector<Tensor<1,dim>> trapz_velocity_values(n_q_trapz_points);
+    
       double local_velocity_square_integral = 0;
       double local_max_velocity = 0;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                        velocity_values);
-            for (unsigned int q = 0; q < n_q_points; ++q)
-              {
-                local_velocity_square_integral += ((velocity_values[q] * velocity_values[q]) *
-                                                   fe_values.JxW(q));
-                local_max_velocity = std::max (std::sqrt(velocity_values[q]*velocity_values[q]),
-                                               local_max_velocity);
+        {
+          if (cell->is_locally_owned())
+            {
+              face_fe_values.reinit (cell);
+              face_fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                          face_velocity_values);
+              fe_values_trapz.reinit (cell);
+              fe_values_trapz[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                          trapz_velocity_values);
+              for (unsigned int q = 0; q < n_q_face_points; ++q)
+                {
+                  local_velocity_square_integral += ((face_velocity_values[q] * face_velocity_values[q]) *
+                                                    face_fe_values.JxW(q));
+                }
+
+                for (unsigned int q = 0; q < n_q_trapz_points; ++q)
+                  {
+                    local_max_velocity = std::max (std::sqrt(trapz_velocity_values[q]*trapz_velocity_values[q]),
+                                                  local_max_velocity);
+                  }
               }
-          }
+        }
 
       const double global_velocity_square_integral
         = Utilities::MPI::sum (local_velocity_square_integral, this->get_mpi_communicator());
