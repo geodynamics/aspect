@@ -60,8 +60,6 @@ subsection Mesh deformation
     # As the highest resolution at the surface is 4 in the mesh refinement function, we set this the same.
     set Maximum surface refinement level = 1
 
-    set
-
     # Because we only have the same level across the entire surface we set this to zero.
     # If we had multiple resolutions, e.g. 3 different cell sizes at the surface,
     # this would be set to 2 (number of cell sizes at surface - 1).
