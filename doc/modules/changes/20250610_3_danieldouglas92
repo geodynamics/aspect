@@ -1,5 +1,6 @@
 Fixed: The evaluation of the min/max melt fraction in
-melt_statistics were incorrectly being done at Gauss
-points.
+melt_statistics and in pressure_statistics were incorrectly
+being done at the Gauss points. Use a Gauss-Lobatto quadrature
+instead for computing the min/max and the integral over each cell.
 <br>
 (Daniel Douglas, 2025/06/12)
