@@ -190,6 +190,15 @@
 #include <vector>
 #include <map>
 
+namespace openlem {
+//#define SHAREDSP
+//#define CHANNEL
+//#define DEPOS
+//#define LAYERS 3
+//#define LAKES
+//#define ICE
+//#define PRECIP
+
 #ifdef ICE
 #define SHAREDSP
 #define BUFFERS
@@ -3190,3 +3199,4 @@ class Lake
   }
 
 };
+	   }
