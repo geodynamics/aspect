@@ -405,6 +405,7 @@ namespace aspect
                                             + std::to_string(rotation_matrix[1][0]) + " " + std::to_string(rotation_matrix[1][1]) + " " + std::to_string(rotation_matrix[1][2]) + "\n"
                                             + std::to_string(rotation_matrix[2][0]) + " " + std::to_string(rotation_matrix[2][1]) + " " + std::to_string(rotation_matrix[2][2])));
                         }
+                        set_rotation_matrix_grains(data_position,data,mineral_i,grain_i,rotation_matrix);
                   }
               }
             ++p;
