@@ -181,7 +181,7 @@ namespace aspect
     LatentHeatMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       if (this->include_melt_transport() && retrieve_entropy_change_from_material_model
-          && outputs.template get_additional_output_object<MaterialModel::EnthalpyOutputs<dim>>() == nullptr)
+          && outputs.template has_additional_output_object<MaterialModel::EnthalpyOutputs<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::EnthalpyOutputs<dim>> (outputs.n_evaluation_points()));

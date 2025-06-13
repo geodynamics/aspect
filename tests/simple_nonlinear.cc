@@ -137,7 +137,7 @@ namespace aspect
     MaterialModelOutputs<dim> out_base(5,3);
     MaterialModelOutputs<dim> out_dviscositydstrainrate(5,3);
 
-    if (out_base.template get_additional_output_object<MaterialModelDerivatives<dim>>() != nullptr)
+    if (out_base.template has_additional_output_object<MaterialModelDerivatives<dim>>())
       throw "error";
 
     out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim>> (5));

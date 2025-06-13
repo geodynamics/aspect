@@ -476,6 +476,19 @@ namespace aspect
         get_additional_input() const;
 
         /**
+         * Given an additional material model input class as explicitly specified
+         * by the template argument, return whether the current object stores
+         * such an additional material model input object. If so, the
+         * get_additional_input_object() function will return a non-null pointer.
+         *
+         * If the input does not exist, i.e., if there is no additional input
+         * object of the specified type, then this function will return false.
+         */
+        template <class AdditionalInputType>
+        bool
+        has_additional_input_object() const;
+
+        /**
          * Vector of shared pointers to additional material model input
          * objects that can be added to MaterialModelInputs. By default,
          * no inputs are added.
@@ -681,6 +694,19 @@ namespace aspect
         DEAL_II_DEPRECATED
         const AdditionalOutputType *
         get_additional_output() const;
+
+        /**
+         * Given an additional material model output class as explicitly specified
+         * by the template argument, return whether the current object stores
+         * such an additional material model output object. If so, the
+         * get_additional_output_object() function will return a non-null pointer.
+         *
+         * If the output does not exist, i.e., if there is no additional output
+         * object of the specified type, then this function will return false.
+         */
+        template <class AdditionalInputType>
+        bool
+        has_additional_output_object() const;
 
         /**
          * Steal the additional outputs from @p other. The destination (@p
@@ -1585,6 +1611,33 @@ namespace aspect
     {
       return get_additional_output_object<AdditionalOutputType>().get();
     }
+
+
+    template <int dim>
+    template <class AdditionalInputType>
+    bool
+    MaterialModelInputs<dim>::has_additional_input_object() const
+    {
+      for (unsigned int i=0; i<additional_inputs.size(); ++i)
+        if (dynamic_cast<AdditionalInputType *> (additional_inputs[i].get()))
+          return true;
+
+      return false;
+    }
+
+
+    template <int dim>
+    template <class AdditionalOutputType>
+    bool
+    MaterialModelOutputs<dim>::has_additional_output_object() const
+    {
+      for (unsigned int i=0; i<additional_outputs.size(); ++i)
+        if (dynamic_cast<const AdditionalOutputType *> (additional_outputs[i].get()))
+          return true;
+
+      return false;
+    }
+
 
 
     template <int dim>

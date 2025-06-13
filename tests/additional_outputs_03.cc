@@ -107,7 +107,7 @@ namespace aspect
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
-        if (out.template get_additional_output_object<MaterialModel::AdditionalOutputs1<dim>>() != nullptr)
+        if (out.template has_additional_output_object<MaterialModel::AdditionalOutputs1<dim>>())
           return;
 
         std::cout << "   creating additional output!" << std::endl;

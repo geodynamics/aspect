@@ -282,7 +282,7 @@ namespace aspect
     create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       if (this->get_parameters().enable_elasticity &&
-          outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == nullptr)
+          outputs.template has_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::ElasticOutputs<dim>> (outputs.n_evaluation_points()));
@@ -590,7 +590,7 @@ namespace aspect
       const unsigned int n_points = outputs.n_evaluation_points();
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
+          && outputs.template has_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
@@ -602,7 +602,7 @@ namespace aspect
              == n_points, ExcInternalError());
 
       if ((this->get_parameters().enable_elasticity) &&
-          outputs.template get_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == nullptr)
+          outputs.template has_additional_output_object<MaterialModel::ElasticOutputs<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
@@ -615,7 +615,7 @@ namespace aspect
 
       // prescribed dilation:
       if (this->get_parameters().enable_prescribed_dilation
-          && outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
+          && outputs.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>> (n_points));

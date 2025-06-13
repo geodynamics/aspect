@@ -824,7 +824,7 @@ namespace aspect
       void
       ViscoPlastic<dim>::create_plastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>() == nullptr)
+        if (out.template has_additional_output_object<PlasticAdditionalOutputs<dim>>() == false)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
