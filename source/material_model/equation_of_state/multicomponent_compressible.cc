@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -84,37 +84,81 @@ namespace aspect
       {
         prm.declare_entry ("Reference temperatures", "298.15",
                            Patterns::Anything(),
-                           "List of reference temperatures $T_0$ for background and compositional fields,"
-                           "for a total of N+P+1 values, where N is the number of compositional fields and P is the number of phases. "
-                           "If only one value is given, then all use the same value. Units: \\si{\\kelvin}.");
+                           "List of reference temperatures $T_0$ for background and compositional fields (N), "
+                           "for a total of N+1 values for models with no phase transitions (or models where the "
+                           "value does not change across any of the phase transitions). For models with phase "
+                           "transitions, the list needs to contain each field name, including the background, for "
+                           "a total of N+1 names, and for each of these names, specify the value for each phase "
+                           "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                           "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                           "the total number of phase transitions, summed over all phases. The format is "
+                           "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                           "If only one value is given, then all fields/phases use the same value. "
+                           "Units: \\si{\\kelvin}.");
         prm.declare_entry ("Reference densities", "3300.",
                            Patterns::Anything(),
-                           "List of densities for background and compositional fields,"
-                           "for a total of N+P+1 values, where N is the number of compositional fields and P is the number of phases. "
-                           "If only one value is given, then all use the same value. "
+                           "List of reference densities $T_0$ for background and compositional fields (N), "
+                           "for a total of N+1 values for models with no phase transitions (or models where the "
+                           "value does not change across any of the phase transitions). For models with phase "
+                           "transitions, the list needs to contain each field name, including the background, for "
+                           "a total of N+1 names, and for each of these names, specify the value for each phase "
+                           "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                           "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                           "the total number of phase transitions, summed over all phases. The format is "
+                           "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                           "If only one value is given, then all fields/phases use the same value. "
                            "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
         prm.declare_entry ("Reference isothermal compressibilities", "4e-12",
                            Patterns::Anything(),
-                           "List of isothermal compressibilities for background and compositional fields,"
-                           "for a total of N+P+1 values, where N is the number of compositional fields and P is the number of phases. "
-                           "If only one value is given, then all use the same value. "
+                           "List of isothermal compressibilities for background and compositional fields (N), "
+                           "for a total of N+1 values for models with no phase transitions (or models where the "
+                           "value does not change across any of the phase transitions). For models with phase "
+                           "transitions, the list needs to contain each field name, including the background, for "
+                           "a total of N+1 names, and for each of these names, specify the value for each phase "
+                           "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                           "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                           "the total number of phase transitions, summed over all phases. The format is "
+                           "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                           "If only one value is given, then all fields/phases use the same value. "
                            "Units: \\si{\\per\\pascal}.");
         prm.declare_entry ("Isothermal bulk modulus pressure derivatives", "4.",
                            Patterns::Anything(),
-                           "List of isothermal pressure derivatives of the bulk moduli for mantle and compositional fields,"
-                           "for a total of N+P+1 values, where N is the number of compositional fields and P is the number of phases. "
-                           "If only one value is given, then all use the same value. "
+                           "List of isothermal bulk modulus pressure derivatives for background and compositional fields (N), "
+                           "for a total of N+1 values for models with no phase transitions (or models where the "
+                           "value does not change across any of the phase transitions). For models with phase "
+                           "transitions, the list needs to contain each field name, including the background, for "
+                           "a total of N+1 names, and for each of these names, specify the value for each phase "
+                           "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                           "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                           "the total number of phase transitions, summed over all phases. The format is "
+                           "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                           "If only one value is given, then all fields/phases use the same value. "
                            "Units: [].");
         prm.declare_entry ("Reference thermal expansivities", "4.e-5",
                            Patterns::Anything(),
-                           "List of thermal expansivities for background and compositional fields,"
-                           "for a total of N+P+1 values, where N is the number of compositional fields and P is the number of phases. "
-                           "If only one value is given, then all use the same value. Units: \\si{\\per\\kelvin}.");
+                           "List of reference thermal expansivities for background and compositional fields (N), "
+                           "for a total of N+1 values for models with no phase transitions (or models where the "
+                           "value does not change across any of the phase transitions). For models with phase "
+                           "transitions, the list needs to contain each field name, including the background, for "
+                           "a total of N+1 names, and for each of these names, specify the value for each phase "
+                           "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                           "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                           "the total number of phase transitions, summed over all phases. The format is "
+                           "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                           "If only one value is given, then all fields/phases use the same value. "
+                           "Units: \\si{\\per\\kelvin}.");
         prm.declare_entry ("Isochoric specific heats", "1250.",
                            Patterns::Anything(),
-                           "List of isochoric specific heats $C_v$ for background and compositional fields,"
-                           "for a total of N+P+1 values, where N is the number of compositional fields and P is the number of phases. "
-                           "If only one value is given, then all use the same value. "
+                           "List of isochoric specific heats for background and compositional fields (N), "
+                           "for a total of N+1 values for models with no phase transitions (or models where the "
+                           "value does not change across any of the phase transitions). For models with phase "
+                           "transitions, the list needs to contain each field name, including the background, for "
+                           "a total of N+1 names, and for each of these names, specify the value for each phase "
+                           "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                           "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                           "the total number of phase transitions, summed over all phases. The format is "
+                           "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                           "If only one value is given, then all fields/phases use the same value. "
                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
       }
 

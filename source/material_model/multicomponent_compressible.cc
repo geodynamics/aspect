@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -76,7 +76,7 @@ namespace aspect
               phase_function_values[j] = phase_function.compute_value(phase_inputs);
             }
 
-          // Average by value of gamma function to get value of compositions
+          // Average by value of the phase function to get value of compositions
           phase_average_equation_of_state_outputs(eos_outputs_all_phases,
                                                   phase_function_values,
                                                   n_phase_transitions_for_each_chemical_composition,
@@ -113,8 +113,7 @@ namespace aspect
 
           // User-defined volume fraction averaging of viscosities
           if (in.requests_property(MaterialProperties::viscosity) || in.requests_property(MaterialProperties::additional_outputs) ||
-              (this->get_parameters().enable_elasticity && in.requests_property(MaterialProperties::reaction_rates) ) ||
-              (this->get_adiabatic_conditions().is_initialized()))
+              (this->get_parameters().enable_elasticity && in.requests_property(MaterialProperties::reaction_rates) ))
             {
               std::vector<double> phase_averaged_viscosities(volume_fractions.size());
               for (unsigned int c=0; c<volume_fractions.size(); ++c)
@@ -168,14 +167,29 @@ namespace aspect
 
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),
-                             "List of viscosities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}.");
+                             "List of viscosities for background and compositional fields (N), "
+                             "for a total of N+1 values for models with no phase transitions (or models where the "
+                             "value does not change across any of the phase transitions). For models with phase "
+                             "transitions, the list needs to contain each field name, including the background, for "
+                             "a total of N+1 names, and for each of these names, specify the value for each phase "
+                             "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                             "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                             "the total number of phase transitions, summed over all phases. The format is "
+                             "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                             "If only one value is given, then all fields/phases use the same value. "
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::Anything(),
-                             "List of thermal conductivities for background mantle and compositional fields,"
-                             "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. "
+                             "List of thermal conductivities for background and compositional fields (N), "
+                             "for a total of N+1 values for models with no phase transitions (or models where the "
+                             "value does not change across any of the phase transitions). For models with phase "
+                             "transitions, the list needs to contain each field name, including the background, for "
+                             "a total of N+1 names, and for each of these names, specify the value for each phase "
+                             "(giving P_c+1 values for each field, with P_c being the number of phase transitions "
+                             "for field c). Therefore, the total number of values given is N+P+1, with P = sum(P_c) "
+                             "the total number of phase transitions, summed over all phases. The format is "
+                             "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
+                             "If only one value is given, then all fields/phases use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,14 +34,18 @@ namespace aspect
     {
       /**
        * A compressible equation of state that is intended for use with multiple compositional
-       * fields and potentially phases. For each material property, the user supplies a comma
-       * delimited list of length N+P+1, where N is the number of compositional fields used in
-       * the computation and P is the total number of phase transitions.
-       * The first entry corresponds to the "background" (which is also why there are N+P+1 entries).
+       * fields and potentially phases.
        *
-       * If a single value is given, then all the compositional fields and phases are given
-       * that value. Other lengths of lists are not allowed. The material parameters
-       * for each compositional field and phase are calculated self-consistently,
+       * For models without phase transitions, each material property is specified as a comma
+       * delimited list of length N+1 for the background and compositional fields (N) For models
+       * with phase transitions, the list needs to contain each field name, including the background,
+       * for a total of N+1 names, and for each of these names, specify the value for each phase
+       * Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of
+       * phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1,
+       * field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given,
+       * then all fields/phases use the same value. Other lengths of lists are not allowed.
+       *
+       * The material parameters for each compositional field and phase are calculated self-consistently,
        * assuming a constant pressure derivative of the isothermal bulk modulus ($K_T'$)
        * at the reference temperature (i.e. a Murnaghan equation of state),
        * a constant ratio of the thermal expansivity ($\alpha$) and
