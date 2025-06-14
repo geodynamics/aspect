@@ -232,7 +232,7 @@ namespace aspect
         /**
          * Total number of Fastscapelib grid nodes.
          */
-        unsigned int n_grid_nodes;
+        unsigned int n_grid_vertices;
 
         /**
          * How many levels FastScape should be refined above the maximum ASPECT surface resolution.

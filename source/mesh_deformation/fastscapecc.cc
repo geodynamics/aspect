@@ -60,7 +60,7 @@ namespace aspect
 
       init_surface_mesh(geom_model);
 
-      n_grid_nodes = surface_mesh.n_active_cells();
+      n_grid_vertices = surface_mesh.n_used_vertices();
     }
   
     template <int dim>
@@ -138,7 +138,7 @@ namespace aspect
                   }
               }
 
-          n_grid_nodes = spherical_vertex_index_map.size();
+          n_grid_vertices = spherical_vertex_index_map.size();
         }
       else
         AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
@@ -359,17 +359,17 @@ namespace aspect
             }
           }
         
-      std::vector<double> V(n_grid_nodes);
+      std::vector<double> V(n_grid_vertices);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           // Initialize the variables that will be sent to FastScape.
-          std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
-          std::vector<double> vz(n_grid_nodes);
-//          std::vector<double> vy(n_grid_nodes);
-//          std::vector<double> vx(n_grid_nodes);
+          std::vector<double> h(n_grid_vertices, std::numeric_limits<double>::max());
+          std::vector<double> vz(n_grid_vertices);
+//          std::vector<double> vy(n_grid_vertices);
+//          std::vector<double> vx(n_grid_vertices);
 
-          std::vector<double> h_old(n_grid_nodes);
+          std::vector<double> h_old(n_grid_vertices);
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
             {
@@ -406,7 +406,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int i = 0; i < n_grid_nodes; ++i)
+          for (unsigned int i = 0; i < n_grid_vertices; ++i)
             {
               h_old[i] = h[i];
             }
@@ -431,7 +431,7 @@ namespace aspect
           auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
 
           // 2. Define the node status array BEFORE creating the flow graph
-          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
+          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_vertices});
           grid.set_nodes_status(node_status_array);
 
           // 3. Create the flow graph
@@ -471,18 +471,18 @@ namespace aspect
           }
 
           // Compute erosion velocities
-          for (unsigned int i = 0; i < n_grid_nodes; ++i)
+          for (unsigned int i = 0; i < n_grid_vertices; ++i)
             V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
           std::cout<<"here it works 13"<<std::endl;
 
           // Broadcast V to all processes
-          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
+          MPI_Bcast(&V[0], n_grid_vertices, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
       else
         {
           for (unsigned int i = 0; i < temporary_variables.size(); ++i)
             MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
-          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
+          MPI_Bcast(&V[0], n_grid_vertices, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
 
       // Step 1: Interpolation function from position to velocity
