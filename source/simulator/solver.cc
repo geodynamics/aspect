@@ -167,7 +167,7 @@ namespace aspect
 
       return dst.l2_norm();
     }
- 
+
 
 
 
@@ -386,10 +386,17 @@ namespace aspect
         virtual unsigned int n_iterations() const=0;
 
     };
-        template<typename Range,
+
+
+    /**
+     * Given a diagonal matrix stored as a vector,
+     * create an operator that represents its action.
+    */
+
+    template<typename Range,
              typename Domain,
              typename Payload>
-    LinearOperator<Range, Domain, Payload> diag_operator(LinearOperator<Range,Domain,Payload> &exemplar,TrilinosWrappers::MPI::Vector &diagonal)
+    LinearOperator<Range, Domain, Payload> diag_operator(LinearOperator<Range,Domain,Payload> &exemplar, const TrilinosWrappers::MPI::Vector &diagonal)
     {
       LinearOperator<Range, Domain, Payload> return_op;
 
@@ -402,9 +409,10 @@ namespace aspect
         dest = src;
         dest.scale(diagonal);
       };
-      //  std::cout << "ok" << std::endl;
       return return_op;
     }
+
+
 
     /**
      * This class approximates the Schur Complement inverse operator
@@ -483,11 +491,11 @@ namespace aspect
             SolverControl solver_control(5000, 1e-6 * src.l2_norm(), false, true);
             SolverCG<TrilinosWrappers::MPI::Vector> solver(solver_control);
             //Solve with Schur Complement approximation
-            auto Op_A=LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(0,0));
-            auto Op_BT = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(0,1));
-            auto Op_B = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(1,0));
-            auto Op_C = diag_operator(Op_A,inverse_lumped_mass_matrix);
-            auto matrix = Op_B*Op_C*Op_BT;
+            const auto Op_A      = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(0,0));
+            const auto Op_BT     = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(0,1));
+            const auto Op_B      = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(1,0));
+            const auto Op_C_inv  = diag_operator(Op_A,inverse_lumped_mass_matrix);
+            const auto BC_invBT  = Op_B*Op_C_inv*Op_BT;
 
 
 
@@ -504,7 +512,7 @@ namespace aspect
             system_matrix.block(1,0).vmult(ptmp,wtmp);
 
             dst=0;
-            solver.solve(matrix,
+            solver.solve(BC_invBT,
                          dst,
                          ptmp,
                          mp_preconditioner);
