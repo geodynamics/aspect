@@ -488,7 +488,7 @@ namespace aspect
         mutable double sea_level_constant_value = 0.0; 
 
         /**
-         * sea level value that change with time.)
+         * Current sea level value.
          */
         mutable double sea_level = 0.0; 
 
