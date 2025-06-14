@@ -41,9 +41,7 @@ namespace aspect
        * with phase transitions, the list needs to contain each field name, including the background,
        * for a total of N+1 names, and for each of these names, specify the value for each phase
        * Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of
-       * phase transitions, summed over all phases. The format is background: value1|value2|...|valueP_1+1,
-       * field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given,
-       * then all fields/phases use the same value. Other lengths of lists are not allowed.
+       * phase transitions, summed over all phases. 
        *
        * The material parameters for each compositional field and phase are calculated self-consistently,
        * assuming a constant pressure derivative of the isothermal bulk modulus ($K_T'$)
