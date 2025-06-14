@@ -192,19 +192,22 @@ namespace aspect
               this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
             for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-            {
-              if (!cell->is_locally_owned())
-                continue;
-
-              for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
+             if (cell->is_locally_owned())
+             {
+              for (unsigned int face = 0; face < cell->n_faces(); ++face)
               {
                 if (!cell->face(face)->at_boundary() ||
                     cell->face(face)->boundary_id() != top_boundary)
                   continue;
 
-                for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_face; ++v)
+                for (unsigned int v = 0; v < cell->face(face)->n_vertices(); ++v)
                 {
                   const Point<dim> pos = cell->face(face)->vertex(v);
+
+// TODO: The following works for Q_k velocity elements, but not for anything
+// else. It also assumes that the velocity DoFs are numbered first, which
+// is generally true -- but we should get these indices from the Introspection
+// object anyway.
 
                   // Extract the full velocity vector at the vertex
                   Tensor<1, dim> velocity;
@@ -215,6 +218,8 @@ namespace aspect
                   double projected_velocity = 0.0;
                   double projected_height = 0.0;
 
+// TODO: Use the gravity model to obtain a "vertical" direction. Also use
+// the geometry model to infer the "height" of a point.
                     if (spherical_model)
                     {
                       projected_velocity = velocity * (pos / pos.norm());  // radial
