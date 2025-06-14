@@ -1,3 +1,4 @@
+[Daniels-MacBook-Pro-3.local:14358] shmem: mmap: an error occurred while determining whether or not /var/folders/zw/0t9y_fkn22l4df48w2pgzd280000gn/T//ompi.Daniels-MacBook-Pro-3.501/jf.0/2929328128/sm_segment.Daniels-MacBook-Pro-3.501.ae9a0000.0 could be created.
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -12,7 +13,7 @@ Number of degrees of freedom: 134 (50+9+25+25+25)
    Solving porosity system ... 0 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.2054e-17, 1.34414e-16, 0, 1.00007
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.85009e-16, 1.29416e-16, 0, 1.00007
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.00007
 
 
@@ -21,31 +22,34 @@ Number of degrees of freedom: 134 (50+9+25+25+25)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     Writing graphical output: output-darcy_convection_step/solution/solution-00000
+     Writing graphical output:      output-darcy_convection_step/solution/solution-00000
+     RMS Darcy, max Darcy velocity: 25 m/year, 25 m/year
 
 *** Timestep 1:  t=100.017 years, dt=100.017 years
-   Solving composition reactions... in 1 substep(s).
+   Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24886e-16, 1.30786e-16, 0, 1.54323e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.926e-16, 1.34855e-16, 0, 1.54323e-08
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.54323e-08
 
 
    Postprocessing:
+     RMS Darcy, max Darcy velocity: 25 m/year, 25 m/year
 
 *** Timestep 2:  t=200 years, dt=99.9833 years
-   Solving composition reactions... in 1 substep(s).
+   Solving composition reactions... in 4 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5766e-16, 4.62514e-16, 0, 1.54323e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.12589e-16, 4.05742e-16, 0, 1.54323e-08
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.54323e-08
 
 
    Postprocessing:
+     RMS Darcy, max Darcy velocity: 25 m/year, 25 m/year
 
 Termination requested by criterion: end time
 
