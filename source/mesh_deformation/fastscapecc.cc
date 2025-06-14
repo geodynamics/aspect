@@ -258,10 +258,7 @@ namespace aspect
       template <int dim>
       unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
       {
-        const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-        const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
-
-        if (box_model)
+        if (const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model()))
           {
             if constexpr (dim == 3)
               {
@@ -275,15 +272,18 @@ namespace aspect
                 return i;
               }
           }
-        else if (spherical_model)
+        else if (const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()))
           {
             auto it = spherical_vertex_index_map.find(p);
             AssertThrow(it != spherical_vertex_index_map.end(),
                         ExcMessage("Point not found in spherical_vertex_index_map."));
             return it->second;
           }
-
-        AssertThrow(false, ExcMessage("Unsupported geometry in vertex_index()."));
+        else
+          {
+            AssertThrow(false, ExcMessage("Unsupported geometry in vertex_index()."));
+            return numbers::invalid_unsigned_int;
+          }
       }
 
 
