@@ -160,21 +160,8 @@ namespace aspect
 
         /**
          * Initialize the surface mesh based on the given geometry model.
-         * This is a fallback that always throws.
          */
         void init_surface_mesh(const GeometryModel::Interface<dim> &);
-
-        /**
-         * Specialization for Box geometry model.
-         */
-        void init_surface_mesh(const GeometryModel::Box<dim> &);
-
-        /**
-         * Specialization for Spherical Shell geometry model.
-         */
-        void init_surface_mesh(const GeometryModel::SphericalShell<dim> &);
-        
-
 
         /**
          * Pointers to Fastscapelib objects

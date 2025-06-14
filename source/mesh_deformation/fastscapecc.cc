@@ -58,202 +58,194 @@ namespace aspect
 
       this->get_pcout() << "Geometry model type: " << typeid(geom_model).name() << std::endl;
 
-      // Runtime dispatch to correct overload
-      if (const auto *box = dynamic_cast<const GeometryModel::Box<dim> *>(&geom_model))
-        init_surface_mesh(*box);
-      else if (const auto *sphere = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geom_model))
-        init_surface_mesh(*sphere);
-      else
-        AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
+      init_surface_mesh(geom_model);
 
       n_grid_nodes = surface_mesh.n_active_cells();
     }
   
     template <int dim>
-    void FastScapecc<dim>::init_surface_mesh(const GeometryModel::Box<dim> &geom_model)
+    void FastScapecc<dim>::init_surface_mesh(const GeometryModel::Interface<dim> &geom_model)
     {
-      this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
-
-      // Get origin and extent of the ASPECT domain
-      const auto origin = geom_model.get_origin();
-      const auto extent = geom_model.get_extents();
-
-      for (unsigned int i = 0; i < dim; ++i)
-      {
-        grid_extent[i].first = origin[i];
-        grid_extent[i].second = origin[i] + extent[i];
-      }
-
-
-      // Extract and store grid extent for later use
-      for (unsigned int i = 0; i < dim - 1; ++i)
-      {
-        grid_extent_surface[i].first = origin[i];
-        grid_extent_surface[i].second = origin[i] + extent[i];
-      }
-
-      // Build surface mesh corners from grid extent
-      Point<dim - 1> p1, p2;
-      for (unsigned int i = 0; i < dim - 1; ++i)
-      {
-        p1[i] = grid_extent_surface[i].first;
-        p2[i] = grid_extent_surface[i].second;
-      }
-
-      // Extract surface repetitions from full domain repetitions
-      std::vector<unsigned int> surface_repetitions(repetitions.begin(), repetitions.begin() + (dim - 1));
-
-      // Apply surface refinement factor
-      const unsigned int total_refinement = surface_refinement_level + additional_refinement_levels;
-      const unsigned int refinement_factor = static_cast<unsigned int>(std::pow(2.0, total_refinement));
-
-      for (unsigned int i = 0; i < dim - 1; ++i)
-        surface_repetitions[i] *= refinement_factor;
-
-      // Store grid dimensions for indexing and spacing
-      nx = surface_repetitions[0]+1;
-      ny = surface_repetitions[1]+1;
-      dx = (grid_extent_surface[0].second - grid_extent_surface[0].first) / static_cast<double>(nx);
-      dy = (grid_extent_surface[1].second - grid_extent_surface[1].first) / static_cast<double>(ny);
-
-      // Create refined surface mesh
-      GridGenerator::subdivided_hyper_rectangle(surface_mesh, surface_repetitions, p1, p2);
-
-      // FE and DoF setup
-      surface_mesh_dof_handler.reinit(surface_mesh);
-      surface_mesh_dof_handler.distribute_dofs(surface_fe);
-
-      surface_constraints.clear();
-      DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-      surface_constraints.close();
-    }
-
-
-
-
-
-
-    template <int dim>
-    void FastScapecc<dim>::init_surface_mesh(const GeometryModel::SphericalShell<dim> &geom_model)
-    {
-      this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
-
-      const Point<dim> center;
-      GridGenerator::hyper_sphere(surface_mesh, center, geom_model.outer_radius());
-      surface_mesh.refine_global(3); // Adjust as needed
-
-      surface_mesh_dof_handler.reinit(surface_mesh);
-      surface_mesh_dof_handler.distribute_dofs(surface_fe);
-
-      surface_constraints.clear();
-      DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-      surface_constraints.close();
-
-      // Create a unique index for each surface vertex
-      unsigned int counter = 0;
-      for (const auto &cell : surface_mesh.active_cell_iterators())
-        for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
-          {
-            const Point<dim> &vertex = cell->vertex(v);
-            if (spherical_vertex_index_map.find(vertex) == spherical_vertex_index_map.end())
-              {
-                spherical_vertex_index_map[vertex] = counter++;
-              }
-          }
-
-      n_grid_nodes = spherical_vertex_index_map.size();
-    }
-
-      template <int dim>
-      void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/)
-      {
-        TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
-
-        const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-        const auto *box_model       = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
-
-        AssertThrow(spherical_model || box_model,
-                    ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
-
-        // Initialize the surface solution vector on the FastScape surface mesh
-        const IndexSet locally_relevant_dofs_surface
-        = DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
-
-        surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-                                locally_relevant_dofs_surface,
-                                this->get_mpi_communicator());
-                                
-        surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-                                locally_relevant_dofs_surface,
-                                this->get_mpi_communicator());
-
-          // surface_index.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-          //                         locally_relevant_dofs_surface,
-          //                         this->get_mpi_communicator());
-          // int increment = 0;
-
-        const types::boundary_id top_boundary =
-          this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-
-        for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+      if (const auto *box = dynamic_cast<const GeometryModel::Box<dim> *>(&geom_model))
         {
-          if (!cell->is_locally_owned())
-            continue;
+          this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
 
-          for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
-          {
-            if (!cell->face(face)->at_boundary() ||
-                cell->face(face)->boundary_id() != top_boundary)
-              continue;
+          // Get origin and extent of the ASPECT domain
+          const auto origin = box->get_origin();
+          const auto extent = box->get_extents();
 
-            for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_face; ++v)
+          for (unsigned int i = 0; i < dim; ++i)
             {
-              const Point<dim> pos = cell->face(face)->vertex(v);
-
-              // Extract the full velocity vector at the vertex
-              Tensor<1, dim> velocity;
-              for (unsigned int d = 0; d < dim; ++d)
-                velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, d)];
-
-              // Project to vertical (box) or radial (sphere)
-              double projected_velocity = 0.0;
-              double projected_height = 0.0;
-
-                if (spherical_model)
-                {
-                  projected_velocity = velocity * (pos / pos.norm());  // radial
-                  projected_height = pos.norm();                              // radial distance
-                }
-                else
-                {
-                  projected_velocity = velocity[dim - 1];              // vertical (z)
-                  projected_height = pos[dim - 1];                            // z-coordinate
-                }
-
-                const unsigned int index = this->vertex_index(pos);
-                surface_solution[index] = projected_velocity;
-                surface_elevation[index] = projected_height; // New vector, same structure
-                // surface_index[index] = increment;
-                // increment = increment + 1;
-
-
-                // Optional debug
-                if (this->get_timestep_number() == 1 && index < 10)
-                  this->get_pcout() << "Surface pos: " << pos
-                                    << ", velocity: " << projected_velocity
-                                    << ", model surface height: " << projected_height<<std::endl;
-                                    // << ", surface index: " << increment 
-              
+              grid_extent[i].first = origin[i];
+              grid_extent[i].second = origin[i] + extent[i];
             }
-          }
+
+
+          // Extract and store grid extent for later use
+          for (unsigned int i = 0; i < dim - 1; ++i)
+            {
+              grid_extent_surface[i].first = origin[i];
+              grid_extent_surface[i].second = origin[i] + extent[i];
+            }
+
+          // Build surface mesh corners from grid extent
+          Point<dim - 1> p1, p2;
+          for (unsigned int i = 0; i < dim - 1; ++i)
+            {
+              p1[i] = grid_extent_surface[i].first;
+              p2[i] = grid_extent_surface[i].second;
+            }
+
+          // Extract surface repetitions from full domain repetitions
+          std::vector<unsigned int> surface_repetitions(repetitions.begin(), repetitions.begin() + (dim - 1));
+
+          // Apply surface refinement factor
+          const unsigned int total_refinement = surface_refinement_level + additional_refinement_levels;
+          const unsigned int refinement_factor = static_cast<unsigned int>(std::pow(2.0, total_refinement));
+
+          for (unsigned int i = 0; i < dim - 1; ++i)
+            surface_repetitions[i] *= refinement_factor;
+
+          // Store grid dimensions for indexing and spacing
+          nx = surface_repetitions[0]+1;
+          ny = surface_repetitions[1]+1;
+          dx = (grid_extent_surface[0].second - grid_extent_surface[0].first) / static_cast<double>(nx);
+          dy = (grid_extent_surface[1].second - grid_extent_surface[1].first) / static_cast<double>(ny);
+
+          // Create refined surface mesh
+          GridGenerator::subdivided_hyper_rectangle(surface_mesh, surface_repetitions, p1, p2);
+
+          // FE and DoF setup
+          surface_mesh_dof_handler.reinit(surface_mesh);
+          surface_mesh_dof_handler.distribute_dofs(surface_fe);
+
+          surface_constraints.clear();
+          DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+          surface_constraints.close();
         }
+      else if (const auto *spherical_shell = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geom_model))
+        {
+          this->get_pcout() << "Spherical Shell geometry detected. Initializing FastScape for Spherical Shell geometry..." << std::endl;
 
-        surface_solution.compress(VectorOperation::insert);
-        surface_elevation.compress(VectorOperation::insert);
-        // surface_index.compress(VectorOperation::insert);
+          const Point<dim> center;
+          GridGenerator::hyper_sphere(surface_mesh, center, spherical_shell->outer_radius());
+          surface_mesh.refine_global(3); // Adjust as needed
 
-      }
-  
+          surface_mesh_dof_handler.reinit(surface_mesh);
+          surface_mesh_dof_handler.distribute_dofs(surface_fe);
+
+          surface_constraints.clear();
+          DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+          surface_constraints.close();
+
+          // Create a unique index for each surface vertex
+          unsigned int counter = 0;
+          for (const auto &cell : surface_mesh.active_cell_iterators())
+            for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_cell; ++v)
+              {
+                const Point<dim> &vertex = cell->vertex(v);
+                if (spherical_vertex_index_map.find(vertex) == spherical_vertex_index_map.end())
+                  {
+                    spherical_vertex_index_map[vertex] = counter++;
+                  }
+              }
+
+          n_grid_nodes = spherical_vertex_index_map.size();
+        }
+      else
+        AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
+    }
+
+          template <int dim>
+          void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/)
+          {
+            TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
+
+            const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+            const auto *box_model       = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+
+            AssertThrow(spherical_model || box_model,
+                        ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
+
+            // Initialize the surface solution vector on the FastScape surface mesh
+            const IndexSet locally_relevant_dofs_surface
+            = DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
+
+            surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                                    locally_relevant_dofs_surface,
+                                    this->get_mpi_communicator());
+
+            surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                                    locally_relevant_dofs_surface,
+                                    this->get_mpi_communicator());
+
+              // surface_index.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+              //                         locally_relevant_dofs_surface,
+              //                         this->get_mpi_communicator());
+              // int increment = 0;
+
+            const types::boundary_id top_boundary =
+              this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+
+            for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+            {
+              if (!cell->is_locally_owned())
+                continue;
+
+              for (unsigned int face = 0; face < GeometryInfo<dim>::faces_per_cell; ++face)
+              {
+                if (!cell->face(face)->at_boundary() ||
+                    cell->face(face)->boundary_id() != top_boundary)
+                  continue;
+
+                for (unsigned int v = 0; v < GeometryInfo<dim - 1>::vertices_per_face; ++v)
+                {
+                  const Point<dim> pos = cell->face(face)->vertex(v);
+
+                  // Extract the full velocity vector at the vertex
+                  Tensor<1, dim> velocity;
+                  for (unsigned int d = 0; d < dim; ++d)
+                    velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, d)];
+
+                  // Project to vertical (box) or radial (sphere)
+                  double projected_velocity = 0.0;
+                  double projected_height = 0.0;
+
+                    if (spherical_model)
+                    {
+                      projected_velocity = velocity * (pos / pos.norm());  // radial
+                      projected_height = pos.norm();                              // radial distance
+                    }
+                    else
+                    {
+                      projected_velocity = velocity[dim - 1];              // vertical (z)
+                      projected_height = pos[dim - 1];                            // z-coordinate
+                    }
+
+                    const unsigned int index = this->vertex_index(pos);
+                    surface_solution[index] = projected_velocity;
+                    surface_elevation[index] = projected_height; // New vector, same structure
+                    // surface_index[index] = increment;
+                    // increment = increment + 1;
+
+
+                    // Optional debug
+                    if (this->get_timestep_number() == 1 && index < 10)
+                      this->get_pcout() << "Surface pos: " << pos
+                                        << ", velocity: " << projected_velocity
+                                        << ", model surface height: " << projected_height<<std::endl;
+                                        // << ", surface index: " << increment
+
+                }
+              }
+            }
+
+            surface_solution.compress(VectorOperation::insert);
+            surface_elevation.compress(VectorOperation::insert);
+            // surface_index.compress(VectorOperation::insert);
+          }
+
+
       template <int dim>
       unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
       {
