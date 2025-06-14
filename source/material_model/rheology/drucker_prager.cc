@@ -123,8 +123,8 @@ namespace aspect
             // which disables its effect.
             yield_stress_prefactor = 1.0;
           }
-          else
-            yield_stress_prefactor = p.yield_stress_prefactor;
+        else
+          yield_stress_prefactor = p.yield_stress_prefactor;
 
         // Initial yield stress (no stabilization terms)
         const double yield_stress = ( (dim==3)
