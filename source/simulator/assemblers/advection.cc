@@ -464,7 +464,7 @@ namespace aspect
       if (this->get_fixed_heat_flux_boundary_indicators().find(face->boundary_id())
           != this->get_fixed_heat_flux_boundary_indicators().end())
         {
-          // We are in the case of a Neumann temperature boundary.
+          // We are on a face of a Neumann temperature boundary.
           // Impose the Neumann value weakly using a RHS term.
 
           const std::vector<Tensor<1,dim>> heat_flux
@@ -490,13 +490,16 @@ namespace aspect
                   ++i;
                 }
 
+              const Tensor<1,dim> normal_vector = scratch.face_finite_element_values->normal_vector(q);
+              const double JxW = scratch.face_finite_element_values->JxW(q);
+
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
                   -= time_step * scratch.face_phi_field[i] *
-                     (heat_flux[q] * scratch.face_finite_element_values->normal_vector(q))
+                     (heat_flux[q] * normal_vector)
                      *
-                     scratch.face_finite_element_values->JxW(q);
+                     JxW;
                 }
             }
         }
@@ -539,7 +542,7 @@ namespace aspect
       if (this->get_fixed_convective_heating_boundary_indicators().find(face->boundary_id())
           != this->get_fixed_convective_heating_boundary_indicators().end())
         {
-          // We are in the case of a Robin temperature boundary.
+          // We are on a face of a Robin temperature boundary.
           // Impose the Robin value weakly using both a LHS and a RHS term.
 
           const std::vector<Tensor<1,dim>> heat_flux
@@ -581,25 +584,28 @@ namespace aspect
                     face->boundary_id(),
                     scratch.face_finite_element_values->quadrature_point(q));
 
+              const Tensor<1,dim> normal_vector = scratch.face_finite_element_values->normal_vector(q);
+              const double JxW = scratch.face_finite_element_values->JxW(q);
+
               for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
                   data.local_rhs(i)
                   += (
                        -time_step * scratch.face_phi_field[i] *
-                       heat_flux[q] * scratch.face_finite_element_values->normal_vector(q)
+                       heat_flux[q] * normal_vector
                        +
                        time_step * scratch.face_phi_field[i] * heat_transfer_coefficients[q] *
                        boundary_temperature
                      )
                      *
-                     scratch.face_finite_element_values->JxW(q);
+                     JxW;
 
                   for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                     {
                       data.local_matrix(i,j)
                       += (time_step * scratch.face_phi_field[i] *
                           heat_transfer_coefficients[q] * scratch.face_phi_field[j])
-                         * scratch.face_finite_element_values->JxW(q);
+                         * JxW;
                     }
                 }
             }
@@ -835,7 +841,7 @@ namespace aspect
            && (!advection_field.is_temperature())))
         {
           /*
-           * We are in the case of a Dirichlet temperature or composition boundary.
+           * We are on a face of a Dirichlet temperature or composition boundary.
            * In the temperature case, impose the Dirichlet value weakly using a matrix term
            * and RHS term. In the composition case, Dirichlet conditions can only be imposed
            * on inflow boundaries, and we only have the flow-dependent terms, so we only

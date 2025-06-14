@@ -2393,6 +2393,46 @@ namespace aspect
                              "> is listed as having more "
                              "than one type of temperature or heat flux boundary condition in the input file."));
 
+    // are there any indicators that occur in both the prescribed temperature and convective heating list?
+    std::set<types::boundary_id> Tc_intersection;
+    std::set_intersection (boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin(),
+                           boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(),
+                           boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().begin(),
+                           boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().end(),
+                           std::inserter(Tc_intersection, Tc_intersection.end()));
+
+    AssertThrow (Tc_intersection.empty(),
+                 ExcMessage ("Boundary indicator <"
+                             +
+                             Utilities::int_to_string(*Tc_intersection.begin())
+                             +
+                             "> with symbolic name <"
+                             +
+                             geometry_model->translate_id_to_symbol_name (*Tc_intersection.begin())
+                             +
+                             "> is listed as having more "
+                             "than one type of temperature or convective heating boundary condition in the input file."));
+
+    // are there any indicators that occur in both the prescribed heat flux and convective heating list?
+    std::set<types::boundary_id> Tflux_intersection;
+    std::set_intersection (parameters.fixed_heat_flux_boundary_indicators.begin(),
+                           parameters.fixed_heat_flux_boundary_indicators.end(),
+                           boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().begin(),
+                           boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().end(),
+                           std::inserter(Tflux_intersection, Tflux_intersection.end()));
+
+    AssertThrow (Tflux_intersection.empty(),
+                 ExcMessage ("Boundary indicator <"
+                             +
+                             Utilities::int_to_string(*Tflux_intersection.begin())
+                             +
+                             "> with symbolic name <"
+                             +
+                             geometry_model->translate_id_to_symbol_name (*Tflux_intersection.begin())
+                             +
+                             "> is listed as having more "
+                             "than one type of heat flux or convective heating boundary condition in the input file."));
+
     boundary_indicator_lists.emplace_back(boundary_composition_manager.get_fixed_composition_boundary_indicators());
 
     // Check that the periodic boundaries do not have other boundary conditions set

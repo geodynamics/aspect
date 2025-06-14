@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2025 - by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -43,7 +43,15 @@ namespace aspect
     {
       public:
         /**
-         * Return the boundary heat transfer coefficient as a function of position.
+         * Compute the heat transfer coefficients for a list of evaluation points.
+         *
+         * @param boundary_indicator The boundary indicator of the part of the
+         * boundary of the domain on which the evaluation points are located
+         * and where we are requesting the heat transfer coefficients.
+         * @param material_model_inputs The material property inputs.
+         * @param material_model_outputs The material property outputs.
+         *
+         * @return A vector of heat transfer coefficients at the evaluation points.
          */
         std::vector<double>
         heat_transfer_coefficient (const types::boundary_id boundary_indicator,
@@ -59,10 +67,7 @@ namespace aspect
         void update () override;
 
         /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files.
          */
         static
         void
@@ -70,9 +75,6 @@ namespace aspect
 
         /**
          * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
          */
         void
         parse_parameters (ParameterHandler &prm) override;

@@ -2,5 +2,8 @@ New: There is now a new type of boundary condition for the
 temperature equation: Robin boundary conditions, which allow
 for prescribing a linear combination of a prescribed
 temperature (Dirichlet) and a prescribed heat flux (Neumann).
+In other words, we can now prescribe a heat flux that depends
+on how much the current temperature differs from a prescribed
+temperature.
 <br>
 (Juliane Dannberg, 2025/06/12)

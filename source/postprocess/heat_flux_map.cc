@@ -241,7 +241,7 @@ namespace aspect
 
                   const unsigned int boundary_id = cell->face(f)->boundary_id();
 
-                  // Compute heat flux through Dirichlet boundary using CBF method
+                  // Compute heat flux through Dirichlet and Robin boundary using CBF method
                   if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end()
                       || robin_temperature_boundaries.find(boundary_id) != robin_temperature_boundaries.end())
                     {
@@ -254,7 +254,7 @@ namespace aspect
                                                   fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
                                                   fe_face_values.JxW(q);
                     }
-                  // Compute heat flux through Neumann boundary by integrating the heat flux
+                  // Compute heat flux through Neumann and Robin boundary by integrating the heat flux
                   else if (fixed_heat_flux_boundaries.find(boundary_id) != fixed_heat_flux_boundaries.end()
                            || robin_temperature_boundaries.find(boundary_id) != robin_temperature_boundaries.end())
                     {

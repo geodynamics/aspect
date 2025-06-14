@@ -20,10 +20,12 @@
 # Can be compared to output from the point values postprocessor.
 
 # The heat flux is 
-# qout​(t) = 7175.64495 exp(- beta t) [W/m^2] * 0.01
+# qout​(t) = 7175.64495 exp(- beta t) [W/m^2] * 0.01 m
+# (since it is a 2-D model, the unit of the heat flux computed here is
+# technically W/m, but the postprocessor reports it as W)
 
 # Some check values
-# t(s)	T(K)	
+# t(s)	Heat flux(W)
 # 0	71.756
 # 250	55.116
 # 500	42.335

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2025 - by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -164,7 +164,7 @@ namespace aspect
       }
       prm.leave_subsection ();
 
-      // go through the list, create objects and let them parse
+      // go through the list of boundary convective heating plugin names, create objects and let them parse
       // their own parameters
       for (auto &model_name : this->plugin_names)
         {
@@ -180,7 +180,7 @@ namespace aspect
           this->plugin_objects.back()->initialize ();
         }
 
-      // go through the list, create objects and let them parse
+      // go through the list of boundary temperature plugin names, create objects and let them parse
       // their own parameters
       for (auto &model_name : temperature_plugin_names)
         {
@@ -196,7 +196,7 @@ namespace aspect
           temperature_plugin_objects.back()->initialize ();
         }
 
-      // go through the list, create objects and let them parse
+      // go through the list of boundary heat flux plugin names, create objects and let them parse
       // their own parameters
       for (auto &model_name : heat_flux_plugin_names)
         {
@@ -223,11 +223,10 @@ namespace aspect
     {
       std::vector<double> coefficients;
 
-      auto p = this->plugin_objects.begin();
-      for (unsigned int i=0; i<this->plugin_objects.size(); ++p, ++i)
-        coefficients = (*p)->heat_transfer_coefficient(boundary_indicator,
-                                                       material_model_inputs,
-                                                       material_model_outputs);
+      for (const auto &p: this->plugin_objects)
+        coefficients = p->heat_transfer_coefficient(boundary_indicator,
+                                                    material_model_inputs,
+                                                    material_model_outputs);
       return coefficients;
     }
 
@@ -240,10 +239,9 @@ namespace aspect
     {
       double temperature = 0.0;
 
-      auto p = temperature_plugin_objects.begin();
-      for (unsigned int i=0; i<temperature_plugin_objects.size(); ++p, ++i)
-        temperature = (*p)->boundary_temperature(boundary_indicator,
-                                                 position);
+      for (const auto &p: temperature_plugin_objects)
+        temperature = p->boundary_temperature(boundary_indicator,
+                                              position);
 
       return temperature;
     }
@@ -259,12 +257,11 @@ namespace aspect
     {
       std::vector<Tensor<1,dim>> heat_fluxes;
 
-      auto p = heat_flux_plugin_objects.begin();
-      for (unsigned int i=0; i<heat_flux_plugin_objects.size(); ++p, ++i)
-        heat_fluxes = (*p)->heat_flux(boundary_indicator,
-                                      material_model_inputs,
-                                      material_model_outputs,
-                                      normal_vectors);
+      for (const auto &p: heat_flux_plugin_objects)
+        heat_fluxes = p->heat_flux(boundary_indicator,
+                                   material_model_inputs,
+                                   material_model_outputs,
+                                   normal_vectors);
       return heat_fluxes;
     }
 
@@ -306,6 +303,7 @@ namespace aspect
                           "insulating (Neumann) behaviour; "
                           "For heat transfer coefficient --> infinity, the boundary approaches "
                           "a prescribed-temperature (Dirichlet) condition."
+                          "The unit of the heat transfer coefficient is \\si{\\watt\\per\\meter\\squared\\per\\kelvin}."
                           "At the moment, this list can only have one entry. \n\n"
                           "The following heat transfer coefficient models are available:\n\n"
                           +

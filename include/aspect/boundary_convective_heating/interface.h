@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2025 - by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -27,7 +27,6 @@
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_heat_flux/interface.h>
 #include <aspect/utilities.h>
-#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -51,7 +50,7 @@ namespace aspect
     {
       public:
         /**
-         * Compute the heat transfer coefficient for a list of quadrature points.
+         * Compute the heat transfer coefficients for a list of evaluation points.
          *
          * The heat transfer coefficient characterises convective heat exchange
          * between the solid model interior and an adjacent fluid. It is defined as
@@ -64,27 +63,19 @@ namespace aspect
          * In the context of a Robin boundary condition, the heat transfer
          * coefficient governs the strength of the convective coupling:
          * For heat transfer coefficient --> zero, the boundary approaches
-         * adiabatic (pure Neumann) behaviour;
+         * insulating (Neumann) behavior;
          * For heat transfer coefficient --> infinity, the boundary approaches
          * a prescribed-temperature (Dirichlet) condition with T = T_infinity.
          *
-         * @param boundary_indicator The boundary indicator of the part of the
-         * boundary of the domain on which the point is located at which we
-         * are requesting the fluid pressure gradients.
+         * The unit of the heat transfer coefficient is W/m^2/K.
+         *
+         * @param boundary_indicator  The boundary indicator of the part of the
+         * boundary of the domain on which the evaluation points are located
+         * and where we are requesting the heat transfer coefficients.
          * @param material_model_inputs The material property inputs.
          * @param material_model_outputs The material property outputs.
          *
-         * @return A vector of heat flux vectors at the evaluation points.
-         *   For historical reasons, the function is asked
-         *   to provide the heat flux as a vector, even though the place where the
-         *   heat flux is used only uses the component of this vector that is
-         *   to the boundary (which it computes by taking the dot product *normal*
-         *   between the returned vector and the normal vector). Because there are
-         *   situations where all you can do is compute the normal heat flux as a
-         *   scalar, the `heat_flux()` function also receives the normal vector as
-         *   an input argument. As a consequence, one way for the function to
-         *   compute the required heat flux vector is to compute the scalar heat
-         *   flux and multiply it by the normal vector.
+         * @return A vector of heat transfer coefficients at the evaluation points.
          */
         virtual
         std::vector<double>
@@ -97,6 +88,11 @@ namespace aspect
 
     /**
      * A class that manages all boundary convective heating objects.
+     *
+     * Note that in order to compute the convective heating, we require
+     * additional parameters from the boundary temperature and
+     * boundary heat flux plugins. This manager class therefore manages
+     * these objects as well.
      *
      * @ingroup BoundaryConvectiveHeating
      */
@@ -122,16 +118,16 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
         /**
-         * A function that calls the boundary_temperature functions of the
-         * individual boundary temperature object.
+         * A function that calls the boundary_temperature function of the
+         * boundary temperature object.
          */
         double
         boundary_temperature (const types::boundary_id boundary_indicator,
                               const Point<dim> &position) const;
 
         /**
-         * A function that calls the heat_flux functions of the
-         * individual boundary heat flux object.
+         * A function that calls the heat_flux function of the
+         * boundary heat flux object.
          */
         std::vector<Tensor<1,dim>>
         heat_flux (const types::boundary_id boundary_indicator,
@@ -140,8 +136,8 @@ namespace aspect
                    const std::vector<Tensor<1,dim>> &normal_vectors) const;
 
         /**
-         * A function that calls the heat_transfer_coefficient functions of the
-         * individual boundary convection heating object.
+         * A function that calls the heat_transfer_coefficient function of the
+         * boundary convection heating object.
          */
         std::vector<double>
         heat_transfer_coefficient (const types::boundary_id boundary_indicator,
@@ -195,7 +191,6 @@ namespace aspect
         const std::set<types::boundary_id> &
         get_convective_heating_boundary_indicators() const;
 
-
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -208,7 +203,6 @@ namespace aspect
         static
         void
         write_plugin_graph (std::ostream &output_stream);
-
 
         /**
          * Exception.

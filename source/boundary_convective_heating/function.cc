@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2024 by the authors of the ASPECT code.
+  Copyright (C) 2025 - by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -75,6 +75,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Function<dim>::update()
@@ -86,6 +87,7 @@ namespace aspect
       else
         boundary_convective_heating_function.set_time (this->get_time());
     }
+
 
 
     template <int dim>
@@ -113,6 +115,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

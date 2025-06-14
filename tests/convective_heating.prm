@@ -12,7 +12,9 @@
 # and can be compared to min value from temperature statistics postprocessor.
 
 # The heat flux through the top boundary should be
-# q = k * dT/dz * Ltop = 10 W/m/K * 400 K/m * 0.01 = 40 W
+# q = k * dT/dz * Ltop = 10 W/m/K * 400 K/m * 0.01 = 40 W/m
+# (since it is a 2-D model, the unit of the heat flux computed here is
+# technically W/m, but the postprocessor reports it as W)
 
 set Dimension                              = 2
 set Use years in output instead of seconds = false
