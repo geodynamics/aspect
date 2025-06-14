@@ -27,15 +27,19 @@
 #include <aspect/mesh_deformation/interface.h>
 
 #include <deal.II/base/signaling_nan.h>
+#include <deal.II/lac/diagonal_matrix.h>
+#include <deal.II/lac/linear_operator.h>
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/solver_bicgstab.h>
 #include <deal.II/lac/solver_cg.h>
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/lac/trilinos_vector.h>
 
 namespace aspect
 {
   namespace internal
   {
+
     /**
      * Implement multiplication with Stokes part of system matrix. In essence, this
      * object represents a 2x2 block matrix that corresponds to the top left
@@ -163,6 +167,8 @@ namespace aspect
 
       return dst.l2_norm();
     }
+ 
+
 
 
     /**
@@ -380,6 +386,25 @@ namespace aspect
         virtual unsigned int n_iterations() const=0;
 
     };
+        template<typename Range,
+             typename Domain,
+             typename Payload>
+    LinearOperator<Range, Domain, Payload> diag_operator(LinearOperator<Range,Domain,Payload> &exemplar,TrilinosWrappers::MPI::Vector &diagonal)
+    {
+      LinearOperator<Range, Domain, Payload> return_op;
+
+
+      return_op.reinit_range_vector  = exemplar.reinit_range_vector;
+      return_op.reinit_domain_vector = exemplar.reinit_domain_vector;
+
+      return_op.vmult = [&](Range &dest, const Domain &src)
+      {
+        dest = src;
+        dest.scale(diagonal);
+      };
+      //  std::cout << "ok" << std::endl;
+      return return_op;
+    }
 
     /**
      * This class approximates the Schur Complement inverse operator
@@ -458,7 +483,15 @@ namespace aspect
             SolverControl solver_control(5000, 1e-6 * src.l2_norm(), false, true);
             SolverCG<TrilinosWrappers::MPI::Vector> solver(solver_control);
             //Solve with Schur Complement approximation
-            solver.solve(mp_matrix,
+            auto Op_A=LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(0,0));
+            auto Op_BT = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(0,1));
+            auto Op_B = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(1,0));
+            auto Op_C = diag_operator(Op_A,inverse_lumped_mass_matrix);
+            auto matrix = Op_B*Op_C*Op_BT;
+
+
+
+            solver.solve(matrix,
                          ptmp,
                          src,
                          mp_preconditioner);
@@ -471,7 +504,7 @@ namespace aspect
             system_matrix.block(1,0).vmult(ptmp,wtmp);
 
             dst=0;
-            solver.solve(mp_matrix,
+            solver.solve(matrix,
                          dst,
                          ptmp,
                          mp_preconditioner);
