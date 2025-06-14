@@ -156,6 +156,23 @@ An easy way to install it is through using the following command in Linux (do no
 This will create a new directory called astyle, download, unpack, compile and install it.
 When you add the bin directory to to your path, the indent command should find astyle.
 
+#### Example usage for single files
+
+Correct the indentation of your `.cc` and `.h` files by downloading the ASPECT [style file](https://github.com/geodynamics/aspect/blob/main/contrib/utilities/astyle.rc) and running astyle
+
+```{code-block} bash
+# Download ASPECT style file with wget or curl
+# curl -O https://raw.githubusercontent.com/geodynamics/aspect/refs/heads/main/contrib/utilities/astyle.rc
+wget https://raw.githubusercontent.com/geodynamics/aspect/refs/heads/main/contrib/utilities/astyle.rc
+
+# Indent files
+astyle --options=astyle.rc my_plugin.cc my_plugin.h
+```
+
+:::{important}
+You NEED to use astyle version 2.04 for correct results (older versions or 2.05 will not work)!
+:::
+
 ### Changelog entries
 
 If your new pull request creates a change that is noticeable to ASPECT users,
