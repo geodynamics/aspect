@@ -115,6 +115,8 @@ namespace aspect
 
           // Create refined surface mesh
           GridGenerator::subdivided_hyper_rectangle(surface_mesh, surface_repetitions, p1, p2);
+
+          Assert (surface_mesh.n_used_vertices() == nx*ny, ExcInternalError());
         }
       else if (const auto *spherical_shell = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geom_model))
         {
