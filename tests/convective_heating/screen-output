@@ -1,0 +1,827 @@
+
+Number of active cells: 10 (on 1 levels)
+Number of degrees of freedom: 211 (126+22+63)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            273 K, 274.7 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -2333 W, 1.123e-13 W
+     Writing graphical output:           output-convective_heating/solution/solution-00000
+
+*** Timestep 1:  t=0.0001 seconds, dt=0.0001 seconds
+   Solving temperature system... 17 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            283.9 K, 305.3 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -297.8 W, -8.782 W
+     Writing graphical output:           output-convective_heating/solution/solution-00001
+
+*** Timestep 2:  t=0.0002 seconds, dt=0.0001 seconds
+   Solving temperature system... 17 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            295.7 K, 322.4 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -106.2 W, 2.653 W
+     Writing graphical output:           output-convective_heating/solution/solution-00002
+
+*** Timestep 3:  t=0.0003 seconds, dt=0.0001 seconds
+   Solving temperature system... 16 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            306.9 K, 333 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -87.14 W, 13.87 W
+     Writing graphical output:           output-convective_heating/solution/solution-00003
+
+*** Timestep 4:  t=0.0004 seconds, dt=0.0001 seconds
+   Solving temperature system... 16 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            315.9 K, 340 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -74.12 W, 22.9 W
+     Writing graphical output:           output-convective_heating/solution/solution-00004
+
+*** Timestep 5:  t=0.0005 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            322.1 K, 344.6 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -63.37 W, 29.15 W
+     Writing graphical output:           output-convective_heating/solution/solution-00005
+
+*** Timestep 6:  t=0.0006 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            326.2 K, 347.6 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -55.41 W, 33.15 W
+     Writing graphical output:           output-convective_heating/solution/solution-00006
+
+*** Timestep 7:  t=0.0007 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            328.7 K, 349.6 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -49.92 W, 35.66 W
+     Writing graphical output:           output-convective_heating/solution/solution-00007
+
+*** Timestep 8:  t=0.0008 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            330.2 K, 350.8 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -46.3 W, 37.24 W
+     Writing graphical output:           output-convective_heating/solution/solution-00008
+
+*** Timestep 9:  t=0.0009 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            331.2 K, 351.6 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -43.99 W, 38.25 W
+     Writing graphical output:           output-convective_heating/solution/solution-00009
+
+*** Timestep 10:  t=0.001 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            331.9 K, 352.1 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -42.52 W, 38.89 W
+     Writing graphical output:           output-convective_heating/solution/solution-00010
+
+*** Timestep 11:  t=0.0011 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            332.3 K, 352.4 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -41.6 W, 39.29 W
+     Writing graphical output:           output-convective_heating/solution/solution-00011
+
+*** Timestep 12:  t=0.0012 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            332.6 K, 352.6 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -41.01 W, 39.55 W
+     Writing graphical output:           output-convective_heating/solution/solution-00012
+
+*** Timestep 13:  t=0.0013 seconds, dt=0.0001 seconds
+   Solving temperature system... 15 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            332.7 K, 352.8 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.64 W, 39.72 W
+     Writing graphical output:           output-convective_heating/solution/solution-00013
+
+*** Timestep 14:  t=0.0014 seconds, dt=0.0001 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            332.8 K, 352.9 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.41 W, 39.82 W
+     Writing graphical output:           output-convective_heating/solution/solution-00014
+
+*** Timestep 15:  t=0.0015 seconds, dt=0.0001 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            332.9 K, 352.9 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.26 W, 39.89 W
+     Writing graphical output:           output-convective_heating/solution/solution-00015
+
+*** Timestep 16:  t=0.0016 seconds, dt=0.0001 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            332.9 K, 352.9 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.16 W, 39.93 W
+     Writing graphical output:           output-convective_heating/solution/solution-00016
+
+*** Timestep 17:  t=0.0017 seconds, dt=0.0001 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.1 W, 39.95 W
+     Writing graphical output:           output-convective_heating/solution/solution-00017
+
+*** Timestep 18:  t=0.0018 seconds, dt=0.0001 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.07 W, 39.97 W
+     Writing graphical output:           output-convective_heating/solution/solution-00018
+
+*** Timestep 19:  t=0.0019 seconds, dt=0.0001 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.04 W, 39.98 W
+     Writing graphical output:           output-convective_heating/solution/solution-00019
+
+*** Timestep 20:  t=0.002 seconds, dt=0.0001 seconds
+   Solving temperature system... 14 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.03 W, 39.99 W
+     Writing graphical output:           output-convective_heating/solution/solution-00020
+
+*** Timestep 21:  t=0.0021 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.02 W, 39.99 W
+     Writing graphical output:           output-convective_heating/solution/solution-00021
+
+*** Timestep 22:  t=0.0022 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.01 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00022
+
+*** Timestep 23:  t=0.0023 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40.01 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00023
+
+*** Timestep 24:  t=0.0024 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00024
+
+*** Timestep 25:  t=0.0025 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00025
+
+*** Timestep 26:  t=0.0026 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00026
+
+*** Timestep 27:  t=0.0027 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00027
+
+*** Timestep 28:  t=0.0028 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00028
+
+*** Timestep 29:  t=0.0029 seconds, dt=0.0001 seconds
+   Solving temperature system... 13 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00029
+
+*** Timestep 30:  t=0.003 seconds, dt=0.0001 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00030
+
+*** Timestep 31:  t=0.0031 seconds, dt=0.0001 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00031
+
+*** Timestep 32:  t=0.0032 seconds, dt=0.0001 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00032
+
+*** Timestep 33:  t=0.0033 seconds, dt=0.0001 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00033
+
+*** Timestep 34:  t=0.0034 seconds, dt=0.0001 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00034
+
+*** Timestep 35:  t=0.0035 seconds, dt=0.0001 seconds
+   Solving temperature system... 12 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00035
+
+*** Timestep 36:  t=0.0036 seconds, dt=0.0001 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00036
+
+*** Timestep 37:  t=0.0037 seconds, dt=0.0001 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00037
+
+*** Timestep 38:  t=0.0038 seconds, dt=0.0001 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00038
+
+*** Timestep 39:  t=0.0039 seconds, dt=0.0001 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00039
+
+*** Timestep 40:  t=0.004 seconds, dt=0.0001 seconds
+   Solving temperature system... 11 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00040
+
+*** Timestep 41:  t=0.0041 seconds, dt=0.0001 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00041
+
+*** Timestep 42:  t=0.0042 seconds, dt=0.0001 seconds
+   Solving temperature system... 10 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00042
+
+*** Timestep 43:  t=0.0043 seconds, dt=0.0001 seconds
+   Solving temperature system... 9 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00043
+
+*** Timestep 44:  t=0.0044 seconds, dt=0.0001 seconds
+   Solving temperature system... 8 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00044
+
+*** Timestep 45:  t=0.0045 seconds, dt=0.0001 seconds
+   Solving temperature system... 7 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00045
+
+*** Timestep 46:  t=0.0046 seconds, dt=0.0001 seconds
+   Solving temperature system... 6 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00046
+
+*** Timestep 47:  t=0.0047 seconds, dt=0.0001 seconds
+   Solving temperature system... 5 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00047
+
+*** Timestep 48:  t=0.0048 seconds, dt=0.0001 seconds
+   Solving temperature system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00048
+
+*** Timestep 49:  t=0.0049 seconds, dt=0.0001 seconds
+   Solving temperature system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00049
+
+*** Timestep 50:  t=0.005 seconds, dt=0.0001 seconds
+   Solving temperature system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00050
+
+*** Timestep 51:  t=0.0051 seconds, dt=0.0001 seconds
+   Solving temperature system... 4 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00051
+
+*** Timestep 52:  t=0.0052 seconds, dt=0.0001 seconds
+   Solving temperature system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00052
+
+*** Timestep 53:  t=0.0053 seconds, dt=0.0001 seconds
+   Solving temperature system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00053
+
+*** Timestep 54:  t=0.0054 seconds, dt=0.0001 seconds
+   Solving temperature system... 3 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00054
+
+*** Timestep 55:  t=0.0055 seconds, dt=0.0001 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00055
+
+*** Timestep 56:  t=0.0056 seconds, dt=0.0001 seconds
+   Solving temperature system... 2 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00056
+
+*** Timestep 57:  t=0.0057 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00057
+
+*** Timestep 58:  t=0.0058 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00058
+
+*** Timestep 59:  t=0.0059 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00059
+
+*** Timestep 60:  t=0.006 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00060
+
+*** Timestep 61:  t=0.0061 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00061
+
+*** Timestep 62:  t=0.0062 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00062
+
+*** Timestep 63:  t=0.0063 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00063
+
+*** Timestep 64:  t=0.0064 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00064
+
+*** Timestep 65:  t=0.0065 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00065
+
+*** Timestep 66:  t=0.0066 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00066
+
+*** Timestep 67:  t=0.0067 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00067
+
+*** Timestep 68:  t=0.0068 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00068
+
+*** Timestep 69:  t=0.0069 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00069
+
+*** Timestep 70:  t=0.007 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00070
+
+*** Timestep 71:  t=0.0071 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00071
+
+*** Timestep 72:  t=0.0072 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00072
+
+*** Timestep 73:  t=0.0073 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00073
+
+*** Timestep 74:  t=0.0074 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00074
+
+*** Timestep 75:  t=0.0075 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00075
+
+*** Timestep 76:  t=0.0076 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00076
+
+*** Timestep 77:  t=0.0077 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00077
+
+*** Timestep 78:  t=0.0078 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00078
+
+*** Timestep 79:  t=0.0079 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00079
+
+*** Timestep 80:  t=0.008 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00080
+
+*** Timestep 81:  t=0.0081 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00081
+
+*** Timestep 82:  t=0.0082 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00082
+
+*** Timestep 83:  t=0.0083 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00083
+
+*** Timestep 84:  t=0.0084 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00084
+
+*** Timestep 85:  t=0.0085 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00085
+
+*** Timestep 86:  t=0.0086 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00086
+
+*** Timestep 87:  t=0.0087 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00087
+
+*** Timestep 88:  t=0.0088 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00088
+
+*** Timestep 89:  t=0.0089 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00089
+
+*** Timestep 90:  t=0.009 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00090
+
+*** Timestep 91:  t=0.0091 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00091
+
+*** Timestep 92:  t=0.0092 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00092
+
+*** Timestep 93:  t=0.0093 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00093
+
+*** Timestep 94:  t=0.0094 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00094
+
+*** Timestep 95:  t=0.0095 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00095
+
+*** Timestep 96:  t=0.0096 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00096
+
+*** Timestep 97:  t=0.0097 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00097
+
+*** Timestep 98:  t=0.0098 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00098
+
+*** Timestep 99:  t=0.0099 seconds, dt=0.0001 seconds
+   Solving temperature system... 1 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00099
+
+*** Timestep 100:  t=0.01 seconds, dt=0.0001 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -40 W, 40 W
+     Writing graphical output:           output-convective_heating/solution/solution-00100
+
+
+
+
+*** Timestep 101:  t=0.01 seconds, dt=5.20417e-18 seconds
+   Solving temperature system... 0 iterations.
+
+   Postprocessing:
+     Temperature min/avg/max:            333 K, 353 K, 373 K
+     Heat fluxes through boundary parts: 0 W, 0 W, -39.93 W, 40.34 W
+     Writing graphical output:           output-convective_heating/solution/solution-00101
+
+Termination requested by criterion: end time
+
+
+

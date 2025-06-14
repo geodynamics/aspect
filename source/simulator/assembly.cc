@@ -184,8 +184,20 @@ namespace aspect
               std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
           }
 
+        if (i==0 && boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().size() != 0)
+          {
+            AssertThrow(parameters.stokes_solver_type != Parameters<dim>::StokesSolverType::block_gmg,
+                        ExcMessage ("The <Convective heating boundary indicators> parameter is set, but the "
+                                    "Stokes solver type is set to 'block GMG'. This is not supported. "
+                                    "Please change the Stokes solver type to something else."));
+
+            assemblers->advection_system_on_boundary_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemRobinBoundary<dim>>());
+          }
+
         if (parameters.use_discontinuous_temperature_discretization
-            || parameters.fixed_heat_flux_boundary_indicators.size() != 0)
+            || parameters.fixed_heat_flux_boundary_indicators.size() != 0
+            || boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().size() != 0)
           {
             assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
             assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
