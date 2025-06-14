@@ -1,32 +1,29 @@
 # Specify postprocessor objects that will be run at the end of each time step
-#The statistics is important for cpo plotter for reading the data
-#The particles and crystal preferred orientation are required for CPO calculations
+# The statistics output file is important for cpo plotter for reading the data
+# The particles and crystal preferred orientation are required for CPO calculations
 subsection Postprocess
   set List of postprocessors = velocity statistics, visualization, particles, crystal preferred orientation
 
-  #specify data output for visualizing in paraview or visit
   subsection Visualization
     set Time between graphical output = 1e5
-    set List of output variables = stress, viscosity, strain rate
+    set List of output variables = stress, material properties, strain rate
   end
 
-  #specify CPO data output
+  # Specify CPO data output
   subsection Crystal Preferred Orientation
     set Time between data output = 1e5
     set Write in background thread = true
     set Compress cpo data files = false # so results are human readable
-    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles #specify what to output, here will only output volume fraction and Euler angles for mineral 0 (olivine)
-    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles
-
-    #specify output parameters for draw volume weighted cpo, the pole figures are plotted with these data
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles #Specify what to output, here will only output volume fraction and Euler angles for mineral 0 (olivine)
+     # Specify output parameters for draw volume weighted cpo, the pole figures are plotted with these data
+    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles   
   end
 
-  # Here is for data results read by paraview and visit
-  # Exclude output properties so as to allow fast reading by paraview
-  # because if number of particles is large, paraview will crash
   subsection Particles
     set Time between data output = 1e4
     set Data output format       = vtu
+    # Exclude output properties so as to allow fast reading by paraview
+    # because if number of particles is large, paraview will crash
     set Exclude output properties = volume fraction, rotation_matrix
   end
 end
@@ -34,14 +31,14 @@ end
 subsection Particles
   set List of particle properties = integrated strain, crystal preferred orientation, cpo elastic tensor, cpo bingham average, integrated strain invariant, velocity, pT path
 
-  # use a ascii file particle_one.dat to specify initial locations of particles
+  # use a ascii file particle_one.dat to Specify initial locations of particles
   set Particle generator name = ascii file
 
   subsection Generator
     subsection Ascii file
       # you may need to change the below path to the absolute path in your local computer
       # the particle_one.dat is located in the cookbook folder
-      set Data directory = /aspect/cookbooks/crystal_preferred_orientation_olivine_fraters_billen_2021/
+      set Data directory = ./
       set Data file name = particle_one.dat
     end
   end
