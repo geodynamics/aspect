@@ -686,12 +686,12 @@ namespace aspect
         std::vector<double> strain_energy(n_grains);
         double mean_strain_energy = 0;
 
-        // First initiate the slip_direction_reference (vector l) in Kaminski 2001) and 
+        // First initiate the slip_direction_reference (vector l) in Kaminski 2001) and
         // slip_normal_reference (vector n) for olivine A,B,C,E types
         std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
         std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
 
-        // CPX and olivine_d_fabric have different slip systems than olivine A,B,C,E fabrics 
+        // CPX and olivine_d_fabric have different slip systems than olivine A,B,C,E fabrics
         if (deformation_type == DeformationType::clinopyroxene)
           {
             // More accurate way to calculate slip plane <110> normal by doing cross product
@@ -739,7 +739,7 @@ namespace aspect
             // https://doi.org/10.1029/2022GC010507
             Tensor<1,3> plane031_normal = cross_product_3d(olivine_a_axis,vec_13b_minus_c);
             plane031_normal /= plane031_normal.norm();
-            // slip_normal_reference (vector n) & slip_direction_reference (vector l) for olivine D types 
+            // slip_normal_reference (vector n) & slip_direction_reference (vector l) for olivine D types
             // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100]
             slip_normal_reference = {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane031_normal}};
             slip_direction_reference = {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
@@ -1068,7 +1068,7 @@ namespace aspect
               break;
 
             // RRSS for CPX (preliminary results, require further investigations)
-            // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100] 
+            // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100]
             case DeformationType::clinopyroxene :
               ref_resolved_shear_stress[0] = 1;
               ref_resolved_shear_stress[1] = 5;
@@ -1158,8 +1158,9 @@ namespace aspect
             //
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
-                               "The RRSS values for Olivine (D-type), used in fabric calculations.
-                              // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100] ");
+                               "The RRSS values for Olivine (D-type), used in fabric calculations."
+                               "Karato 2008 AnnRevEPS; Bystricky_etal 2001 science "
+                               "with added slip system {031}[100]");
 
             prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                Patterns::List(Patterns::Double(0)),
