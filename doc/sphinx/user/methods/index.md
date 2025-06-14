@@ -21,6 +21,7 @@ freesurface/index.md
 melt-transport.md
 nullspace-removal.md
 particles.md
+stokes-solver/solver.md
 geometric-multigrid.md
 nonlinear-stokes-solvers.md
 :::
