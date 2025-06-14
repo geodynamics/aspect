@@ -156,8 +156,8 @@ When you add the bin directory to your path, the indent command should find asty
 
 #### Example astyle usage
 
-To correctly indent the code in the ASPECT build directory, you can use `make indent` or `ninja indent`
-depending on the build system you are using:
+To correctly indent the code in the ASPECT source directory, use `make indent` or `ninja indent`
+while in the ASPECT build directory (depending on your build system):
 
 ```{code-block} bash
 cd <path to your aspect build dir>
