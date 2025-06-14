@@ -36,6 +36,8 @@
 #include <fastscapelib/eroders/spl.hpp>
 
 #include <deal.II/grid/tria.h>
+#include <deal.II/distributed/tria.h>
+
 
 #include <deal.II/lac/affine_constraints.h>
 
@@ -120,16 +122,6 @@ namespace aspect
         
 
       private:
-        /**
-         * Surface mesh and solution.
-         */
-        // using SurfaceMeshType = Triangulation<dim-1, dim>;
-
-        // SurfaceMeshType surface_mesh;
-        // DoFHandler<SurfaceMeshType::dimension, SurfaceMeshType::space_dimension> surface_mesh_dof_handler;
-        // LinearAlgebra::Vector surface_solution;
-        // mutable AffineConstraints<double> surface_constraints; // Constraints for hanging nodes
-        // dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
         unsigned int vertex_index(const Point<dim> &p) const;
 
@@ -146,7 +138,11 @@ namespace aspect
          */
         std::map<dealii::Point<dim>, unsigned int, PointComparator<dim>> spherical_vertex_index_map;
 
-        using SurfaceMeshType = Triangulation<dim - 1, dim>;
+        /**
+         * The surface mesh is a distributed Triangulation to support large-scale
+         * parallel simulations (e.g., global models).
+         */
+        using SurfaceMeshType = parallel::distributed::Triangulation<dim - 1, dim>;
 
         SurfaceMeshType surface_mesh;
         DoFHandler<dim - 1, dim> surface_mesh_dof_handler;

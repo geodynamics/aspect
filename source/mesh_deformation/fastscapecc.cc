@@ -47,6 +47,7 @@ namespace aspect
     template <int dim>
     FastScapecc<dim>::FastScapecc()
     :
+    surface_mesh(MPI_COMM_WORLD),
     surface_fe(1)  // Use a Q1 element for the surface mesh
       // , surface_mesh_dof_handler(surface_mesh) // Link DoFHandler to surface_mesh
     {}
@@ -116,8 +117,11 @@ namespace aspect
           dy = (grid_extent_surface[1].second - grid_extent_surface[1].first) / static_cast<double>(ny);
 
           // Create refined surface mesh
-          GridGenerator::subdivided_hyper_rectangle(surface_mesh, surface_repetitions, p1, p2);
-
+          GridGenerator::subdivided_hyper_rectangle(surface_mesh,
+                                                    surface_repetitions,
+                                                    p1,
+                                                    p2,
+                                                    /* colorize */ true);
           Assert (surface_mesh.n_used_vertices() == nx*ny, ExcInternalError());
         }
       else if (const auto *spherical_shell = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geom_model))
