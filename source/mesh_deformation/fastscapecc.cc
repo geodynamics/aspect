@@ -60,7 +60,9 @@ namespace aspect
 
       init_surface_mesh(geom_model);
 
-      n_grid_vertices = surface_mesh.n_used_vertices();
+      //Fastscapelib operates on grid nodes, each of which conceptually represents a cell center 
+      //and has associated area and neighbor connections.
+      n_grid_nodes = surface_mesh.n_active_cells();
     }
   
     template <int dim>
@@ -138,7 +140,7 @@ namespace aspect
                   }
               }
 
-          n_grid_vertices = spherical_vertex_index_map.size();
+          n_grid_nodes = spherical_vertex_index_map.size();
         }
       else
         AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
@@ -154,16 +156,18 @@ namespace aspect
     }
 
 
-          template <int dim>
-          void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/)
-          {
-            TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
+    template <int dim>
+    void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/,  
+    dealii::LinearAlgebra::distributed::Vector<double> &surface_vertical_velocity,
+    dealii::LinearAlgebra::distributed::Vector<double> &surface_elevation ) const
+    {
+      TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
 
-            const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-            const auto *box_model       = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+      const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+      const auto *box_model       = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
 
-            AssertThrow(spherical_model || box_model,
-                        ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
+      AssertThrow(spherical_model || box_model,
+                  ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
 
 
 // TODO: surface_mesh is a serial triangulation, not one that is MPI-parallel. As a consequence,
@@ -171,94 +175,74 @@ namespace aspect
 // index set, as is surface_mesh_dof_handler.locally_owned_dofs(). You can't create a *parallel*
 // vector in a meaningful way this way (except if you run on only one process).
 
-            // Initialize the surface solution vector on the FastScape surface mesh
-            const IndexSet locally_relevant_dofs_surface
-            = DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
+      // Initialize the surface solution vector on the FastScape surface mesh
+      const IndexSet locally_relevant_dofs_surface
+      = DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
 
-            surface_solution.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-                                    locally_relevant_dofs_surface,
-                                    this->get_mpi_communicator());
+      surface_vertical_velocity.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                              locally_relevant_dofs_surface,
+                              this->get_mpi_communicator());
 
-            surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-                                    locally_relevant_dofs_surface,
-                                    this->get_mpi_communicator());
+      surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
+                              locally_relevant_dofs_surface,
+                              this->get_mpi_communicator());
 
-              // surface_index.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-              //                         locally_relevant_dofs_surface,
-              //                         this->get_mpi_communicator());
-              // int increment = 0;
+      const types::boundary_id top_boundary =
+        this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
-            const types::boundary_id top_boundary =
-              this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+        {
+        for (unsigned int face = 0; face < cell->n_faces(); ++face)
+        {
+          if (!cell->face(face)->at_boundary() ||
+              cell->face(face)->boundary_id() != top_boundary)
+            continue;
 
-            for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-             if (cell->is_locally_owned())
-             {
-              for (unsigned int face = 0; face < cell->n_faces(); ++face)
-              {
-                if (!cell->face(face)->at_boundary() ||
-                    cell->face(face)->boundary_id() != top_boundary)
-                  continue;
-
-                for (unsigned int v = 0; v < cell->face(face)->n_vertices(); ++v)
-                {
-                  const Point<dim> pos = cell->face(face)->vertex(v);
+          for (unsigned int v = 0; v < cell->face(face)->n_vertices(); ++v)
+          {
+            const Point<dim> pos = cell->face(face)->vertex(v);
 
 // TODO: The following works for Q_k velocity elements, but not for anything
 // else. It also assumes that the velocity DoFs are numbered first, which
 // is generally true -- but we should get these indices from the Introspection
 // object anyway.
 
-                  // Extract the full velocity vector at the vertex
-                  Tensor<1, dim> velocity;
-                  for (unsigned int d = 0; d < dim; ++d)
-                    velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, d)];
-
-                  // Project to vertical (box) or radial (sphere)
-                  double projected_velocity = 0.0;
-                  double projected_height = 0.0;
+            // Extract the full velocity vector at the vertex
+            Tensor<1, dim> velocity;
+            for (unsigned int d = 0; d < dim; ++d)
+              velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, d)];
 
 // TODO: Use the gravity model to obtain a "vertical" direction. Also use
 // the geometry model to infer the "height" of a point.
-                    if (spherical_model)
-                    {
-                      projected_velocity = velocity * (pos / pos.norm());  // radial
-                      projected_height = pos.norm();                              // radial distance
-                    }
-                    else
-                    {
-                      projected_velocity = velocity[dim - 1];              // vertical (z)
-                      projected_height = pos[dim - 1];                            // z-coordinate
-                    }
+              const unsigned int index = this->vertex_index(pos);
 
-                    const unsigned int index = this->vertex_index(pos);
-                    surface_solution[index] = projected_velocity;
-                    surface_elevation[index] = projected_height; // New vector, same structure
-                    // surface_index[index] = increment;
-                    // increment = increment + 1;
-
-
-                    // Optional debug
-                    if (this->get_timestep_number() == 1 && index < 10)
-                      this->get_pcout() << "Surface pos: " << pos
-                                        << ", velocity: " << projected_velocity
-                                        << ", model surface height: " << projected_height<<std::endl;
-                                        // << ", surface index: " << increment
-
-                }
+              if (spherical_model)
+              {
+                surface_vertical_velocity[index]  = velocity * (pos / pos.norm());  // radial velocity
+                surface_elevation[index] = pos.norm() - spherical_model->outer_radius(); // elevation
               }
-            }
+              else
+              {
+                surface_vertical_velocity[index]  = velocity[dim - 1];              // vertical (z)
+                surface_elevation[index] = pos[dim - 1] - grid_extent[dim - 1].second; // elevation
+              }
 
-            surface_solution.compress(VectorOperation::insert);
-            surface_elevation.compress(VectorOperation::insert);
-            // surface_index.compress(VectorOperation::insert);
+              // Optional debug
+              if (this->get_timestep_number() == 1 && index < 10)
+                this->get_pcout() << "Surface pos: " << pos
+                                  << ", velocity: " << surface_vertical_velocity[index]
+                                  << ", topography: " << surface_elevation[index] << std::endl;
           }
+        }
+      }
+    }
 
 
       template <int dim>
       unsigned int FastScapecc<dim>::vertex_index(const Point<dim> &p) const
       {
-        if (const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model()))
+        if (const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()))
           {
             if constexpr (dim == 3)
               {
@@ -272,7 +256,7 @@ namespace aspect
                 return i;
               }
           }
-        else if (const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model()))
+        else if (const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model()))
           {
             auto it = spherical_vertex_index_map.find(p);
             AssertThrow(it != spherical_vertex_index_map.end(),
@@ -293,83 +277,60 @@ namespace aspect
           AffineConstraints<double> &mesh_velocity_constraints,
           const std::set<types::boundary_id> &boundary_ids) const
       {
-          if (this->get_timestep_number() == 0)
-             return;
+        if (this->get_timestep_number() == 0)
+          return;
 
-           TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
 
-// TODO: Avoid the const_cast by passing the member-variable vectors currently set
-// in project_surface_solution() as arguments to that function. Specifically,
-// these are surface_solution and surface_elevation, which are only used
-// in this function and in project_surface_solution(), so it should not be
-// be difficult to make these vectors local to the current function instead
-// of member variables.
+        // Step 1: Project current surface velocity from ASPECT solution
+        dealii::LinearAlgebra::distributed::Vector<double> surface_vertical_velocity, surface_elevation;
+        this->project_surface_solution(boundary_ids, surface_vertical_velocity, surface_elevation);
 
-           // Step 1: Project current surface velocity from ASPECT solution
-           const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
+        const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+        const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
+        AssertThrow(spherical_model || box_model, ExcMessage("Unsupported geometry model in FastScapecc."));
 
-           const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-           const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
-           AssertThrow(spherical_model || box_model, ExcMessage("Unsupported geometry model in FastScapecc."));
+        std::vector<std::vector<double>> temporary_variables(3, std::vector<double>());
 
-           std::vector<std::vector<double>> temporary_variables(3, std::vector<double>());
-          
-          for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
+        for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
+        {
+          for (unsigned int vertex_index = 0; vertex_index < cell->n_vertices(); ++vertex_index)
           {
-            for (unsigned int vertex_index = 0; vertex_index < cell->n_vertices(); ++vertex_index)
-            {
-                const Point<dim> vertex = cell->vertex(vertex_index);
-                const unsigned int dof_index = cell->vertex_dof_index(vertex_index, 0);
+            const Point<dim> vertex = cell->vertex(vertex_index);
+            const unsigned int dof_index = cell->vertex_dof_index(vertex_index, 0);
 
-// TODO: rename surface_uplift to surface_uplift_rate because it represents a *velocity*.
-                const double surface_uplift = surface_solution[dof_index];  // from ASPECT
-                const double surface_height =  surface_elevation[dof_index];
-                  
- //                 Test if we get the velocity
- //             if (this->get_timestep_number() == 1)
- //               this->get_pcout() << "Velocity at " << vertex
- //                                 << " (dof " << dof_index << ") = "
- //                                 << surface_uplift << " m/s" << std::endl;
-                
-// TODO: We could omit this block if we store in surface_height not the
-// distance, but the height, as obtained by the geometry model.
-                double topography = numbers::signaling_nan<double>();
-                if (spherical_model)
-                  topography = surface_height - spherical_model->outer_radius();
-                else if (box_model)
-                    topography = surface_height - grid_extent[dim-1].second;
+            const double surface_uplift_rate = surface_vertical_velocity[dof_index];
+            const double topography = surface_elevation[dof_index];
 
-                const unsigned int index = this->vertex_index(vertex);
+            const unsigned int index = this->vertex_index(vertex);
 
-              // Add debug output here
-              static std::set<unsigned int> seen_indices;
-              this->get_pcout() << "Vertex at " << vertex[dim - 1]
+            // Optional debug output
+            if (this->get_timestep_number() == 1)
+              this->get_pcout() << "Vertex at z=" << vertex[dim - 1]
                                 << ", DoF index: " << dof_index
                                 << ", vertex_index: " << index
-                                << ", uplift: " << surface_uplift << " m/s"
-                                << ", height: " << surface_height << " m"
-                                << ", topo: " << topography << " m"
-                                << ", grid_extent height " << grid_extent[dim-1].second << " m"
+                                << ", uplift rate: " << surface_uplift_rate << " m/s"
+                                << ", topography: " << topography << " m"
                                 << std::endl;
 
-                  
-                temporary_variables[0].push_back(topography);
-                temporary_variables[1].push_back(static_cast<double>(index));
-                temporary_variables[2].push_back(surface_uplift * year_in_seconds);  // to m/year
-            }
+            temporary_variables[0].push_back(topography);
+            temporary_variables[1].push_back(static_cast<double>(index));
+            temporary_variables[2].push_back(surface_uplift_rate * year_in_seconds);  // convert to m/year
           }
+        }
+      
         
-      std::vector<double> V(n_grid_vertices);
+      std::vector<double> V(n_grid_nodes);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           // Initialize the variables that will be sent to FastScape.
-          std::vector<double> h(n_grid_vertices, std::numeric_limits<double>::max());
-          std::vector<double> vz(n_grid_vertices);
-//          std::vector<double> vy(n_grid_vertices);
-//          std::vector<double> vx(n_grid_vertices);
+          std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
+          std::vector<double> vz(n_grid_nodes);
+//          std::vector<double> vy(n_grid_nodes);
+//          std::vector<double> vx(n_grid_nodes);
 
-          std::vector<double> h_old(n_grid_vertices);
+          std::vector<double> h_old(n_grid_nodes);
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
             {
@@ -406,7 +367,7 @@ namespace aspect
                 }
             }
 
-          for (unsigned int i = 0; i < n_grid_vertices; ++i)
+          for (unsigned int i = 0; i < n_grid_nodes; ++i)
             {
               h_old[i] = h[i];
             }
@@ -431,7 +392,7 @@ namespace aspect
           auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
 
           // 2. Define the node status array BEFORE creating the flow graph
-          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_vertices});
+          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
           grid.set_nodes_status(node_status_array);
 
           // 3. Create the flow graph
@@ -471,18 +432,18 @@ namespace aspect
           }
 
           // Compute erosion velocities
-          for (unsigned int i = 0; i < n_grid_vertices; ++i)
+          for (unsigned int i = 0; i < n_grid_nodes; ++i)
             V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
           std::cout<<"here it works 13"<<std::endl;
 
           // Broadcast V to all processes
-          MPI_Bcast(&V[0], n_grid_vertices, MPI_DOUBLE, 0, this->get_mpi_communicator());
+          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
       else
         {
           for (unsigned int i = 0; i < temporary_variables.size(); ++i)
             MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
-          MPI_Bcast(&V[0], n_grid_vertices, MPI_DOUBLE, 0, this->get_mpi_communicator());
+          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
 
       // Step 1: Interpolation function from position to velocity

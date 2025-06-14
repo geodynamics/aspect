@@ -155,30 +155,6 @@ namespace aspect
         FE_Q<dim - 1, dim> surface_fe;
 
         /**
-         * Vectors that describe the vertical surface velocity and surface elevation
-         * at all vertices of the surface mesh.
-         *
-         * TODO: Rename surface_solution to surface_vertical_velocity to make this
-         * clearer.
-         */
-        LinearAlgebra::Vector surface_solution;
-        LinearAlgebra::Vector surface_elevation;
-
-        LinearAlgebra::Vector surface_index;
-
-        dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
-
-
-        // template <class M>
-        // void init_surface_mesh(M &geom_model);
-
-        // template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::Box<3>>::value>>
-        // void init_surface_mesh(M &geom_model);
-
-        // template <class M, typename std::enable_if_t<std::is_same<M, GeometryModel::SphericalShell<3>>::value>>
-        // void init_surface_mesh(M &geom_model);
-
-        /**
          * Initialize the surface mesh based on the given geometry model.
          */
         void init_surface_mesh(const GeometryModel::Interface<dim> &);
@@ -193,7 +169,10 @@ namespace aspect
         std::unique_ptr<fastscapelib::spl_eroder<FlowGraphType>> spl_eroder;
         
 
-        void project_surface_solution(const std::set<types::boundary_id> &boundary_ids);
+        void project_surface_solution(const std::set<types::boundary_id> &boundary_ids,
+                                      dealii::LinearAlgebra::distributed::Vector<double> &surface_vertical_velocity,
+                                      dealii::LinearAlgebra::distributed::Vector<double> &surface_elevation) const; 
+
 
         /**
          * Project the Stokes velocity solution onto the
@@ -232,7 +211,7 @@ namespace aspect
         /**
          * Total number of Fastscapelib grid nodes.
          */
-        unsigned int n_grid_vertices;
+        unsigned int n_grid_nodes;
 
         /**
          * How many levels FastScape should be refined above the maximum ASPECT surface resolution.
