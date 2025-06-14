@@ -234,13 +234,20 @@ namespace aspect
         const double sin_phi = std::sin(angle_friction);
         const double sin_psi = std::sin(angle_dilation);
 
-        double alpha     = sin_phi;
-        double alpha_bar = sin_psi;
-        if (dim == 3)
+        double alpha;
+        double alpha_bar;
+        if (dim == 2)
+        {
+          alpha     = sin_phi;
+          alpha_bar = sin_psi;
+        }
+        else if (dim == 3)
           {
             alpha     = 6.0 * sin_phi / (std::sqrt(3.0) * (3.0 + sin_phi));
             alpha_bar = 6.0 * sin_psi / (std::sqrt(3.0) * (3.0 + sin_psi));
           }
+        else
+          AssertThrow(false,ExcNotImplemented());
 
         const double dilation_lhs_term = alpha_bar * alpha / non_yielding_viscosity;
         const double dilation_rhs_term = alpha_bar * (2. * effective_strain_rate - cohesion / non_yielding_viscosity);
