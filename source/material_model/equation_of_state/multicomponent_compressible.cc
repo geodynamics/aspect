@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/equation_of_state/multicomponent_compressible.h>
+#include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 
 
@@ -36,13 +37,20 @@ namespace aspect
                const unsigned int q,
                MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const
       {
-        const double pressure = in.pressure[q];
         const double temperature = std::max(in.temperature[q], 1.); // temperature can't be zero for correct evaluation
+
+        // If we are using the projected density approximation then we need to use the adiabatic pressure
+        double pressure_for_density;
+        if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density) &&
+            this->get_parameters().formulation_mass_conservation==Parameters<dim>::Formulation::MassConservation::projected_density_field)
+          pressure_for_density = this->get_adiabatic_conditions().pressure(in.position[q]);
+        else
+          pressure_for_density = in.pressure[q];
 
         for (unsigned int c=0; c < eos_outputs.densities.size(); ++c)
           {
             const double ak = reference_thermal_expansivities[c]/reference_isothermal_compressibilities[c];
-            const double f = (1. + (pressure - ak*(temperature - reference_temperatures[c])) *
+            const double f = (1. + (pressure_for_density - ak*(temperature - reference_temperatures[c])) *
                               isothermal_bulk_modulus_pressure_derivatives[c] *
                               reference_isothermal_compressibilities[c]);
 
