@@ -498,7 +498,7 @@ namespace aspect
         Functions::ParsedFunction<1> sea_level_function;   
 
          /**
-         * Whether use a function to define sea level change.
+         * Whether to use a function to define sea level.
          */
         bool use_sea_level_function = false;    
 
