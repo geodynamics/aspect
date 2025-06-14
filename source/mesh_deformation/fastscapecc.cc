@@ -212,24 +212,26 @@ namespace aspect
             Tensor<1, dim> velocity;
             for (unsigned int d = 0; d < dim; ++d)
               velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, d)];
+              
+              //Use the gravity model to obtain a "vertical" direction
+              const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(pos);
+              Tensor<1, dim> gravity_dir = gravity;
 
-// TODO: Use the gravity model to obtain a "vertical" direction. Also use
-// the geometry model to infer the "height" of a point.
+              const double gravity_norm = gravity.norm();
+              if (gravity_norm > 0.0)
+                gravity_dir /= gravity_norm;
+
+              const double vertical_velocity = velocity * gravity_dir;  
+
+              const double height = this->get_geometry_model().height_above_reference_surface(pos);
               const unsigned int index = this->vertex_index(pos);
 
-              if (spherical_model)
-              {
-                surface_vertical_velocity[index]  = velocity * (pos / pos.norm());  // radial velocity
-                surface_elevation[index] = pos.norm() - spherical_model->outer_radius(); // elevation
-              }
-              else
-              {
-                surface_vertical_velocity[index]  = velocity[dim - 1];              // vertical (z)
-                surface_elevation[index] = pos[dim - 1] - grid_extent[dim - 1].second; // elevation
-              }
+              surface_vertical_velocity[index] = vertical_velocity;
+              surface_elevation[index] = height;
+            
 
               // Optional debug
-              if (this->get_timestep_number() == 1 && index < 10)
+              if (this->get_timestep_number() == 1 && index < 999999)
                 this->get_pcout() << "Surface pos: " << pos
                                   << ", velocity: " << surface_vertical_velocity[index]
                                   << ", topography: " << surface_elevation[index] << std::endl;
