@@ -481,7 +481,7 @@ namespace aspect
         particle_properties.reserve(property_information.n_components());
 
         unsigned int property_index = 0;
-        for (const auto &p : plugin_objects)
+        for (const auto &p : this->plugin_objects)
           {
             switch (p->late_initialization_mode())
               {
@@ -646,7 +646,7 @@ namespace aspect
       Manager<dim>::update_particles (ParticleUpdateInputs<dim> &inputs,
                                       typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        for (const auto &p : plugin_objects)
+        for (const auto &p : this->plugin_objects)
           {
             p->update_particle_properties(inputs,particles);
           }
@@ -823,7 +823,7 @@ namespace aspect
                        "all") != this->plugin_names.end())
           {
             this->plugin_names.clear();
-            for (const auto &p : std::get<dim>(registered_plugins))
+            for (const auto &p : std::get<dim>(this->registered_plugins))
               this->plugin_names.push_back (std::get<0>(p));
           }
 
