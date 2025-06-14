@@ -58,6 +58,23 @@ namespace aspect
         stiffness_matrix_enstatite[3][3] = 84.3;
         stiffness_matrix_enstatite[4][4] = 79.4;
         stiffness_matrix_enstatite[5][5] = 80.1;
+
+        // Stiffness matrix for Clinopyroxene (GPa)
+        // Almqvist & Mainprice 2017 RevGeophysics (Table 2 Clinopyroxenes: Omphacite)
+        // https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2016RG000552
+        stiffness_matrix_clinopyroxene[0][1] = 85.9;
+        stiffness_matrix_clinopyroxene[0][0] = 257.3;
+        stiffness_matrix_clinopyroxene[0][2] = 76.2;
+        stiffness_matrix_clinopyroxene[1][1] = 216.2;
+        stiffness_matrix_clinopyroxene[1][2] = 71.8;
+        stiffness_matrix_clinopyroxene[2][2] = 260.2;
+        stiffness_matrix_clinopyroxene[3][3] = 80.2;
+        stiffness_matrix_clinopyroxene[4][4] = 70.6;
+        stiffness_matrix_clinopyroxene[5][5] = 85.8;
+        stiffness_matrix_clinopyroxene[0][4] = 7.1;
+        stiffness_matrix_clinopyroxene[1][4] = 13.3;
+        stiffness_matrix_clinopyroxene[2][4] = 33.7;
+        stiffness_matrix_clinopyroxene[3][5] = 10.2;
       }
 
 
@@ -103,7 +120,8 @@ namespace aspect
               }
             else if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::clinopyroxene)
               {
-                // skip, CPX stiffness_matrix not developed yet
+                // implemented but is not tested yet, use with caution
+                stiffness_matrix = &stiffness_matrix_clinopyroxene;
               }
             else
               {

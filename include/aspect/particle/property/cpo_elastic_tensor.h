@@ -161,6 +161,7 @@ namespace aspect
            */
           SymmetricTensor<2,6> stiffness_matrix_olivine;
           SymmetricTensor<2,6> stiffness_matrix_enstatite;
+          SymmetricTensor<2,6> stiffness_matrix_clinopyroxene;
 
           /**
            * The number of grains per particle.

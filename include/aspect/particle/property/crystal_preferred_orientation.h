@@ -239,7 +239,7 @@ namespace aspect
            * The planes are ordered from weakest to strongest with relative values,
            * where the inactive plane is infinity strong. So it is a measure of strength
            * on each slip plane.
-           * @param deformation_type Represent one of the deformation type
+           * @param deformation_type Represent one of the deformation types
            * @param prevent_nondimensionalization Prevent nondimensializing values internally.
            * Only for unit testing purposes.
            */
