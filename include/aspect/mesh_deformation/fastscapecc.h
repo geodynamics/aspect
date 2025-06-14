@@ -154,8 +154,16 @@ namespace aspect
 
         FE_Q<dim - 1, dim> surface_fe;
 
+        /**
+         * Vectors that describe the vertical surface velocity and surface elevation
+         * at all vertices of the surface mesh.
+         *
+         * TODO: Rename surface_solution to surface_vertical_velocity to make this
+         * clearer.
+         */
         LinearAlgebra::Vector surface_solution;
         LinearAlgebra::Vector surface_elevation;
+
         LinearAlgebra::Vector surface_index;
 
         dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;

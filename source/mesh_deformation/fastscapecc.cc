@@ -298,6 +298,13 @@ namespace aspect
 
            TimerOutput::Scope timer_section(this->get_computing_timer(), "FastScape plugin");
 
+// TODO: Avoid the const_cast by passing the member-variable vectors currently set
+// in project_surface_solution() as arguments to that function. Specifically,
+// these are surface_solution and surface_elevation, which are only used
+// in this function and in project_surface_solution(), so it should not be
+// be difficult to make these vectors local to the current function instead
+// of member variables.
+
            // Step 1: Project current surface velocity from ASPECT solution
            const_cast<FastScapecc<dim> *>(this)->project_surface_solution(boundary_ids);
 
@@ -309,13 +316,14 @@ namespace aspect
           
           for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
           {
-            for (unsigned int vertex_index = 0; vertex_index < GeometryInfo<dim - 1>::vertices_per_cell; ++vertex_index)
+            for (unsigned int vertex_index = 0; vertex_index < cell->n_vertices(); ++vertex_index)
             {
                 const Point<dim> vertex = cell->vertex(vertex_index);
                 const unsigned int dof_index = cell->vertex_dof_index(vertex_index, 0);
 
-                double surface_uplift = surface_solution[dof_index];  // from ASPECT
-                double surface_height =  surface_elevation[dof_index];
+// TODO: rename surface_uplift to surface_uplift_rate because it represents a *velocity*.
+                const double surface_uplift = surface_solution[dof_index];  // from ASPECT
+                const double surface_height =  surface_elevation[dof_index];
                   
  //                 Test if we get the velocity
  //             if (this->get_timestep_number() == 1)
@@ -323,7 +331,9 @@ namespace aspect
  //                                 << " (dof " << dof_index << ") = "
  //                                 << surface_uplift << " m/s" << std::endl;
                 
-                double topography = 0;
+// TODO: We could omit this block if we store in surface_height not the
+// distance, but the height, as obtained by the geometry model.
+                double topography = numbers::signaling_nan<double>();
                 if (spherical_model)
                   topography = surface_height - spherical_model->outer_radius();
                 else if (box_model)
