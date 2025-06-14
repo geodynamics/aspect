@@ -1,0 +1,113 @@
+
+Number of active cells: 80 (on 2 levels)
+Number of degrees of freedom: 5,314 (3,075+189+1,025+1,025)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+
+Number of active cells: 640 (on 3 levels)
+Number of degrees of freedom: 33,830 (19,683+1,025+6,561+6,561)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+
+Number of active cells: 1,536 (on 4 levels)
+Number of degrees of freedom: 76,062 (44,331+2,177+14,777+14,777)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.8557 K, 1.266 K
+     Heat fluxes through boundary parts:      0.0005881 W, 0.0005881 W, 0.02101 W, -0.02296 W, 0.0005881 W, 0.0005881 W
+     Writing graphical output:                output-particle_distribution_score_3d/solution/solution-00000
+     Writing particle output:                 output-particle_distribution_score_3d/particles/particles-00000
+     Particle distribution score min/avg/max: 0/0.0159462/0.0535714
+
+*** Timestep 1:  t=0.03 seconds, dt=0.03 seconds
+   Solving temperature system... 8 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 10 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.8557 K, 1.268 K
+     Heat fluxes through boundary parts:      0.000632 W, 0.000632 W, 0.02101 W, -0.02296 W, 0.000632 W, 0.000632 W
+     Writing graphical output:                output-particle_distribution_score_3d/solution/solution-00001
+     Writing particle output:                 output-particle_distribution_score_3d/particles/particles-00001
+     Particle distribution score min/avg/max: 0/0.0159462/0.0535714
+
+*** Timestep 2:  t=0.06 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.8557 K, 1.27 K
+     Heat fluxes through boundary parts:      0.0006358 W, 0.0006358 W, 0.021 W, -0.02295 W, 0.0006358 W, 0.0006358 W
+     Writing graphical output:                output-particle_distribution_score_3d/solution/solution-00002
+     Writing particle output:                 output-particle_distribution_score_3d/particles/particles-00002
+     Particle distribution score min/avg/max: 0/0.0159462/0.0535714
+
+*** Timestep 3:  t=0.09 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.8557 K, 1.273 K
+     Heat fluxes through boundary parts:      0.0006394 W, 0.0006394 W, 0.021 W, -0.02295 W, 0.0006394 W, 0.0006394 W
+     Writing graphical output:                output-particle_distribution_score_3d/solution/solution-00003
+     Writing particle output:                 output-particle_distribution_score_3d/particles/particles-00003
+     Particle distribution score min/avg/max: 0.00223214/0.017468/0.102715
+
+*** Timestep 4:  t=0.12 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.8556 K, 1.277 K
+     Heat fluxes through boundary parts:      0.0006432 W, 0.0006432 W, 0.021 W, -0.02295 W, 0.0006432 W, 0.0006432 W
+     Writing graphical output:                output-particle_distribution_score_3d/solution/solution-00004
+     Writing particle output:                 output-particle_distribution_score_3d/particles/particles-00004
+     Particle distribution score min/avg/max: 0.00223214/0.017468/0.102715
+
+*** Timestep 5:  t=0.15 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.8556 K, 1.281 K
+     Heat fluxes through boundary parts:      0.0006472 W, 0.0006472 W, 0.021 W, -0.02295 W, 0.0006472 W, 0.0006472 W
+     Writing graphical output:                output-particle_distribution_score_3d/solution/solution-00005
+     Writing particle output:                 output-particle_distribution_score_3d/particles/particles-00005
+     Particle distribution score min/avg/max: 0.00223214/0.017468/0.102715
+
+*** Timestep 6:  t=0.18 seconds, dt=0.03 seconds
+   Solving temperature system... 6 iterations.
+   Advecting particles...  done.
+   Solving C_1 system ... 9 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                       0.1 m/s, 0.1 m/s
+     Temperature min/avg/max:                 0 K, 0.8556 K, 1.287 K
+     Heat fluxes through boundary parts:      0.0006514 W, 0.0006514 W, 0.021 W, -0.02294 W, 0.0006514 W, 0.0006514 W
+     Writing graphical output:                output-particle_distribution_score_3d/solution/solution-00006
+     Writing particle output:                 output-particle_distribution_score_3d/particles/particles-00006
+     Particle distribution score min/avg/max: 0.00223214/0.0180055/0.102715
+
+Termination requested by criterion: end time
+
+
+
