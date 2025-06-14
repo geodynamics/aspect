@@ -110,6 +110,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     Function<dim>::
@@ -117,6 +118,7 @@ namespace aspect
     {
       return max_topo;
     }
+
 
 
     template <int dim>
@@ -149,6 +151,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>
