@@ -718,7 +718,7 @@ namespace aspect
             Tensor<1,3> sd110 = vec_a_axis + vec_b_axis;
             sd110 /= sd110.norm();
             // Both Bascou etal., 2002 JSG and Zhang et al., 2006 EPSL agree on the three dominant slip systems:
-            // {11_0}1/2[110],  {110}[001],  and  {100}[001],  
+            // {11_0}1/2[110],  {110}[001],  and  {100}[001],
             slip_normal_reference =  {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
             slip_direction_reference = {{Tensor<1,3>({0,0,1}),0.5*sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
           }
@@ -1149,7 +1149,7 @@ namespace aspect
                                "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite or CPX. Passive sets all RRSS entries to the maximum. The "
                                "Karato 2008 selector selects a fabric based on stress and water content as defined in "
                                "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
-            // 
+            //
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
                                "The RRSS values for CPX (clinopyroxene), used in fabric calculations.");
