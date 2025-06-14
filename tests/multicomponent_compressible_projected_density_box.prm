@@ -1,9 +1,9 @@
 # This model tests the projected density approximation within 
 # The multicomponent compressible material model.
 # The model is 1x1 m on 2x2 element grid where we apply a surface pressure equal 
-# to 50 GPa with gravity disabled. This creates uniform pressure and density fields 
+# to 50 GPa with gravity disabled. This creates uniform pressure and density fields,
 # This surface pressure and free-slip on all sides does not allow material to flow 
-# into/out of the model, while allowing density to accommodate the increased pressure.
+# into or out of the model, while allowing density to accommodate the increased pressure.
 # 
 # The density within multicomponent compressible is determined using the following parameters:
 
@@ -14,7 +14,7 @@
 # isothermal_bulk_modulus_pressure_derivatives = 4
 # reference_densities                          = 3300
 # pressure                                     = 5e10
-# These values are used in the following expression for the density:
+# These values are used in the following expression (Python) for the density:
 #
 # import numpy as np 
 # ak = reference_thermal_expansivities/reference_isothermal_compressibilities
@@ -60,9 +60,7 @@ subsection Compositional fields
   set Types of fields             = density
 end
 
-# This section contains the functionality tested by this model. The projected density approximation
-# is the preferred compressibility formulation, as demonstrated by
-# the compressibility formulations benchmark (Gassmoeller et al.).
+# This section contains the functionality tested by this model.
 # Use the projected density approximation for the compressibility formation,
 # which is the key functionality being tested by this model.
 subsection Formulation
@@ -108,7 +106,7 @@ end
 
 # We allow free slip on all sides
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom,top, left, right
+  set Tangential velocity boundary indicators = left, right, top, bottom
 end
 
 subsection Initial temperature model

@@ -179,12 +179,15 @@ namespace aspect
     void
     MulticomponentCompressible<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density))
         {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>
-            (n_points, this->n_compositional_fields()));
+          if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
+            {
+              const unsigned int n_points = out.n_evaluation_points();
+              out.additional_outputs.push_back(
+                std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>
+                (n_points, this->n_compositional_fields()));
+            }
         }
     }
   }
