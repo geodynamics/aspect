@@ -207,16 +207,15 @@ namespace aspect
           {
             const Point<dim> pos = cell->face(face)->vertex(v);
 
-// TODO: The following works for Q_k velocity elements, but not for anything
-// else. It also assumes that the velocity DoFs are numbered first, which
-// is generally true -- but we should get these indices from the Introspection
-// object anyway.
-
             // Extract the full velocity vector at the vertex
             Tensor<1, dim> velocity;
             for (unsigned int d = 0; d < dim; ++d)
-              velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, d)];
-              
+            {
+              //Query velocity Dofs using introspection 
+              const unsigned int component_index = this->introspection().component_indices.velocities[d];
+              velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, component_index)];
+            }
+
               //Use the gravity model to obtain a "vertical" direction
               const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(pos);
               Tensor<1, dim> gravity_dir = gravity;
