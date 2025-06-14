@@ -66,6 +66,8 @@ namespace aspect
     template <int dim>
     void FastScapecc<dim>::init_surface_mesh(const GeometryModel::Interface<dim> &geom_model)
     {
+      // First create the surface triangulation objects. This is necessarily different
+      // between geometries.
       if (const auto *box = dynamic_cast<const GeometryModel::Box<dim> *>(&geom_model))
         {
           this->get_pcout() << "Box geometry detected. Initializing FastScape for Box geometry..." << std::endl;
@@ -79,7 +81,6 @@ namespace aspect
               grid_extent[i].first = origin[i];
               grid_extent[i].second = origin[i] + extent[i];
             }
-
 
           // Extract and store grid extent for later use
           for (unsigned int i = 0; i < dim - 1; ++i)
@@ -114,14 +115,6 @@ namespace aspect
 
           // Create refined surface mesh
           GridGenerator::subdivided_hyper_rectangle(surface_mesh, surface_repetitions, p1, p2);
-
-          // FE and DoF setup
-          surface_mesh_dof_handler.reinit(surface_mesh);
-          surface_mesh_dof_handler.distribute_dofs(surface_fe);
-
-          surface_constraints.clear();
-          DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-          surface_constraints.close();
         }
       else if (const auto *spherical_shell = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&geom_model))
         {
@@ -130,13 +123,6 @@ namespace aspect
           const Point<dim> center;
           GridGenerator::hyper_sphere(surface_mesh, center, spherical_shell->outer_radius());
           surface_mesh.refine_global(3); // Adjust as needed
-
-          surface_mesh_dof_handler.reinit(surface_mesh);
-          surface_mesh_dof_handler.distribute_dofs(surface_fe);
-
-          surface_constraints.clear();
-          DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
-          surface_constraints.close();
 
           // Create a unique index for each surface vertex
           unsigned int counter = 0;
@@ -154,7 +140,17 @@ namespace aspect
         }
       else
         AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
+
+
+      // Having create the mesh, now set up the DoFHandlers and constraints objects
+      surface_mesh_dof_handler.reinit(surface_mesh);
+      surface_mesh_dof_handler.distribute_dofs(surface_fe);
+
+      surface_constraints.clear();
+      DoFTools::make_hanging_node_constraints(surface_mesh_dof_handler, surface_constraints);
+      surface_constraints.close();
     }
+
 
           template <int dim>
           void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/)
