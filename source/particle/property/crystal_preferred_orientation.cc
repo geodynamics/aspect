@@ -31,6 +31,7 @@
 #include <vector>
 #include <cmath>
 #include <ostream>
+
 namespace aspect
 {
   namespace Particle
@@ -677,41 +678,42 @@ namespace aspect
         const Tensor<2,3> strain_rate_nondimensional = nondimensionalization_value != 0 ? strain_rate_3d/nondimensionalization_value : strain_rate_3d;
         const Tensor<2,3> velocity_gradient_tensor_nondimensional = nondimensionalization_value != 0 ? velocity_gradient_tensor/nondimensionalization_value : velocity_gradient_tensor;
 
-        // create output variables
+        // Create output variables
         std::vector<double> deriv_volume_fractions(n_grains);
         std::vector<Tensor<2,3>> deriv_a_cosine_matrices(n_grains);
 
-        // create shortcuts
+        // Create shortcuts
         const std::array<double, 4> &tau = ref_resolved_shear_stress;
         std::vector<double> strain_energy(n_grains);
         double mean_strain_energy = 0;
 
-        // CPX and olivine_d_fabric has different slip systems
-        // first initiate the l and n for olivine A,B,C,E types
+        // First initiate the slip_direction_reference (vector l) in Kaminski 2001) and
+        // slip_normal_reference (vector n) for olivine A,B,C,E types
         std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
         std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+
+        // CPX and olivine_d_fabric have different slip systems than olivine A,B,C,E fabrics
         if (deformation_type == DeformationType::clinopyroxene)
           {
-            // more accurate way to calculate slip plane <110> normal by doing cross product
+            // More accurate way to calculate slip plane <110> normal by doing cross product
             // First CPX crystal structure info, length unit Angstrom (Å)
-            //see Clinopyroxene on mindat.org at https://www.mindat.org/min-7630.html
+            // See Clinopyroxene on mindat.org at https://www.mindat.org/min-7630.html
             const Tensor<1,3> vec_a_axis ({9.658, 0., 0.});
-            //const Tensor<1,3> vec_a_axis ({1.658, 0., 0.});
             const Tensor<1,3> vec_b_axis ({0.,8.795, 0.});
             const double length_c = 5.294; //[Angstrom]
-            const double angle_beta = 107.42 / 180.* M_PI; //107.42 degrees turns into rad
+            const double angle_beta = 107.42 * constants::degree_to_radians;
             const Tensor<1,3> vec_c_axis ({length_c * std::cos(angle_beta), 0, length_c * std::sin(angle_beta)});
 
-            // tensor 1 is vector b axis minus the vector a axis
+            // Tensor 1 is vector b axis minus the vector a axis
             // Calculate plane110_normal --> crystal axis b minus axis a
-            Tensor<1,3> vec_b_minus_a = vec_b_axis - vec_a_axis;
-            // cross product between c*(b-a) to get normal vector for slip plane nsp{110}
+            const Tensor<1,3> vec_b_minus_a = vec_b_axis - vec_a_axis;
+            // Cross product between c*(b-a) to get normal vector for slip plane nsp{110}
             Tensor<1,3> plane110_normal = cross_product_3d(vec_b_minus_a,vec_c_axis);
             plane110_normal /= plane110_normal.norm();
 
             // Calculate plane11_0_normal --> crystal axis a minus axis -b
-            Tensor<1,3> vec_a_minus_neg_b = vec_a_axis - (-vec_b_axis);
-            // cross product between (a-(-b))*c to get normal vector for slip plane nsp{110}
+            const Tensor<1,3> vec_a_minus_neg_b = vec_a_axis - (-vec_b_axis);
+            // Cross product between (a-(-b))*c to get normal vector for slip plane nsp{110}
             Tensor<1,3> plane11_0_normal = cross_product_3d(vec_a_minus_neg_b,vec_c_axis);
             plane11_0_normal /= plane11_0_normal.norm();
 
@@ -725,20 +727,23 @@ namespace aspect
           }
         else if (deformation_type == DeformationType::olivine_d_fabric)
           {
-            // Olivine axes length in angstrom (Å)
-            Tensor<1,3> olivine_a_axis ({4.816,0.,0.});
-            Tensor<1,3> olivine_b_axis ({0.,10.469,0.});
-            Tensor<1,3> olivine_c_axis ({0.,0.,6.099});
+            // Olivine axes length in angstrom (Å) https://www.mindat.org/min-29264.html
+            const Tensor<1,3> olivine_a_axis ({4.816,0.,0.});
+            const Tensor<1,3> olivine_b_axis ({0.,10.469,0.});
+            const Tensor<1,3> olivine_c_axis ({0.,0.,6.099});
 
-            // crystal axis b minus axis c
-
-            Tensor<1,3> vec_b_minus_c = olivine_b_axis - olivine_c_axis;
-            // cross product between a*(b-c) to get normal vector for nsp{011}
+            // Crystal axis b minus axis c
+            const Tensor<1,3> vec_13b_minus_c = 0.333*olivine_b_axis - olivine_c_axis;
+            // Cross product between a*(b-c) to get normal vector for nsp{011}
             // Olivine D-type fabric Geng et al., 2022 G3 and ref therein gives D-type fabric slip system of {0kl}[100]
-            // this {0kl} contribute to the girdle in b axis (010) pole figure.
+            // This {0kl} contribute to the girdle in b axis (010) pole figure.
             // https://doi.org/10.1029/2022GC010507
-            Tensor<1,3> plane011_normal = cross_product_3d(olivine_a_axis,vec_b_minus_c);
-            plane011_normal /= plane011_normal.norm();
+            Tensor<1,3> plane031_normal = cross_product_3d(olivine_a_axis,vec_13b_minus_c);
+            plane031_normal /= plane031_normal.norm();
+            // slip_normal_reference (vector n) & slip_direction_reference (vector l) for olivine D types
+            // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100]
+            slip_normal_reference = {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane031_normal}};
+            slip_direction_reference = {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
           }
 
 
@@ -751,8 +756,8 @@ namespace aspect
             Tensor<1,3> w;
             Tensor<1,4> beta({1.0, 1.0, 1.0, 1.0});
 
-            // these are variables we only need for olivine, but we need them for both
-            // within this if block and the next ones
+            // These are variables we only need for olivine, but we need them for both
+            // Within this if block and the next ones
             // Ordered vector where the first entry is the max/weakest and the last entry is the inactive slip system.
             std::array<unsigned int,4> indices {};
 
@@ -1063,7 +1068,8 @@ namespace aspect
               ref_resolved_shear_stress[3] = 1;
               break;
 
-            // RRSS for CPX
+            // RRSS for CPX (preliminary results, require further investigations)
+            // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100]
             case DeformationType::clinopyroxene :
               ref_resolved_shear_stress[0] = 1;
               ref_resolved_shear_stress[1] = 5;
@@ -1153,7 +1159,9 @@ namespace aspect
             //
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
-                               "The RRSS values for CPX (clinopyroxene), used in fabric calculations.");
+                               "The RRSS values for Olivine (D-type), used in fabric calculations."
+                               "Karato 2008 AnnRevEPS; Bystricky_etal 2001 science "
+                               "with added slip system {031}[100]");
 
             prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                Patterns::List(Patterns::Double(0)),
