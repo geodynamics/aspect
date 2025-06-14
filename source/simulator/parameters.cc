@@ -1637,7 +1637,8 @@ namespace aspect
             }
           else
             {
-              const int error_code = Utilities::MPI::broadcast(mpi_communicator, error_code, /* root = */ 0);
+              const int dummy = -1;
+              const int error_code = Utilities::MPI::broadcast(mpi_communicator, dummy, /* root = */ 0);
 
               if (error_code != 0)
                 throw QuietException();
