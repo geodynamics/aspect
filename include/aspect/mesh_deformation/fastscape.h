@@ -493,7 +493,7 @@ namespace aspect
         mutable double sea_level = 0.0; 
 
         /**
-         * The user defined 1D function of sea level.)
+         * The user defined 1D function of time-dependent sea level.
          */
         Functions::ParsedFunction<1> sea_level_function;   
 
