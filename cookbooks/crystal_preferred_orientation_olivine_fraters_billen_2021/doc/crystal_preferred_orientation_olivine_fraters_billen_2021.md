@@ -1,12 +1,12 @@
 # Olivine Fabric Developments Under Simple Shear
 
-*This section was contributed by Xiaochuan Tian, with helps from Yijun Wang and Menno Fraters. It is
+*This section was contributed by Xiaochuan Tian, with help from Yijun Wang and Menno Fraters. It is
 based on a section in {cite:t}`fraters_billen_2021_cpo`
 by Menno Fraters and Magali Billen published in 2021.*
 
 This cookbook explains how to set up a numerical experiment for fabric
 developments of a single olivine particle under simple shear macroscopic strain.
-It uses ASPECT's
+It uses ASPECT
 crystal preferred orientation (CPO) implementation, which is described in detail in
 {cite:t}`fraters_billen_2021_cpo`.
 The fabric calculation is based on DRex {cite:t}`kaminski2004`.
@@ -46,9 +46,7 @@ The model computes how crystal grains rotate and align under simple shear and th
 Rather than solving the Stokes equation with boundary conditions, we instead prescribe
 a constant simple shear strain rate field by setting "Nonlinear solver scheme" to
 "single Advection, no Stokes" and
-prescribing the Stokes solution with a function. In this case, what we only care is the
-prescribed strain rate that is exerted onto the olivine particle. Parameters useful for the Stokes
-equation is not important in this case.
+prescribing the Stokes solution with a function. In this case, the only model property that we care about is the prescribed strain rate that is exerted onto the olivine particle. Parameters useful for the Stokes equation is not important in this case.
 
 ```{literalinclude} prescribe_stokes.part.prm
 ```

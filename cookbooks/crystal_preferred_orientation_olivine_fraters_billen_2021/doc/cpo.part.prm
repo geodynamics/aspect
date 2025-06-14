@@ -1,5 +1,4 @@
 # Specify postprocessor objects that will be run at the end of each time step
-# The statistics output file is important for cpo plotter for reading the data
 # The particles and crystal preferred orientation are required for CPO calculations
 subsection Postprocess
   set List of postprocessors = velocity statistics, visualization, particles, crystal preferred orientation
@@ -31,7 +30,7 @@ end
 subsection Particles
   set List of particle properties = integrated strain, crystal preferred orientation, cpo elastic tensor, cpo bingham average, integrated strain invariant, velocity, pT path
 
-  # use a ascii file particle_one.dat to Specify initial locations of particles
+  # use an ASCII file particle_one.dat to specify initial locations of particles
   set Particle generator name = ascii file
 
   subsection Generator

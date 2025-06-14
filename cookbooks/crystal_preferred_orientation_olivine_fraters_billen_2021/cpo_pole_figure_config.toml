@@ -5,7 +5,7 @@ compressed = false
 [pole_figures]
     elastisity_header = false #not yet implemented
     small_figure = true
-    no_description_text = false #false
+    no_description_text = false
     color_scale = "Batlow"
     times = [1.0,1e5,3e5]
     particle_ids = [0]
@@ -13,3 +13,4 @@ compressed = false
     minerals = ["Olivine","Enstatite"]
     grain_data_file_prefix = "weighted_CPO"
     particle_data_dir = "particles_cpo"
+    
