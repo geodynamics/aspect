@@ -244,7 +244,7 @@ namespace aspect
            * Only for unit testing purposes.
            */
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives_drex_2004(DeformationType deformation_type,
+          compute_derivatives_drex_2004(const DeformationType deformation_type,
                                         const unsigned int cpo_index,
                                         const ArrayView<double> &data,
                                         const unsigned int mineral_i,
@@ -619,7 +619,7 @@ namespace aspect
           CPOInitialGrainsModel initial_grains_model;
 
           /**
-           * CPX RRSS todo
+           * Clinopyroxene Reference Resolved Shear Stress (RRSS), see Fraters and Billen 2021 for details
           */
           std::vector<double> CPX_RRSS;
 
