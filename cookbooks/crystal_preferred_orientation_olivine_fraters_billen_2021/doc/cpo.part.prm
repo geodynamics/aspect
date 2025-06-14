@@ -16,7 +16,7 @@ subsection Postprocess
     set Compress cpo data files = false # so results are human readable
     set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles #, mineral 1: volume fraction, mineral 1: Euler angles #Specify what to output, here will only output volume fraction and Euler angles for mineral 0 (olivine)
      # Specify output parameters for draw volume weighted cpo, the pole figures are plotted with these data
-    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles   
+    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles, mineral 1: volume fraction, mineral 1: Euler angles
   end
 
   subsection Particles
