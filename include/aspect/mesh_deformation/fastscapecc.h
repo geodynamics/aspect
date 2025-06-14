@@ -132,6 +132,18 @@ namespace aspect
         // dealii::LinearAlgebra::distributed::Vector<double> boundary_solution;
 
         unsigned int vertex_index(const Point<dim> &p) const;
+
+        /*
+         * A map, used only for the spherical geometry, that maps the location
+         * of a vertex to an index between zero and the number of vertices
+         * in the surface mesh.
+         *
+         * TODO: This map is only used for the spherical shell geometry. We
+         *   should prevent this object from being used altogether in all
+         *   other cases, and this could be facilitated by wrapping it in
+         *   std_cxx17::optional<>. Only when we encounter the spherical
+         *   geometry do we actually set anything in the optional.
+         */
         std::map<dealii::Point<dim>, unsigned int, PointComparator<dim>> spherical_vertex_index_map;
 
         using SurfaceMeshType = Triangulation<dim - 1, dim>;
