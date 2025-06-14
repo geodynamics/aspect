@@ -145,8 +145,6 @@ you would like to contribute some code.
 
 ### Installing astyle
 
-To correctly indent the code in ASPECT you can use `make indent` or `ninja indent`
-depending on the build system you are using. The indenting script needs version 2.04 astyle.
 If you installed deal.II through candi, the correct astyle may already on your system and in your path.
 If the indenting script complains that it could not find (the correct version of) astyle,
 you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/).
@@ -154,18 +152,22 @@ you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/asty
 An easy way to install it is through using the following command in Linux (do not do this in the aspect directory):
 `mkdir astyle && cd astyle && wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle 2.04/astyle_2.04_linux.tar.gz' && tar -zxvf astyle_2.04_linux.tar.gz && cd astyle/build/gcc && make && sudo make install`.
 This will create a new directory called astyle, download, unpack, compile and install it.
-When you add the bin directory to to your path, the indent command should find astyle.
+When you add the bin directory to your path, the indent command should find astyle.
 
-#### Example usage for single files
+#### Example astyle usage
 
-Correct the indentation of your `.cc` and `.h` files by downloading the ASPECT [style file](https://github.com/geodynamics/aspect/blob/main/contrib/utilities/astyle.rc) and running astyle
+To correctly indent the code in the ASPECT build directory, you can use `make indent` or `ninja indent`
+depending on the build system you are using:
 
 ```{code-block} bash
-# Download ASPECT style file with wget or curl
-# curl -O https://raw.githubusercontent.com/geodynamics/aspect/refs/heads/main/contrib/utilities/astyle.rc
-wget https://raw.githubusercontent.com/geodynamics/aspect/refs/heads/main/contrib/utilities/astyle.rc
+cd <path to your aspect build dir>
+make indent
+```
 
-# Indent files
+If you wish to correctly indent individual files in another directory, you can use:
+
+```{code-block} bash
+cp <path to your aspect source dir>/contrib/utilities/astyle.rc .
 astyle --options=astyle.rc my_plugin.cc my_plugin.h
 ```
 
