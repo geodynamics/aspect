@@ -165,6 +165,12 @@ namespace aspect
             AssertThrow(spherical_model || box_model,
                         ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
 
+
+// TODO: surface_mesh is a serial triangulation, not one that is MPI-parallel. As a consequence,
+// all processes have a complete copy of it, and locally_relevant_dofs_surface is the *complete*
+// index set, as is surface_mesh_dof_handler.locally_owned_dofs(). You can't create a *parallel*
+// vector in a meaningful way this way (except if you run on only one process).
+
             // Initialize the surface solution vector on the FastScape surface mesh
             const IndexSet locally_relevant_dofs_surface
             = DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
