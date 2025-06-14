@@ -536,7 +536,7 @@ set(ASPECT_MAIN_FILE "source/main.cc")
 # lead to errors with duplicate instantiations. The only reliable option
 # is to exclude the files that instantiate the whole class.
 set(UNITY_SEPARATE_FILES
-  "source/simulator/core.cc;source/volume_of_fluid/handler.cc")
+  "source/simulator/core.cc")
 
 foreach(_source_file ${UNITY_SEPARATE_FILES})
   set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
