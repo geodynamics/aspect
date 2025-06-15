@@ -244,7 +244,8 @@ namespace aspect
     void
     LatentHeatMelt<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = melt_fraction(in.temperature[q],
