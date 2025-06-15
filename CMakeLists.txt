@@ -577,221 +577,6 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
 endif()
 
 
-message(STATUS "Writing externally readable configuration information")
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-  "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
-  VERSION ${ASPECT_PACKAGE_VERSION}
-  COMPATIBILITY AnyNewerVersion
-)
-
-# Configure a cmake fragment that plugins can use to
-# set up compiler flags, include paths, etc to compile an
-# ASPECT plugin.
-# Config for the build dir:
-set(CONFIG_DIR "${CMAKE_BINARY_DIR}")
-configure_file(
-  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
-  ${CMAKE_BINARY_DIR}/AspectConfig.cmake
-  @ONLY
-)
-# Config for the install dir:
-set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
-configure_file(
-  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
-  ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake
-  @ONLY
-)
-
-# Next, set up the testsuite
-
-set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
-set(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
-set(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
-
-configure_file(
-  ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
-  ${CMAKE_BINARY_DIR}/CTestCustom.ctest
-  @ONLY
-)
-configure_file(
-  ${CMAKE_SOURCE_DIR}/tests/cmake/print_test_info.sh
-  ${CMAKE_BINARY_DIR}/print_test_info.sh
-  @ONLY
-)
-
-# enable all tests and force a re-run of the cmake configuration in the test/ folder:
-add_custom_target(setup_tests
-  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON . >/dev/null
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  COMMENT "Enabling all tests ...")
-
-set(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING
-  "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
-
-
-# This is an empty target but we will make it depend on tests/ and unit_tests/ next:
-add_custom_target(test)
-
-# Generate CTestTestfile.cmake in the main build folder that lists all subfolders
-# that contain tests. This way you can call "ctest" in the build directory.
-file(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
-  # If we have the unit_tests directory, add it so ctest picks it up and configure
-  # the test project in the subfolder:
-  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unit_tests)\n")
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests)
-  execute_process(
-    COMMAND ${CMAKE_COMMAND}
-        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
-        ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests
-    OUTPUT_FILE setup_unit_tests.log
-    RESULT_VARIABLE test_cmake_result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
-   )
-  if(NOT test_cmake_result EQUAL 0)
-    message(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
-  endif()
-
-  # Finally create a custom target to run the tests:
-  add_custom_target(run_unit_tests
-    COMMAND ${CMAKE_BINARY_DIR}/aspect --test
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
-    DEPENDS ${TARGET_EXE}
-    COMMENT "Running unit_tests ...")
-endif()
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
-  # Hook up the tests:
-  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
-endif()
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
-  AND ${ASPECT_NEED_TEST_CONFIGURE})
-
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
-
-  # set a flag so we don't need to rerun this configuration step every time:
-  set(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
-
-  message(STATUS "Setting up test project, see tests/setup_tests.log for details.")
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} -G "${ASPECT_TEST_GENERATOR}"
-        -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
-        -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
-        -D Aspect_DIR=${CMAKE_BINARY_DIR}
-        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests
-    OUTPUT_FILE setup_tests.log
-    RESULT_VARIABLE test_cmake_result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-   )
-  if(NOT test_cmake_result EQUAL 0)
-    message(FATAL_ERROR "ERROR: tests/ project could not be configured.")
-  endif()
-
-  # Finally create a custom target:
-  add_custom_target(run_tests
-    COMMAND ${CMAKE_COMMAND} --build . --target test
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    DEPENDS ${TARGET_EXE}
-    COMMENT "Running tests ...")
-endif()
-
-# Provide the "generate_reference_output" target:
-add_custom_target(generate_reference_output
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-
-# Provide "indent" target for indenting all headers and source files
-add_custom_target(indent
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  COMMAND ./contrib/utilities/indent
-  COMMENT "Indenting all ASPECT header and source files..."
-  )
-
-if(CMAKE_GENERATOR MATCHES "Ninja")
-  set(_make_command "$ ninja")
-else()
-  set(_make_command " $ make")
-endif()
-
-# Provide "release" and "debug" targets to switch compile mode
-if(${DEAL_II_BUILD_TYPE} MATCHES "DebugRelease")
-add_custom_target(release
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Release mode. Now recompile with: ${_make_command}"
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to RELEASE mode..."
-  )
-add_custom_target(debug
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug mode. Now recompile with: ${_make_command}"
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to DEBUG mode..."
-  )
-add_custom_target(debugrelease
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=DebugRelease .
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug and Release mode. Now recompile with: ${_make_command}"
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to DEBUG/RELEASE mode..."
-  )
-endif()
-
-# Provide a "distclean" target (like it is done in deal.II):
-add_custom_target(distclean
-  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
-  COMMAND ${CMAKE_COMMAND} -E remove_directory CMakeFiles
-  COMMAND ${CMAKE_COMMAND} -E remove
-    CMakeCache.txt cmake_install.cmake Makefile
-    build.ninja rules.ninja .ninja_deps .ninja_log
-  COMMENT "distclean invoked"
-  )
-
-
-
-file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
-"message(
-\"###
-#
-#  Project ${TARGET_EXE} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
-#      ${DEAL_II_PATH}
-#
-#  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
-#
-#  You can now run
-#      ${_make_command}                - to compile and link ${TARGET_EXE}
-#      ${_make_command} debug          - to switch the build type to 'Debug'
-#      ${_make_command} release        - to switch the build type to 'Release'
-#      ${_make_command} debugrelease   - to switch the build type to compile both
-#      ${_make_command} clean          - to remove the generated executable as well as
-#                               all intermediate compilation files
-#      ${_make_command} distclean      - to clean the directory from all generated
-#                               files (includes clean, runclean and the removal
-#                               of the generated build system)
-#      ${_make_command} setup_tests    - enable all tests and re-run test detection
-#      ${_make_command} indent         - fix indentation of all source files
-#      ${_make_command} info           - to view this message again
-\")")
-
-# Provide "info" target
-add_custom_target(info
-  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
-  )
-
 
 INCLUDE (CheckCXXSourceCompiles)
 
@@ -1067,6 +852,225 @@ install(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
   DESTINATION include
   COMPONENT includes
   FILES_MATCHING PATTERN "*.h")
+
+message(STATUS "Writing externally readable configuration information")
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
+  VERSION ${ASPECT_PACKAGE_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+# Configure a cmake fragment that plugins can use to
+# set up compiler flags, include paths, etc to compile an
+# ASPECT plugin.
+# Config for the build dir:
+set(CONFIG_DIR "${CMAKE_BINARY_DIR}")
+configure_file(
+  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
+  ${CMAKE_BINARY_DIR}/AspectConfig.cmake
+  @ONLY
+)
+# Config for the install dir:
+set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
+configure_file(
+  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
+  ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake
+  @ONLY
+)
+
+
+# ##############################################################################
+# Setting up the testsuite
+# ##############################################################################
+
+set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
+set(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
+set(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
+  ${CMAKE_BINARY_DIR}/CTestCustom.ctest
+  @ONLY
+)
+configure_file(
+  ${CMAKE_SOURCE_DIR}/tests/cmake/print_test_info.sh
+  ${CMAKE_BINARY_DIR}/print_test_info.sh
+  @ONLY
+)
+
+# enable all tests and force a re-run of the cmake configuration in the test/ folder:
+add_custom_target(setup_tests
+  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON . >/dev/null
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMENT "Enabling all tests ...")
+
+set(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING
+  "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
+
+
+# This is an empty target but we will make it depend on tests/ and unit_tests/ next:
+add_custom_target(test)
+
+# Generate CTestTestfile.cmake in the main build folder that lists all subfolders
+# that contain tests. This way you can call "ctest" in the build directory.
+file(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
+  # If we have the unit_tests directory, add it so ctest picks it up and configure
+  # the test project in the subfolder:
+  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unit_tests)\n")
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests)
+  execute_process(
+    COMMAND ${CMAKE_COMMAND}
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
+        ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests
+    OUTPUT_FILE setup_unit_tests.log
+    RESULT_VARIABLE test_cmake_result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
+   )
+  if(NOT test_cmake_result EQUAL 0)
+    message(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
+  endif()
+
+  # Finally create a custom target to run the tests:
+  add_custom_target(run_unit_tests
+    COMMAND ${CMAKE_BINARY_DIR}/aspect --test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
+    DEPENDS ${TARGET_EXE}
+    COMMENT "Running unit_tests ...")
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
+  # Hook up the tests:
+  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
+  AND ${ASPECT_NEED_TEST_CONFIGURE})
+
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
+
+  # set a flag so we don't need to rerun this configuration step every time:
+  set(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
+
+  message(STATUS "Setting up test project, see tests/setup_tests.log for details.")
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -G "${ASPECT_TEST_GENERATOR}"
+        -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
+        -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
+        -D Aspect_DIR=${CMAKE_BINARY_DIR}
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests
+    OUTPUT_FILE setup_tests.log
+    RESULT_VARIABLE test_cmake_result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+   )
+  if(NOT test_cmake_result EQUAL 0)
+    message(FATAL_ERROR "ERROR: tests/ project could not be configured.")
+  endif()
+
+  # Finally create a custom target:
+  add_custom_target(run_tests
+    COMMAND ${CMAKE_COMMAND} --build . --target test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    DEPENDS ${TARGET_EXE}
+    COMMENT "Running tests ...")
+endif()
+
+# Provide the "generate_reference_output" target:
+add_custom_target(generate_reference_output
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+
+# Provide "indent" target for indenting all headers and source files
+add_custom_target(indent
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMAND ./contrib/utilities/indent
+  COMMENT "Indenting all ASPECT header and source files..."
+  )
+
+if(CMAKE_GENERATOR MATCHES "Ninja")
+  set(_make_command "$ ninja")
+else()
+  set(_make_command " $ make")
+endif()
+
+# Provide "release" and "debug" targets to switch compile mode
+if(${DEAL_II_BUILD_TYPE} MATCHES "DebugRelease")
+add_custom_target(release
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Release mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to RELEASE mode..."
+  )
+add_custom_target(debug
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to DEBUG mode..."
+  )
+add_custom_target(debugrelease
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=DebugRelease .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug and Release mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to DEBUG/RELEASE mode..."
+  )
+endif()
+
+# Provide a "distclean" target (like it is done in deal.II):
+add_custom_target(distclean
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
+  COMMAND ${CMAKE_COMMAND} -E remove_directory CMakeFiles
+  COMMAND ${CMAKE_COMMAND} -E remove
+    CMakeCache.txt cmake_install.cmake Makefile
+    build.ninja rules.ninja .ninja_deps .ninja_log
+  COMMENT "distclean invoked"
+  )
+
+
+
+file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
+"message(
+\"###
+#
+#  Project ${TARGET_EXE} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
+#      ${DEAL_II_PATH}
+#
+#  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
+#
+#  You can now run
+#      ${_make_command}                - to compile and link ${TARGET_EXE}
+#      ${_make_command} debug          - to switch the build type to 'Debug'
+#      ${_make_command} release        - to switch the build type to 'Release'
+#      ${_make_command} debugrelease   - to switch the build type to compile both
+#      ${_make_command} clean          - to remove the generated executable as well as
+#                               all intermediate compilation files
+#      ${_make_command} distclean      - to clean the directory from all generated
+#                               files (includes clean, runclean and the removal
+#                               of the generated build system)
+#      ${_make_command} setup_tests    - enable all tests and re-run test detection
+#      ${_make_command} indent         - fix indentation of all source files
+#      ${_make_command} info           - to view this message again
+\")")
+
+# Provide "info" target
+add_custom_target(info
+  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
+  )
+
 
 # examples:
 set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL
