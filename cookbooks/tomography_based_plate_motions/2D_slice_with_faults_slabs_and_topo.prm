@@ -68,13 +68,13 @@ subsection Geometry model
 
     subsection Ascii data model
       set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
-      set Data file name       = input_topography_smooth_gauss.txt 
+      set Data file name       = input_topography_smooth_gauss.txt
     end
   end
 
 #  subsection Initial topography model
 #    set Model name = function
-# 
+#
 #    subsection Function
 #      set Variable names      = r, phi
 #      set Function constants  = h = 8e3, n_phi = 1
@@ -94,7 +94,7 @@ subsection Mesh refinement
 
   subsection Minimum refinement function
     set Variable names = depth, y
-    set Function expression = if(depth > 350000, 5, 7 ) 
+    set Function expression = if(depth > 350000, 5, 7 )
   end
 
   subsection Composition threshold

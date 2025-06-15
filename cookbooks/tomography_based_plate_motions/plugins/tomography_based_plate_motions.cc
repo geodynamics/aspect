@@ -249,8 +249,8 @@ namespace aspect
           lateral_averaging_properties.emplace_back(std::make_unique<internal::FunctorDepthAverageUnscaledViscosity<dim>>());
 
           std::vector<std::vector<double>> averages =
-                                          this->get_lateral_averaging().compute_lateral_averages(reference_viscosity_coordinates,
-                                              lateral_averaging_properties);
+            this->get_lateral_averaging().compute_lateral_averages(reference_viscosity_coordinates,
+                                                                   lateral_averaging_properties);
 
           average_viscosity_profile = std::move(averages[0]);
 
@@ -975,14 +975,14 @@ namespace aspect
 
       if (initial_temperature_manager == nullptr)
         const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
-                                                                                = this->get_initial_temperature_manager_pointer();
+          = this->get_initial_temperature_manager_pointer();
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
         initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
 
       if (initial_composition_manager == nullptr)
         const_cast<std::shared_ptr<const aspect::InitialComposition::Manager<dim>>&>(initial_composition_manager)
-                                                                                = this->get_initial_composition_manager_pointer();
+          = this->get_initial_composition_manager_pointer();
 
       // This function will fill the outputs for grain size, viscosity, and dislocation viscosity
       if (in.requests_property(MaterialProperties::viscosity)

@@ -17,7 +17,7 @@ end
 
 subsection Initial composition model
   set List of model names = ascii data, world builder, slab model
-  
+
   subsection Slab model
     set Data directory = $ASPECT_SOURCE_DIR/cookbooks/tomography_based_plate_motions/input_data/
     set Data file name = slab2_depth_thickness_2D.txt

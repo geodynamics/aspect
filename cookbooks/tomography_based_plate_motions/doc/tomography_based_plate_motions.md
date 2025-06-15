@@ -66,12 +66,12 @@ The user can change several parameters to investigate the mantle forces and how 
 - The prescribed viscosity of the plate boundaries, which controls friction between plates.
 - To use viscous and neutrally buoyant cratons in the model.
 
-# Added complexity—Slab2 and initial topography 
+# Added complexity—Slab2 and initial topography
 For additional complexity, we use the Slab2 {cite}`hayes2018slab2` database that describes the three dimensional geometries of all the seismically active subduction zones in detail on Earth instead of the vertical slabs defined in the TM1 model. We also deform the outer shell by the initial topography. Incorporating these finer heterogeneities allow us to simulate Earth-like surface deformation in the models.
 
 The slabs are included as a compositional field that is diffused with a length scale of 30 km. Physically, this value represents the diffusion of a slab in $\approx$ 15 Ma using diffusivity of 1.14e{-6} m$^2$/s$^{-1}$. Within the slabs, we compute the temperatures using the diffused slabs' composition and a user-defined temperature anomaly, added to the reference mantle adiabat. Additionally, we add a low-viscosity layer in the material model, the mid-mantle layer, that extends below the mantle transition zone until 1000 km depth. The weak mid-mantle layer ensures that our slabs do not get stuck and can still pull the attached lithospheric plates as they sink into the more viscous lower mantle.
 
-For topography, we use a 1-deg spacing longitude-latitude grid and then smoothen the topography using a moving average containing 20 topography data points. The chosen smoothening reduces the pressure oscillations in our models that arise from the sharp topography gradients. 
+For topography, we use a 1-deg spacing longitude-latitude grid and then smoothen the topography using a moving average containing 20 topography data points. The chosen smoothening reduces the pressure oscillations in our models that arise from the sharp topography gradients.
 
 :::{note}
 Our tests with initial topography revealed that having smooth topography variations is important for both linear and nonlinear solver to converge. One possible explanation is that as the outer shell deforms according to the imposed topography, it is more difficult to apply the free-slip boundary condition on a mesh that has sudden variations in the tangential vector across the neighboring cells (see {numref}`fig:topography_test`).
@@ -79,7 +79,7 @@ Our tests with initial topography revealed that having smooth topography variati
 
 ```{figure-md} fig:topography_test
 <img src="Fig_topography_test.*" />
-(a) Flow in a simple compressible spherical shell with added topography—a mountain and a basin. The arrows marks the region where the tangential flow changes from deformed to undeformed surface. Shorter-wavelength topography changes leads to higher linear iterations and higher non-linear residual in the system. (b) We smooth the observed topography in this cookbook because the material model is quite complex already for sufficient solver convergence.  
+(a) Flow in a simple compressible spherical shell with added topography—a mountain and a basin. The arrows marks the region where the tangential flow changes from deformed to undeformed surface. Shorter-wavelength topography changes leads to higher linear iterations and higher non-linear residual in the system. (b) We smooth the observed topography in this cookbook because the material model is quite complex already for sufficient solver convergence.
 ```
 
 ## Running the model
@@ -88,7 +88,7 @@ The prm file that includes all the heterogeneites is available in the folder, [2
 ```{literalinclude} tomography_based_plate_motions-2.part.prm
 ```
 
-The parameter, `Use asthenosphere viscosity scaling in cold regions` ensures that the slabs are uniformly strong and that the low viscosity of asthenosphere does not affect the slabs (i.e, cold regions) during lateral viscosity averaging.  
+The parameter, `Use asthenosphere viscosity scaling in cold regions` ensures that the slabs are uniformly strong and that the low viscosity of asthenosphere does not affect the slabs (i.e, cold regions) during lateral viscosity averaging.
 
 We can visualize the flow field around the Chilean slab in the Figure {numref}`fig:flow_around_slabs` below:
 
@@ -99,7 +99,7 @@ Instantaneous velocity field as Chilean slab subducts and pulls the attached Naz
 ```
 
 ## Surface deformation : plate motions and SHmax directions
-With access to high-performance computing, we would want to run these models in three-dimensions and compare the modeled surface observations such as plate motions or SHmax directions. 
+With access to high-performance computing, we would want to run these models in three-dimensions and compare the modeled surface observations such as plate motions or SHmax directions.
 The following model was run using ~2.5k cores on a HPC and shows a practical application of how these models can be used to approximate the present-day physical state of the Earth.
 
 #TODO
