@@ -536,7 +536,7 @@ file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.
 set(ASPECT_MAIN_FILE "source/main.cc")
 
 # Create the combined set of source files that make up the project
-set(TARGET_SRC
+set(ASPECT_ALL_SOURCE_FILES
     ${ASPECT_MAIN_FILE}
     ${ASPECT_UNIT_TEST_FILES}
     ${ASPECT_SOURCE_FILES})
@@ -643,7 +643,7 @@ endif()
 
 # Set up targets for ASPECT executables:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-  add_executable(${TARGET_EXE_DEBUG} ${TARGET_SRC})
+  add_executable(${TARGET_EXE_DEBUG} ${ASPECT_ALL_SOURCE_FILES})
   set_property(TARGET ${TARGET_EXE_DEBUG}
                PROPERTY OUTPUT_NAME aspect-debug)
 
@@ -658,7 +658,7 @@ if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
 endif()
 
 if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-  add_executable(${TARGET_EXE_RELEASE} ${TARGET_SRC})
+  add_executable(${TARGET_EXE_RELEASE} ${ASPECT_ALL_SOURCE_FILES})
   set_property(TARGET ${TARGET_EXE_RELEASE}
                PROPERTY OUTPUT_NAME aspect-release)
 
