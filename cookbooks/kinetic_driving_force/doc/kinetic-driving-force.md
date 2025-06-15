@@ -33,10 +33,15 @@ The reaction rate is then calculated as:
 
 where $Q$ is a kinetic prefactor constant (units: J/mol/s) and $X$ is the mass fraction of phase $b$ (the product phase).
 
-
 ```{figure-md} fig:simple-subduction-Q-1e-9
 <img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0010.png" style="width:80.0%" />
+```
+
+```{figure-md} fig:simple-subduction-Q-1e-9
 <img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0020.png" style="width:80.0%" />
+```
+
+```{figure-md} fig:simple-subduction-Q-1e-9
 <img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0030.png" style="width:80.0%" />
 
 Evolution of a simple subduction model with an olivine --> wadsleyite phase transition that is governed by a kinetic reaction rate (Equation {math:numref}`eqn:reaction-rate`). Cold material flows into the top left boundary at a fixed temperature and velocity (left column) and olivine transforms to wadsleyite (center column). A low-density metastable olivine layer forms below the equilibrium reaction depth with a dynamic topography that responds to changes in pressure and temperature (right column).`
