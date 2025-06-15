@@ -18,7 +18,7 @@ The model formulates the kinetic driving force as a function of the excess Gibbs
 where $\Delta G$ is the kinetic driving force, $\Delta G_0 = \Delta G_b - \Delta G_a$ is the difference in Gibbs free energy between two polymorphic phases $a$ and $b$ under a hydrostatic adiabatic reference state, $\Delta V$ and $\Delta S$ are the differences in molar volume and entropy of the polymorphic phases, respectively, $\Delta P = p - \bar{p}$ is the nonadiabatic ("dynamic") pressure, and $\Delta T = T - \bar{T}$ is the nonadiabatic temperature. The thermodynamic variables $\Delta G_0$, $\Delta V$, and $\Delta S$ are evaluated along an isentropic adiabat ($\bar{p}$, $\bar{T}$, {numref}`fig:ascii-data-profile`) using the thermodynamic data and equations of state from {cite:t}`stixrude:lithgow-bertelloni:2011`. These thermodynamic data are stored in the table `aspect/cookbooks/kinetic_driving_force/ol-wad-driving-force-profile.txt`, which is referenced using the [`AsciiDataProfile`](https://github.com/geodynamics/aspect/blob/a947bac5a92025ed0f12bf4da70757e78a531b25/include/aspect/structured_data.h#L717) class.
 
 ```{figure-md} fig:ascii-data-profile
-<img src="driving-force-contours-fill-olivine-wadsleyite.png" style="width:80.0%" />
+<img src="driving-force-contours-fill-olivine-wadsleyite.*" style="width:80.0%" />
 
 Kinetic driving force for the reaction olivine --> wadsleyite as a function of depth.`
 ```
@@ -34,19 +34,19 @@ The reaction rate is then calculated as:
 where $Q$ is a kinetic prefactor constant (units: J/mol/s) and $X$ is the mass fraction of phase $b$ (the product phase).
 
 ```{figure-md} fig:simple-subduction-Q-1e-9-10Ma
-<img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0010.png" style="width:80.0%" />
+<img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0010.*" style="width:80.0%" />
 
 A simple subduction model with an olivine --> wadsleyite phase transition at 10 Ma. The phase transition is governed by a kinetic reaction rate (Equation {math:numref}`eqn:reaction-rate`). Cold material flows into the top left boundary at a fixed temperature and velocity (left column) and olivine transforms to wadsleyite (center column). A low-density metastable olivine layer forms below the equilibrium reaction depth with a dynamic topography that responds to changes in pressure and temperature (right column).`
 ```
 
 ```{figure-md} fig:simple-subduction-Q-1e-9-20Ma
-<img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0020.png" style="width:80.0%" />
+<img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0020.*" style="width:80.0%" />
 
 A simple subduction model with an olivine --> wadsleyite phase transition at 20 Ma.
 ```
 
 ```{figure-md} fig:simple-subduction-Q-1e-9-30Ma
-<img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0030.png" style="width:80.0%" />
+<img src="simple-subduction-with-kinetic-driving-force-profile-temperature-full-density-nonadiabatic-X-field-0030.*" style="width:80.0%" />
 
 A simple subduction model with an olivine --> wadsleyite phase transition at 30 Ma.
 ```
