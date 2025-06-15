@@ -762,7 +762,8 @@ TEST_CASE("CPO")
 
 
     std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
-    derivatives = lpo_3d.compute_derivatives_drex_2004(0,
+    derivatives = lpo_3d.compute_derivatives_drex_2004(aspect::Particle::Property::DeformationType::olivine_a_fabric,
+                                                       0,
                                                        data,
                                                        0,
                                                        strain_rate_nondimensional,
@@ -991,7 +992,8 @@ TEST_CASE("CPO")
 
 
     std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
-    derivatives = lpo_3d.compute_derivatives_drex_2004(0,
+    derivatives = lpo_3d.compute_derivatives_drex_2004(aspect::Particle::Property::DeformationType::olivine_a_fabric,
+                                                       0,
                                                        data,
                                                        0,
                                                        strain_rate_nondimensional,
