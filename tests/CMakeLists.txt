@@ -30,7 +30,7 @@ SET(Aspect_DIR "${Aspect_DIR}" CACHE STRING "" FORCE)
 SET(ASPECT_COMPARE_TEST_RESULTS "${ASPECT_COMPARE_TEST_RESULTS}" CACHE BOOL "" FORCE)
 SET(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "")
 
-FIND_PACKAGE(Aspect 2.4.0 QUIET REQUIRED HINTS ${Aspect_DIR})
+FIND_PACKAGE(Aspect 3.1.0 QUIET REQUIRED HINTS ${Aspect_DIR})
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
 FIND_PACKAGE(Perl)
@@ -177,7 +177,6 @@ SET(_n_tests "0")
 LIST(SORT _tests)
 
 FOREACH(_test ${_tests})
-
   SET(_test_full ${_test})
   GET_FILENAME_COMPONENT(_testname ${_test} NAME_WE)
 
@@ -196,7 +195,7 @@ FOREACH(_test ${_tests})
 
   IF(_use_test)
 
-    MESSAGE(STATUS "** processing test ${_testname}:")
+    MESSAGE(STATUS "Processing test ${_testname}:")
 
     # Create main target for this test. We let it depend on the screen output
     # even if the folder with reference data for this test doesn't contain any
@@ -423,4 +422,4 @@ FOREACH(_test ${_tests})
   ENDIF()
 ENDFOREACH()
 
-MESSAGE("     Found ${_n_tests} tests.")
+MESSAGE("Found ${_n_tests} tests.")
