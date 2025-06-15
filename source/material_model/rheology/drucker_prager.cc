@@ -35,7 +35,7 @@ namespace aspect
       DruckerPragerParameters::DruckerPragerParameters()
         : angle_internal_friction (numbers::signaling_nan<double>()),
           cohesion  (numbers::signaling_nan<double>()),
-          yield_stress_prefactor (numbers::signaling_nan<double>()),
+          yield_stress_prefactor (1.0),
           max_yield_stress (numbers::signaling_nan<double>())
       {}
 
@@ -116,22 +116,12 @@ namespace aspect
         // Here the middle circumscribing approach is taken.
         const double stress_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
 
-        double yield_stress_prefactor;
-        if (std::isnan(p.yield_stress_prefactor))
-          {
-            // If the yield stress prefactor is not set, we assume it is 1,
-            // which disables its effect.
-            yield_stress_prefactor = 1.0;
-          }
-        else
-          yield_stress_prefactor = p.yield_stress_prefactor;
-
         // Initial yield stress (no stabilization terms)
         const double yield_stress = ( (dim==3)
                                       ?
-                                      (( 6.0 * p.cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part) * yield_stress_prefactor
+                                      (( 6.0 * p.cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part) * p.angle_internal_friction
                                       :
-                                      (p.cohesion * cos_phi + pressure * sin_phi) * yield_stress_prefactor);
+                                      (p.cohesion * cos_phi + pressure * sin_phi) * p.angle_internal_friction);
 
         return std::min(yield_stress, p.max_yield_stress);
       }
