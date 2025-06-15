@@ -281,14 +281,55 @@ namespace aspect
       {
         // Find the index of the entropy field and replace the assembler for it.
         // The index of the entropy field is its index in the compositional fields plus one (for the temperature field).
-        const unsigned int entropy_index = simulator_access.introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy)[0]
-                                           + 1;
-        assemblers.advection_system[entropy_index].clear();
-        assemblers.advection_system[entropy_index].emplace_back (std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>());
-        assemblers.advection_system_assembler_properties[entropy_index].needed_update_flags = update_hessians;
+
+        // loop over all entropy indices 
+
+        std::vector<unsigned int> entropy_indices = simulator_access.introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy)
+                                           ;
+
+      for (unsigned int i=0; i < entropy_indices.size(); ++i)
+           {
+
+        assemblers.advection_system[entropy_indices[i]+1].clear();
+        assemblers.advection_system[entropy_indices[i]+1].emplace_back (std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>());
+        assemblers.advection_system_assembler_properties[entropy_indices[i]+1].needed_update_flags = update_hessians;
+
+          }
       }
   }
 } // namespace aspect
+
+namespace aspect
+{
+
+
+  template <int dim>
+  void post_nonlinear_solver (const SolverControl &nonlinear_solver_control)
+  {
+ //   const typename Simulator<dim>::AdvectionField adv_field (Simulator<dim>::AdvectionField::temperature());
+ //   interpolate_material_output_into_advection_field(adv_field); 
+
+
+    const bool success = nonlinear_solver_control.last_check() == SolverControl::success;
+    std::cout << "\nnumber of nonlinear iterations: " << nonlinear_solver_control.last_step() << ". State: " << success << ".\n";
+  
+  }
+
+
+  template <int dim>
+  void signal_connector (SimulatorSignals<dim> &signals)
+  {
+  //  std::cout << "Connecting signals" << std::endl;
+    signals.post_nonlinear_solver.connect (&post_nonlinear_solver<dim>);
+  }
+
+
+  ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
+                                    signal_connector<3>)
+
+}
+
+
 
 template <int dim>
 void signal_connector (aspect::SimulatorSignals<dim> &signals)

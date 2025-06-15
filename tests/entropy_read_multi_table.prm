@@ -6,6 +6,7 @@ set Use years in output instead of seconds = true
 set End time                               = 0
 set Maximum time step                      = 1e6
 set Nonlinear solver scheme                = iterated Advection and Stokes
+set Use operator splitting                 = true
 set Max nonlinear iterations               = 50
 set Surface pressure                       = 0
 set Adiabatic surface temperature          = 1560.29

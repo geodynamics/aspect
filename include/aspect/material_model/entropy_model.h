@@ -117,6 +117,9 @@ namespace aspect
         double angle_of_internal_friction;
         double cohesion;
 
+        double multicomp_max_iteration;
+        double multicomp_tolerance;
+
         /**
          * Minimum/Maximum viscosity and lateral viscosity variations.
          */
@@ -131,6 +134,14 @@ namespace aspect
          */
         std::unique_ptr<ThermalConductivity::Interface<dim>> thermal_conductivity;
 
+        double  equilibrate_temperature (std::vector<double> &composition_equalibrated_S,
+                                         const std::vector<double> &temperature,
+                                         const std::vector<double> &chemical_composition,
+                                         const std::vector<double> &entropy,
+                                         const std::vector<double> &Cp,
+                                         const double pressure,
+                                         const double max_iteration,
+                                         const double max_error) const;
         /**
          * Information about the location of data files.
          */
