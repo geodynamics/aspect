@@ -25,6 +25,7 @@
 #include <aspect/utilities.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_temperature/adiabatic_boundary.h>
+#include <aspect/initial_composition/slab_model.h>
 #include <aspect/simulator_signals.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -64,6 +65,19 @@ namespace aspect
         public:
           MaterialTypeAdditionalOutputs(const unsigned int n_points)
             : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "material_type"),
+                                                  n_points)
+          {}
+      };
+
+      /**
+       * Additional output fields to output depth
+       */
+      template <int dim>
+      class DepthAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+      {
+        public:
+          DepthAdditionalOutputs(const unsigned int n_points)
+            : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "depth"),
                                                   n_points)
           {}
       };
@@ -144,6 +158,38 @@ namespace aspect
           dT_vs_depth_profile.initialize(this->get_mpi_communicator());
           temperature_scaling_index = dT_vs_depth_profile.get_column_index_from_name("temperature_scaling");
         }
+
+      // Determine some properties that are constant for all points
+      vs_anomaly_index = this->introspection().compositional_index_for_name("vs_anomaly");
+      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
+      craton_index = (use_cratons)
+                     ?
+                     this->introspection().compositional_index_for_name("continents")
+                     :
+                     numbers::invalid_unsigned_int;
+
+      grain_size_index = this->introspection().compositional_index_for_name("grain_size");
+
+      ridge_index  = numbers::invalid_unsigned_int;
+      trench_index = numbers::invalid_unsigned_int;
+      fault_index  = numbers::invalid_unsigned_int;
+
+      if (use_faults)
+        {
+          if (use_varying_fault_viscosity)
+            {
+              ridge_index  = this->introspection().compositional_index_for_name("ridges");
+              trench_index = this->introspection().compositional_index_for_name("trenches");
+            }
+          else
+            fault_index  = this->introspection().compositional_index_for_name("faults");
+        }
+
+      slab_index  = (use_slab2_database)
+                    ?
+                    this->introspection().compositional_index_for_name("slabs")
+                    :
+                    numbers::invalid_unsigned_int;
 
       // Get column for crustal depths
       std::set<types::boundary_id> surface_boundary_set;
@@ -257,9 +303,15 @@ namespace aspect
       // the largest depth in the profile).
       double reference_viscosity = reference_viscosity_profile->compute_viscosity(reference_viscosity_coordinates.at(depth_index));
 
-      // By default, ashtenosphere_viscosity is set to the second layer in the reference profile.
+      // By default, asthenosphere_viscosity is set to the second layer in the reference profile.
       if (depth_index == 1)
         reference_viscosity = asthenosphere_viscosity;
+
+      // We change the reference viscosity when we are using slab2 database, such that
+      // the slabs do not get stuck when entering the lower mantle.
+      // Currently, this is the mid-mantle viscosity
+      if (depth < 800e3 && depth > 660e3 && use_slab2_database)
+        reference_viscosity = mid_mantle_viscosity;
 
       return std::make_pair (reference_viscosity, depth_index);
     }
@@ -307,31 +359,6 @@ namespace aspect
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
         initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
-
-      const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
-
-      const unsigned int grain_size_index = this->introspection().compositional_index_for_name("grain_size");
-
-      const unsigned int craton_index = (use_cratons)
-                                        ?
-                                        this->introspection().compositional_index_for_name("continents")
-                                        :
-                                        numbers::invalid_unsigned_int;
-
-      unsigned int ridge_index  = numbers::invalid_unsigned_int;
-      unsigned int trench_index = numbers::invalid_unsigned_int;
-      unsigned int fault_index  = numbers::invalid_unsigned_int;
-
-      if (use_faults)
-        {
-          if (use_varying_fault_viscosity)
-            {
-              ridge_index  = this->introspection().compositional_index_for_name("ridges");
-              trench_index = this->introspection().compositional_index_for_name("trenches");
-            }
-          else
-            fault_index  = this->introspection().compositional_index_for_name("faults");
-        }
 
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
@@ -431,10 +458,24 @@ namespace aspect
           if (use_depth_dependent_viscosity)
             {
               const double viscosity_scaling_below_this_depth = 60e3;
+              const double non_adiabatic_temperature = in.temperature[i] - this->get_adiabatic_conditions().temperature(in.position[i]);
+
+              // In our reference profile, asthenosphere is represented by the second layer.
+              // This condition leads to strong cratons and slabs in asthenosphere.
+              // Temperatures are prescribed after first non linear iteration.
+              const bool cold_asthenosphere = depth > reference_viscosity_coordinates[1]
+                                              && depth <= reference_viscosity_coordinates[2]
+                                              && non_adiabatic_temperature <= -100
+                                              && !scale_cold_regions_in_asthenosphere
+                                              && this->get_nonlinear_iteration() > 0;
+
+              const bool apply_viscosity_scaling = average_viscosity_profile.size() != 0
+                                                   && depth > viscosity_scaling_below_this_depth
+                                                   && !cold_asthenosphere;
 
               // Scale viscosity so that laterally averaged viscosity == reference viscosity profile
               // Only scale if average viscosity is already available and we are below a specified depth.
-              if (average_viscosity_profile.size() != 0 && depth > viscosity_scaling_below_this_depth)
+              if (apply_viscosity_scaling)
                 out.viscosities[i] *= compute_viscosity_scaling(this->get_geometry_model().depth(in.position[i]));
             }
 
@@ -448,6 +489,7 @@ namespace aspect
 
           // This represents the viscosity with respect to which we want to define cratons/faults.
           const double background_viscosity_log = std::log10(out.viscosities[i]);
+          const double background_viscosity = out.viscosities[i];
 
           // If using faults, use the composition value to compute the viscosity instead
           // We extend the faults to depths 40 km more than the lithospheric depths because otherwise
@@ -472,7 +514,26 @@ namespace aspect
                     out.viscosities[i] = std::pow(10,
                                                   std::log10(fault_viscosity) * in.composition[i][fault_index]
                                                   + background_viscosity_log * (1. - in.composition[i][fault_index]));
+
+                  // If using slabs, then make sure that the viscosity within them is same as the
+                  // background (lithosphere) viscosity and that the faults do not cut them.
+                  // Since slabs are prescribed as a diffused field, we can't choose a compositional value
+                  // of 0 but rather a value of 0.25 that reasonably represents the slab geometry without
+                  // including a large regions of the surrounding mantle.
+                  if (use_slab2_database && in.composition[i][slab_index] > 0.25)
+                    out.viscosities[i] = background_viscosity;
                 }
+            }
+
+          // Add a weak zone just above the slabs to represent the weak trenches. Ideally, we would
+          // want them to be of similar thickness as other plate boundaries described in composition 'faults'.
+          if (use_slab2_database)
+            {
+              const InitialComposition::SlabModel<dim> &slab_model =
+                initial_composition_manager->template get_matching_active_plugin<InitialComposition::SlabModel<dim>>();
+              const double slab_depth = slab_model.get_slab_boundary().get_data_component(surface_boundary_id, in.position[i], 0);
+              if (depth <= slab_depth && depth >= slab_depth - trench_weak_zone_thickness)
+                out.viscosities[i] = std::min(fault_viscosity, background_viscosity);
             }
 
           // If using cratons, use the composition value to compute the viscosity instead. The cratons in the
@@ -864,6 +925,7 @@ namespace aspect
                          const std::vector<double> &compositional_fields,
                          const Point<dim> &) const
     {
+      double alpha = 1e-5;
       if (n_material_data == 1)
         return material_lookup[0]->thermal_expansivity(temperature,pressure);
       else
@@ -873,6 +935,35 @@ namespace aspect
             alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
           return alpha;
         }
+
+      alpha = std::max(std::min(alpha,max_thermal_expansivity),min_thermal_expansivity);
+      return alpha;
+    }
+
+
+
+    template <int dim>
+    double
+    TomographyBasedPlateMotions<dim>::
+    specific_heat (const double temperature,
+                   const double pressure,
+                   const std::vector<double> &compositional_fields,
+                   const Point<dim> &/*position*/) const
+    {
+      double cp = 0.0;
+      if (!use_table_properties)
+        return reference_specific_heat;
+
+      if (n_material_data == 1)
+        cp = material_lookup[0]->specific_heat(temperature,pressure);
+      else
+        {
+          for (unsigned i = 0; i < n_material_data; i++)
+            cp += compositional_fields[i] * material_lookup[i]->specific_heat(temperature,pressure);
+        }
+
+      cp = std::max(std::min(cp,max_specific_heat),min_specific_heat);
+      return cp;
     }
 
 
@@ -882,15 +973,7 @@ namespace aspect
     TomographyBasedPlateMotions<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      // Determine some properties that are constant for all points
-      const unsigned int vs_anomaly_index = this->introspection().compositional_index_for_name("vs_anomaly");
-      const unsigned int surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
-
-      const unsigned int craton_index = (use_cratons)
-                                        ?
-                                        this->introspection().compositional_index_for_name("continents")
-                                        :
-                                        numbers::invalid_unsigned_int;
+      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
       if (initial_temperature_manager == nullptr)
         const_cast<std::shared_ptr<const aspect::InitialTemperature::Manager<dim>>&>(initial_temperature_manager)
@@ -898,6 +981,10 @@ namespace aspect
 
       const InitialTemperature::AdiabaticBoundary<dim> &adiabatic_boundary =
         initial_temperature_manager->template get_matching_active_plugin<InitialTemperature::AdiabaticBoundary<dim>>();
+
+      if (initial_composition_manager == nullptr)
+        const_cast<std::shared_ptr<const aspect::InitialComposition::Manager<dim>>&>(initial_composition_manager)
+          = this->get_initial_composition_manager_pointer();
 
       // This function will fill the outputs for grain size, viscosity, and dislocation viscosity
       if (in.requests_property(MaterialProperties::viscosity)
@@ -962,9 +1049,50 @@ namespace aspect
                 }
 
               const double sigmoid_width = 2.e4;
-              const double sigmoid = 1.0 / (1.0 + std::exp( (depth_to_base_of_uppermost_mantle - depth)/sigmoid_width));
 
-              new_temperature = initial_temperature + (mantle_temperature - initial_temperature) * sigmoid;
+              // In the presence of Slab2 database, we use initial temperatures from the TM1 model
+              // for the lithospheric structure. Otherwise, just use a user-defined depth for the
+              // transition between the TM1 model and the tomography model.
+              double tm1_to_tomography = depth_to_base_of_uppermost_mantle;
+
+              if (use_slab2_database)
+                tm1_to_tomography = lithosphere_thickness;
+
+              const double sigmoid = 1.0 / (1.0 + std::exp( (tm1_to_tomography - depth)/sigmoid_width));
+
+              if (use_slab2_database)
+                {
+                  const double slab_composition = in.composition[i][slab_index];
+
+                  const double non_adiabatic_temperature = mantle_temperature - reference_temperature;
+
+                  // We remove all the positive anomalies in the upper mantle and the vertical slabs in the TM1 model
+                  // to avoid duplication of slabs included when using the slab2 model.
+                  // We also remove all anomalies above the uppermost mantle because
+                  // the tomography is not accurate in this region.
+                  if (( depth < 660e3 && non_adiabatic_temperature < 0) || (depth < depth_to_base_of_uppermost_mantle))
+                    mantle_temperature = reference_temperature;
+
+                  // smooth the transition between the TM1 and tomography model
+                  new_temperature = initial_temperature + (mantle_temperature - initial_temperature) * sigmoid;
+
+                  // Now, reduce the temperature at slab locations and take the minimum with the existing temperature.
+                  // We do this because we want our slabs to be continuous and it is possible that the TM1 model
+                  // has temperatures lower in the lithosphere where slab is present.
+                  // We use a slab composition value assuming an approximate thickness of the slab to be 110 km
+                  // in a model with resolution of 15 km in the slabs.
+                  if (slab_composition > 0.25)
+                    {
+                      const double modified_temperature = slab_temperature_anomaly * slab_composition + reference_temperature;
+                      new_temperature                   = std::min(modified_temperature, new_temperature);
+                    }
+
+                  // Output the diffused slab as composition.
+                  if (prescribed_field_out != NULL)
+                    prescribed_field_out->prescribed_field_outputs[i][slab_index] = initial_composition_manager->initial_composition(in.position[i], slab_index);
+                }
+              else
+                new_temperature = initial_temperature + (mantle_temperature - initial_temperature) * sigmoid;
             }
 
           if (const std::shared_ptr<PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
@@ -984,6 +1112,7 @@ namespace aspect
               out.densities[i] = density(new_temperature, pressure, in.composition[i], in.position[i]);
               out.thermal_expansion_coefficients[i] = thermal_expansivity(new_temperature, pressure, in.composition[i], in.position[i]);
               out.compressibilities[i] = compressibility(new_temperature, pressure, in.composition[i], in.position[i]);
+              out.specific_heat[i] = specific_heat(new_temperature, pressure, in.composition[i], in.position[i]);
             }
           else
             {
@@ -994,6 +1123,15 @@ namespace aspect
               unsigned int material_type = 0;
 
               // Density computation
+
+              // We only want to use the reference densities in the part of the model that also
+              // uses seismic velocities to determine the densities. Otherwise, use the density
+              // computed by the material model.
+              const double reference_density = this->get_adiabatic_conditions().is_initialized()
+                                               ?
+                                               this->get_adiabatic_conditions().density(in.position[i])
+                                               :
+                                               reference_rho;
               if (depth <= crustal_thickness)
                 {
                   out.thermal_expansion_coefficients[i] = 2.7e-5;
@@ -1049,15 +1187,6 @@ namespace aspect
                   if (!this->get_adiabatic_conditions().is_initialized())
                     density_anomaly = 0;
 
-                  // We only want to use the reference densities in the part of the model that also
-                  // uses seismic velocities to determine the densities. Otherwise, use the density
-                  // computed by the material model.
-                  const double reference_density = this->get_adiabatic_conditions().is_initialized()
-                                                   ?
-                                                   this->get_adiabatic_conditions().density(in.position[i])
-                                                   :
-                                                   reference_rho;
-
                   out.densities[i] = reference_density * (1. + density_anomaly);
 
                   if (use_depth_dependent_thermal_expansivity)
@@ -1073,6 +1202,24 @@ namespace aspect
               if (const std::shared_ptr<MaterialTypeAdditionalOutputs<dim>> material_type_out
                   = out.template get_additional_output_object<MaterialTypeAdditionalOutputs<dim>>())
                 material_type_out->output_values[0][i] = material_type;
+
+              if (DepthAdditionalOutputs<dim> *depth_out = out.template get_additional_output<DepthAdditionalOutputs<dim>>())
+                depth_out->output_values[0][i] = depth;
+
+              if (use_slab2_database)
+                {
+                  const double reference_temperature = this->get_adiabatic_conditions().temperature(in.position[i]);
+                  const double slab_composition = in.composition[i][slab_index];
+
+                  // Remove the negative buoyancy from tomography in the upper mantle
+                  if ( depth < 660e3 && depth > depth_to_base_of_uppermost_mantle && delta_log_vs > 0 )
+                    out.densities[i] = reference_density ;
+
+                  // add higher density for slabs based on a user-defined temperature anomaly expected in the slabs.
+                  if ( depth < 660e3 && slab_composition > 0.25 )
+                    out.densities[i] =  reference_density * (1. - out.thermal_expansion_coefficients[i] *
+                                                             (new_temperature - reference_temperature) );
+                }
             }
         }
     }
@@ -1259,6 +1406,22 @@ namespace aspect
                              Patterns::Double (0),
                              "The maximum viscosity that is allowed in the whole model domain. "
                              "Units: \\si{\\pascal\\second}.");
+          prm.declare_entry ("Minimum specific heat", "500",
+                             Patterns::Double (0),
+                             "The minimum specific heat that is allowed in the whole model domain. "
+                             "Units: \\si{\\joule\\kilogram\\kelvin}");
+          prm.declare_entry ("Maximum specific heat", "6000",
+                             Patterns::Double (0),
+                             "The maximum specific heat that is allowed in the whole model domain. "
+                             "Units: \\si{\\joule\\kilogram\\kelvin}");
+          prm.declare_entry ("Minimum thermal expansivity", "1e-5",
+                             Patterns::Double (),
+                             "The minimum thermal expansivity that is allowed in the whole model domain. "
+                             "Units: \\si{\\per\\kelvin}");
+          prm.declare_entry ("Maximum thermal expansivity", "1e-3",
+                             Patterns::Double (),
+                             "The maximum thermal expansivity that is allowed in the whole model domain. "
+                             "Units: \\si{\\per\\kelvin}");
           prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
                              Patterns::DirectoryName (),
                              "The path to the model data. The path may also include the special "
@@ -1306,6 +1469,13 @@ namespace aspect
                              Patterns::Double(0),
                              "This parameter value determines the asthenosphere layer in the reference file. "
                              "Units: \\si{\\pascal\\second}");
+          prm.declare_entry ("Mid mantle viscosity", "1e21",
+                             Patterns::Double(0),
+                             "This parameter value determines the viscosity of the layer between 660 and 1000 km. "
+                             "We do this to decrease the viscosity of this layer in the reference viscosity "
+                             "layer because slabs in slab2 model extend until/beyond transition zone, which can "
+                             "get stuck otherwise. "
+                             "Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Use cratons", "false",
                              Patterns::Bool (),
                              "This parameter value determines if we want to use cratons as viscous and neutrally "
@@ -1350,6 +1520,23 @@ namespace aspect
                              "We can evaluate the effects of lithospheric thickness variations on the surface plate "
                              "motions using this. Currently, this parameter sets the lithosphere to a constant "
                              "thickness of 100 km.");
+          prm.declare_entry ("Use slab2 database", "false",
+                             Patterns::Bool (),
+                             "This parameter value determines if we want to the slab depths and thickness defined "
+                             "in Slab2 database (Hayes et al., 2018). Currently, it only supports input as a 2D   "
+                             "grid on the boundary with columns representing depths and thickness of the slabs.");
+          prm.declare_entry ("Slab temperature anomaly", "-650",
+                             Patterns::Double(),
+                             "The temperature anomaly of the slabs relative to the surrounding mantle. Since we use the diffused "
+                             "temperature anomaly in our current implementation, the default value is approximately the difference "
+                             "between the surface and mantle temperature."
+                             "Units:  \\si{\\kelvin}");
+          prm.declare_entry ("Trench weak zone thickness", "50e3",
+                             Patterns::Double(0),
+                             "This parameter value determines the thickness of weak zone representing the oceanic trenches. "
+                             "In our implementation, we set these weak zones parallel to the top of the slabs in the slab2 model "
+                             "and therefore, this parameter only makes sense when we are using the slab2 models. "
+                             "Units: m");
           // Varying fault parameters
           prm.enter_subsection("Varying fault viscosity");
           {
@@ -1363,6 +1550,13 @@ namespace aspect
                                "Units: \\si{\\pascal\\second}");
           }
           prm.leave_subsection();
+          prm.declare_entry ("Use asthenosphere viscosity scaling in cold regions", "true",
+                             Patterns::Bool (),
+                             "This parameter value determines if we want to scale cold regions, i.e., cratons or "
+                             "slabs, to a weak asthenosphere in the reference viscosity profile in the same way this "
+                             "is done everywhere else in the asthenosphere. If this parameter is set to false, we would "
+                             "have strong slabs and cratons and better connectivity with the slabs in the lithoesphere.");
+
           // Depth-dependent viscosity parameters
           Rheology::AsciiDepthProfile<dim>::declare_parameters(prm);
 
@@ -1477,6 +1671,10 @@ namespace aspect
           max_temperature_dependence_of_eta     = prm.get_double ("Maximum temperature dependence of viscosity");
           min_eta                               = prm.get_double ("Minimum viscosity");
           max_eta                               = prm.get_double ("Maximum viscosity");
+          min_specific_heat                     = prm.get_double ("Minimum specific heat");
+          max_specific_heat                     = prm.get_double ("Maximum specific heat");
+          min_thermal_expansivity               = prm.get_double ("Minimum thermal expansivity");
+          max_thermal_expansivity               = prm.get_double ("Maximum thermal expansivity");
 
           if (grain_growth_activation_energy.size() != grain_growth_activation_volume.size() ||
               grain_growth_activation_energy.size() != grain_growth_rate_constant.size() ||
@@ -1529,14 +1727,19 @@ namespace aspect
           use_faults                              = prm.get_bool ("Use faults");
           use_cratons                             = prm.get_bool ("Use cratons");
           craton_viscosity                        = prm.get_double("Craton viscosity");
+          scale_cold_regions_in_asthenosphere     = prm.get_bool ("Use asthenosphere viscosity scaling in cold regions");
           use_depth_dependent_rho_vs              = prm.get_bool ("Use depth dependent density scaling");
           use_depth_dependent_dT_vs               = prm.get_bool ("Use depth dependent temperature scaling");
           use_depth_dependent_thermal_expansivity = prm.get_bool ("Use thermal expansivity profile");
           depth_to_base_of_uppermost_mantle       = prm.get_double ("Uppermost mantle thickness");
           fault_viscosity                         = prm.get_double ("Fault viscosity");
           asthenosphere_viscosity                 = prm.get_double ("Asthenosphere viscosity");
+          mid_mantle_viscosity                    = prm.get_double ("Mid mantle viscosity");
           use_varying_fault_viscosity             = prm.get_bool ("Use varying fault viscosity");
           use_constant_lithosphere_thickness      = prm.get_bool("Use constant lithosphere thickness");
+          use_slab2_database                      = prm.get_bool("Use slab2 database");
+          slab_temperature_anomaly                = prm.get_double ("Slab temperature anomaly");
+          trench_weak_zone_thickness              = prm.get_double ("Trench weak zone thickness");
 
           if (use_varying_fault_viscosity)
             AssertThrow (use_faults,
@@ -1682,6 +1885,13 @@ namespace aspect
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialTypeAdditionalOutputs<dim>> (n_points));
+        }
+
+      if (out.template get_additional_output<DepthAdditionalOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = out.viscosities.size();
+          out.additional_outputs.push_back(
+            std::make_unique<DepthAdditionalOutputs<dim>> (n_points));
         }
     }
   }
