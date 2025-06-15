@@ -1,0 +1,15 @@
+# This is a benchmark case for multi-component entropy averaging method
+# It tests the equilibration of 70% forsterite (starting with entropy = 2700 J/K/kg) 
+# and 30% enstatite (starting with entropy = 700 J/K/kg) at increasing pressure conditions.
+# This is like moving material from surface to increasing depth.
+# At last time step (pressure = 4e10. The expected (calculated by Burman) Temperature = 1320.6975594320584; 
+# entropy = 2100 density = 3897.462703346402
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/benchmarks/entropy_multicomponent/entropy_multicomponent_2_adiabat_1cell.prm
+
+set Output directory                       = output-change-adiabatic-p
+
+set End time                               = 4e6
+set Maximum time step                      = 2e5

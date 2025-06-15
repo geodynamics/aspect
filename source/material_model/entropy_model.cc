@@ -32,7 +32,7 @@
 #include <aspect/material_model/steinberger.h>
 #include <aspect/material_model/equation_of_state/interface.h>
 
-namespace aspect
+namespace aspect //TEST
 {
   namespace MaterialModel
   {
@@ -90,10 +90,12 @@ namespace aspect
                              "iterates over the advection equations but a non iterating solver scheme was selected. "
                              "Please check the consistency of your solver scheme."));
 
-      AssertThrow(material_file_names.size() == 1 || SimulatorAccess<dim>::get_end_time () == 0,
-                  ExcMessage("The 'entropy model' material model can only handle one composition, "
-                             "and can therefore only read one material lookup table."));
-
+// Uncomment this line to enable the use of the entropy averaging for multiple compositions,
+// which has NOT been tested yet.
+      /*      AssertThrow(material_file_names.size() == 1 || SimulatorAccess<dim>::get_end_time () == 0,
+                       ExcMessage("The 'entropy model' material model can only handle one composition, "
+                                  "and can therefore only read one material lookup table."));
+      */
 
 
       for (unsigned int i = 0; i < material_file_names.size(); ++i)
@@ -119,6 +121,89 @@ namespace aspect
 
 
     template <int dim>
+    double
+    EntropyModel<dim>::
+    equilibrate_temperature (std::vector<double> &composition_equalibrated_S,
+                             const std::vector<double> &temperature,
+                             const std::vector<double> &mass_fractions,
+                             const std::vector<double> &entropy,
+                             const std::vector<double> &Cp,
+                             const double pressure,
+                             const double max_iteration,
+                             const double max_error
+                      ) const
+    {
+      AssertThrow(material_file_names.size() == temperature.size() && temperature.size() == mass_fractions.size() &&  temperature.size() == entropy.size() && temperature.size() == Cp.size(),
+                  ExcMessage("The temperature, chemical composition, entropy and specific heat capacity vectors"
+                             " must all have the same size as the number of look-up tables."));
+
+      std::vector<double> composition_initial_S  = entropy;
+      std::vector<double> composition_initial_T  = temperature;
+      std::vector<double> composition_initial_Cp = Cp;
+      std::vector<double> composition_lookup_T(temperature.size());
+      std::vector<double> composition_lookup_Cp(temperature.size());
+
+      bool equalibration = false;
+      unsigned int iteration = 0;
+      double ln_equalibrated_T = 0;
+
+      // Step1
+   
+      // TODO: set the iteration number as a parameter
+      while (equalibration == false || iteration == 500)
+        {
+          double T_numerator = 0;
+          double T_denominator = 0;
+
+          iteration += 1;
+          AssertThrow(iteration <= (max_iteration-2) || *min_element(mass_fractions.begin(),mass_fractions.end())==0,
+                  ExcMessage("Oops, the composition is not equalibrated after the iterations number you set :/. "
+                     "we are at pressure = " + std::to_string (pressure) +" and equilibrated T= " + std::to_string(std::exp(ln_equalibrated_T))
+                     +" composition 0 =" + std::to_string(composition_lookup_T[0]) + " composition 1 =" + std::to_string(composition_lookup_T[1])
+                     + " and iteration = " + std::to_string(iteration) +" and max_iteration = " + std::to_string(max_iteration)));
+
+
+          for (unsigned int i = 0; i < material_file_names.size(); ++i)
+            {
+              T_numerator += mass_fractions[i] * composition_initial_Cp[i] * std::log(composition_initial_T[i]);
+              T_denominator += mass_fractions[i] * composition_initial_Cp[i];
+            }
+
+          ln_equalibrated_T = T_numerator/T_denominator;
+
+          // step2
+          for (unsigned int i = 0; i < material_file_names.size(); ++i)
+            {
+              composition_equalibrated_S[i] = composition_initial_S[i] + composition_initial_Cp[i] * (ln_equalibrated_T - std::log (composition_initial_T[i]));
+              // step3
+              composition_lookup_T[i] = entropy_reader[i]->temperature(composition_equalibrated_S[i], pressure);
+
+               composition_lookup_Cp[i] = entropy_reader[i]->specific_heat(composition_equalibrated_S[i], pressure);
+            }
+          // step4
+          // update the T0 and S0 to prepare for another iteration
+          composition_initial_T = composition_lookup_T;
+          composition_initial_S = composition_equalibrated_S;
+            composition_initial_Cp = composition_lookup_Cp;
+
+          equalibration = true;
+          for (unsigned int i = 0; i < material_file_names.size(); ++i)
+            {
+              // TODO: set the small value (currently 1e-5) as a parameter
+              if (std::abs (composition_lookup_T[i] - std::exp(ln_equalibrated_T)) >= max_error)
+                {
+                  equalibration = false;
+                  break;
+                }
+            }
+        }
+//(0920)      std::cout << "S for component = " << composition_equalibrated_S[0] <<" "<<composition_equalibrated_S[1] <<std::endl;
+      //  entropy = composition_equalibrated_S;
+      return exp(ln_equalibrated_T); // vector composition_equalibrated_S could be modified while reading in reference
+
+    }
+
+    template <int dim>
     void
     EntropyModel<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                 MaterialModel::MaterialModelOutputs<dim> &out) const
@@ -126,7 +211,6 @@ namespace aspect
       const unsigned int projected_density_index = this->introspection().compositional_index_for_name("density_field");
       //TODO : need to make it work for more than one field
       const std::vector<unsigned int> &entropy_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::entropy);
-      const unsigned int entropy_index = entropy_indices[0];
       const std::vector<unsigned int> &composition_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::chemical_composition);
 
       AssertThrow(composition_indices.size() == material_file_names.size() - 1,
@@ -134,6 +218,8 @@ namespace aspect
                              "and therefore it requires one more lookup table than there are chemical compositional fields."));
 
       EquationOfStateOutputs<dim> eos_outputs (material_file_names.size());
+  //    ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out = out.template get_additional_output_object<ReactionRateOutputs<dim>>(); 
       std::vector<double> volume_fractions (material_file_names.size());
       std::vector<double> mass_fractions (material_file_names.size());
 
@@ -148,20 +234,29 @@ namespace aspect
           // This is a requirement of the projected density approximation for
           // the Stokes equation and not related to the entropy formulation.
           // Also convert pressure from Pa to bar, bar is used in the table.
-          const double entropy = in.composition[i][entropy_index];
+          //const double entropy = in.composition[i][entropy_index];
+          std::vector<double> component_entropy (material_file_names.size());
+          std::vector<double> composition_temperature_lookup (material_file_names.size()); // NEED TO CHANGE
           const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]) / 1.e5;
-          adjusted_inputs.temperature[i] = entropy_reader[0]->temperature(entropy,pressure);
+          
+          ////adjusted_inputs.temperature[i] = entropy_reader[0]->temperature(entropy,pressure);
 
           // Loop over all material files, and store the looked-up values for all compositions.
           for (unsigned int j=0; j<material_file_names.size(); ++j)
             {
-              eos_outputs.densities[j] = entropy_reader[j]->density(entropy, pressure);
-              eos_outputs.thermal_expansion_coefficients[j] = entropy_reader[j]->thermal_expansivity(entropy,pressure);
-              eos_outputs.specific_heat_capacities[j] = entropy_reader[j]->specific_heat(entropy,pressure);
+              component_entropy[j] = in.composition[i][entropy_indices[j]];
+              composition_temperature_lookup[j] = entropy_reader[j]->temperature(component_entropy[j], pressure);
+              // std::cout << "component_entropy = " <<component_entropy[j]<<" " << std::endl;
+              eos_outputs.densities[j] = entropy_reader[j]->density(component_entropy[j], pressure);
+              // std::cout << "densities = " << eos_outputs.densities[j]<<" " << std::endl;
+              eos_outputs.thermal_expansion_coefficients[j] = entropy_reader[j]->thermal_expansivity(component_entropy[j],pressure);
+              eos_outputs.specific_heat_capacities[j] = entropy_reader[j]->specific_heat(component_entropy[j],pressure);
 
               const Tensor<1, 2> pressure_unit_vector({0.0, 1.0});
-              eos_outputs.compressibilities[j] = ((entropy_reader[j]->density_gradient(entropy,pressure)) * pressure_unit_vector) / eos_outputs.densities[j];
+              eos_outputs.compressibilities[j] = ((entropy_reader[j]->density_gradient(component_entropy[j],pressure)) * pressure_unit_vector) / eos_outputs.densities[j];
             }
+
+
 
           // Calculate volume fractions from mass fractions
           // If there is only one lookup table, set the mass and volume fractions to 1
@@ -185,10 +280,104 @@ namespace aspect
 
           out.compressibilities[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
 
+
+          // Thermal conductivity can be pressure temperature dependent
+          std::vector<double> composition_equalibrated_S(material_file_names.size());
+
+
+
+          const double equilibrated_T = equilibrate_temperature (composition_equalibrated_S, composition_temperature_lookup, mass_fractions, component_entropy, eos_outputs.specific_heat_capacities, pressure, multicomp_max_iteration, multicomp_tolerance);
+          //// const double temperature_lookup = equilibrated_T;
+          adjusted_inputs.temperature[i] = equilibrated_T;
+          /*
+          std::cout << "equilibrated_T = " << equilibrated_T<<" " << std::endl;
+          std::cout << "equilibrated_S = " << composition_equalibrated_S[0]<<" " <<composition_equalibrated_S[1]<<" " << std::endl;
+          std::cout << "equilibrated_T_lookup = " << composition_temperature_lookup[0]<<" " << composition_temperature_lookup[1]<<" " <<std::endl;
+          */
+          //entropy_reader[0]->temperature(entropy,pressure);
+          //   const std::vector<double> temp_temperature_lookup (material_file_names.size(), temperature_lookup); // NEED TO CHANGE
+
+
+         //// out.thermal_conductivities[i] = thermal_conductivity(temperature_lookup, in.pressure[i], in.position[i]);
+
           out.entropy_derivative_pressure[i]    = 0.;
           out.entropy_derivative_temperature[i] = 0.;
-          for (unsigned int c=0; c<in.composition[i].size(); ++c)
-            out.reaction_terms[i][c]            = 0.;
+
+          // Calculate the reaction terms
+
+          if (material_file_names.size()==1)
+            {
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                {
+                  out.reaction_terms[i][c] = 0.;
+                }
+            }
+
+          else
+            {
+              // Calculate the reaction rates for the operator splitting
+              for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+                {
+                  if (this->get_parameters().use_operator_splitting)
+                    {
+                      if (reaction_rate_out != nullptr)
+                        {
+                          //AssertThrow(this->get_parameters().use_operator_splitting == 1,
+                          //ExcMessage("The 'entropy model' material model requires the use of operator splitting for multiple chemical composition."));
+
+
+
+                          reaction_rate_out->reaction_rates[i][c] = 0.0;
+
+
+                          // Figure out if compositional field c is an entropy field and the how manyth entropy field it is
+                          // Can this loop go away?
+               //           for (unsigned int c = 0; c < in.composition[i].size(); ++c)
+               //             {
+                              bool c_is_entropy_field = false;
+                              unsigned int c_is_nth_entropy_field = 0;
+
+                              unsigned int nth_entropy_index = 0;
+                              for (unsigned int entropy_index : entropy_indices)
+                                {
+                                  if (c == entropy_index)
+                                    {
+                                      c_is_entropy_field = true;
+
+                                      c_is_nth_entropy_field = nth_entropy_index;
+
+                                    }
+                                  ++nth_entropy_index;
+                                }
+
+
+//                          out.reaction_terms[i][c] = (composition_equalibrated_S[c_is_nth_entropy_field] - in.composition[i][entropy_indices[c_is_nth_entropy_field]]); //
+
+
+                              const unsigned int timestep_number = this->simulator_is_past_initialization()
+                                                                   ?
+                                                                   this->get_timestep_number()
+                                                                   :
+                                                                   0;
+
+                              if (c_is_entropy_field == true && timestep_number > 0)
+                                //      const unsigned int dif = (composition_equalibrated_S[c_is_nth_entropy_field] - in.composition[i][entropy_indices[c_is_nth_entropy_field]])/ this->get_timestep();
+                                reaction_rate_out->reaction_rates[i][c] = (composition_equalibrated_S[c_is_nth_entropy_field] - in.composition[i][entropy_indices[c_is_nth_entropy_field]]) / this->get_timestep();
+
+                              //     std::cout << "reaction_rate_out = " << composition_equalibrated_S[c_is_nth_entropy_field] <<" " << std::endl;
+
+                 //       }
+                            }
+
+                      out.reaction_terms[i][c] = 0.0;
+
+
+                    }
+                }
+            }
+
+
+
 
           // set up variable to interpolate prescribed field outputs onto compositional fields
           if (const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
@@ -277,22 +466,23 @@ namespace aspect
             if (in.requests_property(MaterialProperties::additional_outputs))
               {
 
-                std::vector<double> vp (material_file_names.size());
-                std::vector<double> vs (material_file_names.size());
-                for (unsigned int j=0; j<material_file_names.size(); ++j)
-                  {
-                    vp[j] = entropy_reader[j]->seismic_vp(entropy,pressure);
-                    vs[j] = entropy_reader[j]->seismic_vs(entropy,pressure);
-                  }
-                seismic_out->vp[i] = MaterialUtilities::average_value (volume_fractions, vp, MaterialUtilities::arithmetic);
-                seismic_out->vs[i] = MaterialUtilities::average_value (volume_fractions, vs, MaterialUtilities::arithmetic);
-              }
+              std::vector<double> vp (material_file_names.size());
+              std::vector<double> vs (material_file_names.size());
+              for (unsigned int j=0; j<material_file_names.size(); ++j)
+                {
+                  vp[j] = entropy_reader[j]->seismic_vp(component_entropy[j],pressure);
+                  vs[j] = entropy_reader[j]->seismic_vs(component_entropy[j],pressure);
+                }
+              seismic_out->vp[i] = MaterialUtilities::average_value (volume_fractions, vp, MaterialUtilities::arithmetic);
+              seismic_out->vs[i] = MaterialUtilities::average_value (volume_fractions, vs, MaterialUtilities::arithmetic);
+            }
         }
 
       // Evaluate thermal conductivity. This has to happen after
       // the evaluation of the equation of state and calculation of temperature.
       thermal_conductivity->evaluate(adjusted_inputs, out);
     }
+
 
 
 
@@ -368,6 +558,19 @@ namespace aspect
                              "parametrization is only valid for the lower mantle (bridgmanite).");
           ThermalConductivity::TosiStackhouse<dim>::declare_parameters(prm);
 
+
+
+
+          prm.declare_entry ("Maximum iteration for multicomponent equilibration", "500",
+                              Patterns::Double (0.),
+                              "The maximum iteration for multicomponent equlibrating "
+                              "to reach the tolerance value. ");
+          prm.declare_entry ("Multicomponent equilibration tolerance", "1e-7",
+                                Patterns::Double (0.),
+                                "The maximum tolerance for multicomponent equlibrating "
+                            );
+
+
           prm.leave_subsection();
         }
 
@@ -412,6 +615,9 @@ namespace aspect
 
           angle_of_internal_friction = prm.get_double ("Angle of internal friction") * constants::degree_to_radians;
           cohesion = prm.get_double("Cohesion");
+
+          multicomp_max_iteration = prm.get_double("Maximum iteration for multicomponent equilibration");
+          multicomp_tolerance = prm.get_double("Multicomponent equilibration tolerance");
 
           prm.leave_subsection();
         }
@@ -467,10 +673,19 @@ namespace aspect
           out.additional_outputs.push_back(
             std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
         }
-    }
 
+      if (this->get_parameters().use_operator_splitting
+          && out.template get_additional_output_object<ReactionRateOutputs<dim>>() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
+        }
+
+    }
   }
 }
+
 
 
 // explicit instantiations
