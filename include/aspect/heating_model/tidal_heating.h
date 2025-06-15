@@ -67,10 +67,10 @@ namespace aspect
 
       private:
         /**
-         * Parameters used for tidal heating.
-         * H equation is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099)
+         * Parameters used for tidal heating (H), which is defined using the following
+         * Equation is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099)
          * H = 2*(viscosity)*(time-averaged tidal strain rate)^2/(1+((viscosity)*(tidal frequency)/(elastic shear modulus))^2))
-         * viscosity = material_model_outputs.viscosities
+         * viscosity (Pa s) = viscosity calculated by the selected material in ASPECT
          * time-averaged strain rate = tidal_strain_rate
          * tidal frequency = tidal_frequency
          * elastic shear modulus = elastic_shear_modulus
