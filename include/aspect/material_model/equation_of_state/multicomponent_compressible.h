@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2025 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,13 +34,16 @@ namespace aspect
     {
       /**
        * A compressible equation of state that is intended for use with multiple compositional
-       * fields. For each material property, the user supplies a comma delimited list of
-       * length N+1, where N is the number of compositional fields used in the computation.
-       * The first entry corresponds to the "background" (which is also why there are N+1 entries).
+       * fields and potentially phases.
        *
-       * If a single value is given, then all the compositional fields are given
-       * that value. Other lengths of lists are not allowed. The material parameters
-       * for each compositional field are calculated self-consistently,
+       * For models without phase transitions, each material property is specified as a comma
+       * delimited list of length N+1 for the background and compositional fields (N) For models
+       * with phase transitions, the list needs to contain each field name, including the background,
+       * for a total of N+1 names, and for each of these names, specify the value for each phase
+       * Therefore, the total number of values given is N+P+1, with P = sum(P_c) the total number of
+       * phase transitions, summed over all phases. 
+       *
+       * The material parameters for each compositional field and phase are calculated self-consistently,
        * assuming a constant pressure derivative of the isothermal bulk modulus ($K_T'$)
        * at the reference temperature (i.e. a Murnaghan equation of state),
        * a constant ratio of the thermal expansivity ($\alpha$) and
@@ -63,8 +66,8 @@ namespace aspect
         public:
           /**
            * A function that computes the output of the equation of state @p eos_outputs
-           * for all compositions, given the inputs in @p in and an index q that
-           * determines which entry of the vector of inputs is used.
+           * for all compositions and phases, given the inputs in @p in and an
+           * index q that determines which entry of the vector of inputs is used.
            */
           void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                         const unsigned int q,
@@ -94,42 +97,49 @@ namespace aspect
 
           /**
            * Read the parameters this class declares from the parameter file.
-           * The optional parameter @p n_compositions determines the maximum
-           * number of compositions the equation of state is set up with,
-           * and should have the same value as the parameter with the same
-           * name in the declare_parameters() function.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers, this is considered the number of phases
+           * for each compositional field and will be checked against the parsed
+           * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm,
+                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition = nullptr);
 
           /**
-           * Vector for reference_densities, read from parameter file .
+           * Vector of reference densities $\rho_0$ with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> reference_densities;
 
         private:
           /**
-           * Vector for reference temperatures, read from parameter file .
+           * Vector of reference temperatures $T_0$ with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> reference_temperatures;
 
           /**
-           * Vector for reference compressibilities, read from parameter file.
+           * Vector of reference compressibilities, with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> reference_isothermal_compressibilities;
 
           /**
-           * Vector for isothermal bulk modulus pressure derivatives, read from parameter file.
+           * Vector of isothermal bulk modulus pressure derivatives with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> isothermal_bulk_modulus_pressure_derivatives;
 
           /**
-           * Vector for reference thermal expansivities, read from parameter file.
+           * Vector of reference thermal expansivities, with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> reference_thermal_expansivities;
 
           /**
-           * Vector for isochoric specific heats, read from parameter file.
+           * Vector of isochoric specific heats, with one entry per composition and phase plus one
+           * for the background field.
            */
           std::vector<double> isochoric_specific_heats;
 
