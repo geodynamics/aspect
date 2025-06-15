@@ -634,7 +634,6 @@ endif()
 
 
 
-
 # deal.II versions >=9.5 disable deprecation warnings in user code. Enable
 # the warnings again by removing the flag that disables them.
 string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
@@ -684,6 +683,12 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   target_link_libraries(${TARGET_EXE_RELEASE} dealii::dealii_release)
 endif()
 
+# make sure we have the rpath to our dependencies set:
+foreach(_T ${TARGET_EXECUTABLES})
+  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+endforeach()
+
+
 # Make sure that we have an executable 'aspect' that
 # links to the debug version, or the release version if
 # we did not compile in debug mode. TARGET_EXE describes
@@ -697,8 +702,6 @@ add_custom_target(aspect ALL
                            ${CMAKE_BINARY_DIR}/aspect                    # link name
                   DEPENDS ${TARGET_EXE}
                   COMMENT "Creating symlink from ${TARGET_EXE} to './aspect'")
-install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
-	TYPE BIN)
 
 # This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
 # does not do so, so do it here. Remove this when we require deal.II 9.6.
@@ -847,25 +850,26 @@ else()
 endif()
 
 
-#
-## installation
-#
-# binaries:
+# ##############################################################################
+# Installation
+# ##############################################################################
+
+
+# Binaries:
+install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
+	TYPE BIN)
+
 install(TARGETS ${TARGET_EXECUTABLES}
-  RUNTIME DESTINATION bin
-  COMPONENT runtime)
+        RUNTIME
+        COMPONENT runtime)
 
-
-# make sure we have the rpath to our dependencies set:
-foreach(_T ${TARGET_EXECUTABLES})
-  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
-endforeach()
-
-# headers:
-install(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
-  DESTINATION include
-  COMPONENT includes
-  FILES_MATCHING PATTERN "*.h")
+# Headers:
+install(DIRECTORY
+          include/
+          ${CMAKE_BINARY_DIR}/include/
+        DESTINATION include
+        COMPONENT includes
+        FILES_MATCHING PATTERN "*.h")
 
 message(STATUS "Writing externally readable configuration information")
 include(CMakePackageConfigHelpers)
