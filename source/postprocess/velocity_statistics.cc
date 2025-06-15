@@ -35,29 +35,20 @@ namespace aspect
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      const QIterated<dim> quadrature_formula_for_max (QTrapezoid<1>(),
-                                                       this->get_parameters().stokes_velocity_degree);
-      const unsigned int n_q_points_for_max = quadrature_formula_for_max.size();
+      // Use a Gauss-Lobatto quadrature rule so that we do not need to use two separate quadratures
+      // for the maximum velocity (ideally we would use Trapezoidal quadrature) and the RMS velocity
+      // (ideally we would use Gauss quadrature).
+      const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.velocities).degree + 2);
+      const unsigned int n_q_points = quadrature_formula.size();
 
-      const Quadrature<dim> &quadrature_formula_for_rms = this->introspection().quadratures.velocities;
-      const unsigned int n_q_points_for_rms = quadrature_formula_for_rms.size();
+      FEValues<dim> fe_values(this->get_mapping(),
+                              this->get_fe(),
+                              quadrature_formula,
+                              update_values   |
+                              update_quadrature_points |
+                              update_JxW_values);
 
-      FEValues<dim> fe_values_for_max (this->get_mapping(),
-                                       this->get_fe(),
-                                       quadrature_formula_for_max,
-                                       update_values   |
-                                       update_quadrature_points |
-                                       update_JxW_values);
-
-      FEValues<dim> fe_values_for_rms (this->get_mapping(),
-                                       this->get_fe(),
-                                       quadrature_formula_for_rms,
-                                       update_values   |
-                                       update_quadrature_points |
-                                       update_JxW_values);
-
-      std::vector<Tensor<1,dim>> velocity_values_for_rms(n_q_points_for_rms);
-      std::vector<Tensor<1,dim>> velocity_values_for_max(n_q_points_for_max);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       double local_velocity_square_integral = 0;
       double local_max_velocity = 0;
@@ -66,21 +57,14 @@ namespace aspect
         {
           if (cell->is_locally_owned())
             {
-              fe_values_for_rms.reinit (cell);
-              fe_values_for_rms[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                  velocity_values_for_rms);
-              fe_values_for_max.reinit (cell);
-              fe_values_for_max[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                  velocity_values_for_max);
-              for (unsigned int q = 0; q < n_q_points_for_rms; ++q)
+              fe_values.reinit (cell);
+              fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                                                                                          velocity_values);
+              for (unsigned int q = 0; q < n_q_points; ++q)
                 {
-                  local_velocity_square_integral += ((velocity_values_for_rms[q] * velocity_values_for_rms[q]) *
-                                                     fe_values_for_rms.JxW(q));
-                }
-
-              for (unsigned int q = 0; q < n_q_points_for_max; ++q)
-                {
-                  local_max_velocity = std::max (std::sqrt(velocity_values_for_max[q]*velocity_values_for_max[q]),
+                  local_velocity_square_integral += (velocity_values[q].norm() *
+                                                     fe_values.JxW(q));
+                  local_max_velocity = std::max (velocity_values[q].norm(),
                                                  local_max_velocity);
                 }
             }
