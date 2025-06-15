@@ -145,8 +145,6 @@ you would like to contribute some code.
 
 ### Installing astyle
 
-To correctly indent the code in ASPECT you can use `make indent` or `ninja indent`
-depending on the build system you are using. The indenting script needs version 2.04 astyle.
 If you installed deal.II through candi, the correct astyle may already on your system and in your path.
 If the indenting script complains that it could not find (the correct version of) astyle,
 you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/).
@@ -154,7 +152,28 @@ you can find it [here](https://sourceforge.net/projects/astyle/files/astyle/asty
 An easy way to install it is through using the following command in Linux (do not do this in the aspect directory):
 `mkdir astyle && cd astyle && wget 'https://sourceforge.net/projects/astyle/files/astyle/astyle 2.04/astyle_2.04_linux.tar.gz' && tar -zxvf astyle_2.04_linux.tar.gz && cd astyle/build/gcc && make && sudo make install`.
 This will create a new directory called astyle, download, unpack, compile and install it.
-When you add the bin directory to to your path, the indent command should find astyle.
+When you add the bin directory to your path, the indent command should find astyle.
+
+#### Example astyle usage
+
+To correctly indent the code in the ASPECT source directory, use `make indent` or `ninja indent`
+while in the ASPECT build directory (depending on your build system):
+
+```{code-block} bash
+cd <path to your aspect build dir>
+make indent
+```
+
+If you wish to correctly indent individual files in another directory, you can use:
+
+```{code-block} bash
+cp <path to your aspect source dir>/contrib/utilities/astyle.rc .
+astyle --options=astyle.rc my_plugin.cc my_plugin.h
+```
+
+:::{important}
+You NEED to use astyle version 2.04 for correct results (older versions or 2.05 will not work)!
+:::
 
 ### Changelog entries
 
