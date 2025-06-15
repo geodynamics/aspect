@@ -164,6 +164,7 @@ find_package(ZLIB)
 if(${ZLIB_FOUND})
   message(STATUS "Using ASPECT_WITH_ZLIB = 'ON'")
   set(ASPECT_WITH_ZLIB ON)
+  list(APPEND ASPECT_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
 else()
   message(STATUS "Using ASPECT_WITH_ZLIB = 'OFF'")
   set(ASPECT_WITH_ZLIB OFF)
@@ -177,6 +178,7 @@ if(ASPECT_WITH_PYTHON)
   find_package(Python3 COMPONENTS Interpreter Development NumPy)
   if(Python3_FOUND)
     message(STATUS "  PYTHON_EXECUTABLE: ${Python3_EXECUTABLE}")
+    list(APPEND ASPECT_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
   else()
     message(FATAL_ERROR "Python not found. Consider disabling ASPECT_WITH_PYTHON.")
   endif()
@@ -189,6 +191,7 @@ find_package(PerpleX QUIET
 if(${PerpleX_FOUND})
   message(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
   set(ASPECT_WITH_PERPLEX ON)
+  list(APPEND ASPECT_INCLUDE_DIRS ${PerpleX_INCLUDE_DIR})
 else()
   set(ASPECT_WITH_PERPLEX OFF)
 endif()
@@ -200,8 +203,8 @@ message(STATUS "Using ASPECT_WITH_LIBDAP = '${ASPECT_WITH_LIBDAP}'")
 if(ASPECT_WITH_LIBDAP)
   find_package(LIBDAP)
   if(${LIBDAP_FOUND})
-    include_directories(${LIBDAP_INCLUDE_DIRS})
     message(STATUS "LIBDAP found at ${LIBDAP_LIBRARY}\n")
+    list(APPEND ASPECT_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIRS})
   else()
     message(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
   endif()
@@ -285,6 +288,7 @@ if(ASPECT_WITH_NETCDF)
     message(STATUS "  NETCDF_INCLUDE_DIR: ${NETCDF_INCLUDE_DIR}")
     message(STATUS "  NETCDF_LIBRARY: ${NETCDF_LIBRARY}")
     message(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
+    list(APPEND ASPECT_INCLUDE_DIRS ${NETCDF_INCLUDE_DIRS})
   else()
     message(STATUS "NetCDF not found. Disabling ASPECT_WITH_NETCDF. You can specify a hint to your installation directory with NETCDF_DIR.")
     set(ASPECT_WITH_NETCDF OFF CACHE BOOL "" FORCE)
@@ -305,11 +309,13 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
   endif()
 
-  # Add the WorldBuilder include dirs. This includes both the WorldBuilder
-  # header files, as well as where the cmake run we do below puts the
-  # WorldBuilder config.h file.
-  include_directories("${WORLD_BUILDER_SOURCE_DIR}/include/")
-  include_directories("${CMAKE_BINARY_DIR}/world_builder/include")
+  # Add the WorldBuilder include dirs. This covers both the
+  # WorldBuilder header files. The cmake run we do below puts the
+  # WorldBuilder config.h file into directories that are different for
+  # debug and release builds, and so we add these files later when we
+  # describe how to link against the WorldBuilder, specific for each
+  # executable.
+  list(APPEND ASPECT_INCLUDE_DIRS "${WORLD_BUILDER_SOURCE_DIR}/include/")
 
 
   include("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
@@ -369,7 +375,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
     # generate config.cc and include it:
     configure_file("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
                     "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
-    include_directories("${CMAKE_BINARY_DIR}/include/")
+    list(APPEND ASPECT_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include/")
     file(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
 
     # Move some file to the end for unity builds to make sure other file come
@@ -544,12 +550,12 @@ foreach(_source_file ${UNITY_SEPARATE_FILES})
 endforeach()
 
 
+# Add the ASPECT include directories to what we already have from
+# above. Put the ASPECT header files to the front of the list, whereas
+# the 'catch' headers can be preempted by the system
+list(PREPEND ASPECT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
+list(APPEND  ASPECT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/contrib/catch)
 
-# Set up include directories. Put the ASPECT header files
-# to the front of the list, whereas the 'catch' headers can
-# be preempted by the system
-include_directories(BEFORE ${CMAKE_BINARY_DIR}/include include)
-include_directories(AFTER  contrib/catch)
 
 # Set the name of the main targets in the form of
 # TARGET_EXE/LIB_DEBUG/RELEASE. Set TARGET_EXE as the debug build,
@@ -583,7 +589,6 @@ write_basic_package_version_file(
 # set up compiler flags, include paths, etc to compile an
 # ASPECT plugin.
 # Config for the build dir:
-set(CONFIG_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include" "${CMAKE_SOURCE_DIR}/include")
 set(CONFIG_DIR "${CMAKE_BINARY_DIR}")
 configure_file(
   ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
@@ -591,7 +596,6 @@ configure_file(
   @ONLY
 )
 # Config for the install dir:
-set(CONFIG_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
 set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
 configure_file(
   ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
@@ -674,7 +678,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
 
   message(STATUS "Setting up test project, see tests/setup_tests.log for details.")
   execute_process(
-    COMMAND ${CMAKE_COMMAND} -G ${ASPECT_TEST_GENERATOR}
+    COMMAND ${CMAKE_COMMAND} -G "${ASPECT_TEST_GENERATOR}"
         -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
         -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
         -D Aspect_DIR=${CMAKE_BINARY_DIR}
@@ -850,14 +854,13 @@ set(TARGET_SRC
     ${ASPECT_UNIT_TEST_FILES}
     ${ASPECT_SOURCE_FILES})
 
-
-
 # Set up targets for ASPECT executables:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   add_executable(${TARGET_EXE_DEBUG} ${TARGET_SRC})
   set_property(TARGET ${TARGET_EXE_DEBUG}
                PROPERTY OUTPUT_NAME aspect-debug)
 
+  target_include_directories(${TARGET_EXE_DEBUG} PRIVATE ${ASPECT_INCLUDE_DIRS})
   target_compile_flags(${TARGET_EXE_DEBUG} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
     "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_DEBUG}"
     )
@@ -872,6 +875,7 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   set_property(TARGET ${TARGET_EXE_RELEASE}
                PROPERTY OUTPUT_NAME aspect-release)
 
+  target_include_directories(${TARGET_EXE_RELEASE} PRIVATE ${ASPECT_INCLUDE_DIRS})
   target_compile_flags(${TARGET_EXE_RELEASE} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
     "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_RELEASE}"
     )
@@ -905,10 +909,11 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   endif()
 endif()
 
-# turn on debug checks like invalid element access in c++ standard library:
+# Turn on debug checks like invalid element access in c++ standard library:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
 endif()
+
 
 
 # ##############################################################################
@@ -918,8 +923,8 @@ endif()
 # zlib
 if(${ZLIB_FOUND})
   message(STATUS "Linking ASPECT against zlib")
-  include_directories(${ZLIB_INCLUDE_DIR})
   foreach(_T ${TARGET_EXECUTABLES})
+    target_include_directories(${_T} PRIVATE ${ZLIB_INCLUDE_DIR})
     target_link_libraries(${_T} ${ZLIB_LIBRARY})
   endforeach()
 endif()
@@ -927,9 +932,8 @@ endif()
 # Python3
 if(${Python3_FOUND})
   message(STATUS "Linking ASPECT against Python3")
-  include_directories(${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
-
   foreach(_T ${TARGET_EXECUTABLES})
+    target_include_directories(${_T} PRIVATE ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
     target_link_libraries(${_T} ${Python3_LIBRARIES})
   endforeach()
 endif()
@@ -937,8 +941,8 @@ endif()
 # PerpleX
 if(${PerpleX_FOUND})
   message(STATUS "Linking ASPECT against PerpleX")
-  include_directories(${PerpleX_INCLUDE_DIR})
   foreach(_T ${TARGET_EXECUTABLES})
+    target_include_directories(${_T} PRIVATE ${PerpleX_INCLUDE_DIR})
     target_link_libraries(${_T} ${PerpleX_LIBRARIES})
   endforeach()
 endif()
@@ -946,8 +950,8 @@ endif()
 # libdap
 if(${LIBDAP_FOUND})
   message(STATUS "Linking ASPECT against libdap")
-  include_directories(${LIBDAP_INCLUDE_DIRS})
   foreach(_T ${TARGET_EXECUTABLES})
+    target_include_directories(${_T} PRIVATE ${LIBDAP_INCLUDE_DIRS})
     target_link_libraries(${_T} ${LIBDAP_LIBRARIES})
   endforeach()
 endif()
@@ -978,7 +982,6 @@ endif()
 # NetCDF
 if(${NETCDF_FOUND})
   message(STATUS "Linking ASPECT against NetCDF")
-  include_directories(${NETCDF_INCLUDE_DIRS})
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${NETCDF_LIBRARIES})
   endforeach()
@@ -988,12 +991,12 @@ endif()
 if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
   message(STATUS "Linking ASPECT against WorldBuilder")
   if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-    target_include_directories(${TARGET_EXE_DEBUG} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
+    target_include_directories(${TARGET_EXE_DEBUG} PRIVATE "${CMAKE_BINARY_DIR}/world_builder/include/")
     target_link_libraries(${TARGET_EXE_DEBUG} WorldBuilderDebug)
   endif()
 
   if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-    target_include_directories(${TARGET_EXE_RELEASE} PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
+    target_include_directories(${TARGET_EXE_RELEASE} PRIVATE "${CMAKE_BINARY_DIR}/world_builder_release/include/")
     target_link_libraries(${TARGET_EXE_RELEASE} WorldBuilderRelease)
   endif()
 endif()
@@ -1066,7 +1069,8 @@ install(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
   FILES_MATCHING PATTERN "*.h")
 
 # examples:
-set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL "If ON all cookbooks and benchmarks will be built and installed.")
+set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL
+    "If ON all cookbooks and benchmarks will be built and installed.")
 
 if(ASPECT_INSTALL_EXAMPLES)
   add_subdirectory(benchmarks)
