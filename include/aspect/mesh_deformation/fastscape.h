@@ -485,12 +485,7 @@ namespace aspect
         /**
          * Used defined constant sea level value (m).)
          */
-        mutable double sea_level_constant_value = 0.0; 
-
-        /**
-         * Current sea level value.
-         */
-        mutable double sea_level = 0.0; 
+        double sea_level_constant_value; 
 
         /**
          * The user defined 1D function of time-dependent sea level.
@@ -500,7 +495,7 @@ namespace aspect
          /**
          * Whether to use a function to define sea level.
          */
-        bool use_sea_level_function = false;    
+        bool use_sea_level_function;    
 
         /**
          * Parameters to set an extra erosional base level

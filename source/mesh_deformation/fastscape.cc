@@ -430,10 +430,10 @@ namespace aspect
           std::mt19937 random_number_generator(fastscape_seed);
           std::uniform_real_distribution<double> random_distribution(-noise_elevation,noise_elevation);
           // read sea level from the user defined function or constant value;
-          if (use_sea_level_function)
-            sea_level = sea_level_function.value(Point<1>(time_in_years));
-          else
-            sea_level = sea_level_constant_value;
+          const double current_sea_level = use_sea_level_function
+              ? sea_level_function.value(Point<1>(time_in_years))
+              : sea_level_constant_value;
+
           for (unsigned int i=0; i<fastscape_array_size; ++i)
             {
               elevation_old[i] = elevation[i];
@@ -458,13 +458,13 @@ namespace aspect
                   if (sediment_rain > 0 && use_marine_component)
                     {
                       // Only apply sediment rain to areas below sea level.
-                      if (elevation[i] < sea_level)
+                      if (elevation[i] < current_sea_level)
                         {
                           // If the rain would put us above sea level, set height to sea level.
-                          if (elevation[i] + sediment_rain*aspect_timestep_in_years > sea_level)
-                            elevation[i] = sea_level;
+                          if (elevation[i] + sediment_rain*aspect_timestep_in_years > current_sea_level)
+                            elevation[i] = current_sea_level;
                           else
-                            elevation[i] = std::min(sea_level,elevation[i] + sediment_rain*aspect_timestep_in_years);
+                            elevation[i] = std::min(current_sea_level,elevation[i] + sediment_rain*aspect_timestep_in_years);
                         }
                     }
                 }
@@ -510,7 +510,7 @@ namespace aspect
                                               &slope_exponent_p);
         // Add sediments through marine sedimentation                                   
         if (use_marine_component)
-            fastscape_set_marine_parameters_(&sea_level,
+            fastscape_set_marine_parameters_(&current_sea_level,
                                          &sand_surface_porosity,
                                          &silt_surface_porosity,
                                          &sand_efold_depth,
@@ -797,8 +797,13 @@ namespace aspect
                                               std::vector<double> &silt_fraction) const
     {
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
-
+      // declare time in years
       const unsigned int current_timestep = this->get_timestep_number ();
+      const double time_in_years = this->get_time() / year_in_seconds;
+      // declare currrent sea level 
+      const double current_sea_level = use_sea_level_function
+          ? sea_level_function.value(Point<1>(time_in_years))
+          : sea_level_constant_value;
 
       // Initialize FastScape with grid and extent.
       fastscape_init_();
@@ -826,7 +831,8 @@ namespace aspect
                                           &slope_exponent_p);
 
       if (use_marine_component)
-        fastscape_set_marine_parameters_(&sea_level,
+        
+        fastscape_set_marine_parameters_(&current_sea_level,
                                          &sand_surface_porosity,
                                          &silt_surface_porosity,
                                          &sand_efold_depth,

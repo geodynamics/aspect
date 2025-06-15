@@ -1,5 +1,8 @@
-# This is a test on the input sea level function for the Fastscape Plugin. 
-# Sea level can be defined either as a constant value or as a user-defined function. 
+# This test verifies the input sea level function for the Fastscape Plugin.
+# Sea level can be specified either as a constant or as a time-dependent function.
+# In this case, sea level decreases linearly with time during 500 kyrs.
+# The results can be visualized in the Fastscape sea level VTK output file.
+# Enable if: ASPECT_WITH_FASTSCAPE
 
 set Dimension                              = 2
 set Start time                             = 0
@@ -8,7 +11,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = no Advection, single Stokes 
 set Nonlinear solver tolerance             = 1e-3 
 set Maximum time step                      = 20e3
-set Output directory                       = output-fs_test
+set Output directory                       = output-fastscape_sea_level_function
 set Pressure normalization                 = no
 
 subsection Formulation
@@ -55,31 +58,26 @@ subsection Mesh deformation
     set Maximum surface refinement level = 6
     set Surface refinement difference = 0
     set Y extent in 2d = 20e3
-    #set Uplift and advect with fastscape = true
+    set Uplift and advect with fastscape = true
     set Use marine component = true
-    #set Use ghost nodes = true
+    set Use ghost nodes = true
+
 
    subsection Boundary conditions    
-      set Front = 1 # fixed
-      set Right  = 0 # reflective
+      set Front = 1 
+      set Right  = 0 
       set Back = 1
       set Left   = 0
    end
    
    subsection Erosional parameters
-    set Bedrock river incision rate = 2e-6
-    # set Use kf distribution function = true
-    # subsection kf distribution function
-    #   set Variable names = x,y,t
-    #   set Function expression = if(t<=250e3, 1e-6, if(x>25e3,1e-4, 1e-6))
-    # end
-     set Sediment river incision rate = 2e-6
+    set Bedrock river incision rate = 1e-5
+     set Sediment river incision rate = 1e-5
      set Bedrock diffusivity = -1    
      set Sediment diffusivity = -1
    end
 
    subsection Marine parameters
-     #set Sea level = -2000 
     set Use sea level function = true
     subsection Sea level function
       set Variable names = t
@@ -107,9 +105,6 @@ end
 
 subsection Gravity model
   set Model name = vertical
-  # subsection Vertical
-  #   set Magnitude = 9.81
-  # end
 end
 
 subsection Material model
@@ -131,7 +126,7 @@ subsection Postprocess
   set List of postprocessors = visualization
 
   subsection Visualization
-    set Time between graphical output = 100e3
+    set Time between graphical output = 250e3
     set Interpolate output = false
     set Output format = vtu
   end
