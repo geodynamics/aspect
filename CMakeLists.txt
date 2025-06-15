@@ -452,6 +452,12 @@ configure_file(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in
                ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
 
 
+
+# ##############################################################################
+# Checking system properties
+# ##############################################################################
+
+
 # Check if we can raise floating point exceptions.
 #
 # Note that some library we link with in ASPECT on some platforms will trigger
@@ -477,6 +483,50 @@ if(ASPECT_USE_FP_EXCEPTIONS)
     message(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
   endif()
 endif()
+
+
+# See if we can use dlopen to load plugin libraries.
+include(CheckCXXSourceCompiles)
+
+set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
+check_cxx_source_compiles("
+#include <cstddef>
+#include <dlfcn.h>
+
+int main()
+{
+  void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
+  return handle == NULL || dlerror();
+}
+" HAVE_DLOPEN)
+set(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
+
+if(NOT HAVE_DLOPEN)
+  message(STATUS "dlopen() test failed, disabling dynamic plugin loading")
+  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+endif()
+
+if(ASPECT_USE_SHARED_LIBS)
+  message(STATUS "Enabling dynamic loading of plugins from the input file")
+else()
+  message(STATUS "Disabling dynamic loading of plugins from the input file")
+endif()
+
+
+# See whether we can verify that every plugin we load is compiled against
+# the same deal.II library
+set(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
+include(CheckIncludeFileCXX)
+check_include_file_cxx("link.h" _HAVE_LINK_H)
+if(NOT _HAVE_LINK_H)
+  set(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
+endif()
+if(ASPECT_HAVE_LINK_H)
+  message(STATUS "Enabling checking of compatible deal.II library when loading plugins")
+endif()
+
+
 
 # Check if we want to precompile header files. This speeds up compile time,
 # but can fail on some machines with old CMake. Starting with CMake 3.16
@@ -584,44 +634,6 @@ endif()
 
 
 
-INCLUDE (CheckCXXSourceCompiles)
-
-set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
-list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
-check_cxx_source_compiles("
-#include <cstddef>
-#include <dlfcn.h>
-
-int main()
-{
-  void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
-  return handle == NULL || dlerror();
-}
-" HAVE_DLOPEN)
-set(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
-
-if(NOT HAVE_DLOPEN)
-  message(STATUS "dlopen() test failed, disabling dynamic plugin loading")
-  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-endif()
-
-if(ASPECT_USE_SHARED_LIBS)
-  message(STATUS "Enabling dynamic loading of plugins from the input file")
-else()
-  message(STATUS "Disabling dynamic loading of plugins from the input file")
-endif()
-
-# See whether we can verify that every plugin we load is compiled against
-# the same deal.II library
-set(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
-include(CheckIncludeFileCXX)
-check_include_file_cxx("link.h" _HAVE_LINK_H)
-if(NOT _HAVE_LINK_H)
-  set(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
-endif()
-if(ASPECT_HAVE_LINK_H)
-  message(STATUS "Enabling checking of compatible deal.II library when loading plugins")
-endif()
 
 # deal.II versions >=9.5 disable deprecation warnings in user code. Enable
 # the warnings again by removing the flag that disables them.
