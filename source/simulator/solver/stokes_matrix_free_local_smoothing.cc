@@ -482,7 +482,7 @@ namespace aspect
 
           if (active_cell_data.enable_prescribed_dilation)
             {
-              if (out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
+              if (out.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
                 out.additional_outputs.push_back(std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>>(out.n_evaluation_points()));
 
               active_cell_data.dilation_lhs_term_table.reinit(TableIndices<2>(n_cells, n_q_points));
@@ -611,8 +611,8 @@ namespace aspect
 
                   if (active_cell_data.enable_prescribed_dilation)
                     {
-                      const MaterialModel::PrescribedPlasticDilation<dim> *prescribed_dilation
-                        = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>();
+                      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+                        = out.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>();
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
                         {

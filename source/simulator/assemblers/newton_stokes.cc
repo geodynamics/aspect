@@ -69,10 +69,10 @@ namespace aspect
 
       const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
 
-      const MaterialModel::PrescribedPlasticDilation<dim>
-      *prescribed_dilation = enable_prescribed_dilation ?
-                             scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
-                             : nullptr;
+      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>>
+      prescribed_dilation = enable_prescribed_dilation ?
+                            scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
+                            : nullptr;
 
       // First loop over all dofs and find those that are in the Stokes system
       // save the component (pressure and dim velocities) each belongs to.
@@ -311,7 +311,7 @@ namespace aspect
         }
 
       if (this->get_parameters().enable_prescribed_dilation &&
-          outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
+          outputs.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>>(outputs.n_evaluation_points()));

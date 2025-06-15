@@ -43,10 +43,10 @@ namespace aspect
       const unsigned int n_q_points           = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
 
-      const MaterialModel::PrescribedPlasticDilation<dim>
-      *prescribed_dilation =
-        (this->get_parameters().enable_prescribed_dilation)
-        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
+      const std::shared_ptr<const MaterialModel::PrescribedPlasticDilation<dim>>
+      prescribed_dilation =
+        this->get_parameters().enable_prescribed_dilation
+        ? scratch.material_model_outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()
         : nullptr;
 
       // First loop over all dofs and find those that are in the Stokes system
@@ -240,7 +240,7 @@ namespace aspect
       const unsigned int n_points = outputs.n_evaluation_points();
 
       if (this->get_parameters().enable_prescribed_dilation
-          && outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
+          && outputs.template has_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>>(n_points));
@@ -248,7 +248,7 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_prescribed_dilation
              ||
-             outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_lhs_term.size()
+             outputs.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation_lhs_term.size()
              == n_points, ExcInternalError());
 
     }

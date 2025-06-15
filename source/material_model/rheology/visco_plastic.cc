@@ -417,13 +417,10 @@ namespace aspect
               {
                 if (output_parameters.composition_yielding[j] == true)
                   {
-                    const double current_dilation = drucker_prager_parameters.angle_dilation * weakening_factors[1];
-                    const std::pair<double,double> dilation_terms = drucker_prager_plasticity.compute_dilation_terms_for_stokes_system (
-                                                                      current_friction,
-                                                                      current_dilation,
-                                                                      current_cohesion,
-                                                                      non_yielding_viscosity,
-                                                                      effective_edot_ii);
+                    output_parameters.drucker_prager_parameters[j].angle_dilation *= weakening_factors[1];
+                    const std::pair<double,double> dilation_terms = drucker_prager_plasticity.compute_dilation_terms_for_stokes_system (output_parameters.drucker_prager_parameters[j],
+                                                                    non_yielding_viscosity,
+                                                                    effective_edot_ii);
                     output_parameters.dilation_lhs_terms[j] = dilation_terms.first;
                     output_parameters.dilation_rhs_terms[j] = dilation_terms.second;
                   }

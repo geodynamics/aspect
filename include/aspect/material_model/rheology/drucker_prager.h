@@ -185,9 +185,7 @@ namespace aspect
            * is the effective viscosity.
            */
           std::pair<double,double>
-          compute_dilation_terms_for_stokes_system(const double angle_friction,
-                                                   const double angle_dilation,
-                                                   const double cohesion,
+          compute_dilation_terms_for_stokes_system(const DruckerPragerParameters &drucker_prager_parameters,
                                                    const double non_yielding_viscosity,
                                                    const double effective_strain_rate) const;
 

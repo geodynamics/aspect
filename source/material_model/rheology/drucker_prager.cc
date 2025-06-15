@@ -225,22 +225,20 @@ namespace aspect
 
       template <int dim>
       std::pair<double,double>
-      DruckerPrager<dim>::compute_dilation_terms_for_stokes_system(const double angle_friction,
-                                                                   const double angle_dilation,
-                                                                   const double cohesion,
+      DruckerPrager<dim>::compute_dilation_terms_for_stokes_system(const DruckerPragerParameters &drucker_prager_parameters,
                                                                    const double non_yielding_viscosity,
                                                                    const double effective_strain_rate) const
       {
-        const double sin_phi = std::sin(angle_friction);
-        const double sin_psi = std::sin(angle_dilation);
+        const double sin_phi = std::sin(drucker_prager_parameters.angle_internal_friction);
+        const double sin_psi = std::sin(drucker_prager_parameters.angle_dilation);
 
         double alpha;
         double alpha_bar;
         if (dim == 2)
-        {
-          alpha     = sin_phi;
-          alpha_bar = sin_psi;
-        }
+          {
+            alpha     = sin_phi;
+            alpha_bar = sin_psi;
+          }
         else if (dim == 3)
           {
             alpha     = 6.0 * sin_phi / (std::sqrt(3.0) * (3.0 + sin_phi));
@@ -250,7 +248,7 @@ namespace aspect
           AssertThrow(false,ExcNotImplemented());
 
         const double dilation_lhs_term = alpha_bar * alpha / non_yielding_viscosity;
-        const double dilation_rhs_term = alpha_bar * (2. * effective_strain_rate - cohesion / non_yielding_viscosity);
+        const double dilation_rhs_term = alpha_bar * (2. * effective_strain_rate - drucker_prager_parameters.cohesion / non_yielding_viscosity);
 
         return std::make_pair(dilation_lhs_term, dilation_rhs_term);
       }
