@@ -41,32 +41,18 @@ namespace aspect
       // points are in fact the support points.
       // Additionally, use a Gauss quadrature formula for evaluating the
       // integrated melt fraction within the cell.
-      const QIterated<dim> quadrature_formula_for_max (QTrapezoid<1>(),
-                                                       this->get_parameters().temperature_degree);
-      const unsigned int n_q_points_for_max = quadrature_formula_for_max.size();
+      const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.velocities).degree + 3);
+      const unsigned int n_q_points = quadrature_formula.size();
 
-      const Quadrature<dim> &quadrature_formula_for_integral = this->introspection().quadratures.temperature;
-      const unsigned int n_q_points_for_integral = quadrature_formula_for_integral.size();
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_values   |
+                               update_gradients |
+                               update_quadrature_points |
+                               update_JxW_values);
 
-      FEValues<dim> fe_values_for_max (this->get_mapping(),
-                                       this->get_fe(),
-                                       quadrature_formula_for_max,
-                                       update_values   |
-                                       update_gradients |
-                                       update_quadrature_points |
-                                       update_JxW_values);
-
-      FEValues<dim> fe_values_for_integral (this->get_mapping(),
-                                            this->get_fe(),
-                                            quadrature_formula_for_integral,
-                                            update_values   |
-                                            update_gradients |
-                                            update_quadrature_points |
-                                            update_JxW_values);
-
-      MaterialModel::MaterialModelInputs<dim> in_for_max(fe_values_for_max.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelInputs<dim> in_for_integral(fe_values_for_integral.n_quadrature_points, this->n_compositional_fields());
-
+      MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
 
       std::ostringstream output;
       output.precision(4);
@@ -80,34 +66,26 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             // fill material model inputs
-            fe_values_for_max.reinit (cell);
-            fe_values_for_integral.reinit (cell);
+            fe_values.reinit (cell);
 
-            in_for_max.reinit(fe_values_for_max, cell, this->introspection(), this->get_solution());
-            in_for_integral.reinit(fe_values_for_max, cell, this->introspection(), this->get_solution());
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             // we can only postprocess melt fractions if the material model that is used
             // in the simulation has implemented them
             // otherwise, set them to zero
-            std::vector<double> melt_fractions_for_max(n_q_points_for_max, numbers::signaling_nan<double>());
-            std::vector<double> melt_fractions_for_integral(n_q_points_for_integral, numbers::signaling_nan<double>());
+            std::vector<double> melt_fractions(n_q_points, numbers::signaling_nan<double>());
 
             if (MaterialModel::MeltFractionModel<dim>::is_melt_fraction_model(this->get_material_model()))
               {
                 MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-                .melt_fractions(in_for_max, melt_fractions_for_max);
-                MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-                .melt_fractions(in_for_integral, melt_fractions_for_integral);
+                .melt_fractions(in, melt_fractions);
               }
 
-            for (unsigned int q=0; q<n_q_points_for_max; ++q)
+            for (unsigned int q=0; q<n_q_points; ++q)
               {
-                local_min_melt       = std::min(local_min_melt, melt_fractions_for_max[q]);
-                local_max_melt       = std::max(local_max_melt, melt_fractions_for_max[q]);
-              }
-            for (unsigned int q=0; q<n_q_points_for_integral; ++q)
-              {
-                local_melt_integral += melt_fractions_for_integral[q] * fe_values_for_integral.JxW(q);
+                local_min_melt       = std::min(local_min_melt, melt_fractions[q]);
+                local_max_melt       = std::max(local_max_melt, melt_fractions[q]);
+                local_melt_integral += melt_fractions[q] * fe_values.JxW(q);
               }
 
           }

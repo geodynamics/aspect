@@ -41,29 +41,17 @@ namespace aspect
       // in fact the support points.
       // Additionally, use a Gauss quadrature formula for evaluating the
       // integrated melt fraction within the cell.
-      const QIterated<dim> quadrature_formula_for_max (QTrapezoid<1>(),
-                                                       this->get_fe().base_element(this->introspection().base_elements.pressure).degree);
-      const unsigned int n_q_points_for_max = quadrature_formula_for_max.size();
+      const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.velocities).degree + 3);
+      const unsigned int n_q_points = quadrature_formula.size();
 
-      const Quadrature<dim> &quadrature_formula_for_integral = this->introspection().quadratures.pressure;
-      const unsigned int n_q_points_for_integral = quadrature_formula_for_integral.size();
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_values   |
+                               update_quadrature_points |
+                               update_JxW_values);
 
-      FEValues<dim> fe_values_for_max (this->get_mapping(),
-                                       this->get_fe(),
-                                       quadrature_formula_for_max,
-                                       update_values   |
-                                       update_quadrature_points |
-                                       update_JxW_values);
-
-      FEValues<dim> fe_values_for_integral (this->get_mapping(),
-                                            this->get_fe(),
-                                            quadrature_formula_for_integral,
-                                            update_values   |
-                                            update_quadrature_points |
-                                            update_JxW_values);
-
-      std::vector<double> pressure_values_for_max(n_q_points_for_max);
-      std::vector<double> pressure_value_for_integral(n_q_points_for_max);
+      std::vector<double> pressure_values(n_q_points);
 
 
       double local_pressure_integral = 0;
@@ -77,25 +65,17 @@ namespace aspect
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
-            fe_values_for_max.reinit (cell);
-            fe_values_for_max[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                pressure_values_for_max);
-            fe_values_for_integral.reinit (cell);
-            fe_values_for_integral[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                pressure_value_for_integral);
-            for (unsigned int q=0; q<n_q_points_for_max; ++q)
+            fe_values.reinit (cell);
+            fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
+                                                                                      pressure_values);
+            for (unsigned int q=0; q<n_q_points; ++q)
               {
-                const double value = pressure_values_for_max[q];
+                const double value = pressure_values[q];
 
                 local_min_pressure = std::min (local_min_pressure, value);
                 local_max_pressure = std::max (local_max_pressure, value);
-              }
 
-            for (unsigned int q=0; q<n_q_points_for_integral; ++q)
-              {
-                const double value = pressure_value_for_integral[q];
-
-                local_pressure_integral += value*fe_values_for_integral.JxW(q);
+                local_pressure_integral += value*fe_values.JxW(q);
               }
           }
 
