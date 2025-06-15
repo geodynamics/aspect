@@ -535,6 +535,19 @@ list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main
 file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
 set(ASPECT_MAIN_FILE "source/main.cc")
 
+# Create the combined set of source files that make up the project
+set(TARGET_SRC
+    ${ASPECT_MAIN_FILE}
+    ${ASPECT_UNIT_TEST_FILES}
+    ${ASPECT_SOURCE_FILES})
+
+# Add the ASPECT include directories to what we already have from
+# above. Put the ASPECT header files to the front of the list, whereas
+# the 'catch' headers can be preempted by the system
+list(PREPEND ASPECT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
+list(APPEND  ASPECT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/contrib/catch)
+
+
 # Special treatment of some files for unity builds. We need to exclude them
 # because otherwise template class instantiations split across several
 # .cc files (for example Simulator<dim> in core.cc, helper_functions.cc,
@@ -548,13 +561,6 @@ foreach(_source_file ${UNITY_SEPARATE_FILES})
   set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
   set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
 endforeach()
-
-
-# Add the ASPECT include directories to what we already have from
-# above. Put the ASPECT header files to the front of the list, whereas
-# the 'catch' headers can be preempted by the system
-list(PREPEND ASPECT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
-list(APPEND  ASPECT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/contrib/catch)
 
 
 # Set the name of the main targets in the form of
@@ -621,7 +627,8 @@ endif()
 # the warnings again by removing the flag that disables them.
 string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
 
-set(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
+set(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING
+    "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
 
 if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   message(STATUS "Appending ASPECT_ADDITIONAL_CXX_FLAGS: '${ASPECT_ADDITIONAL_CXX_FLAGS}':")
@@ -633,11 +640,6 @@ if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
 endif()
 
 
-# Create the combined set of source files that make up the project
-set(TARGET_SRC
-    ${ASPECT_MAIN_FILE}
-    ${ASPECT_UNIT_TEST_FILES}
-    ${ASPECT_SOURCE_FILES})
 
 # Set up targets for ASPECT executables:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
