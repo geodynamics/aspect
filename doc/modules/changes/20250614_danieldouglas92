@@ -1,0 +1,5 @@
+Fixed: The conservation of water mass when being partitioned
+within the solid phase and the free fluid phase in the
+reactive fluid transport model.
+<br>
+(Daniel Douglas, 2025/06/14)
