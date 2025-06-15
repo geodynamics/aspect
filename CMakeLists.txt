@@ -215,10 +215,10 @@ set(ASPECT_WITH_FASTSCAPE OFF CACHE BOOL
 message(STATUS "Using ASPECT_WITH_FASTSCAPE = '${ASPECT_WITH_FASTSCAPE}'")
 
 if(ASPECT_WITH_FASTSCAPE)
-  find_library(FASTSCAPE NAMES fastscapelib_fortran
+  find_library(FASTSCAPE_LIB_NAME NAMES fastscapelib_fortran
                PATHS $ENV{FASTSCAPE_DIR} ${FASTSCAPE_DIR} PATH_SUFFIXES lib
                NO_DEFAULT_PATH)
-  if(FASTSCAPE)
+  if(FASTSCAPE_LIB_NAME)
      message(STATUS "FastScape library found at ${FASTSCAPE_DIR}")
 
     # Get the fastscape source path so we can check the version further down below.
@@ -262,7 +262,7 @@ if(ASPECT_WITH_FASTSCAPE)
     include(CheckLibraryExists)
     set(_required_libs "${CMAKE_REQUIRED_LIBRARIES}")
     set(CMAKE_REQUIRED_LIBRARIES "gfortran")
-    check_library_exists(${FASTSCAPE} fastscape_named_vtk_ "" ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
+    check_library_exists(${FASTSCAPE_LIB_NAME} fastscape_named_vtk_ "" ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
     if (ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
       message(STATUS "Found fastscape_named_vtk -- enabling its use")
     else()
@@ -953,19 +953,26 @@ if(${LIBDAP_FOUND})
 endif()
 
 # Fastscape
-if (FASTSCAPE)
+if (FASTSCAPE_LIB_NAME)
   message(STATUS "Linking ASPECT against Fastscape")
   foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${FASTSCAPE})
+    target_link_libraries(${_T} ${FASTSCAPE_LIB_NAME})
   endforeach()
 
-  # Also link against the compiler support library because fastscapelib_fortran
-  # is only a static library that doesn't record that it needs the compiler
-  # support library.
-  message(STATUS "Linking ASPECT against gfortran support library")
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} gfortran)
-  endforeach()
+  # If fastscapelib_fortran is only a static library, then we also
+  # need to link against the compiler support library because static
+  # libraries don't record their dependencies.
+  #
+  # CMake does not seem to have a good way to determine whether a file is
+  # a shared or static library, but because static libraries end in .a
+  # on both Mac and Unix (and, I think Windows), we can test that:
+  string(REGEX MATCH ".*\\.a$"_res "${FASTSCAPE_LIB_NAME}")
+  if(_res)
+    message(STATUS "Linking ASPECT against gfortran support library")
+    foreach(_T ${TARGET_EXECUTABLES})
+      target_link_libraries(${_T} gfortran)
+    endforeach()
+  endif()
 endif()
 
 # NetCDF
