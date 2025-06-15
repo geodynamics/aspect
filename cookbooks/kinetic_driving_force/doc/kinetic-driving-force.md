@@ -15,13 +15,15 @@ The model formulates the kinetic driving force as a function of the excess Gibbs
 
 ```
 
-where $\Delta G$ is the kinetic driving force, $\Delta G_0 = \Delta G_b - \Delta G_a$ is the difference in Gibbs free energy between two polymorphic phases $a$ and $b$ under a hydrostatic adiabatic reference state, $\Delta V$ and $\Delta S$ are the differences in molar volume and entropy of the polymorphic phases, respectively, $\Delta P = p - \bar{p}$ is the nonadiabatic ("dynamic") pressure, and $\Delta T = T - \bar{T}$ is the nonadiabatic temperature. The thermodynamic variables $\Delta G_0$, $\Delta V$, and $\Delta S$ are evaluated along an isentropic adiabat ($\bar{p}$, $\bar{T}$, {numref}`fig:ascii-data-profile`) using the thermodynamic data and equations of state from {cite:t}`stixrude:lithgow-bertelloni:2011`. These thermodynamic data are stored in the table [ol-wad-driving-force-profile.txt](/doc/sphinx/user/cookbooks/cookbooks/kinetic_driving_force/ol-wad-driving-force-profile.txt), which is referenced using the [`AsciiDataProfile`](https://github.com/geodynamics/aspect/blob/a947bac5a92025ed0f12bf4da70757e78a531b25/include/aspect/structured_data.h#L717) class.
+where $\Delta G$ is the kinetic driving force, $\Delta G_0 = \Delta G_b - \Delta G_a$ is the difference in Gibbs free energy between two polymorphic phases $a$ and $b$ under a hydrostatic adiabatic reference state, $\Delta V$ and $\Delta S$ are the differences in molar volume and entropy of the polymorphic phases, respectively, $\Delta P = p - \bar{p}$ is the nonadiabatic ("dynamic") pressure, and $\Delta T = T - \bar{T}$ is the nonadiabatic temperature.
 
 ```{figure-md} fig:ascii-data-profile
 <img src="driving-force-contours-fill-olivine-wadsleyite.png" style="width:80.0%" />
 
 Kinetic driving force for the reaction olivine --> wadsleyite as a function of depth. The pressure- and temperature-dependent terms in Equation {math:numref}`eqn:driving-force` are shown separately in (a) and (b), respectively, with the other term held fixed. The $\Delta G = 0$ contour indicates the chemical equilibrium. Olivine transforms into wadsleyite where the $\Delta G$ is negative (purple contours) and remains stable where $\Delta G$ is positive (orange contours). At a fixed depth, positive dynamic pressure tends to speed up the olivine --> wadsleyite reaction, while excess local heating tends to retard it. $\Delta G_0$, $\Delta V$, and $\Delta S$ for olivine and wadsleyite were computed with the mineral physics toolkit `BurnMan` {cite}`cottaar:etal:2014` using thermodynamic data and equations of state from {cite:t}`stixrude:lithgow-bertelloni:2011`.`
 ```
+
+The thermodynamic variables $\Delta G_0$, $\Delta V$, and $\Delta S$ are evaluated along an isentropic adiabat ($\bar{p}$, $\bar{T}$, {numref}`fig:ascii-data-profile`) using the thermodynamic data and equations of state from {cite:t}`stixrude:lithgow-bertelloni:2011`. These thermodynamic data are stored in the table `aspect/cookbooks/kinetic_driving_force/ol-wad-driving-force-profile.txt`, which is referenced using the [`AsciiDataProfile`](https://github.com/geodynamics/aspect/blob/a947bac5a92025ed0f12bf4da70757e78a531b25/include/aspect/structured_data.h#L717) class.
 
 The reaction rate is then calculated as:
 
