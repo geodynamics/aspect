@@ -2181,18 +2181,63 @@ namespace aspect
 
   template <int dim>
   void
-  Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
+  Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset,
+                                               const bool is_composition,
+                                               const unsigned int composition_index)
   {
     const Quadrature<dim-1> &quadrature_formula = introspection.face_quadratures.temperature;
+
+    bool consider_darcy_velocity = false;
+    bool consider_fluid_velocity = false;
+    unsigned int porosity_idx = numbers::invalid_unsigned_int;
+
+    // Check to see if we are attempting to replace the boundary conditions for the temperature, or for the
+    // composition. If we are attempting to replace the composition boundary conditions, check to see if the current
+    // compositional field is advected with the darcy velocity (via the darcy field advection method) or with the
+    // fluid velocity (via the melt field advection method, or via a compositional field named porosity when melt
+    // transport is included).
+    if (is_composition)
+      {
+        if (introspection.compositional_field_methods[composition_index] == Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
+          {
+            consider_darcy_velocity = true;
+            porosity_idx = introspection.find_composition_type(CompositionalFieldDescription::porosity);
+          }
+        if (introspection.compositional_field_methods[composition_index] == Parameters<dim>::AdvectionFieldMethod::fem_melt_field ||
+            (parameters.include_melt_transport && introspection.get_indices_for_fields_of_type(CompositionalFieldDescription::porosity)[0] == composition_index) )
+          consider_fluid_velocity = true;
+      }
+
+    // If the compositional field uses the darcy velocity, we need to update the gradients, otherwise we do not
+    const UpdateFlags update_flags
+      = UpdateFlags(
+          consider_darcy_velocity
+          ?
+          update_values |
+          update_gradients |
+          update_normal_vectors |
+          update_quadrature_points |
+          update_JxW_values
+          :
+          update_values |
+          update_normal_vectors |
+          update_quadrature_points |
+          update_JxW_values);
 
     FEFaceValues<dim> fe_face_values (*mapping,
                                       finite_element,
                                       quadrature_formula,
-                                      update_values   | update_normal_vectors |
-                                      update_quadrature_points | update_JxW_values);
+                                      update_flags);
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
     std::vector<Tensor<1,dim>> face_current_mesh_velocity_values (fe_face_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_current_fluid_velocity_values (fe_face_values.n_quadrature_points);
+
+    MaterialModel::MaterialModelInputs<dim> in(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
+    MeltHandler<dim>::create_material_model_outputs(out);
+    std::shared_ptr<MaterialModel::MeltOutputs<dim>> fluid_out
+      = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
 
     const auto &tangential_velocity_boundaries =
       boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
@@ -2227,8 +2272,22 @@ namespace aspect
                   fe_face_values[introspection.extractors.velocities].get_function_values(mesh_deformation->mesh_velocity,
                                                                                           face_current_mesh_velocity_values);
 
+                if (consider_darcy_velocity)
+                  {
+                    in.reinit(fe_face_values, cell, introspection, solution);
+                    material_model->evaluate(in, out);
+                    fluid_out = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
+                  }
+
+                if (consider_fluid_velocity)
+                  {
+                    fe_face_values[introspection.variable("fluid velocity").extractor_vector()].get_function_values(current_linearization_point,
+                        face_current_fluid_velocity_values);
+                  }
+
                 // ... check if the face is an outflow boundary by integrating the normal velocities
                 // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
+                // do this for the solid velocity, the darcy velocity, or the fluid velocity.
                 double integrated_flow = 0;
 
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
@@ -2243,8 +2302,32 @@ namespace aspect
                     if (parameters.mesh_deformation_enabled)
                       boundary_velocity -= face_current_mesh_velocity_values[q];
 
-                    integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
-                                       fe_face_values.JxW(q);
+                    if (consider_darcy_velocity)
+                      {
+                        const double porosity = std::max(in.composition[q][porosity_idx], 1e-10);
+                        const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
+                        const double solid_density = out.densities[q];
+                        const double fluid_viscosity = fluid_out->fluid_viscosities[q];
+                        const double fluid_density = fluid_out->fluid_densities[q];
+                        const double permeability = fluid_out->permeabilities[q];
+                        const Tensor<1,dim> boundary_darcy_velocity = boundary_velocity -
+                                                                      permeability / fluid_viscosity / porosity * gravity *
+                                                                      (solid_density - fluid_density);
+                        integrated_flow += (boundary_darcy_velocity * fe_face_values.normal_vector(q)) *
+                                           fe_face_values.JxW(q);
+                      }
+
+                    else if (consider_fluid_velocity)
+                      {
+                        integrated_flow += (face_current_fluid_velocity_values[q] * fe_face_values.normal_vector(q)) *
+                                           fe_face_values.JxW(q);
+                      }
+
+                    else
+                      {
+                        integrated_flow += (boundary_velocity * fe_face_values.normal_vector(q)) *
+                                           fe_face_values.JxW(q);
+                      }
                   }
 
                 // ... and change the boundary id of any outflow boundary faces.
@@ -2678,7 +2761,9 @@ namespace aspect
   template void Simulator<dim>::initialize_current_linearization_point (); \
   template void Simulator<dim>::interpolate_material_output_into_advection_field(const std::vector<AdvectionField> &adv_field); \
   template void Simulator<dim>::check_consistency_of_formulation(); \
-  template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset); \
+  template void Simulator<dim>::replace_outflow_boundary_ids(const unsigned int boundary_id_offset, \
+                                                             const bool is_composition, \
+                                                             const unsigned int composition_index); \
   template void Simulator<dim>::restore_outflow_boundary_ids(const unsigned int boundary_id_offset); \
   template void Simulator<dim>::check_consistency_of_boundary_conditions() const; \
   template double Simulator<dim>::compute_initial_newton_residual(); \
