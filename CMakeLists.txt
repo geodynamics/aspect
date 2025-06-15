@@ -1093,26 +1093,34 @@ install(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_D
 install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
 
 message(STATUS "Writing configuration details into detailed.log...")
-
-
 message(STATUS "")
-MESSAGE(STATUS "===== Configuring ASPECT documentation =============")
+
 
 ###########################################################
-# Having configured most of the compilation phase, now also
-# deal with other parts of the system.
+# Now also deal with other parts of the system.
 ###########################################################
+
+message(STATUS "===== Configuring ASPECT documentation =============")
 
 # Start with the documentation
 
 add_subdirectory(doc)
 
+message(STATUS "")
+message(STATUS "")
+
+###########################################################
+# Finally, print a summary.
+###########################################################
+
 include(cmake/write_config)
 
-# print "info" if run for the first time:
+# Print "info" if run for the first time:
 if(NOT USAGE_PRINTED)
   include(${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake)
   set(USAGE_PRINTED TRUE CACHE INTERNAL "")
 else()
   message(STATUS "Run  ${_make_command} info  to print a detailed help message")
 endif()
+
+message(STATUS "")
