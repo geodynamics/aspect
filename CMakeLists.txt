@@ -768,7 +768,7 @@ if (FASTSCAPE_LIB_NAME)
   # CMake does not seem to have a good way to determine whether a file is
   # a shared or static library, but because static libraries end in .a
   # on both Mac and Unix (and, I think Windows), we can test that:
-  string(REGEX MATCH ".*\\.a$"_res "${FASTSCAPE_LIB_NAME}")
+  string(REGEX MATCH ".*\\.a$" _res "${FASTSCAPE_LIB_NAME}")
   if(_res)
     message(STATUS "Linking ASPECT against gfortran support library")
     foreach(_T ${TARGET_EXECUTABLES})
