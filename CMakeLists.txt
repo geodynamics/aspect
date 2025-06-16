@@ -164,6 +164,7 @@ find_package(ZLIB)
 if(${ZLIB_FOUND})
   message(STATUS "Using ASPECT_WITH_ZLIB = 'ON'")
   set(ASPECT_WITH_ZLIB ON)
+  list(APPEND ASPECT_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
 else()
   message(STATUS "Using ASPECT_WITH_ZLIB = 'OFF'")
   set(ASPECT_WITH_ZLIB OFF)
@@ -177,6 +178,7 @@ if(ASPECT_WITH_PYTHON)
   find_package(Python3 COMPONENTS Interpreter Development NumPy)
   if(Python3_FOUND)
     message(STATUS "  PYTHON_EXECUTABLE: ${Python3_EXECUTABLE}")
+    list(APPEND ASPECT_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
   else()
     message(FATAL_ERROR "Python not found. Consider disabling ASPECT_WITH_PYTHON.")
   endif()
@@ -189,6 +191,7 @@ find_package(PerpleX QUIET
 if(${PerpleX_FOUND})
   message(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
   set(ASPECT_WITH_PERPLEX ON)
+  list(APPEND ASPECT_INCLUDE_DIRS ${PerpleX_INCLUDE_DIR})
 else()
   set(ASPECT_WITH_PERPLEX OFF)
 endif()
@@ -200,8 +203,8 @@ message(STATUS "Using ASPECT_WITH_LIBDAP = '${ASPECT_WITH_LIBDAP}'")
 if(ASPECT_WITH_LIBDAP)
   find_package(LIBDAP)
   if(${LIBDAP_FOUND})
-    include_directories(${LIBDAP_INCLUDE_DIRS})
     message(STATUS "LIBDAP found at ${LIBDAP_LIBRARY}\n")
+    list(APPEND ASPECT_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIRS})
   else()
     message(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
   endif()
@@ -285,6 +288,7 @@ if(ASPECT_WITH_NETCDF)
     message(STATUS "  NETCDF_INCLUDE_DIR: ${NETCDF_INCLUDE_DIR}")
     message(STATUS "  NETCDF_LIBRARY: ${NETCDF_LIBRARY}")
     message(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
+    list(APPEND ASPECT_INCLUDE_DIRS ${NETCDF_INCLUDE_DIRS})
   else()
     message(STATUS "NetCDF not found. Disabling ASPECT_WITH_NETCDF. You can specify a hint to your installation directory with NETCDF_DIR.")
     set(ASPECT_WITH_NETCDF OFF CACHE BOOL "" FORCE)
@@ -305,11 +309,13 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
   endif()
 
-  # Add the WorldBuilder include dirs. This includes both the WorldBuilder
-  # header files, as well as where the cmake run we do below puts the
-  # WorldBuilder config.h file.
-  include_directories("${WORLD_BUILDER_SOURCE_DIR}/include/")
-  include_directories("${CMAKE_BINARY_DIR}/world_builder/include")
+  # Add the WorldBuilder include dirs. This covers both the
+  # WorldBuilder header files. The cmake run we do below puts the
+  # WorldBuilder config.h file into directories that are different for
+  # debug and release builds, and so we add these files later when we
+  # describe how to link against the WorldBuilder, specific for each
+  # executable.
+  list(APPEND ASPECT_INCLUDE_DIRS "${WORLD_BUILDER_SOURCE_DIR}/include/")
 
 
   include("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
@@ -369,7 +375,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
     # generate config.cc and include it:
     configure_file("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
                     "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
-    include_directories("${CMAKE_BINARY_DIR}/include/")
+    list(APPEND ASPECT_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include/")
     file(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
 
     # Move some file to the end for unity builds to make sure other file come
@@ -446,6 +452,12 @@ configure_file(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in
                ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
 
 
+
+# ##############################################################################
+# Checking system properties
+# ##############################################################################
+
+
 # Check if we can raise floating point exceptions.
 #
 # Note that some library we link with in ASPECT on some platforms will trigger
@@ -471,6 +483,50 @@ if(ASPECT_USE_FP_EXCEPTIONS)
     message(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
   endif()
 endif()
+
+
+# See if we can use dlopen to load plugin libraries.
+include(CheckCXXSourceCompiles)
+
+set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
+check_cxx_source_compiles("
+#include <cstddef>
+#include <dlfcn.h>
+
+int main()
+{
+  void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
+  return handle == NULL || dlerror();
+}
+" HAVE_DLOPEN)
+set(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
+
+if(NOT HAVE_DLOPEN)
+  message(STATUS "dlopen() test failed, disabling dynamic plugin loading")
+  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+endif()
+
+if(ASPECT_USE_SHARED_LIBS)
+  message(STATUS "Enabling dynamic loading of plugins from the input file")
+else()
+  message(STATUS "Disabling dynamic loading of plugins from the input file")
+endif()
+
+
+# See whether we can verify that every plugin we load is compiled against
+# the same deal.II library
+set(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
+include(CheckIncludeFileCXX)
+check_include_file_cxx("link.h" _HAVE_LINK_H)
+if(NOT _HAVE_LINK_H)
+  set(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
+endif()
+if(ASPECT_HAVE_LINK_H)
+  message(STATUS "Enabling checking of compatible deal.II library when loading plugins")
+endif()
+
+
 
 # Check if we want to precompile header files. This speeds up compile time,
 # but can fail on some machines with old CMake. Starting with CMake 3.16
@@ -529,6 +585,19 @@ list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main
 file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
 set(ASPECT_MAIN_FILE "source/main.cc")
 
+# Create the combined set of source files that make up the project
+set(ASPECT_ALL_SOURCE_FILES
+    ${ASPECT_MAIN_FILE}
+    ${ASPECT_UNIT_TEST_FILES}
+    ${ASPECT_SOURCE_FILES})
+
+# Add the ASPECT include directories to what we already have from
+# above. Put the ASPECT header files to the front of the list, whereas
+# the 'catch' headers can be preempted by the system
+list(PREPEND ASPECT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
+list(APPEND  ASPECT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/contrib/catch)
+
+
 # Special treatment of some files for unity builds. We need to exclude them
 # because otherwise template class instantiations split across several
 # .cc files (for example Simulator<dim> in core.cc, helper_functions.cc,
@@ -543,13 +612,6 @@ foreach(_source_file ${UNITY_SEPARATE_FILES})
   set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
 endforeach()
 
-
-
-# Set up include directories. Put the ASPECT header files
-# to the front of the list, whereas the 'catch' headers can
-# be preempted by the system
-include_directories(BEFORE ${CMAKE_BINARY_DIR}/include include)
-include_directories(AFTER  contrib/catch)
 
 # Set the name of the main targets in the form of
 # TARGET_EXE/LIB_DEBUG/RELEASE. Set TARGET_EXE as the debug build,
@@ -571,6 +633,246 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
 endif()
 
 
+
+# deal.II versions >=9.5 disable deprecation warnings in user code. Enable
+# the warnings again by removing the flag that disables them.
+string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
+
+set(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING
+    "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
+
+if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
+  message(STATUS "Appending ASPECT_ADDITIONAL_CXX_FLAGS: '${ASPECT_ADDITIONAL_CXX_FLAGS}':")
+  string(APPEND DEAL_II_CXX_FLAGS_DEBUG " ${ASPECT_ADDITIONAL_CXX_FLAGS}")
+  string(APPEND DEAL_II_CXX_FLAGS_RELEASE " ${ASPECT_ADDITIONAL_CXX_FLAGS}")
+  message(STATUS "  DEAL_II_WARNING_FLAGS: ${DEAL_II_WARNING_FLAGS}")
+  message(STATUS "  DEAL_II_CXX_FLAGS_DEBUG: ${DEAL_II_CXX_FLAGS_DEBUG}")
+  message(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
+endif()
+
+
+
+# Set up targets for ASPECT executables:
+if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
+  add_executable(${TARGET_EXE_DEBUG} ${ASPECT_ALL_SOURCE_FILES})
+  set_property(TARGET ${TARGET_EXE_DEBUG}
+               PROPERTY OUTPUT_NAME aspect-debug)
+
+  target_include_directories(${TARGET_EXE_DEBUG} PRIVATE ${ASPECT_INCLUDE_DIRS})
+  target_compile_flags(${TARGET_EXE_DEBUG} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
+    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_DEBUG}"
+    )
+  target_link_flags(${TARGET_EXE_DEBUG} PRIVATE
+    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_DEBUG}"
+    )
+  target_link_libraries(${TARGET_EXE_DEBUG} dealii::dealii_debug)
+endif()
+
+if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
+  add_executable(${TARGET_EXE_RELEASE} ${ASPECT_ALL_SOURCE_FILES})
+  set_property(TARGET ${TARGET_EXE_RELEASE}
+               PROPERTY OUTPUT_NAME aspect-release)
+
+  target_include_directories(${TARGET_EXE_RELEASE} PRIVATE ${ASPECT_INCLUDE_DIRS})
+  target_compile_flags(${TARGET_EXE_RELEASE} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
+    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_RELEASE}"
+    )
+  target_link_flags(${TARGET_EXE_RELEASE} PRIVATE
+    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_RELEASE}"
+    )
+  target_link_libraries(${TARGET_EXE_RELEASE} dealii::dealii_release)
+endif()
+
+# make sure we have the rpath to our dependencies set:
+foreach(_T ${TARGET_EXECUTABLES})
+  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+endforeach()
+
+
+# Make sure that we have an executable 'aspect' that
+# links to the debug version, or the release version if
+# we did not compile in debug mode. TARGET_EXE describes
+# which target this references.
+#
+# We do this in the build directory with the first of the following
+# two commands, and in the install directory with the second.
+add_custom_target(aspect ALL
+                  COMMAND ${CMAKE_COMMAND} -E create_symlink
+                           $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME>  # executable file name
+                           ${CMAKE_BINARY_DIR}/aspect                    # link name
+                  DEPENDS ${TARGET_EXE}
+                  COMMENT "Creating symlink from ${TARGET_EXE} to './aspect'")
+
+# This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
+# does not do so, so do it here. Remove this when we require deal.II 9.6.
+if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
+  if(DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
+    target_compile_definitions(${TARGET_EXE_RELEASE} PUBLIC "NDEBUG")
+  endif()
+endif()
+
+# Turn on debug checks like invalid element access in c++ standard library:
+if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
+  target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
+endif()
+
+
+
+# ##############################################################################
+# Make sure we correctly link with external libraries
+# ##############################################################################
+
+# zlib
+if(${ZLIB_FOUND})
+  message(STATUS "Linking ASPECT against zlib")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${ZLIB_LIBRARY})
+  endforeach()
+endif()
+
+# Python3
+if(${Python3_FOUND})
+  message(STATUS "Linking ASPECT against Python3")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${Python3_LIBRARIES})
+  endforeach()
+endif()
+
+# PerpleX
+if(${PerpleX_FOUND})
+  message(STATUS "Linking ASPECT against PerpleX")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${PerpleX_LIBRARIES})
+  endforeach()
+endif()
+
+# libdap
+if(${LIBDAP_FOUND})
+  message(STATUS "Linking ASPECT against libdap")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${LIBDAP_LIBRARIES})
+  endforeach()
+endif()
+
+# Fastscape
+if (FASTSCAPE_LIB_NAME)
+  message(STATUS "Linking ASPECT against Fastscape")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${FASTSCAPE_LIB_NAME})
+  endforeach()
+
+  # If fastscapelib_fortran is only a static library, then we also
+  # need to link against the compiler support library because static
+  # libraries don't record their dependencies.
+  #
+  # CMake does not seem to have a good way to determine whether a file is
+  # a shared or static library, but because static libraries end in .a
+  # on both Mac and Unix (and, I think Windows), we can test that:
+  string(REGEX MATCH ".*\\.a$"_res "${FASTSCAPE_LIB_NAME}")
+  if(_res)
+    message(STATUS "Linking ASPECT against gfortran support library")
+    foreach(_T ${TARGET_EXECUTABLES})
+      target_link_libraries(${_T} gfortran)
+    endforeach()
+  endif()
+endif()
+
+# NetCDF
+if(${NETCDF_FOUND})
+  message(STATUS "Linking ASPECT against NetCDF")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${NETCDF_LIBRARIES})
+  endforeach()
+endif()
+
+# WorldBuilder
+if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
+  message(STATUS "Linking ASPECT against WorldBuilder")
+  if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
+    # Add those WorldBuilder include directories to the include
+    # directory list that are specific to the build (debug or
+    # release):
+    target_include_directories(${TARGET_EXE_DEBUG} PRIVATE "${CMAKE_BINARY_DIR}/world_builder/include/")
+    target_link_libraries(${TARGET_EXE_DEBUG} WorldBuilderDebug)
+  endif()
+
+  if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
+    # Add those WorldBuilder include directories to the include
+    # directory list that are specific to the build (debug or
+    # release):
+    target_include_directories(${TARGET_EXE_RELEASE} PRIVATE "${CMAKE_BINARY_DIR}/world_builder_release/include/")
+    target_link_libraries(${TARGET_EXE_RELEASE} WorldBuilderRelease)
+  endif()
+endif()
+
+# Some systems need to explicitly link to some libraries to use dlopen
+if(ASPECT_USE_SHARED_LIBS)
+  message(STATUS "Linking ASPECT against dlopen")
+  foreach(_T ${TARGET_EXECUTABLES})
+    target_link_libraries(${_T} ${CMAKE_DL_LIBS})
+  endforeach()
+endif()
+
+
+
+if(ASPECT_PRECOMPILE_HEADERS)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+    message(STATUS "Precompiling common header files.")
+    # Use the native cmake support to precompile some common headers
+    # from ASPECT and deal.II that are frequently included, but rarely changed.
+    foreach(_T ${TARGET_EXECUTABLES})
+      TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
+        <aspect/global.h> <aspect/plugins.h> <aspect/introspection.h> <aspect/parameters.h>)
+      TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
+        <deal.II/base/table_handler.h> <deal.II/base/timer.h>
+        <deal.II/base/conditional_ostream.h> <deal.II/distributed/tria.h>
+        <deal.II/dofs/dof_handler.h> <deal.II/fe/fe.h> <deal.II/fe/mapping_q.h>
+        <deal.II/particles/particle_handler.h>)
+    endforeach()
+  else()
+    message(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.16 and newer versions.")
+  endif()
+endif()
+
+if(ASPECT_UNITY_BUILD)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+    foreach(_T ${TARGET_EXECUTABLES})
+      set_property(TARGET ${_T} PROPERTY UNITY_BUILD TRUE)
+    endforeach()
+    message(STATUS "Combining source files into unity build.")
+  elseif(CMAKE_VERSION VERSION_LESS 3.16)
+    message(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
+  endif()
+else()
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+    foreach(_T ${TARGET_EXECUTABLES})
+      set_property(TARGET ${_T} PROPERTY UNITY_BUILD FALSE)
+    endforeach()
+  endif()
+endif()
+
+
+# ##############################################################################
+# Installation
+# ##############################################################################
+
+
+# Binaries:
+install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
+	TYPE BIN)
+
+install(TARGETS ${TARGET_EXECUTABLES}
+        RUNTIME
+        COMPONENT runtime)
+
+# Headers:
+install(DIRECTORY
+          include/
+          ${CMAKE_BINARY_DIR}/include/
+        DESTINATION include
+        COMPONENT includes
+        FILES_MATCHING PATTERN "*.h")
+
 message(STATUS "Writing externally readable configuration information")
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
@@ -583,7 +885,6 @@ write_basic_package_version_file(
 # set up compiler flags, include paths, etc to compile an
 # ASPECT plugin.
 # Config for the build dir:
-set(CONFIG_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include" "${CMAKE_SOURCE_DIR}/include")
 set(CONFIG_DIR "${CMAKE_BINARY_DIR}")
 configure_file(
   ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
@@ -591,7 +892,6 @@ configure_file(
   @ONLY
 )
 # Config for the install dir:
-set(CONFIG_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
 set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
 configure_file(
   ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
@@ -599,7 +899,10 @@ configure_file(
   @ONLY
 )
 
-# Next, set up the testsuite
+
+# ##############################################################################
+# Setting up the testsuite
+# ##############################################################################
 
 set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
 set(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
@@ -674,7 +977,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
 
   message(STATUS "Setting up test project, see tests/setup_tests.log for details.")
   execute_process(
-    COMMAND ${CMAKE_COMMAND} -G ${ASPECT_TEST_GENERATOR}
+    COMMAND ${CMAKE_COMMAND} -G "${ASPECT_TEST_GENERATOR}"
         -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
         -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
         -D Aspect_DIR=${CMAKE_BINARY_DIR}
@@ -789,284 +1092,9 @@ add_custom_target(info
   )
 
 
-INCLUDE (CheckCXXSourceCompiles)
-
-set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
-list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
-check_cxx_source_compiles("
-#include <cstddef>
-#include <dlfcn.h>
-
-int main()
-{
-  void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
-  return handle == NULL || dlerror();
-}
-" HAVE_DLOPEN)
-set(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
-
-if(NOT HAVE_DLOPEN)
-  message(STATUS "dlopen() test failed, disabling dynamic plugin loading")
-  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-endif()
-
-if(ASPECT_USE_SHARED_LIBS)
-  message(STATUS "Enabling dynamic loading of plugins from the input file")
-else()
-  message(STATUS "Disabling dynamic loading of plugins from the input file")
-endif()
-
-# See whether we can verify that every plugin we load is compiled against
-# the same deal.II library
-set(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
-include(CheckIncludeFileCXX)
-check_include_file_cxx("link.h" _HAVE_LINK_H)
-if(NOT _HAVE_LINK_H)
-  set(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
-endif()
-if(ASPECT_HAVE_LINK_H)
-  message(STATUS "Enabling checking of compatible deal.II library when loading plugins")
-endif()
-
-# deal.II versions >=9.5 disable deprecation warnings in user code. Enable
-# the warnings again by removing the flag that disables them.
-string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
-
-set(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
-
-if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
-  message(STATUS "Appending ASPECT_ADDITIONAL_CXX_FLAGS: '${ASPECT_ADDITIONAL_CXX_FLAGS}':")
-  string(APPEND DEAL_II_CXX_FLAGS_DEBUG " ${ASPECT_ADDITIONAL_CXX_FLAGS}")
-  string(APPEND DEAL_II_CXX_FLAGS_RELEASE " ${ASPECT_ADDITIONAL_CXX_FLAGS}")
-  message(STATUS "  DEAL_II_WARNING_FLAGS: ${DEAL_II_WARNING_FLAGS}")
-  message(STATUS "  DEAL_II_CXX_FLAGS_DEBUG: ${DEAL_II_CXX_FLAGS_DEBUG}")
-  message(STATUS "  DEAL_II_CXX_FLAGS_RELEASE: ${DEAL_II_CXX_FLAGS_RELEASE}")
-endif()
-
-
-# Create the combined set of source files that make up the project
-set(TARGET_SRC
-    ${ASPECT_MAIN_FILE}
-    ${ASPECT_UNIT_TEST_FILES}
-    ${ASPECT_SOURCE_FILES})
-
-
-
-# Set up targets for ASPECT executables:
-if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-  add_executable(${TARGET_EXE_DEBUG} ${TARGET_SRC})
-  set_property(TARGET ${TARGET_EXE_DEBUG}
-               PROPERTY OUTPUT_NAME aspect-debug)
-
-  target_compile_flags(${TARGET_EXE_DEBUG} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
-    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_DEBUG}"
-    )
-  target_link_flags(${TARGET_EXE_DEBUG} PRIVATE
-    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_DEBUG}"
-    )
-  target_link_libraries(${TARGET_EXE_DEBUG} dealii::dealii_debug)
-endif()
-
-if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-  add_executable(${TARGET_EXE_RELEASE} ${TARGET_SRC})
-  set_property(TARGET ${TARGET_EXE_RELEASE}
-               PROPERTY OUTPUT_NAME aspect-release)
-
-  target_compile_flags(${TARGET_EXE_RELEASE} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
-    "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_RELEASE}"
-    )
-  target_link_flags(${TARGET_EXE_RELEASE} PRIVATE
-    "${DEAL_II_LINKER_FLAGS} ${DEAL_II_LINKER_FLAGS_RELEASE}"
-    )
-  target_link_libraries(${TARGET_EXE_RELEASE} dealii::dealii_release)
-endif()
-
-# Make sure that we have an executable 'aspect' that
-# links to the debug version, or the release version if
-# we did not compile in debug mode. TARGET_EXE describes
-# which target this references.
-#
-# We do this in the build directory with the first of the following
-# two commands, and in the install directory with the second.
-add_custom_target(aspect ALL
-                  COMMAND ${CMAKE_COMMAND} -E create_symlink
-                           $<TARGET_PROPERTY:${TARGET_EXE},OUTPUT_NAME>  # executable file name
-                           ${CMAKE_BINARY_DIR}/aspect                    # link name
-                  DEPENDS ${TARGET_EXE}
-                  COMMENT "Creating symlink from ${TARGET_EXE} to './aspect'")
-install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
-	TYPE BIN)
-
-# This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
-# does not do so, so do it here. Remove this when we require deal.II 9.6.
-if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-  if(DEAL_II_PACKAGE_VERSION VERSION_LESS 9.6.0)
-    target_compile_definitions(${TARGET_EXE_RELEASE} PUBLIC "NDEBUG")
-  endif()
-endif()
-
-# turn on debug checks like invalid element access in c++ standard library:
-if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-  target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
-endif()
-
-
-# ##############################################################################
-# Make sure we correctly link with external libraries
-# ##############################################################################
-
-# zlib
-if(${ZLIB_FOUND})
-  message(STATUS "Linking ASPECT against zlib")
-  include_directories(${ZLIB_INCLUDE_DIR})
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${ZLIB_LIBRARY})
-  endforeach()
-endif()
-
-# Python3
-if(${Python3_FOUND})
-  message(STATUS "Linking ASPECT against Python3")
-  include_directories(${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
-
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${Python3_LIBRARIES})
-  endforeach()
-endif()
-
-# PerpleX
-if(${PerpleX_FOUND})
-  message(STATUS "Linking ASPECT against PerpleX")
-  include_directories(${PerpleX_INCLUDE_DIR})
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${PerpleX_LIBRARIES})
-  endforeach()
-endif()
-
-# libdap
-if(${LIBDAP_FOUND})
-  message(STATUS "Linking ASPECT against libdap")
-  include_directories(${LIBDAP_INCLUDE_DIRS})
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${LIBDAP_LIBRARIES})
-  endforeach()
-endif()
-
-# Fastscape
-if (FASTSCAPE_LIB_NAME)
-  message(STATUS "Linking ASPECT against Fastscape")
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${FASTSCAPE_LIB_NAME})
-  endforeach()
-
-  # If fastscapelib_fortran is only a static library, then we also
-  # need to link against the compiler support library because static
-  # libraries don't record their dependencies.
-  #
-  # CMake does not seem to have a good way to determine whether a file is
-  # a shared or static library, but because static libraries end in .a
-  # on both Mac and Unix (and, I think Windows), we can test that:
-  string(REGEX MATCH ".*\\.a$"_res "${FASTSCAPE_LIB_NAME}")
-  if(_res)
-    message(STATUS "Linking ASPECT against gfortran support library")
-    foreach(_T ${TARGET_EXECUTABLES})
-      target_link_libraries(${_T} gfortran)
-    endforeach()
-  endif()
-endif()
-
-# NetCDF
-if(${NETCDF_FOUND})
-  message(STATUS "Linking ASPECT against NetCDF")
-  include_directories(${NETCDF_INCLUDE_DIRS})
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${NETCDF_LIBRARIES})
-  endforeach()
-endif()
-
-# WorldBuilder
-if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
-  message(STATUS "Linking ASPECT against WorldBuilder")
-  if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-    target_include_directories(${TARGET_EXE_DEBUG} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
-    target_link_libraries(${TARGET_EXE_DEBUG} WorldBuilderDebug)
-  endif()
-
-  if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-    target_include_directories(${TARGET_EXE_RELEASE} PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
-    target_link_libraries(${TARGET_EXE_RELEASE} WorldBuilderRelease)
-  endif()
-endif()
-
-# Some systems need to explicitly link to some libraries to use dlopen
-if(ASPECT_USE_SHARED_LIBS)
-  message(STATUS "Linking ASPECT against dlopen")
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${CMAKE_DL_LIBS})
-  endforeach()
-endif()
-
-
-
-if(ASPECT_PRECOMPILE_HEADERS)
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    message(STATUS "Precompiling common header files.")
-    # Use the native cmake support to precompile some common headers
-    # from ASPECT and deal.II that are frequently included, but rarely changed.
-    foreach(_T ${TARGET_EXECUTABLES})
-      TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
-        <aspect/global.h> <aspect/plugins.h> <aspect/introspection.h> <aspect/parameters.h>)
-      TARGET_PRECOMPILE_HEADERS(${_T} PRIVATE
-        <deal.II/base/table_handler.h> <deal.II/base/timer.h>
-        <deal.II/base/conditional_ostream.h> <deal.II/distributed/tria.h>
-        <deal.II/dofs/dof_handler.h> <deal.II/fe/fe.h> <deal.II/fe/mapping_q.h>
-        <deal.II/particles/particle_handler.h>)
-    endforeach()
-  else()
-    message(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.16 and newer versions.")
-  endif()
-endif()
-
-if(ASPECT_UNITY_BUILD)
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    foreach(_T ${TARGET_EXECUTABLES})
-      set_property(TARGET ${_T} PROPERTY UNITY_BUILD TRUE)
-    endforeach()
-    message(STATUS "Combining source files into unity build.")
-  elseif(CMAKE_VERSION VERSION_LESS 3.16)
-    message(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
-  endif()
-else()
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    foreach(_T ${TARGET_EXECUTABLES})
-      set_property(TARGET ${_T} PROPERTY UNITY_BUILD FALSE)
-    endforeach()
-  endif()
-endif()
-
-
-#
-## installation
-#
-# binaries:
-install(TARGETS ${TARGET_EXECUTABLES}
-  RUNTIME DESTINATION bin
-  COMPONENT runtime)
-
-
-# make sure we have the rpath to our dependencies set:
-foreach(_T ${TARGET_EXECUTABLES})
-  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
-endforeach()
-
-# headers:
-install(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
-  DESTINATION include
-  COMPONENT includes
-  FILES_MATCHING PATTERN "*.h")
-
 # examples:
-set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL "If ON all cookbooks and benchmarks will be built and installed.")
+set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL
+    "If ON all cookbooks and benchmarks will be built and installed.")
 
 if(ASPECT_INSTALL_EXAMPLES)
   add_subdirectory(benchmarks)
