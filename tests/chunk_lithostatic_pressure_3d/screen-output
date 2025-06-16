@@ -8,7 +8,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        0.305 m/year, 3.71 m/year
+     RMS, max velocity:        0.305 m/year, 3.05 m/year
      Pressure min/avg/max:     -2.098e+07 Pa, 3.696e+10 Pa, 9.157e+10 Pa
      Writing graphical output: output-chunk_lithostatic_pressure_3d/solution/solution-00000
 

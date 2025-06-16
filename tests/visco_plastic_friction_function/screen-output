@@ -13,7 +13,7 @@ Number of degrees of freedom: 1,444 (882+121+441)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  8.8e-16 m/year, 1.92e-15 m/year
+     RMS, max velocity:                  8.8e-16 m/year, 4.55e-15 m/year
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 
@@ -26,7 +26,7 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
    Postprocessing:
-     RMS, max velocity:                  1.58e-18 m/year, 4.94e-18 m/year
+     RMS, max velocity:                  1.58e-18 m/year, 5.23e-18 m/year
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 
@@ -39,7 +39,7 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
    Postprocessing:
-     RMS, max velocity:                  1.86e-18 m/year, 6.44e-18 m/year
+     RMS, max velocity:                  1.86e-18 m/year, 7.24e-18 m/year
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 
@@ -52,7 +52,7 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
    Postprocessing:
-     RMS, max velocity:                  3.76e-18 m/year, 1.18e-17 m/year
+     RMS, max velocity:                  3.76e-18 m/year, 1.2e-17 m/year
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
 
 

@@ -41,7 +41,7 @@ Number of degrees of freedom: 3,909 (2,210+297+297+1,105)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                                 1.88e-11 m/s, 2.05e-11 m/s
+     RMS, max velocity:                                 1.88e-11 m/s, 2.49e-11 m/s
      Mass fluxes through boundary parts:                0.00054 kg/s, 0.00054 kg/s, 0 kg/s, -0.00108 kg/s
      Writing graphical output:                          output-gs_drucker_prager_extension_adiabatic/solution/solution-00000
      Writing particle output:                           output-gs_drucker_prager_extension_adiabatic/particles/particles-00000

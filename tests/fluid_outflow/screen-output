@@ -146,7 +146,7 @@ Number of degrees of freedom: 4,070 (882+421+882+121+441+441+441+441)
 
 
    Postprocessing:
-     RMS, max velocity:         0.102 m/year, 0.107 m/year
+     RMS, max velocity:         0.102 m/year, 0.108 m/year
      Compositions min/max/mass: 1.93e-05/0.009586/6.125e+04 // 0/0/0 // 0/0/0
 
 *** Timestep 4:  t=377.343 years, dt=94.3517 years
@@ -220,7 +220,7 @@ Number of degrees of freedom: 4,070 (882+421+882+121+441+441+441+441)
 
 
    Postprocessing:
-     RMS, max velocity:         0.102 m/year, 0.107 m/year
+     RMS, max velocity:         0.102 m/year, 0.108 m/year
      Compositions min/max/mass: 1.93e-05/0.009501/6.122e+04 // 0/0/0 // 0/0/0
 
 *** Timestep 6:  t=569.098 years, dt=96.1518 years
@@ -617,7 +617,7 @@ Number of degrees of freedom: 4,070 (882+421+882+121+441+441+441+441)
 
 
    Postprocessing:
-     RMS, max velocity:         0.0999 m/year, 0.103 m/year
+     RMS, max velocity:         0.0999 m/year, 0.104 m/year
      Compositions min/max/mass: 1.93e-05/0.01093/6.167e+04 // 0/0/0 // 0/0/0
 
 *** Timestep 17:  t=1607.49 years, dt=71.3164 years

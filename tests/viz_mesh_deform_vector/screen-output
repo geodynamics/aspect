@@ -36,7 +36,7 @@ Number of mesh deformation degrees of freedom: 1,466
      Rayleigh number:                               0
 
      Topography min/max:       0 m, 0 m
-     RMS, max velocity:        0.000714 m/year, 0.00231 m/year
+     RMS, max velocity:        0.000714 m/year, 0.00232 m/year
      Writing graphical output: output-viz_mesh_deform_vector/solution/solution-00000
 
 *** Timestep 1:  t=675303 years, dt=675303 years
@@ -56,7 +56,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max:       -1953 m, 950.1 m
-     RMS, max velocity:        0.00121 m/year, 0.00298 m/year
+     RMS, max velocity:        0.00121 m/year, 0.00299 m/year
      Writing graphical output: output-viz_mesh_deform_vector/solution/solution-00002
 
 *** Timestep 3:  t=2.514e+06 years, dt=548867 years
@@ -109,7 +109,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max:       -83.67 m, 212 m
-     RMS, max velocity:        0.000347 m/year, 0.001 m/year
+     RMS, max velocity:        0.000347 m/year, 0.00101 m/year
      Writing graphical output: output-viz_mesh_deform_vector/solution/solution-00007
 
 *** Timestep 8:  t=8.37191e+06 years, dt=1.58468e+06 years
@@ -129,7 +129,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max:       -83.53 m, 203.4 m
-     RMS, max velocity:        0.000322 m/year, 0.000863 m/year
+     RMS, max velocity:        0.000322 m/year, 0.000862 m/year
      Writing graphical output: output-viz_mesh_deform_vector/solution/solution-00009
 
 *** Timestep 10:  t=1.15953e+07 years, dt=1.83287e+06 years
@@ -139,7 +139,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max:       -185.6 m, 89.51 m
-     RMS, max velocity:        0.000359 m/year, 0.000975 m/year
+     RMS, max velocity:        0.000359 m/year, 0.000976 m/year
      Writing graphical output: output-viz_mesh_deform_vector/solution/solution-00010
 
 

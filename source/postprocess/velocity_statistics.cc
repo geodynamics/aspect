@@ -62,7 +62,7 @@ namespace aspect
                                                                                           velocity_values);
               for (unsigned int q = 0; q < n_q_points; ++q)
                 {
-                  local_velocity_square_integral += (velocity_values[q].norm() *
+                  local_velocity_square_integral += (velocity_values[q].norm_square() *
                                                      fe_values.JxW(q));
                   local_max_velocity = std::max (velocity_values[q].norm(),
                                                  local_max_velocity);

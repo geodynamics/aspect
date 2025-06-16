@@ -8,7 +8,7 @@ Number of degrees of freedom: 2,392 (1,458+205+729)
 
    Postprocessing:
      Writing graphical output: output-gravity_prem/solution/solution-00000
-     RMS, max velocity:        4.93e-15 m/s, 3.64e-14 m/s
+     RMS, max velocity:        4.93e-15 m/s, 5.92e-14 m/s
 
 Termination requested by criterion: end time
 

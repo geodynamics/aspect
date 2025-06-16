@@ -8,7 +8,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      RMS, max velocity:                  0.183 m/s, 0.25 m/s
-     Pressure min/avg/max:               -2 Pa, 1.466e-16 Pa, 2 Pa
+     Pressure min/avg/max:               -2 Pa, 6.817e-17 Pa, 2 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
 
 Termination requested by criterion: end time

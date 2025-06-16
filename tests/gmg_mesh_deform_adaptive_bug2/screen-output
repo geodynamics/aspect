@@ -16,7 +16,7 @@ Number of mesh deformation degrees of freedom: 738
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00000
-     RMS, max velocity:                                 0.00795 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00795 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.584e+12 kg
      Topography min/max:                                0 m, 0 m
 
@@ -40,7 +40,7 @@ Number of mesh deformation degrees of freedom: 654
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00001
-     RMS, max velocity:                                 0.00792 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00792 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.629e+12 kg
      Topography min/max:                                0 m, 432 m
 
@@ -63,7 +63,7 @@ Number of mesh deformation degrees of freedom: 678
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00002
-     RMS, max velocity:                                 0.00789 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00789 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.674e+12 kg
      Topography min/max:                                0 m, 861.1 m
 
@@ -86,7 +86,7 @@ Number of mesh deformation degrees of freedom: 648
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00003
-     RMS, max velocity:                                 0.00787 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00787 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.72e+12 kg
      Topography min/max:                                0 m, 1288 m
 
@@ -109,7 +109,7 @@ Number of mesh deformation degrees of freedom: 678
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00004
-     RMS, max velocity:                                 0.00784 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00784 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.766e+12 kg
      Topography min/max:                                0 m, 1713 m
 
@@ -132,7 +132,7 @@ Number of mesh deformation degrees of freedom: 648
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00005
-     RMS, max velocity:                                 0.00781 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00781 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.813e+12 kg
      Topography min/max:                                0 m, 2136 m
 
@@ -155,7 +155,7 @@ Number of mesh deformation degrees of freedom: 678
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00006
-     RMS, max velocity:                                 0.00779 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00779 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.86e+12 kg
      Topography min/max:                                0 m, 2556 m
 
@@ -178,7 +178,7 @@ Number of mesh deformation degrees of freedom: 654
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00007
-     RMS, max velocity:                                 0.00776 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00776 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.907e+12 kg
      Topography min/max:                                0 m, 2974 m
 
@@ -201,7 +201,7 @@ Number of mesh deformation degrees of freedom: 672
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00008
-     RMS, max velocity:                                 0.00774 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00774 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 3.955e+12 kg
      Topography min/max:                                0 m, 3389 m
 
@@ -224,7 +224,7 @@ Number of mesh deformation degrees of freedom: 660
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00009
-     RMS, max velocity:                                 0.00771 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00771 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.004e+12 kg
      Topography min/max:                                0 m, 3802 m
 
@@ -247,7 +247,7 @@ Number of mesh deformation degrees of freedom: 668
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00010
-     RMS, max velocity:                                 0.00769 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00769 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.052e+12 kg
      Topography min/max:                                0 m, 4216 m
 
@@ -270,7 +270,7 @@ Number of mesh deformation degrees of freedom: 660
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00011
-     RMS, max velocity:                                 0.00766 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00766 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.102e+12 kg
      Topography min/max:                                0 m, 4624 m
 
@@ -293,7 +293,7 @@ Number of mesh deformation degrees of freedom: 668
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00012
-     RMS, max velocity:                                 0.00764 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00764 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.151e+12 kg
      Topography min/max:                                0 m, 5032 m
 
@@ -316,7 +316,7 @@ Number of mesh deformation degrees of freedom: 660
 
    Postprocessing:
      Writing graphical output:                          output-gmg_mesh_deform_adaptive_bug2/solution/solution-00013
-     RMS, max velocity:                                 0.00765 m/year, 0.01 m/year
+     RMS, max velocity:                                 0.00765 m/year, 0.0125 m/year
      Average density / Average viscosity / Total mass:  2800 kg/m^3, 1e+22 Pa s, 4.151e+12 kg
      Topography min/max:                                0 m, 5032 m
 

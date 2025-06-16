@@ -10,7 +10,7 @@ Number of degrees of freedom: 143 (86+14+43)
    Solving Stokes system (AMG)... 25+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 0.0381 m/year, 0.0514 m/year
+     RMS, max velocity: 0.0381 m/year, 0.0515 m/year
 
 Termination requested by criterion: end time
 

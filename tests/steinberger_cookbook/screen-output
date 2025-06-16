@@ -10,7 +10,7 @@ Number of degrees of freedom: 13,637 (6,402+833+3,201+3,201)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_cookbook/solution/solution-00000
-     RMS, max velocity:                  0.00621 m/year, 0.0339 m/year
+     RMS, max velocity:                  0.00621 m/year, 0.034 m/year
      Temperature min/avg/max:            273 K, 2045 K, 3773 K
      Heat fluxes through boundary parts: -3.311e+05 W, 5.078e+05 W, 5.914e+04 W, -5.914e+04 W
 
@@ -22,7 +22,7 @@ Number of degrees of freedom: 13,637 (6,402+833+3,201+3,201)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_cookbook/solution/solution-00001
-     RMS, max velocity:                  0.00627 m/year, 0.0345 m/year
+     RMS, max velocity:                  0.00627 m/year, 0.0346 m/year
      Temperature min/avg/max:            273 K, 2044 K, 3773 K
      Heat fluxes through boundary parts: -3.652e+05 W, 5.879e+05 W, 3.315e+04 W, -3.315e+04 W
 

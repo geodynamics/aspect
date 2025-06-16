@@ -25,7 +25,7 @@ Number of degrees of freedom: 1,470 (336+48+168+306+306+306)
    Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.000204 m/s, 0.00052 m/s
+     RMS, max velocity:            0.000204 m/s, 0.000525 m/s
      Compositions min/max/mass:    0/1/0.1839 // 0/1/0.1837 // 0/0/0
      Number of advected particles: 100000
 
@@ -36,7 +36,7 @@ Number of degrees of freedom: 1,470 (336+48+168+306+306+306)
    Solving Stokes system (GMG)... 15+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.000299 m/s, 0.000776 m/s
+     RMS, max velocity:            0.000299 m/s, 0.000785 m/s
      Compositions min/max/mass:    -0.114/1.069/0.1808 // 0/1/0.1809 // -0.000424/0.0002772/7.163e-07
      Number of advected particles: 100000
 

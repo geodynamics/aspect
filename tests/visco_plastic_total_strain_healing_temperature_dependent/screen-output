@@ -17,7 +17,7 @@ Number of degrees of freedom: 520 (242+36+121+121)
      Compositions min/max/mass:                         0.2/0.2/2e+09
      Average density / Average viscosity / Total mass:  3302 kg/m^3, 5e+21 Pa s, 3.302e+13 kg
      Temperature min/avg/max:                           273 K, 273 K, 273 K
-     RMS, max velocity:                                 8.14e-14 m/year, 1.89e-13 m/year
+     RMS, max velocity:                                 8.14e-14 m/year, 2.29e-13 m/year
      Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00000
 
 
@@ -34,7 +34,7 @@ Number of degrees of freedom: 520 (242+36+121+121)
      Compositions min/max/mass:                         0.1622/0.1622/1.622e+09
      Average density / Average viscosity / Total mass:  3302 kg/m^3, 5.946e+21 Pa s, 3.302e+13 kg
      Temperature min/avg/max:                           273 K, 273 K, 273 K
-     RMS, max velocity:                                 2.96e-18 m/year, 1.02e-17 m/year
+     RMS, max velocity:                                 2.96e-18 m/year, 1.09e-17 m/year
      Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00001
 
 
@@ -51,7 +51,7 @@ Number of degrees of freedom: 520 (242+36+121+121)
      Compositions min/max/mass:                         0.1243/0.1243/1.243e+09
      Average density / Average viscosity / Total mass:  3302 kg/m^3, 6.891e+21 Pa s, 3.302e+13 kg
      Temperature min/avg/max:                           273 K, 273 K, 273 K
-     RMS, max velocity:                                 4.97e-18 m/year, 1.12e-17 m/year
+     RMS, max velocity:                                 4.97e-18 m/year, 1.28e-17 m/year
      Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00002
 
 
@@ -68,7 +68,7 @@ Number of degrees of freedom: 520 (242+36+121+121)
      Compositions min/max/mass:                         0.08652/0.08652/8.652e+08
      Average density / Average viscosity / Total mass:  3302 kg/m^3, 7.837e+21 Pa s, 3.302e+13 kg
      Temperature min/avg/max:                           273 K, 273 K, 273 K
-     RMS, max velocity:                                 3.56e-18 m/year, 8.75e-18 m/year
+     RMS, max velocity:                                 3.56e-18 m/year, 8.53e-18 m/year
      Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00003
 
 
@@ -85,7 +85,7 @@ Number of degrees of freedom: 520 (242+36+121+121)
      Compositions min/max/mass:                         0.0487/0.0487/4.87e+08
      Average density / Average viscosity / Total mass:  3302 kg/m^3, 8.783e+21 Pa s, 3.302e+13 kg
      Temperature min/avg/max:                           273 K, 273 K, 273 K
-     RMS, max velocity:                                 2.75e-18 m/year, 8.66e-18 m/year
+     RMS, max velocity:                                 2.75e-18 m/year, 9.89e-18 m/year
      Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00004
 
 
@@ -102,7 +102,7 @@ Number of degrees of freedom: 520 (242+36+121+121)
      Compositions min/max/mass:                         0.01087/0.01087/1.087e+08
      Average density / Average viscosity / Total mass:  3302 kg/m^3, 9.728e+21 Pa s, 3.302e+13 kg
      Temperature min/avg/max:                           273 K, 273 K, 273 K
-     RMS, max velocity:                                 4.2e-18 m/year, 1.04e-17 m/year
+     RMS, max velocity:                                 4.2e-18 m/year, 1.06e-17 m/year
      Writing graphical output:                          output-visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00005
 
 

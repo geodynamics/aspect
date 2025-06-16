@@ -46,7 +46,7 @@ Number of mesh deformation degrees of freedom: 1,466
      Rayleigh number:                               0
 
      Topography min/max: 0 m, 0 m
-     RMS, max velocity:  0.00071 m/year, 0.00228 m/year
+     RMS, max velocity:  0.00071 m/year, 0.00229 m/year
 
 *** Timestep 1:  t=136892 years, dt=136892 years
    Solving mesh displacement system... 5 iterations.
@@ -60,7 +60,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -79.72 m, 177.2 m
-     RMS, max velocity:  0.00055 m/year, 0.00133 m/year
+     RMS, max velocity:  0.00055 m/year, 0.00134 m/year
 
 *** Timestep 2:  t=377514 years, dt=240622 years
    Solving mesh displacement system... 5 iterations.
@@ -116,7 +116,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -14.2 m, 48.26 m
-     RMS, max velocity:  0.000441 m/year, 0.00166 m/year
+     RMS, max velocity:  0.000441 m/year, 0.00167 m/year
 
 
 
@@ -147,7 +147,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -15.54 m, 51.35 m
-     RMS, max velocity:  0.000433 m/year, 0.0016 m/year
+     RMS, max velocity:  0.000433 m/year, 0.00161 m/year
 
 *** Timestep 8:  t=1.48683e+06 years, dt=199168 years
    Solving mesh displacement system... 5 iterations.
@@ -186,7 +186,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -16.14 m, 52.75 m
-     RMS, max velocity:  0.000424 m/year, 0.00152 m/year
+     RMS, max velocity:  0.000424 m/year, 0.00153 m/year
 
 
 

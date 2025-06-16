@@ -50,7 +50,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0000
      Compositions min/max/mass:          -0.0001483/0.07254/8.922e+08 // 0/0/0
-     RMS, max velocity:                  9.87e-07 m/year, 5.64e-06 m/year
+     RMS, max velocity:                  9.87e-07 m/year, 5.63e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
      Mass fluxes through boundary parts: 0 kg/yr, -350.6 kg/yr, 353.8 kg/yr, 0 kg/yr
 
@@ -66,7 +66,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0001
      Compositions min/max/mass:          -0.0001414/0.07254/8.923e+08 // 0/0/0
-     RMS, max velocity:                  9.85e-07 m/year, 5.63e-06 m/year
+     RMS, max velocity:                  9.85e-07 m/year, 5.62e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
      Mass fluxes through boundary parts: 0 kg/yr, -347.8 kg/yr, 350.7 kg/yr, 0 kg/yr
 
@@ -82,7 +82,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0002
      Compositions min/max/mass:          -0.0001414/0.07254/8.923e+08 // 0/0/0
-     RMS, max velocity:                  9.85e-07 m/year, 5.63e-06 m/year
+     RMS, max velocity:                  9.85e-07 m/year, 5.62e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
      Mass fluxes through boundary parts: 0 kg/yr, -347.8 kg/yr, 350.7 kg/yr, 0 kg/yr
 
@@ -98,7 +98,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Postprocessing:
      Writing graphical output:           output-average_density_boundary_fluid_pressure/solution/solution-00001.0003
      Compositions min/max/mass:          -0.0001414/0.07254/8.923e+08 // 0/0/0
-     RMS, max velocity:                  9.85e-07 m/year, 5.63e-06 m/year
+     RMS, max velocity:                  9.85e-07 m/year, 5.62e-06 m/year
      Temperature min/avg/max:            293 K, 1210 K, 1624 K
      Mass fluxes through boundary parts: 0 kg/yr, -347.8 kg/yr, 350.7 kg/yr, 0 kg/yr
 

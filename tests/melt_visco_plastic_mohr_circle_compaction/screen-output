@@ -12,7 +12,7 @@ Number of degrees of freedom: 16,698 (4,290+1,122+4,290+561+2,145+2,145+2,145)
    Postprocessing:
      Writing graphical output:  output-melt_visco_plastic_mohr_circle_compaction/solution/solution-00000
      Compositions min/max/mass: 0.01/0.01/400 // 0.01/0.01/400
-     RMS, max velocity:         5.32e-13 m/s, 1.3e-12 m/s
+     RMS, max velocity:         5.32e-13 m/s, 1.32e-12 m/s
 
 Termination requested by criterion: end time
 
