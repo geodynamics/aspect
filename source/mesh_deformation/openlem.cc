@@ -36,7 +36,7 @@ namespace aspect
     void
     OpenLEM<dim>::initialize ()
     {
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+      //if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           CitationInfo::add("openlem");
 
@@ -279,7 +279,7 @@ namespace aspect
                     openlem::Node *node_old = grid_old.getNode(ix,iy);
                     openlem::Node *node_new = grid_new.getNode(ix,iy);
                     const double elevation_noise = random_distribution(random_number_generator);
-                    node_new->h = node_new->h + elevation_noise;
+		    //node_new->h = node_new->h + elevation_noise;
                     //std::cout << ix << ":" << iy << " = " << mesh_velocity_z[ix][iy] << ", node_old->h = " << node_old->h << ", node_new->h = " << node_new->h << std::endl;
                   }
 
@@ -723,12 +723,12 @@ namespace aspect
 
           for (unsigned int openlem_iteration = 0; openlem_iteration < openlem_iterations; ++openlem_iteration)
             {
-              std::cout << "before = " << (grid.getNode(5,7))->h << std::endl;
+              //std::cout << "before = " << (grid.getNode(5,7))->h << std::endl;
               int nc = grid.computeFlowDirection();
               printf("Changes in flow direction: %i\n",nc);
               double ch = grid.erode(openlem_timestep_in_years);
               printf("Maximum elevation change: %e\n",ch);
-              std::cout << "after = " << (grid.getNode(5,7))->h << std::endl;
+              //std::cout << "after = " << (grid.getNode(5,7))->h << std::endl;
               //openlem_execute_step_();
 
               //// If we are using the ghost nodes we want to reset them every openlem timestep.
@@ -812,7 +812,7 @@ namespace aspect
             openlem::Node *node = grid.getNode(index_x,index_y);
             node->h = local_aspect_values[0][i];
             node->l = 0;
-            node->u = 0;//1;//local_aspect_values[dim+2][i];
+            node->u = 20000;//1;//local_aspect_values[dim+2][i];
             if (index_x == 5 && index_y == 7)
               std::cout << "Flag fill 1 before = " << node->h << ", " << local_aspect_values[0][i] << ", node_u = " << node->u << std::endl;
             //elevation[index] = local_aspect_values[0][i];
@@ -850,7 +850,7 @@ namespace aspect
                 openlem::Node *node = grid.getNode(index_x,index_y);
                 node->h = local_aspect_values[0][i];
                 node->l = 0;
-                node->u = 0;//local_aspect_values[dim+2][i];
+                node->u = 100;//local_aspect_values[dim+2][i];
                 if (index_x == 5 && index_y == 7)
                   std::cout << "Flag fill 2 before = " << node->h << ", " << local_aspect_values[0][i] << ", node_u = " << node->u << std::endl;
                 //const unsigned int index = local_aspect_values[1][i];

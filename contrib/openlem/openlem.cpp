@@ -1521,8 +1521,8 @@ class Grid
 #ifdef TRANSPORT
     if ( !pn->b )
     {
-      if ( fabs((qssum-pn->qs)/qssum) > qdev )  qdev = fabs((qssum-pn->qs)/qssum);
-      if ( fabs((qpsum-pn->qp)/qpsum) > qdev )  qdev = fabs((qpsum-pn->qp)/qpsum);
+      //if ( fabs((qssum-pn->qs)/qssum) > qdev )  qdev = fabs((qssum-pn->qs)/qssum);
+      //if ( fabs((qpsum-pn->qp)/qpsum) > qdev )  qdev = fabs((qpsum-pn->qp)/qpsum);
     }
     qssum = pn->qs;
     qpsum = pn->qp;
@@ -1898,10 +1898,11 @@ class Grid
       for ( int j = 0; j < n; ++j )
       {
         int  tmp = computeFluxes ( i, j, dt );
-	printf("i:j = %i:%i, q = %i, tmp = %i, b=%i; ",i,j,q, tmp,getNode(i,j)->b);
+	   //printf("i:j = %i:%i, q = %i, tmp = %i, b=%i; ",i,j,q, tmp,getNode(i,j)->b);
 	if ( getNode(i,j)->b )  q += tmp;
       }	
 #ifndef PRECIP
+      //printf ( "Info: Total discharge is %i, should be %i\n", q, m*n );
     if ( q != m*n )
     {
       printf ( "Error: Total discharge is %i, should be %i\n", q, m*n );
