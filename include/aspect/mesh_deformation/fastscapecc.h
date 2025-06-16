@@ -104,6 +104,8 @@ namespace aspect
                                                  const std::set<types::boundary_id> &boundary_id) const override;
 
 
+        double interpolate_surface_velocity(const Point<dim> &p,
+                                            const std::vector<double> &V) const;
         /**
          * Returns whether or not the plugin requires surface stabilization.
          */

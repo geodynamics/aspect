@@ -38,6 +38,8 @@
 #include <deal.II/lac/vector.h>
 #include <deal.II/numerics/fe_field_function.h>
 #include <typeinfo>
+#include <deal.II/grid/grid_tools_cache.h>
+#include <deal.II/grid/grid_tools.h>
 
 
 namespace aspect
@@ -149,6 +151,8 @@ namespace aspect
       else
         AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
 
+      // For the interpolation
+      // surface_cache = std::make_shared<dealii::GridTools::Cache<dim-1, dim-1>>(surface_mesh);
 
       // Having create the mesh, now set up the DoFHandlers and constraints objects
       surface_mesh_dof_handler.reinit(surface_mesh);
@@ -502,32 +506,8 @@ namespace aspect
           MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
 
-      // Step 1: Interpolation function from position to velocity
-      // auto erosion_function = [&](const Point<dim> &p) -> double
-      // {
-      // // Closest-point search (replace with a spatial tree for performance)
-      // double min_dist = std::numeric_limits<double>::max();
-      // unsigned int best_index = 0;
-
-      // unsigned int i = 0;
-      // for (const auto &cell : surface_mesh.active_cell_iterators())
-      //   for (unsigned int v = 0; v < GeometryInfo<dim-1>::vertices_per_cell; ++v, ++i)
-      //     {
-      //       const Point<dim> &node = cell->vertex(v);
-      //       double dist = node.distance(p);
-      //       if (dist < min_dist)
-      //         {
-      //           min_dist = dist;
-      //           best_index = i;
-      //         }
-      //     }
-      // return V[best_index];
-      // std::cout<<"here it works 14"<<std::endl;
-      // const unsigned int index = this->vertex_index(p);
-      // return V[index];
-      // };
-
-      // Step 1: Interpolation function from position to velocity
+      // Maybe this is enough
+      // Step 1: Get V ordered
       auto erosion_function = [&](const Point<dim> &p) -> double
       {
         std::cout << "here it works 14" << std::endl;
@@ -535,13 +515,50 @@ namespace aspect
         return V[index];
       };
 
+      //Eventually we could interpolate for better accuracy
+      // auto erosion_function = [&](const Point<dim> &p) -> double
+      // {
+      //   try
+      //   {
+      //     const auto cell_and_point = dealii::GridTools::find_active_cell_around_point<dim - 1>(*surface_cache, p);
+
+      //     const auto &cell = cell_and_point.first;
+
+      //     if (cell->is_valid())
+      //     {
+      //       // Interpolate using FEValues
+      //       const MappingQ1<dim - 1> mapping;
+      //       FEValues<dim - 1> fe_values(mapping,
+      //                                   surface_fe,
+      //                                   Quadrature<dim - 1>(cell_and_point.second),
+      //                                   update_values);
+
+      //       fe_values.reinit(cell);
+
+      //       std::vector<double> values(fe_values.dofs_per_cell);
+      //       cell->get_dof_values(V, values); 
+
+      //       return values[0];
+      //     }
+      //     else
+      //     {
+      //       return 0.0;
+      //     }
+      //   }
+      //   catch (...)
+      //   {
+      //     // Fallback for out-of-bound or failure
+      //     return 0.0;
+      //   }
+      // };
+
+
       VectorFunctionFromScalarFunctionObject<dim> radial_velocity_field(
         erosion_function,
         dim - 1, // project onto radial component
         dim      // full space dimension
       );
-      std::cout << "Rank " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator())
-                << ": here it works 15" << std::endl;
+      std::cout << "Rank " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator())<< ": here it works 15" << std::endl;
 
 
 
