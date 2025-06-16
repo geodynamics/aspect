@@ -1,0 +1,4 @@
+Fixed: The Crystal Preferred Orientation plugin was not serializing
+the internal state
+<br>
+(Menno Fraters, Yijun Wang, Agi Kiraly, 2025/06/16)
