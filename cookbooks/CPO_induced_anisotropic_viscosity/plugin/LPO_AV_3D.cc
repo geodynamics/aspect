@@ -811,8 +811,13 @@ namespace aspect
                   double residual = scalar_viscosity;
                   double threshold = 0.0001*scalar_viscosity;
                   SymmetricTensor<2,dim> stress;
+<<<<<<< HEAD
                   stress = 2*scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6; // Use stress in MPa //Added *2 2025.06.18.
                   //std::cout << "Initial stress: " << stress << std::endl;
+=======
+                  stress = scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6; // Use stress in MPa
+                  // std::cout << "Initial stress: " << stress << std::endl;
+>>>>>>> 32de52fb3 (Created initial version of a cookbook for CPO induced anisotropic viscosity.)
                   while (std::abs(residual) > threshold && n_iterations < max_iteration)
                     // while (n_iterations < max_iteration)
                     {
