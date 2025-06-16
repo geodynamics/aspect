@@ -65,7 +65,9 @@ namespace aspect
 
       //Fastscapelib operates on grid nodes, each of which conceptually represents a cell center
       //and has associated area and neighbor connections.
-      n_grid_nodes = surface_mesh.n_active_cells();
+      // n_grid_no3des = surface_mesh.n_active_cells();
+      // n_grid_nodes = surface_mesh.n_active_cells();
+      n_grid_nodes = surface_mesh.n_used_vertices();
     }
 
     template <int dim>
@@ -401,9 +403,6 @@ namespace aspect
               h_old[i] = h[i];
             }
 
-          auto elevation = xt::adapt(h);
-          auto elevation_old = xt::adapt(h_old);
-
           std::cout<<"here it works 11"<<std::endl;
 
           const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
@@ -420,9 +419,13 @@ namespace aspect
 
           // 1. Create the FastScape grid adapter
           auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
+          auto shape = grid.shape();
 
           // 2. Define the node status array BEFORE creating the flow graph
-          auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
+          // auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
+          // grid.set_nodes_status(node_status_array);
+
+          xt::xarray<fastscapelib::node_status> node_status_array = xt::zeros<fastscapelib::node_status>(grid.shape());
           grid.set_nodes_status(node_status_array);
 
           // 3. Create the flow graph
@@ -442,11 +445,12 @@ namespace aspect
           std::cout<<"here it works 12"<<std::endl;
 
 
-
           // Create data arrays using grid->shape()
-          auto uplift_rate = xt::adapt(vz);
-          xt::xarray<double> drainage_area = xt::zeros<double>(grid.shape());
-          xt::xarray<double> sediment_flux = xt::zeros<double>(grid.shape());
+          auto elevation      = xt::adapt(h, shape);
+          auto elevation_old  = xt::adapt(h_old, shape);
+          auto uplift_rate    = xt::adapt(vz, shape);
+          xt::xarray<double> drainage_area  = xt::zeros<double>(shape);
+          xt::xarray<double> sediment_flux  = xt::zeros<double>(shape);
 
           std::cout << "\n[DEBUG INIT] Max elevation = " << xt::amax(elevation)()
                     << ", Min = " << xt::amin(elevation)() << std::endl;
