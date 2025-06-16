@@ -100,7 +100,7 @@ namespace aspect
               // Only compute residual for doubles. This condition checks for nan values
               if (data_surface_strain_rate < 1e300 || !std::isnan(data_surface_strain_rate))
                 computed_quantities[q](0) = data_surface_strain_rate -
-                                            std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))) * unit_scaling_factor;
+                                            std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(strain_rate)))) * unit_scaling_factor;
               else
                 continue;
 
