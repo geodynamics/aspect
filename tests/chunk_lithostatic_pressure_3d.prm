@@ -6,7 +6,7 @@
 # velocity should go to zero.
 
 
-set Dimension = 3
+set Dimension                              = 3
 set CFL number                             = 1.0
 set End time                               = 0
 set Start time                             = 0
