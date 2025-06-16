@@ -606,6 +606,54 @@ namespace aspect
 
 
     template <int dim>
+    template <class Archive>
+    void CrystalPreferredOrientation<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &last_output_time
+      & output_file_number
+      & times_and_pvtu_file_names
+      & output_file_names_by_timestep
+      & xdmf_entries
+      ;
+    }
+
+
+
+    template <int dim>
+    void
+    CrystalPreferredOrientation<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+
+        oa << (*this);
+      }
+
+      status_strings["Crystal Preferred Orientation"] = os.str();
+    }
+
+
+    template <int dim>
+    void
+    CrystalPreferredOrientation<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // see if something was saved
+      if (status_strings.find("Crystal Preferred Orientation") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("Crystal Preferred Orientation")->second);
+          aspect::iarchive ia (is);
+
+          ia >> (*this);
+        }
+    }
+
+
+    template <int dim>
     void
     CrystalPreferredOrientation<dim>::declare_parameters (ParameterHandler &prm)
     {
