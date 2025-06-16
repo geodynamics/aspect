@@ -1858,7 +1858,7 @@ namespace aspect
     if (output.template has_additional_output_object<MaterialModel::MeltOutputs<dim>>())
       return;
 
-    const unsigned int n_comp = (output.reaction_terms.size() > 0) ? output.reaction_terms[0].size() : 0;
+    const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
       std::make_unique<MaterialModel::MeltOutputs<dim>> (output.n_evaluation_points(), n_comp));
   }

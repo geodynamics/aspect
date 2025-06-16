@@ -51,6 +51,7 @@ namespace aspect
 
       MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      MeltHandler<dim>::create_material_model_outputs(out);
 
       std::ostringstream output;
       output.precision(4);

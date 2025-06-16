@@ -14,7 +14,7 @@
 # mass_fraction_free_water = initial_porosity * water_density / bulk_density
 # total_water = wt_percent_water * mass_fraction_bound_water + mass_fraction_free_water # This needs to be conserved
 
-# final_wt_percent_water = 0.1 # (1%)
+# final_wt_percent_water = 0.1 # (10% wt percent of bound water in the solid, 1 wt percent of water released)
 ## If the mass of water is conserved, then we can use the expression for the total_water to determine what the final
 ## porosity should be.
 ## 

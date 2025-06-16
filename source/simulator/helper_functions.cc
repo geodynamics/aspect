@@ -1659,7 +1659,7 @@ namespace aspect
     MaterialModel::MaterialModelInputs<dim> in(n_q_points, introspection.n_compositional_fields);
     MaterialModel::MaterialModelOutputs<dim> out(n_q_points, introspection.n_compositional_fields);
     HeatingModel::HeatingModelOutputs heating_model_outputs(n_q_points, introspection.n_compositional_fields);
-
+    MeltHandler<dim>::create_material_model_outputs(out);
     // add reaction rate outputs
     material_model->create_additional_named_outputs(out);
 

@@ -61,7 +61,7 @@ namespace aspect
            * @p in and @p melt_fraction need to have the same size.
            *
            * @param in Object that contains the current conditions.
-           * @param porosity_idx the index of the "porosity" composition
+           * @param mass_frac_porosity the mass fraction of the "porosity" composition
            * @param q the quadrature point index
            */
           double
