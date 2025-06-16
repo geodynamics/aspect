@@ -401,7 +401,7 @@ namespace aspect
 
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
-                const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+                const SymmetricTensor<2, dim> deviatoric_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
 
                 // Get stress from timestep $t$ rotated and advected into the current
                 // timestep $t+\Delta t_c$ from the compositional fields.
@@ -496,7 +496,7 @@ namespace aspect
         for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
             const double eta = out.viscosities[i];
-            const SymmetricTensor<2, dim> deviatoric_strain_rate = deviator(in.strain_rate[i]);
+            const SymmetricTensor<2, dim> deviatoric_strain_rate = Utilities::Tensors::consistent_deviator(in.strain_rate[i]);
             const SymmetricTensor<2,dim> stress_0_advected (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index],
                                                             &in.composition[i][stress_start_index]+n_independent_components));
             const SymmetricTensor<2,dim> stress_old (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_start_index+n_independent_components],
@@ -700,7 +700,7 @@ namespace aspect
 
                 // Compute the total stress at time t.
                 const SymmetricTensor<2, dim>
-                stress_t = 2. * effective_creep_viscosity * deviator(in.strain_rate[i])
+                stress_t = 2. * effective_creep_viscosity * Utilities::Tensors::consistent_deviator(in.strain_rate[i])
                            + effective_creep_viscosity / elastic_viscosity * stress_0_t
                            + (1. - timestep_ratio) * (1. - effective_creep_viscosity / elastic_viscosity) * stress_old;
 
@@ -858,7 +858,7 @@ namespace aspect
         const double timestep_ratio = calculate_timestep_ratio();
 
         const SymmetricTensor<2, dim>
-        edot_deviator = deviator(strain_rate) + 0.5 * stress_0_advected / elastic_viscosity
+        edot_deviator = strain_rate + 0.5 * stress_0_advected / elastic_viscosity
                         + 0.5 * (1. - timestep_ratio) * (1.  - creep_viscosity/elastic_viscosity) * stress_old / creep_viscosity;
 
         return edot_deviator;

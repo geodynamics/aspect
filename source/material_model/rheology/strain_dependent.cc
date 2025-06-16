@@ -457,7 +457,7 @@ namespace aspect
                                                          &composition[0] + Tensor<2,dim>::n_independent_components));
               const SymmetricTensor<2,dim> L = symmetrize( strain * transpose(strain) );
 
-              const double strain_ii = std::fabs(second_invariant(L));
+              const double strain_ii = std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(L));
               brittle_weakening = calculate_plastic_weakening(strain_ii, j);
               viscous_weakening = calculate_viscous_weakening(strain_ii, j);
               break;
@@ -633,7 +633,7 @@ namespace aspect
                    ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                               "not filled by the caller."));
 
-            const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
+            const double edot_ii = std::max(std::sqrt(std::max(-Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(in.strain_rate[i])), 0.)),
                                             min_strain_rate);
             double delta_e_ii = edot_ii*this->get_timestep();
 

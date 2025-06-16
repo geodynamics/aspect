@@ -3268,6 +3268,7 @@ namespace aspect
       }
 
 
+
       template <>
       const Tensor<3,3> &levi_civita<3>()
       {
@@ -3286,6 +3287,35 @@ namespace aspect
         }();
 
         return t;
+      }
+
+
+
+      template <int dim>
+      SymmetricTensor<2,dim> consistent_deviator(const SymmetricTensor<2,dim> &input)
+      {
+        SymmetricTensor<2,dim> output = input;
+
+        const double volumetric_value = trace(input) / 3.;
+        for (unsigned int d = 0; d < dim; ++d)
+          output[d][d] -= volumetric_value;
+
+        return output;
+      }
+
+
+
+      template <int dim>
+      double consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &t)
+      {
+        if (dim == 2)
+          return -( Utilities::fixed_power<2,double>(t[0][0])             // t11^2
+                    + Utilities::fixed_power<2,double>(t[1][1])           // t22^2
+                    + Utilities::fixed_power<2,double>(t[0][0] + t[1][1]) // t33^2
+                    + Utilities::fixed_power<2,double>(t[0][1]) * 2.0     // 2*t12^2
+                  ) * 0.5;
+        else
+          return second_invariant(t);
       }
     }
 
@@ -3383,7 +3413,17 @@ namespace aspect
                                              const DoFHandler<dim>::active_cell_iterator &, \
                                              const std::vector<Point<dim>> &, \
                                              std::vector<double> &)> &function, \
-                   LinearAlgebra::BlockVector &vec_result);
+                   LinearAlgebra::BlockVector &vec_result); \
+  \
+  namespace Tensors \
+  { \
+    template \
+    SymmetricTensor<2,dim> consistent_deviator(const SymmetricTensor<2,dim> &); \
+    \
+    template \
+    double consistent_second_invariant_of_deviatoric_tensor(const SymmetricTensor<2,dim> &); \
+  }
+
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 

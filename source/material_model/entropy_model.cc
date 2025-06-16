@@ -416,7 +416,7 @@ namespace aspect
                                                                                                       drucker_prager_parameters);
                     }
 
-                  const double strain_rate_effective = std::fabs(second_invariant(deviator(in.strain_rate[i])));
+                  const double strain_rate_effective = std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(in.strain_rate[i])));
 
                   if (std::sqrt(strain_rate_effective) >= std::numeric_limits<double>::min())
                     {

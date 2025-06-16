@@ -126,7 +126,7 @@ namespace aspect
                       const Point<dim> point_at_surface = fe_face_values.quadrature_point(q);
 
                       // Extract the strain rate invariant output here.
-                      const double e_ii = std::sqrt(std::fabs(second_invariant(deviator(strain_rate[q]))));
+                      const double e_ii = std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(strain_rate[q]))));
 
                       // Extract data strain rate invartiant.
                       double e_ii_data = get_data_surface_strain_rate(point_at_surface);

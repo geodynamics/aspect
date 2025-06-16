@@ -76,7 +76,7 @@ namespace aspect
                                                                                          drucker_prager_parameters);
 
               // Scale the stress accordingly.
-              const double deviatoric_stress = 2 * material_model_outputs.viscosities[q] * std::sqrt(std::fabs(second_invariant(deviatoric_strain_rate)));
+              const double deviatoric_stress = 2 * material_model_outputs.viscosities[q] * std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(deviatoric_strain_rate)));
               double scaling_factor = 1.0;
               if (deviatoric_stress > 0.0)
                 scaling_factor = std::min(yield_stress / deviatoric_stress, 1.0);

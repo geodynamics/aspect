@@ -1,0 +1,5 @@
+Changed: The deviator and second invariant of symmetric tensors are modified to
+be consistent with the plane strain assumption in 2D. It changes the outputs of
+compressible material models that are dependent on the deviatoric strain rate.
+<br>
+(Yimin Jin, 2025/06/17)

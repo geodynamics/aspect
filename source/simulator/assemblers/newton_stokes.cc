@@ -195,7 +195,7 @@ namespace aspect
               if (elastic_out != nullptr)
                 effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
               else if ((preconditioner_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
-                effective_strain_rate = deviator(effective_strain_rate);
+                effective_strain_rate = Utilities::Tensors::consistent_deviator(effective_strain_rate);
 
               // use the spd factor when the stabilization is PD or SPD
               const double alpha = (preconditioner_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
@@ -448,7 +448,7 @@ namespace aspect
                                    * JxW;
 
               if (enable_elasticity)
-                data.local_rhs(i) += ( deviator(elastic_out->elastic_force[q])
+                data.local_rhs(i) += ( elastic_out->elastic_force[q]
                                        * scratch.grads_phi_u[i]
                                      ) * JxW;
 
@@ -515,7 +515,7 @@ namespace aspect
                   if (elastic_out != nullptr)
                     effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
                   else if ((velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
-                    effective_strain_rate = deviator(effective_strain_rate);
+                    effective_strain_rate = Utilities::Tensors::consistent_deviator(effective_strain_rate);
 
                   // use the spd factor when the stabilization is PD or SPD
                   const double alpha =  (velocity_block_stabilization & Newton::Parameters::Stabilization::PD)

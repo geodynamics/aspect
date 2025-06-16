@@ -564,7 +564,7 @@ namespace aspect
                           if (elastic_out != nullptr)
                             effective_strain_rate = elastic_out->viscoelastic_strain_rate[q];
                           else if ((this->get_newton_handler().parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none)
-                            effective_strain_rate = deviator(effective_strain_rate);
+                            effective_strain_rate = Utilities::Tensors::consistent_deviator(effective_strain_rate);
 
                           // use the spd factor when the stabilization is PD or SPD.
                           const double alpha =  (this->get_newton_handler().parameters.velocity_block_stabilization
