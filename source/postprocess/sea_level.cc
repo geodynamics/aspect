@@ -366,9 +366,6 @@ namespace aspect
                              && (this->get_timestep_number() != 0)))
         return {"Non-uniform sea level change min/max:", output_stats.str()};
 
-      const unsigned int max_data_length = Utilities::MPI::max (output_file.str().size()+1,
-                                                                this->get_mpi_communicator());
-
       const unsigned int mpi_tag = 777;
 
       // On processor 0, collect all of the data the individual processors sent
@@ -395,38 +392,25 @@ namespace aspect
           // First write out the data we have created locally.
           file << output_file.str();
 
-          std::string tmp;
-          tmp.resize (max_data_length, '\0');
-
           // Then loop through all of the other processors and collect
           // data, then write it to the file.
           for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
             {
-              MPI_Status status;
-              // Get the data. Note that MPI says that an MPI_Recv may receive
-              // less data than the length specified here. Since we have already
-              // determined the maximal message length, we use this feature here
-              // rather than trying to find out the exact message length with
-              // a call to MPI_Probe.
-              const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                         this->get_mpi_communicator(), &status);
-              AssertThrowMPI(ierr);
-
-              // Output the string. Note that 'tmp' has length max_data_length,
-              // but we only wrote a certain piece of it in the MPI_Recv, ended
-              // by a \0 character. Write only this part by outputting it as a
-              // C string object, rather than as a std::string.
-              file << tmp.c_str();
+              Utilities::MPI::Future<std::string> data
+                = Utilities::MPI::irecv<std::string> (this->get_mpi_communicator(), p, mpi_tag);
+              file << data.get();
             }
         }
       else
-        // On other processors, send the data to processor zero. include the \0
-        // character at the end of the string.
+        // On other processors, send the data to processor zero. By not capturing
+        // the return value, we are implementing a "waiting send" that only returns
+        // once the data has been sent completely. This may be inefficient but
+        // harmless in the current context. (It's also unavoidable: We need to
+        // wait for the operation at some point, and the end of the current
+        // function is near from here, with not many operations in between that
+        // could be executed while waiting.)
         {
-          output_file << "\0";
-          const int ierr = MPI_Send (&output_file.str()[0], output_file.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                     this->get_mpi_communicator());
-          AssertThrowMPI(ierr);
+          Utilities::MPI::isend (output_file.str(), this->get_mpi_communicator(), /* receiver = */ 0, mpi_tag);
         }
 
       // if output_interval is positive, then update the last supposed output time
