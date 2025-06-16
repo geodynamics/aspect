@@ -1,0 +1,53 @@
+# we prescribe the simple shear strain rate by setting solver scheme
+# as "single Advection, no Stokes"
+# see below "subsection Prescribed Stokes solution "
+set Nonlinear solver scheme  = single Advection, no Stokes
+# The model run to 3e5 seconds, at which the total strain will
+# be 1.5 with strain rate of 5e-6 1/s.
+set End time                 = 3e5
+set Use years in output instead of seconds = false
+
+# Set zero gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+# 1m by 1m by 1m cube
+# center is at (0,0,0)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+    set Box origin X coordinate = -0.5
+    set Box origin Y coordinate = -0.5
+    set Box origin Z coordinate = -0.5
+  end
+end
+
+# Here prescribing velocity field so that it results in
+# simple shear strain rate epsilon_xz = -5e6 1/s
+# as z ranges from -0.5 to 0.5 meter.
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,z,t
+    set Function expression = z/1e5;0;0 ## Annotation set velocity condition
+  end
+end
+
+# The default X,Y,Z repetitions is 1, so will be 2 by 2 by 2 grids without refinement
+# Here with setting "Initial global refinement" to be 1, it becomes
+# 4 by 4 by 4 grids.
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 10000
+end

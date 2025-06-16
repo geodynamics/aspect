@@ -1,0 +1,1629 @@
+
+Number of active cells: 8 (on 2 levels)
+Number of degrees of freedom: 652 (375+27+125+125)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:           2.89e-06 m/s, 5e-06 m/s
+     Writing graphical output:    output-cookbook_cpo_olivine/solution/solution-00000
+     Writing particle output:     output-cookbook_cpo_olivine/particles/particles-00000
+     Writing particle cpo output: output-cookbook_cpo_olivine/particles_cpo/CPO-00000
+
+*** Timestep 1:  t=500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 2:  t=1000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 3:  t=1500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 4:  t=2000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 5:  t=2500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 6:  t=3000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 7:  t=3500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 8:  t=4000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 9:  t=4500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 10:  t=5000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 11:  t=5500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 12:  t=6000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 13:  t=6500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 14:  t=7000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 15:  t=7500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 16:  t=8000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 17:  t=8500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 18:  t=9000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 19:  t=9500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 20:  t=10000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00001
+
+*** Timestep 21:  t=10500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 22:  t=11000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 23:  t=11500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 24:  t=12000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 25:  t=12500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 26:  t=13000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 27:  t=13500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 28:  t=14000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 29:  t=14500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 30:  t=15000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 31:  t=15500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 32:  t=16000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 33:  t=16500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 34:  t=17000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 35:  t=17500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 36:  t=18000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 37:  t=18500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 38:  t=19000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 39:  t=19500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 40:  t=20000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00002
+
+*** Timestep 41:  t=20500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 42:  t=21000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 43:  t=21500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 44:  t=22000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 45:  t=22500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 46:  t=23000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 47:  t=23500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 48:  t=24000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 49:  t=24500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 50:  t=25000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 51:  t=25500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 52:  t=26000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 53:  t=26500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 54:  t=27000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 55:  t=27500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 56:  t=28000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 57:  t=28500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 58:  t=29000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 59:  t=29500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 60:  t=30000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00003
+
+*** Timestep 61:  t=30500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 62:  t=31000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 63:  t=31500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 64:  t=32000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 65:  t=32500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 66:  t=33000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 67:  t=33500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 68:  t=34000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 69:  t=34500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 70:  t=35000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 71:  t=35500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 72:  t=36000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 73:  t=36500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 74:  t=37000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 75:  t=37500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 76:  t=38000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 77:  t=38500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 78:  t=39000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 79:  t=39500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 80:  t=40000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00004
+
+*** Timestep 81:  t=40500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 82:  t=41000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 83:  t=41500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 84:  t=42000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 85:  t=42500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 86:  t=43000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 87:  t=43500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 88:  t=44000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 89:  t=44500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 90:  t=45000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 91:  t=45500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 92:  t=46000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 93:  t=46500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 94:  t=47000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 95:  t=47500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 96:  t=48000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 97:  t=48500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 98:  t=49000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 99:  t=49500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 100:  t=50000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00005
+
+*** Timestep 101:  t=50500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 102:  t=51000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 103:  t=51500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 104:  t=52000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 105:  t=52500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 106:  t=53000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 107:  t=53500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 108:  t=54000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 109:  t=54500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 110:  t=55000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 111:  t=55500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 112:  t=56000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 113:  t=56500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 114:  t=57000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 115:  t=57500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 116:  t=58000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 117:  t=58500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 118:  t=59000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 119:  t=59500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 120:  t=60000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00006
+
+*** Timestep 121:  t=60500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 122:  t=61000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 123:  t=61500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 124:  t=62000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 125:  t=62500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 126:  t=63000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 127:  t=63500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 128:  t=64000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 129:  t=64500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 130:  t=65000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 131:  t=65500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 132:  t=66000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 133:  t=66500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 134:  t=67000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 135:  t=67500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 136:  t=68000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 137:  t=68500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 138:  t=69000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 139:  t=69500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 140:  t=70000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00007
+
+*** Timestep 141:  t=70500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 142:  t=71000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 143:  t=71500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 144:  t=72000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 145:  t=72500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 146:  t=73000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 147:  t=73500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 148:  t=74000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 149:  t=74500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 150:  t=75000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 151:  t=75500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 152:  t=76000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 153:  t=76500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 154:  t=77000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 155:  t=77500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 156:  t=78000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 157:  t=78500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 158:  t=79000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 159:  t=79500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 160:  t=80000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00008
+
+*** Timestep 161:  t=80500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 162:  t=81000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 163:  t=81500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 164:  t=82000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 165:  t=82500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 166:  t=83000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 167:  t=83500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 168:  t=84000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 169:  t=84500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 170:  t=85000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 171:  t=85500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 172:  t=86000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 173:  t=86500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 174:  t=87000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 175:  t=87500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 176:  t=88000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 177:  t=88500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 178:  t=89000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 179:  t=89500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 180:  t=90000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:       2.89e-06 m/s, 5e-06 m/s
+     Writing particle output: output-cookbook_cpo_olivine/particles/particles-00009
+
+*** Timestep 181:  t=90500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 182:  t=91000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 183:  t=91500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 184:  t=92000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 185:  t=92500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 186:  t=93000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 187:  t=93500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 188:  t=94000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 189:  t=94500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 190:  t=95000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 191:  t=95500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 192:  t=96000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 193:  t=96500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 194:  t=97000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 195:  t=97500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 196:  t=98000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 197:  t=98500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 198:  t=99000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 199:  t=99500 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+
+*** Timestep 200:  t=100000 seconds, dt=500 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:           2.89e-06 m/s, 5e-06 m/s
+     Writing graphical output:    output-cookbook_cpo_olivine/solution/solution-00001
+     Writing particle output:     output-cookbook_cpo_olivine/particles/particles-00010
+     Writing particle cpo output: output-cookbook_cpo_olivine/particles_cpo/CPO-00001
+
+*** Timestep 201:  t=100000 seconds, dt=1.45519e-11 seconds
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+
+   Postprocessing:
+     RMS, max velocity:            2.89e-06 m/s, 5e-06 m/s
+     Number of advected particles: 1
+     Writing particle cpo output:  output-cookbook_cpo_olivine/particles_cpo/CPO-00002
+
+Termination requested by criterion: end time
+
+
+
