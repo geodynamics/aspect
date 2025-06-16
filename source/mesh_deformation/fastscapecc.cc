@@ -228,7 +228,7 @@ namespace aspect
 
 
                     const double vertical_velocity = velocity * gravity_dir;
-
+                    const double height = this->get_geometry_model().height_above_reference_surface(pos);
                     const unsigned int index = this->vertex_index(pos);
                     std::cout<<"here it works 0e"<<std::endl;
                     std::cout<< "Surface pos: " << pos <<std::endl;
@@ -558,7 +558,8 @@ namespace aspect
         dim - 1, // project onto radial component
         dim      // full space dimension
       );
-      std::cout << "Rank " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator())<< ": here it works 15" << std::endl;
+      std::cout << "Rank " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator())
+                << ": here it works 15" << std::endl;
 
 
 

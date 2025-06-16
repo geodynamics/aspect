@@ -165,6 +165,7 @@ namespace aspect
         std::unique_ptr<GridAdapterType> grid;
         std::unique_ptr<FlowGraphType> flow_graph;
         std::unique_ptr<fastscapelib::spl_eroder<FlowGraphType>> spl_eroder;
+        // mutable std::shared_ptr<dealii::GridTools::Cache<dim-1, dim-1>> surface_cache;
 
 
         void project_surface_solution(const std::set<types::boundary_id> &boundary_ids,
