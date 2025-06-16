@@ -383,7 +383,6 @@ namespace aspect
         surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
                                 locally_relevant_dofs_surface,
                                 this->get_mpi_communicator());
-        double increment = 0;
         const types::boundary_id top_boundary =
           this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
         std::cout<<"here it works 0a"<<std::endl;
@@ -426,7 +425,6 @@ namespace aspect
 
                 const double vertical_velocity = velocity * gravity_dir;  
 
-                const double height = this->get_geometry_model().height_above_reference_surface(pos);
                 const unsigned int index = this->vertex_index(pos);
               std::cout<<"here it works 0e"<<std::endl;
               std::cout<< "Surface pos: " << pos <<std::endl;
