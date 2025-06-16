@@ -87,6 +87,23 @@ namespace aspect
          */
         void parse_parameters (ParameterHandler &prm) override;
 
+        /**
+         * Serialize the contents of this class as far as they are not read
+         * from input parameter files.
+         */
+        template <class Archive>
+        void serialize (Archive &ar, const unsigned int version);
+
+        /**
+         * Save the state of this object.
+         */
+        void save (std::map<std::string, std::string> &status_strings) const override;
+
+        /**
+         * Restore the state of the object.
+         */
+        void load (const std::map<std::string, std::string> &status_strings) override;
+
       private:
         /**
          * Function used to set the FastScape ghost nodes. FastScape boundaries are
@@ -132,9 +149,8 @@ namespace aspect
          */
         void initialize_fastscape(std::vector<double> &elevation,
                                   std::vector<double> &basement,
-                                  std::vector<double> &bedrock_transport_coefficient_array,
-                                  std::vector<double> &bedrock_river_incision_rate_array,
-                                  std::vector<double> &silt_fraction) const;
+                                  std::vector<double> &silt_fraction,
+                                  bool restart) const;
 
         /**
          * Execute FastScape
@@ -164,20 +180,6 @@ namespace aspect
                                           const unsigned int &fastscape_ny) const;
 
         /**
-         * Read data from file for restarting.
-         */
-        void read_restart_files(std::vector<double> &elevation,
-                                std::vector<double> &basement,
-                                std::vector<double> &silt_fraction) const;
-
-        /**
-         * Save data to file for restarting.
-         */
-        void save_restart_files(const std::vector<double> &elevation,
-                                std::vector<double> &basement,
-                                std::vector<double> &silt_fraction) const;
-
-        /**
          * Suggestion for the number of FastScape steps to run for every ASPECT timestep,
          * where the FastScape timestep is determined by ASPECT_timestep_length divided by
          * this parameter.
@@ -189,16 +191,6 @@ namespace aspect
          * limit it is repeatedly divided by 2 until the final timestep is smaller than this parameter.
          */
         double maximum_fastscape_timestep;
-
-        /**
-         * Check whether FastScape needs to be restarted. This is used as
-         * a mutable bool because we determine whether the model is being resumed in
-         * initialize(), and then after reinitializing FastScape we change it to false
-         * so it does not initialize FastScape again in future timesteps.
-         * TODO: There is probably a better way to do this, and restarts should be rolled into
-         * the general ASPECT restart.
-         */
-        mutable bool restart;
 
         /**
          * FastScape cell size in X.

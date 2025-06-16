@@ -52,6 +52,8 @@ namespace aspect
       free_surface_theta(stabilization_theta)
     {}
 
+
+
     template <int dim>
     void
     ApplyStabilization<dim>::
@@ -171,6 +173,20 @@ namespace aspect
     {
       return false;
     }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::save (std::map<std::string,std::string> &) const
+    {}
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::load (const std::map<std::string,std::string> &)
+    {}
 
 
 
