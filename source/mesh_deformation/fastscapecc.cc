@@ -159,206 +159,6 @@ namespace aspect
       surface_constraints.close();
     }
 
-
-    // template <int dim>
-    // void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/,  
-    // dealii::LinearAlgebra::distributed::Vector<double> &surface_vertical_velocity,
-    // dealii::LinearAlgebra::distributed::Vector<double> &surface_elevation ) const
-    // {
-    //   TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
-
-    //   const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-    //   const auto *box_model       = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
-
-    //   AssertThrow(spherical_model || box_model,
-    //               ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
-
-    //   // Initialize the surface solution vector on the FastScape surface mesh
-    //   const IndexSet locally_relevant_dofs_surface
-    //   = DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
-
-    //   surface_vertical_velocity.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-    //                           locally_relevant_dofs_surface,
-    //                           this->get_mpi_communicator());
-
-    //   surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-    //                           locally_relevant_dofs_surface,
-    //                           this->get_mpi_communicator());
-
-    //   const types::boundary_id top_boundary =
-    //     this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-
-    //   for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-    //     if (cell->is_locally_owned())
-    //     {
-    //     for (unsigned int face = 0; face < cell->n_faces(); ++face)
-    //     {
-    //       if (!cell->face(face)->at_boundary() ||
-    //           cell->face(face)->boundary_id() != top_boundary)
-    //         continue;
-
-    //       for (unsigned int v = 0; v < cell->face(face)->n_vertices(); ++v)
-    //       {
-    //         const Point<dim> pos = cell->face(face)->vertex(v);
-
-    //         // Extract the full velocity vector at the vertex
-    //         Tensor<1, dim> velocity;
-    //         for (unsigned int d = 0; d < dim; ++d)
-    //         {
-    //           //Query velocity Dofs using introspection 
-    //           const unsigned int component_index = this->introspection().component_indices.velocities[d];
-    //           velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, component_index)];
-    //         }
-
-    //           //Use the gravity model to obtain a "vertical" direction
-    //           const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(pos);
-    //           Tensor<1, dim> gravity_dir = gravity;
-
-    //           const double gravity_norm = gravity.norm();
-    //           if (gravity_norm > 0.0)
-    //             gravity_dir /= gravity_norm;
-
-    //           const double vertical_velocity = velocity * gravity_dir;  
-
-    //           const double height = this->get_geometry_model().height_above_reference_surface(pos);
-    //           // const unsigned int index = this->vertex_index(pos);
-
-    //           const unsigned int dof_index = cell->face(face)->vertex_dof_index(v, 0);
-
-
-    //           // Just care about the one that are own
-    //           if (surface_vertical_velocity.locally_owned_elements().is_element(dof_index))
-    //           {
-    //             surface_vertical_velocity[dof_index] = vertical_velocity;
-    //             surface_elevation[dof_index] = height;
-    //           }
-
-    //           // Optional debug
-    //           if (this->get_timestep_number() == 1 && dof_index < 999999)
-    //             this->get_pcout() << "Surface pos: " << pos
-    //                               << ", velocity: " << surface_vertical_velocity[dof_index]
-    //                               << ", topography: " << surface_elevation[dof_index] << std::endl;
-    //       }
-    //     }
-    //   }
-    //   surface_vertical_velocity.update_ghost_values();
-    //   surface_elevation.update_ghost_values();
-    // }
-
-      // template <int dim>
-      // void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/,  
-      //                                                 dealii::LinearAlgebra::distributed::Vector<double> &surface_vertical_velocity,
-      //                                                 dealii::LinearAlgebra::distributed::Vector<double> &surface_elevation ) const
-      // {
-      //   TimerOutput::Scope timer_section(this->get_computing_timer(), "Project surface solution");
-
-      //   const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
-      //   const auto *box_model       = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
-
-      //   AssertThrow(spherical_model || box_model,
-      //               ExcMessage("FastScapecc only supports Box or SphericalShell geometries."));
-
-      //   // Initialize distributed vectors with ghost entries
-      //   const IndexSet locally_relevant_dofs_surface =
-      //     DoFTools::extract_locally_relevant_dofs(surface_mesh_dof_handler);
-
-      //   surface_vertical_velocity.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-      //                                     locally_relevant_dofs_surface,
-      //                                     this->get_mpi_communicator());
-
-      //   surface_elevation.reinit(surface_mesh_dof_handler.locally_owned_dofs(),
-      //                             locally_relevant_dofs_surface,
-      //                             this->get_mpi_communicator());
-
-      //   // Identify the top boundary (where erosion applies)
-      //   const types::boundary_id top_boundary =
-      //     this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-
-      //   // Loop over all vertices on the surface mesh
-      //   for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
-      //   {
-      //     for (unsigned int v = 0; v < cell->n_vertices(); ++v)
-      //     {
-      //       const Point<dim> pos = cell->vertex(v);
-      //       const unsigned int dof_index = cell->vertex_dof_index(v, 0);
-
-      //       // Skip if we don't own this DoF
-      //       if (!surface_vertical_velocity.locally_owned_elements().is_element(dof_index))
-      //       {
-      //         this->get_pcout() << "Skipping vertex at " << pos
-      //                           << " with dof_index = " << dof_index
-      //                           << " (not locally owned)" << std::endl;
-      //         continue;
-      //       }
-      //       // Debug: Before trying to match and assign
-      //       this->get_pcout() << "Processing vertex at " << pos
-      //                         << " with dof_index = " << dof_index
-      //                         << " (owned)" << std::endl;
-
-
-
-      //       // Find matching point on the main mesh to get velocity
-      //       Tensor<1, dim> velocity;
-      //       bool found = false;
-
-      //       for (const auto &main_cell : this->get_dof_handler().active_cell_iterators())
-      //       {
-      //         if (!main_cell->is_locally_owned())
-      //           continue;
-
-      //         for (unsigned int f = 0; f < main_cell->n_faces(); ++f)
-      //         {
-      //           if (!main_cell->face(f)->at_boundary() ||
-      //               main_cell->face(f)->boundary_id() != top_boundary)
-      //             continue;
-
-      //           for (unsigned int fv = 0; fv < main_cell->face(f)->n_vertices(); ++fv)
-      //           {
-      //             if (main_cell->face(f)->vertex(fv).distance(pos) < 1e-10)
-      //             {
-      //               for (unsigned int d = 0; d < dim; ++d)
-      //               {
-      //                 const unsigned int component = this->introspection().component_indices.velocities[d];
-      //                 velocity[d] = this->get_solution()[main_cell->face(f)->vertex_dof_index(fv, component)];
-      //               }
-      //               found = true;
-      //               break;
-      //             }
-      //           }
-      //           if (found) break;
-      //         }
-      //         if (found) break;
-      //       }
-
-      //       if (!found)
-      //         this->get_pcout() << "Warning: No match found for vertex at " << pos << std::endl;
-      //         continue;
-
-      //       // Project velocity onto vertical (gravity) direction
-      //       Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(pos);
-      //       const double gravity_norm = gravity.norm();
-      //       if (gravity_norm > 0.0)
-      //         gravity /= gravity_norm;
-
-      //       const double vertical_velocity = velocity * gravity;
-      //       const double height = this->get_geometry_model().height_above_reference_surface(pos);
-
-      //       // Save results
-      //       surface_vertical_velocity[dof_index] = vertical_velocity;
-      //       surface_elevation[dof_index] = height;
-
-      //       // Optional: Debug print
-      //       if (this->get_timestep_number() == 1 && dof_index < 9999)
-      //         this->get_pcout() << "Vertex at " << pos
-      //                           << ", vel: " << vertical_velocity
-      //                           << ", height: " << height << std::endl;
-      //     }
-      //   }
-
-      //   surface_vertical_velocity.compress(VectorOperation::insert);
-      //   surface_elevation.compress(VectorOperation::insert);
-      // }
-
       template <int dim>
       void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/,  
       dealii::LinearAlgebra::distributed::Vector<double> &surface_vertical_velocity,
@@ -430,21 +230,23 @@ namespace aspect
               std::cout<< "Surface pos: " << pos <<std::endl;
                   std::cout   << ", Index: " << index << std::endl;
                  std::cout<< "Vertical velocity: " << vertical_velocity<< std::endl;
-              //     std::cout  << ", velocity: " << surface_vertical_velocity[index]<<std::endl;
-              //    std::cout   << ", topography: " << surface_elevation[index] <<std::endl; 
+                  std::cout  << ", velocity: " << surface_vertical_velocity[index]<<std::endl;
+                 std::cout   << ", topography: " << surface_elevation[index] <<std::endl; 
 
-              //   surface_vertical_velocity[index] = vertical_velocity;
-              // std::cout<<"here it works 0f"<<std::endl;
+                surface_vertical_velocity[index] = vertical_velocity;
+              std::cout<<"here it works 0f"<<std::endl;
 
-              //   surface_elevation[index] = height;
-              // std::cout<<"here it works 0g"<<std::endl;
+                surface_elevation[index] = height;
+              std::cout<<"here it works 0g"<<std::endl;
 
-              
-
-      
             }
           }
         }
+        surface_vertical_velocity.compress(dealii::VectorOperation::insert);
+        surface_elevation.compress(dealii::VectorOperation::insert); 
+
+        this->get_pcout() << "Projected surface solution onto FastScape mesh." << std::endl;
+
       }
 
       template <int dim>
@@ -558,9 +360,6 @@ namespace aspect
           // Initialize the variables that will be sent to FastScape.
           std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
           std::vector<double> vz(n_grid_nodes);
-//          std::vector<double> vy(n_grid_nodes);
-//          std::vector<double> vx(n_grid_nodes);
-
           std::vector<double> h_old(n_grid_nodes);
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
@@ -568,9 +367,6 @@ namespace aspect
               int index = static_cast<int>(temporary_variables[1][i]);
               h[index] = temporary_variables[0][i];
               vz[index] = temporary_variables[2][i];
-//              vy[index] = temporary_variables[3][i];
-//              vx[index] = temporary_variables[2][i];
-
             }
 
           for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
@@ -593,8 +389,6 @@ namespace aspect
                   int index = static_cast<int>(temporary_variables[1][i]);
                   h[index] = temporary_variables[0][i];
                   vz[index] = temporary_variables[2][i];
-//                  vy[index] = temporary_variables[3][i];
-//                  vx[index] = temporary_variables[2][i];
                 }
             }
 
@@ -605,6 +399,7 @@ namespace aspect
 
           auto elevation = xt::adapt(h);
           auto elevation_old = xt::adapt(h_old);
+
           std::cout<<"here it works 11"<<std::endl;
 
           const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
@@ -649,27 +444,52 @@ namespace aspect
           xt::xarray<double> drainage_area = xt::zeros<double>(grid.shape());
           xt::xarray<double> sediment_flux = xt::zeros<double>(grid.shape());
 
+          std::cout << "\n[DEBUG INIT] Max elevation = " << xt::amax(elevation)()
+                    << ", Min = " << xt::amin(elevation)() << std::endl;
+          std::cout << "[DEBUG INIT] Max uplift rate = " << xt::amax(uplift_rate)()
+                    << ", Min = " << xt::amin(uplift_rate)() << std::endl;
+
           // Start erosion loop
           xt::xarray<double> uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
 
           for (unsigned int i = 0; i < fastscape_iterations; ++i)
           {
-            
+            std::cout << "\nFastScape iteration " << i + 1 << "/" << fastscape_iterations << std::endl;
+
             uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
+
+            std::cout << "[DEBUG] uplifted_elevation max = " << xt::amax(uplifted_elevation)()
+                      << ", min = " << xt::amin(uplifted_elevation)() << std::endl;
+
             flow_graph.update_routes(uplifted_elevation);
+
             flow_graph.accumulate(drainage_area, 1.0);
+
+            std::cout << "[DEBUG] drainage_area max = " << xt::amax(drainage_area)()
+                      << ", min = " << xt::amin(drainage_area)() << std::endl;
+
             auto spl_erosion = spl_eroder.erode(uplifted_elevation, drainage_area, fastscape_timestep_in_years);
+
+            std::cout << "[DEBUG] spl_erosion max = " << xt::amax(spl_erosion)()
+                      << ", min = " << xt::amin(spl_erosion)() << std::endl;
+
             sediment_flux = flow_graph.accumulate(spl_erosion);
+
             elevation = uplifted_elevation - spl_erosion;
-            this->get_pcout() << "  FastScape iteration " << i+1 << "/" << fastscape_iterations
-                              << ": max elevation = " << *std::max_element(elevation.begin(), elevation.end())
-                              << ", max uplift = " << *std::max_element(uplift_rate.begin(), uplift_rate.end()) * fastscape_timestep_in_years
-                              << std::endl;
+
+            std::cout << "[DEBUG] updated elevation max = " << xt::amax(elevation)()
+                      << ", min = " << xt::amin(elevation)() << std::endl;
           }
+
 
           // Compute erosion velocities
           for (unsigned int i = 0; i < n_grid_nodes; ++i)
+          {
             V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
+            std::cout << "grid node: " << i << ", V: " << V[i] << std::endl;
+          }
+
+
           std::cout<<"here it works 13"<<std::endl;
 
           // Broadcast V to all processes
@@ -683,27 +503,36 @@ namespace aspect
         }
 
       // Step 1: Interpolation function from position to velocity
+      // auto erosion_function = [&](const Point<dim> &p) -> double
+      // {
+      // // Closest-point search (replace with a spatial tree for performance)
+      // double min_dist = std::numeric_limits<double>::max();
+      // unsigned int best_index = 0;
+
+      // unsigned int i = 0;
+      // for (const auto &cell : surface_mesh.active_cell_iterators())
+      //   for (unsigned int v = 0; v < GeometryInfo<dim-1>::vertices_per_cell; ++v, ++i)
+      //     {
+      //       const Point<dim> &node = cell->vertex(v);
+      //       double dist = node.distance(p);
+      //       if (dist < min_dist)
+      //         {
+      //           min_dist = dist;
+      //           best_index = i;
+      //         }
+      //     }
+      // return V[best_index];
+      // std::cout<<"here it works 14"<<std::endl;
+      // const unsigned int index = this->vertex_index(p);
+      // return V[index];
+      // };
+
+      // Step 1: Interpolation function from position to velocity
       auto erosion_function = [&](const Point<dim> &p) -> double
       {
-      // Closest-point search (replace with a spatial tree for performance)
-      double min_dist = std::numeric_limits<double>::max();
-      unsigned int best_index = 0;
-
-      unsigned int i = 0;
-      for (const auto &cell : surface_mesh.active_cell_iterators())
-        for (unsigned int v = 0; v < GeometryInfo<dim-1>::vertices_per_cell; ++v, ++i)
-          {
-            const Point<dim> &node = cell->vertex(v);
-            double dist = node.distance(p);
-            if (dist < min_dist)
-              {
-                min_dist = dist;
-                best_index = i;
-              }
-          }
-          std::cout<<"here it works 14"<<std::endl;
-
-      return V[best_index];
+        std::cout << "here it works 14" << std::endl;
+        const unsigned int index = this->vertex_index(p);
+        return V[index];
       };
 
       VectorFunctionFromScalarFunctionObject<dim> radial_velocity_field(
@@ -711,7 +540,8 @@ namespace aspect
           dim - 1, // project onto radial component
           dim      // full space dimension
       );
-          std::cout<<"here it works 15"<<std::endl;
+      std::cout << "Rank " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) 
+                << ": here it works 15" << std::endl;
 
 
 
