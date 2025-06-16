@@ -104,6 +104,11 @@ namespace aspect
          */
         void load (const std::map<std::string, std::string> &status_strings) override;
 
+        /**
+         * Update time-dependent input parmetersfor the FastScape plugin.
+         */
+        void update() override;
+
       private:
         /**
          * Function used to set the FastScape ghost nodes. FastScape boundaries are
@@ -119,6 +124,7 @@ namespace aspect
                              std::vector<double> &velocity_x,
                              std::vector<double> &velocity_y,
                              std::vector<double> &velocity_z,
+                             std::vector<double> &bedrock_transport_coefficient_array,
                              const double &fastscape_timestep_in_years,
                              const bool init) const;
 
@@ -160,6 +166,7 @@ namespace aspect
                                std::vector<double> &velocity_x,
                                std::vector<double> &velocity_y,
                                std::vector<double> &velocity_z,
+                               std::vector<double> &bedrock_transport_coefficient_array,
                                const double &fastscape_timestep_in_years,
                                const unsigned int &fastscape_iterations) const;
 
@@ -452,9 +459,19 @@ namespace aspect
         double sediment_river_incision_rate;
 
         /**
-         * Bedrock transport coefficient for hillslope diffusion (m^2/yr, kd in FastScape surface equation.)
+         * Declare a parsed function for spatially variable kd 
          */
-        double bedrock_transport_coefficient;
+        Functions::ParsedFunction<2> kd_distribution_function;
+
+        /**
+         * Flag for using parsed function vs constant
+         */
+        bool use_kd_distribution_function;
+
+        /**
+         * The constant bedrock transport coefficient valuefor hillslope diffusion (m^2/yr, kd in FastScape surface equation.)
+         */
+        double constant_bedrock_transport_coefficient;
 
         /**
          * Sediment transport coefficient for hillslope diffusion (m^2/yr). When set to -1 this is
