@@ -508,7 +508,7 @@ namespace aspect
                                        ?
                                        ref_strain_rate
                                        :
-                                       std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
+                                       std::max(std::sqrt(std::fabs(Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(Utilities::Tensors::consistent_deviator(in.strain_rate[i])))),
                                                 min_strain_rate) );
 
               // compute viscous stress

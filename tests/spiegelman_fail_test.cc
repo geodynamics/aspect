@@ -86,8 +86,6 @@ namespace aspect
     class SpiegelmanMaterial : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        double compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const;
-
         double compute_viscosity(const double edot_ii,const double pressure,const int comp, const double constant_viscosity,const bool compute_full_viscosity, const double min_visc, const double max_visc) const;
 
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -204,16 +202,6 @@ namespace aspect
     template <int dim>
     double
     SpiegelmanMaterial<dim>::
-    compute_second_invariant(const SymmetricTensor<2,dim> strain_rate, const double min_strain_rate) const
-    {
-      const double edot_ii_strict = std::sqrt(strain_rate*strain_rate);
-      const double edot_ii = std::max(edot_ii_strict, min_strain_rate);
-      return edot_ii;
-    }
-
-    template <int dim>
-    double
-    SpiegelmanMaterial<dim>::
     compute_viscosity(const double edot_ii,
                       const double pressure,
                       const int comp,
@@ -308,7 +296,7 @@ namespace aspect
               std::vector<SymmetricTensor<2,dim>> composition_viscosities_derivatives(volume_fractions.size());
               std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
 
-              const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? deviator(in.strain_rate[i]) : in.strain_rate[i];
+              const SymmetricTensor<2,dim> edot = use_deviator_of_strain_rate ? Utilities::Tensors::consistent_deviator(in.strain_rate[i]) : in.strain_rate[i];
 
               for (unsigned int c=0; c < volume_fractions.size(); ++c)
                 {
@@ -317,7 +305,7 @@ namespace aspect
                   // Otherwise, calculate the square-root of the norm of the second invariant of the deviatoric-
                   // strain rate (often simplified as epsilondot_ii)
 
-                  const double edot_ii = compute_second_invariant(edot, min_strain_rate[c]);
+                  const double edot_ii = Utilities::Tensors::consistent_second_invariant_of_deviatoric_tensor(edot, min_strain_rate[c]);
 
                   // Find effective viscosities for each of the individual phases
                   // Viscosities should have same number of entries as compositional fields
