@@ -26,11 +26,17 @@ Number of mesh deformation degrees of freedom: 462
    Solving mesh surface diffusion
    Solving mesh displacement system... 1 iterations.
    Solving temperature system... 7 iterations.
-   Advecting particles...  done.
+   Solving noninitial_plastic_strain system ... 12 iterations.
+   Solving plastic_strain system ... 9 iterations.
+   Solving upper_crust system ... 9 iterations.
+   Solving lower_crust system ... 9 iterations.
+   Solving lithospheric_mantle system ... 9 iterations.
+   Initial Newton Stokes residual = 8.15787e+16, v = 8.15787e+16, p = 1.24042e+13
+
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 21+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000140692, 0, 0, 0, 0, 0, 0.977752
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.977752
+   Solving Stokes system (AMG)... 0+18 iterations.
+      Newton system information: Norm of the rhs: 2.11455e+13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000259204
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
