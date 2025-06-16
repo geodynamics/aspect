@@ -37,7 +37,7 @@ of size $L_x=2500~\text{ m}$ and $L_y=5000~\text{ m}$. The gravity is not specif
 in the paper but it is set to $g=9.81~\text{ m s}^{-2}$. Boundary conditions are
 free slip on all four sides. Simulations are run up to about $500~\text{ ka}$.
 There are three materials in the domain as shown in {numref}`fig:sinking-anhydrite-setup`.
-The full input file that contains these modifications and that was used for the simulations 
+The full input file that contains these modifications and that was used for the simulations
 can be found at [cookbooks/sinking_anhydrite_block.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/sinking_of_anhydrite_block_in_salt_diapir/sinking_of_anhydrite_block_in_salt_diapir_particle_in_cell.prm).
 
 ```{figure-md} fig:sinking-anhydrite-setup
@@ -54,7 +54,7 @@ In the current case the original resolution of the experiment is $200 \times 400
 i.e. cells of $12.5 \times 12.5~\text{ m}$ in size. The particles are located
 every 10 to $12.5~\text{ m}$ in vertical and horizontal direction, i.e. about 100,000 particles in total.
 We here make use of adaptive mesh refinement with a criterion based on the compositions interface and
-seed the system with 2,000,000 randomly distributed particles. Elements of the finest are 
+seed the system with 2,000,000 randomly distributed particles. Elements of the finest are
 then $5 \times 5~\text{ m}$ in size.
 Unfortunately the authors fail to mention the type of averaging that they use for the density and
 viscosity carried by the particles. We here choose the harmonic one, keeping in mind that

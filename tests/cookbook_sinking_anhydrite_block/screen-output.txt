@@ -1,0 +1,75 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (add_sinking_anhydrite_block_cookbook, 197dd5afa)
+--     . using deal.II 9.5.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 13.2.0
+--     . using p4est 2.3.2
+--     . using Geodynamic World Builder 1.0.0
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&particles=1&sha=197dd5afa&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 2,048 (on 6 levels)
+Number of degrees of freedom: 52,455 (16,770+2,145+8,385+8,385+8,385+8,385)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 17+0 iterations.
+
+Number of active cells: 1,391 (on 7 levels)
+Number of degrees of freedom: 37,922 (12,126+1,544+6,063+6,063+6,063+6,063)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Skipping temperature solve because RHS is zero.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 29+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          cookbook_sinking_anhydrite_block/solution/solution-00000
+     RMS, max velocity:                                 0.000535 m/year, 0.00596 m/year
+     Compositions min/max/mass:                         0/1/6.213e+06 // 0/1/6.277e+06 // 0/1/9918
+     Average density / Average viscosity / Total mass:  2201 kg/m^3, 9.052e+16 Pa s, 2.751e+10 kg
+     Writing particle output:                           cookbook_sinking_anhydrite_block/particles/particles-00000
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      1.55s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |         2 |    0.0913s |       5.9% |
+| Assemble temperature system      |         2 |     0.161s |        10% |
+| Build Stokes preconditioner      |         2 |    0.0124s |       0.8% |
+| Initialization                   |         1 |     0.116s |       7.4% |
+| Particles: Advect                |         2 |    0.0149s |      0.96% |
+| Particles: Copy                  |         2 |   0.00595s |      0.38% |
+| Particles: Generate              |         2 |    0.0407s |       2.6% |
+| Particles: Initialization        |         1 |  4.28e-05s |         0% |
+| Particles: Initialize properties |         2 |    0.0758s |       4.9% |
+| Particles: Interpolate           |         2 |    0.0083s |      0.53% |
+| Particles: Sort                  |         2 |   0.00625s |       0.4% |
+| Particles: Update properties     |         2 |    0.0184s |       1.2% |
+| Postprocessing                   |         1 |     0.136s |       8.8% |
+| Refine mesh structure, part 1    |         1 |     0.143s |       9.2% |
+| Refine mesh structure, part 2    |         1 |     0.029s |       1.9% |
+| Setup dof systems                |         2 |    0.0478s |       3.1% |
+| Setup initial conditions         |         2 |     0.274s |        18% |
+| Setup matrices                   |         2 |    0.0383s |       2.5% |
+| Solve Stokes system              |         2 |       0.4s |        26% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 2s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&particles=1&sha=197dd5afa&src=code
+-----------------------------------------------------------------------------

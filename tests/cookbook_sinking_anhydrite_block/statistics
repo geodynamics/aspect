@@ -1,0 +1,29 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Visualization file name
+# 13: RMS velocity (m/year)
+# 14: Max. velocity (m/year)
+# 15: Minimal value for composition salt_left
+# 16: Maximal value for composition salt_left
+# 17: Global mass for composition salt_left
+# 18: Minimal value for composition salt_right
+# 19: Maximal value for composition salt_right
+# 20: Global mass for composition salt_right
+# 21: Minimal value for composition anhydrite_block
+# 22: Maximal value for composition anhydrite_block
+# 23: Global mass for composition anhydrite_block
+# 24: Average density (kg/m^3)
+# 25: Average viscosity (Pa s)
+# 26: Total mass (kg)
+# 27: Number of advected particles
+# 28: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 1391 13670 6063 18189 0 29 30 30 output-cookbook_sinking_anhydrite_block/solution/solution-00000 5.35326336e-04 5.96137708e-03 0.00000000e+00 1.00000000e+00 6.21276220e+06 0.00000000e+00 1.00000000e+00 6.27731959e+06 0.00000000e+00 1.00000000e+00 9.91821289e+03 2.20055557e+03 9.05246390e+16 2.75069446e+10 100000 output-cookbook_sinking_anhydrite_block/particles/particles-00000 
