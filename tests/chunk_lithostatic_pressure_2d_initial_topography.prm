@@ -1,4 +1,4 @@
-# In this variation on chunk_lithostatic_pressure_2d.prm
+# In this variation on chunk_lithostatic_pressure_3d.prm
 # we test whether the point_is_in_domain function
 # handles the initial topography correctly. We therefore
 # add an initial topography and pick a representative point
@@ -6,10 +6,10 @@
 # the unperturbed surface but below the surface plus
 # initial topography.
 
-include $ASPECT_SOURCE_DIR/tests/chunk_lithostatic_pressure_2d.prm
+include $ASPECT_SOURCE_DIR/tests/chunk_lithostatic_pressure_3d.prm
 
 set Dimension = 2
-set End time                               = 0
+set End time  = 0
 
 subsection Geometry model
   set Model name = chunk

@@ -10,7 +10,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      RMS, max velocity:        0.305 m/year, 3.71 m/year
      Pressure min/avg/max:     -2.098e+07 Pa, 3.29e+10 Pa, 9.157e+10 Pa
-     Writing graphical output: output-chunk_lithostatic_pressure_2d/solution/solution-00000
+     Writing graphical output: output-chunk_lithostatic_pressure_3d/solution/solution-00000
 
 Termination requested by criterion: end time
 
