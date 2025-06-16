@@ -66,10 +66,10 @@ namespace aspect
       bool operator()(const dealii::Point<dim> &a, const dealii::Point<dim> &b) const
       {
         for (unsigned int d = 0; d < dim; ++d)
-        {
-          if (a[d] < b[d]) return true;
-          if (a[d] > b[d]) return false;
-        }
+          {
+            if (a[d] < b[d]) return true;
+            if (a[d] > b[d]) return false;
+          }
         return false;
       }
     };
@@ -119,7 +119,7 @@ namespace aspect
          * Parse parameters for the FastScape plugin.
          */
         void parse_parameters (ParameterHandler &prm) override;
-        
+
 
       private:
 
@@ -157,17 +157,17 @@ namespace aspect
 
         /**
          * Pointers to Fastscapelib objects
-         */  
+         */
         using GridAdapterType = typename fastscapelib::dealii_grid<SurfaceMeshType>;
         using FlowGraphType = typename fastscapelib::flow_graph<GridAdapterType>;
         std::unique_ptr<GridAdapterType> grid;
         std::unique_ptr<FlowGraphType> flow_graph;
         std::unique_ptr<fastscapelib::spl_eroder<FlowGraphType>> spl_eroder;
-        
+
 
         void project_surface_solution(const std::set<types::boundary_id> &boundary_ids,
                                       dealii::LinearAlgebra::distributed::Vector<double> &surface_vertical_velocity,
-                                      dealii::LinearAlgebra::distributed::Vector<double> &surface_elevation) const; 
+                                      dealii::LinearAlgebra::distributed::Vector<double> &surface_elevation) const;
 
 
         /**

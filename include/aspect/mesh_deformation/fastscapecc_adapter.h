@@ -63,43 +63,43 @@
 
 namespace fastscapelib
 {
-    /**
-     * Used to get the actual xtensor container type from a given selector.
-     *
-     * @tparam S The xtensor selector type.
-     * @tparam T The container value type.
-     * @tparam N The number of dimensions (only for static dimension containers)
-     */
-    template <class S, class T, std::size_t N = 0>
-    struct xt_container
-    {
-    };
+  /**
+   * Used to get the actual xtensor container type from a given selector.
+   *
+   * @tparam S The xtensor selector type.
+   * @tparam T The container value type.
+   * @tparam N The number of dimensions (only for static dimension containers)
+   */
+  template <class S, class T, std::size_t N = 0>
+  struct xt_container
+  {
+  };
 
-    template <class T, std::size_t N>
-    struct xt_container<xt_selector, T, N>
-    {
-        using tensor_type = xt::xtensor<T, N>;
-        using array_type = xt::xarray<T>;
-    };
+  template <class T, std::size_t N>
+  struct xt_container<xt_selector, T, N>
+  {
+    using tensor_type = xt::xtensor<T, N>;
+    using array_type = xt::xarray<T>;
+  };
 
-    /**
-     * Alias for the selected (static dimension) xtensor container type.
-     *
-     * @tparam S The xtensor selector type.
-     * @tparam T The container value type.
-     * @tparam N The fixed number of dimensions.
-     */
-    template <class S, class T, std::size_t N>
-    using xt_tensor_t = typename xt_container<S, T, N>::tensor_type;
+  /**
+   * Alias for the selected (static dimension) xtensor container type.
+   *
+   * @tparam S The xtensor selector type.
+   * @tparam T The container value type.
+   * @tparam N The fixed number of dimensions.
+   */
+  template <class S, class T, std::size_t N>
+  using xt_tensor_t = typename xt_container<S, T, N>::tensor_type;
 
-    /**
-     * Alias for the selected (dynamic dimension) xtensor container type.
-     *
-     * @tparam S The xtensor selector type.
-     * @tparam T The container value type.
-     */
-    template <class S, class T>
-    using xt_array_t = typename xt_container<S, T>::array_type;
+  /**
+   * Alias for the selected (dynamic dimension) xtensor container type.
+   *
+   * @tparam S The xtensor selector type.
+   * @tparam T The container value type.
+   */
+  template <class S, class T>
+  using xt_array_t = typename xt_container<S, T>::array_type;
 
 }  // namespace fastscapelib
 #endif
@@ -294,42 +294,42 @@ namespace fastscapelib
 //   }
 
 
-        template <class T, class S>
-        void fastscapelib::dealii_grid<T, S>::compute_connectivity()
-        {
-        // Resize internal storage for neighbor counts, indices, and distances
-        m_neighbors_count.resize(m_size);
-        m_neighbors_indices.resize(m_size);
-        m_neighbors_distances.resize(m_size);
+  template <class T, class S>
+  void fastscapelib::dealii_grid<T, S>::compute_connectivity()
+  {
+    // Resize internal storage for neighbor counts, indices, and distances
+    m_neighbors_count.resize(m_size);
+    m_neighbors_indices.resize(m_size);
+    m_neighbors_distances.resize(m_size);
 
-        // Step 1: Map global active cell indices to local indices
-        // This is necessary to translate global indices into local array indices
-        std::unordered_map<unsigned int, unsigned int> global_to_local_index;
-        unsigned int local_index = 0;
-        for (const auto &cell : m_triangulation.active_cell_iterators())
-        {
-            global_to_local_index[cell->global_active_cell_index()] = local_index++;
-        }
+    // Step 1: Map global active cell indices to local indices
+    // This is necessary to translate global indices into local array indices
+    std::unordered_map<unsigned int, unsigned int> global_to_local_index;
+    unsigned int local_index = 0;
+    for (const auto &cell : m_triangulation.active_cell_iterators())
+      {
+        global_to_local_index[cell->global_active_cell_index()] = local_index++;
+      }
 
-        // Step 2: Loop through each active cell and determine valid neighbors
-        local_index = 0;
-        for (const auto &cell : m_triangulation.active_cell_iterators())
-        {
-            const auto &center = cell->center();  // Get cell center for distance computation
-            unsigned int valid_neighbors = 0;
+    // Step 2: Loop through each active cell and determine valid neighbors
+    local_index = 0;
+    for (const auto &cell : m_triangulation.active_cell_iterators())
+      {
+        const auto &center = cell->center();  // Get cell center for distance computation
+        unsigned int valid_neighbors = 0;
 
-            for (unsigned int face_i = 0; face_i < cell->n_faces(); ++face_i)
-            {
+        for (unsigned int face_i = 0; face_i < cell->n_faces(); ++face_i)
+          {
             // Only consider internal faces with valid neighbor
             // if (!cell->at_boundary(face_i) && cell->neighbor_index_is_valid(face_i))
             if (!cell->at_boundary(face_i) && cell->neighbor(face_i).state() == dealii::IteratorState::valid)
-            {
+              {
                 const auto &neighbor = cell->neighbor(face_i);
                 const unsigned int global_nb_index = neighbor->global_active_cell_index();
 
                 auto it = global_to_local_index.find(global_nb_index);
-                    AssertThrow(it != global_to_local_index.end(),
-                                aspect::ExcMessage("Neighbor index not found in global_to_local_index map."));
+                AssertThrow(it != global_to_local_index.end(),
+                            aspect::ExcMessage("Neighbor index not found in global_to_local_index map."));
 
 
                 // Fill neighbor index and distance arrays
@@ -337,15 +337,15 @@ namespace fastscapelib
                 m_neighbors_distances[local_index][valid_neighbors] = center.distance(neighbor->center());
 
                 ++valid_neighbors;
-            }
-            }
+              }
+          }
 
-            // Save how many neighbors this node has
-            m_neighbors_count[local_index] = valid_neighbors;
+        // Save how many neighbors this node has
+        m_neighbors_count[local_index] = valid_neighbors;
 
-            ++local_index;
-        }
-        }
+        ++local_index;
+      }
+  }
 
 
   template <class T, class S>
