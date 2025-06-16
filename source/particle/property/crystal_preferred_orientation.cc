@@ -692,7 +692,7 @@ namespace aspect
         std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
         std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
 
-        // CPX and olivine_d_fabric have different slip systems than olivine A,B,C,E fabrics
+        // CPX has different crystal structure (monolitic) and slip systems than olivine fabrics
         if (deformation_type == DeformationType::clinopyroxene)
           {
             // More accurate way to calculate slip plane <110> normal by doing cross product
@@ -725,27 +725,6 @@ namespace aspect
             slip_normal_reference =  {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
             slip_direction_reference = {{Tensor<1,3>({0,0,1}),0.5*sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
           }
-        else if (deformation_type == DeformationType::olivine_d_fabric)
-          {
-            // Olivine axes length in angstrom (Å) https://www.mindat.org/min-29264.html
-            const Tensor<1,3> olivine_a_axis ({4.816,0.,0.});
-            const Tensor<1,3> olivine_b_axis ({0.,10.469,0.});
-            const Tensor<1,3> olivine_c_axis ({0.,0.,6.099});
-
-            // Crystal axis b minus axis c
-            const Tensor<1,3> vec_13b_minus_c = 0.333*olivine_b_axis - olivine_c_axis;
-            // Cross product between a*(b-c) to get normal vector for nsp{011}
-            // Olivine D-type fabric Geng et al., 2022 G3 and ref therein gives D-type fabric slip system of {0kl}[100]
-            // This {0kl} contribute to the girdle in b axis (010) pole figure.
-            // https://doi.org/10.1029/2022GC010507
-            Tensor<1,3> plane031_normal = cross_product_3d(olivine_a_axis,vec_13b_minus_c);
-            plane031_normal /= plane031_normal.norm();
-            // slip_normal_reference (vector n) & slip_direction_reference (vector l) for olivine D types
-            // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100]
-            slip_normal_reference = {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),plane031_normal}};
-            slip_direction_reference = {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({1,0,0})}};
-          }
-
 
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
@@ -1040,13 +1019,12 @@ namespace aspect
               ref_resolved_shear_stress[3] = 1;
               break;
 
-            // from Kaminski and Ribe, GRL 2002 and
-            // Becker et al., 2007 (http://www-udc.ig.utexas.edu/external/becker/preprints/bke07.pdf)
+            // from Kaminski and Ribe, GRL 2002
             case DeformationType::olivine_d_fabric :
-              ref_resolved_shear_stress[0] = 3;
-              ref_resolved_shear_stress[1] = 5;
-              ref_resolved_shear_stress[2] = max_value;
-              ref_resolved_shear_stress[3] = 1;
+              ref_resolved_shear_stress[0] = 1;
+              ref_resolved_shear_stress[1] = 1;
+              ref_resolved_shear_stress[2] = 3;
+              ref_resolved_shear_stress[3] = max_value;
               break;
 
             // Kaminski, Ribe and Browaeys, GJI, 2004 (same as in the matlab code) and
@@ -1069,7 +1047,6 @@ namespace aspect
               break;
 
             // RRSS for CPX (preliminary results, require further investigations)
-            // Karato 2008 AnnRevEPS; Bystricky_etal 2001 science {031}[100]
             case DeformationType::clinopyroxene :
               ref_resolved_shear_stress[0] = 1;
               ref_resolved_shear_stress[1] = 5;
@@ -1159,9 +1136,7 @@ namespace aspect
             //
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
-                               "The RRSS values for Olivine (D-type), used in fabric calculations."
-                               "Karato 2008 AnnRevEPS; Bystricky_etal 2001 science "
-                               "with added slip system {031}[100]");
+                               "The RRSS values for CPX, used in fabric calculations.");
 
             prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                Patterns::List(Patterns::Double(0)),
