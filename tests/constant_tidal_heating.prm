@@ -9,6 +9,9 @@
 #
 # The governing equation in the model is simplified as (density)*(specific heat capacity)*dT/dt=H, as unit of H is W/m^3.
 # As expected, temperature increases with time as the convective and conductive processes are not active.
+#
+# The statistics show temperature of 1.94196735e2 K after 100 Myr of tidal heating and heating rate of 6.29829872e-09 W/kg.
+# These match with analytical values which are 1.94196735e+02 K and 6.29829872e-09 W/kg for temperature and heating rate, respectively.
 
 
 set Dimension                              = 2
