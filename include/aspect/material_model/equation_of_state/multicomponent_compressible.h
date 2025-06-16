@@ -45,12 +45,11 @@ namespace aspect
        * field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. If only one value is given,
        * then all fields/phases use the same value. Other lengths of lists are not allowed.
        *
-       * The material parameters for each compositional field and phase are calculated self-consistently,
-       * assuming a constant pressure derivative of the isothermal bulk modulus ($K_T'$)
-       * at the reference temperature (i.e. a Murnaghan equation of state),
-       * a constant ratio of the thermal expansivity ($\alpha$) and
-       * isothermal compressibility ($\beta_T$), and a constant isochoric
-       * specific heat $C_v$. This leads to the following expressions for the material
+       * If no phase transitions are included, the material parameters for each compositional field
+       * are calculated self-consistently, assuming a constant pressure derivative of the isothermal
+       * bulk modulus ($K_T'$) at the reference temperature (i.e. a Murnaghan equation of state),
+       * a constant ratio of the thermal expansivity ($\alpha$) and isothermal compressibility ($\beta_T$),
+       * and a constant isochoric specific heat $C_v$. This leads to the following expressions for the material
        * properties of each material:
        *
        * $\rho(p,T) = \rho_0 f^{1/K_T'}$
@@ -61,6 +60,10 @@ namespace aspect
        *
        * where $\rho$ is the density and $C_p$ is the isobaric heat capacity.
        * $f$ is a scaling factor for $\alpha$ and $\beta_T$.
+       *
+       * Significantly, if phase transitions are included the formulation no longer self-consistently calculates
+       * the second derivative properties (heat capacity, thermal expansivity, and compressibility), as they are
+       * they are affected by the P-T-X dependence of the phase function.
        */
       template <int dim>
       class MulticomponentCompressible :  public ::aspect::SimulatorAccess<dim>
@@ -144,6 +147,11 @@ namespace aspect
            * for the background field.
            */
           std::vector<double> isochoric_specific_heats;
+
+          /**
+           * Whether to enable the use of phase transitions, which currently breaks thermodynamic consistency
+           */
+          bool enable_phase_transitions;
       };
     }
   }

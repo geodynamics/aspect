@@ -236,9 +236,10 @@ namespace aspect
           std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
           compositional_field_names.insert(compositional_field_names.begin(),"background");
 
-          Utilities::MapParsing::Options options(chemical_field_names, "Thermal conductivities");
+          Utilities::MapParsing::Options options(chemical_field_names, "");
           options.list_of_allowed_keys = compositional_field_names;
           options.allow_multiple_values_per_key = true;
+          options.check_values_per_key = true;
           options.n_values_per_key = n_phases_for_each_chemical_composition;
           options.check_values_per_key = (options.n_values_per_key.size() != 0);
           options.store_values_per_key = (options.n_values_per_key.size() == 0);

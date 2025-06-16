@@ -160,6 +160,12 @@ namespace aspect
                            "background: value1|value2|...|valueP_1+1, field1:value1|...|valueP_2+1, ..., fieldN: value1|...|valueP_N+1. "
                            "If only one value is given, then all fields/phases use the same value. "
                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
+        prm.declare_entry ("Enable phase transitions", "false",
+                           Patterns::Bool (),
+                           "Whether to enable the use of phase transitions, which break the thermodynamic "
+                           "consistency of the equation of state for properties (heat capacity, thermal "
+                           "expansivity and compressibility) that are affected by the P-T-X dependence "
+                           "of the phase transition.");
       }
 
 
@@ -173,14 +179,13 @@ namespace aspect
 
         // Establish that a background field is required here
         compositional_field_names.insert(compositional_field_names.begin(),"background");
-        Utilities::MapParsing::Options options(compositional_field_names, "");
 
         std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
         chemical_field_names.insert(chemical_field_names.begin(),"background");
 
+        Utilities::MapParsing::Options options(compositional_field_names, "");
         options.list_of_allowed_keys = compositional_field_names;
         options.allow_multiple_values_per_key = true;
-
         if (expected_n_phases_per_composition)
           {
             options.n_values_per_key = *expected_n_phases_per_composition;
@@ -189,10 +194,24 @@ namespace aspect
             // if they are to be used for all phases associated with a given key.
             options.check_values_per_key = true;
           }
+        else
+          {
+            // If the material model does not tell us how many phases per composition to expect,
+            // at least check that the parameters parsed below have the same number of values.
+            options.store_values_per_key = true;
+          }
+
+        // Check that phase transitions have explicitly been enabled if the number of phases
+        // for any compositional field is greater than 0
+        // ToDo: Loop over n_phases_per_compositions and ensure that no value is greater than 1
 
         // Parse multicomponent properties
         options.property_name = "Reference temperatures";
         reference_temperatures = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
+
+        // Now that we know we have stored the number of phases per composition, we can check them for subsequent properties.
+        options.store_values_per_key = false;
+        options.check_values_per_key = true;
 
         options.property_name = "Reference densities";
         reference_densities = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
@@ -208,6 +227,8 @@ namespace aspect
 
         options.property_name = "Isochoric specific heats";
         isochoric_specific_heats = Utilities::MapParsing::parse_map_to_double_array (prm.get(options.property_name), options);
+
+        enable_phase_transitions = prm.get_bool ("Enable phase transitions");
       }
     }
   }
