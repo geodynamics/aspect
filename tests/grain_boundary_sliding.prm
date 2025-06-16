@@ -1,0 +1,131 @@
+## This parameter file tests the implementation
+# of grain boundary sliding (GBS) rheology in ASPECT, based on the analytical
+# creep law from Goldsby & Kohlstedt (2001): 
+#
+#   η = 0.5 * A^(-1/n) * d^m * exp[(E + PV)/(nRT)] * (ε̇)^{(1-n)/n}
+#
+# where:
+#   η is the effective viscosity,
+#   A is the prefactor,
+#   n is the stress exponent,
+#   m is the grain size exponent,
+#   d is the grain size,
+#   E is the activation energy,
+#   V is the activation volume,
+#   P is pressure,
+#   R is the gas constant,
+#   T is temperature,
+#   ε̇ is the second invariant of the deviatoric strain rate tensor.
+#
+# This test imposes a constant shear velocity field that produces a uniform
+# strain rate of ε̇ = 1.0 x 10^-15 s⁻¹ throughout the domain. The temperature is fixed
+# at 263 K, and the grain size is set to 26 μm. These material parameters are chosen
+# to represent deformation in ice 1.
+#
+# All other creep mechanisms (e.g., diffusion creep, dislocation creep,
+# Peierls creep) are effectively disabled to isolate the GBS response.
+#
+# The viscosity field output from ASPECT is 3.805e+15 Pa s.
+# This matches the analytical solution of 3.81e+15 Pa·s 
+# computed in Python using the following code:
+#
+# import numpy as np
+#
+# # Constants
+# A = 3.9e-19              # 1/Pa^n m^m /s
+# n = 1.8
+# m = 1.4
+# d = 26e-6                # m
+# E = 49000                # J/mol
+# V = 13e-6                # m^3/mol
+# R = 8.314                # J/mol/K
+# T = 263                  # K
+# edot = 1e-15             # 1/s
+
+# # Pressure in Pascals at mid-depth (P = rho * g * (H - y)). 0 in this case for simplicity.
+# y = 0.5
+# P = 0
+
+# eta = 0.5 * A**(-1/n) * d**m * np.exp((E + P * V) / (n * R * T)) * edot**((1 - n) / n)
+# print(f"Analytical viscosity at y={y}: {eta:.2e} Pa·s")
+
+set Dimension                              = 2
+set End time                               = 0.025
+set Use years in output instead of seconds = false
+set Output directory = grain_boundary_sliding
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+    set X periodic = true
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 1
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom:function, top:function
+
+  subsection Function
+    set Function expression = if (y < 0.5, -1e-15, 1e-15); 0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 263
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+    set Viscous flow law = diffusion 
+    set Include Grain Boundary Sliding = true
+
+    set Reference strain rate = 1e-15
+    set Minimum strain rate = 1e-20
+
+    subsection Grain boundary sliding
+      # GBS Parameters (Goldsby & Kohlstedt 2001)
+      set Prefactors for grain boundary sliding = 3.9e-19
+      set Stress exponents for grain boundary sliding = 1.8
+      set Grain size exponents for grain boundary sliding = 1.4
+      set Activation energies for grain boundary sliding = 49000
+      set Activation volumes for grain boundary sliding = 13e-6
+      set Grain size = 26e-6
+    end
+
+    set Prefactors for diffusion creep = 1e-50
+   
+    set Minimum viscosity = 1e10
+    set Maximum viscosity = 1e25
+    set Yield mechanism = drucker
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, material statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = material properties,  strain rate
+    set Output format =  gnuplot
+    set Time between graphical output = 1e6
+  end
+end

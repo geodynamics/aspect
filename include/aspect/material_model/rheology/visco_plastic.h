@@ -34,6 +34,7 @@
 #include <aspect/material_model/rheology/compositional_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/material_model/rheology/grain_boundary_sliding.h>
 #include <aspect/simulator_access.h>
 
 #include<deal.II/fe/component_mask.h>
@@ -318,6 +319,16 @@ namespace aspect
           Rheology::DiffusionCreep<dim> diffusion_creep;
           Rheology::DislocationCreep<dim> dislocation_creep;
           std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
+
+          /**
+           * Whether to include grain boundary sliding in the constitutive formulation.
+           */
+          bool use_grain_boundary_sliding;
+
+          /**
+            Object for computing grain boundary sliding viscosities.
+           */
+          std::unique_ptr<Rheology::GrainBoundarySliding<dim>> grain_boundary_sliding_rheology;
 
           /**
            * Whether to include Peierls creep in the constitutive formulation.

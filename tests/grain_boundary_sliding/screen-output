@@ -1,0 +1,25 @@
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 84 (50+9+25)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 2+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-grain_boundary_sliding/solution/solution-00000
+     Average density / Average viscosity / Total mass:  3303 kg/m^3, 3.805e+15 Pa s, 3303 kg
+
+*** Timestep 1:  t=0.025 seconds, dt=0.025 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3303 kg/m^3, 3.805e+15 Pa s, 3303 kg
+
+Termination requested by criterion: end time
+
+
+
