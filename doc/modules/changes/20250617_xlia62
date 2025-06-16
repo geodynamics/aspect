@@ -1,0 +1,7 @@
+New: Add support for specifying 
+bedrock_river_incision_rate (Kf) and bedrock_transport_coefficient (Kd) 
+in Fastscape Fortran using user-defined functions.
+These parameters represent climate and rock erodibility conditions.
+They can now vary in both space and time through 2D and time-dependent functions.
+
+(Liang Xue, Derek Neuharth, 2025/06/17)

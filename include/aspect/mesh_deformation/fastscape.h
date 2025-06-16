@@ -105,9 +105,10 @@ namespace aspect
         void load (const std::map<std::string, std::string> &status_strings) override;
 
         /**
-         * Update time-dependent input parmetersfor the FastScape plugin.
+         * Update time-dependent input parmeters for the FastScape plugin.
          */
         void update() override;
+
 
       private:
         /**
@@ -275,6 +276,11 @@ namespace aspect
          * Seed number for initial topography noise in FastScape.
          */
         int fastscape_seed;
+
+        /**
+         * time scale factor for time-dependent parmeters for the FastScape plugin.
+         */
+        double time_scaling_factor;
 
         /**
          * Variable to hold ASPECT domain extents.
@@ -446,10 +452,24 @@ namespace aspect
         double sediment_deposition_g;
 
         /**
-         * Bedrock river incision rate for the stream power law.
-         * (meters^(1-2m)/yr, $kf$ variable in FastScape surface equation.)
+         * Bedrock river incision rate (kf) for the stream power law.
+         * Units: $\{m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, 
+         * the units are $\{m^(1-2drainage_area_exponent)/s}$
+         * $kf$ variable in FastScape surface equation.)
+         * This function is only used only if use_kf_distribution_function is true.
          */
-        double bedrock_river_incision_rate;
+        Functions::ParsedFunction<2> kf_distribution_function;
+        
+        /**
+         * Flag to choose if a function of river incision rate for the stream power law will be applied.
+         */
+        bool use_kf_distribution_function;
+
+        /**
+         * Bedrock river incision rate (kf) for the stream power law.
+         * This function is only used only if use_kf_distribution_function is false.
+         */
+        double constant_bedrock_river_incision_rate;
 
         /**
          * Sediment river incision rate for the stream power law (meters^(1-2m)/yr).
@@ -459,7 +479,11 @@ namespace aspect
         double sediment_river_incision_rate;
 
         /**
-         * Declare a parsed function for spatially variable kd 
+         * Bedrock transport coefficient value for hillslope diffusion 
+         * Units: $\\{m^2/yr}$ if ``Use years instead of seconds in output'' is true; 
+         * otherwise, the units are $\$\\{m^2/s}$".
+         * $kd$ in FastScape surface equation.
+         * This function is only used only if use_kd_distribution_function is true. 
          */
         Functions::ParsedFunction<2> kd_distribution_function;
 
@@ -469,13 +493,15 @@ namespace aspect
         bool use_kd_distribution_function;
 
         /**
-         * The constant bedrock transport coefficient valuefor hillslope diffusion (m^2/yr, kd in FastScape surface equation.)
+         * Bedrock transport coefficient valuefor hillslope diffusion 
+         * (m^2/yr, kd in FastScape surface equation).
+         * This function is only used only if use_kf_distribution_function is false.
          */
         double constant_bedrock_transport_coefficient;
 
         /**
-         * Sediment transport coefficient for hillslope diffusion (m^2/yr). When set to -1 this is
-         * identical to the bedrock value.
+         * Sediment transport coefficient for hillslope diffusion (m^2/yr). 
+         * When set to -1 this is identical to the bedrock value.
          * (kd in FastScape surface equation applied to sediment).
          */
         double sediment_transport_coefficient;
