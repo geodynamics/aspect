@@ -89,29 +89,18 @@ namespace aspect
           const auto origin = box->get_origin();
           const auto extent = box->get_extents();
 
-// TODO: I *think* that grid_extent and grid_extent_surface are identical here. What is their difference?
-// The documentation doesn't say, and they are not used for the spherical shell at all. If they are only
-// used for the box geometry, it may be useful to prefix their names with box_ to indicate that, in the
-// same way as we have spherical_vertex_index_map.
           for (unsigned int i = 0; i < dim; ++i)
             {
-              grid_extent[i].first = origin[i];
-              grid_extent[i].second = origin[i] + extent[i];
-            }
-
-          // Extract and store grid extent for later use
-          for (unsigned int i = 0; i < dim - 1; ++i)
-            {
-              grid_extent_surface[i].first = origin[i];
-              grid_extent_surface[i].second = origin[i] + extent[i];
+              box_grid_extent[i].first = origin[i];
+              box_grid_extent[i].second = origin[i] + extent[i];
             }
 
           // Build surface mesh corners from grid extent
           Point<dim - 1> p1, p2;
           for (unsigned int i = 0; i < dim - 1; ++i)
             {
-              p1[i] = grid_extent_surface[i].first;
-              p2[i] = grid_extent_surface[i].second;
+              p1[i] = box_grid_extent[i].first;
+              p2[i] = box_grid_extent[i].second;
             }
 
           // Extract surface repetitions from full domain repetitions
@@ -127,8 +116,8 @@ namespace aspect
           // Store grid dimensions for indexing and spacing
           nx = surface_repetitions[0]+1;
           ny = surface_repetitions[1]+1;
-          dx = (grid_extent_surface[0].second - grid_extent_surface[0].first) / static_cast<double>(nx-1);
-          dy = (grid_extent_surface[1].second - grid_extent_surface[1].first) / static_cast<double>(ny-1);
+          dx = (box_grid_extent[0].second - box_grid_extent[0].first) / static_cast<double>(nx-1);
+          dy = (box_grid_extent[1].second - box_grid_extent[1].first) / static_cast<double>(ny-1);
 
           // Create refined surface mesh
           GridGenerator::subdivided_hyper_rectangle(surface_mesh,
@@ -203,7 +192,7 @@ namespace aspect
                                this->get_mpi_communicator());
       const types::boundary_id top_boundary =
         this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-      std::cout<<"here it works 0a"<<std::endl;
+      // std::cout<<"here it works 0a"<<std::endl;
 // TODO: I'm going to suggest the following convention, to make it easier to
 // understand what we are doing: When we are iterating over cells of the ASPECT
 // triangulation/DoFHandler, let's call the object 'volume_cell'. If we are
@@ -222,10 +211,10 @@ namespace aspect
 
                 for (unsigned int v = 0; v < cell->face(face)->n_vertices(); ++v)
                   {
-                    std::cout<<"here it works 0a"<<std::endl;
+                    // std::cout<<"here it works 0a"<<std::endl;
 
                     const Point<dim> pos = cell->face(face)->vertex(v);
-                    std::cout<<"here it works 0b"<<std::endl;
+                    // std::cout<<"here it works 0b"<<std::endl;
 
                     // Extract the full velocity vector at the vertex
                     Tensor<1, dim> velocity;
@@ -235,7 +224,7 @@ namespace aspect
                         const unsigned int component_index = this->introspection().component_indices.velocities[d];
                         velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, component_index)];
                       }
-                    std::cout<<"here it works 0c"<<std::endl;
+                    // std::cout<<"here it works 0c"<<std::endl;
 
 
                     // Use the gravity model to obtain a "vertical" direction
@@ -245,24 +234,24 @@ namespace aspect
                     const double gravity_norm = gravity.norm();
                     if (gravity_norm > 0.0)
                       gravity_dir /= gravity_norm;
-                    std::cout<<"here it works 0d"<<std::endl;
+                    // std::cout<<"here it works 0d"<<std::endl;
 
 
                     const double vertical_velocity = velocity * gravity_dir;
                     const double height = this->get_geometry_model().height_above_reference_surface(pos);
                     const unsigned int index = this->vertex_index(pos);
-                    std::cout<<"here it works 0e"<<std::endl;
-                    std::cout<< "Surface pos: " << pos <<std::endl;
-                    std::cout   << ", Index: " << index << std::endl;
-                    std::cout<< "Vertical velocity: " << vertical_velocity<< std::endl;
-                    std::cout  << ", velocity: " << surface_vertical_velocity[index]<<std::endl;
-                    std::cout   << ", topography: " << surface_elevation[index] <<std::endl;
+                    // std::cout<<"here it works 0e"<<std::endl;
+                    // std::cout<< "Surface pos: " << pos <<std::endl;
+                    // std::cout   << ", Index: " << index << std::endl;
+                    // std::cout<< "Vertical velocity: " << vertical_velocity<< std::endl;
+                    // std::cout  << ", velocity: " << surface_vertical_velocity[index]<<std::endl;
+                    // std::cout   << ", topography: " << surface_elevation[index] <<std::endl;
 
                     surface_vertical_velocity[index] = vertical_velocity;
-                    std::cout<<"here it works 0f"<<std::endl;
+                    // std::cout<<"here it works 0f"<<std::endl;
 
                     surface_elevation[index] = height;
-                    std::cout<<"here it works 0g"<<std::endl;
+                    // std::cout<<"here it works 0g"<<std::endl;
 
                   }
               }
@@ -281,12 +270,12 @@ namespace aspect
         {
           if constexpr (dim == 3)
             {
-              const unsigned int i =std::min(static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5), nx - 1);
-              const unsigned int j =std::min(static_cast<unsigned int>((p[1] - grid_extent[1].first) / dy + 0.5), ny - 1);
+              const unsigned int i =std::min(static_cast<unsigned int>((p[0] - box_grid_extent[0].first) / dx + 0.5), nx - 1);
+              const unsigned int j =std::min(static_cast<unsigned int>((p[1] - box_grid_extent[1].first) / dy + 0.5), ny - 1);
               const unsigned int index = j * nx + i;
 
               // std::cout << "[DEBUG vertex_index] p: (" << x << ", " << y << "), "
-              //           << "grid_extent x0: " << x0 << ", y0: " << y0 << ", "
+              //           << "box_grid_extent x0: " << x0 << ", y0: " << y0 << ", "
               //           << "dx: " << dx << ", dy: " << dy << ", "
               //           << "i: " << i << ", j: " << j << ", nx: " << nx << ", "
               //           << "index: " << index << std::endl;
@@ -296,11 +285,11 @@ namespace aspect
           else if constexpr (dim == 2)
             {
               const double x = p[0];
-              const double x0 = grid_extent[0].first;
+              const double x0 = box_grid_extent[0].first;
               const unsigned int i = static_cast<unsigned int>((x - x0) / dx + 0.5);
 
               std::cout << "[DEBUG vertex_index 2D] p: " << x
-                        << ", grid_extent x0: " << x0
+                        << ", box_grid_extent x0: " << x0
                         << ", dx: " << dx << ", i: " << i << std::endl;
 
               return i;
@@ -335,9 +324,9 @@ namespace aspect
 
       // Step 1: Project current surface velocity from ASPECT solution
       dealii::LinearAlgebra::distributed::Vector<double> surface_vertical_velocity, surface_elevation;
-      std::cout<<"here it works 0"<<std::endl;
+      // std::cout<<"here it works 0"<<std::endl;
       this->project_surface_solution(boundary_ids, surface_vertical_velocity, surface_elevation);
-      std::cout<<"here it works 1"<<std::endl;
+      // std::cout<<"here it works 1"<<std::endl;
 
       const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
       const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
@@ -451,7 +440,7 @@ namespace aspect
           // the one after calling FastScape:
           const std::vector<double> h_old = h;
 
-          std::cout<<"here it works 11"<<std::endl;
+          // std::cout<<"here it works 11"<<std::endl;
 
           const double aspect_timestep_in_years = this->get_timestep() / year_in_seconds;
 
@@ -507,7 +496,7 @@ namespace aspect
           =
             // fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
             fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5);
-          std::cout << "here it works 12" << std::endl;
+          // std::cout << "here it works 12" << std::endl;
 
           //Only for raster grid 
           //To propose if we add back the raster grid option later 
@@ -543,6 +532,7 @@ namespace aspect
           std::vector<std::string> vtu_filenames;
 
           // === WRITE INITIAL STATE ===
+          //Output the 
 // TODO: Is the comment wrong? We're not at the initial state any more, right?
 
 // TODO: In the long run (perhaps not right away), we should adopt a system like many of
@@ -661,15 +651,15 @@ namespace aspect
             this->get_pcout() << "➤ Wrote PVD file: " << pvd_filename << std::endl;
           }
  
-
-
           // Compute erosion velocities
 // TODO: We compute a vertical velocity in meters per year here. But internally, ASPECT
 // computes in meters/second. When you apply these constraints, you'll have to multiple
 // as appropriate. It might be nice to do that here already.
+          const double aspect_timestep_in_seconds = aspect_timestep_in_years * year_in_seconds;
+
           for (unsigned int i = 0; i < n_grid_nodes; ++i)
             {
-              V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
+              V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_seconds;
               // std::cout << "grid node: " << i << ", V: " << V[i] << std::endl;
             }
 
