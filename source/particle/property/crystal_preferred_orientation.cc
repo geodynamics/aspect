@@ -687,13 +687,24 @@ namespace aspect
         std::vector<double> strain_energy(n_grains);
         double mean_strain_energy = 0;
 
-        // First initiate the slip_direction_reference (vector l) in Kaminski 2001) and
-        // slip_normal_reference (vector n) for olivine A,B,C,E types
-        std::array<Tensor<1,3>,4> slip_normal_reference {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
-        std::array<Tensor<1,3>,4> slip_direction_reference {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+        // First initiate the slip_normal_reference (vector n) and the
+        // slip_direction_reference (vector l) in Kaminski (2001) 
+        std::array<Tensor<1,3>,4> slip_normal_reference; 
+        std::array<Tensor<1,3>,4> slip_direction_reference; 
 
-        // CPX has different crystal structure (monolitic) and slip systems than olivine fabrics
-        if (deformation_type == DeformationType::clinopyroxene)
+        // for olivine A,B,C,D,E and types and enstatite
+        if (deformation_type == DeformationType::olivine_a_fabric || 
+            deformation_type == DeformationType::olivine_b_fabric ||
+            deformation_type == DeformationType::olivine_c_fabric ||
+            deformation_type == DeformationType::olivine_d_fabric ||
+            deformation_type == DeformationType::olivine_e_fabric || 
+            deformation_type == DeformationType::enstatite)
+          {
+            slip_normal_reference = {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
+            slip_direction_reference = {{Tensor<1,3>({1,0,0}),Tensor<1,3>({1,0,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
+          }
+        // CPX has different crystal structure (monoclinic) and slip systems than olivine or enstatite fabrics
+        else if (deformation_type == DeformationType::clinopyroxene)
           {
             // More accurate way to calculate slip plane <110> normal by doing cross product
             // First CPX crystal structure info, length unit Angstrom (Å)
@@ -725,6 +736,8 @@ namespace aspect
             slip_normal_reference =  {{Tensor<1,3>({0,1,0}),plane11_0_normal,plane110_normal,Tensor<1,3>({1,0,0})}};
             slip_direction_reference = {{Tensor<1,3>({0,0,1}),0.5*sd110,Tensor<1,3>({0,0,1}),Tensor<1,3>({0,0,1})}};
           }
+        else
+          AssertThrow(false, ExcMessage("Unknown deformation type"));
 
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
@@ -1047,6 +1060,7 @@ namespace aspect
               break;
 
             // RRSS for CPX (preliminary results, require further investigations)
+            // Main slip systems from Bascou_etal., 2002 JSG and Zhang et al., 2006 EPSL and with numerical experiments
             case DeformationType::clinopyroxene :
               ref_resolved_shear_stress[0] = 1;
               ref_resolved_shear_stress[1] = 5;
@@ -1133,10 +1147,13 @@ namespace aspect
                                "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite or CPX. Passive sets all RRSS entries to the maximum. The "
                                "Karato 2008 selector selects a fabric based on stress and water content as defined in "
                                "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
-            //
+            
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
-                               "The RRSS values for CPX, used in fabric calculations.");
+                               "The RRSS values for CPX, used in fabric calculations."
+                               "(preliminary results, require further investigations)"
+                               "Main slip systems from Bascou_etal., 2002 JSG and "
+                               "Zhang et al., 2006 EPSL and with numerical experiments");
 
             prm.declare_entry ("Volume fractions minerals", "0.7, 0.3",
                                Patterns::List(Patterns::Double(0)),

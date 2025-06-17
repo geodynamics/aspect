@@ -120,7 +120,6 @@ namespace aspect
               }
             else if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::clinopyroxene)
               {
-                // implemented but is not tested yet, use with caution
                 stiffness_matrix = &stiffness_matrix_clinopyroxene;
               }
             else
