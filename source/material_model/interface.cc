@@ -1000,8 +1000,8 @@ namespace aspect
 
     template <int dim>
     PrescribedPlasticDilation<dim>::PrescribedPlasticDilation (const unsigned int n_points)
-      : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "prescribed_dilation")),
-        dilation(n_points, numbers::signaling_nan<double>())
+      : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(3, "prescribed_dilation")),
+        dilation(dim, std::vector<double>(n_points, numbers::signaling_nan<double>()))
     {}
 
 
@@ -1010,8 +1010,17 @@ namespace aspect
     std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
     {
       (void)idx;
-      Assert(idx==0, ExcInternalError());
-      return dilation;
+      Assert(idx<3, ExcInternalError());
+      switch (idx)
+        {
+          case 0:
+            return dilation[0];
+          case 1:
+            return dilation[1];
+          case 2:
+            return dilation[2];
+        }
+      return std::vector<double>();
     }
 
 

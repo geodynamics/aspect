@@ -1232,7 +1232,7 @@ namespace aspect
          * A scalar value per evaluation point that specifies the prescribed dilation
          * in that point.
          */
-        std::vector<double> dilation;
+        std::vector<std::vector<double>> dilation;
     };
 
 
