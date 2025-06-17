@@ -1,0 +1,14 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Visualization file name
+# 11: RMS velocity (m/s)
+# 12: Max. velocity (m/s)
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 289 0 0 output-steinberger_plasticity_2/solution/solution-00000 3.77276746e-10 3.97100000e-10 
+1 5.000000000000e-01 5.000000000000e-01 64 659 289 289 0 0                                                      "" 3.77276746e-10 3.97100000e-10 

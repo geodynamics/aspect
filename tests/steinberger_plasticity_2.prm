@@ -1,0 +1,124 @@
+# This is a test for Steinberger material model with Drucker-Prager Plasticity
+# The model is set up with a prescribed velocity field. Given the model setup, 
+# yielding is expected to happen at places where pressure is lower than 2 GPa
+# (~50 km depth).
+# yield stress = P*sind(0.5) + 8e7*cosd(0.5) Pa
+# stress second invariant = 1e8 Pa
+# yielding if yield stress <= stress second invariant
+
+set Dimension                              = 2
+set Use years in output instead of seconds = false
+set Adiabatic surface temperature          = 1600.0
+set End time                               = 0.5
+set Output directory                       = output-steinberger_plasticity_2
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+# vx increases with depth with a constant rate, giving a strain rate of 5e-17 1/s
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Variable names = x,y,t
+    set Function constants = bottom_vx= 3.1710e-10, top_vx = 3.5710e-10
+    set Function expression = (top_vx - bottom_vx)/400e3 * y + top_vx ; 0 
+  end
+end
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+# Composition setup
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = density_field
+  set Types of fields  = density
+  set Compositional field methods = prescribed field
+end
+
+subsection Material model
+  set Model name = Steinberger 
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
+    set Material file names              = testdata.txt
+
+    # No temperature dependency of viscosity
+    set Lateral viscosity file name      = test-viscosity-prefactor.txt
+
+    # eta_ref = 1e24 Pa s at all depth
+    set Radial viscosity file name       = test-radial-visc-higher.txt
+
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Thermal conductivity             = 1.5
+    set Maximum viscosity                = 1e24
+
+    # Drucker-Prager plasticity
+    set Use Drucker-Prager rheology       = true
+    set Cohesions                         = 8e7
+    set Angles of internal friction       = 0.5 # = 0.01 radians
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 400e3
+    set Y extent = 400e3
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Minimal temperature = 273
+  end
+end
+
+subsection Initial temperature model
+  set Model name   = function
+
+  subsection Function
+    set Function expression = 1200.0
+  end
+
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81   # = Ra / Thermal expansion coefficient
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+
+  subsection Visualization
+    set List of output variables = material properties, named additional outputs, stress second invariant, strain rate
+    set Output format                 = gnuplot
+    set Point-wise stress and strain  = true
+  end
+end
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-7
+  end
+end
