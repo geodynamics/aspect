@@ -5,32 +5,32 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system (GMG)... 25+0 iterations.
+   Solving Stokes system (GMG)... 35+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.16908e-13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.91178e-13
 
 
    Postprocessing:
      RMS, max velocity:        2.13 m/s, 4.93 m/s
-     Errors u_L2, p_L2:        1.794314e-04, 8.890798e-05
+     Errors u_L2, p_L2:        1.794305e-04, 8.789932e-05
      Writing graphical output: output-prescribed_dilation_gmg/solution/solution-00000
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving Stokes system (GMG)... 26+0 iterations.
+   Solving Stokes system (GMG)... 36+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.7238e-13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.33873e-13
 
 
    Postprocessing:
      RMS, max velocity:        2.13 m/s, 4.93 m/s
-     Errors u_L2, p_L2:        2.245433e-05, 5.961163e-06
+     Errors u_L2, p_L2:        2.245432e-05, 5.910004e-06
      Writing graphical output: output-prescribed_dilation_gmg/solution/solution-00001
 
 Termination requested by criterion: end time

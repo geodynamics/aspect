@@ -102,6 +102,20 @@ namespace aspect
        * All the drucker prager plasticity parameters.
        */
       std::vector<Rheology::DruckerPragerParameters> drucker_prager_parameters;
+
+      /**
+       * The LHS term corresponding to plastic dilation in the
+       * Stokes system. For details, see the comments of
+       * MaterialModel::PrescribedDilation::dilation_lhs_term.
+       */
+      std::vector<double> dilation_lhs_terms;
+
+      /**
+       * The RHS term corresponding to plastic dilation in the
+       * Stokes system. For details, see the comments of
+       * MaterialModel::PrescribedDilation::dilation_rhs_term.
+       */
+      std::vector<double> dilation_rhs_terms;
     };
 
     namespace Rheology
@@ -143,7 +157,7 @@ namespace aspect
            */
           void compute_viscosity_derivatives(const unsigned int point_index,
                                              const std::vector<double> &volume_fractions,
-                                             const std::vector<double> &composition_viscosities,
+                                             const IsostrainViscosities &isostrain_values,
                                              const MaterialModel::MaterialModelInputs<dim> &in,
                                              MaterialModel::MaterialModelOutputs<dim> &out,
                                              const std::vector<double> &phase_function_values = std::vector<double>(),

@@ -104,7 +104,9 @@ namespace aspect
       return viscosity.memory_consumption()
              + newton_factor_wrt_pressure_table.memory_consumption()
              + strain_rate_table.memory_consumption()
-             + newton_factor_wrt_strain_rate_table.memory_consumption();
+             + newton_factor_wrt_strain_rate_table.memory_consumption()
+             + dilation_derivative_wrt_pressure_table.memory_consumption()
+             + dilation_derivative_wrt_strain_rate_table.memory_consumption();
     }
 
 
@@ -118,6 +120,8 @@ namespace aspect
       newton_factor_wrt_pressure_table.clear();
       strain_rate_table.clear();
       newton_factor_wrt_strain_rate_table.clear();
+      dilation_derivative_wrt_pressure_table.clear();
+      dilation_derivative_wrt_strain_rate_table.clear();
     }
   }
 
@@ -220,8 +224,14 @@ namespace aspect
             const VectorizedArray<number> val_p = p_eval.get_value(q);
 
             // Terms to be tested by phi_p:
-            const VectorizedArray<number> pressure_terms =
+            VectorizedArray<number> pressure_terms =
               -cell_data->pressure_scaling * div_u;
+
+            if (cell_data->enable_prescribed_dilation)
+              pressure_terms -= cell_data->pressure_scaling *
+                                cell_data->pressure_scaling *
+                                cell_data->dilation_lhs_term_table(cell,q) *
+                                val_p;
 
             // Terms to be tested by the symmetric gradients of phi_u:
             SymmetricTensor<2,dim,VectorizedArray<number>>
@@ -230,19 +240,33 @@ namespace aspect
             for (unsigned int d=0; d<dim; ++d)
               velocity_terms[d][d] -= cell_data->pressure_scaling * val_p;
 
-            if (cell_data->is_compressible)
+            if (cell_data->is_compressible ||
+                cell_data->enable_prescribed_dilation)
               for (unsigned int d=0; d<dim; ++d)
                 velocity_terms[d][d] -= viscosity_x_2 / 3. * div_u;
 
             // Add the Newton derivatives if required.
             if (cell_data->enable_newton_derivatives)
-              velocity_terms +=
-                ( cell_data->symmetrize_newton_system ?
-                  ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
-                    cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
-                  2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u )
-                +
-                2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
+              {
+                velocity_terms +=
+                  ( cell_data->symmetrize_newton_system ?
+                    ( cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u +
+                      cell_data->newton_factor_wrt_strain_rate_table(cell,q) * eps_times_sym_grad_u ) :
+                    2. * cell_data->strain_rate_table(cell,q) * deta_deps_times_sym_grad_u )
+                  +
+                  2. * cell_data->strain_rate_table(cell,q) * deta_dp_times_p;
+
+                if (cell_data->enable_prescribed_dilation)
+                  {
+                    pressure_terms += ( ( cell_data->dilation_derivative_wrt_strain_rate_table(cell,q)
+                                          * sym_grad_u )
+                                        +
+                                        ( cell_data->dilation_derivative_wrt_pressure_table(cell,q)
+                                          * cell_data->pressure_scaling * val_p )
+                                      )
+                                      * cell_data->pressure_scaling;
+                  }
+              }
 
             u_eval.submit_symmetric_gradient(velocity_terms, q);
             p_eval.submit_value(pressure_terms, q);
@@ -643,7 +667,8 @@ namespace aspect
           velocity.get_symmetric_gradient (q);
         sym_grad_u *= viscosity_x_2;
 
-        if (cell_data->is_compressible)
+        if (cell_data->is_compressible ||
+            cell_data->enable_prescribed_dilation)
           {
             const VectorizedArray<number> div = trace(sym_grad_u);
             for (unsigned int d=0; d<dim; ++d)

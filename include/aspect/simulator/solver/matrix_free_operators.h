@@ -108,6 +108,11 @@ namespace aspect
       bool enable_newton_derivatives;
 
       /**
+       * If true, plastic dilation terms are part of the operator.
+       */
+      bool enable_prescribed_dilation;
+
+      /**
        * Symmetrize the Newton system when it's true (i.e., the
        * stabilization is symmetric or SPD).
        */
@@ -148,6 +153,30 @@ namespace aspect
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
       newton_factor_wrt_strain_rate_table;
+
+      /**
+       * Table which stores the dilation LHS terms. For the definition of this
+       * term, see the comments of MaterialModel::PrescribedPlasticDilation::
+       * dilation_lhs_term.
+       */
+      Table<2, VectorizedArray<number>> dilation_lhs_term_table;
+
+      /**
+       * Table which stores the product of the plastic dilation derivative
+       * with respect to pressure and the Newton derivative scaling factor.
+       * Note that the plastic dilation derivative does not include the term
+       * $\bar\alpha\alpha / \eta^{ve}$, which is always on the left-hand
+       * side no matter if the Newton method is applied.
+       */
+      Table<2, VectorizedArray<number>>
+      dilation_derivative_wrt_pressure_table;
+
+      /**
+       * Table which stores the product of the plastic dilation derivative
+       * with respect to strain-rate and the Newton derivative scaling factor.
+       */
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+      dilation_derivative_wrt_strain_rate_table;
 
       /**
        * Table which stores the product of the pressure perturbation

@@ -1204,15 +1204,27 @@ namespace aspect
      * Stokes solution.
      *
      * This is typically used in a MaterialModel to add dilation when plastic
-     * failure occurs as motivated by ChoiPeterson2015. If this output
-     * (denoted by R below) is present and enable_prescribed_dilation==true
-     * the following terms will be assembled:
-     *
-     * 1) $\int - (R,q)$ to the conservation of mass equation, creating
-     *    $-(div u,q) = -(R,q)$.
-     * 2) $\int - 2.0 / 3.0 * eta * (R, div v)$ to the RHS of the momentum
-     *    equation (if the model is incompressible), otherwise this term is
-     *    already present on the left side.
+     * failure occurs, but can be used for other forms of dilation as well.
+     * When plastic dilation is included, a term
+     * $\bar\alpha\gamma$ should be added to the right-hand side of the
+     * mass conservation equation, where $\bar\alpha$ is the negative
+     * derivative of plastic potential with respect to the pressure
+     * ($\sin\psi$ in 2D case), and $\gamma$ is the plastic multiplier.
+     * The plastic multiplier is given by
+     * $\gamma = (\tau_{II} - \alpha p - k) / \eta^{ve}$,
+     * where $\tau_{II}$ is the second invariant of the deviatoric stress,
+     * $\alpha$ is the negative derivative of yield function with respect to
+     * the pressure ($\sin\phi$ in 2D case), $k$ is cohesion, and $\eta^{ve}$,
+     * is the pre-yielding viscosity. When the Picard method or Defect Correction
+     * Method is applied, the term $\bar\alpha\gamma$ should be split into two
+     * terms:
+     * $\bar\alpha\gamma = \bar\alpha\alpha p / \eta^{ve} +
+     * \bar\alpha(\tau_{II} - k) / \eta^{ve}$,
+     * the former of which should be moved to the left-hand side in order to
+     * guarantee the stability of the nonlinear solver. Therefore, this output
+     * provides two terms: dilation_lhs_term corresponds to
+     * $\bar\alpha\alpha / \eta^{ve}$ (p is replaced by the shape function),
+     * and dilation_rhs_term corresponds to $(\tau_{II} - k) / \eta^{ve}$.
      */
     template <int dim>
     class PrescribedPlasticDilation : public NamedAdditionalMaterialOutputs<dim>
@@ -1229,10 +1241,16 @@ namespace aspect
         std::vector<double> get_nth_output(const unsigned int idx) const override;
 
         /**
-         * A scalar value per evaluation point that specifies the prescribed dilation
-         * in that point.
+         * A scalar value per evaluation point corresponding to the LHS term
+         * due to plastic dilation.
          */
-        std::vector<double> dilation;
+        std::vector<double> dilation_lhs_term;
+
+        /**
+         * A scalar value per evaluation point corresponding to the RHS term
+         * due to plastic dilation.
+         */
+        std::vector<double> dilation_rhs_term;
     };
 
 

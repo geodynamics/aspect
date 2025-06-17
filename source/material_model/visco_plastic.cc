@@ -240,7 +240,7 @@ namespace aspect
                     out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
 
                 rheology->compute_viscosity_derivatives(i, volume_fractions,
-                                                        isostrain_viscosities.composition_viscosities,
+                                                        isostrain_viscosities,
                                                         in, out, phase_function_values,
                                                         n_phase_transitions_for_each_chemical_composition);
             }
@@ -282,6 +282,19 @@ namespace aspect
               average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions,
                                                                                  rheology->elastic_rheology.get_elastic_shear_moduli(),
                                                                                  rheology->viscosity_averaging);
+            }
+
+          if (const std::shared_ptr<PrescribedPlasticDilation<dim>> plastic_dilation =
+                out.template get_additional_output_object<PrescribedPlasticDilation<dim>>())
+            {
+              plastic_dilation->dilation_lhs_term[i]
+                = MaterialUtilities::average_value(volume_fractions,
+                                                   isostrain_viscosities.dilation_lhs_terms,
+                                                   MaterialUtilities::arithmetic);
+              plastic_dilation->dilation_rhs_term[i]
+                = MaterialUtilities::average_value(volume_fractions,
+                                                   isostrain_viscosities.dilation_rhs_terms,
+                                                   MaterialUtilities::arithmetic);
             }
         }
 
