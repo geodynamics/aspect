@@ -21,16 +21,11 @@
 #include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <aspect/geometry_model/interface.h>
 #include <aspect/utilities.h>
-#include <deal.II/base/tensor.h>
 
 #ifdef ASPECT_WITH_WORLD_BUILDER
 #include <world_builder/grains.h>
 #include <world_builder/world.h>
 #endif
-
-#include <vector>
-#include <cmath>
-#include <ostream>
 
 namespace aspect
 {
@@ -1061,11 +1056,28 @@ namespace aspect
 
             // RRSS for CPX (preliminary results, require further investigations)
             // Main slip systems from Bascou_etal., 2002 JSG and Zhang et al., 2006 EPSL and with numerical experiments
-            case DeformationType::clinopyroxene :
-              ref_resolved_shear_stress[0] = 1;
-              ref_resolved_shear_stress[1] = 5;
-              ref_resolved_shear_stress[2] = 5;
-              ref_resolved_shear_stress[3] = 1.5;
+            // case DeformationType::clinopyroxene :
+            //   ref_resolved_shear_stress[0] = 1;
+            //   ref_resolved_shear_stress[1] = 5;
+            //   ref_resolved_shear_stress[2] = 5;
+            //   ref_resolved_shear_stress[3] = 1.5;
+            //   break;
+
+            case DeformationType::clinopyroxene:
+              // Use the member variable CPX_RRSS if it has been set (size == 4)
+              if (CPX_RRSS.size() == 4)
+                {
+                  for (unsigned int i=0; i<4; ++i)
+                    ref_resolved_shear_stress[i] = CPX_RRSS[i];
+                }
+              else
+                {
+                  // Default values if CPX_RRSS wasn't set
+                  ref_resolved_shear_stress[0] = 1;
+                  ref_resolved_shear_stress[1] = 5;
+                  ref_resolved_shear_stress[2] = 5;
+                  ref_resolved_shear_stress[3] = 1.5;
+                }
               break;
 
             default:
@@ -1150,8 +1162,10 @@ namespace aspect
 
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
-                               "The RRSS values for CPX, used in fabric calculations."
+                               "The default RRSS values for CPX, used in fabric calculations."
                                "(preliminary results, require further investigations)"
+                               "user can change this in input file under subsection Initial grains"
+                               "by adding a variable CPX RRSS = four entries separated by comma"
                                "Main slip systems from Bascou_etal., 2002 JSG and "
                                "Zhang et al., 2006 EPSL and with numerical experiments");
 
@@ -1275,23 +1289,41 @@ namespace aspect
             for (size_t mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
               {
                 if (temp_deformation_type_selector[mineral_i] == "Passive")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::passive;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::passive;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] == "Olivine: Karato 2008")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_karato_2008;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_karato_2008;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: A-fabric")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_a_fabric;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_a_fabric;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: B-fabric")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_b_fabric;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_b_fabric;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: C-fabric")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_c_fabric;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_c_fabric;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: D-fabric")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_d_fabric;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_d_fabric;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] ==  "Olivine: E-fabric")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_e_fabric;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::olivine_e_fabric;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] ==  "Enstatite")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::enstatite;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::enstatite;
+                  }
                 else if (temp_deformation_type_selector[mineral_i] ==  "Clinopyroxene")
-                  deformation_type_selector[mineral_i] = DeformationTypeSelector::clinopyroxene;
+                  {
+                    deformation_type_selector[mineral_i] = DeformationTypeSelector::clinopyroxene;
+                  }
                 else
                   {
                     AssertThrow(false,
@@ -1308,8 +1340,9 @@ namespace aspect
             volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
             double volume_fractions_minerals_sum = 0;
             for (auto fraction : volume_fractions_minerals)
-              volume_fractions_minerals_sum += fraction;
-
+              {
+                volume_fractions_minerals_sum += fraction;
+              }
             AssertThrow(std::abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
                         ExcMessage("The sum of the CPO volume fractions should be one."));
           }

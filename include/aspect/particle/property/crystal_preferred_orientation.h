@@ -619,7 +619,14 @@ namespace aspect
           CPOInitialGrainsModel initial_grains_model;
 
           /**
-           * Clinopyroxene Reference Resolved Shear Stress (RRSS), see Fraters and Billen 2021 for details
+           * Clinopyroxene Reference Resolved Shear Stress (RRSS);
+           * The RRSS notation is defined in
+           * Kaminski etal., 2004 and see Fraters and Billen 2021 for details;
+           *
+           * RRSS value for CPX does not exist in DRex formulation,
+           * but Bascou etal., 2002 JSG using VPSC provides a reference, which is
+           * supported by experiment work from Zhang etal., 2006 EPSL
+           * that agree with the three main slip systems
           */
           std::vector<double> CPX_RRSS;
 
