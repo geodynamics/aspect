@@ -396,7 +396,7 @@ namespace aspect
     template<typename Range,
              typename Domain,
              typename Payload>
-    LinearOperator<Range, Domain, Payload> diag_operator(LinearOperator<Range,Domain,Payload> &exemplar, const TrilinosWrappers::MPI::Vector &diagonal)
+    LinearOperator<Range, Domain, Payload> diag_operator(const LinearOperator<Range,Domain,Payload> &exemplar, const TrilinosWrappers::MPI::Vector &diagonal)
     {
       LinearOperator<Range, Domain, Payload> return_op;
 
@@ -499,7 +499,7 @@ namespace aspect
 
 
 
-            solver.solve(matrix,
+            solver.solve(BC_invBT,
                          ptmp,
                          src,
                          mp_preconditioner);
