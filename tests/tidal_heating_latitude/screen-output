@@ -1,0 +1,150 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           100 K, 100 K, 100 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00000
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           106.6 K, 110.2 K, 118.6 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00001
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 2:  t=200000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           113.1 K, 120.3 K, 137.2 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00002
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 3:  t=300000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           119.7 K, 130.5 K, 155.8 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00003
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 4:  t=400000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           126.3 K, 140.7 K, 174.4 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00004
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 5:  t=500000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           132.8 K, 150.8 K, 193 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00005
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 6:  t=600000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           139.4 K, 161 K, 211.6 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00006
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 7:  t=700000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           146 K, 171.2 K, 230.2 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00007
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 8:  t=800000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           152.5 K, 181.3 K, 248.8 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00008
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 9:  t=900000 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           159.1 K, 191.5 K, 267.4 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00009
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+*** Timestep 10:  t=1e+06 years, dt=100000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           165.7 K, 201.7 K, 286 K
+     Writing graphical output:                          output-tidal_heating_latitude/solution/solution-00010
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 2.631e+21 kg
+     Heating rate (average/total):                      6.799e-09 W/kg, 1.789e+13 W
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

@@ -23,6 +23,8 @@
 #define _aspect_heating_model_tidal_heating_h
 
 #include <aspect/heating_model/interface.h>
+#include <aspect/simulator_access.h>
+
 
 namespace aspect
 {
@@ -34,8 +36,15 @@ namespace aspect
      * @ingroup HeatingModels
      */
     template <int dim>
-    class TidalHeating : public Interface<dim>
+    class TidalHeating : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
+      public:
+        /**
+         * Initialize function, which sets the start time and
+         * start timestep of tidal heating.
+         */
+        void initialize() override;
+
       public:
         /**
          * Return the tidal heating terms.
@@ -74,10 +83,28 @@ namespace aspect
          * time-averaged strain rate = constant_tidal_strain_rate
          * tidal frequency = tidal_frequency
          * elastic shear modulus = elastic_shear_modulus
+         *
+         * strain_rate_distribution lets selection for distribution of tidal strain rate.
+         * If 'constant', the tidal strain rate is fixed to 'Constant tidal strain rate'.
+         * If 'latitudinal variation', 'Maximum tidal strain rate' and 'Minimum tidal strain rate' are used.
+         * Then, the equation follows as (maximum_tidal_strain_rate - minimum_tidal_strain_rate)*cos(theta/2)+(maximum_tidal_strain_rate+minimum_tidal_strain_rate)/2.
+         * This is shown in Fig.3 of Nimmo et al. (2007) (https://doi.org/10.1016/j.icarus.2007.04.021).
          */
         double tidal_frequency;
         double elastic_shear_modulus;
         double constant_tidal_strain_rate;
+
+        /**
+         * Specify the distribution of time-averaged tidal strain rate.
+         */
+        enum StrainRateDistribution
+        {
+          constant,
+          latitudinal_variation
+        } strain_rate_distribution;
+
+        double maximum_tidal_strain_rate;
+        double minimum_tidal_strain_rate;
     };
   }
 }
