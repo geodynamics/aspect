@@ -35,5 +35,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "CPO_induced_anisotropic_viscosity")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED  LPO_AV_3D.h LPO_AV_3D.cc cpo_bingham_average_euler.h cpo_bingham_average_euler.cc)
+ADD_LIBRARY(${TARGET} SHARED  cpo_induced_anisotropic_viscosity.h cpo_induced_anisotropic_viscosity.cc anisotropic_stress.cc anisotropic_stress.h)
 ASPECT_SETUP_PLUGIN(${TARGET})

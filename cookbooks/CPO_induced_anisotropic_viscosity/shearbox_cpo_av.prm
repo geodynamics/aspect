@@ -1,0 +1,187 @@
+# This cookbook demonstrates how CPO induced anisotropic viscosity evolves during
+# simple shearing. The model consists of 1 cell and one particle in the middle.
+# The particle includes 500 grains with initially random orientations (isotropic
+# texture), which then evolves into a CPO aligned with the shear direction.
+
+set Additional shared libraries = ./plugin/libCPO_induced_anisotropic_viscosity.debug.so
+set CFL number = 0.1
+set Timing output frequency  = 10000
+set Dimension                = 3
+set Pressure normalization   = surface
+set Surface pressure         = 0
+set Nonlinear solver scheme  = single Advection, single Stokes
+set End time                 = 0.1
+set Use years instead of seconds = false
+set Output directory  = output_Shearbox_CPO_AV
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Function expression = 0;\
+                              0; 0; 0; 0;\
+                              0; 0; 0; 0;\
+                              0; 0; 0; 0;\
+                              0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 14
+  set Names of fields = scalar_viscosity, \
+                        phi1, eigvalue_a1, eigvalue_a2, eigvalue_a3,\
+                        theta, eigvalue_b1, eigvalue_b2, eigvalue_b3,\
+                        phi2, eigvalue_c1, eigvalue_c2, eigvalue_c3,\
+                        water
+  set Compositional field methods = prescribed field, \
+                                    particles, particles, particles, particles, \
+                                    particles, particles, particles, particles, \
+                                    particles, particles, particles, particles, \
+                                    static
+  set Mapped particle properties = phi1:cpo mineral 0 phi1[0], eigvalue_a1:cpo mineral 0 eigenvalues a axis[0], eigvalue_a2:cpo mineral 0 eigenvalues a axis[1], eigvalue_a3:cpo mineral 0 eigenvalues a axis[2], \
+                                   theta:cpo mineral 0 theta[0], eigvalue_b1:cpo mineral 0 eigenvalues b axis[0], eigvalue_b2:cpo mineral 0 eigenvalues b axis[1], eigvalue_b3:cpo mineral 0 eigenvalues b axis[2], \
+                                   phi2:cpo mineral 0 phi2[0], eigvalue_c1:cpo mineral 0 eigenvalues c axis[0], eigvalue_c2:cpo mineral 0 eigenvalues c axis[1], eigvalue_c3:cpo mineral 0 eigenvalues c axis[2]
+  set Types of fields = generic, \
+                        generic, generic, generic, generic, \
+                        generic, generic, generic, generic, \
+                        generic, generic, generic, generic, \
+                        generic
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    # Temperature function (anisotropic viscosity in this material is disabled at T<1000K)
+    set Function expression = 1600
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators = bottom, top, front, back, left, right
+
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature    = 1600
+    set Front temperature  = 1600
+    set Back temperature   = 1600
+    set Left temperature   = 1600
+    set Right temperature  = 1600
+  end
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators =  top:function, bottom:function, left:function, right:function, front:function, back:function
+
+  subsection Function
+    set Variable names = x,y,z,t
+    set Function expression = (z-0.5);0;0
+  end
+end
+
+
+subsection Material model
+  set Model name = CPO-induced anisotropic viscosity
+
+  subsection CPO-induced Anisotropic Viscosity
+    set Reference viscosity = 1e9
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  # For this simple shear box test, there is no need for AMR
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics, memory statistics, visualization, particles, crystal preferred orientation
+
+  subsection Visualization
+    set Time between graphical output = 0.1
+    set List of output variables = material properties, strain rate, named additional outputs, shear stress, stress
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+
+  subsection Particles
+    set Time between data output = 0.1
+    set Data output format       = gnuplot, vtu
+    set Exclude output properties = rotation_matrix, volume fraction
+  end
+
+  subsection Crystal Preferred Orientation
+    set Time between data output = 0.1
+    set Write in background thread = true
+    set Compress cpo data files = false
+    set Write out raw cpo data = mineral 0: volume fraction, mineral 0: Euler angles
+    set Write out draw volume weighted cpo data = mineral 0: volume fraction, mineral 0: Euler angles
+  end
+end
+
+subsection Particles
+  set List of particle properties =  integrated strain, integrated strain invariant, velocity, pT path, strain rate, crystal preferred orientation, cpo bingham average, cpo elastic tensor
+  set Allow cells without particles = false
+  set Interpolation scheme = nearest neighbor
+  set Particle generator name = ascii file
+
+  subsection Generator
+    subsection Ascii file
+      set Data directory = ./
+      set Data file name = particle_one.dat
+    end
+  end
+
+  subsection Crystal Preferred Orientation
+
+    subsection Initial grains
+      set Minerals = Olivine: A-fabric
+      set Volume fractions minerals = 1.0
+    end
+
+    set Number of grains per particle = 1000
+    set Property advection method = Backward Euler
+    set Property advection tolerance = 1e-15
+    set CPO derivatives algorithm = D-Rex 2004
+
+    subsection D-Rex 2004
+      set Mobility = 10
+      set Stress exponents = 3.5
+      set Exponents p = 1.5
+      set Threshold GBS = 0.3
+    end
+  end
+
+  subsection CPO Bingham Average
+    set Random number seed = 200
+    set Use rotation matrix = false
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+  end
+end
