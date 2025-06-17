@@ -3,7 +3,8 @@
 # layer. The layers dehydrate as they are subducted, with the solid-fluid
 # reactions governed by an approximation published by Tian et al., 2018.
 
-set World builder file                         = fixed_slab.wb
+set Additional shared libraries                = /Users/danieldouglas/software/aspect/cookbooks/2D_subduction_with_two_phase_flow/plugin/lib2D_subduction_with_two_phase_flow.so
+set World builder file                         = /Users/danieldouglas/software/aspect/cookbooks/2D_subduction_with_two_phase_flow/fixed_slab.wb
 set Adiabatic surface temperature              = 1573
 set Nonlinear solver scheme                    = iterated Advection and Stokes
 set Nonlinear solver failure strategy          = continue with next timestep
@@ -58,7 +59,7 @@ subsection Temperature field
 end
 
 subsection Initial composition model
-  set List of model names = world builder
+  set List of model names = world builder disequilibrium
   subsection World builder
     set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
   end
@@ -117,7 +118,7 @@ subsection Material model
     set Reference fluid density                          = 1000
     set Shear to bulk viscosity ratio                    = 0.1
     set Reference fluid viscosity                        = 1
-    set Reference permeability                           = 1e-7
+    set Reference permeability                           = 5e-8
     set Exponential fluid weakening factor               = 30
     set Fluid compressibility                            = 0
     set Fluid reaction time scale for operator splitting = 1e4
@@ -156,8 +157,6 @@ subsection Material model
                                                             gabbro:      1.577e-21, \
                                                             MORB:        1.577e-21, \
                                                             sediment:    1.577e-21
-
-    set Query bound fluid for water fugacity              = true
 
     set Water fugacity exponents for diffusion creep      = 0.7
 
@@ -232,10 +231,10 @@ end
 subsection Mesh refinement
   set Coarsening fraction                      = 0.3
   set Refinement fraction                      = 0.5
-  set Initial adaptive refinement              = 0
-  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 3
+  set Initial global refinement                = 5
   set Strategy                                 = temperature, viscosity, composition threshold, minimum refinement function
-  set Time steps between mesh refinement       = 5
+  set Time steps between mesh refinement       = 0
   set Refinement criteria scaling factors      = 2, 1.5, 1.5, 1
   set Refinement criteria merge operation      = max
   set Run postprocessors on initial refinement = false
@@ -261,11 +260,11 @@ subsection Boundary velocity model
 end
 
 subsection Melt settings
-  set Include melt transport                  = false
+  set Include melt transport = false
 end
 
 subsection Postprocess
-  set List of postprocessors = visualization, composition statistics, velocity statistics
+  set List of postprocessors          = visualization, composition statistics, velocity statistics
   subsection Visualization
     set List of output variables      = material properties, strain rate, named additional outputs, darcy velocity
     set Output format                 = vtu

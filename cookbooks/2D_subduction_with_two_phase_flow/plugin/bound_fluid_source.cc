@@ -44,7 +44,7 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       ReactiveFluidTransport<dim>::evaluate(in, out);
-      const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid_idx");
+      const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
       for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
         if (out.reaction_terms[q][bound_fluid_idx] <= 0.0)
           out.reaction_terms[q][bound_fluid_idx] = 0.0;

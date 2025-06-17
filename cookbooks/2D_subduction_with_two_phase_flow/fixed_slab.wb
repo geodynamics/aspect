@@ -35,10 +35,10 @@
       "max depth": 300e3,
       "composition models": 
       [
-        {"model": "tian water content mod", "compositions": [1], "min depth":0.0, "max depth": 10e3, "lithology": "sediment", "initial water content": 2, "cutoff pressure": 1},
-        {"model": "tian water content mod", "compositions": [1], "min depth":10e3, "max depth": 20e3, "lithology": "MORB", "initial water content": 1, "cutoff pressure": 16},
-        {"model": "tian water content mod", "compositions": [1], "min depth":20e3, "max depth": 30e3, "lithology": "gabbro", "initial water content": 0.5, "cutoff pressure": 26},
-        {"model": "tian water content mod", "compositions": [1], "min depth":30e3, "max depth": 120e3, "lithology": "peridotite", "initial water content": 1, "cutoff pressure": 10},
+        {"model": "tian water content", "compositions": [1], "min depth":0.0, "max depth": 10e3, "lithology": "sediment", "initial water content": 2, "cutoff pressure": 1},
+        {"model": "tian water content", "compositions": [1], "min depth":10e3, "max depth": 20e3, "lithology": "MORB", "initial water content": 1, "cutoff pressure": 16},
+        {"model": "tian water content", "compositions": [1], "min depth":20e3, "max depth": 30e3, "lithology": "gabbro", "initial water content": 0.5, "cutoff pressure": 26},
+        {"model": "tian water content", "compositions": [1], "min depth":30e3, "max depth": 120e3, "lithology": "peridotite", "initial water content": 1, "cutoff pressure": 10},
         {"model": "uniform", "compositions": [5], "min depth":0.0, "max depth": 10e3, "operation":"add"},
         {"model": "uniform", "compositions": [4], "min depth":10e3, "max depth": 20e3, "operation":"add"},
         {"model": "uniform", "compositions": [3], "min depth":20e3, "max depth": 30e3, "operation":"add"},
@@ -58,10 +58,10 @@
                         {"length":300e3,"thickness":[300e3],"top truncation":[-50e3],"angle":[45,45]}],
 
 	    "composition models":[
-        {"model":"tian water content mod", "compositions":[1], "min distance slab top":0, "max distance slab top":10e3, "lithology":"sediment", "initial water content": 2, "cutoff pressure": 1},
-        {"model":"tian water content mod", "compositions":[1], "min distance slab top":10e3, "max distance slab top":20e3, "lithology":"MORB", "initial water content": 1, "cutoff pressure": 16},
-        {"model":"tian water content mod", "compositions":[1], "min distance slab top":20e3, "max distance slab top":30e3, "lithology":"gabbro", "initial water content": 0.5, "cutoff pressure": 26},
-        {"model":"tian water content mod", "compositions":[1], "min distance slab top":30e3, "max distance slab top":120e3, "lithology":"peridotite", "initial water content": 1, "cutoff pressure": 10},
+        {"model":"tian water content", "compositions":[1], "min distance slab top":0, "max distance slab top":10e3, "lithology":"sediment", "initial water content": 2, "cutoff pressure": 1},
+        {"model":"tian water content", "compositions":[1], "min distance slab top":10e3, "max distance slab top":20e3, "lithology":"MORB", "initial water content": 1, "cutoff pressure": 16},
+        {"model":"tian water content", "compositions":[1], "min distance slab top":20e3, "max distance slab top":30e3, "lithology":"gabbro", "initial water content": 0.5, "cutoff pressure": 26},
+        {"model":"tian water content", "compositions":[1], "min distance slab top":30e3, "max distance slab top":120e3, "lithology":"peridotite", "initial water content": 1, "cutoff pressure": 10},
         {"model":"uniform", "compositions":[5], "min distance slab top":0.0, "max distance slab top":10e3, "operation":"add"},
         {"model":"uniform", "compositions":[4], "min distance slab top":10e3, "max distance slab top":20e3, "operation":"add"},
         {"model":"uniform", "compositions":[3], "min distance slab top":20e3, "max distance slab top":30e3, "operation":"add"},

@@ -128,7 +128,7 @@ namespace aspect
                                                          n_comp);
           if (n_comp == bound_fluid_idx &&
               this->get_parameters().compositional_field_methods[bound_fluid_idx] == Parameters<dim>::AdvectionFieldMethod::static_field)
-            comp_value *= 1.1;
+            comp_value *= 1.1/100;
           return comp_value;
         }
 
