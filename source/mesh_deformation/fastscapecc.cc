@@ -46,6 +46,7 @@
 #include <aspect/utilities.h>  // For Utilities::create_directory
 #include <filesystem>          // C++17 or later
 
+
 namespace aspect
 {
   namespace MeshDeformation
@@ -63,7 +64,7 @@ namespace aspect
     {
       const auto &geom_model = this->get_geometry_model();
 
-      this->get_pcout() << "Geometry model type: " << typeid(geom_model).name() << std::endl;
+      // this->get_pcout() << "Geometry model type: " << typeid(geom_model).name() << std::endl;
 
       init_surface_mesh(geom_model);
 
@@ -435,11 +436,19 @@ namespace aspect
           std::fill(node_status_array.begin(), node_status_array.end(), fastscapelib::node_status::core);
           grid.set_nodes_status(node_status_array);
 
-          // 3. Create the flow graph
+          // // 3. Create the flow graph
+          // auto flow_graph = FlowGraphType(
+          //   grid,
+          //   { fastscapelib::single_flow_router(), fastscapelib::MSTSinkResolver()}
+          // );
+
           auto flow_graph = FlowGraphType(
-            grid,
-            { fastscapelib::single_flow_router() }
-          );
+              grid,
+              {
+                  std::make_shared<fastscapelib::single_flow_router>(),
+                  std::make_shared<fastscapelib::mst_sink_resolver>()
+              }
+);
 
           // 4. Set base level nodes
           std::vector<std::size_t> base_level_nodes = {0};
@@ -455,6 +464,13 @@ namespace aspect
           auto elevation      = xt::adapt(h, shape);
           auto elevation_old  = xt::adapt(h_old, shape);
           auto uplift_rate    = xt::adapt(vz, shape);
+
+          //To fix the borders
+          // auto row_bounds = xt::view(uplift_rate, xt::keep(0, -1), xt::all());
+          // row_bounds = 0.0;
+          // auto col_bounds = xt::view(uplift_rate, xt::all(), xt::keep(0, -1));
+          // col_bounds = 0.0;
+
           xt::xarray<double> drainage_area  = xt::zeros<double>(shape);
           xt::xarray<double> sediment_flux  = xt::zeros<double>(shape);
           xt::xarray<double> spl_erosion = xt::zeros<double>(shape);
