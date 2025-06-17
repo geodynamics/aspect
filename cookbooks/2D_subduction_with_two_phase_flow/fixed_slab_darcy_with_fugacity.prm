@@ -6,13 +6,13 @@
 # subducting plate, creating a fixed fluid source that is meant to mimic the steady input of water
 # into the subduction factory by continuous subduction. The free fluid released by the fixed source
 # is advected through the system according to the Darcy velocity, and is allowed to be reabsorbed by
-# the solid phase if the reactions determined by the Tian 2019 reaction model predict that this is 
+# the solid phase if the reactions determined by the Tian 2019 reaction model predict that this is
 # stable.
-# 
+#
 # In this parameter file, when fluid is contained within the solid phase the viscosity is reduced
 # according to a calculated water fugacity term. This water fugacity term assumes a uniform olivine
 # composition of 90% forsterite and 10% fayalite throughout the entire model domain. While this is
-# an oversimplification, it is sufficient for demonstrating the functionaly within the scope of 
+# an oversimplification, it is sufficient for demonstrating the functionaly within the scope of
 # this cookbook.
 
 # Load the plugin library and the world builder file, which are both required for this cookbook
@@ -43,8 +43,8 @@ set Resume computation                         = auto
 # We use the block AMG solver instead of block GMG to more directly compare the
 # behaviour of this model with the model that advects the fluid according to the
 # fully coupled McKenzie equations, which does not support the use of block GMG.
-# Additionally, the Tian 2019 reaction model requires operator splitting with a 
-# fixed reaction solver type. 
+# Additionally, the Tian 2019 reaction model requires operator splitting with a
+# fixed reaction solver type.
 subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type                              = block AMG
@@ -60,7 +60,7 @@ subsection Solver parameters
   end
 end
 
-# Increase the smoothing parameters beta and cR for numerical stability and 
+# Increase the smoothing parameters beta and cR for numerical stability and
 # computational efficiency.
 subsection Discretization
   subsection Stabilization parameters
@@ -94,7 +94,7 @@ end
 # The initial composition is defined using a modified version of the world builder
 # initial composition model compiled for this plugin. The `world builder disequilibrium`
 # initial composition model works exactly like the regular world builder initial composition
-# model, except that it increases the value of the bound_fluid composition by 10%. 
+# model, except that it increases the value of the bound_fluid composition by 10%.
 subsection Initial composition model
   set List of model names = world builder disequilibrium
   subsection World builder
