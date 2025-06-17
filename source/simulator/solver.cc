@@ -170,7 +170,6 @@ namespace aspect
 
 
 
-
     /**
      * Implement the block Schur preconditioner for the Stokes system.
      */
@@ -391,16 +390,15 @@ namespace aspect
     /**
      * Given a diagonal matrix stored as a vector,
      * create an operator that represents its action.
-    */
+     */
 
     template<typename Range,
              typename Domain,
              typename Payload>
-    LinearOperator<Range, Domain, Payload> diag_operator(const LinearOperator<Range,Domain,Payload> &exemplar, const TrilinosWrappers::MPI::Vector &diagonal)
+    LinearOperator<Range, Domain, Payload> diag_operator(const LinearOperator<Range,Domain,Payload> &exemplar,
+                                                         const TrilinosWrappers::MPI::Vector &diagonal)
     {
       LinearOperator<Range, Domain, Payload> return_op;
-
-
       return_op.reinit_range_vector  = exemplar.reinit_range_vector;
       return_op.reinit_domain_vector = exemplar.reinit_domain_vector;
 
@@ -496,8 +494,6 @@ namespace aspect
             const auto Op_B      = LinearOperator<TrilinosWrappers::MPI::Vector>(system_matrix.block(1,0));
             const auto Op_C_inv  = diag_operator(Op_A,inverse_lumped_mass_matrix);
             const auto BC_invBT  = Op_B*Op_C_inv*Op_BT;
-
-
 
             solver.solve(BC_invBT,
                          ptmp,
