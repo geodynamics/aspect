@@ -36,7 +36,7 @@ namespace aspect
     MeltStatistics<dim>::execute (TableHandler &statistics)
     {
       // Use a Gauss-Lobatto quadrature formula based on the temperature
-      // degree for computing the min/max, both of which may lie of the
+      // degree for computing the min/max, both of which may lie on the
       // boundaries of the cell.
       const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.temperature).degree + 2);
       const unsigned int n_q_points = quadrature_formula.size();
