@@ -16,25 +16,25 @@
 # along with ASPECT; see the file doc/COPYING.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
+cmake_minimum_required(VERSION 3.13.4)
 
-FIND_PACKAGE(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
+find_package(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
-IF (NOT Aspect_FOUND)
-  MESSAGE(FATAL_ERROR "\n"
+if (NOT Aspect_FOUND)
+  message(FATAL_ERROR "\n"
   "Could not find a valid ASPECT build/installation directory. "
   "Please specify the directory where you are building ASPECT by passing\n"
   "   -D Aspect_DIR=<path to ASPECT>\n"
   "to cmake or by setting the environment variable ASPECT_DIR in your shell "
   "before calling cmake. See the section 'How to write a plugin' in the "
         "manual for more information.")
-ENDIF ()
+endif ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
 
-SET(TARGET "compressibility_formulations")
-PROJECT(${TARGET})
+set(TARGET "compressibility_formulations")
+project(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED compressibility_formulations.cc)
+add_library(${TARGET} SHARED compressibility_formulations.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
