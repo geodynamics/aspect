@@ -148,23 +148,36 @@ subsection Boundary temperature model
   end
 end
 
-
+# Reactions are computed using the Tian 2019 reaction model, and are composited
+# with a visco plastic solid rheology. The Tian 2019 reaction model is modified
+# within this cookbook to prevent the bound_fluid composition from ever decreasing.
 subsection Material model
 
   set Model name                                         = reactive fluid transport bound fluid source
+  # We use a geometric averaging scheme for the viscosity instead of harmonic to 
+  # avoid oversmoothing of the viscosity.
   set Material averaging                                 = geometric average only viscosity
 
   subsection Reactive Fluid Transport Model
     set Base model                                       = visco plastic
-    set Reference fluid density                          = 1000
+    set Reference fluid density                          = 1000 # kg/m^3
     set Shear to bulk viscosity ratio                    = 0.1
-    set Reference fluid viscosity                        = 1
+    set Reference fluid viscosity                        = 1 # Pa s
     set Reference permeability                           = 5e-8
+    # This parameter controls how much the viscosity is reduced in the presence
+    # of free water.
     set Exponential fluid weakening factor               = 30
-    set Fluid compressibility                            = 0
+    set Fluid compressibility                            = 0 # incompressible fluid
+    # This parameter controls how quickly the water is released or absorbed by the
+    # solid phase. A time scale of 10,000 years ensures that these reactions are
+    # happening rapdily relative to the timescale of solid advection.
     set Fluid reaction time scale for operator splitting = 1e4
+    # We use the Tian 2019 reaction model, which parameterizes the solubility using
+    # polynomials for the four solid compositions used in this cookbook.
     set Fluid-solid reaction scheme                      = tian approximation
     subsection Tian 2019 model
+      # The polynomials for each lithology blow up to extremely large values at low
+      # temperatures, we cap the bound water at these values to prevent this.
       set Maximum weight percent water in peridotite     = 4
       set Maximum weight percent water in gabbro         = 2
       set Maximum weight percent water in MORB           = 3
@@ -172,24 +185,47 @@ subsection Material model
     end
   end
 
+  # This subsection defines how the solid deforms using a composite visco-plastic
+  # rheology. The rheology uses dislocation creep, diffusion creep, drucker-prager
+  # plasticity, and introduces a viscous weakening term that is dependent on the 
+  # modeled bound water content.
   subsection Visco Plastic
+    # Use a geometric averaging scheme for the viscosity
     set Viscosity averaging scheme                        = geometric
     set Viscous flow law                                  = composite
+    # The HK04 olivine hydration prefactor scales the solid viscosity based on the 
+    # modeled water-fugacity, assuming an olivine composition that is 90% forsterite
+    # and 10% fayalite.
     set Viscosity prefactor scheme                        = HK04 olivine hydration
     set Minimum strain rate                               = 1e-20
     set Reference strain rate                             = 1e-20
 
+    # We introduce phase transitions as a method for changing the rheology of the model 
+    # within the lower mantle, and to limit the viscosity of the sediment rheology. Within
+    # the lower mantle (beneath 660 km depth), the solid only deforms via diffusion creep.
+    # Shallower than 660 km, all deformation mechanisms are active. For the sediment
+    # composition only, the viscosity is prescribed to be 1e19 Pa s, at depths shallower
+    # than 125 km.
     set Phase transition depths           =   background: 660e3,  porosity: 660e3, bound_fluid: 660e3, peridotite: 660e3, gabbro: 660e3, MORB: 660e3, sediment: 125e3|660e3
     set Phase transition widths           =   background: 1e3,    porosity: 1e3,   bound_fluid: 1e3,   peridotite: 1e3,   gabbro: 1e3,   MORB: 1e3,   sediment: 10e3|1e3
     set Phase transition temperatures     =   background: 1573,   porosity: 1573,  bound_fluid: 1573,  peridotite: 1573,  gabbro: 1573,  MORB: 1573,  sediment: 1573|1573
     set Phase transition Clapeyron slopes =   background: 0,      porosity: 0,     bound_fluid: 0,     peridotite: 0,     gabbro: 0,     MORB: 0,     sediment: 0|0
+    set Densities                         =   background: 3300,   porosity: 3300,  bound_fluid: 3300,  peridotite: 3300,  gabbro: 3300,  MORB: 3300,  sediment: 3300
+    set Minimum viscosity                 =   background: 2.5e18|2.5e18, \
+                                              porosity: 2.5e18|2.5e18, \
+                                              bound_fluid: 2.5e18|2.5e18, \
+                                              peridotite: 2.5e18|2.5e18, \
+                                              gabbro: 2.5e18|2.5e18, \
+                                              MORB: 2.5e18|2.5e18, \
+                                              sediment: 9.999e18|2.5e18|2.5e18
 
-    # set Densities                         =   background: 3300,   porosity: 3300,  bound_fluid: 3300,  peridotite: 3300,  gabbro: 3100,  MORB: 3000,  sediment: 2900
-    set Densities                         =   background: 3300,   porosity: 3300,  bound_fluid: 3300,  peridotite: 3300,  gabbro: 3300,  MORB: 3175,  sediment: 3175
-
-    set Minimum viscosity   =   background: 2.5e18|2.5e18,  porosity: 2.5e18|2.5e18, bound_fluid: 2.5e18|2.5e18, peridotite: 2.5e18|2.5e18, gabbro: 2.5e18|2.5e18, MORB: 2.5e18|2.5e18, sediment: 9.999e18|2.5e18|2.5e18
-    set Maximum viscosity   =   background: 2.5e23|2.5e23,  porosity: 2.5e23|2.5e23, bound_fluid: 2.5e23|2.5e23, peridotite: 2.5e23|2.5e23, gabbro: 2.5e23|2.5e23, MORB: 2.5e23|2.5e23, sediment: 1.001e19|2.5e23|2.5e23
-
+    set Maximum viscosity                 =   background: 2.5e23|2.5e23, \
+                                              porosity: 2.5e23|2.5e23, \
+                                              bound_fluid: 2.5e23|2.5e23, \
+                                              peridotite: 2.5e23|2.5e23, \
+                                              gabbro: 2.5e23|2.5e23, \
+                                              MORB: 2.5e23|2.5e23, \
+                                              sediment: 1.001e19|2.5e23|2.5e23
 
     set Prefactors for diffusion creep                    = background:  1.577e-21, \
                                                             porosity:    1.577e-21, \
