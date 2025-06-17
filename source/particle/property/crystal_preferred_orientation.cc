@@ -688,16 +688,16 @@ namespace aspect
         double mean_strain_energy = 0;
 
         // First initiate the slip_normal_reference (vector n) and the
-        // slip_direction_reference (vector l) in Kaminski (2001) 
-        std::array<Tensor<1,3>,4> slip_normal_reference; 
-        std::array<Tensor<1,3>,4> slip_direction_reference; 
+        // slip_direction_reference (vector l) in Kaminski (2001)
+        std::array<Tensor<1,3>,4> slip_normal_reference;
+        std::array<Tensor<1,3>,4> slip_direction_reference;
 
         // for olivine A,B,C,D,E and types and enstatite
-        if (deformation_type == DeformationType::olivine_a_fabric || 
+        if (deformation_type == DeformationType::olivine_a_fabric ||
             deformation_type == DeformationType::olivine_b_fabric ||
             deformation_type == DeformationType::olivine_c_fabric ||
             deformation_type == DeformationType::olivine_d_fabric ||
-            deformation_type == DeformationType::olivine_e_fabric || 
+            deformation_type == DeformationType::olivine_e_fabric ||
             deformation_type == DeformationType::enstatite)
           {
             slip_normal_reference = {{Tensor<1,3>({0,1,0}),Tensor<1,3>({0,0,1}),Tensor<1,3>({0,1,0}),Tensor<1,3>({1,0,0})}};
@@ -1147,7 +1147,7 @@ namespace aspect
                                "Olivine: E-fabric, Olivine: Karato 2008 or Enstatite or CPX. Passive sets all RRSS entries to the maximum. The "
                                "Karato 2008 selector selects a fabric based on stress and water content as defined in "
                                "figure 4 of the Karato 2008 review paper (doi: 10.1146/annurev.earth.36.031207.124120).");
-            
+
             prm.declare_entry ("CPX RRSS", "1,5,5,1.5",
                                Patterns::List(Patterns::Anything()),
                                "The RRSS values for CPX, used in fabric calculations."
