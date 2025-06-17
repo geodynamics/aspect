@@ -432,9 +432,8 @@ namespace aspect
           std::mt19937 random_number_generator(fastscape_seed);
           std::uniform_real_distribution<double> random_distribution(-noise_elevation,noise_elevation);
           // read sea level from the user defined function or constant value;
-          sea_level_function.set_time(time_in_years);
           const double current_sea_level = use_sea_level_function
-              ? sea_level_function.value(Point<1>()) // use a dummy point -- we only care about the time dependence
+              ? sea_level_function.value(Point<1>()) 
               : sea_level_constant_value;
 
           for (unsigned int i=0; i<fastscape_array_size; ++i)
@@ -813,12 +812,11 @@ namespace aspect
                                               std::vector<double> &silt_fraction) const
     {
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
-      // declare time in years
+
       const unsigned int current_timestep = this->get_timestep_number ();
-      const double time_in_years = this->get_time() / year_in_seconds;
-      // declare currrent sea level 
+      // Set sea level 
       const double current_sea_level = use_sea_level_function
-          ? sea_level_function.value(Point<1>(time_in_years))
+          ? sea_level_function.value(Point<1>()) 
           : sea_level_constant_value;
 
       // Initialize FastScape with grid and extent.
@@ -1625,6 +1623,15 @@ namespace aspect
       return true;
     }
 
+    template <int dim>
+    void
+    FastScape<dim>::update()
+    {
+      if (use_sea_level_function)
+        {
+          sea_level_function.set_time(this->get_time() / year_in_seconds); 
+        }
+    }
 
 
     template <int dim>

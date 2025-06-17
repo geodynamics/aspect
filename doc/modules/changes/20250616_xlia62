@@ -2,4 +2,4 @@ Added: The ability for specifying a sea level curve in the
 FastScape Fortran plugin, allowing it to be defined either
 as a constant or as a user-defined time-dependent function. 
 <br>
-(Liang Xue, John Naliboff, Rene	Gassmoeller, 2025/06/16)
+(Liang Xue, John Naliboff, Rene	Gassmoeller, Wolfgang Bangerth, 2025/06/16)
