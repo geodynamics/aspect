@@ -40,7 +40,7 @@
 #include <typeinfo>
 #include <deal.II/grid/grid_tools_cache.h>
 #include <deal.II/grid/grid_tools.h>
-
+#include <deal.II/numerics/data_out.h>
 
 namespace aspect
 {
@@ -453,6 +453,7 @@ namespace aspect
           auto uplift_rate    = xt::adapt(vz, shape);
           xt::xarray<double> drainage_area  = xt::zeros<double>(shape);
           xt::xarray<double> sediment_flux  = xt::zeros<double>(shape);
+          xt::xarray<double> spl_erosion = xt::zeros<double>(shape);
 
           std::cout << "\n[DEBUG INIT] Max elevation = " << xt::amax(elevation)()
                     << ", Min = " << xt::amin(elevation)() << std::endl;
@@ -502,6 +503,39 @@ namespace aspect
 
 
           std::cout<<"here it works 13"<<std::endl;
+
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+          {
+          // Create and fill output vectors for visualization
+          dealii::Vector<double> elevation_output(n_grid_nodes);
+          dealii::Vector<double> uplift_rate_output(n_grid_nodes);
+          dealii::Vector<double> erosion_output(n_grid_nodes);
+          dealii::Vector<double> drainage_area_output(n_grid_nodes);
+
+          for (unsigned int i = 0; i < n_grid_nodes; ++i)
+          {
+            elevation_output[i] = elevation[i];
+            uplift_rate_output[i] = uplift_rate[i];
+            erosion_output[i] = spl_erosion[i];
+            drainage_area_output[i] = drainage_area[i];
+          }
+
+            dealii::DataOut<dim-1, dim> data_out;
+            data_out.attach_dof_handler(surface_mesh_dof_handler);
+
+            data_out.add_data_vector(surface_mesh_dof_handler, elevation_output, "FastScape_Elevation");
+            data_out.add_data_vector(surface_mesh_dof_handler, uplift_rate_output, "Uplift_Rate_m_per_year");
+            data_out.add_data_vector(surface_mesh_dof_handler, erosion_output, "Erosion_m");
+            data_out.add_data_vector(surface_mesh_dof_handler, drainage_area_output, "Drainage_Area");
+
+            data_out.build_patches();
+
+            const std::string filename = "fastscape_surface_timestep_" +
+                                        std::to_string(this->get_timestep_number()) + ".vtk";
+            std::ofstream output(filename);
+            data_out.write_vtk(output);
+            this->get_pcout() << "FastScape VTK output written to " << filename << std::endl;
+          }
 
           // Broadcast V to all processes
           MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
