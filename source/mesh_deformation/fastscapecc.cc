@@ -415,24 +415,27 @@ namespace aspect
               fastscape_timestep_in_years *= 0.5;
             }
 
+          std::cout << "[DEBUG] fastscape_steps_per_aspect_step = " << fastscape_steps_per_aspect_step << std::endl;
+          std::cout << "[DEBUG] aspect_timestep_in_years = " << aspect_timestep_in_years << std::endl;
+          std::cout << "[DEBUG] fastscape_iterations = " << fastscape_iterations << std::endl;
+            
+
           double cell_area = surface_mesh.begin_active()->measure();
 
           // 1. Create the FastScape grid adapter
           auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
-          auto shape = grid.shape();
+          auto shape = grid.shape();  // Should be {n_grid_nodes}
 
-          // 2. Define the node status array BEFORE creating the flow graph
-          // auto node_status_array = xt::zeros<fastscapelib::node_status>({n_grid_nodes});
-          // grid.set_nodes_status(node_status_array);
-
-          xt::xarray<fastscapelib::node_status> node_status_array = xt::zeros<fastscapelib::node_status>(grid.shape());
+          // 2. Define the node status array with correct shape and type
+          xt::xtensor<fastscapelib::node_status, 1> node_status_array(shape);
+          std::fill(node_status_array.begin(), node_status_array.end(), fastscapelib::node_status::core);
           grid.set_nodes_status(node_status_array);
 
           // 3. Create the flow graph
           auto flow_graph = FlowGraphType(
-                              grid,
-          { fastscapelib::single_flow_router() }
-                            );
+            grid,
+            { fastscapelib::single_flow_router() }
+          );
 
           // 4. Set base level nodes
           std::vector<std::size_t> base_level_nodes = {0};
@@ -440,12 +443,11 @@ namespace aspect
 
           // 5. Build the erosion model
           auto spl_eroder = fastscapelib::spl_eroder<FlowGraphType>(
-                              fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd)
-                            );
-          std::cout<<"here it works 12"<<std::endl;
+            fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd)
+          );
+          std::cout << "here it works 12" << std::endl;
 
-
-          // Create data arrays using grid->shape()
+          // 6. Create data arrays using grid shape
           auto elevation      = xt::adapt(h, shape);
           auto elevation_old  = xt::adapt(h_old, shape);
           auto uplift_rate    = xt::adapt(vz, shape);
@@ -456,6 +458,7 @@ namespace aspect
                     << ", Min = " << xt::amin(elevation)() << std::endl;
           std::cout << "[DEBUG INIT] Max uplift rate = " << xt::amax(uplift_rate)()
                     << ", Min = " << xt::amin(uplift_rate)() << std::endl;
+
 
           // Start erosion loop
           xt::xarray<double> uplifted_elevation = elevation + fastscape_timestep_in_years * uplift_rate;
