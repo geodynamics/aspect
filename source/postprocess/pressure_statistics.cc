@@ -34,7 +34,7 @@ namespace aspect
     PressureStatistics<dim>::execute (TableHandler &statistics)
     {
       // Use a Gauss-Lobatto quadrature formula based on the pressure
-      // degree for computing the min/max, both of which may lie of the
+      // degree for computing the min/max, both of which may lie on the
       // boundaries of the cell.
       const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.pressure).degree + 2);
       const unsigned int n_q_points = quadrature_formula.size();
