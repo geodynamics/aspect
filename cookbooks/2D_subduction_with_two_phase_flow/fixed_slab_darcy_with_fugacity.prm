@@ -110,6 +110,7 @@ end
 # The geometry is a very large 2D box, and the cells have an aspect ratio of 1:1.
 # The geometry is large to ensure that the model boundaries are not significantly
 # impacting the velocities within the vicinty of the slab and in the mantle wedge.
+# Prior to additional refinements, the base grid size is 1450 x 1450 km.
 subsection Geometry model
   set Model name = box
   subsection Box
@@ -195,7 +196,7 @@ subsection Material model
     set Viscous flow law                                  = composite
     # The HK04 olivine hydration prefactor scales the solid viscosity based on the 
     # modeled water-fugacity, assuming an olivine composition that is 90% forsterite
-    # and 10% fayalite.
+    # and 10% fayalite. This implementation is based off of Hirth & Kohlstaedt 2004.
     set Viscosity prefactor scheme                        = HK04 olivine hydration
     set Minimum strain rate                               = 1e-20
     set Reference strain rate                             = 1e-20
@@ -227,6 +228,7 @@ subsection Material model
                                               MORB: 2.5e23|2.5e23, \
                                               sediment: 1.001e19|2.5e23|2.5e23
 
+    # Diffusion creep parameters from Hirth & Kohlstaedt 2004
     set Prefactors for diffusion creep                    = background:  1.577e-21, \
                                                             porosity:    1.577e-21, \
                                                             bound_fluid: 1.577e-21, \
@@ -257,6 +259,7 @@ subsection Material model
                                                             MORB:        375e3, \
                                                             sediment:    375e3
 
+    # Dislocation creep parameters from Hirth & Kohlstaedt 2004.
     set Prefactors for dislocation creep                  = background:  1.01e-25|1e-50, \
                                                             porosity:    1.01e-25|1e-50, \
                                                             bound_fluid: 1.01e-25|1e-50, \
@@ -285,6 +288,7 @@ subsection Material model
                                                             MORB:        520e3, \
                                                             sediment:    520e3
 
+    # Drucker-Prager plasticity parameters
     set Angles of internal friction                       = 30
 
     set Cohesions                                         = background:  60e6, \
@@ -297,14 +301,21 @@ subsection Material model
 
     set Maximum yield stress                              = 500e6
 
+    # For stability and efficiency, do not use the full pressure.
     set Use adiabatic pressure in plasticity              = true
 
+    # Thermal parameters.
     set Thermal expansivities                             = 3.0e-5
     set Thermal diffusivities                             = 1e-6
     set Heat capacities                                   = 750
   end
 end
 
+# Adapt the mesh using a combination of strategies. Every 5 time steps,
+# the mesh is refined based on the temperature, viscosity, and the location
+# of free water. We ensure that mesh cannot go below 4 levels of refinement
+# using a minimum refinement function. The highest refinement level is 8 
+# which results in a grid size of ~5.5 x 5.5 km.
 subsection Mesh refinement
   set Coarsening fraction                      = 0.3
   set Refinement fraction                      = 0.5
