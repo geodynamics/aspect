@@ -344,12 +344,12 @@ namespace aspect
       std::vector<std::vector<double>> temporary_variables(3, std::vector<double>());
 
 // TODO: Based on the convention, one should then rename cell -> surface_cell
-      for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
+      for (const auto &surface_cell : surface_mesh_dof_handler.active_cell_iterators())
         {
-          for (unsigned int vertex_index = 0; vertex_index < cell->n_vertices(); ++vertex_index)
+          for (unsigned int vertex_index = 0; vertex_index < surface_cell->n_vertices(); ++vertex_index)
             {
-              const Point<dim> vertex = cell->vertex(vertex_index);
-              const unsigned int dof_index = cell->vertex_dof_index(vertex_index, 0);
+              const Point<dim> vertex = surface_cell->vertex(vertex_index);
+              const unsigned int dof_index = surface_cell->vertex_dof_index(vertex_index, 0);
 
               const double surface_uplift_rate = surface_vertical_velocity[dof_index];
               const double topography = surface_elevation[dof_index];
@@ -454,11 +454,11 @@ namespace aspect
 // want? If so, perhaps say so in a comment and explain what it is used for.
 //
 // Separately, let's call this variable surface_cell_area in concordance with our convention
-          const double cell_area = surface_mesh.begin_active()->measure();
+          const double surface_cell_area = surface_mesh.begin_active()->measure();
 
           // 1. Create the FastScape grid adapter
 // TODO: I haven't looked at the GridAdapter yet, but we should see whether we can't get rid of the const_cast.
-          auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
+          auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), surface_cell_area);
           auto shape = grid.shape();  // Should be {n_grid_nodes}
 
           // 2. Define the node status array with correct shape and type
