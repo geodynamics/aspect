@@ -7,6 +7,8 @@ In this cookbook we expand on what was demonstrated in the {ref}`sec:cookbook:ti
 ```{literalinclude} fixed_slab.part.prm
 ```
 
+The worldbuilder file can be found at [cookbooks/2D-subduction-two-phase-flow](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/2D-subduction-two-phase-flow/). However, this cookbook will only focus on the ASPECT side of the mode. For more details on the worldbuilder and how to use it, specifically in the context of using geodynamic software like ASPECT for modeling subduction zones, please refer to the GWB manual. There are two comprehensive guides that are relevant to this cookbook, the first focuses on defining a complex  and compo which contains a few extremely comprehensive guides on what the parameters mean, and how to build a worldbuilder file specifically for subduction zone modeling.
+
 ```{figure-md} fig:initial-bound-water
 <img src="bound_water.png" />
 

@@ -5,7 +5,7 @@
 // Composition 5 is sediment
 
 {
-  "version": "1.1",
+  "version": "1.0",
   "gravity model":{"model":"uniform", "magnitude":9.81},
   "cross section":[[0,0],[50e3,0]],
   "surface temperature":273,

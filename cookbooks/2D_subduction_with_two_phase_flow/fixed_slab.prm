@@ -3,7 +3,7 @@
 # layer. The layers dehydrate as they are subducted, with the solid-fluid
 # reactions governed by an approximation published by Tian et al., 2018.
 
-set World builder file                         = world_builder_files/static_2D_cross_section_MOD.wb
+set World builder file                         = fixed_slab.wb
 set Adiabatic surface temperature              = 1573
 set Nonlinear solver scheme                    = iterated Advection and Stokes
 set Nonlinear solver failure strategy          = continue with next timestep
@@ -108,7 +108,7 @@ end
 
 subsection Material model
 
-  set Model name = reactive fluid transport
+  set Model name = reactive fluid transport bound fluid source
   # set Model name = visco plastic
   set Material averaging                                 = geometric average only viscosity
 
@@ -232,8 +232,8 @@ end
 subsection Mesh refinement
   set Coarsening fraction                      = 0.3
   set Refinement fraction                      = 0.5
-  set Initial adaptive refinement              = 3
-  set Initial global refinement                = 5
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
   set Strategy                                 = temperature, viscosity, composition threshold, minimum refinement function
   set Time steps between mesh refinement       = 5
   set Refinement criteria scaling factors      = 2, 1.5, 1.5, 1
