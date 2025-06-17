@@ -18,6 +18,7 @@
   <http://www.gnu.org/licenses/>.
  */
 
+#ifdef ASPECT_WITH_FASTSCAPELIB
 
 #include <iostream>
 
@@ -870,3 +871,5 @@ namespace aspect
                                            "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }
+
+#endif // #ifdef ASPECT_WITH_FASTSCAPELIB

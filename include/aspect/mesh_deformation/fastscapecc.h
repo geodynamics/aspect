@@ -21,6 +21,8 @@
 #ifndef _aspect_mesh_deformation_fastscapecc_h
 #define _aspect_mesh_deformation_fastscapecc_h
 
+#ifdef ASPECT_WITH_FASTSCAPELIB
+
 #include <type_traits>
 
 #include <aspect/global.h>
@@ -308,5 +310,7 @@ namespace aspect
     };
   }
 }
+
+#endif // #ifdef ASPECT_WITH_FASTSCAPELIB
 
 #endif

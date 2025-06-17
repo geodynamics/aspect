@@ -21,6 +21,8 @@
 #ifndef _aspect_mesh_deformation_fastscapecc_adapter_h
 #define _aspect_mesh_deformation_fastscapecc_adapter_h
 
+#ifdef ASPECT_WITH_FASTSCAPELIB
+
 #include <unordered_map>
 #include <vector>
 
@@ -383,5 +385,8 @@ namespace fastscapelib
     return m_neighbors_distances[idx];
   }
 }
+
+#endif // #ifdef ASPECT_WITH_FASTSCAPELIB
+
 
 #endif  // _aspect_mesh_deformation_fastscapecc_adapter_h
