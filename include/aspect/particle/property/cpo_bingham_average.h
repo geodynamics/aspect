@@ -39,7 +39,7 @@ namespace aspect
        * Computes the Bingham average of the CPO particle properties.
        * See https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html for more info.
        *
-       * The layout of the data vector per particle is the following (note that for this plugin the following dim's are always 3):
+       * The layout of the data vector per particle is the following (note that for this plugin with rotation matrix representation the following dim's are always 3):
        * 1 averaged a axis of olivine       -> 3 (dim) doubles, starts at:
        *                                         data_position + 1,
        * 2 eigenvalues of a axis of olivine -> 3 (dim) doubles, starts at:
@@ -64,6 +64,9 @@ namespace aspect
        *                                          data_position + 31,
        * 12 eigenvalues of a axis of enstatite -> 3 (dim) doubles, starts at:
        *                                          data_position + 34,
+       * If "Use rotation matrix" is set to False in the parameter file, the output number
+       * 1, 3, 5 will save the phi1, theta, phi2 or olivine and 7, 8, 9 will be the same
+       * for enstatite, and they will be 1 (dim) double instead of 3 (dim) doubles.
        *
        * @ingroup ParticleProperties
        */
@@ -136,7 +139,8 @@ namespace aspect
            * axis associated with the densest clustering of points for each axis. the a to c axis vectors
            * are stored in the first to last array respectively.
            */
-          std::array<std::array<double,6>,3>
+          template <int array_length>
+          std::array<std::array<double,array_length>,3>
           compute_bingham_average(std::vector<Tensor<2,3>> matrices) const;
 
           /**
@@ -189,6 +193,11 @@ namespace aspect
            * when doing the random draw volume weighting, this sets how many samples are taken.
            */
           unsigned int n_samples;
+
+          /*
+           this sets whether the orientations are represented by rotation matrix or Euler angles.
+           */
+          bool use_rotmat;
 
       };
     }
