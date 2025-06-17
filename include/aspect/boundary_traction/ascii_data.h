@@ -95,10 +95,7 @@ namespace aspect
         update () override;
 
         /**
-         * Declare the parameters this class takes through input files. The
-         * default implementation of this function does not describe any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
+         * Declare the parameters this class takes through input files.
          */
         static
         void
@@ -106,9 +103,6 @@ namespace aspect
 
         /**
          * Read the parameters this class declares from the parameter file.
-         * The default implementation of this function does not read any
-         * parameters. Consequently, derived classes do not have to overload
-         * this function if they do not take any runtime parameters.
          */
         void
         parse_parameters (ParameterHandler &prm) override;
