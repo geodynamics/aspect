@@ -1357,14 +1357,12 @@ namespace aspect
               filesize = data_string.size();
 
 #else // ASPECT_WITH_LIBDAP
+              // We got a URL but we don't have libDAP. That's an error.
 
               // Broadcast failure state, then throw. We signal the failure by
               // setting the file size to an invalid size, then trigger an assert.
-              {
-                std::size_t invalid_filesize = numbers::invalid_size_type;
-                const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
-                AssertThrowMPI(ierr);
-              }
+              const std::size_t invalid_filesize = numbers::invalid_size_type;
+              std::ignore = Utilities::MPI::broadcast (comm, invalid_filesize, 0);
               AssertThrow(false,
                           ExcMessage(std::string("Reading of file ") + filename + " failed. " +
                                      "Make sure you have the dependencies for reading a url " +
@@ -1372,7 +1370,7 @@ namespace aspect
 
 #endif // ASPECT_WITH_LIBDAP
             }
-          else
+          else // we have a regular file name
             {
               std::ifstream filestream;
               const bool filename_ends_in_gz = std::regex_search(filename, std::regex("\\.gz$"));
@@ -1384,9 +1382,8 @@ namespace aspect
               if (!filestream)
                 {
                   // broadcast failure state, then throw
-                  std::size_t invalid_filesize = numbers::invalid_size_type;
-                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
-                  AssertThrowMPI(ierr);
+                  const std::size_t invalid_filesize = numbers::invalid_size_type;
+                  std::ignore = Utilities::MPI::broadcast (comm, invalid_filesize, 0);
                   AssertThrow (false,
                                ExcMessage (std::string("Could not open file <") + filename + ">."));
                 }
@@ -1406,9 +1403,8 @@ namespace aspect
               catch (const std::ios::failure &)
                 {
                   // broadcast failure state, then throw
-                  std::size_t invalid_filesize = numbers::invalid_size_type;
-                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
-                  AssertThrowMPI(ierr);
+                  const std::size_t invalid_filesize = numbers::invalid_size_type;
+                  std::ignore = Utilities::MPI::broadcast (comm, invalid_filesize, 0);
                   AssertThrow (false,
                                ExcMessage (std::string("Could not read file content from <") + filename + ">."));
                 }
@@ -1418,17 +1414,14 @@ namespace aspect
             }
 
           // Distribute data_size and data across processes
-          int ierr = MPI_Bcast(&filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
-          AssertThrowMPI(ierr);
+          std::ignore = Utilities::MPI::broadcast (comm, filesize, 0);
 
           big_mpi::broadcast(&data_string[0], filesize, 0, comm);
         }
       else
         {
           // Prepare for receiving data
-          std::size_t filesize;
-          int ierr = MPI_Bcast(&filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
-          AssertThrowMPI(ierr);
+          const std::size_t filesize = Utilities::MPI::broadcast (comm, /* dummy = */ std::size_t(), 0);
           if (filesize == numbers::invalid_size_type)
             throw QuietException();
 
