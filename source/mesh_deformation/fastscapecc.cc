@@ -89,6 +89,10 @@ namespace aspect
           const auto origin = box->get_origin();
           const auto extent = box->get_extents();
 
+// TODO: I *think* that grid_extent and grid_extent_surface are identical here. What is their difference?
+// The documentation doesn't say, and they are not used for the spherical shell at all. If they are only
+// used for the box geometry, it may be useful to prefix their names with box_ to indicate that, in the
+// same way as we have spherical_vertex_index_map.
           for (unsigned int i = 0; i < dim; ++i)
             {
               grid_extent[i].first = origin[i];
@@ -171,6 +175,8 @@ namespace aspect
       surface_constraints.close();
     }
 
+
+
     template <int dim>
     void FastScapecc<dim>::project_surface_solution(const std::set<types::boundary_id> & /*boundary_ids*/,
                                                     dealii::LinearAlgebra::distributed::Vector<double> &surface_vertical_velocity,
@@ -198,6 +204,13 @@ namespace aspect
       const types::boundary_id top_boundary =
         this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       std::cout<<"here it works 0a"<<std::endl;
+// TODO: I'm going to suggest the following convention, to make it easier to
+// understand what we are doing: When we are iterating over cells of the ASPECT
+// triangulation/DoFHandler, let's call the object 'volume_cell'. If we are
+// iterating over surface_mesh/surface_mesh_dof_handler, let's call the object
+// surface_cell. This way it's always clear what it is we're currently considering.
+//
+// So, here, we should rename cell->volume_cell
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
@@ -218,14 +231,14 @@ namespace aspect
                     Tensor<1, dim> velocity;
                     for (unsigned int d = 0; d < dim; ++d)
                       {
-                        //Query velocity Dofs using introspection
+                        // Query velocity Dofs using introspection
                         const unsigned int component_index = this->introspection().component_indices.velocities[d];
                         velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, component_index)];
                       }
                     std::cout<<"here it works 0c"<<std::endl;
 
 
-                    //Use the gravity model to obtain a "vertical" direction
+                    // Use the gravity model to obtain a "vertical" direction
                     const Tensor<1, dim> gravity = this->get_gravity_model().gravity_vector(pos);
                     Tensor<1, dim> gravity_dir = gravity;
 
@@ -295,7 +308,7 @@ namespace aspect
         }
       else if (const auto *spherical_model = dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model()))
         {
-          auto it = spherical_vertex_index_map.find(p);
+          const auto it = spherical_vertex_index_map.find(p);
           AssertThrow(it != spherical_vertex_index_map.end(),
                       ExcMessage("Point not found in spherical_vertex_index_map."));
           return it->second;
@@ -330,8 +343,25 @@ namespace aspect
       const auto *box_model = dynamic_cast<const GeometryModel::Box<dim> *>(&this->get_geometry_model());
       AssertThrow(spherical_model || box_model, ExcMessage("Unsupported geometry model in FastScapecc."));
 
+// TODO: You are using these three arrays in the following way:
+//   temp[0][i] = topography value at some location
+//   temp[1][i] = DoF index within surface_dof_handler for this location
+//   temp[2][i] = surface_uplift_rate for this location
+// I think this would be more transparent if you had the following:
+// struct ValuesAtSurfaceVertex
+// {
+//   double topography;
+//   double surface_uplift_rate;
+// };
+// and then you store everything in a
+// std::multimap<types::global_dof_index, ValuesAtSurfaceVertex> surface_vertex_to_surface_values;
+// Note that here I chose a multimap because you visit vertices more than once from all of
+// the adjacent cells, at least in the current code you enter the same vertex into
+//the temp vectors multiple times. I *think* that you should get the same values every
+//time you visit a vertex, so perhaps a std::map is a better choice.
       std::vector<std::vector<double>> temporary_variables(3, std::vector<double>());
 
+// TODO: Based on the convention, one should then rename cell -> surface_cell
       for (const auto &cell : surface_mesh_dof_handler.active_cell_iterators())
         {
           for (unsigned int vertex_index = 0; vertex_index < cell->n_vertices(); ++vertex_index)
@@ -362,13 +392,25 @@ namespace aspect
 
       std::vector<double> V(n_grid_nodes);
 
+// TODO: If you do the work in the following only of process 0, don't the other processes
+// have to send their data to process 0? I.e., don't we need a 'gather' operation here?
+//
+// Update: On reading further, I see that you actually do that. Let's move the 'else' branch
+// here, doing something like
+//    if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
+//      send data to process zero
+// This makes it easier to see that in order for this to work, we first have to send the
+// data before we receive it in the ==0 block.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           // Initialize the variables that will be sent to FastScape.
           std::vector<double> h(n_grid_nodes, std::numeric_limits<double>::max());
           std::vector<double> vz(n_grid_nodes);
-          std::vector<double> h_old(n_grid_nodes);
 
+// TODO: This will then simply be a loop over all elements of the map/multimap above.
+// Note that right now you encounter the same vertex multiple times, and you simply
+// overwrite early content with later content (which is ok).
+          // First copy our own data into the h and vz arrays:
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
             {
               int index = static_cast<int>(temporary_variables[1][i]);
@@ -376,8 +418,14 @@ namespace aspect
               vz[index] = temporary_variables[2][i];
             }
 
+          // Then also retrieve what the other processes sent to us and put
+          // them into the same arrays as well:
           for (unsigned int p = 1; p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
             {
+// TODO: In order to send/receive the std::map or std::multimap mentioned above, you can use
+// Utilities::MPI::isend/irecv. These are easier to use than what you have here because
+// they work on *any* data structure.
+
               MPI_Status status;
               MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
               int incoming_size = 0;
@@ -399,10 +447,9 @@ namespace aspect
                 }
             }
 
-          for (unsigned int i = 0; i < n_grid_nodes; ++i)
-            {
-              h_old[i] = h[i];
-            }
+          // Save the current elevation so that we can later take the difference to
+          // the one after calling FastScape:
+          const std::vector<double> h_old = h;
 
           std::cout<<"here it works 11"<<std::endl;
 
@@ -421,9 +468,14 @@ namespace aspect
           std::cout << "[DEBUG] fastscape_iterations = " << fastscape_iterations << std::endl;
             
 
-          double cell_area = surface_mesh.begin_active()->measure();
+// TODO: This is a pretty arbitrary cell, with a pretty arbitrary cell diameter. Is that what you
+// want? If so, perhaps say so in a comment and explain what it is used for.
+//
+// Separately, let's call this variable surface_cell_area in concordance with our convention
+          const double cell_area = surface_mesh.begin_active()->measure();
 
           // 1. Create the FastScape grid adapter
+// TODO: I haven't looked at the GridAdapter yet, but we should see whether we can't get rid of the const_cast.
           auto grid = GridAdapterType(const_cast<SurfaceMeshType &>(surface_mesh), cell_area);
           auto shape = grid.shape();  // Should be {n_grid_nodes}
 
@@ -451,10 +503,10 @@ namespace aspect
           flow_graph.set_base_levels(base_level_nodes);
 
           // 5. Build the erosion model
-          auto spl_eroder = fastscapelib::spl_eroder<FlowGraphType>(
+          fastscapelib::spl_eroder<FlowGraphType> spl_eroder
+          =
             // fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
-            fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
-          );
+            fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5);
           std::cout << "here it works 12" << std::endl;
 
           //Only for raster grid 
@@ -491,6 +543,11 @@ namespace aspect
           std::vector<std::string> vtu_filenames;
 
           // === WRITE INITIAL STATE ===
+// TODO: Is the comment wrong? We're not at the initial state any more, right?
+
+// TODO: In the long run (perhaps not right away), we should adopt a system like many of
+// the other plugins where we don't output information in *every* time step, but only
+// when requested.
           {
             dealii::Vector<double> elevation_output(n_grid_nodes);
             dealii::Vector<double> uplift_rate_output(n_grid_nodes);
@@ -607,6 +664,9 @@ namespace aspect
 
 
           // Compute erosion velocities
+// TODO: We compute a vertical velocity in meters per year here. But internally, ASPECT
+// computes in meters/second. When you apply these constraints, you'll have to multiple
+// as appropriate. It might be nice to do that here already.
           for (unsigned int i = 0; i < n_grid_nodes; ++i)
             {
               V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_years;
@@ -616,13 +676,19 @@ namespace aspect
 
           std::cout<<"here it works 13"<<std::endl;
 
-          // Broadcast V to all processes
+          // Broadcast V to all other processes
           MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
       else
         {
+// TODO: This is the else branch I mention above
           for (unsigned int i = 0; i < temporary_variables.size(); ++i)
             MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
+
+// TODO: This one corresponds to the Bcast at the end of the if-block above and sends all other processes
+// what process 0 has computed. I would move that *after* the if-block in the same
+// way as the two lines above were moved *before* the if-block, as that more clearly
+// communicates the order of communication.
           MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
         }
 
@@ -631,6 +697,7 @@ namespace aspect
       auto erosion_function = [&](const Point<dim> &p) -> double
       {
         const unsigned int index = this->vertex_index(p);
+// TODO: Here, V is provided in meters/year. But you will want m/s.
         return V[index];
       };
       std::cout << "here it works 14" << std::endl;
@@ -692,7 +759,6 @@ namespace aspect
           mesh_velocity_constraints);
 
       this->get_pcout() << "Applying erosion velocities to mesh boundary." << std::endl;
-
     }
 
     template <int dim>

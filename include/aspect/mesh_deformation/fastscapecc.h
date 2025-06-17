@@ -128,6 +128,12 @@ namespace aspect
 
       private:
 
+        /**
+         * For a given location, typically the location of a vertex of ASPECT's
+         * volume mesh, return the DoF index that corresponds to this vertex
+         * location within the surface_dof_handler. This index can then also
+         * be used to index into vectors defined on surface_dof_handler.
+         */
         unsigned int vertex_index(const Point<dim> &p) const;
 
         /*
