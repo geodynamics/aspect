@@ -171,8 +171,9 @@ namespace WorldBuilder
               const double slab_temperature = world->properties(position_in_cartesian_coordinates.get_array(), depth, {{{1,0,0}}})[0];
               double partition_coefficient = calculate_water_content(lithostatic_pressure,
                                                                      slab_temperature);
-
-              partition_coefficient = std::min(max_water_content, partition_coefficient);
+              // The partition_coefficient is output as a percentage, but geodynamic modeling software
+              // typically deal with fractions, so we divide by 100 below
+              partition_coefficient = std::min(max_water_content, partition_coefficient) / 100;
 
               for (unsigned int i = 0; i < compositions.size(); ++i)
                 {
