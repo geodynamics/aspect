@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2025 - by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -45,6 +45,8 @@ namespace aspect
     {
       ReactiveFluidTransport<dim>::evaluate(in, out);
       const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+
+      // Do not allow the bound fluid content to decrease.
       for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
         if (out.reaction_terms[q][bound_fluid_idx] <= 0.0)
           out.reaction_terms[q][bound_fluid_idx] = 0.0;

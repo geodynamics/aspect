@@ -55,7 +55,7 @@ subsection Solver parameters
     set Maximum number of expensive Stokes solver steps = 0
   end
   subsection Operator splitting parameters
-    set Reaction solver type                   = fixed
+    set Reaction solver type                   = fixed step
     set Reaction time step                     = 50
   end
 end
@@ -99,6 +99,7 @@ subsection Initial composition model
   set List of model names = world builder disequilibrium
   subsection World builder
     set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+    set Disequilibrium percentage     = 10
   end
 end
 
@@ -155,7 +156,7 @@ end
 subsection Material model
 
   set Model name                                         = reactive fluid transport bound fluid source
-  # We use a geometric averaging scheme for the viscosity instead of harmonic to 
+  # We use a geometric averaging scheme for the viscosity instead of harmonic to
   # avoid oversmoothing of the viscosity.
   set Material averaging                                 = geometric average only viscosity
 
@@ -188,20 +189,20 @@ subsection Material model
 
   # This subsection defines how the solid deforms using a composite visco-plastic
   # rheology. The rheology uses dislocation creep, diffusion creep, drucker-prager
-  # plasticity, and introduces a viscous weakening term that is dependent on the 
+  # plasticity, and introduces a viscous weakening term that is dependent on the
   # modeled bound water content.
   subsection Visco Plastic
     # Use a geometric averaging scheme for the viscosity
     set Viscosity averaging scheme                        = geometric
     set Viscous flow law                                  = composite
-    # The HK04 olivine hydration prefactor scales the solid viscosity based on the 
+    # The HK04 olivine hydration prefactor scales the solid viscosity based on the
     # modeled water-fugacity, assuming an olivine composition that is 90% forsterite
     # and 10% fayalite. This implementation is based off of Hirth & Kohlstaedt 2004.
     set Viscosity prefactor scheme                        = HK04 olivine hydration
     set Minimum strain rate                               = 1e-20
     set Reference strain rate                             = 1e-20
 
-    # We introduce phase transitions as a method for changing the rheology of the model 
+    # We introduce phase transitions as a method for changing the rheology of the model
     # within the lower mantle, and to limit the viscosity of the sediment rheology. Within
     # the lower mantle (beneath 660 km depth), the solid only deforms via diffusion creep.
     # Shallower than 660 km, all deformation mechanisms are active. For the sediment
@@ -314,7 +315,7 @@ end
 # Adapt the mesh using a combination of strategies. Every 5 time steps,
 # the mesh is refined based on the temperature, viscosity, and the location
 # of free water. We ensure that mesh cannot go below 4 levels of refinement
-# using a minimum refinement function. The highest refinement level is 8 
+# using a minimum refinement function. The highest refinement level is 8
 # which results in a grid size of ~5.5 x 5.5 km.
 subsection Mesh refinement
   set Coarsening fraction                      = 0.3
@@ -341,7 +342,7 @@ subsection Mesh refinement
 
   # refine where the porosity is bigger than 1e-6, the bound fluid is larger
   # than 0.001, and where the sediment composition is greater than 0.5. Set
-  # the peridotite, gabbro, and MORB compositions to 10, which means that we 
+  # the peridotite, gabbro, and MORB compositions to 10, which means that we
   # will never refine based on these compositions since they cannot be larger
   # than 1.0.
   subsection Composition threshold
