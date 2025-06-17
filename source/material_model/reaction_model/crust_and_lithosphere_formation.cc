@@ -32,14 +32,6 @@ namespace aspect
   {
     namespace ReactionModel
     {
-
-
-      template <int dim>
-      CrustLithosphereFormation<dim>::CrustLithosphereFormation()
-        = default;
-
-
-
       template <int dim>
       void
       CrustLithosphereFormation<dim>::calculate_reaction_terms (const typename Interface<dim>::MaterialModelInputs  &in,
@@ -51,8 +43,6 @@ namespace aspect
 
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
               {
-                const std::string field_name = this->introspection().name_for_compositional_index(c);
-
                 // Crust and lithosphere are only generated when material approaches the surface,
                 // i.e. above the reaction depth and when the velocity is predominantly upwards.
                 const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
@@ -65,14 +55,12 @@ namespace aspect
                 const bool within_crust = depth < crustal_thickness && upward_flow;
                 const bool within_lithosphere = depth < crustal_thickness + lithosphere_thickness && upward_flow;
 
-                const unsigned int basalt_idx = this->introspection().compositional_index_for_name("basalt");
-
                 // In the crust, we convert every material to basalt.
                 if (within_crust)
                   {
-                    if (field_name == "basalt")
+                    if (c == basalt_index)
                       out.reaction_terms[i][c] = 1. - in.composition[i][c];
-                    else if (field_name == "harzburgite")
+                    else if (c == harzburgite_index)
                       out.reaction_terms[i][c] = - in.composition[i][c];
                   }
                 // In the lithosphere, we convert pyrolite to harzburgite.
@@ -80,14 +68,14 @@ namespace aspect
                 // TODO: Think about what should happen to basalt when it reaches depth of melting again.
                 else if (within_lithosphere)
                   {
-                    if (field_name == "basalt")
+                    if (c == basalt_index)
                       out.reaction_terms[i][c] = 0.0;
-                    else if (field_name == "harzburgite")
+                    else if (c == harzburgite_index)
                       {
                         // Lithosphere composition changes linearly with depth, but only background mantle
                         // is converted (whereas basalt is not).
                         const double harzburgite_change = (crustal_thickness + lithosphere_thickness - depth) / lithosphere_thickness
-                                                          * (1.0 - in.composition[i][basalt_idx]);
+                                                          * (1.0 - in.composition[i][basalt_index]);
                         // If we already have more harzburgite than the change, we do not change it.
                         if (in.composition[i][c] >= harzburgite_change)
                           out.reaction_terms[i][c] = 0.0;
@@ -137,6 +125,9 @@ namespace aspect
                     ExcMessage("The reaction model <crust and lithosphere formation> "
                                "can only be used if there are compositional fields named "
                                "'basalt' and 'harzburgite'."));
+
+        basalt_index = this->introspection().compositional_index_for_name("basalt");
+        harzburgite_index = this->introspection().compositional_index_for_name("harzburgite");
       }
     }
   }
@@ -148,14 +139,12 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace ReactionModel
+    {
 #define INSTANTIATE(dim) \
-  namespace ReactionModel \
-  { \
-    template class CrustLithosphereFormation<dim>; \
-  }
+  template class CrustLithosphereFormation<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
-
-#undef INSTANTIATE
+      ASPECT_INSTANTIATE(INSTANTIATE)
+    }
   }
 }

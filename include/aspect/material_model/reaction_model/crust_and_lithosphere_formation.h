@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_crust_and_lithosphere_formation_h
-#define _aspect_crust_and_lithosphere_formation_h
+#ifndef _aspect_material_model_reaction_model_crust_and_lithosphere_formation_h
+#define _aspect_material_model_reaction_model_crust_and_lithosphere_formation_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
@@ -48,9 +48,6 @@ namespace aspect
       class CrustLithosphereFormation : public ::aspect::SimulatorAccess<dim>
       {
         public:
-          // constructor
-          CrustLithosphereFormation();
-
           /**
           * Declare the parameters this function takes through input files.
           */
@@ -63,7 +60,6 @@ namespace aspect
            */
           void
           parse_parameters (ParameterHandler &prm);
-
 
           /**
            * Compute the change in composition for the basalt and harzburgite chemical
@@ -78,8 +74,21 @@ namespace aspect
                                     typename Interface<dim>::MaterialModelOutputs       &out) const;
 
         private:
+          /**
+           * Parameters controlling where the generation of crust and lithosphere
+           * occurs. Crust is generated above the crustal_thickness, and lithosphere
+           * is generated below the crustal_thickness and down to a depth that is the
+           * sum of crustal_thickness and lithosphere_thickness.
+           */
           double crustal_thickness;
           double lithosphere_thickness;
+
+          /**
+           * The indices of the compositional fields that store the basalt and
+           * harzburgite chemical compositions.
+           */
+          unsigned int basalt_index;
+          unsigned int harzburgite_index;
       };
     }
 

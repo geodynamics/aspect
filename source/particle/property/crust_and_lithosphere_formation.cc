@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 by the authors of the ASPECT code.
+  Copyright (C) 2025 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -136,6 +136,26 @@ namespace aspect
 
 
       template <int dim>
+      AdvectionField
+      CrustLithosphereFormation<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
+      {
+        if (property_component == 0)
+          return AdvectionField::composition(basalt_index);
+        else if (property_component == 1)
+          return AdvectionField::composition(harzburgite_index);
+        else
+          {
+            Assert(false,
+                   ExcMessage("The crust and lithosphere formation particle property "
+                              "only has two components: basalt and harzburgite."));
+            // This line will never be reached but is needed to avoid compiler warnings.
+            return AdvectionField::composition(0);
+          }
+      }
+
+
+
+      template <int dim>
       UpdateTimeFlags
       CrustLithosphereFormation<dim>::need_update() const
       {
@@ -157,7 +177,6 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int>>
       CrustLithosphereFormation<dim>::get_property_information() const
       {
-        // TODO: This is the name we use in the input file. Does that make sense?
         return {{"basalt",1}, {"harzburgite",1}};
       }
 

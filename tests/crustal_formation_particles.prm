@@ -72,10 +72,6 @@ end
 
 subsection Material model
   set Model name = simple
-
-  subsection Simple model
-
-  end
 end
 
 subsection Compositional fields
