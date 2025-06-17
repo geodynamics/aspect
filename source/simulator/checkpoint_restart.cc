@@ -397,8 +397,7 @@ namespace aspect
           }
       }
 
-    MPI_Bcast(&last_checkpoint_id, 1, MPI_INT, 0, mpi_communicator);
-    return last_checkpoint_id;
+    return Utilities::MPI::broadcast(mpi_communicator, last_checkpoint_id, 0);
   }
 
 
