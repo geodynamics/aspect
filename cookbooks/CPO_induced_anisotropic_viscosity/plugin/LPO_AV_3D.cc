@@ -1124,4 +1124,3 @@ namespace aspect
                                    "Olivine LPO related viscous anisotropy based on the Simple material model")
   }
 }
-}
