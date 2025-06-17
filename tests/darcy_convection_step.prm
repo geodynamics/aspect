@@ -163,7 +163,7 @@ end
 
 # Output the darcy velocity
 subsection Postprocess
-  set List of postprocessors = visualization
+  set List of postprocessors = visualization, fluid velocity statistics
 
   subsection Visualization
     set List of output variables = darcy velocity
