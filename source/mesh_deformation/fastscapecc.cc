@@ -267,11 +267,6 @@ namespace aspect
         {
           if constexpr (dim == 3)
             {
-              const double x = p[0];
-              const double y = p[1];
-              const double x0 = grid_extent[0].first;
-              const double y0 = grid_extent[1].first;
-
               const unsigned int i =std::min(static_cast<unsigned int>((p[0] - grid_extent[0].first) / dx + 0.5), nx - 1);
               const unsigned int j =std::min(static_cast<unsigned int>((p[1] - grid_extent[1].first) / dy + 0.5), ny - 1);
               const unsigned int index = j * nx + i;
