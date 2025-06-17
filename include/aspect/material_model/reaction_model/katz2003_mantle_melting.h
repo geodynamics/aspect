@@ -48,9 +48,6 @@ namespace aspect
       class Katz2003MantleMelting : public ::aspect::SimulatorAccess<dim>
       {
         public:
-          // constructor
-          Katz2003MantleMelting();
-
           /**
            * Declare the parameters this function takes through input files.
            */
@@ -63,7 +60,6 @@ namespace aspect
            */
           void
           parse_parameters (ParameterHandler &prm);
-
 
           /**
            * Percentage of material that is molten for a given @p temperature and
@@ -87,7 +83,6 @@ namespace aspect
                           const double pressure,
                           const double maximum_melt_fraction,
                           const NonlinearDependence::Dependence dependence) const;
-
 
           /**
            * Compute all the reaction rate variables needed for a reactive transport model based on the
