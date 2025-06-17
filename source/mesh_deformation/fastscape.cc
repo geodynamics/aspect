@@ -208,7 +208,7 @@ namespace aspect
 
       // Get the deformation type names called for each boundary.
       std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-                                                          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+        = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
       // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
       for (const types::boundary_id id : mesh_deformation_boundary_ids)
@@ -619,7 +619,7 @@ namespace aspect
 
     template <int dim>
     std::vector<std::vector<double>>
-                                  FastScape<dim>::get_aspect_values() const
+    FastScape<dim>::get_aspect_values() const
     {
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
