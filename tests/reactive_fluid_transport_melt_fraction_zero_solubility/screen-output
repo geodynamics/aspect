@@ -1,0 +1,45 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving bound_fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41313e-16, 2.27658e-16, 2.27658e-16, 0
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.27658e-16
+
+
+   Postprocessing:
+     Melt fraction min/total/max: 0.01669, 6.676e+04, 0.01669
+     Compositions min/max/mass:   0.01/0.01/4e+04 // 0.01/0.01/4e+04
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving composition reactions... in 10 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 7+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.72322e-16, 6.41101e-17, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Melt fraction min/total/max: 0.01669, 6.676e+04, 0.01669
+     Compositions min/max/mass:   0.02483/0.02483/9.931e+04 // 0/0/0
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

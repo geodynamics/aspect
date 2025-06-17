@@ -1,0 +1,42 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Minimal melt fraction
+# 20: Total melt volume
+# 21: Maximal melt fraction
+# 22: Minimal value for composition porosity
+# 23: Maximal value for composition porosity
+# 24: Global mass for composition porosity
+# 25: Minimal value for composition bound_fluid
+# 26: Maximal value for composition bound_fluid
+# 27: Global mass for composition bound_fluid
+# 28: Minimal value for composition peridotite
+# 29: Maximal value for composition peridotite
+# 30: Global mass for composition peridotite
+# 31: Minimal value for composition gabbro
+# 32: Maximal value for composition gabbro
+# 33: Global mass for composition gabbro
+# 34: Minimal value for composition MORB
+# 35: Maximal value for composition MORB
+# 36: Global mass for composition MORB
+# 37: Minimal value for composition sediment
+# 38: Maximal value for composition sediment
+# 39: Global mass for composition sediment
+# 40: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1 22 9 54 1 0 0 0 0 0 0 0 4 5 24 1.56632604e-02 6.26530414e+04 1.56632604e-02 1.00000000e-02 1.00000000e-02 4.00000000e+04 1.00000000e-02 1.00000000e-02 4.00000000e+04 1.00000000e+00 1.00000000e+00 4.00000000e+06 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-reactive_fluid_transport_melt_fraction_tian_approximation/solution/solution-00000 
+1 1.000000000000e+04 1.000000000000e+04 1 22 9 54 1 0 0 0 0 0 0 0 4 5 25 1.56123844e-02 6.24495376e+04 1.56123844e-02 2.32371827e-02 2.32371827e-02 9.29487307e+04 1.02570285e-03 1.02570285e-03 4.10281139e+03 1.00000000e+00 1.00000000e+00 4.00000000e+06 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                                                       "" 

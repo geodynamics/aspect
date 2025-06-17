@@ -1,0 +1,58 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 110 (18+7+18+4+9+9+9+9+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving bound_fluid system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Skipping gabbro composition solve because RHS is zero.
+   Skipping MORB composition solve because RHS is zero.
+   Skipping sediment composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 4+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41313e-16, 2.27658e-16, 2.27658e-16, 2.35543e-16, 0, 0, 0, 161.907
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 161.907
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Melt fraction min/total/max: 0.01566, 6.265e+04, 0.01566
+     Compositions min/max/mass:   0.01/0.01/4e+04 // 0.01/0.01/4e+04 // 1/1/4e+06 // 0/0/0 // 0/0/0 // 0/0/0
+     Writing graphical output:    output-reactive_fluid_transport_melt_fraction_tian_approximation/solution/solution-00000
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving composition reactions... in 10 substep(s).
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving bound_fluid system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Skipping gabbro composition solve because RHS is zero.
+   Skipping MORB composition solve because RHS is zero.
+   Skipping sediment composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 4+0 iterations.
+   Solving fluid velocity system... 1 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.0761e-16, 6.98782e-17, 9.84565e-17, 1.41086e-16, 0, 0, 0, 1442.06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1442.06
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Melt fraction min/total/max: 0.01561, 6.245e+04, 0.01561
+     Compositions min/max/mass:   0.02324/0.02324/9.295e+04 // 0.001026/0.001026/4103 // 1/1/4e+06 // 0/0/0 // 0/0/0 // 0/0/0
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 2 nonlinear solver failures occurred!

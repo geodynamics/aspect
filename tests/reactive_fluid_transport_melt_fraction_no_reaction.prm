@@ -1,0 +1,45 @@
+# This test checks that the no reaction model correctly 
+# outputs the melt fractions. The initial bound water is 1 wt%, and there is
+# also an initial porosity of 1% (volume fraction). 
+# The melt fraction within the no reaction model is calculated with:
+# m_f = wt%_free_water
+# So we need to compute the wt%_free_water. The porosity is a volume fraction,
+# so we just need to convert it to a mass fraction with:
+# wt%_free_water = porosity * rho_f / rho_b
+# We use a fluid density of 2000 kg/m^3 and a solid density of 3000 kg/m^3, so the
+# bulk density rho_b is equal to:
+# rho_b = (1 - porosity) * rho_s + porosity * rho_f = 2990 kg/m^3.
+# This results in an initial wt%_free_water equal to 0.0066889. Therefore, we can
+# determine that the melt fraction output should be equal to:
+# m_f = 0.0066889.
+include $ASPECT_SOURCE_DIR/tests/reactive_fluid_transport_zero_solubility.prm
+
+set End time = 1e3
+set Use operator splitting = false
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Initial composition model
+  subsection Function
+    set Function expression = 0.01; 0.01
+  end
+end
+
+# Use the no reaction scheme in the reactive fluid
+# transport model.
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Fluid-solid reaction scheme = no reaction
+    set Reference fluid density = 2000
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = melt statistics, composition statistics
+end

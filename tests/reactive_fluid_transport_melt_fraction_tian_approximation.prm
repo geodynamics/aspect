@@ -1,0 +1,68 @@
+# This test checks that the tian approximation reaction model correctly 
+# outputs the melt fractions. The initial bound water is 1 wt%, and there is
+# also an initial porosity of 1% (volume fraction). 
+# The pressure is 1 GPa, and the temperature is set to 1600 K, and the solid
+# is 100% peridotite. The tian approximation says that the peridotite can only
+# store 0.10257 wt% water. The melt fraction within the tian reaction model is calculated with:
+# m_f = wt%_bound_water + wt%_free_water - equilibrium_water_content
+# So we need to compute the wt%_free_water. The porosity is a volume fraction,
+# so we just need to convert it to a mass fraction with:
+# wt%_free_water = porosity * rho_f / rho_b
+# We use a fluid density of 2000 kg/m^3 and a solid density of 3000 kg/m^3, so the
+# bulk density rho_b is equal to:
+# rho_b = (1 - porosity) * rho_s + porosity * rho_f = 2990 kg/m^3.
+# This results in an initial wt%_free_water equal to 0.0066889. Therefore, we can
+# determine that the melt fraction output should be equal to:
+# m_f = 0.01 + 0.0066889 - 0.0010257 = 0.0156632.
+include $ASPECT_SOURCE_DIR/tests/reactive_fluid_transport_zero_solubility.prm
+
+set End time          = 10e3
+set Surface pressure  = 1e9
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction solver type = fixed step
+    set Reaction time step   = 1000
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Initial composition model
+  subsection Function
+    set Function constants  = initial_porosity=0.01, initial_bound_water=0.01
+    set Function expression = initial_porosity; \
+                              initial_bound_water; \
+                              1; \
+                              0; \
+                              0; \
+                              0  
+  end
+end
+
+# Use the tian approximation reaction scheme in the reactive fluid
+# transport model.
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Reference fluid density     = 2000
+    set Fluid-solid reaction scheme = tian approximation
+    set Fluid reaction time scale for operator splitting = 1000
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = melt statistics, composition statistics, visualization
+  subsection Visualization
+    set List of output variables =  material properties
+  end
+end
