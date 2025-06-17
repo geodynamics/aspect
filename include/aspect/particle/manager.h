@@ -313,6 +313,11 @@ namespace aspect
         std::unique_ptr<Integrator::Interface<dim>> integrator;
 
         /**
+         * Random number generator used for creating and deleting particles
+         */
+        std::mt19937 random_number_generator;
+
+        /**
          * Interpolation scheme for moving particles in this manager
          */
         std::unique_ptr<Interpolator::Interface<dim>> interpolator;

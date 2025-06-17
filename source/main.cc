@@ -30,6 +30,7 @@
 #include <string>
 #include <thread>
 #include <regex>
+#include <utility>
 
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
@@ -435,39 +436,9 @@ read_parameter_file(const std::string &parameter_file_name,
       // then only MPI process 0 gets the data. so we have to
       // read it there, then broadcast it to the other processors
       if (i_am_proc_0)
-        {
-          input_as_string = read_until_end (std::cin);
-          int size = input_as_string.size()+1;
-          int ierr = MPI_Bcast (&size,
-                                1,
-                                MPI_INT,
-                                /*root=*/0, MPI_COMM_WORLD);
-          AssertThrowMPI(ierr);
-          ierr = MPI_Bcast (const_cast<char *>(input_as_string.c_str()),
-                            size,
-                            MPI_CHAR,
-                            /*root=*/0, MPI_COMM_WORLD);
-          AssertThrowMPI(ierr);
-        }
-      else
-        {
-          // on this side, read what processor zero has broadcast about
-          // the size of the input file. then create a buffer to put the
-          // text in, get it from processor 0, and copy it to
-          // input_as_string
-          int size;
-          int ierr = MPI_Bcast (&size, 1,
-                                MPI_INT,
-                                /*root=*/0, MPI_COMM_WORLD);
-          AssertThrowMPI(ierr);
-
-          std::vector<char> p (size);
-          ierr = MPI_Bcast (p.data(), size,
-                            MPI_CHAR,
-                            /*root=*/0, MPI_COMM_WORLD);
-          AssertThrowMPI(ierr);
-          input_as_string = p.data();
-        }
+        input_as_string = read_until_end (std::cin);
+      input_as_string = Utilities::MPI::broadcast(MPI_COMM_WORLD, input_as_string,
+                                                  /*root=*/0);
     }
 
   return input_as_string;
@@ -514,12 +485,12 @@ parse_parameters (const std::string &input_as_string,
             }
           catch (const dealii::ExceptionBase &e)
             {
-              dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
-                                                 /* reading failed: */ false,
-                                                 root_process);
+              std::ignore = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD,
+                                                               /* reading failed: */ false,
+                                                               root_process);
               throw;
             }
-          dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD, true, root_process);
+          std::ignore = dealii::Utilities::MPI::broadcast (MPI_COMM_WORLD, true, root_process);
         }
       else
         {

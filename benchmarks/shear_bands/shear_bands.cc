@@ -140,7 +140,8 @@ namespace aspect
             }
 
           // fill melt outputs if they exist
-          aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim>>();
+          const std::shared_ptr<aspect::MaterialModel::MeltOutputs<dim>> melt_out
+            = out.template get_additional_output_object<aspect::MaterialModel::MeltOutputs<dim>>();
 
           if (melt_out != nullptr)
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)

@@ -52,7 +52,8 @@ namespace aspect
     void
     MeltSimple<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
@@ -252,7 +253,7 @@ namespace aspect
     void
     MeltSimple<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (this->get_parameters().use_operator_splitting && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
+      if (this->get_parameters().use_operator_splitting && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

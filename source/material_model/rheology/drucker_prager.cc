@@ -34,7 +34,9 @@ namespace aspect
     {
       DruckerPragerParameters::DruckerPragerParameters()
         : angle_internal_friction (numbers::signaling_nan<double>()),
+          angle_dilation (numbers::signaling_nan<double>()),
           cohesion  (numbers::signaling_nan<double>()),
+          yield_stress_prefactor (1.0),
           max_yield_stress (numbers::signaling_nan<double>())
       {}
 
@@ -54,24 +56,33 @@ namespace aspect
       {
         DruckerPragerParameters drucker_prager_parameters;
 
-        drucker_prager_parameters.max_yield_stress = max_yield_stress;
-
         if (phase_function_values == std::vector<double>())
           {
             // no phases
             drucker_prager_parameters.angle_internal_friction = angles_internal_friction[composition];
+            drucker_prager_parameters.angle_dilation = angles_dilation[composition];
             drucker_prager_parameters.cohesion = cohesions[composition];
+            drucker_prager_parameters.yield_stress_prefactor = yield_stress_prefactors[composition];
+            drucker_prager_parameters.max_yield_stress = max_yield_stresses[composition];
           }
         else
           {
             // Average among phases
             drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                                 angles_internal_friction, composition);
+            drucker_prager_parameters.angle_dilation = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
+                                                       angles_dilation, composition);
             drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
                                                  cohesions, composition);
+            drucker_prager_parameters.yield_stress_prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
+                                                               yield_stress_prefactors, composition);
+            drucker_prager_parameters.max_yield_stress = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phase_transitions_per_composition,
+                                                         max_yield_stresses, composition);
           }
         return drucker_prager_parameters;
       }
+
+
 
       template <int dim>
       double
@@ -80,8 +91,25 @@ namespace aspect
                                                 const double pressure,
                                                 const double max_yield_stress) const
       {
-        const double sin_phi = std::sin(angle_internal_friction);
-        const double cos_phi = std::cos(angle_internal_friction);
+        DruckerPragerParameters p;
+        p.angle_internal_friction = angle_internal_friction;
+        p.cohesion = cohesion;
+        p.max_yield_stress = max_yield_stress;
+
+        // Call the new version of the function that takes
+        // DruckerPragerParameters as input.
+        return compute_yield_stress(pressure, p);
+      }
+
+
+
+      template <int dim>
+      double
+      DruckerPrager<dim>::compute_yield_stress (const double pressure,
+                                                const DruckerPragerParameters &p) const
+      {
+        const double sin_phi = std::sin(p.angle_internal_friction);
+        const double cos_phi = std::cos(p.angle_internal_friction);
 
         // The expression below differs from Eq. 9 of Glerum et al, 2018.
         // There are actually three different ways of choosing this parameter, which
@@ -95,11 +123,11 @@ namespace aspect
         // Initial yield stress (no stabilization terms)
         const double yield_stress = ( (dim==3)
                                       ?
-                                      ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part
+                                      (( 6.0 * p.cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part) * p.yield_stress_prefactor
                                       :
-                                      cohesion * cos_phi + pressure * sin_phi);
+                                      (p.cohesion * cos_phi + pressure * sin_phi) * p.yield_stress_prefactor);
 
-        return std::min(yield_stress, max_yield_stress);
+        return std::min(yield_stress, p.max_yield_stress);
       }
 
 
@@ -113,7 +141,26 @@ namespace aspect
                                              const double max_yield_stress,
                                              const double non_yielding_viscosity) const
       {
-        const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure, max_yield_stress);
+        DruckerPragerParameters p;
+        p.angle_internal_friction = angle_internal_friction;
+        p.cohesion = cohesion;
+        p.max_yield_stress = max_yield_stress;
+
+        // Call the new version of this function that takes
+        // DruckerPragerParameters as input.
+        return compute_viscosity(pressure, effective_strain_rate, p, non_yielding_viscosity);
+      }
+
+
+
+      template <int dim>
+      double
+      DruckerPrager<dim>::compute_viscosity (const double pressure,
+                                             const double effective_strain_rate,
+                                             const DruckerPragerParameters &p,
+                                             const double non_yielding_viscosity) const
+      {
+        const double yield_stress = compute_yield_stress(pressure, p);
 
         // If there is no damper, the yielding plastic element accommodates all the strain
         double apparent_viscosity = yield_stress / (2. * effective_strain_rate);
@@ -144,7 +191,7 @@ namespace aspect
                                                               const DruckerPragerParameters &p) const
       {
 
-        const double yield_stress = compute_yield_stress(p.cohesion, p.angle_internal_friction, pressure, p.max_yield_stress);
+        const double yield_stress = compute_yield_stress(pressure, p);
 
         if (stress > yield_stress)
           {
@@ -182,6 +229,38 @@ namespace aspect
 
 
       template <int dim>
+      std::pair<double,double>
+      DruckerPrager<dim>::compute_dilation_terms_for_stokes_system(const DruckerPragerParameters &drucker_prager_parameters,
+                                                                   const double non_yielding_viscosity,
+                                                                   const double effective_strain_rate) const
+      {
+        const double sin_phi = std::sin(drucker_prager_parameters.angle_internal_friction);
+        const double sin_psi = std::sin(drucker_prager_parameters.angle_dilation);
+
+        double alpha;
+        double alpha_bar;
+        if (dim == 2)
+          {
+            alpha     = sin_phi;
+            alpha_bar = sin_psi;
+          }
+        else if (dim == 3)
+          {
+            alpha     = 6.0 * sin_phi / (std::sqrt(3.0) * (3.0 + sin_phi));
+            alpha_bar = 6.0 * sin_psi / (std::sqrt(3.0) * (3.0 + sin_psi));
+          }
+        else
+          AssertThrow(false,ExcNotImplemented());
+
+        const double dilation_lhs_term = alpha_bar * alpha / non_yielding_viscosity;
+        const double dilation_rhs_term = alpha_bar * (2. * effective_strain_rate - drucker_prager_parameters.cohesion / non_yielding_viscosity);
+
+        return std::make_pair(dilation_lhs_term, dilation_rhs_term);
+      }
+
+
+
+      template <int dim>
       void
       DruckerPrager<dim>::declare_parameters (ParameterHandler &prm)
       {
@@ -192,6 +271,13 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "For a value of zero, in 2d the von Mises criterion is retrieved. "
                            "Angles higher than 30 degrees are harder to solve numerically. Units: degrees.");
+        prm.declare_entry ("Angles of dilation", "0.",
+                           Patterns::Anything(),
+                           "List of angles of plastic dilation, $\\psi$, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "For a value of zero, the von Mises flow rule is retrieved. "
+                           "The dilation angle should never exceed the internal friction angle.");
         prm.declare_entry ("Cohesions", "1e20",
                            Patterns::Anything(),
                            "List of cohesions, $C$, for background material and compositional fields, "
@@ -199,8 +285,17 @@ namespace aspect
                            "those corresponding to chemical compositions. "
                            "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
                            "exceeding the yield stress. Units: \\si{\\pascal}.");
-        prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double (0.),
-                           "Limits the maximum value of the yield stress determined by the "
+        prm.declare_entry ("Prefactors for yield stress", "1.0",
+                           Patterns::Anything(),
+                           "List of prefactors for the yield stress, for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
+                           "The prefactor is multiplied with the yield stress computed from the Drucker-Prager "
+                           "plasticity parameters. Default value is 1.0.");
+        prm.declare_entry ("Maximum yield stress", "1e12",
+                           Patterns::Anything(),
+                           "List of maximum yield stresses, for background material and compositional fields, "
+                           ", which limits the maximum value of the yield stress determined by the "
                            "Drucker-Prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
                            "in previous models. Units: \\si{\\pascal}.");
@@ -249,16 +344,40 @@ namespace aspect
         angles_internal_friction = Utilities::MapParsing::parse_map_to_double_array(prm.get("Angles of internal friction"),
                                                                                     options);
 
+        options.property_name = "Angles of dilation";
+        angles_dilation = Utilities::MapParsing::parse_map_to_double_array(prm.get("Angles of dilation"),
+                                                                           options);
+
         // Convert angles from degrees to radians
-        for (double &angle : angles_internal_friction)
-          angle *= constants::degree_to_radians;
+        for (unsigned int i = 0; i < angles_internal_friction.size(); ++i)
+          {
+            angles_internal_friction[i] *= constants::degree_to_radians;
+            angles_dilation[i]          *= constants::degree_to_radians;
+
+            AssertThrow(angles_dilation[i] <= angles_internal_friction[i],
+                        ExcMessage("The dilation angle is greater than the internal friction angle for "
+                                   "composition " + Utilities::to_string(i) + "."));
+
+            if (angles_dilation[i] > 0.0)
+              AssertThrow(this->get_parameters().enable_prescribed_dilation == true,
+                          ExcMessage("ASPECT detected a nonzero dilation angle, but dilation is "
+                                     "not enabled. Please set parameter entry 'Enable prescribed "
+                                     "dilation' to 'true'."));
+          }
 
         options.property_name = "Cohesions";
         cohesions = Utilities::MapParsing::parse_map_to_double_array(prm.get("Cohesions"),
                                                                      options);
 
         // Limit maximum value of the Drucker-Prager yield stress
-        max_yield_stress = prm.get_double("Maximum yield stress");
+        options.property_name = "Maximum yield stress";
+        max_yield_stresses = Utilities::MapParsing::parse_map_to_double_array(prm.get("Maximum yield stress"),
+                                                                              options);
+
+        // Prefactors for the yield stress
+        options.property_name = "Prefactors for yield stress";
+        yield_stress_prefactors = Utilities::MapParsing::parse_map_to_double_array(prm.get("Prefactors for yield stress"),
+                                                                                   options);
 
         // Whether to include a plastic damper when computing the Drucker-Prager plastic viscosity
         use_plastic_damper = prm.get_bool("Use plastic damper");

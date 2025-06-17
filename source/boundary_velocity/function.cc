@@ -68,6 +68,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Function<dim>::update()
@@ -79,6 +80,7 @@ namespace aspect
       else
         boundary_velocity_function.set_time (this->get_time());
     }
+
 
 
     template <int dim>

@@ -22,14 +22,14 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 0+0 iterations.
    Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77541e-16, 1.34525e-16, 1.34525e-16, 6.14908e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.14908e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.77541e-16, 1.34525e-16, 1.34525e-16, 6.14901e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.14901e-08
 
 
    Postprocessing:
      Writing graphical output:  output-particle_melt_advection/solution/solution-00000
      Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
-     RMS, max velocity:         0.00292 m/year, 0.00958 m/year
+     RMS, max velocity:         0.00292 m/year, 0.00961 m/year
      Temperature min/avg/max:   293 K, 1519 K, 1625 K
      Writing depth average:     output-particle_melt_advection/depth_average
      Writing particle output:   output-particle_melt_advection/particles/particles-00000
@@ -72,7 +72,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 5+0 iterations.
    Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.73366e-09, 3.83927e-06, 1.793e-07, 1.50033e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.73365e-09, 3.83927e-06, 1.793e-07, 1.50033e-06
       Relative nonlinear residual (total system) after nonlinear iteration 4: 3.83927e-06
 
 

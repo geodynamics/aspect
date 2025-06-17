@@ -23,10 +23,17 @@
 
 
 find_package(deal.II 9.5.0 QUIET REQUIRED HINTS @DEAL_II_PATH@ @deal.II_DIR@)
-set(Aspect_INCLUDE_DIRS "@CONFIG_INCLUDE_DIRS@")
+set(Aspect_INCLUDE_DIRS "@ASPECT_INCLUDE_DIRS@")
 set(Aspect_VERSION "@ASPECT_PACKAGE_VERSION@")
 set(Aspect_DIR "@CONFIG_DIR@")
+
+set(ASPECT_WITH_FASTSCAPE "@ASPECT_WITH_FASTSCAPE@")
+
+# Import information about the World Builder installation
 set(ASPECT_WITH_WORLD_BUILDER "@ASPECT_WITH_WORLD_BUILDER@")
+set(WORLD_BUILDER_VERSION "@WORLD_BUILDER_VERSION@")
+set(WORLD_BUILDER_SOURCE_DIR "@WORLD_BUILDER_SOURCE_DIR@")
+
 # force our build type to the one that is used by ASPECT:
 set(ASPECT_BUILD_DEBUG "@ASPECT_BUILD_DEBUG@")
 set(ASPECT_BUILD_RELEASE "@ASPECT_BUILD_RELEASE@")
@@ -53,6 +60,15 @@ macro(ASPECT_SETUP_PLUGIN _target)
     deal_ii_setup_target(${_target} DEBUG)
     set_target_properties(${_target} PROPERTIES SUFFIX ".debug.so")
 
+    if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
+      # Add those WorldBuilder include directories to the include
+      # directory list that are specific to the build (debug or
+      # release):
+      target_include_directories(${_target} PRIVATE
+        "${WORLD_BUILDER_SOURCE_DIR}/include/"
+        "${Aspect_DIR}/world_builder/include/")
+    endif()
+
     list(APPEND _target_libs ${_target})
   endif()
 
@@ -74,12 +90,20 @@ macro(ASPECT_SETUP_PLUGIN _target)
       set_target_properties(${_release_target_name} PROPERTIES SUFFIX ".release.so")
     endif()
 
+    if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
+      # Add those WorldBuilder include directories to the include
+      # directory list that are specific to the build (debug or
+      # release):
+      target_include_directories(${_release_target_name} PRIVATE
+        "${WORLD_BUILDER_SOURCE_DIR}/include/"
+        "${Aspect_DIR}/world_builder_release/include/")
+    endif()
+
     list(APPEND _target_libs ${_release_target_name})
   endif()
 
   foreach(_T ${_target_libs})
-    set_property(TARGET ${_T} APPEND PROPERTY
-      INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}")
+    target_include_directories(${_T} PRIVATE ${Aspect_INCLUDE_DIRS})
     set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
   endforeach()
 

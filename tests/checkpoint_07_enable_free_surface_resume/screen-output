@@ -2,10 +2,10 @@
 Loading shared library <./libcheckpoint_07_enable_free_surface_resume.debug.so>
 * Copying checkpoint files.
 Executing the following command:
-mkdir -p output-checkpoint_07_enable_free_surface_resume; cp -r output-checkpoint_07_enable_free_surface_create/restart* output-checkpoint_07_enable_free_surface_resume/
+mkdir -p output-checkpoint_07_enable_free_surface_resume; mv output-checkpoint_07_enable_free_surface_create/restart output-checkpoint_07_enable_free_surface_resume/
 * Finished copying files. Now resuming model.
 
-*** Resuming from snapshot!
+*** Resuming from snapshot output-checkpoint_07_enable_free_surface_resume/restart/02/
 
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
@@ -21,7 +21,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_resume/solution/solution-00008
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0153 m/year, 0.0281 m/year
+     RMS, max velocity:        0.0153 m/year, 0.042 m/year
 
 Termination requested by criterion: end time
 

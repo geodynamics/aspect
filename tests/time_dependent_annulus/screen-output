@@ -38,7 +38,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
      Writing graphical output: output-time_dependent_annulus/solution/solution-00002
 
 Termination requested by criterion: end time
-*** Snapshot created!
+*** Snapshot output-time_dependent_annulus/restart/01/ created!
 
 
 

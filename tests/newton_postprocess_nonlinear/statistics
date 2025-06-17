@@ -13,32 +13,44 @@
 # 13: Iterations for composition solver 4
 # 14: Iterations for composition solver 5
 # 15: Iterations for composition solver 6
-# 16: Iterations for Stokes solver
-# 17: Velocity iterations in Stokes preconditioner
-# 18: Schur complement iterations in Stokes preconditioner
-# 19: Minimal value for composition ve_stress_xx
-# 20: Maximal value for composition ve_stress_xx
-# 21: Global mass for composition ve_stress_xx
-# 22: Minimal value for composition ve_stress_yy
-# 23: Maximal value for composition ve_stress_yy
-# 24: Global mass for composition ve_stress_yy
-# 25: Minimal value for composition ve_stress_xy
-# 26: Maximal value for composition ve_stress_xy
-# 27: Global mass for composition ve_stress_xy
-# 28: Minimal value for composition block
-# 29: Maximal value for composition block
-# 30: Global mass for composition block
-# 31: Minimal value for composition air
-# 32: Maximal value for composition air
-# 33: Global mass for composition air
-# 34: Minimal value for composition inclusion
-# 35: Maximal value for composition inclusion
-# 36: Global mass for composition inclusion
-# 37: RMS velocity (m/year)
-# 38: Max. velocity (m/year)
-# 39: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 25350 1 0 0 0 0 0 0 0 46 608 217 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.29445583e-01 2.21277259e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0000 
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 25350 1 0 0 0 0 0 0 0 62 844 309 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.30698641e-01 2.20935964e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0001 
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 25350 1 0 0 0 0 0 0 0  1  22  10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.30195484e-01 2.20729788e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0002 
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 25350 1 0 0 0 0 0 0 0  1  22  10 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.32343456e-01 2.20552295e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0003 
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 25350 1 0 0 0 0 0 0 0  4  51  24 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.34967346e-01 2.20314989e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0004 
+# 16: Iterations for composition solver 7
+# 17: Iterations for composition solver 8
+# 18: Iterations for composition solver 9
+# 19: Iterations for Stokes solver
+# 20: Velocity iterations in Stokes preconditioner
+# 21: Schur complement iterations in Stokes preconditioner
+# 22: Minimal value for composition ve_stress_xx
+# 23: Maximal value for composition ve_stress_xx
+# 24: Global mass for composition ve_stress_xx
+# 25: Minimal value for composition ve_stress_yy
+# 26: Maximal value for composition ve_stress_yy
+# 27: Global mass for composition ve_stress_yy
+# 28: Minimal value for composition ve_stress_xy
+# 29: Maximal value for composition ve_stress_xy
+# 30: Global mass for composition ve_stress_xy
+# 31: Minimal value for composition ve_stress_xx_old
+# 32: Maximal value for composition ve_stress_xx_old
+# 33: Global mass for composition ve_stress_xx_old
+# 34: Minimal value for composition ve_stress_yy_old
+# 35: Maximal value for composition ve_stress_yy_old
+# 36: Global mass for composition ve_stress_yy_old
+# 37: Minimal value for composition ve_stress_xy_old
+# 38: Maximal value for composition ve_stress_xy_old
+# 39: Global mass for composition ve_stress_xy_old
+# 40: Minimal value for composition block
+# 41: Maximal value for composition block
+# 42: Global mass for composition block
+# 43: Minimal value for composition air
+# 44: Maximal value for composition air
+# 45: Global mass for composition air
+# 46: Minimal value for composition inclusion
+# 47: Maximal value for composition inclusion
+# 48: Global mass for composition inclusion
+# 49: RMS velocity (m/year)
+# 50: Max. velocity (m/year)
+# 51: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 82944 1 0 0 0 0 0 0 0 0 0 0 23 382  86 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.30696156e-01 2.23141164e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0000 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 82944 1 0 0 0 0 0 0 0 1 1 1 25 561 104 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.33307479e-01 2.23141164e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0001 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 82944 1 0 0 0 0 0 0 0 1 1 1  1  38   7 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.35057339e-01 2.23141164e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0002 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 82944 1 0 0 0 0 0 0 0 1 1 1  1  43   8 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.38723667e-01 2.23141164e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0003 
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 1089 82944 1 0 0 0 0 0 0 0 1 1 1  1  44   8 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 4.71245660e+09 0.00000000e+00 1.00000000e+00 5.10416667e+09 0.00000000e+00 1.00000000e+00 1.83376736e+08 1.41390048e-01 2.23141164e-01 output-newton_postprocess_nonlinear/solution/solution-00000.0004 

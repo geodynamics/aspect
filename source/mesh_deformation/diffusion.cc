@@ -226,7 +226,7 @@ namespace aspect
       std::vector<Tensor<1, dim>> initial_topography_values(n_fs_face_q_points);
 
       // The global displacements on the MeshDeformation FE
-      LinearAlgebra::Vector displacements = this->get_mesh_deformation_handler().get_mesh_displacements();
+      const LinearAlgebra::Vector &displacements = this->get_mesh_deformation_handler().get_mesh_displacements();
 
       // The global initial topography on the MeshDeformation FE
       // TODO Once the initial mesh deformation is ready, this

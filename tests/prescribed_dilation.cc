@@ -36,8 +36,8 @@ namespace aspect
   {
     /**
      * u = cos(y), sin(x)+xy
-     * p = 2/3 eta x
-     * grad p = 2/3 eta
+     * p = -2/3 eta x
+     * grad p = -2/3 eta
      * R = div u = x
      * => grad p and compressibility term cancel
      */
@@ -60,9 +60,8 @@ namespace aspect
                 const double eta)
       {
         const double x = pos[0];
-        //        const double y = pos[1];
 
-        return 2./3.*eta*(x-1.0);
+        return -2./3.*eta*(x-1.0);
       }
 
 
@@ -168,11 +167,11 @@ namespace aspect
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
-          MaterialModel::PrescribedPlasticDilation<dim>
-          *prescribed_dilation = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>();
+          const std::shared_ptr<MaterialModel::PrescribedPlasticDilation<dim>> prescribed_dilation
+            = out.template get_additional_output_object<MaterialModel::PrescribedPlasticDilation<dim>>();
 
-          MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+          const std::shared_ptr<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
+            = out.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -208,7 +207,8 @@ namespace aspect
                 }
               if (prescribed_dilation)
                 {
-                  prescribed_dilation->dilation[i] = x;
+                  prescribed_dilation->dilation_rhs_term[i] = x;
+                  prescribed_dilation->dilation_lhs_term[i] = 0.;
                 }
 
             }

@@ -61,7 +61,7 @@ Number of degrees of freedom: 57,556 (21,186+2,737+10,593+23,040)
    Postprocessing:
      Writing graphical output:           output-grain_size_ridge/solution/solution-00000
      Compositions min/max/mass:          0.002101/0.005/8.195e+09
-     RMS, max velocity:                  0.0356 m/year, 0.117 m/year
+     RMS, max velocity:                  0.0356 m/year, 0.176 m/year
      Mass fluxes through boundary parts: 0 kg/yr, 4.133e+07 kg/yr, -1.835e+07 kg/yr, 0 kg/yr
      Writing particle output:            output-grain_size_ridge/particles/particles-00000
 
@@ -81,12 +81,12 @@ Number of degrees of freedom: 57,556 (21,186+2,737+10,593+23,040)
 
    Postprocessing:
      Compositions min/max/mass:          0.0006567/0.005/8.175e+09
-     RMS, max velocity:                  0.0355 m/year, 0.118 m/year
+     RMS, max velocity:                  0.0355 m/year, 0.179 m/year
      Mass fluxes through boundary parts: 0 kg/yr, 4.133e+07 kg/yr, -1.688e+07 kg/yr, 0 kg/yr
      Number of advected particles:       499998
 
 Termination requested by criterion: end time
-*** Snapshot created!
+*** Snapshot output-grain_size_ridge/restart/01/ created!
 
 
 

@@ -36,6 +36,8 @@ namespace aspect
       : viscosity_derivative_wrt_pressure(n_points, numbers::signaling_nan<double>())
       , viscosity_derivative_wrt_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
       , viscosity_derivative_averaging_weights(n_points, numbers::signaling_nan<double>())
+      , dilation_derivative_wrt_pressure(n_points, numbers::signaling_nan<double>())
+      , dilation_derivative_wrt_strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>())
     {}
   }
 
@@ -49,7 +51,8 @@ namespace aspect
     assemblers.stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::NewtonStokesPreconditioner<dim>>());
     assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
 
-    if (this->get_material_model().is_compressible())
+    if (this->get_material_model().is_compressible() ||
+        this->get_parameters().enable_prescribed_dilation)
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (this->get_parameters().use_full_A_block_preconditioner == false)
@@ -115,7 +118,7 @@ namespace aspect
   NewtonHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>() != nullptr)
+    if (output.template has_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>())
       return;
 
     output.additional_outputs.push_back(

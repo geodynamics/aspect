@@ -36,7 +36,6 @@
 #include <boost/archive/text_iarchive.hpp>
 
 #include <cmath>
-#include <cstdio>
 #include <unistd.h>
 
 #include <algorithm>
@@ -434,6 +433,8 @@ namespace aspect
                                        (is_cell_data_output ? "solution.visit" : "solution_surface.visit"));
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
+      const auto n_file_names = output_history.times_and_pvtu_names.size();
+      times_and_output_file_names.reserve(n_file_names);
       for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
         times_and_output_file_names.push_back(std::make_pair(output_history.times_and_pvtu_names[timestep].first,
                                                              output_history.output_file_names_by_timestep[timestep]));
@@ -549,6 +550,7 @@ namespace aspect
               const unsigned int n_files =
                 (group_files == 0) ?
                 n_processes : std::min(group_files, n_processes);
+              filenames.reserve(n_files);
               for (unsigned int i = 0; i < n_files; ++i)
                 filenames.push_back(
                   solution_file_prefix + "."
@@ -1293,12 +1295,9 @@ namespace aspect
                             "but all boundaries of the domain. ");
 
           // Finally also construct a string for Patterns::MultipleSelection that
-          // contains the names of all registered visualization postprocessors.
-          // Also add a number of removed plugins that are now combined in 'material properties'
-          // to keep compatibility with input files. These will be filtered out in parse_parameters().
+          // contains the names of all registered visualization postprocessors
           const std::string pattern_of_names
-            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ()
-              + "|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity";
+            = std::get<dim>(registered_visualization_plugins).get_pattern_of_names ();
           prm.declare_entry("List of output variables",
                             "",
                             Patterns::MultipleSelection(pattern_of_names),
@@ -1414,27 +1413,8 @@ namespace aspect
                          "all") != viz_names.end())
             {
               viz_names.clear();
-              for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim>>::PluginInfo>::const_iterator
-                   p = std::get<dim>(registered_visualization_plugins).plugins->begin();
-                   p != std::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
-                viz_names.push_back (std::get<0>(*p));
-            }
-
-          // TODO: Remove deprecated options
-          const std::set<std::string> deprecated_postprocessors = {"density",
-                                                                   "specific heat",
-                                                                   "thermal conductivity",
-                                                                   "thermal diffusivity",
-                                                                   "thermal expansivity",
-                                                                   "viscosity"
-                                                                  };
-
-          for (const auto &viz_name: viz_names)
-            {
-              // Check if the current name is in the set of the deprecated names
-              AssertThrow(deprecated_postprocessors.count(viz_name) == 0,
-                          ExcMessage("The visualization postprocessor '" + viz_name + "' has been removed. "
-                                     "Please use the 'material properties' postprocessor instead."));
+              for (const auto &p : *std::get<dim>(registered_visualization_plugins).plugins)
+                viz_names.push_back (std::get<0>(p));
             }
         }
         prm.leave_subsection();

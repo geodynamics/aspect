@@ -6,19 +6,19 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Initial Newton Stokes residual = 997.366, v = 432.304, p = 898.806
+   Initial Newton Stokes residual = 955.927, v = 325.491, p = 898.806
 
-   Solving Stokes system (GMG)... 0+22 iterations.
-      Newton system information: Norm of the rhs: 997.366
+   Solving Stokes system (GMG)... 0+23 iterations.
+      Newton system information: Norm of the rhs: 955.927
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Nonlinear residual reduction has been very large (3.48956e-13); skipping Stokes solve
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.48956e-13
+   Nonlinear residual reduction has been very large (7.89635e-13); skipping Stokes solve
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.89635e-13
 
 
    Postprocessing:
-     RMS, max velocity:        2.13 m/s, 4.82 m/s
-     Errors u_L2, p_L2:        1.794314e-04, 8.890806e-05
+     RMS, max velocity:        2.13 m/s, 4.93 m/s
+     Errors u_L2, p_L2:        1.794305e-04, 8.789928e-05
      Writing graphical output: output-prescribed_dilation_newton_singleadvection/solution/solution-00000
 
 Number of active cells: 256 (on 5 levels)
@@ -26,19 +26,19 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
-   Initial Newton Stokes residual = 898.181, v = 601.449, p = 667.075
+   Initial Newton Stokes residual = 805.147, v = 450.858, p = 667.075
 
-   Solving Stokes system (GMG)... 0+22 iterations.
-      Newton system information: Norm of the rhs: 898.181
+   Solving Stokes system (GMG)... 0+25 iterations.
+      Newton system information: Norm of the rhs: 805.147
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Nonlinear residual reduction has been very large (8.38532e-13); skipping Stokes solve
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.38532e-13
+   Nonlinear residual reduction has been very large (3.51418e-13); skipping Stokes solve
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.51418e-13
 
 
    Postprocessing:
-     RMS, max velocity:        2.13 m/s, 4.88 m/s
-     Errors u_L2, p_L2:        2.245433e-05, 5.961308e-06
+     RMS, max velocity:        2.13 m/s, 4.93 m/s
+     Errors u_L2, p_L2:        2.245432e-05, 5.910085e-06
      Writing graphical output: output-prescribed_dilation_newton_singleadvection/solution/solution-00001
 
 Termination requested by criterion: end time

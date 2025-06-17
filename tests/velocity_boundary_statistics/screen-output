@@ -44,7 +44,7 @@ Number of degrees of freedom: 12,176 (7,470+971+3,735)
      Max, min, and rms velocity along boundary parts: 3.693e-09 m/s, 4.272e-12 m/s, 2.064e-09 m/s, 0 m/s, 0 m/s, 0 m/s, 1.754e-10 m/s, 2.121e-12 m/s, 1.11e-10 m/s, 1.441e-09 m/s, 1.768e-12 m/s, 9.181e-10 m/s
 
 Termination requested by criterion: end time
-*** Snapshot created!
+*** Snapshot output-velocity_boundary_statistics/restart/01/ created!
 
 
 

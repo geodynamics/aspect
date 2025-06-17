@@ -108,6 +108,11 @@ namespace aspect
       bool enable_newton_derivatives;
 
       /**
+       * If true, plastic dilation terms are part of the operator.
+       */
+      bool enable_prescribed_dilation;
+
+      /**
        * Symmetrize the Newton system when it's true (i.e., the
        * stabilization is symmetric or SPD).
        */
@@ -148,6 +153,30 @@ namespace aspect
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
       newton_factor_wrt_strain_rate_table;
+
+      /**
+       * Table which stores the dilation LHS terms. For the definition of this
+       * term, see the comments of MaterialModel::PrescribedPlasticDilation::
+       * dilation_lhs_term.
+       */
+      Table<2, VectorizedArray<number>> dilation_lhs_term_table;
+
+      /**
+       * Table which stores the product of the plastic dilation derivative
+       * with respect to pressure and the Newton derivative scaling factor.
+       * Note that the plastic dilation derivative does not include the term
+       * $\bar\alpha\alpha / \eta^{ve}$, which is always on the left-hand
+       * side no matter if the Newton method is applied.
+       */
+      Table<2, VectorizedArray<number>>
+      dilation_derivative_wrt_pressure_table;
+
+      /**
+       * Table which stores the product of the plastic dilation derivative
+       * with respect to strain-rate and the Newton derivative scaling factor.
+       */
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+      dilation_derivative_wrt_strain_rate_table;
 
       /**
        * Table which stores the product of the pressure perturbation
@@ -243,6 +272,72 @@ namespace aspect
          */
         const OperatorCellData<dim,number> *cell_data;
     };
+
+
+
+    /**
+    * Operator for the B^T block.
+    */
+    template <int dim, int degree_v, typename number>
+    class BTBlockOperator
+      : public MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>
+    {
+      public:
+
+        /**
+         * Constructor.
+         */
+        BTBlockOperator ();
+
+        /**
+         * Reset object.
+         */
+        void clear () override;
+
+        /**
+         * Pass in a reference to the problem data.
+         */
+        void set_cell_data (const OperatorCellData<dim,number> &data);
+
+        /**
+         * Computes the diagonal of the matrix. Since matrix-free operators have not access
+         * to matrix elements, we must apply the matrix-free operator to the unit vectors to
+         * recover the diagonal.
+         */
+        void compute_diagonal () override;
+
+      private:
+
+        /**
+         * Performs the application of the matrix-free operator. This function is called by
+         * vmult() functions MatrixFreeOperators::Base.
+         */
+        void apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                        const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const override;
+
+        /**
+         * Defines the application of the cell matrix.
+         */
+        void local_apply (const dealii::MatrixFree<dim, number> &data,
+                          dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                          const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                          const std::pair<unsigned int, unsigned int> &cell_range) const;
+
+        /**
+         * This function doesn't do anything, it's created to use the matrixfree loop.
+         */
+        void local_apply_face (const dealii::MatrixFree<dim, number> &data,
+                               dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                               const std::pair<unsigned int, unsigned int> &face_range) const;
+
+        /**
+         * A pointer to the current cell data that contains viscosity and other required parameters per cell.
+         */
+        const OperatorCellData<dim,number> *cell_data;
+    };
+
+
 
     /**
      * Operator for the pressure mass matrix used in the block preconditioner

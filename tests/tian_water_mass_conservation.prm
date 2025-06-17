@@ -1,0 +1,111 @@
+## This test is based off of the test: tian_peridotite.prm, and ensures that mass
+## of water is being conserved when using the Reactive Fluid Transport model, with
+## the Tian 2019 reaction model. The test prescribes 11% bound water in a 100% 
+## peridotite composition, which has a solid density of 3000 kg/m^3, and 0% 
+## initial porosity. The python code below shows to calculate the volume of free water
+## after this reaction has been completed. The total mass of water in the model is given by:
+# initial_wt_percent_water = 0.11 # (11%)
+# initial_porosity = 0.0 # (0%)
+# solid_density = 3000 # (kg/m^3)
+# water_density = 1000 # (kg/m^3)
+# bulk_density  = (1 - initial_porosity) * solid_density + initial_porosity * water_density # (kg/m^3)
+
+# mass_fraction_bound_water = (1 - initial_porosity) * solid_density / bulk_density
+# mass_fraction_free_water = initial_porosity * water_density / bulk_density
+# total_water = wt_percent_water * mass_fraction_bound_water + mass_fraction_free_water # This needs to be conserved
+
+# final_wt_percent_water = 0.1 # (10% wt percent of bound water in the solid, 1 wt percent of water released)
+## If the mass of water is conserved, then we can use the expression for the total_water to determine what the final
+## porosity should be.
+## 
+## DO SOME ALGEBRA..... 
+## final_mass_fraction_bound_water = (1 - final_porosity) * solid_density / new_bulk_density
+## final_mass_fraction_free_water = final_porosity * water_density / new_bulk_density
+## Substitute in to the above equations: new_bulk_density = (1 - final_porosity) * solid_density + final_porosity * water_density # (kg/m^3)
+## final_mass_fraction_bound_water = (1 - final_porosity) * solid_density / ((1 - final_porosity) * solid_density + final_porosity * water_density)
+## final_mass_fraction_free_water  = final_porosity * water_density / ((1 - final_porosity) * solid_density + final_porosity * water_density)
+## total_water = final_wt_percent_water * final_mass_fraction_bound_water + final_mass_fraction_free_water
+## total_water final_wt_percent_water * (1 - final_porosity) * solid_density / ((1 - final_porosity) * solid_density + final_porosity * water_density) + final_porosity * water_density / ((1 - final_porosity) * solid_density + final_porosity * water_density)
+## In the above equations, all are known except for final_porosity. 
+## SOLVE FOR: final_porosity
+# final_porosity = solid_density * (total_water - final_wt_percent_water) / ( (total_water - final_wt_percent_water)*solid_density + (1 - total_water)*water_density )
+#
+## This results in a porosity that should be equal to 0.0326086956521739. The output for the porosity composition after the reactions
+## is 0.03261, verifying that we are conserving the mass of water. 
+
+include $ASPECT_SOURCE_DIR/tests/tian_peridotite.prm
+set End time                               = 1e2
+set Maximum time step                      = 1e2
+
+# Set the advection method to be darcy field
+subsection Compositional fields
+  set Compositional field methods = darcy field, field, field, field, field, field
+end
+
+# Change the Reaction solver type to fixed step, so that we know how to scale the
+# reactions.
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction solver type = fixed step 
+    set Reaction time step   = 10
+  end
+end
+
+# Disable gravity for uniform pressure.
+subsection Gravity model
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Uniform temperature of 500 K.
+subsection Initial temperature model
+  subsection Function
+    set Function expression = 500
+  end
+end
+
+# Keep the temperature fixed
+subsection Boundary temperature model
+  subsection Initial temperature
+    set Maximal temperature = 500
+    set Minimal temperature = 500
+  end
+end
+
+# Material model, using the simpler base model and selecting the tian approximation
+# as the fluid solid reaction scheme for the reactive fluid transport model.
+subsection Material model
+  set Model name = reactive fluid transport
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = simpler
+    set Reference fluid density                          = 1000
+    set Fluid reaction time scale for operator splitting = 1e2
+    set Fluid-solid reaction scheme                      = tian approximation
+    subsection Tian 2019 model
+      set Maximum weight percent water in peridotite     = 10
+    end
+  end
+
+  subsection Simpler model
+    set Reference density             = 3000.0
+    set Thermal expansion coefficient = 0
+  end
+end
+
+# Disable melt transport
+subsection Melt settings
+  set Include melt transport = false
+end
+
+# No refinement
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Post processing, output the value of the compositional field.
+subsection Postprocess
+  set List of postprocessors = composition statistics
+end

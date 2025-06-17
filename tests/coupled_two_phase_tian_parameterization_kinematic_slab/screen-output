@@ -33,7 +33,7 @@ Skipping mesh refinement, because the mesh did not change.
      Writing graphical output:  output-coupled_two_phase_tian_parameterization_kinematic_slab/solution/solution-00000
 
 *** Timestep 1:  t=1000 years, dt=1000 years
-   Solving composition reactions... in 1 substep(s).
+   Solving composition reactions... in 100 substep(s).
    Solving temperature system... 8 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving bound_fluid system ... 11 iterations.
@@ -49,24 +49,24 @@ Skipping mesh refinement, because the mesh did not change.
      Compositions min/max/mass: 0/0/0 // -0.002633/0.02/1.037e+06 // 0/1.008/9.91e+09 // -0.1319/1/1.296e+07 // -0.1316/1/5.185e+07 // 0/0/0
 
 *** Timestep 2:  t=2000 years, dt=1000 years
-   Solving composition reactions... in 1 substep(s).
+   Solving composition reactions... in 100 substep(s).
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
-   Solving bound_fluid system ... 11 iterations.
+   Solving bound_fluid system ... 12 iterations.
    Solving peridotite system ... 7 iterations.
    Solving gabbro system ... 10 iterations.
    Solving MORB system ... 11 iterations.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 14+0 iterations.
+   Solving Stokes system (AMG)... 20+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -1.365e-07/4.969e-05/8407 // -0.002346/0.02/1.083e+06 // 0/1.016/9.907e+09 // -0.1179/1/1.364e+07 // -0.1173/1/5.457e+07 // 0/0/0
+     Compositions min/max/mass: -2.167e-05/0.00789/1.336e+06 // -0.0001036/0.02/1.534e+06 // 0/1.016/9.907e+09 // -0.1179/1/1.364e+07 // -0.1173/1/5.457e+07 // 0/0/0
      Writing graphical output:  output-coupled_two_phase_tian_parameterization_kinematic_slab/solution/solution-00001
 
-Number of active cells: 25 (on 3 levels)
-Number of degrees of freedom: 1,570 (258+113+258+38+129+129+129+129+129+129+129)
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 3,533 (578+273+578+81+289+289+289+289+289+289+289)
 
 Termination requested by criterion: end time
 

@@ -1,0 +1,157 @@
+# This test defines an initial block of porosity implaced in a solid within a 2D cartesian box.
+# Because the porosity composition is less dense than the solid, the porosity will rise to the 
+# surface of the model and flow out of the top of the box. This tests the implementation of 
+# composition dependent outflow boundary conditions for when a composition is advected with the 
+# Darcy field advection method.
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 50
+set Pressure normalization                 = surface
+set Maximum time step                      = 500
+set CFL number                             = 0.5
+set Surface pressure                       = 0
+set Use operator splitting                 = true
+set Output directory                       = output-darcy_outflow
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Max nonlinear iterations               = 10
+set Nonlinear solver tolerance             = 1e-3
+
+# Define a function which applies a downward solid velocity of 10 cm/yr on all sides.
+# This allows the solid to be inflowing at the top boundary, while the fluid will be 
+# outflowing at the top boundary.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function, bottom:function, right:function, left:function
+
+  subsection Function
+    set Variable names      = x,y,
+    set Function expression = 0;-0.1
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+# 5 km x 5 km box
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 5e3
+    set Y extent = 5e3
+
+    set X repetitions = 10
+    set Y repetitions = 10
+  end
+end
+
+# Set the global refinement to 0, 500 m x 500 m mesh.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Uniform temperature of 293 K
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+subsection Adiabatic conditions model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = z
+    set Function expression = 293; 3.3e4*z; 3300
+  end
+end
+
+subsection Boundary temperature model
+  set Allow fixed temperature on outflow boundaries = false
+  set List of model names                           = box
+  set Fixed temperature boundary indicators         = top, bottom, right, left
+
+  subsection Box
+    set Bottom temperature = 293
+    set Top temperature    = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+  end
+end
+
+subsection Compositional fields
+  set Number of fields            = 3
+  set Names of fields             = porosity, bound_fluid, solid_phase
+  set Compositional field methods = darcy field, field, field
+end
+
+subsection Melt settings
+  set Include melt transport      = false
+end
+
+# Initialize a porosity that is 0 in the bottom half of the model.
+# In the upper half, the porosity increases from 0% at the left boundary
+# to 5% at the right boundary. We define a solid composition that has a 
+# value of 1 in the top 500 m of the box, and a value of 0 in the rest of the box.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,t
+    set Function constants  = box_height=5e3, box_width=5e3, porosity_min=0, porosity_max=0.05
+    set Function expression = if(y >= box_height / 2, x/box_width * (porosity_max - porosity_min), 0); 0.0; if(y>=box_height - 500, 1, 0)
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators         = bottom, top
+  set Allow fixed composition on outflow boundaries = false
+  set List of model names                           = initial composition
+end
+
+subsection Material model
+  set Model name                                        = reactive fluid transport
+  set Material averaging                                = geometric average only viscosity
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = visco plastic
+    set Reference fluid density                          = 1000 # density of water
+    set Shear to bulk viscosity ratio                    = 1
+    set Reference fluid viscosity                        = 10
+    set Reference permeability                           = 5e-7
+    set Exponential fluid weakening factor               = 0
+    set Fluid compressibility                            = 0
+    set Fluid reaction time scale for operator splitting = 1e50
+    set Fluid-solid reaction scheme                      = zero solubility
+  end
+
+  subsection Visco Plastic
+    set Viscosity averaging scheme                      = geometric
+    set Viscous flow law                                = diffusion
+    set Prefactors for diffusion creep                  = 5e-21
+    set Stress exponents for diffusion creep            = 1.0
+    set Activation energies for diffusion creep         = 0
+    set Activation volumes for diffusion creep          = 0
+    set Densities                                       = 3000
+
+    set Angles of internal friction                     = 0
+    set Cohesions                                       = 1e50
+
+    set Minimum viscosity                               = 1e19
+    set Maximum viscosity                               = 1e19
+    set Thermal expansivities                           = 0
+  end
+end
+
+# Output the darcy velocity
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics
+end

@@ -43,9 +43,12 @@ namespace aspect
      * representing these components must be named and listed in a very specific
      * format, which is designed to minimize mislabeling stress tensor components
      * as distinct 'compositional rock types' (or vice versa). For 2D models,
-     * the first three compositional fields must be labeled ve_stress_xx, ve_stress_yy
-     * and ve_stress_xy. In 3D, the first six compositional fields must be labeled
-     * ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz.
+     * 3+3 consecutive compositional fields must be labeled ve_stress_xx, ve_stress_yy,
+     * ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old.
+     * In 3D, 6+6 consecutive compositional fields must be labeled
+     * ve_stress_xx, ve_stress_yy, ve_stress_zz, ve_stress_xy, ve_stress_xz, ve_stress_yz,
+     * ve_stress_xx_old, ve_stress_yy_old, ve_stress_zz_old, ve_stress_xy_old,
+     * ve_stress_xz_old, ve_stress_yz_old.
      *
      * Expanding the model to include non-linear viscous flow (e.g.,
      * diffusion/dislocation creep) and plasticity would produce a constitutive
@@ -61,10 +64,11 @@ namespace aspect
      *
      * The overview below directly follows Moresi et al. (2003) eqns. 23-32.
      * However, an important distinction between this material model and
-     * the studies above is the use of compositional fields, rather than
+     * the studies above is the option to use compositional fields, rather than
      * particles, to track individual components of the viscoelastic stress
-     * tensor. The material model will be updated when an option to track
-     * and calculate viscoelastic stresses with particles is implemented.
+     * tensor. Calculating viscoelastic stresses with particles is also implemented,
+     * and can be switched on by using particles with the particle property
+     * 'elastic stress'.
      *
      * Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric
      * rate of deformation ($\hat{D}$) as the sum of elastic
@@ -90,11 +94,11 @@ namespace aspect
      * W^{t}\tau^{t} + \tau^{t}W^{t}$.
      * In this material model, the size of the time step above ($\Delta t^{e}$)
      * can be specified as the numerical time step size or an independent fixed time
-     * step. If the latter case is a selected, the user has an option to apply a
-     * stress averaging scheme to account for the differences between the numerical
-     * and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time
-     * step throughout the model run, this can still be achieved by using CFL and
-     * maximum time step values that restrict the numerical time step to a specific time.
+     * step. If the latter case is selected, a stress averaging scheme is applied
+     * to account for the differences between the numerical
+     * and fixed elastic time step (eqn. 32). A fixed computational time
+     * step throughout the model run can be achieved by using a large CFL number and
+     * smaller maximum time step values that restrict the numerical time step to a specific time.
      *
      * The formulation above allows rewriting the total rate of deformation (eqn. 29) as
      * $\tau^{t + \Delta t^{e}} = \eta_{eff} \left (
@@ -108,9 +112,11 @@ namespace aspect
      * The magnitude of the shear modulus thus controls how much the effective
      * viscosity is reduced relative to the initial viscosity.
      *
-     * Elastic effects are introduced into the governing stokes equations through
-     * an elastic force term (eqn. 30) using stresses from the previous time step:
-     * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$.
+     * Elastic effects are introduced into the governing Stokes equations through
+     * an elastic force term (eqn. 30 updated to the term in eqn. 5 in Farrington et al. 2014)
+     * using stresses from the previous time step rotated and advected into the current
+     * time step:
+     * $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{0adv}$.
      * This force term is added onto the right-hand side force vector in the
      * system of equations.
      *
@@ -126,9 +132,11 @@ namespace aspect
      * user supplies a comma delimited list of length N+1, where N is the
      * number of compositional fields. The additional field corresponds to
      * the value for background material. They should be ordered
-     * ``background, composition1, composition2...''. However, the first 3 (2D)
-     * or 6 (3D) composition fields correspond to components of the elastic
-     * stress tensor and their material values will not contribute to the volume
+     * ``background, composition1, composition2...''. 3+3 (2D)
+     * or 6+6 (3D) consecutive composition fields should correspond to components
+     * of the elastic stress tensor of the previous timestep rotated and advected
+     * into the current timestep and the tensor of the previous timestep advected
+     * into the current timestep only. Their material values will not contribute to the volume
      * fractions. If a single value is given, then all the compositional fields
      * are given that value. Other lengths of lists are not allowed. For a given
      * compositional field the material parameters are treated as constant,
@@ -174,22 +182,20 @@ namespace aspect
         /**
          * Declare the parameters this class takes through input files.
          */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+        static void
+        declare_parameters(ParameterHandler &prm);
 
         /**
          * Read the parameters this class declares from the parameter file.
          */
         void
-        parse_parameters (ParameterHandler &prm) override;
+        parse_parameters(ParameterHandler &prm) override;
         /**
          * @}
          */
 
         void
-        create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const override;
-
+        create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const override;
 
       private:
         /**

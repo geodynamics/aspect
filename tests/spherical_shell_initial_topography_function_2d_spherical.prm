@@ -1,0 +1,40 @@
+# Test the spherical geometry model with initial topography function
+# specified in spherical coordinates. No simulation is performed,
+# output is generated to verify topography handling in 2d spherical system.
+include $ASPECT_SOURCE_DIR/tests/spherical_shell_initial_topography_function_3d_spherical.prm
+
+set Dimension = 2
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+
+  # Initial topography model using a function defined in spherical coordinates.
+  # Coordinates are (r, phi), where phi is longitude.
+  # The topography represents a 5 km high mountain belt with sinusoidal variation
+  # in the longitudnal (phi) direction.
+  subsection Initial topography model
+    set Model name = function
+
+    subsection Function
+    set Coordinate system        = spherical
+    set Variable names           = r,     phi
+    set Function constants       = k_phi = 2
+    set Function expression      = 5e3 * sin(k_phi * phi)
+    set Maximum topography value = 5000
+    end
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set List of output variables = surface elevation
+    set Output format = gnuplot
+  end
+end

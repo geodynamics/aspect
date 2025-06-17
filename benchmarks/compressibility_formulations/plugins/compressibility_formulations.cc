@@ -163,7 +163,8 @@ namespace aspect
       // prescribe the density field to the current value of the density. The actual projection
       // only happens inside Simulator<dim>::interpolate_material_output_into_compositional_field,
       // this just sets the correct term the field will be set to.
-      if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
+      if (const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+          = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>())
         for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           prescribed_field_out->prescribed_field_outputs[i][density_field_index] = out.densities[i];
     }
@@ -174,7 +175,7 @@ namespace aspect
     void
     CompressibilityFormulations<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

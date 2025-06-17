@@ -65,7 +65,7 @@ Number of mesh deformation degrees of freedom: 462
      Pressure min/avg/max:               -4.233e+07 Pa, 1.372e+09 Pa, 2.996e+09 Pa
      Temperature min/avg/max:            273 K, 998.3 K, 1613 K
      Topography min/max:                 0 m, 0 m
-     RMS, max velocity:                  0.00218 m/year, 0.00343 m/year
+     RMS, max velocity:                  0.00218 m/year, 0.00354 m/year
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving mesh surface diffusion
@@ -129,7 +129,7 @@ Number of mesh deformation degrees of freedom: 462
      Pressure min/avg/max:               -4.257e+07 Pa, 1.374e+09 Pa, 2.997e+09 Pa
      Temperature min/avg/max:            273 K, 998.5 K, 1613 K
      Topography min/max:                 -4.132 m, 2.952 m
-     RMS, max velocity:                  0.00227 m/year, 0.0034 m/year
+     RMS, max velocity:                  0.00227 m/year, 0.00354 m/year
 
 *** Timestep 2:  t=20000 years, dt=10000 years
    Solving mesh surface diffusion
@@ -193,7 +193,7 @@ Number of mesh deformation degrees of freedom: 462
      Pressure min/avg/max:               -4.732e+07 Pa, 1.375e+09 Pa, 2.997e+09 Pa
      Temperature min/avg/max:            273 K, 998.6 K, 1613 K
      Topography min/max:                 -11.13 m, 7.33 m
-     RMS, max velocity:                  0.00235 m/year, 0.00337 m/year
+     RMS, max velocity:                  0.00235 m/year, 0.00354 m/year
 
 *** Timestep 3:  t=30000 years, dt=10000 years
    Solving mesh surface diffusion
@@ -257,7 +257,7 @@ Number of mesh deformation degrees of freedom: 462
      Pressure min/avg/max:               -5.444e+07 Pa, 1.375e+09 Pa, 2.997e+09 Pa
      Temperature min/avg/max:            273 K, 998.8 K, 1613 K
      Topography min/max:                 -21.61 m, 13.27 m
-     RMS, max velocity:                  0.00236 m/year, 0.00336 m/year
+     RMS, max velocity:                  0.00236 m/year, 0.00354 m/year
 
 Termination requested by criterion: end time
 

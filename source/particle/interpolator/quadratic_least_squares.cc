@@ -340,10 +340,9 @@ namespace aspect
         const double unit_offset = 0.5;
         std::vector<double> property_minimums(n_particle_properties, std::numeric_limits<double>::max());
         std::vector<double> property_maximums(n_particle_properties, std::numeric_limits<double>::lowest());
-        for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
-             particle != particle_range.end(); ++particle, ++particle_index)
+        for (const auto &particle : particle_range)
           {
-            const ArrayView<double> particle_property_value = particle->get_properties();
+            const ArrayView<const double> particle_property_value = particle.get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               {
                 if (selected_properties[property_index] == true)
@@ -354,7 +353,7 @@ namespace aspect
                   }
               }
 
-            Point<dim> relative_particle_position = particle->get_reference_location();
+            Point<dim> relative_particle_position = particle.get_reference_location();
             for (unsigned int d = 0; d < dim; ++d)
               relative_particle_position[d] -= unit_offset;
             // A is accessed by A[column][row] here since we need to append
@@ -385,6 +384,8 @@ namespace aspect
                 A[8][particle_index] = relative_particle_position[1] * relative_particle_position[1];
                 A[9][particle_index] = relative_particle_position[2] * relative_particle_position[2];
               }
+
+            ++particle_index;
           }
 
         // If the limiter is enabled for at least one property then we know that we can access ghost cell

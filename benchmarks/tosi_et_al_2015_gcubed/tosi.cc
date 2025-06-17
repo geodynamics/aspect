@@ -82,8 +82,8 @@ namespace aspect
            */
 
           //set up additional output for the derivatives
-          MaterialModel::MaterialModelDerivatives<dim> *derivatives;
-          derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+          const std::shared_ptr<MaterialModel::MaterialModelDerivatives<dim>> derivatives
+            = out.template get_additional_output_object<MaterialModel::MaterialModelDerivatives<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {

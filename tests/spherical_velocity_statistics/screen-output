@@ -46,7 +46,7 @@ Number of degrees of freedom: 12,176 (7,470+971+3,735)
      Radial RMS, tangential RMS, total RMS velocity: 8.5e-10 m/s, 9.28e-10 m/s, 1.26e-09 m/s
 
 Termination requested by criterion: end step
-*** Snapshot created!
+*** Snapshot output-spherical_velocity_statistics/restart/01/ created!
 
 
 

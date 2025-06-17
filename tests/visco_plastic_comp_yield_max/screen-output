@@ -1,0 +1,31 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 2,505 (882+300+441+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving weak system ... 0 iterations.
+   Solving strong system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+10 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   WARNING: The nonlinear solver in the current timestep failed to converge.
+   Acting according to the parameter 'Nonlinear solver failure strategy':
+   Continuing to the next timestep even though solution is not fully converged.
+
+   Postprocessing:
+     Writing graphical output:           output-visco_plastic_comp_yield_max/solution/solution-00000
+     RMS, max velocity:                  0.000408 m/year, 0.000707 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+
+
+
+
+Termination requested by criterion: end time
+
+
+
+
+WARNING: During this computation 1 nonlinear solver failures occurred!

@@ -1,0 +1,39 @@
+# This test defines an initial blob of porosity implaced in a solid within a 2D cartesian box.
+# Because the porosity blob is less dense, the blob will rise to the surface of the model and
+# flow out of the top of the box. Additionally, there is an imposed solid inflow at the top boundary,
+# and so one composition will be outflowing (the porosity) while another is inflowing (the solid).
+# This tests the implementation of composition dependent outflow boundary conditions when a composition 
+# is advected with the fluid velocity. The composition of the 'porosity' compositional field should change 
+# from its initial value along the parts of the boundary where the blob is flowing out. 
+include $ASPECT_SOURCE_DIR/tests/darcy_outflow.prm 
+set Output directory                       = output-fluid_outflow
+set End time                               = 2000
+
+
+subsection Melt settings
+  set Include melt transport      = true
+end
+
+subsection Compositional fields
+  set Number of fields            = 3
+  set Names of fields             = porosity, bound_fluid, solid_phase
+  set Compositional field methods = field, field, field
+end
+
+# # Initialize 1% (0.01) porosity blob.
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,t
+    set Function constants  = pi=3.1415926, x0=2500, y0=2500, c=1000
+    set Function expression = 0.01 * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); 0.0; if(y>=7000, 1, 0)
+  end
+end
+
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Maximum compaction viscosity                     = 1e19
+    set Minimum compaction viscosity                     = 1e19
+  end
+end

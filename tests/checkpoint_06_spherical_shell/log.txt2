@@ -1,5 +1,5 @@
 
-*** Resuming from snapshot!
+*** Resuming from snapshot output2.tmp/restart/01/
 
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
@@ -11,7 +11,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output2.tmp/solution/solution-00004
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0239 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
 
 *** Timestep 5:  t=3e+07 years, dt=2.24601e+06 years
    Solving temperature system... 5 iterations.
@@ -20,7 +20,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      Writing graphical output: output2.tmp/solution/solution-00005
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0103 m/year, 0.0239 m/year
+     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
 
 Termination requested by criterion: end time
 

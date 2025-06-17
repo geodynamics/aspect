@@ -158,8 +158,8 @@ namespace aspect
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>&> (scratch_base);
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>&> (data_base);
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
+      std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -240,7 +240,7 @@ namespace aspect
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>() == nullptr)
+      if (outputs.template has_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
@@ -258,8 +258,8 @@ namespace aspect
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>&> (scratch_base);
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>&> (data_base);
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -330,8 +330,8 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -339,8 +339,8 @@ namespace aspect
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
 
-      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
+      const std::shared_ptr<const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> force
+        = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -422,21 +422,21 @@ namespace aspect
     {
       const unsigned int n_points = outputs.viscosities.size();
 
-      if (outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>() == nullptr)
+      if (outputs.template has_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
         }
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
+          && outputs.template has_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == false)
         {
           outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
         }
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
+             outputs.template get_additional_output_object<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
              == n_points, ExcInternalError());
     }
 
@@ -454,8 +454,8 @@ namespace aspect
       if (!scratch.rebuild_stokes_matrix)
         return;
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        scratch.material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        scratch.material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
@@ -539,11 +539,11 @@ namespace aspect
 
       // Some material models provide dislocation viscosities and boundary area work fractions
       // as additional material outputs. If they are attached, use them.
-      const ShearHeatingOutputs<dim> *shear_heating_out =
-        material_model_outputs.template get_additional_output<ShearHeatingOutputs<dim>>();
+      const std::shared_ptr<const ShearHeatingOutputs<dim>> shear_heating_out =
+        material_model_outputs.template get_additional_output_object<ShearHeatingOutputs<dim>>();
 
-      const MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
+      const std::shared_ptr<const MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        material_model_outputs.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
@@ -589,7 +589,7 @@ namespace aspect
     {
       const unsigned int n_points = material_model_outputs.viscosities.size();
 
-      if (material_model_outputs.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>() == nullptr)
+      if (material_model_outputs.template has_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>() == false)
         {
           material_model_outputs.additional_outputs.push_back(
             std::make_unique<MaterialModel::AnisotropicViscosity<dim>> (n_points));
@@ -673,8 +673,8 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      MaterialModel::AnisotropicViscosity<dim> *anisotropic_viscosity =
-        out.template get_additional_output<MaterialModel::AnisotropicViscosity<dim>>();
+      const std::shared_ptr<MaterialModel::AnisotropicViscosity<dim>> anisotropic_viscosity =
+        out.template get_additional_output_object<MaterialModel::AnisotropicViscosity<dim>>();
 
       Simple<dim>::evaluate(in, out);
       Point<dim> center;

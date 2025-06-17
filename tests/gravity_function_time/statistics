@@ -12,4 +12,4 @@
 # 12: RMS velocity (m/s)
 # 13: Max. velocity (m/s)
 0 0.000000000000e+00 0.000000000000e+00 64 659 289 0  0  0  0 output-gravity_function_time/solution/solution-00000 0.00000000e+00 0.00000000e+00 
-1 1.000000000000e+00 1.000000000000e+00 64 659 289 5 14 15 15 output-gravity_function_time/solution/solution-00001 3.93790886e-03 6.69822058e-03 
+1 1.000000000000e+00 1.000000000000e+00 64 659 289 5 14 15 15 output-gravity_function_time/solution/solution-00001 3.93790886e-03 6.74392432e-03 

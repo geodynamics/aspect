@@ -16,7 +16,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Postprocessing:
      Writing graphical output:           output-stokes_residual_cheap/solution/solution-00000
-     RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
+     RMS, max velocity:                  1.24e-08 m/s, 5.01e-08 m/s
      Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
      Heat fluxes through boundary parts: 1.667e-07 W, 3.128e-05 W, 0 W, 0 W
      Writing stokes residuals            output-stokes_residual_cheap/stokes_residuals.txt
@@ -29,7 +29,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     RMS, max velocity:                  1.24e-08 m/s, 4.85e-08 m/s
+     RMS, max velocity:                  1.24e-08 m/s, 5.01e-08 m/s
      Temperature min/avg/max:            0 K, 1.03 K, 1.1 K
      Heat fluxes through boundary parts: 1.667e-07 W, 3.725e-05 W, 0 W, 0 W
      Writing stokes residuals            output-stokes_residual_cheap/stokes_residuals.txt

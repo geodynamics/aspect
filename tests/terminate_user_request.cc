@@ -21,12 +21,12 @@
 #include <stdlib.h>
 
 // Create a function that is run upon loading the plugin. We delete the
-// restart.mesh file that is used as a trigger for terminating
+// file that is used as a trigger for terminating
 // ASPECT. Otherwise we might have a left over file that triggers termination
 // immediately.
 int f()
 {
-  system ("rm -f output-terminate_user_request/restart.mesh");
+  system ("rm -f output-terminate_user_request/restart/last_good_checkpoint.txt");
   return 42;
 }
 

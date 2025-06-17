@@ -112,7 +112,7 @@ Number of active cells: 1,170 (on 6 levels)
 Number of degrees of freedom: 16,762 (10,284+1,336+5,142)
 
 Termination requested by criterion: end step
-*** Snapshot created!
+*** Snapshot output-pressure_boundary/restart/01/ created!
 
 
 

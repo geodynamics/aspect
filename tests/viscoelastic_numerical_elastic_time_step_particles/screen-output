@@ -1,42 +1,48 @@
 
 Number of active cells: 400 (on 1 levels)
-Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
+Number of degrees of freedom: 25,844 (3,362+441+441+3,600+3,600+3,600+3,600+3,600+3,600)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 53+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.01554e-17, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.01554e-17, 0, 0, 0, 0, 0, 0, 7.82898e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.82898e-08
+
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0
      Writing particle output:   output-viscoelastic_numerical_elastic_time_step_particles/particles/particles-00000
-
-
-
 
 *** Timestep 1:  t=1000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
    Solving Stokes system (GMG)... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.41613e-16, 0, 0, 0, 0, 0, 0, 9.98454e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.98454e-08
+
 
    Postprocessing:
-     Compositions min/max/mass:    4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -5.602/6.258/1.859e+08
-     Number of advected particles: 11974
-
-
-
+     Compositions min/max/mass:    4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -6.349/6.273/2.418e+08 // 4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -6.347/6.271/2.417e+08
+     Number of advected particles: 11973
 
 *** Timestep 2:  t=2000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Advecting particles...  done.
-   Solving Stokes system (GMG)... 0+0 iterations.
+   Solving Stokes system (GMG)... 2+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.15759e-16, 0, 0, 0, 0, 0, 0, 1.18233e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.18233e-07
+
 
    Postprocessing:
-     Compositions min/max/mass:    8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -9.585/11.75/4.707e+08
-     Number of advected particles: 11971
-
-
-
+     Compositions min/max/mass:    8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -11.18/11.07/4.332e+08 // 8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -11.17/11.06/4.33e+08
+     Number of advected particles: 11969
 
 Termination requested by criterion: end time
 

@@ -72,9 +72,14 @@ namespace aspect
          * @param in Object that contains the current conditions.
          * @param melt_fractions Vector of doubles that is filled with the
          * allowable free fluid fraction for each given input conditions.
+         * @param out Optional pointer to the material properties provided by the
+         * material model. By default, this variable is a nullptr. If the melt
+         * fractions depend on material model properties, then this parameter
+         * must be set to a valid pointer to a MaterialModelOutputs object.
          */
         void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions) const override;
+                             std::vector<double> &melt_fractions,
+                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         double reference_darcy_coefficient () const override;
 
@@ -161,7 +166,8 @@ namespace aspect
       // Fill the melt outputs if they exist. Note that the MeltOutputs class was originally
       // designed for two-phase flow material models in ASPECT that model the flow of melt,
       // but can be reused for a geofluid of arbitrary composition.
-      MeltOutputs<dim> *fluid_out = out.template get_additional_output<MeltOutputs<dim>>();
+      std::shared_ptr<MeltOutputs<dim>> fluid_out
+        = out.template get_additional_output_object<MeltOutputs<dim>>();
 
       if (fluid_out != nullptr)
         {
@@ -183,7 +189,8 @@ namespace aspect
             }
         }
 
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
       const unsigned int water_idx = this->introspection().compositional_index_for_name("water_content");
 
       // Fill reaction rate outputs if the model uses operator splitting.
@@ -355,7 +362,8 @@ namespace aspect
     void
     Volatiles<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {
@@ -395,7 +403,7 @@ namespace aspect
     Volatiles<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
+          && out.template has_additional_output_object<ReactionRateOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

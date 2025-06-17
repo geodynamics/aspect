@@ -1,0 +1,9 @@
+Fixed: The grain size material model expected the wrong
+number of entries for some input parameters if multiple
+compositional fields were active. This is fixed now.
+Also when new particles were generated in a boundary cell
+with Dirichlet boundary conditions for the compositional
+fields, the grain size particle property
+would be interpolated incorrectly. This is fixed as well.
+<br>
+(Rene Gassmoeller, Menno Fraters, 2025/03/27)

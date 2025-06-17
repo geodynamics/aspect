@@ -1,6 +1,9 @@
-# This test checks whether the viscoelastic bending beam benchmark
-# run successfully in combination with a viscous damper for the
-# elastic viscosity.
+# This test is based on the viscoelastic bending beam benchmark
+# but with a viscous damper for the
+# elastic viscosity. As we currently do not allow an elastic damper,
+# we expect failure.
+
+# EXPECT FAILURE
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
@@ -26,9 +29,9 @@ subsection Material model
   set Model name = viscoelastic
 
   subsection Viscoelastic
-    set Densities            =  2800,  2800,  2800,  2800,  3300
-    set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e24
-    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
+    set Densities            =  2800,  2800,  2800,  2800,  2800,  2800,  2800,  3300
+    set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e18, 1.e18, 1.e18, 1.e24
+    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
     set Fixed elastic time step     = 1e3
     set Elastic damper viscosity    = 1e14
     set Use fixed elastic time step = false

@@ -116,6 +116,7 @@ namespace aspect
                                                    this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+        MeltHandler<dim>::create_material_model_outputs(out);
 
         in.requested_properties
           = MaterialModel::MaterialProperties::uninitialized;

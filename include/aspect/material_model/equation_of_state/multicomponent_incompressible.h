@@ -53,13 +53,13 @@ namespace aspect
       {
         public:
           /**
-           * A function that computes the output of the equation of state @p out
+           * A function that computes the output of the equation of state @p eos_outputs
            * for all compositions and phases, given the inputs in @p in and an
            * index input_index that determines which entry of the vector of inputs is used.
            */
           void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                         const unsigned int input_index,
-                        MaterialModel::EquationOfStateOutputs<dim> &out) const;
+                        MaterialModel::EquationOfStateOutputs<dim> &eos_outputs) const;
 
           /**
            * Return whether the model is compressible or not. Incompressibility

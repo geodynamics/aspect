@@ -7,11 +7,11 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system (GMG)... 29+0 iterations.
+   Solving Stokes system (GMG)... 28+0 iterations.
 
    Postprocessing:
 
-     Model domain depth (m):                        3e+06
+     Model domain depth (m):                        3.09e+06
      Temperature contrast across model domain (K):  3500
      Reference depth (m):                           0
      Reference temperature (K):                     1613
@@ -23,9 +23,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Reference thermal conductivity (W/(m*K)):      4.7
      Reference viscosity (Pa*s):                    1e+21
      Reference thermal diffusivity (m^2/s):         1.22101e-06
-     Rayleigh number:                               7.4479e+07
+     Rayleigh number:                               8.13852e+07
 
-     RMS, max velocity:       0.0119 m/year, 0.0933 m/year
+     RMS, max velocity:       0.0119 m/year, 0.126 m/year
      Temperature min/avg/max: 1613 K, 1613 K, 1613 K
      Topography min/max:      -4.757e+04 m, 9e+04 m
 

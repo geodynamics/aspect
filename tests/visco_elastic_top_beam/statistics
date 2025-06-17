@@ -5,20 +5,24 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: Iterations for composition solver 2
-# 11: Iterations for composition solver 3
-# 12: Iterations for composition solver 4
-# 13: Iterations for Stokes solver
-# 14: Velocity iterations in Stokes preconditioner
-# 15: Schur complement iterations in Stokes preconditioner
-# 16: RMS velocity (m/year)
-# 17: Max. velocity (m/year)
-# 18: Minimal temperature (K)
-# 19: Average temperature (K)
-# 20: Maximal temperature (K)
-# 21: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 150 1478 176 5400 0 0 0 0 0 145 147 147 1.49142525e-03 4.58943446e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00000 
-1 1.000000000000e+03 1.000000000000e+03 150 1478 176 5400 0 3 3 3 2 122 124 124 1.20294420e-03 3.64598980e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00001 
-2 2.000000000000e+03 1.000000000000e+03 150 1478 176 5400 0 2 2 3 2 115 117 117 1.14082153e-03 3.49965651e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00002 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for composition solver 7
+# 17: Iterations for Stokes solver
+# 18: Velocity iterations in Stokes preconditioner
+# 19: Schur complement iterations in Stokes preconditioner
+# 20: RMS velocity (m/year)
+# 21: Max. velocity (m/year)
+# 22: Minimal temperature (K)
+# 23: Average temperature (K)
+# 24: Maximal temperature (K)
+# 25: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 150 1478 176 9450 2 0 0 0  0 0 0  0 1 157 160 160 2.98285088e-03 9.17887096e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00000 
+1 1.000000000000e+03 1.000000000000e+03 150 1478 176 9450 4 0 8 8 10 8 8 10 9 266 271 271 1.20261452e-03 3.27917693e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00001 
+2 2.000000000000e+03 1.000000000000e+03 150 1478 176 9450 3 0 6 6  6 6 6  6 6 249 253 253 1.38596740e-03 4.17980190e-03 2.93000000e+02 2.93000000e+02 2.93000000e+02 output-visco_elastic_top_beam/solution/solution-00002 

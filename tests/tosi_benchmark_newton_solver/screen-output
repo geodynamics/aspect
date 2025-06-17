@@ -54,7 +54,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     RMS, max velocity:                               3.37 m/s, 15.9 m/s
+     RMS, max velocity:                               3.37 m/s, 16 m/s
      Temperature min/avg/max:                         0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -1 W, 1 W
      Writing graphical output:                        output-tosi_benchmark_newton_solver/solution/solution-00000
@@ -171,7 +171,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                               106 m/s, 448 m/s
+     RMS, max velocity:                               106 m/s, 454 m/s
      Temperature min/avg/max:                         0 K, 0.5058 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -3.892 W, 1 W
      Max, min, and rms velocity along boundary parts: 453.8 m/s, 0.01021 m/s, 201.2 m/s, 376.3 m/s, 0.002762 m/s, 157.7 m/s, 398.9 m/s, 4.9 m/s, 275.3 m/s, 0.2417 m/s, 0.00255 m/s, 0.1638 m/s
@@ -247,7 +247,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     RMS, max velocity:                               110 m/s, 472 m/s
+     RMS, max velocity:                               110 m/s, 479 m/s
      Temperature min/avg/max:                         0 K, 0.506 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -4.011 W, 1 W
      Max, min, and rms velocity along boundary parts: 478.5 m/s, 0.0105 m/s, 212.6 m/s, 398.6 m/s, 0.00287 m/s, 167.6 m/s, 413 m/s, 4.772 m/s, 284.9 m/s, 0.2585 m/s, 0.002607 m/s, 0.1745 m/s
@@ -316,7 +316,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     RMS, max velocity:                               115 m/s, 493 m/s
+     RMS, max velocity:                               115 m/s, 500 m/s
      Temperature min/avg/max:                         0 K, 0.5062 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -4.137 W, 1 W
      Max, min, and rms velocity along boundary parts: 500.4 m/s, 0.01104 m/s, 223 m/s, 419.4 m/s, 0.002887 m/s, 177.2 m/s, 425.1 m/s, 4.729 m/s, 293.4 m/s, 0.2689 m/s, 0.002623 m/s, 0.1811 m/s
@@ -378,7 +378,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     RMS, max velocity:                               116 m/s, 498 m/s
+     RMS, max velocity:                               116 m/s, 505 m/s
      Temperature min/avg/max:                         0 K, 0.5063 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -4.169 W, 1 W
      Max, min, and rms velocity along boundary parts: 505.4 m/s, 0.01117 m/s, 225.4 m/s, 424.2 m/s, 0.002891 m/s, 179.4 m/s, 427.7 m/s, 4.717 m/s, 295.3 m/s, 0.2716 m/s, 0.002627 m/s, 0.1827 m/s

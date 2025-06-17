@@ -20,7 +20,7 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Postprocessing:
      Compositions min/max/mass:   0/0/0 // 0.01/0.01/4e+04
      Melt fraction min/total/max: 0.01, 4e+04, 0.01
-     RMS, max velocity:           8.75e-19 m/year, 1.5e-18 m/year
+     RMS, max velocity:           8.75e-19 m/year, 3.05e-18 m/year
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving composition reactions... in 1 substep(s).
@@ -30,14 +30,14 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 2+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.39641e-16, 7.10006e-17, 3.75003e-16, 1.29567e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.29567e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43689e-16, 1.67589e-16, 1.41119e-16, 1.29149e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.29149e-07
 
 
    Postprocessing:
-     Compositions min/max/mass:   0.01/0.01/4e+04 // 4.54e-07/4.54e-07/1.816
+     Compositions min/max/mass:   0.01002/0.01002/4.006e+04 // 4.54e-07/4.54e-07/1.816
      Melt fraction min/total/max: 0.01, 4e+04, 0.01
-     RMS, max velocity:           2.95e-07 m/year, 4.04e-07 m/year
+     RMS, max velocity:           2.96e-07 m/year, 4.05e-07 m/year
 
 Termination requested by criterion: end time
 

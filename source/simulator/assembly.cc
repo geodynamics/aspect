@@ -73,7 +73,7 @@ namespace aspect
     assemblers->stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::StokesPreconditioner<dim>>());
     assemblers->stokes_system.push_back(std::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim>>());
 
-    if (material_model->is_compressible())
+    if (material_model->is_compressible() || parameters.enable_prescribed_dilation)
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (parameters.use_full_A_block_preconditioner == false)
@@ -184,8 +184,20 @@ namespace aspect
               std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
           }
 
+        if (i==0 && boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().size() != 0)
+          {
+            AssertThrow(parameters.stokes_solver_type != Parameters<dim>::StokesSolverType::block_gmg,
+                        ExcMessage ("The <Convective heating boundary indicators> parameter is set, but the "
+                                    "Stokes solver type is set to 'block GMG'. This is not supported. "
+                                    "Please change the Stokes solver type to something else."));
+
+            assemblers->advection_system_on_boundary_face[i].push_back(
+              std::make_unique<aspect::Assemblers::AdvectionSystemRobinBoundary<dim>>());
+          }
+
         if (parameters.use_discontinuous_temperature_discretization
-            || parameters.fixed_heat_flux_boundary_indicators.size() != 0)
+            || parameters.fixed_heat_flux_boundary_indicators.size() != 0
+            || boundary_convective_heating_manager.get_fixed_convective_heating_boundary_indicators().size() != 0)
           {
             assemblers->advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
             assemblers->advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
@@ -989,13 +1001,14 @@ namespace aspect
       }
 
 #ifdef DEBUG
-    // make sure that if the model does not use operator splitting,
+    // make sure that if the model does not use operator splitting on fields or particles,
     // the material model outputs do not fill the reaction_rates (because the reaction_terms are used instead)
-    if (!parameters.use_operator_splitting)
+    if (!parameters.use_operator_splitting &&
+        !(introspection.compositional_name_exists("ve_stress_xx") && parameters.mapped_particle_properties.count(introspection.compositional_index_for_name("ve_stress_xx"))))
       {
         material_model->create_additional_named_outputs(scratch.material_model_outputs);
-        MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
-          = scratch.material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
+        const std::shared_ptr<MaterialModel::ReactionRateOutputs<dim>> reaction_rate_outputs
+          = scratch.material_model_outputs.template get_additional_output_object<MaterialModel::ReactionRateOutputs<dim>>();
 
         Assert(reaction_rate_outputs == nullptr,
                ExcMessage("You are using a material model where the reaction rate outputs "

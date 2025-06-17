@@ -34,7 +34,7 @@ Level: 1 Index: 1
 Level: 1 Index: 2
 Level: 1 Index: 3
      Writing graphical output:           output-cell_reference/solution/solution-00000
-     RMS, max velocity:                  5.88e-08 m/s, 1.41e-07 m/s
+     RMS, max velocity:                  5.88e-08 m/s, 2.06e-07 m/s
      Temperature min/avg/max:            0 K, 0.9574 K, 1.1 K
      Heat fluxes through boundary parts: 1.651e-07 W, 4.054e-06 W, 0 W, 0 W
 

@@ -1,0 +1,112 @@
+# This parameter file tests the tidal heating plugin for a case where the
+# viscosity is constant and the tidal heating is not dependent on latitude
+# or longitude. 
+#
+# The equation implemented in this heating model is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099),
+# which is defined as:
+# H= 2*(viscosity)*(time-averaged strain rate)^2/(1+((viscosity)*(tidal frequency)/(shear modulus))^2)), where
+# viscosity is the viscosity derived from the material model at every point (constant in this test - 1e14 Pa s)
+#
+# The governing equation in the model is simplified as (density)*(specific heat capacity)*dT/dt=H, as unit of H is W/m^3.
+# As expected, temperature increases with time as the convective and conductive processes are not active.
+#
+# The statistics show temperature of 1.94196735e2 K after 100 Myr of tidal heating and heating rate of 6.29829872e-09 W/kg.
+# These match with analytical values which are 1.94196735e+02 K and 6.29829872e-09 W/kg for temperature and heating rate, respectively.
+
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 1e6
+
+set Output directory                       = constant_tidal_heating
+
+set Maximum first time step                    = 0.5e5
+set CFL number                                 = 0.8
+set Maximum time step                          = 0.5e5
+
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 10
+    set Y extent = 10
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y,t
+    set Function expression = 100
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = 0,1,2,3
+end
+
+
+# Set the gravity to 0 in order to inhibit convection
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 0 #1.3
+  end
+end
+
+
+subsection Material model
+  set Model name = simpler
+  subsection Simpler model
+    set Reference density = 917
+    set Reference specific heat = 2110
+    set Reference temperature = 100
+    set Thermal conductivity = 0 # 1.93
+    set Thermal expansion coefficient = 0 # 1.6e-4
+    set Viscosity = 1e14
+  end
+end
+
+
+subsection Heating model
+  set List of model names = tidal heating
+  subsection Tidal heating
+    set Tidal frequency = 2.048e-5
+    set Elastic shear modulus = 3.3e9
+    set Constant tidal strain rate =2e-10
+  end
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 2
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, visualization, basic statistics, \
+			       pressure statistics, material statistics, heating statistics
+
+  subsection Visualization
+    set Time between graphical output = 0.5e5
+    set Output format                 = vtu
+    set List of output variables      = material properties, strain rate, shear stress, stress, nonadiabatic pressure, heating
+  end
+end

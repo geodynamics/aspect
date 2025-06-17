@@ -15,7 +15,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      Writing graphical output:           output-gmg_test_project_q1/solution/solution-00000
-     RMS, max velocity:                  0.0221 m/year, 0.061 m/year
+     RMS, max velocity:                  0.0221 m/year, 0.1 m/year
      Temperature min/avg/max:            273 K, 1602 K, 3700 K
      Heat fluxes through boundary parts: 9.777e+05 W, 4.047e+07 W
 

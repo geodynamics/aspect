@@ -1,0 +1,46 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (fix_init_topo_function, aea9b39ca)
+--     . using deal.II 9.6.1
+--     .       with 32 bit indices
+--     .       with vectorization level 1 (SSE2, 2 doubles, 128 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.6
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&sha=aea9b39ca&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output: output-spherical_shell_initial_topography_function_3d_spherical/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start    |     0.244s |            |
+|                                             |            |            |
+| Section                         | no. calls |  wall time | % of total |
++---------------------------------+-----------+------------+------------+
+| Initialization                  |         1 |    0.0818s |        33% |
+| Postprocessing                  |         1 |    0.0781s |        32% |
+| Setup dof systems               |         1 |     0.014s |       5.7% |
+| Setup initial conditions        |         1 |    0.0178s |       7.3% |
+| Setup matrices                  |         1 |   0.00451s |       1.8% |
++---------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts: 0s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&mf=1&sha=aea9b39ca&src=code
+-----------------------------------------------------------------------------

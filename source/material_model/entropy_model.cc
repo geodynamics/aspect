@@ -191,13 +191,15 @@ namespace aspect
             out.reaction_terms[i][c]            = 0.;
 
           // set up variable to interpolate prescribed field outputs onto compositional fields
-          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
+          if (const std::shared_ptr<PrescribedFieldOutputs<dim>> prescribed_field_out
+              = out.template get_additional_output_object<PrescribedFieldOutputs<dim>>())
             {
               prescribed_field_out->prescribed_field_outputs[i][projected_density_index] = out.densities[i];
             }
 
           // set up variable to interpolate prescribed field outputs onto temperature field
-          if (PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim>>())
+          if (const std::shared_ptr<PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
+              = out.template get_additional_output_object<PrescribedTemperatureOutputs<dim>>())
             {
               prescribed_temperature_out->prescribed_temperature_outputs[i] = adjusted_inputs.temperature[i];
             }
@@ -234,27 +236,30 @@ namespace aspect
 
                   const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
 
-                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+                  MaterialModel::Rheology::DruckerPragerParameters drucker_prager_parameters;
+                  drucker_prager_parameters.cohesion = cohesion;
+                  drucker_prager_parameters.angle_internal_friction = angle_of_internal_friction;
+                  drucker_prager_parameters.max_yield_stress = std::numeric_limits<double>::infinity();
+
+                  const std::shared_ptr<PlasticAdditionalOutputs<dim>>
+                  plastic_out = out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>();
+
                   if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
                       plastic_out->cohesions[i] = cohesion;
                       plastic_out->friction_angles[i] = angle_of_internal_friction;
                       plastic_out->yielding[i] = 0;
-                      plastic_out->yield_stresses[i] = drucker_prager_plasticity.compute_yield_stress(cohesion,
-                                                                                                      angle_of_internal_friction,
-                                                                                                      pressure,
-                                                                                                      std::numeric_limits<double>::infinity());
+                      plastic_out->yield_stresses[i] = drucker_prager_plasticity.compute_yield_stress(pressure,
+                                                                                                      drucker_prager_parameters);
                     }
 
                   const double strain_rate_effective = std::fabs(second_invariant(deviator(in.strain_rate[i])));
 
                   if (std::sqrt(strain_rate_effective) >= std::numeric_limits<double>::min())
                     {
-                      const double eta_plastic = drucker_prager_plasticity.compute_viscosity(cohesion,
-                                                                                             angle_of_internal_friction,
-                                                                                             pressure,
+                      const double eta_plastic = drucker_prager_plasticity.compute_viscosity(pressure,
                                                                                              std::sqrt(strain_rate_effective),
-                                                                                             std::numeric_limits<double>::infinity());
+                                                                                             drucker_prager_parameters);
 
                       effective_viscosity = 1.0 / ( ( 1.0 /  eta_plastic  ) + ( 1.0 / (vis_lateral * viscosity_profile) ) );
 
@@ -267,7 +272,8 @@ namespace aspect
             }
 
           // fill seismic velocities outputs if they exist
-          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
+          if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
+              = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>())
             if (in.requests_property(MaterialProperties::additional_outputs))
               {
 
@@ -432,14 +438,14 @@ namespace aspect
     void
     EntropyModel<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<SeismicAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PrescribedFieldOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -447,7 +453,7 @@ namespace aspect
             (n_points, this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output<PrescribedTemperatureOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PrescribedTemperatureOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -455,7 +461,7 @@ namespace aspect
             (n_points));
         }
 
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PlasticAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

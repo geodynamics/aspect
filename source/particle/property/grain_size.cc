@@ -127,6 +127,19 @@ namespace aspect
 
 
       template <int dim>
+      AdvectionField
+      GrainSize<dim>::advection_field_for_boundary_initialization (const unsigned int property_component) const
+      {
+        (void) property_component;
+        Assert (property_component == 0,
+                ExcInternalError());
+
+        return AdvectionField::composition(grain_size_index);
+      }
+
+
+
+      template <int dim>
       UpdateTimeFlags
       GrainSize<dim>::need_update() const
       {

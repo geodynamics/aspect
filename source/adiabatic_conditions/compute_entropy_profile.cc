@@ -54,8 +54,8 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
       this->get_material_model().create_additional_named_outputs (out);
 
-      MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
-        = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
+      const std::shared_ptr<MaterialModel::PrescribedTemperatureOutputs<dim>> prescribed_temperature_out
+        = out.template get_additional_output_object<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
       // check if the material model computes prescribed temperature outputs
       AssertThrow(prescribed_temperature_out != nullptr,

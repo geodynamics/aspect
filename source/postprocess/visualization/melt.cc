@@ -126,7 +126,8 @@ namespace aspect
         MeltHandler<dim>::create_material_model_outputs(out);
 
         this->get_material_model().evaluate(in, out);
-        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+        const std::shared_ptr<MaterialModel::MeltOutputs<dim>> melt_outputs
+          = out.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
         AssertThrow(melt_outputs != nullptr,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 

@@ -591,25 +591,22 @@ namespace aspect
                                                        :
                                                        std::max(in.pressure[i],0.0);
 
-                  const double yield_stress = drucker_prager_plasticity.compute_yield_stress(drucker_prager_parameters.cohesion,
-                                                                                             drucker_prager_parameters.angle_internal_friction,
-                                                                                             pressure_for_yielding,
-                                                                                             drucker_prager_parameters.max_yield_stress);
+                  const double yield_stress = drucker_prager_plasticity.compute_yield_stress(pressure_for_yielding,
+                                                                                             drucker_prager_parameters);
 
                   // Apply plastic yielding:
                   // If the non-yielding stress is greater than the yield stress,
                   // rescale the viscosity back to yield surface
                   if (non_yielding_stress >= yield_stress)
                     {
-                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(drucker_prager_parameters.cohesion,
-                                                                                        drucker_prager_parameters.angle_internal_friction,
-                                                                                        pressure_for_yielding,
+                      effective_viscosity = drucker_prager_plasticity.compute_viscosity(pressure_for_yielding,
                                                                                         second_strain_rate_invariant,
-                                                                                        drucker_prager_parameters.max_yield_stress,
+                                                                                        drucker_prager_parameters,
                                                                                         effective_viscosity);
                     }
 
-                  PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
+                  const std::shared_ptr<PlasticAdditionalOutputs<dim>> plastic_out
+                    = out.template get_additional_output_object<PlasticAdditionalOutputs<dim>>();
 
                   if (plastic_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
                     {
@@ -622,7 +619,8 @@ namespace aspect
 
               out.viscosities[i] = std::min(std::max(min_eta,effective_viscosity),max_eta);
 
-              if (DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>())
+              if (const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
+                  = out.template get_additional_output_object<DislocationViscosityOutputs<dim>>())
                 if (in.requests_property(MaterialProperties::additional_outputs))
                   {
                     disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e300);
@@ -633,7 +631,8 @@ namespace aspect
 
           // fill seismic velocities outputs if they exist
           if (use_table_properties)
-            if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
+            if (const std::shared_ptr<SeismicAdditionalOutputs<dim>> seismic_out
+                = out.template get_additional_output_object<SeismicAdditionalOutputs<dim>>())
               if (in.requests_property(MaterialProperties::additional_outputs))
                 {
                   seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
@@ -641,9 +640,11 @@ namespace aspect
                 }
         }
 
-      DislocationViscosityOutputs<dim> *disl_viscosities_out = out.template get_additional_output<DislocationViscosityOutputs<dim>>();
+      const std::shared_ptr<DislocationViscosityOutputs<dim>> disl_viscosities_out
+        = out.template get_additional_output_object<DislocationViscosityOutputs<dim>>();
       if (in.requests_property(MaterialProperties::additional_outputs))
-        grain_size_evolution->fill_additional_outputs(in,out,phase_indices,disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
+        grain_size_evolution->fill_additional_outputs(in,out,phase_indices,
+                                                      disl_viscosities_out->dislocation_viscosities,out.additional_outputs);
 
       if (in.requests_property(MaterialProperties::reaction_terms))
         {
@@ -1079,7 +1080,13 @@ namespace aspect
           use_adiabatic_pressure_for_yielding = prm.get_bool ("Use adiabatic pressure for yield stress");
           drucker_prager_plasticity.initialize_simulator (this->get_simulator());
 
-          std::vector<unsigned int> n_phases = {n_phase_transitions[0]+1};
+          // drucker_prager_plasticity checks that n_phases has as many entries as the number of
+          // chemical compositions, however we do not support different rheologies for different
+          // compositions in this material model. Make sure the vector has the expected size, but
+          // also notify drucker_prager_plasticity that there should be no values for other compositions.
+          std::vector<unsigned int> n_phases = phase_function->n_phases_for_each_chemical_composition();
+          for (unsigned int i=1; i<n_phases.size(); ++i)
+            n_phases[i] = 0;
           drucker_prager_plasticity.parse_parameters(prm, std::make_unique<std::vector<unsigned int>> (n_phases));
 
           // Parse grain size evolution parameters
@@ -1133,7 +1140,7 @@ namespace aspect
     GrainSize<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // These properties are useful as output.
-      if (out.template get_additional_output<DislocationViscosityOutputs<dim>>() == nullptr)
+      if (out.template has_additional_output_object<DislocationViscosityOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
@@ -1144,14 +1151,14 @@ namespace aspect
       grain_size_evolution->create_additional_named_outputs(out);
 
       // These properties are only output properties.
-      if (use_table_properties && out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
+      if (use_table_properties && out.template has_additional_output_object<SeismicAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-      if (enable_drucker_prager_rheology && out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
+      if (enable_drucker_prager_rheology && out.template has_additional_output_object<PlasticAdditionalOutputs<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

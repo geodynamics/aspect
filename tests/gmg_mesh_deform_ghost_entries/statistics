@@ -5,30 +5,43 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Iterations for temperature solver
-# 9: Iterations for composition solver 1
-# 10: Iterations for composition solver 2
-# 11: Iterations for composition solver 3
-# 12: Iterations for Stokes solver
-# 13: Velocity iterations in Stokes preconditioner
-# 14: Schur complement iterations in Stokes preconditioner
-# 15: Minimal value for composition ve_stress_xx
-# 16: Maximal value for composition ve_stress_xx
-# 17: Global mass for composition ve_stress_xx
-# 18: Minimal value for composition ve_stress_yy
-# 19: Maximal value for composition ve_stress_yy
-# 20: Global mass for composition ve_stress_yy
-# 21: Minimal value for composition ve_stress_xy
-# 22: Maximal value for composition ve_stress_xy
-# 23: Global mass for composition ve_stress_xy
-# 24: Minimal temperature (K)
-# 25: Average temperature (K)
-# 26: Maximal temperature (K)
-# 27: Average nondimensional temperature (K)
-# 28: Minimum topography (m)
-# 29: Maximum topography (m)
-# 30: RMS velocity (m/year)
-# 31: Max. velocity (m/year)
-# 32: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 544 5256 604 6978 0  0  0  0 41 42 42  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 0.00000000e+00  0.00000000e+00 0.00000000e+00 1.42218003e-01 4.48332498e-01 output-gmg_mesh_deform_ghost_entries/solution/solution-00000 
-1 1.000000000000e+01 1.000000000000e+01 517 5028 578 6675 0 18 18 18 43 44 44 -1.53313360e+05 2.68748187e+05 -2.45294664e+10 -2.68748187e+05 1.53313360e+05 2.45294664e+10 -6.33263297e+04 3.27739165e+05 1.17849460e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02 9.03950472e-17 -3.99991786e-02 9.99979465e-03 1.29375437e-01 4.07824749e-01                                                           "" 
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for composition solver 4
+# 14: Iterations for composition solver 5
+# 15: Iterations for composition solver 6
+# 16: Iterations for Stokes solver
+# 17: Velocity iterations in Stokes preconditioner
+# 18: Schur complement iterations in Stokes preconditioner
+# 19: Minimal value for composition ve_stress_xx
+# 20: Maximal value for composition ve_stress_xx
+# 21: Global mass for composition ve_stress_xx
+# 22: Minimal value for composition ve_stress_yy
+# 23: Maximal value for composition ve_stress_yy
+# 24: Global mass for composition ve_stress_yy
+# 25: Minimal value for composition ve_stress_xy
+# 26: Maximal value for composition ve_stress_xy
+# 27: Global mass for composition ve_stress_xy
+# 28: Minimal value for composition ve_stress_xx_old
+# 29: Maximal value for composition ve_stress_xx_old
+# 30: Global mass for composition ve_stress_xx_old
+# 31: Minimal value for composition ve_stress_yy_old
+# 32: Maximal value for composition ve_stress_yy_old
+# 33: Global mass for composition ve_stress_yy_old
+# 34: Minimal value for composition ve_stress_xy_old
+# 35: Maximal value for composition ve_stress_xy_old
+# 36: Global mass for composition ve_stress_xy_old
+# 37: Minimal temperature (K)
+# 38: Average temperature (K)
+# 39: Maximal temperature (K)
+# 40: Average nondimensional temperature (K)
+# 41: Minimum topography (m)
+# 42: Maximum topography (m)
+# 43: RMS velocity (m/year)
+# 44: Max. velocity (m/year)
+# 45: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 547 5283 607 29538 2 0 0 0 0 0 0 0 50 52 52  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 0.00000000e+00  0.00000000e+00 0.00000000e+00 1.42218008e+00 4.48451738e+00 output-gmg_mesh_deform_ghost_entries/solution/solution-00000 
+1 1.000000000000e+01 1.000000000000e+01 520 5055 581 28080 3 0 6 6 6 6 6 6 92 95 95 -1.66348906e+06 2.68746042e+06 -4.60271437e+11 -2.68746042e+06 1.66348906e+06 4.60271437e+11 -1.68679022e+06 3.74579211e+06 1.17849458e+17 -1.66342833e+06 2.68746042e+06 -3.03042715e+11 -2.68746042e+06 1.66342833e+06 3.03042715e+11 -1.68683279e+06 3.74581724e+06 1.17849454e+17 2.93000000e+02 2.93000000e+02 2.93000000e+02 1.50658412e-17 -3.99991786e-02 9.99979465e-03 1.38031863e-02 5.79872499e-02                                                           "" 

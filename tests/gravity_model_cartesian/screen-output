@@ -7,7 +7,7 @@ Number of degrees of freedom: 240 (144+24+72)
    Solving Stokes system (GMG)... 29+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        98.6 m/year, 201 m/year
+     RMS, max velocity:        98.6 m/year, 202 m/year
      Writing graphical output: output-gravity_model_cartesian/solution/solution-00000
 
 Termination requested by criterion: end step

@@ -98,9 +98,9 @@ namespace aspect
          * @note Implementations of this function in derived classes can
          * only compute the depth with regard to the <i>reference
          * configuration</i> of the geometry, i.e., the geometry initially
-         * created. If you are using a dynamic topography in your models
-         * that changes in every time step, or if you apply initial
-         * topography to your model, then the <i>actual</i> depth
+         * created with initial topography or not.
+         * If you are using a dynamic topography in your models
+         * that changes in every time step, then the <i>actual</i> depth
          * of a point with regard to this dynamic topography will not
          * match the value this function returns. This is so because
          * computing the actual depth is difficult: In parallel computations,
@@ -147,18 +147,18 @@ namespace aspect
         aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const = 0;
 
         /**
-         * Takes the Cartesian points (x,z or x,y,z) and returns standardized
-         * coordinates which are most 'natural' to the geometry model. For a box
-         * this will  be (x,z) in 2d or (x,y,z) in 3d, and for a spheroid geometry
-         * model it  will be (radius, longitude) in 2d and (radius, longitude,
-         * latitude) in 3d.
+         * Takes the Cartesian points (`(x,z)` or `(x,y,z)`) and returns standardized
+         * coordinates which are most "natural" to the geometry model. For a box
+         * this will be `(x,z)` in 2d, or `(x,y,z)` in 3d, and for a spheroid geometry
+         * model it will be `(radius, longitude)` in 2d, and `(radius, longitude,
+         * latitude)` in 3d.
          */
         virtual
         std::array<double,dim> cartesian_to_natural_coordinates(const Point<dim> &position) const;
 
         /**
-         * Undoes the action of cartesian_to_natural_coordinates, and turns the
-         * coordinate system which is most 'natural' to the geometry model into
+         * Undoes the action of cartesian_to_natural_coordinates(), and turns the
+         * coordinate system which is most "natural" to the geometry model into
          * Cartesian coordinates.
          */
         virtual

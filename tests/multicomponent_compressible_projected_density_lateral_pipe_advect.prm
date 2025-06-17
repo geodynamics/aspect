@@ -1,0 +1,49 @@
+# This simple lateral pipe model tests the projected density approximation within
+# the multicomponent compressible material model. Here we look at the mass flux
+# difference (i.e., error) between the left (in) and right (out) boundaries to asses the
+# efficacy of the pda approximation in terms of mass conservation.
+
+# The pipe has dimensions 100x1000 km with a material influx of 1 cm per year
+# at the leftmost boundary. We also apply a temperature gradient which spans 1600 K
+# at the leftmost boundary to 1800 K at the rightmost.
+
+# We ignore gravity in this model to limit the change in density to temperature and
+# pressure fluctuations stemming from the temperature gradient and lateral Advection
+# respectively.
+
+# The mass flux error at the end time (2e6 years) of this test and the equivalent test using a 
+# different material model in benchmarks/compressibility_formulations is as follows:
+# Mass flux error corresponding to the tests/multicomponent_compressibile_projected_density_lateral_pipe_advect : 0.004840160569129433
+# Mass flux error corresponding to the tests/compressibility_lateral_pipe_advect_projected_density              : 0.004871669696948347
+
+# The small differences in the mass flux error above reflect the different compressible equations of state 
+# used by each material model
+
+include $ASPECT_SOURCE_DIR/benchmarks/compressibility_formulations/lateral_pipe_advect/lateral_pipe.prm
+
+set Dimension                   = 2
+set End time                    = 2e6
+set Output directory            = multicomponent_compressible_projected_density_lateral_pipe_advect
+
+subsection Formulation
+  set Mass conservation    = projected density field
+  set Temperature equation = real density
+end
+
+subsection Material model
+  set Model name = multicomponent compressible
+
+  subsection Multicomponent compressible
+    set Reference temperatures                       = 1600
+    set Reference densities                          = 3300
+    set Reference isothermal compressibilities       = 4e-12
+    set Isothermal bulk modulus pressure derivatives = 4
+    set Reference thermal expansivities              = 2.e-5
+    set Isochoric specific heats                     = 1250
+    set Thermal conductivities                       = 0.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = material statistics, composition statistics, mass flux statistics
+end

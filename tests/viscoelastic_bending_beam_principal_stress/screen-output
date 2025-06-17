@@ -1,14 +1,32 @@
 
 Number of active cells: 150 (on 1 levels)
-Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
+Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,350+1,350+1,350)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving beam system ... 0 iterations.
    Solving Stokes system (GMG)... 161+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64892e-16, 0, 0, 0, 0, 0, 0, 0, 0.0372797
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0372797
+
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving beam system ... 1 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.83145e-16, 0, 0, 0, 0, 0, 0, 0, 3.36799e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.36799e-09
+
 
    Postprocessing:
      RMS, max velocity:        0.00862 m/year, 0.0168 m/year
@@ -16,12 +34,55 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
      Writing graphical output: output-viscoelastic_bending_beam_principal_stress/solution/solution-00000
 
 *** Timestep 1:  t=1000 years, dt=1000 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 4 iterations.
    Solving ve_stress_yy system ... 4 iterations.
-   Solving ve_stress_xy system ... 4 iterations.
+   Solving ve_stress_xy system ... 3 iterations.
+   Solving ve_stress_xx_old system ... 4 iterations.
+   Solving ve_stress_yy_old system ... 4 iterations.
+   Solving ve_stress_xy_old system ... 3 iterations.
    Solving beam system ... 3 iterations.
-   Solving Stokes system (GMG)... 141+0 iterations.
+   Solving Stokes system (GMG)... 143+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.47152e-16, 0.0924842, 0.0924842, 0.010698, 0, 0, 0, 0, 0.263533
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.263533
+
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 3 iterations.
+   Solving ve_stress_yy system ... 3 iterations.
+   Solving ve_stress_xy system ... 3 iterations.
+   Solving ve_stress_xx_old system ... 3 iterations.
+   Solving ve_stress_yy_old system ... 3 iterations.
+   Solving ve_stress_xy_old system ... 3 iterations.
+   Solving beam system ... 3 iterations.
+   Solving Stokes system (GMG)... 110+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.44021e-16, 0.00744266, 0.00744266, 0.00172126, 0, 0, 0, 0, 0.00187603
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00744266
+
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 2 iterations.
+   Solving ve_stress_yy system ... 2 iterations.
+   Solving ve_stress_xy system ... 3 iterations.
+   Solving ve_stress_xx_old system ... 3 iterations.
+   Solving ve_stress_yy_old system ... 3 iterations.
+   Solving ve_stress_xy_old system ... 2 iterations.
+   Solving beam system ... 3 iterations.
+   Solving Stokes system (GMG)... 44+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.36714e-16, 2.79298e-05, 2.79298e-05, 1.17398e-05, 0, 0, 0, 0, 5.72008e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.79298e-05
+
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 2 iterations.
+   Solving ve_stress_yy system ... 2 iterations.
+   Solving ve_stress_xy system ... 2 iterations.
+   Solving ve_stress_xx_old system ... 2 iterations.
+   Solving ve_stress_yy_old system ... 2 iterations.
+   Solving ve_stress_xy_old system ... 2 iterations.
+   Solving beam system ... 3 iterations.
+   Solving Stokes system (GMG)... 3+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.31617e-16, 1.24537e-07, 1.24537e-07, 4.68141e-08, 0, 0, 0, 0, 3.31503e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.24537e-07
+
 
    Postprocessing:
      RMS, max velocity:        0.00818 m/year, 0.0155 m/year

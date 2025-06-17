@@ -41,7 +41,8 @@ namespace aspect
         std::vector<double> &fluid_pressure_gradient_outputs
       ) const
       {
-        const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
+        const std::shared_ptr<const MaterialModel::MeltOutputs<dim>>
+        melt_outputs = material_model_outputs.template get_additional_output_object<MaterialModel::MeltOutputs<dim>>();
         Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
 
         for (unsigned int q=0; q<fluid_pressure_gradient_outputs.size(); ++q)

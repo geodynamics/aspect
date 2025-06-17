@@ -18,10 +18,31 @@
 
 include $ASPECT_SOURCE_DIR/tests/visualization_stress.prm
 
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 5
+
 set End time                               = 1
 
 subsection Formulation
   set Enable elasticity = true
+end
+
+# One operator splitting step to update the stresses
+set Use operator splitting                 = true
+
+# Solver settings
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
 end
 
 subsection Material model
@@ -37,8 +58,17 @@ subsection Material model
 end
 
 subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+  set Types of fields  = stress,       stress,       stress,       stress,           stress,           stress
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0; 0; 0; 0; 0; 0;
+  end
 end
 
 subsection Postprocess

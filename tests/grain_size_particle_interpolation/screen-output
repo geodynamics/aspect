@@ -1,0 +1,44 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,526 (578+81+289+289+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Solving anomaly system ... 0 iterations.
+   Solving Stokes system (GMG)... 9+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-grain_size_particle_interpolation/solution/solution-00000
+     Compositions min/max/mass:                         1000/1000/1e+13 // 0.001/0.001/1e+07
+     Writing particle output:                           output-grain_size_particle_interpolation/particles/particles-00000
+     Average density / Average viscosity / Total mass:  1000 kg/m^3, 3.787e+19 Pa s, 1e+13 kg
+
+*** Timestep 1:  t=6250 years, dt=6250 years
+   Solving temperature system... 42 iterations.
+   Advecting particles...  done.
+   Solving anomaly system ... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-grain_size_particle_interpolation/solution/solution-00001
+     Compositions min/max/mass:                         1000/1000/1e+13 // 0.001/0.001/1e+07
+     Writing particle output:                           output-grain_size_particle_interpolation/particles/particles-00001
+     Average density / Average viscosity / Total mass:  1000 kg/m^3, 5.607e+19 Pa s, 1e+13 kg
+
+*** Timestep 2:  t=10000 years, dt=3750 years
+   Solving temperature system... 12 iterations.
+   Advecting particles...  done.
+   Solving anomaly system ... 0 iterations.
+   Solving Stokes system (GMG)... 1+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-grain_size_particle_interpolation/solution/solution-00002
+     Compositions min/max/mass:                         1000/1000/1e+13 // 0.001/0.001/1e+07
+     Writing particle output:                           output-grain_size_particle_interpolation/particles/particles-00002
+     Average density / Average viscosity / Total mass:  1000 kg/m^3, 6.991e+19 Pa s, 1e+13 kg
+
+Termination requested by criterion: end time
+
+
+

@@ -850,8 +850,8 @@ namespace aspect
 
         // store the original viscosities if we need to compute the
         // system jacobian later on
-        MaterialModelDerivatives<dim> *derivatives =
-          values_out.template get_additional_output<MaterialModelDerivatives<dim>>();
+        const std::shared_ptr<MaterialModelDerivatives<dim>> derivatives =
+          values_out.template get_additional_output_object<MaterialModelDerivatives<dim>>();
 
         std::vector<double> viscosity_before_averaging;
         if (derivatives != nullptr)
@@ -998,10 +998,24 @@ namespace aspect
 
 
 
+    namespace
+    {
+      std::vector<std::string> make_prescribed_dilation_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("dilation_lhs_term");
+        names.emplace_back("dilation_rhs_term");
+        return names;
+      }
+    }
+
+
+
     template <int dim>
     PrescribedPlasticDilation<dim>::PrescribedPlasticDilation (const unsigned int n_points)
-      : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "prescribed_dilation")),
-        dilation(n_points, numbers::signaling_nan<double>())
+      : NamedAdditionalMaterialOutputs<dim>(make_prescribed_dilation_outputs_names()),
+        dilation_lhs_term(n_points, numbers::signaling_nan<double>()),
+        dilation_rhs_term(n_points, numbers::signaling_nan<double>())
     {}
 
 
@@ -1009,9 +1023,20 @@ namespace aspect
     template <int dim>
     std::vector<double> PrescribedPlasticDilation<dim>::get_nth_output(const unsigned int idx) const
     {
-      (void)idx;
-      Assert(idx==0, ExcInternalError());
-      return dilation;
+      AssertIndexRange (idx, 2);
+      switch (idx)
+        {
+          case 0:
+            return dilation_lhs_term;
+
+          case 1:
+            return dilation_rhs_term;
+
+          default:
+            AssertThrow(false, ExcInternalError());
+        }
+      // we will never get here, so just return something
+      return std::vector<double>();
     }
 
 

@@ -1,0 +1,7 @@
+Fixed: The evaluation of the minimum/maximum value in
+melt_statistics and in pressure_statistics was inaccurately being
+done at the Gauss quadrature points. Use a Gauss-Lobatto quadrature
+instead to improve the accuracy when these values lie at the
+boundaries of a cell (e.g. the surface).
+<br>
+(Daniel Douglas, 2025/06/12)

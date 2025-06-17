@@ -13,7 +13,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
 
    Postprocessing:
-     RMS, max velocity:        0.00125 m/s, 0.00345 m/s
+     RMS, max velocity:        0.00125 m/s, 0.00365 m/s
      Writing graphical output: output-viz_plugin_dependency/solution/solution-00000
 
 Termination requested by criterion: end time

@@ -14,7 +14,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000707 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
      Writing graphical output:           output-visco_plastic_yield_plastic_viscous_strain_weakening_particles/solution/solution-00000
      Number of advected particles:       100000

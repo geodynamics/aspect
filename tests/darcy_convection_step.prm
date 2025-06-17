@@ -45,6 +45,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 set Maximum time step                      = 200
 set Use operator splitting                 = true
+set Adiabatic surface temperature          = 293
 
 # 10 km x 10 km box
 subsection Geometry model
@@ -162,7 +163,7 @@ end
 
 # Output the darcy velocity
 subsection Postprocess
-  set List of postprocessors = visualization
+  set List of postprocessors = visualization, fluid velocity statistics
 
   subsection Visualization
     set List of output variables = darcy velocity

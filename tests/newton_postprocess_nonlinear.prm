@@ -6,13 +6,25 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
+set Nonlinear solver scheme                = iterated Advection and Newton Stokes
 set Nonlinear solver tolerance             = 1e-4
 set Max nonlinear iterations               = 5
 set CFL number                             = 0.5
 set Maximum time step                      = 5
 set Timing output frequency                = 1
 set Pressure normalization                 = no
+
+# One operator splitting step to update the stresses
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction solver type                   = fixed step
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
 
 # Solver parameters
 subsection Solver parameters
@@ -60,6 +72,13 @@ subsection Discretization
   set Composition polynomial degree     = 2
   set Stokes velocity polynomial degree = 2
   set Temperature polynomial degree     = 1
+  # DG for viscoelastic stresses
+  set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = false, false, false, false, false, false, true, true, true
+    set Global composition maximum = 1.
+    set Global composition minimum = 0.
+  end
 end
 
 # Formulation classification
@@ -81,9 +100,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 6
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, block,                air,                  inclusion
-  set Types of fields  = stress,       stress,       stress,       chemical composition, chemical composition, chemical composition
+  set Number of fields = 9
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, block,                air,                  inclusion
+  set Types of fields  = stress,       stress,       stress,       stress,       stress,       stress, chemical composition, chemical composition, chemical composition
 end
 
 # Spatial domain of different compositional fields
@@ -93,7 +112,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; \
+    set Function expression = 0; 0; 0; 0; 0; 0; \
                               if ( ( x<43.75e3 && y>25.e3 && y<75.e3) || (x>56.25e3 && y>25.e3 && y<75.e3) || (y>56.25e3 && y<75.e3 && x>=43.75e3 && x<=56.25e3) || (y<43.75e3 && y>25.e3 && x>=43.75e3 && x<=56.25e3), 1, 0); \
                               if (y<=25.e3 || y>=75.e3, 1, 0); \
                               if (y<=56.25e3 && y>=43.75e3 && x>=43.75e3 && x<=56.25e3, 1, 0);
@@ -140,16 +159,18 @@ subsection Material model
     set Reference strain rate       = 1.e-13
     set Maximum viscosity           = 1.e23
     set Minimum viscosity           = 1.e17
-    set Prefactors for dislocation creep          = 5e-24, 1e-50, 1e-50, 1e-50, 5e-24, 5.e-18, 5e-18
+
+    set Prefactors for dislocation creep          = 5e-24, 5e-24, 5.e-18, 5e-18
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
     set Elastic shear moduli        = 1e50
     set Use fixed elastic time step = false
-    set Fixed elastic time step     = 5e3
+    set Fixed elastic time step     = 5
     set Viscosity averaging scheme  = harmonic
-    set Angles of internal friction = 37., 0., 0., 0., 37., 0., 0.
-    set Cohesions                   = 100.e6, 1.e50, 1.e50, 1.e50, 100.e6, 10.e6, 10.e6
+
+    set Angles of internal friction = 37., 37., 0., 0.
+    set Cohesions                   = 100.e6, 100.e6, 10.e6, 10.e6
   end
 end
 

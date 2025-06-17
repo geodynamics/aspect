@@ -56,48 +56,59 @@ namespace aspect
       // In the following, we will first normalize the input to a dim-dimensional
       // point with a dummy vertical/radial coordinate that, one would hope,
       // the function expression will then simply ignore.
-      Point<dim> global_point;
+      Point<dim> input_point;
 
-      if (Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
-          Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+      const bool is_box_geometry =
+        Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model());
+
+      const bool is_spherical_geometry =
+        Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model());
+
+      if (is_box_geometry)
         {
-          for (unsigned int d=0; d<dim-1; ++d)
-            global_point[d] = surface_point[d];
-
-          // Now for the vertical component:
-          global_point[dim-1] = 0;
-
-          // The point as it is would have to be translated into a different
-          // coordinate system if that was requested in the input file.
-          // This is not currently implemented.
+          // For box geometries, copy the surface point coordinates and add a dummy vertical component.
+          for (unsigned int d = 0; d < dim - 1; ++d)
+            input_point[d] = surface_point[d];
+          input_point[dim - 1] = 0.0;
           Assert (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian,
                   ExcNotImplemented());
         }
-      else if (Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) )
+      else if (is_spherical_geometry)
         {
-          std::array<double, dim> point;
-          point[0] = 6371000.0;
-          for (unsigned int d=0; d<dim-1; ++d)
-            point[d+1] = surface_point[d];
+          // For spherical geometries, first construct an array of spherical coordinates:
+          // radius (fixed at Earth radius), followed by angles (phi, theta).
+          std::array<double, dim> spherical_coords;
+          spherical_coords[0] = 6371000.0;  // Approximate Earth radius in meters
+          for (unsigned int d = 0; d < dim - 1; ++d)
+            spherical_coords[d + 1] = surface_point[d];
 
-          global_point = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(point);
-
-          // The point as it is would have to be translated into a different
-          // coordinate system (or, perhaps, better just left in the spherical
-          // coordinates we received) if that was requested in the input file.
-          // This is not currently implemented.
-          Assert (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian,
-                  ExcNotImplemented());
+          if (coordinate_system == Utilities::Coordinates::CoordinateSystem::spherical)
+            {
+              // If the coordinate system is spherical, directly convert spherical coordinates to a Point<dim>.
+              input_point = Utilities::convert_array_to_point<dim>(spherical_coords);
+            }
+          else if (coordinate_system == Utilities::Coordinates::CoordinateSystem::cartesian)
+            {
+              // If the coordinate system is cartesian, convert spherical coordinates to cartesian coordinates.
+              input_point = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_coords);
+            }
+          else
+            {
+              AssertThrow(false, ExcMessage("Unsupported geometry or coordinate system."));
+            }
         }
       else
-        AssertThrow(false, ExcNotImplemented());
+        {
+          AssertThrow(false, ExcMessage("Unsupported geometry for the 'function' initial topography model."));
+        }
 
-      const double topo = initial_topography_function.value(global_point);
-
-      return topo;
+      // Evaluate the user-defined initial topography function at the constructed input point.
+      return initial_topography_function.value(input_point);
     }
+
 
 
     template <int dim>
@@ -107,6 +118,7 @@ namespace aspect
     {
       return max_topo;
     }
+
 
 
     template <int dim>
@@ -139,6 +151,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

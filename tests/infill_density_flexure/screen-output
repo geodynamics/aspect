@@ -8,7 +8,7 @@ Loading shared library <./libinfill_density_flexure.debug.so>
    Also loading next Ascii data boundary file ASPECT_DIR/benchmarks/infill_density/data/box_2d_top.1.txt.
 
 Number of active cells: 7,200 (on 3 levels)
-Number of degrees of freedom: 346,503 (58,322+21,600+7,381+64,800+64,800+64,800+64,800)
+Number of degrees of freedom: 540,903 (58,322+21,600+7,381+64,800+64,800+64,800+64,800+64,800+64,800+64,800)
 
 Number of mesh deformation degrees of freedom: 14,762
    Solving mesh displacement system... 0 iterations.
@@ -18,18 +18,37 @@ Number of mesh deformation degrees of freedom: 14,762
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system (AMG)... 85+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70436e-16, 0, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
+   Solving lithosphere system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.70436e-16, 0, 0, 0, 0, 0, 0, 0, 8.83042e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.83042e-08
+
 
    Postprocessing:
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Topography min/max:       0 m, 0 m
-     RMS, max velocity:        0.246 m/year, 0.676 m/year
+     RMS, max velocity:        2.46 m/year, 6.76 m/year
      Writing graphical output: output-infill_density_flexure/solution/solution-00000
 
 Number of active cells: 5,826 (on 3 levels)
-Number of degrees of freedom: 280,892 (47,642+17,478+6,036+52,434+52,434+52,434+52,434)
+Number of degrees of freedom: 438,194 (47,642+17,478+6,036+52,434+52,434+52,434+52,434+52,434+52,434+52,434)
 
 Number of mesh deformation degrees of freedom: 12,072
    Solving mesh displacement system... 0 iterations.

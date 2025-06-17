@@ -815,11 +815,27 @@ namespace aspect
                                                      "linear x momentum|linear y momentum|linear z momentum"),
                          "Choose none, one or several from "
                          "\n\n"
-                         "\\begin{itemize} \\item net rotation \\item angular momentum \\item net translation "
-                         "\\item net surface rotation"
-                         "\\item linear momentum \\item net x translation \\item net y translation "
-                         "\\item net z translation \\item linear x momentum \\item linear y momentum "
-                         "\\item linear z momentum \\end{itemize}"
+                         "* net rotation"
+                         "\n"
+                         "* angular momentum"
+                         "\n"
+                         "* net translation"
+                         "\n"
+                         "* net surface rotation"
+                         "\n"
+                         "* linear momentum"
+                         "\n"
+                         "* net x translation"
+                         "\n"
+                         "* net y translation"
+                         "\n"
+                         "* net z translation"
+                         "\n"
+                         "* linear x momentum"
+                         "\n"
+                         "* linear y momentum"
+                         "\n"
+                         "* linear z momentum"
                          "\n\n"
                          "These are a selection of operations to remove certain parts of the nullspace from "
                          "the velocity after solving. For some geometries and certain boundary conditions "
@@ -1251,20 +1267,19 @@ namespace aspect
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "the temperature field gains its values:"
-                         "\\begin{itemize}"
-                         "\\item ``field'': If the temperature is marked with this "
+                         "* ``field'': If the temperature is marked with this "
                          "method, then its values are computed in each time step by "
                          "solving the temperature advection-diffusion equation. In other words, "
                          "this corresponds to the usual notion of a temperature. "
                          "\n"
-                         "\\item ``prescribed field'': The value of the temperature is determined "
+                         "* ``prescribed field'': The value of the temperature is determined "
                          "in each time step from the material model. If a compositional field is "
                          "marked with this method, then the value of a specific additional material "
                          "model output, called the `PrescribedTemperatureOutputs' is interpolated "
                          "onto the temperature. This field does not change otherwise, it is not "
                          "advected with the flow. "
                          "\n"
-                         "\\item ``prescribed field with diffusion'': If the temperature field is "
+                         "* ``prescribed field with diffusion'': If the temperature field is "
                          "marked this way, the value of a specific additional material model output, "
                          "called the `PrescribedTemperatureOutputs' is interpolated onto the field, as in "
                          "the ``prescribed field'' method. Afterwards, the field is diffused based on "
@@ -1275,11 +1290,10 @@ namespace aspect
                          "of diffusion is independent of the time step size, and that the field is not "
                          "advected with the flow."
                          "\n"
-                         "\\item ``static'': If a temperature field is marked "
+                         "* ``static'': If a temperature field is marked "
                          "this way, then it does not evolve at all. Its values are "
                          "simply set to the initial conditions, and will then "
-                         "never change."
-                         "\\end{itemize}");
+                         "never change.");
     }
     prm.leave_subsection();
 
@@ -1314,15 +1328,14 @@ namespace aspect
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "compositional fields gain their values:"
-                         "\\begin{itemize}"
-                         "\\item ``field'': If a compositional field is marked with this "
+                         "* ``field'': If a compositional field is marked with this "
                          "method, then its values are computed in each time step by "
                          "advecting along the values of the previous time step using the "
                          "velocity field, and applying reaction rates to it. In other words, "
                          "this corresponds to the usual notion of a composition field as "
                          "mentioned in Section~\\ref{sec:methods:compositional-fields}. "
                          "\n"
-                         "\\item ``particles'': If a compositional field is marked with "
+                         "* ``particles'': If a compositional field is marked with "
                          "this method, then its values are obtained in each time step "
                          "by interpolating the corresponding properties from the "
                          "particles located on each cell. The time evolution therefore "
@@ -1331,19 +1344,19 @@ namespace aspect
                          "See Section~\\ref{sec:methods:particles} for more information about "
                          "how particles behave."
                          "\n"
-                         "\\item ``volume of fluid``: If a compositional field "
+                         "* ``volume of fluid``: If a compositional field "
                          "is marked with this method, then its values are "
                          "obtained in each timestep by reconstructing a "
                          "polynomial finite element approximation on each cell "
                          "from a volume of fluid interface tracking method, "
                          "which is used to compute the advection updates."
                          "\n"
-                         "\\item ``static'': If a compositional field is marked "
+                         "* ``static'': If a compositional field is marked "
                          "this way, then it does not evolve at all. Its values are "
                          "simply set to the initial conditions, and will then "
                          "never change."
                          "\n"
-                         "\\item ``melt field'': If a compositional field is marked with this "
+                         "* ``melt field'': If a compositional field is marked with this "
                          "method, then its values are computed in each time step by "
                          "advecting along the values of the previous time step using the "
                          "melt velocity, and applying reaction rates to it. In other words, "
@@ -1353,7 +1366,7 @@ namespace aspect
                          "This method can only be chosen if melt transport is active in the "
                          "model."
                          "\n"
-                         "\\item ``darcy field'': If a compositional field is marked with this "
+                         "* ``darcy field'': If a compositional field is marked with this "
                          "method, then its values are computed in each time step by "
                          "advecting along the values of the previous time step using the "
                          "fluid velocity prescribed by Darcy's Law, and applying reaction rates "
@@ -1364,14 +1377,14 @@ namespace aspect
                          "the darcy field method. We calculate the fluid velocity $u_f$ using an "
                          "approximation of Darcy's Law: $u_f = u_s - K_D / \\phi * (rho_s * g - rho_f * g)$."
                          "\n"
-                         "\\item ``prescribed field'': The value of these fields is determined "
+                         "* ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
                          "marked with this method, then the value of a specific additional material "
                          "model output, called the `PrescribedFieldOutputs' is interpolated "
                          "onto the field. This field does not change otherwise, it is not "
                          "advected with the flow."
                          "\n"
-                         "\\item ``prescribed field with diffusion'': If a compositional field is "
+                         "* ``prescribed field with diffusion'': If a compositional field is "
                          "marked this way, the value of a specific additional material model output, "
                          "called the `PrescribedFieldOutputs' is interpolated onto the field, as in "
                          "the ``prescribed field'' method. Afterwards, the field is diffused based on "
@@ -1380,8 +1393,7 @@ namespace aspect
                          "$(I-l^2 \\Delta) C_\\text{smoothed} = C_\\text{prescribed}$, "
                          "where $l$ is the diffusion length scale. Note that this means that the amount "
                          "of diffusion is independent of the time step size, and that the field is not "
-                         "advected with the flow."
-                         "\\end{itemize}");
+                         "advected with the flow.");
       prm.declare_entry ("Mapped particle properties", "",
                          Patterns::Map (Patterns::Anything(),
                                         Patterns::Anything()),
@@ -1614,8 +1626,8 @@ namespace aspect
               const std::string command = "lst setstripe -c " + std::to_string(lfs_stripe_count)
                                           + ' ' + output_directory;
 
-              int error_code = system (command.c_str());
-              Utilities::MPI::broadcast(&error_code, 1, 0, mpi_communicator);
+              const int error_code = system (command.c_str());
+              std::ignore = Utilities::MPI::broadcast(mpi_communicator, error_code, /* root= */ 0);
 
               AssertThrow (error_code == 0,
                            ExcMessage ("Could not successfully execute the LFS file striping "
@@ -1625,8 +1637,8 @@ namespace aspect
             }
           else
             {
-              int error_code;
-              Utilities::MPI::broadcast(&error_code, 1, 0, mpi_communicator);
+              const int dummy = -1;
+              const int error_code = Utilities::MPI::broadcast(mpi_communicator, dummy, /* root = */ 0);
 
               if (error_code != 0)
                 throw QuietException();
@@ -1641,7 +1653,7 @@ namespace aspect
       resume_computation = false;
     else if (prm.get ("Resume computation") == "auto")
       {
-        resume_computation = Utilities::fexists(output_directory+"restart.mesh", mpi_communicator);
+        resume_computation = Utilities::fexists(output_directory+"restart/last_good_checkpoint.txt", mpi_communicator);
       }
     else
       AssertThrow (false, ExcMessage ("Resume computation parameter must be either `true', `false', or `auto'."));
@@ -2352,6 +2364,7 @@ namespace aspect
     InitialComposition::Manager<dim>::declare_parameters (prm);
     PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::Manager<dim>::declare_parameters (prm);
+    BoundaryConvectiveHeating::Manager<dim>::declare_parameters (prm);
     BoundaryComposition::Manager<dim>::declare_parameters (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     BoundaryVelocity::Manager<dim>::declare_parameters (prm);

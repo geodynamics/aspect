@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 134 (50+9+25+25+25)
 
@@ -22,6 +17,7 @@ Number of degrees of freedom: 134 (50+9+25+25+25)
 
    Postprocessing:
      Writing graphical output: output-darcy_convection_step/solution/solution-00000
+     Max Darcy velocity:       25 m/year
 
 *** Timestep 1:  t=100.017 years, dt=100.017 years
    Solving composition reactions... in 1 substep(s).
@@ -29,11 +25,12 @@ Number of degrees of freedom: 134 (50+9+25+25+25)
    Solving porosity system ... 0 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24886e-16, 1.30786e-16, 0, 1.54323e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24886e-16, 1.33126e-16, 0, 1.54323e-08
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.54323e-08
 
 
    Postprocessing:
+     Max Darcy velocity: 25 m/year
 
 *** Timestep 2:  t=200 years, dt=99.9833 years
    Solving composition reactions... in 1 substep(s).
@@ -41,20 +38,16 @@ Number of degrees of freedom: 134 (50+9+25+25+25)
    Solving porosity system ... 0 iterations.
    Skipping bound_fluid composition solve because RHS is zero.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.5766e-16, 4.62514e-16, 0, 1.54323e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.26318e-16, 3.30564e-16, 0, 1.54323e-08
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1.54323e-08
 
 
    Postprocessing:
+     Max Darcy velocity: 25 m/year
 
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
 
 WARNING: During this computation 1 nonlinear solver failures occurred!
------------------------------------------------------------------------------
------------------------------------------------------------------------------

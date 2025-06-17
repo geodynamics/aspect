@@ -1,0 +1,9 @@
+Changed: The file layout of checkpointing files has been changed. Now,
+files are stored in folders rotating between output/restart/01/,
+output/restart/02/, and output/restart/03/. To reuse checkpoint files
+written earlier, you will need to: 1. create output/restart/01/,
+2. move restart files output/restart.mesh to output/restart/01/mesh
+(similarly for other files), 3. create a file
+output/restart/last_good_checkpoint.txt with the content "1".
+<br>
+(Timo Heister, 2025/06/11)

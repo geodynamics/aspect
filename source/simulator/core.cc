@@ -200,6 +200,7 @@ namespace aspect
                      TimerOutput::never,
                      TimerOutput::wall_times),
     total_walltime_until_last_snapshot(0.),
+    last_checkpoint_id (numbers::invalid_unsigned_int),
     initial_topography_model(InitialTopographyModel::create_initial_topography_model<dim>(prm)),
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     // make sure the parameters object gets a chance to
@@ -316,7 +317,8 @@ namespace aspect
 
         material_model->create_additional_named_outputs(out);
 
-        MaterialModel::ElasticAdditionalOutputs<dim> *elastic_outputs = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+        const std::shared_ptr<MaterialModel::ElasticAdditionalOutputs<dim>> elastic_outputs
+          = out.template get_additional_output_object<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
         // Throw if the elastic_outputs do not exist
         AssertThrow(elastic_outputs != nullptr,
@@ -350,6 +352,10 @@ namespace aspect
     // Create a boundary temperature manager
     boundary_temperature_manager.initialize_simulator (*this);
     boundary_temperature_manager.parse_parameters (prm);
+
+    // Create a boundary convective flux manager
+    boundary_convective_heating_manager.initialize_simulator (*this);
+    boundary_convective_heating_manager.parse_parameters (prm);
 
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_heat_flux.get()))
       sim->initialize_simulator (*this);
@@ -691,6 +697,7 @@ namespace aspect
     // If there is a fixed boundary temperature or heat flux,
     // update the temperature boundary condition.
     boundary_temperature_manager.update();
+    boundary_convective_heating_manager.update();
     boundary_heat_flux->update();
 
     // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
@@ -701,7 +708,7 @@ namespace aspect
     // so we want to offset them by 128 and not allow more than 128 boundary ids.
     const unsigned int boundary_id_offset = 128;
     if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset);
+      replace_outflow_boundary_ids(boundary_id_offset, false, numbers::invalid_unsigned_int);
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
@@ -736,40 +743,42 @@ namespace aspect
     // update the composition boundary condition.
     boundary_composition_manager.update();
 
-    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
-    // use the same trick for marking up outflow boundary conditions for compositional fields
-    // as we did above already for the temperature.
-    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset);
-
     // now do the same for the composition variables:
     {
       // obtain the boundary indicators that belong to Dirichlet-type
       // composition boundary conditions and interpolate the composition
       // there
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-        if (parameters.use_discontinuous_composition_discretization[c] == false)
-          for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
-            {
-              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-                [&] (const Point<dim> &x) -> double
+        {
+          // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
+          // use the same trick for marking up outflow boundary conditions for compositional fields
+          // as we did above already for the temperature.
+          if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+            replace_outflow_boundary_ids(boundary_id_offset, true, c);
+
+          if (parameters.use_discontinuous_composition_discretization[c] == false)
+            for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
               {
-                return boundary_composition_manager.boundary_composition(p, x, c);
-              },
-              introspection.component_masks.compositional_fields[c].first_selected_component(),
-              introspection.n_components);
+                VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+                  [&] (const Point<dim> &x) -> double
+                {
+                  return boundary_composition_manager.boundary_composition(p, x, c);
+                },
+                introspection.component_masks.compositional_fields[c].first_selected_component(),
+                introspection.n_components);
 
-              VectorTools::interpolate_boundary_values (*mapping,
-                                                        dof_handler,
-                                                        p,
-                                                        vector_function_object,
-                                                        new_current_constraints,
-                                                        introspection.component_masks.compositional_fields[c]);
-            }
+                VectorTools::interpolate_boundary_values (*mapping,
+                                                          dof_handler,
+                                                          p,
+                                                          vector_function_object,
+                                                          new_current_constraints,
+                                                          introspection.component_masks.compositional_fields[c]);
+
+              }
+          if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+            restore_outflow_boundary_ids(boundary_id_offset);
+        }
     }
-
-    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      restore_outflow_boundary_ids(boundary_id_offset);
 
     if (parameters.include_melt_transport)
       melt_handler->add_current_constraints (new_current_constraints);
@@ -1020,7 +1029,8 @@ namespace aspect
             // For equal-order interpolation, we need a stabilization term
             // in the bottom right of Stokes matrix. Make sure we have the
             // necessary entries.
-            if (parameters.use_equal_order_interpolation_for_stokes == true)
+            if (parameters.use_equal_order_interpolation_for_stokes == true ||
+                parameters.enable_prescribed_dilation == true)
               coupling[x.pressure][x.pressure] = DoFTools::always;
           }
       }
@@ -2020,6 +2030,10 @@ namespace aspect
     // start-up
     if (parameters.resume_computation == true)
       {
+        last_checkpoint_id = determine_last_good_snapshot();
+        AssertThrow(last_checkpoint_id != numbers::invalid_unsigned_int,
+                    ExcMessage("You requested to restart the simulation from the last checkpoint but no written checkpoint has been found."));
+
         resume_from_snapshot();
         // we need to remove additional_refinement_times that are in the past
         // and adjust max_refinement_level which is not written to file
@@ -2034,6 +2048,9 @@ namespace aspect
       }
     else
       {
+        // This will cause the next checkpoint to be written to be 01:
+        last_checkpoint_id = 0;
+
         time = parameters.start_time;
 
         // Instead of calling global_refine(n) we flag all cells for

@@ -53,6 +53,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_heat_flux/interface.h>
+#include <aspect/boundary_convective_heating/interface.h>
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
@@ -860,6 +861,14 @@ namespace aspect
        * restarting from a saved state
        * @{
        */
+
+      /**
+       * Determine the id of the last good snapshot that was written by reading
+       * the last_good_checkpoint.txt file from the output/checkpoint/ folder.
+       * It will return numbers::invalid_unsigned_int if no snapshot exists.
+       */
+      unsigned int determine_last_good_snapshot() const;
+
       /**
        * Save the state of this program to a set of files in the output
        * directory. In reality, however, only some variables are stored (in
@@ -1121,35 +1130,6 @@ namespace aspect
       void get_artificial_viscosity (Vector<T> &viscosity_per_cell,
                                      const AdvectionField &advection_field,
                                      const bool skip_interior_cells = false) const;
-
-      /**
-       * Compute the seismic shear wave speed, Vs anomaly per element. we
-       * compute the anomaly by computing a smoothed (over 200 km or so)
-       * laterally averaged temperature profile and associated seismic
-       * velocity that is then subtracted from the seismic velocity at the
-       * current pressure temperature conditions
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_Vs_anomaly(Vector<float> &values) const;
-
-      /**
-       * Compute the seismic pressure wave speed, Vp anomaly per element. we
-       * compute the anomaly by computing a smoothed (over 200 km or so)
-       * laterally averaged temperature profile and associated seismic
-       * velocity that is then subtracted from the seismic velocity at the
-       * current pressure temperature conditions
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_Vp_anomaly(Vector<float> &values) const;
 
       /**
        * Adjust the pressure variable (which is only determined up to
@@ -1418,7 +1398,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void replace_outflow_boundary_ids(const unsigned int boundary_id_offset);
+      void replace_outflow_boundary_ids(const unsigned int boundary_id_offset,
+                                        const bool is_composition,
+                                        const unsigned int composition_index);
 
       /**
        * Undo the offset of the boundary ids done in replace_outflow_boundary_ids
@@ -1800,6 +1782,13 @@ namespace aspect
       double total_walltime_until_last_snapshot;
 
       /**
+       * Checkpointing happens in rotating folders /restart/01/, /restart/02/,
+       * etc.. This variable holds the last index used and as such should
+       * contain the last valid checkpoint written.
+       */
+      unsigned int last_checkpoint_id;
+
+      /**
        * In output_statistics(), where we output the statistics object above,
        * we do the actual writing on a separate thread. This variable is the
        * handle we get for this thread so that we can wait for it to finish,
@@ -1821,7 +1810,9 @@ namespace aspect
       const IntermediaryConstructorAction                                    post_geometry_model_creation_action;
       const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;
       const std::unique_ptr<GravityModel::Interface<dim>>                    gravity_model;
+
       BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
+      BoundaryConvectiveHeating::Manager<dim>                                boundary_convective_heating_manager;
       BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
       const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
 
@@ -1851,16 +1842,16 @@ namespace aspect
        * after this point, it needs to keep its own shared pointer
        * to it.
        */
-      std::shared_ptr<WorldBuilder::World>                                   world_builder;
+      std::shared_ptr<WorldBuilder::World>                      world_builder;
 #endif
-      BoundaryVelocity::Manager<dim>                                         boundary_velocity_manager;
-      BoundaryTraction::Manager<dim>                                         boundary_traction_manager;
-      const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
+      BoundaryVelocity::Manager<dim>                            boundary_velocity_manager;
+      BoundaryTraction::Manager<dim>                            boundary_traction_manager;
+      const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>   boundary_heat_flux;
 
       /**
        * The managers holding different sets of particles
        */
-      std::vector<Particle::Manager<dim>> particle_managers;
+      std::vector<Particle::Manager<dim>>                       particle_managers;
 
       /**
        * @}
@@ -1917,7 +1908,7 @@ namespace aspect
        * a MappingQ1Eulerian object to describe the mesh deformation,
        * swapping it in for the original MappingQ or MappingCartesian object.
        */
-      std::unique_ptr<Mapping<dim>>                            mapping;
+      std::unique_ptr<Mapping<dim>>                             mapping;
 
       const FESystem<dim>                                       finite_element;
 
@@ -1936,8 +1927,8 @@ namespace aspect
        * 'constraints' is computed in setup_dofs(), 'current_constraints' is
        * done in compute_current_constraints().
        */
-      AffineConstraints<double>                                          constraints;
-      AffineConstraints<double>                                          current_constraints;
+      AffineConstraints<double>                                 constraints;
+      AffineConstraints<double>                                 current_constraints;
 
       /**
        * A place to store the latest correction computed by normalize_pressure().

@@ -112,7 +112,8 @@ namespace aspect
                       typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const override;
+                                     std::vector<double> &melt_fractions,
+                                     const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         /**
          * @}
@@ -354,7 +355,8 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = melt_fraction(in.temperature[q],
@@ -392,7 +394,8 @@ namespace aspect
       std::vector<double> volumetric_strain_rates(in.n_evaluation_points());
       std::vector<double> volumetric_yield_strength(in.n_evaluation_points());
 
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
+        = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
       if (this->include_melt_transport() )
         {
@@ -566,7 +569,8 @@ namespace aspect
               const double cohesion = MaterialUtilities::average_value(volume_fractions, cohesions, viscosity_averaging);
               const double angle_internal_friction = MaterialUtilities::average_value(volume_fractions, angles_internal_friction, viscosity_averaging);
 
-              PlasticAdditionalOutputs2<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs2<dim>>();
+              const std::shared_ptr<PlasticAdditionalOutputs2<dim>> plastic_out
+                = out.template get_additional_output_object<PlasticAdditionalOutputs2<dim>>();
               if (plastic_out != nullptr)
                 {
                   plastic_out->cohesions[i] = cohesion;
@@ -583,7 +587,8 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
+      const std::shared_ptr<MeltOutputs<dim>> melt_out
+        = out.template get_additional_output_object<MeltOutputs<dim>>();
 
       if (melt_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
         {
@@ -1004,7 +1009,7 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs2<dim>>() == nullptr)
+      if (out.template has_additional_output_object<PlasticAdditionalOutputs2<dim>>() == false)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

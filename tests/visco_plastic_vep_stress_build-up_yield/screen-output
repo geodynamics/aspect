@@ -1,57 +1,70 @@
 
 Number of active cells: 400 (on 1 levels)
-Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
+Number of degrees of freedom: 25,844 (3,362+441+441+3,600+3,600+3,600+3,600+3,600+3,600)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving Stokes system (GMG)... 53+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.01554e-17, 0, 0, 0, 0, 0, 0, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx_old composition solve because RHS is zero.
+   Skipping ve_stress_yy_old composition solve because RHS is zero.
+   Skipping ve_stress_xy_old composition solve because RHS is zero.
    Solving Stokes system (GMG)... 4+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.40927e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.01554e-17, 0, 0, 0, 0, 0, 0, 3.40927e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.40927e-08
 
 
    Postprocessing:
-     RMS, max velocity:     0.0258 m/year, 0.0444 m/year
+     RMS, max velocity:     0.0258 m/year, 0.0446 m/year
      Writing depth average: output-visco_plastic_vep_stress_build-up_yield/depth_average
-
-
-
 
 *** Timestep 1:  t=1000 years, dt=1000 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
-   Solving ve_stress_xx system ... 11 iterations.
-   Solving ve_stress_yy system ... 11 iterations.
-   Solving ve_stress_xy system ... 12 iterations.
+   Solving ve_stress_xx system ... 1 iterations.
+   Solving ve_stress_yy system ... 1 iterations.
+   Solving ve_stress_xy system ... 1 iterations.
+   Solving ve_stress_xx_old system ... 1 iterations.
+   Solving ve_stress_yy_old system ... 1 iterations.
+   Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.0851e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24313e-16, 3.1778e-09, 3.1778e-09, 5.82344e-09, 0, 0, 0, 9.24602e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.24602e-08
 
 
    Postprocessing:
-     RMS, max velocity:     0.0258 m/year, 0.0444 m/year
+     RMS, max velocity:     0.0258 m/year, 0.0446 m/year
      Writing depth average: output-visco_plastic_vep_stress_build-up_yield/depth_average
-
-
-
 
 *** Timestep 2:  t=2000 years, dt=1000 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
-   Solving ve_stress_xx system ... 12 iterations.
-   Solving ve_stress_yy system ... 12 iterations.
-   Solving ve_stress_xy system ... 12 iterations.
+   Solving ve_stress_xx system ... 1 iterations.
+   Solving ve_stress_yy system ... 1 iterations.
+   Solving ve_stress_xy system ... 1 iterations.
+   Solving ve_stress_xx_old system ... 1 iterations.
+   Solving ve_stress_yy_old system ... 1 iterations.
+   Solving ve_stress_xy_old system ... 1 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 8.95334e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.24168e-16, 8.25123e-12, 8.25123e-12, 1.54253e-11, 0, 0, 0, 9.24555e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 9.24555e-08
 
 
    Postprocessing:
-     RMS, max velocity:     0.0258 m/year, 0.0444 m/year
+     RMS, max velocity:     0.0258 m/year, 0.0446 m/year
      Writing depth average: output-visco_plastic_vep_stress_build-up_yield/depth_average
-
-
-
 
 Termination requested by criterion: end time
 

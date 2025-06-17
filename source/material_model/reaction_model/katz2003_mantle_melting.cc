@@ -176,7 +176,8 @@ namespace aspect
       calculate_reaction_rate_outputs(const typename Interface<dim>::MaterialModelInputs &in,
                                       typename Interface<dim>::MaterialModelOutputs &out) const
       {
-        ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+        const std::shared_ptr<ReactionRateOutputs<dim>>
+        reaction_rate_out = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
@@ -292,7 +293,8 @@ namespace aspect
                               typename Interface<dim>::MaterialModelOutputs &out,
                               const double reference_T) const
       {
-        MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
+        const std::shared_ptr<MeltOutputs<dim>> melt_out
+          = out.template get_additional_output_object<MeltOutputs<dim>>();
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
         if (melt_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))

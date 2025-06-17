@@ -83,4 +83,9 @@ benchmarks/nsinker_spherical_shell/README.md
 benchmarks/time_dependent_annulus/README.md
 benchmarks/viscoelastic_plastic_shear_bands/README.md
 benchmarks/grain_size_pinned_state/README.md
+benchmarks/viscoelastic_stress_build-up/README.md
+benchmarks/viscoelastic_sheared_torsion/README.md
+benchmarks/viscoelastic_relaxation/README.md
+benchmarks/viscoelastic_plastic_simple_shear/README.md
+benchmarks/viscoelastic_bending_beam/README.md
 :::

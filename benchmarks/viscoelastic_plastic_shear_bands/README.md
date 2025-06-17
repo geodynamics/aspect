@@ -16,4 +16,5 @@ Tectonophysics, 484, 36-47. doi:10.1016/j.tecto.2009.08.042.
 
 :::{toctree}
 gerya_2019/README.md
+kaus_2010/README.md
 :::

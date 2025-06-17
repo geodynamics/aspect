@@ -1,0 +1,94 @@
+# This is a test for the "reference profile" average velocity scheme used in 
+# the seismic anomalies postprocessor. The reference velocity is estimated
+# assuming adiabatic temperature and pressure.
+
+set End time                               = 0
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = true
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields  = density_field
+  set Types of fields  = density
+  set Compositional field methods = prescribed field
+end
+
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Lateral viscosity file name      = temp-viscosity-prefactor.txt
+    set Radial viscosity file name       = radial-visc-simple.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+  end
+end
+
+
+
+# Prescribe the initial temperature. 
+subsection Initial temperature model
+  set List of model names = function
+  
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function expression = ( (x>=25e3 && x<=75e3 && y<=200e3) ? \
+    		 	      (1600) : (800) ) 
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = bottom,top
+end
+
+
+
+# generate visualization and statistic files.
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Interpolate output            = false
+    set Output format                 = gnuplot
+    set List of output variables      = Vs anomaly, Vp anomaly
+  end
+  
+end
+
+
+# other model setup
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 100e3
+    set Y extent  = 400e3
+    set X repetitions  = 1
+    set Y repetitions  = 4
+  end
+end
+
+# Free slip on all boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end

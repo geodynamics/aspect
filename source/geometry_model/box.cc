@@ -515,9 +515,7 @@ namespace aspect
                                    "``ReferenceCell''). You can also use symbolic names ``left'', ``right'', "
                                    "etc., to refer to these boundaries in input files. "
                                    "It is also possible to add initial topography to the box model. Note however that "
-                                   "this is done after the last initial adaptive refinement cycle. "
-                                   "Also, initial topography is supposed to be small, as it is not taken into account "
-                                   "when depth or a representative point is computed. ")
+                                   "this is done after the last initial adaptive refinement cycle. ")
 
 
   }

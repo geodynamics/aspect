@@ -1,5 +1,5 @@
 
-*** Resuming from snapshot!
+*** Resuming from snapshot output2.tmp/restart/02/
 
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
@@ -27,11 +27,11 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Postprocessing:
      Writing graphical output:  output2.tmp/solution/solution-00002
      Compositions min/max/mass: 0/0/0 // 0/0/0
-     RMS, max velocity:         0.00109 m/year, 0.00296 m/year
+     RMS, max velocity:         0.00109 m/year, 0.00389 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
 
 Termination requested by criterion: end time
-*** Snapshot created!
+*** Snapshot output2.tmp/restart/03/ created!
 
 
 

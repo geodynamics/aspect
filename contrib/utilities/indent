@@ -31,7 +31,7 @@ export TMPDIR="${TMPDIR:-/tmp}"
 
 find_astyle() {
   # Split $PATH variable into an array
-  IFS=':' PATHS=(${PATH})
+  IFS=':' read -ra PATHS <<< "$PATH"
 
   # Loop over available astyle executables in those $PATH directories
   find "${PATHS[@]}" -iname '*astyle*' -print0 2>/dev/null \
@@ -55,7 +55,7 @@ if test ! -f contrib/utilities/astyle.rc ; then
 fi
 
 astyle="$(find_astyle)"
-astyle="${astyle:-`which astyle`}" # Fallback to `which astyle`
+astyle="${astyle:-${which astyle}}" # Fallback to `which astyle`
 export astyle
 
 if test -z "${astyle}"; then
@@ -112,13 +112,12 @@ indent_file() {
   file="${1}"
   tmpfile="$(mktemp "${TMPDIR}/$(basename "$1").tmp.XXXXXXXX")"
 
-  cat ${file} \
-      | perl -p -e 's/(?<=>)>/ >/g;' \
+  perl -p -e 's/(?<=>)>/ >/g;' <"${file}" \
       | "${astyle}" --options=contrib/utilities/astyle.rc \
       | perl -p -e 's/(?<=>) >/>/g;' \
       | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' \
       | sed -e '$a\' \
-      > ${tmpfile}
+      > "${tmpfile}"
 
   if ! diff -q "${file}" "${tmpfile}" >/dev/null; then
     mv "${tmpfile}" "${file}"
@@ -136,8 +135,8 @@ export -f indent_file
 echo "--- Indenting all ASPECT header and source files"
 
 find tests include source benchmarks cookbooks unit_tests \
-     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
-  | xargs -P 10 -I {} bash -c "indent_file {}"
+     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print0 \
+  | xargs -0 -P 10 -I {} bash -c "indent_file {}"
 
 
 # Find all source files that should be checked for invalid characters
@@ -157,11 +156,11 @@ find_source_files | xargs -0 -n 50 -P 10 chmod -x
 dos_to_unix()
 {
     f=$1
-    tr -d '\015' <$f >$f.tmp
-    if ! diff -q $f $f.tmp >/dev/null ; then
-      mv $f.tmp $f
+    tr -d '\015' <"${f}" >"${f}.tmp"
+    if ! diff -q "${f}" "${f}.tmp" >/dev/null ; then
+      mv "${f}.tmp" "${f}"
     else
-      rm $f.tmp
+      rm "${f}.tmp"
     fi
 }
 export -f dos_to_unix
@@ -173,9 +172,9 @@ tab_to_space()
     f=$1
     # awkward tab replacement because of OSX sed, do not change unless you test it on OSX
     TAB=$'\t'
-    sed -e "s/$TAB/  /g" $f >$f.tmp
-    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
-    rm -f $f.tmp
+    sed -e "s/$TAB/  /g" "$f" >"$f.tmp"
+    diff -q "$f" "$f.tmp" >/dev/null || mv "$f.tmp" "$f"
+    rm -f "$f.tmp"
 }
 export -f tab_to_space
 find_source_files | xargs -0 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {}
@@ -186,9 +185,9 @@ remove_trailing_whitespace()
     f=$1
     # awkward tab replacement because of OSX sed, do not change unless you test it on OSX
     TAB=$'\t'
-    sed -e "s/[ $TAB]*$//"  $f >$f.tmp
-    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
-    rm -f $f.tmp
+    sed -e "s/[ $TAB]*$//"  "$f" >"$f.tmp"
+    diff -q "$f" "$f.tmp" >/dev/null || mv "$f.tmp" "$f"
+    rm -f "$f.tmp"
 }
 export -f remove_trailing_whitespace
 find_source_files | xargs -0 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
@@ -206,21 +205,21 @@ ensure_single_trailing_newline()
   # append the next line to the current line and repeat the check
   # If it does match and we're at the end of the file,
   # remove the line.
-  sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' $f >$f.tmpi
+  sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' "${f}" >"${f}.tmpi"
 
   # Then add a newline to the end of the file
   # '$' denotes the end of file
   # 'a\' appends the following text (which in this case is nothing)
   # on a new line
-  sed -e '$a\' $f.tmpi >$f.tmp
+  sed -e '$a\' "$f.tmpi" >"$f.tmp"
 
-  diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
-  rm -f $f.tmp $f.tmpi
+  diff -q "$f" "$f.tmp" >/dev/null || mv "$f.tmp" "$f"
+  rm -f "$f.tmp" "$f.tmpi"
 }
 export -f ensure_single_trailing_newline
 find_source_files | xargs -0 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 
 # Do not recursively search the tests directory for prm files, otherwise the output prms will be changed
-find tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
-find tests -maxdepth 1 \( -name '*.prm' \) -print | xargs -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+find tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print0 | xargs -0 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+find tests -maxdepth 1 \( -name '*.prm' \) -print0 | xargs -0 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 exit 0

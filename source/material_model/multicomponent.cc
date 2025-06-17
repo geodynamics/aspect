@@ -120,14 +120,6 @@ namespace aspect
       {
         prm.enter_subsection("Multicomponent");
         {
-          equation_of_state.initialize_simulator (this->get_simulator());
-          equation_of_state.parse_parameters (prm);
-
-          reference_T = prm.get_double ("Reference temperature");
-
-          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
-                                prm);
-
           // Make options file for parsing maps to double arrays
           std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
           chemical_field_names.insert(chemical_field_names.begin(),"background");
@@ -135,11 +127,26 @@ namespace aspect
           std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
           compositional_field_names.insert(compositional_field_names.begin(),"background");
 
-          Utilities::MapParsing::Options options(chemical_field_names, "Viscosities");
+          Utilities::MapParsing::Options options(chemical_field_names, "");
           options.list_of_allowed_keys = compositional_field_names;
           options.allow_multiple_values_per_key = true;
+          options.check_values_per_key = true;
+
+          // We do not have phase transitions. Make sure there is only one entry for each field.
+          const std::vector<unsigned int> n_phases_for_each_chemical_composition (chemical_field_names.size(), 1);
+          options.n_values_per_key = n_phases_for_each_chemical_composition;
+
+          equation_of_state.initialize_simulator (this->get_simulator());
+          equation_of_state.parse_parameters (prm,
+                                              std::make_unique<std::vector<unsigned int>>(n_phases_for_each_chemical_composition));
+
+          reference_T = prm.get_double ("Reference temperature");
+
+          viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
+                                prm);
 
           // Parse multicomponent properties
+          options.property_name = "Viscosities";
           viscosities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Viscosities"), options);
           options.property_name = "Thermal conductivities";
           thermal_conductivities = Utilities::MapParsing::parse_map_to_double_array (prm.get("Thermal conductivities"), options);

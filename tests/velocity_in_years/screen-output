@@ -22,7 +22,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Reference thermal diffusivity (m^2/s):         8e-10
      Rayleigh number:                               0
 
-     RMS, max velocity: 0.353 m/year, 1.02 m/year
+     RMS, max velocity: 0.353 m/year, 1 m/year
 
 Termination requested by criterion: end time
 

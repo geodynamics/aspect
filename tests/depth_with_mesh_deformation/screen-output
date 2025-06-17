@@ -1,0 +1,28 @@
+
+Number of active cells: 128 (on 4 levels)
+Number of degrees of freedom: 1,836 (1,122+153+561)
+
+Number of mesh deformation degrees of freedom: 306
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 4 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Storing deformed surface topography:  Done
+     Writing graphical output:             output-depth_with_mesh_deformation/solution/solution-00000
+
+*** Timestep 1:  t=10000 years, dt=10000 years
+   Solving mesh displacement system... 4 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     Storing deformed surface topography:  Done
+     Writing graphical output:             output-depth_with_mesh_deformation/solution/solution-00001
+
+Termination requested by criterion: end time
+
+
+

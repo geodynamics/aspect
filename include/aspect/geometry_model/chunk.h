@@ -114,19 +114,15 @@ namespace aspect
             const Point<dim> &p) const override;
 
           /**
-           * This function computes the outer radius of the domain
-           * at the longitude (and latitude) of the given point
-           * (given in cartesian coordinates), i.e. the unperturbed
-           * outer radius + the topography.
-           */
-          double
-          get_radius(const Point<dim> &space_point) const;
-
-          /**
            * Return a copy of this manifold.
            */
           std::unique_ptr<Manifold<dim,dim>>
           clone() const override;
+
+          /**
+           * Return the topography at a given point
+           */
+          double topography_for_point(const Point<dim> &x_y_z) const;
 
         private:
           /**
