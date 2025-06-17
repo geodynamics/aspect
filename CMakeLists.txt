@@ -450,6 +450,8 @@ include(${CMAKE_SOURCE_DIR}/cmake/macro_aspect_query_git_information.cmake)
 ASPECT_QUERY_GIT_INFORMATION("ASPECT")
 configure_file(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in
                ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h
+        DESTINATION "include/aspect/")
 
 
 
@@ -688,6 +690,11 @@ foreach(_T ${TARGET_EXECUTABLES})
   set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 endforeach()
 
+# Install them in the right place:
+install(TARGETS ${TARGET_EXECUTABLES}
+        RUNTIME
+        COMPONENT runtime)
+
 
 # Make sure that we have an executable 'aspect' that
 # links to the debug version, or the release version if
@@ -702,6 +709,11 @@ add_custom_target(aspect ALL
                            ${CMAKE_BINARY_DIR}/aspect                    # link name
                   DEPENDS ${TARGET_EXE}
                   COMMENT "Creating symlink from ${TARGET_EXE} to './aspect'")
+
+# Install it alongside the other executables:
+install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
+	TYPE BIN)
+
 
 # This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
 # does not do so, so do it here. Remove this when we require deal.II 9.6.
@@ -856,14 +868,11 @@ endif()
 # Installation
 # ##############################################################################
 
+# Above, we have already marked a number of generated files for
+# installation right at the place where we describe how to create
+# these files. Below, we describe how to install files not already
+# marked for installation.
 
-# Binaries:
-install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
-	TYPE BIN)
-
-install(TARGETS ${TARGET_EXECUTABLES}
-        RUNTIME
-        COMPONENT runtime)
 
 # Headers. We install *all* headers of ASPECT, including the ones that
 # declare our cornucopia of plugins. This seems wrong at first -- one
@@ -882,13 +891,24 @@ install(DIRECTORY
         COMPONENT includes
         FILES_MATCHING PATTERN "*.h")
 
+# Data files:
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
+  DESTINATION data
+  COMPONENT data)
+
+
 message(STATUS "Writing externally readable configuration information")
+
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
   VERSION ${ASPECT_PACKAGE_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
+
+install(FILES "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
+        DESTINATION "lib/cmake/Aspect/")
+
 
 # Configure a cmake fragment that plugins can use to
 # set up compiler flags, include paths, etc. to compile an
@@ -900,6 +920,9 @@ configure_file(
   ${CMAKE_BINARY_DIR}/AspectConfig.cmake
   @ONLY
 )
+install(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake
+        DESTINATION "lib/cmake/Aspect/")
+
 
 # Config for the install dir:
 set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
@@ -1109,12 +1132,21 @@ add_custom_target(info
   COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
   )
 
+message(STATUS "Writing configuration details into detailed.log...")
+message(STATUS "")
 
-# examples:
+
+###########################################################
+# Now also deal with other parts of the system.
+###########################################################
+
+# Cookbooks and benchmarks (="examples"):
 set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL
     "If ON all cookbooks and benchmarks will be built and installed.")
 
 if(ASPECT_INSTALL_EXAMPLES)
+  message(STATUS "===== Configuring ASPECT cookbooks and benchmarks =============")
+
   add_subdirectory(benchmarks)
   add_subdirectory(cookbooks)
 
@@ -1126,34 +1158,19 @@ if(ASPECT_INSTALL_EXAMPLES)
     DESTINATION benchmarks
     COMPONENT examples
     FILES_MATCHING PATTERN "*")
+
+  message(STATUS "")
 endif()
 
-# data files:
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
-  DESTINATION data
-  COMPONENT data)
 
-# cmake stuff:
-install(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake
-        DESTINATION "lib/cmake/Aspect/")
-install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
-
-message(STATUS "Writing configuration details into detailed.log...")
-message(STATUS "")
-
-
-###########################################################
-# Now also deal with other parts of the system.
-###########################################################
-
+# Documentation:
 message(STATUS "===== Configuring ASPECT documentation =============")
-
-# Start with the documentation
 
 add_subdirectory(doc)
 
 message(STATUS "")
 message(STATUS "")
+
 
 ###########################################################
 # Finally, print a summary.
