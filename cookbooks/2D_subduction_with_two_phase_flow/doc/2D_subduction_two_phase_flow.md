@@ -3,117 +3,102 @@
 
 *This section was contributed by Daniel Douglas.*
 
-In this cookbook we expand on what was demonstrated in the {ref}`sec:cookbook:tian_parameterization_kinematic_slab` cookbook by building towards a dynamic model of subduction that includes reactive fluid transport at varying degrees of fluid--solid coupling. In this cookbook, we make the setup more complex in incremental steps. To do this, we will use the Geodynamic World Builder, and start by allowing
+In this cookbook we expand on what was demonstrated in the {ref}`sec:cookbooks:tian_parameterization_kinematic_slab` cookbook by incrementally building towards a dynamic model of subduction that includes reactive fluid transport at varying degrees of fluid--solid coupling.
 
-construct a simplified model of subduction which simulates two-phase reactive fluid transport
-using an implementation of parameterized phase diagrams from {cite:t}`tian_et_al_2019`. The model focuses on the
-slab-mantle interface for a slab with a kinematically prescribed convergence rate of 5 cm/yr and a constant dip of
-45 degrees. The model domain is 100 km x 100 km, with the x-axis aligned parallel to the slab surface, and the
-y-axis aligned orthogonal to the slab surface. To achieve a dipping slab in a 2D Cartesian box, the gravity vector
-is oriented at an angle of 45 degrees from vertical. With the exception of the left boundary, the temperature (1500
-K) and composition (peridotite) at the start of the model is uniform. On the left boundary, the temperature is 1500
-K for y > 20 km (mantle wedge), and for y <= 20 km (slab) the temperature varies linearly from 400 K to 600 K.
-For the composition on the left boundary, for y > 20 km the composition is peridotite, and for y <= 20 km, the slab
-is imposed with a layered composition consisting of 5 km of sediment, 7 km of mid-ocean ridge basalt (MORB), and 8 km
-of gabbro. For numerical stability, the slab is dry for t <= 100 kyr. For t > 100 kyr, the incoming lithologies on
-the left boundary become hydrated, carrying 3 wt% water in sediment, 2 wt% water in MORB, and 1 wt% water in gabbro.
-The boundary velocities are all kinematically prescribed, for 0 <= y <= 20 km, the velocity is set to 5 cm/yr, and
-for y > 20 km the velocity linearly decreases from 5 cm/yr at the slab surface to 2 cm/yr at the top boundary. A
-schematic diagram showing where the model is in the context of a generic subduction zone is shown in {numref}`fig:schematic-diagram-overview`, and a schematic diagram of the model setup is shown in {numref}`fig:schematic-diagram-model`
-
-:::{note}
-The low fluid viscosity and high contrast in density between the solid and fluid phases leads to large fluid
-velocities on the order of m/yr. Combined with the need for high resolution around the fluid to resolve compaction
-viscosity gradients means that this cookbook requires more computational resources than some other cookbooks within
-ASPECT. In detail, this simulation was run on 128 processors for approximately 2 hours.
-:::
-
-```{figure-md} fig:schematic-diagram-overview
-<img src="schematic-diagram-overview.png" style="width:90.0%" />
-
-Schematic diagram showing the model region of a subduction zone, and the actual schematic diagram of the model.
+This cookbook requires that ASPECT is compiled with the Geodynamic World Builder (GWB), which is enabled by setting `ASPECT_WITH_WORLD_BUILDER=ON`
+when configuring ASPECT with CMake (this is the default setting). The GWB is a powerful tool that allows ASPECT users to create complex initial
+conditions. In this example, we will use it to define the temperature and hydration state of a two-dimensional subduction zone. To use GWB with
+ASPECT, you must specify the path to a World Builder (.wb) file in the ASPECT input file, and indicate that the initial temperature and composition
+are generated using GWB. These settings look like this:
+```{literalinclude} input_world_builder.part.prm
 ```
 
-```{figure-md} fig:schematic-diagram-model
-<img src="schematic-diagram-model.png" style="width:90.0%" />
+```{figure-md} fig:model-overview
+<img src="model_overview.png" />
 
-Schematic diagram showing the model design.
+ The model domain coloured by the model temperature. The subducting plate descends into the mantle at a constant dip of 45&deg;. The temperature of the mantle is fixed to 1573 K, the overriding plate is defined with a linear geotherm, and the subducting plate with a plate cooling model with a convergence rate of 3 cm/yr.
 ```
 
-## The input file
-This cookbook includes two input files, one which advects the porosity (free fluid) compositional field through the
-darcy velocity, and one which advects the porosity compositional field according to the fluid velocities obtained by solving the fully coupled two-phase flow system of equations. Both models feature dehydration and rehydration reactions using the Tian parameterization and both input files can be found at [cookbooks/tian_parameterization_kinematic_slab](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/tian_parameterization_kinematic_slab/). One
-important problem in models that track the partitioning of fluid into/out of a solid phase is that these
-interactions can be much faster than the time step of the model. To model these type of processes, ASPECT uses
-operator splitting (see also {ref}`sec:benchmark:operator-splitting`): Reactions are solved on a different time
-scale than advection. For this model, this means that at the beginning of each time step, all hydration/dehydration
-reactions are solved using several shorter sub-time steps. In the input file, we have to choose both the size of
-these sub-time steps and the rate (or characteristic time scale) of the solid-fluid reactions, which must be
-consistent in the sense that the operator splitting time step can not be larger than the reaction time scale. We
-choose a conservative value for the fluid-solid reaction time scale of 50 kyr for model stability and computational
-efficiency. For a production model one would likely want to reduce this value to be as low as possible without
-affecting model convergence, since in reality the timescale for the fluid-solid reactions is likely much lower than
-the advection time step. For example, at 573 K it has been estimated that to fully serpentinize a 1 km line of
-mantle would take ~ 10 kyr, and this timescale seems to decrease with increasing temperature {cite:t}`macdonald_fyfe_1985`. However, smaller time scales would lead to very large changes in porosity that make the
-nonlinear solver converge less reliably unless much smaller advection time steps/higher resolution are enforced.
+The World Builder file can be found at [cookbooks/2D_subduction_with_two_phase_flow](https://www.github.com/geodynamics/aspect/blob/main/cookbooks/
+2D_subduction_two_phase_flow/). However, this cookbook will only focus on the ASPECT side of the model. For more details on the World Builder and how
+to use it, specifically in the context of using geodynamic software like ASPECT for modeling subduction zones, please refer to the GWB manual. There
+are two comprehensive guides that are relevant to this cookbook, the first focuses on defining a [complex slab geometry and initial thermal
+distribution](https://gwb.readthedocs.io/en/latest/user_manual/cookbooks/simple_subduction_2d_cartesian/doc/README.html), and the second demonstrates
+how to define an [initial hydration state of a subducting plate](https://gwb.readthedocs.io/en/latest/user_manual/cookbooks/
+2d_cartesian_hydrated_slab/doc/README.html).
 
-## Model Evolution
-As the slab 'subducts' across the base of the model, the hot ambient mantle heats the slab leading to progressive
-dehydration of the lithologies through time. By the time the model terminates, most of the sediment layer is
-dehydrated and the MORB layer is in the process of dehydrating. In the single-phase model, once free fluid is
-generated its velocity is dictated by Darcy's law, which due to the large density contrast between the solid and
-the fluid results in fluid pathways that are largely parallel to gravity, with some deflection due to the down-dip
-velocity of the solid. The high viscosity within the slab does not inhibit the development of fluid pathways, so
-once free fluid is generated, it escapes the slab directly into the mantle wedge, hydrating the mantle peridotite in
-the process. In the coupled two-phase model, model evolution is drastically changed by the effects of the solid on
-the fluids. Initially, free fluid from the dehydration of the subducting lithologies is trapped within the slab due
-to the large compaction viscosities. This trapped fluid at first flows up-dip within the slab, until 1 Myr into
-model evolution when fluid pathways breach the slab surface and begin migrating through the mantle wedge. However,
-the extent of mantle hydration is significantly reduced in the fully coupled case relative to the uncoupled case, as
-can be seen by the 0.1 wt% bound water content in {numref}`fig:uncoupled-diagram` and {numref}`fig:coupled-diagram`.
-This result showcases that fully coupling the solid and fluid phases can lead to drastically different model
-outcomes, and whether it is appropriate to neglect this coupling needs to be considered when constructing models of
-two-phase reactive fluid transport.
+The model domain is a rectangular box spanning 8700 km × 2900 km {numref}`fig:model-overview`. The trench is located at x = 4000 km. The subducting
+plate is 3000 km long and 120 km thick, while the overriding plate is 2500 km long and 80 km thick. The slab geometry is relatively simple: beginning
+at the trench, the slab bends to a dip of 45&deg; over a (slab) length of 300 km, then continues into the mantle at a constant 45&deg; dip for an
+additional 800 km (measured along the slab, not by depth). The subducting plate forms at a spreading center located 3000 km from the trench, and the
+temperature of the plate is initialized using a plate cooling model assuming a convergence rate of 3 cm/yr. This results in a 100 Myr old plate just
+before subduction. The overriding plate has a linear temperature gradient from a surface temperature of 273 K to 1573 K at the base of the plate. The
+subducting plate consists of multiple lithological layers: a 10 km thick sediment layer at the top, followed by a 10 km thick mid-ocean ridge basalt
+(MORB) layer, underlain by a 10 km thick gabbro layer. The remainder of the subducting plate, along with the mantle and the overriding plate, is
+comprised of peridotite. The initial hydration states of the layers within the subducting plate are as follows: sediment contains up to 2 wt% bound
+water, MORB up to 1 wt%, gabbro up to 0.5 wt%, and peridotite within the subducting plate up to 1 wt%. These values are then multiplied by a factor
+of 1.05, resulting in a 5% excess of bound water relative to the equilibrium value {numref}`fig:initial-bound-water`. This disequilibrium triggers
+continuous fluid release from the subducting plate, and is meant to represent the continuous input of the slab into the trench.
 
-```{figure-md} fig:temperature-velocity
-<img src="temperature-fluid-velocity.png" style="width:90.0%" />
+```{figure-md} fig:initial-bound-water
+<img src="bound_water.png" />
 
-The temperature field at the end of model time for the fully coupled case. Blue vectors are scaled by the magnitude of the fluid velocity and orientated by the direction of fluid flow and highlights the migration of the fluid up-dip within the slab. The region beneath the thick horizontal black line is where the slab is imposed within the model.
+ The initial water content within the subducting plate. The model includes layered lithologies. From top to bottom: 10 km of sediment with 2 wt% H$_2$O, 10 km of MORB with 1 wt% H$_2$O, 10 km of gabbro with 0.5 wt% H$_2$O, and 90 km of peridotite with 1 wt% H$_2$O. The white contours show isotherms at 200 K intervals spanning 300 K to 1300 K, and the black contours show depths at 100 km intervals.
 ```
 
-```{figure-md} fig:uncoupled-diagram
-<img src="uncoupled-porosity.png" style="width:90.0%" />
+Once water is released from the subducting plate, it is advected according to either the Darcy velocity or the fluid velocity (from the fully coupled
+McKenzie equations (to be implemented)). The solid velocity is still computed each time step, as the presence of bound or free fluids act to reduce
+the solid viscosity and thereby impact the solid velocity. Since the fluid velocity depends on the solid velocity in both advection cases, updating
+the solid velocity every time step is important, even if we do not advect the solid in this setup {numref}`fig:velocity-temperature`.
+The total solid viscosity is determined via:
 
-The distribution of free fluid (porosity) in the model when the solid and fluid phase are not fully coupled. Region
-where there is 0.1 wt% bound water in the solid is shown with the thick cyan contour. Brown - Yellow contours show
-isotherms between 500 - 1000 K at 100 K intervals.
+```{math}
+:label: eq:creep-viscosity
+\eta_i = \frac{1}{2}A_i^{-\frac{1}{n_i}} \dot{\epsilon}_{ii}^{\frac{1 - n_i}{n_i}} d^{m_i} f_{H_2O}^{-r_i} \text{exp}\left(-\alpha \phi \right) \text{exp}\left( \frac{E_i + PV_i}{n_i RT} \right)
 ```
 
-```{figure-md} fig:coupled-diagram
-<img src="coupled-porosity.png" style="width:90.0%" />
+```{figure-md} fig:velocity-temperature
+<img src="solid_velocity.png" />
 
-The distribution of fluids in the model when the solid and fluid phase are fully coupled. Region where there is 0.1
-wt% bound water in the solid is shown with the thick cyan contour. Brown - Yellow contours show isotherms between
-500 - 1000 K at 100 K intervals.
+ The temperature of the model within the immediate vicinity of the subduction zone. The vectors show the direction of and are scaled by the velocity of the solid phase. The cool, dense slab generates corner flow style convection patterns in the mantle wedge.
+```
+
+where $i$ denote the deformation mechanism (diffusion or dislocation creep), $n_i$ is the stress exponent, $m_i$ is the grain size exponent, $r_i$ is
+the water fugacity exponent, $A_i$ is a prefactor, $E_i$ is the activation energy, $V_i$ is the activation volume, $d$ is the grain size, $P$ is
+pressure, $T$ is temperature, and $R$ is the gas constant. The presence of water reduces the viscosity via the terms
+$\text{exp}\left(-\alpha \phi \right)$, where $\alpha$ is an exponent constant and $\phi$ is the volume fraction of free water,
+and through $f_{H_2O}$, which is the water fugacity determined based on the amount of water within the solid {numref}`fig:viscosity-comparison`. In
+the input file, enabling this behaviour looks like this:
+```{literalinclude} input_water_viscous_weakening.part.prm
+```
+
+```{figure-md} fig:viscosity-comparison
+<img src="viscosity_profiles.png" />
+
+ The viscosity of the model within the immediate vicinity of the subduction zone just after the beginning of the model run-time (top) and at the end of the model run-time (bottom). The viscosity within the mantle wedge and the overriding plate is notably reduced due to the presence of free and bound-fluid (see {numref}`fig:fluid-pathways`)
+```
+
+In these models, the water density (1000 kg/m$^3$) is significantly lower than the solid density (3300 kg/m$^3$), so the fluid velocity is dominantly
+vertical due to the high buoyancy force experienced by the fluid. However, corner flow in the mantle wedge does impose a trench-ward horizontal
+component to the fluid velocity. As the fluid ascends through the hot peridotite mantle wedge, the PT conditions do not allow for the free fluid to
+be reabsorbed into the solid phase {numref}`fig:fluid-pathways`. However, when the free fluid starts ascending through the cooler overriding plate,
+the temperature is sufficiently low that hydration of the overriding plate begins to occur {numref}`fig:fluid-pathways`. The free fluid in the mantle
+wedge leads to a reduction of wedge viscosities, and the combination of free fluid and bound fluid in the overriding plate leads localized reductions
+of the overriding plate viscosity {numref}`fig:viscosity-comparison`. Within the model where the fluid is advected with the Darcy velocity, two
+distinct bands of free water can be seen seeping out of the subducting plate. The first band produces a larger flux of water, is centered around a
+distance of ~175 km landward of the trench, and is sourced from the subducting peridotite layer. The second band is lower in flux magnitude, is
+centered around a distance of ~400 km landward from the trench, and is sourced from the gabbro and MORB layers.
+
+```{figure-md} fig:fluid-pathways
+<img src="fluid_figures.png" />
+
+ The viscosity distribution near the start of the model run (top) and at end of the model run (bottom), with the free fluid overlain on top. White contour shows where the bound water makes up 0.5 wt% of the solid.
 ```
 
 ## Extending the Model
-There are several parameters which heavily influence the solid-fluid interactions within this cookbook. Here are
-some ideas for varying the model setup to explore the influence of these parameters:
+There are several parameters which will dictate the magnitude of fluid flux and the fluid pathways within this cookbook. To investigate the
+importance of these parameters, here are some suggestions for how to tweak the .prm files:
 
--   Changing the layering of the lithologies in the slab: The 4 lithologies parameterized by Tian et al., 2019
-behave differently through P-T space, and changing the thicknesses of these layers in the slab will control the
-location and the rate of dehydration.
--   Changing the thermal structure: The temperature used in this cookbook is very simplified, and assumes a very
-cold slab to prevent large amounts of dehydration at the start of the model. Making the slab warmer and imposing an
-adiabatic temperature in the ambient mantle would not only change when the slab dehydrates, but also how much water
-can partition into the peridotite mantle.
--   Changing the dip and convergence rate: We assume a 45 degree slab dip and a convergence rate of 5 cm/yr. Varying
-this dip will impact the magnitude of the slab-orthogonal component of gravity which has a large control on the
-fluid pathways. Varying the convergence rate will influence how much heat is able to conduct from the mantle into
-the slab and affect the timing of dehydration.
-
-It is worth reiterating that to extend this model towards a production simulation, the nonlinear solver tolerance
-should be stricter (at least 1e-5), and reaction rates should be reduced. This cookbook serves as a base model
-that showcases the use of tian approximation in the reactive two-phase fluid material model, and these
-simplifications were made in this cookbook to make the model more user-friendly.
+-   Change the `Disequilibrium percentage` parameter. The value used in this cookbook is 5%, and increasing this value will lead to a larger flux of fluid off the subducting plate.
+-   Change the `Fluid reaction time scale for operator splitting` parameter. The value used in this cookbook is 10,000 years, and increasing this will lead to a decrease in the fluid flux off the subducting plate.
+-   Changing the `Reference permeability` parameter. Decreasing the reference permeability will decrease the magnitude of the vertical fluid velocity, leading to more lateral advection of the fluid within the mantle wedge as it ascends.

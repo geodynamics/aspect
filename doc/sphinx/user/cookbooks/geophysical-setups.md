@@ -112,7 +112,7 @@ cookbooks/transform_fault_behn_2007/doc/transform_fault_behn_2007.md
 cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction_2d.md
 cookbooks/allken_et_al_2012_rift_interaction/doc/allken.md
 cookbooks/tian_parameterization_kinematic_slab/doc/tian_parameterization_kinematic_slab.md
-cookbooks/2D-subduction-two-phase-flow.md
+cookbooks/2D_subduction_with_two_phase_flow/doc/2D_subduction_two_phase_flow.md
 cookbooks/phase_transition_kinetics/doc/phase-transition-kinetics.md
 cookbooks/mantle_convection_with_continents_in_annulus/doc/mantle_convection_in_annulus.md
 cookbooks/inclusions/doc/inclusions.md

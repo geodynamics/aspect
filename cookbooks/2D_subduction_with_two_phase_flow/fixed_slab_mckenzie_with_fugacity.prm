@@ -1,0 +1,41 @@
+# This model uses the same foundation as the other parameter file used in this cookbook,
+# so we include this parameter file and only change what is needed. The major difference
+# between this parameter file and fixed_slab_darcy_with_fugacity.prm is that here the
+# fluid phase is advected according to the fully coupled McKenzie equations.
+include $ASPECT_SOURCE_DIR/cookbooks/2D_subduction_with_two_phase_flow/fixed_slab_darcy_with_fugacity.prm
+
+# Change the output directory.
+set Output directory                           = output-fixed_slab_mckenzie_fluid_advection
+
+# We need to make sure that the porosity field is no longer advected with the darcy velocity.
+# So change the advection method back to field.
+subsection Compositional fields
+  set Names of fields             = porosity,    bound_fluid, peridotite,           gabbro,               MORB,                 sediment
+  set Compositional field methods = field,       static,      static,               static,               static,               static
+end
+
+# Setting Include melt transport = true allows the free fluid to be advected with the
+# McKenzie equations.
+subsection Melt settings
+  set Include melt transport = true
+end
+
+# When Include melt transport = true, the effects of compaction are taken into account
+# when determining the solid and fluid velocities. We limit the compaction viscosities
+# to improve numerical efficiency and stability.
+subsection Material model
+  subsection Reactive Fluid Transport Model
+    set Minimum compaction viscosity = 1e19
+    set Maximum compaction viscosity = 1e23
+  end
+end
+
+# Remove the darcy velocity from the list of output variables, output the melt material properties.
+subsection Postprocess
+  subsection Visualization
+    set List of output variables      = material properties, strain rate, named additional outputs, melt material properties
+    subsection Melt material properties
+      set List of properties = compaction length, permeability, compaction viscosity
+    end
+  end
+end
