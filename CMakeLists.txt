@@ -683,7 +683,7 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   target_link_libraries(${TARGET_EXE_RELEASE} dealii::dealii_release)
 endif()
 
-# make sure we have the rpath to our dependencies set:
+# Make sure we have the rpath to our dependencies set:
 foreach(_T ${TARGET_EXECUTABLES})
   set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 endforeach()
@@ -865,7 +865,16 @@ install(TARGETS ${TARGET_EXECUTABLES}
         RUNTIME
         COMPONENT runtime)
 
-# Headers:
+# Headers. We install *all* headers of ASPECT, including the ones that
+# declare our cornucopia of plugins. This seems wrong at first -- one
+# would hope that user-defined plugins really only depend on
+# simulator.h, simulator_access.h, the various */interface.h, and a
+# handful of other files, with the remaining ones then marked as
+# PRIVATE headers. But on second thought, code often asks whether, for
+# example, we use this or that geometry model, or has this or that
+# additional material model output object. For this to work, one
+# actually does need to have access to the declarations of these
+# classes -- in other words, to all of the ASPECT headers.
 install(DIRECTORY
           include/
           ${CMAKE_BINARY_DIR}/include/
@@ -882,7 +891,7 @@ write_basic_package_version_file(
 )
 
 # Configure a cmake fragment that plugins can use to
-# set up compiler flags, include paths, etc to compile an
+# set up compiler flags, include paths, etc. to compile an
 # ASPECT plugin.
 # Config for the build dir:
 set(CONFIG_DIR "${CMAKE_BINARY_DIR}")
@@ -891,6 +900,7 @@ configure_file(
   ${CMAKE_BINARY_DIR}/AspectConfig.cmake
   @ONLY
 )
+
 # Config for the install dir:
 set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
 configure_file(
@@ -919,7 +929,8 @@ configure_file(
   @ONLY
 )
 
-# enable all tests and force a re-run of the cmake configuration in the test/ folder:
+# Define a target to enable all tests and force a re-run of the cmake
+# configuration in the test/ folder:
 add_custom_target(setup_tests
   COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON . >/dev/null
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -968,7 +979,8 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
 endif()
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
-  AND ${ASPECT_NEED_TEST_CONFIGURE})
+   AND
+   ${ASPECT_NEED_TEST_CONFIGURE})
 
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
@@ -1006,6 +1018,11 @@ add_custom_target(generate_reference_output
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 
+# ####################################################################
+# Set up some other meta-targets (unrelated to actually compiling or
+# running any code
+# ####################################################################
+
 # Provide "indent" target for indenting all headers and source files
 add_custom_target(indent
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -1013,13 +1030,13 @@ add_custom_target(indent
   COMMENT "Indenting all ASPECT header and source files..."
   )
 
+# Provide "release" and "debug" targets to switch compile mode
 if(CMAKE_GENERATOR MATCHES "Ninja")
   set(_make_command "$ ninja")
 else()
   set(_make_command " $ make")
 endif()
 
-# Provide "release" and "debug" targets to switch compile mode
 if(${DEAL_II_BUILD_TYPE} MATCHES "DebugRelease")
 add_custom_target(release
   COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
@@ -1061,7 +1078,8 @@ add_custom_target(distclean
   )
 
 
-
+# Provide an "info" target that outputs some summary information and something
+# like "make help".
 file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
 "message(
 \"###
