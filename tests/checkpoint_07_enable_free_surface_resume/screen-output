@@ -21,7 +21,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_resume/solution/solution-00008
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0153 m/year, 0.0281 m/year
+     RMS, max velocity:        0.0153 m/year, 0.042 m/year
 
 Termination requested by criterion: end time
 

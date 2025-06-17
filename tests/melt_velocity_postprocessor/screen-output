@@ -1,0 +1,85 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 36+0 iterations.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79208e-16, 2.00937e-16, 0, 0.000940036
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.000940036
+
+   Postprocessing:
+     Max melt velocity: 0.0101 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.79208e-16, 2.00937e-16, 0, 5.95625e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.95625e-09
+
+   Postprocessing:
+     Max melt velocity: 0.0101 m/year
+
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving composition reactions... in 1 substep(s).
+   Solving temperature system... 6 iterations.
+   Solving porosity system ... 4 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 14+0 iterations.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000516901, 0.0138592, 0, 1.95542e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0138592
+
+   Postprocessing:
+     Max melt velocity: 0.00948 m/year
+
+   Solving temperature system... 3 iterations.
+   Solving porosity system ... 3 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 4+0 iterations.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.9301e-08, 0.000115642, 0, 2.67372e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000115642
+
+   Postprocessing:
+     Max melt velocity: 0.00948 m/year
+
+   Solving temperature system... 2 iterations.
+   Solving porosity system ... 2 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.05498e-10, 2.78217e-07, 0, 5.65178e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.78217e-07
+
+   Postprocessing:
+     Max melt velocity: 0.00948 m/year
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 0+0 iterations.
+   Solving fluid velocity system... 12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.23802e-13, 1.20368e-13, 0, 5.65178e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.65178e-09
+
+   Postprocessing:
+     Max melt velocity: 0.00948 m/year
+
+
+Termination requested by criterion: end time
+
+
+

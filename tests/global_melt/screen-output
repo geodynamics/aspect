@@ -47,7 +47,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Postprocessing:
      Writing graphical output:  output-global_melt/solution/solution-00000
      Compositions min/max/mass: 0/0/0 // 0/0/0
-     RMS, max velocity:         0.00111 m/year, 0.00309 m/year
+     RMS, max velocity:         0.00111 m/year, 0.00413 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
      Writing depth average:     output-global_melt/depth_average
 
@@ -96,7 +96,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Postprocessing:
      Writing graphical output:  output-global_melt/solution/solution-00001
      Compositions min/max/mass: 0/0/0 // 0/0/0
-     RMS, max velocity:         0.0011 m/year, 0.003 m/year
+     RMS, max velocity:         0.0011 m/year, 0.00395 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
 
 Termination requested by criterion: end time

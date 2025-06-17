@@ -23,7 +23,7 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.131 m/year, 0.221 m/year
+     RMS, max velocity:         0.131 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0000
 
    Solving temperature system... 0 iterations.
@@ -44,7 +44,7 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.133 m/year, 0.22 m/year
+     RMS, max velocity:         0.133 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0001
 
    Solving temperature system... 0 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.135 m/year, 0.22 m/year
+     RMS, max velocity:         0.135 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0002
 
    Solving temperature system... 0 iterations.
@@ -88,7 +88,7 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.139 m/year, 0.22 m/year
+     RMS, max velocity:         0.139 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0003
 
    Solving temperature system... 0 iterations.
@@ -110,7 +110,7 @@ Number of degrees of freedom: 93,572 (8,450+1,089+1,089+9,216+9,216+9,216+9,216+
 
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
-     RMS, max velocity:         0.141 m/year, 0.22 m/year
+     RMS, max velocity:         0.141 m/year, 0.223 m/year
      Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0004
 
 

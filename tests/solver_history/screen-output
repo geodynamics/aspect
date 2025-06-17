@@ -13,7 +13,7 @@ post_stokes_solver:
 
    Postprocessing:
      Writing graphical output:           output-solver_history/solution/solution-00000
-     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     RMS, max velocity:                  9e-09 m/s, 3.27e-08 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.667e-07 W, 6.239e-05 W, 0 W, 0 W
      Writing stokes residuals            output-solver_history/stokes_residuals.txt
@@ -25,7 +25,7 @@ post_stokes_solver:
 post_stokes_solver:
 
    Postprocessing:
-     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     RMS, max velocity:                  9e-09 m/s, 3.27e-08 m/s
      Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
      Heat fluxes through boundary parts: 1.667e-07 W, 7.433e-05 W, 0 W, 0 W
      Writing stokes residuals            output-solver_history/stokes_residuals.txt

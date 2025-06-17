@@ -8,7 +8,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system (AMG)... 27+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:       0.577 m/year, 0.993 m/year
+     RMS, max velocity:       0.577 m/year, 1 m/year
      Temperature min/avg/max: 160 K, 160 K, 160 K
      Writing depth average:   output-diffusion_dislocation_fixed_strain_rate2/depth_average
 

@@ -27,7 +27,7 @@ Number of degrees of freedom: 1,272 (480+72+240+240+240)
      that does not have any quadrature points in it.
      Consider reducing the number of depth layers for averaging.
 
-     RMS, max velocity:                  0.0139 m/year, 0.023 m/year
+     RMS, max velocity:                  0.0139 m/year, 0.0376 m/year
      Temperature min/avg/max:            300 K, 2067 K, 3700 K
      Writing graphical output:           output-cookbook_mantle_convection_annulus/solution/solution-00000
      Heat fluxes through boundary parts: 1.168e+07 W, 2.059e+07 W

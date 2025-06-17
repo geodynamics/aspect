@@ -62,7 +62,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
    Postprocessing:
      Writing graphical output:           output-entropy_adiabat/solution/solution-00000
-     RMS, max velocity:                  0.00867 m/year, 0.00992 m/year
+     RMS, max velocity:                  0.00867 m/year, 0.01 m/year
      Temperature min/avg/max:            1437 K, 1610 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.363e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2360/2534/3.993e+13 // 3363/4397/6.617e+13
@@ -106,7 +106,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00873 m/year, 0.00993 m/year
+     RMS, max velocity:                  0.00873 m/year, 0.01 m/year
      Temperature min/avg/max:            1452 K, 1611 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.394e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2353/2534/3.994e+13 // 3363/4397/6.617e+13
@@ -150,7 +150,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00873 m/year, 0.00993 m/year
+     RMS, max velocity:                  0.00873 m/year, 0.01 m/year
      Temperature min/avg/max:            1452 K, 1612 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.396e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2347/2534/3.996e+13 // 3363/4397/6.617e+13
@@ -185,7 +185,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00873 m/year, 0.00992 m/year
+     RMS, max velocity:                  0.00873 m/year, 0.01 m/year
      Temperature min/avg/max:            1448 K, 1612 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.397e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2344/2534/3.997e+13 // 3363/4397/6.617e+13
@@ -220,7 +220,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1448 K, 1613 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.4e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2343/2534/3.998e+13 // 3363/4397/6.616e+13
@@ -255,7 +255,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1449 K, 1614 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.399e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2345/2534/4e+13 // 3363/4397/6.616e+13
@@ -290,7 +290,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1453 K, 1615 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.399e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2348/2534/4.001e+13 // 3363/4397/6.616e+13
@@ -325,7 +325,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1458 K, 1616 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.4e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2353/2534/4.002e+13 // 3363/4397/6.616e+13
@@ -360,7 +360,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00993 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1466 K, 1617 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2354/2534/4.004e+13 // 3363/4397/6.615e+13
@@ -395,7 +395,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00993 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1474 K, 1618 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2353/2534/4.005e+13 // 3363/4397/6.615e+13
@@ -430,7 +430,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00993 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1484 K, 1619 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2353/2534/4.006e+13 // 3363/4397/6.615e+13
@@ -465,7 +465,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00994 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1487 K, 1620 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2354/2534/4.008e+13 // 3363/4397/6.615e+13
@@ -500,7 +500,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00994 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1488 K, 1621 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2355/2534/4.009e+13 // 3363/4397/6.614e+13
@@ -535,7 +535,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00994 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1491 K, 1622 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2357/2534/4.011e+13 // 3363/4397/6.614e+13
@@ -579,7 +579,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00995 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1494 K, 1623 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2357/2534/4.012e+13 // 3363/4397/6.614e+13
@@ -623,7 +623,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.00874 m/year, 0.00995 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1498 K, 1624 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2356/2534/4.014e+13 // 3363/4397/6.614e+13
@@ -668,7 +668,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
    Postprocessing:
      Writing graphical output:           output-entropy_adiabat/solution/solution-00001
-     RMS, max velocity:                  0.00874 m/year, 0.00995 m/year
+     RMS, max velocity:                  0.00874 m/year, 0.01 m/year
      Temperature min/avg/max:            1499 K, 1624 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2356/2534/4.014e+13 // 3363/4397/6.614e+13

@@ -21,9 +21,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 35+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.000357 m/s, 0.000871 m/s
-     Compositions min/max/mass:   -0.002724/1.002/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.000357 m/s, 0.000868 m/s
+     Compositions min/max/mass:    -0.002724/1.002/0.1829
+     Number of advected particles: 10
 
 *** Timestep 2:  t=108.001 seconds, dt=32.9312 seconds
    Skipping temperature solve because RHS is zero.
@@ -32,9 +32,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 34+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.000566 m/s, 0.00143 m/s
-     Compositions min/max/mass:   -0.005727/1.007/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.000566 m/s, 0.00143 m/s
+     Compositions min/max/mass:    -0.005727/1.007/0.1829
+     Number of advected particles: 10
 
 *** Timestep 3:  t=128.029 seconds, dt=20.0276 seconds
    Skipping temperature solve because RHS is zero.
@@ -43,9 +43,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.000765 m/s, 0.00199 m/s
-     Compositions min/max/mass:   -0.005826/1.012/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.000765 m/s, 0.00199 m/s
+     Compositions min/max/mass:    -0.005826/1.012/0.1829
+     Number of advected particles: 10
 
 *** Timestep 4:  t=142.394 seconds, dt=14.3657 seconds
    Skipping temperature solve because RHS is zero.
@@ -54,9 +54,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 31+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.000951 m/s, 0.00252 m/s
-     Compositions min/max/mass:   -0.01254/1.013/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.000951 m/s, 0.00252 m/s
+     Compositions min/max/mass:    -0.01254/1.013/0.1829
+     Number of advected particles: 10
 
 *** Timestep 5:  t=153.746 seconds, dt=11.3521 seconds
    Skipping temperature solve because RHS is zero.
@@ -65,9 +65,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 30+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.00113 m/s, 0.00301 m/s
-     Compositions min/max/mass:   -0.01537/1.013/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.00113 m/s, 0.003 m/s
+     Compositions min/max/mass:    -0.01537/1.013/0.1829
+     Number of advected particles: 10
 
 *** Timestep 6:  t=163.257 seconds, dt=9.51104 seconds
    Skipping temperature solve because RHS is zero.
@@ -76,9 +76,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 30+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.00129 m/s, 0.00348 m/s
-     Compositions min/max/mass:   -0.01789/1.014/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.00129 m/s, 0.00348 m/s
+     Compositions min/max/mass:    -0.01789/1.014/0.1829
+     Number of advected particles: 10
 
 *** Timestep 7:  t=171.476 seconds, dt=8.21824 seconds
    Skipping temperature solve because RHS is zero.
@@ -87,9 +87,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 30+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.00144 m/s, 0.0039 m/s
-     Compositions min/max/mass:   -0.02016/1.015/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.00144 m/s, 0.0039 m/s
+     Compositions min/max/mass:    -0.02016/1.015/0.1829
+     Number of advected particles: 10
 
 *** Timestep 8:  t=178.808 seconds, dt=7.33242 seconds
    Skipping temperature solve because RHS is zero.
@@ -98,9 +98,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 30+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.00159 m/s, 0.00428 m/s
-     Compositions min/max/mass:   -0.01921/1.015/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.00159 m/s, 0.00427 m/s
+     Compositions min/max/mass:    -0.01921/1.015/0.1829
+     Number of advected particles: 10
 
 *** Timestep 9:  t=185.503 seconds, dt=6.69451 seconds
    Skipping temperature solve because RHS is zero.
@@ -109,9 +109,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.00172 m/s, 0.00462 m/s
-     Compositions min/max/mass:   -0.01969/1.015/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.00172 m/s, 0.00461 m/s
+     Compositions min/max/mass:    -0.01969/1.015/0.1829
+     Number of advected particles: 10
 
 *** Timestep 10:  t=191.702 seconds, dt=6.19938 seconds
    Skipping temperature solve because RHS is zero.
@@ -120,9 +120,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.00185 m/s, 0.00494 m/s
-     Compositions min/max/mass:   -0.01757/1.015/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.00185 m/s, 0.00492 m/s
+     Compositions min/max/mass:    -0.01757/1.015/0.1829
+     Number of advected particles: 10
 
 *** Timestep 11:  t=197.504 seconds, dt=5.8016 seconds
    Skipping temperature solve because RHS is zero.
@@ -131,9 +131,9 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:           0.00196 m/s, 0.00522 m/s
-     Compositions min/max/mass:   -0.01715/1.015/0.1829
-     Number of advected particles 10
+     RMS, max velocity:            0.00196 m/s, 0.00519 m/s
+     Compositions min/max/mass:    -0.01715/1.015/0.1829
+     Number of advected particles: 10
 
 *** Timestep 12:  t=200 seconds, dt=2.49648 seconds
    Skipping temperature solve because RHS is zero.
@@ -142,7 +142,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 26+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.00201 m/s, 0.00533 m/s
+     RMS, max velocity:         0.00201 m/s, 0.0053 m/s
      Compositions min/max/mass: -0.01579/1.014/0.1829
      Writing particle output:   output-particle_periodic_boundaries_rk4/particles/particles-00001
 

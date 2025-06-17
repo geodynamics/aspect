@@ -15,7 +15,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
    Solving Stokes system (GMG)... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                               0.0214 m/s, 0.0465 m/s
+     RMS, max velocity:                                                               0.0214 m/s, 0.0463 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.09e-08 kg*m^2/s, 1.68 kg*m^2, 1.25e-08 1/s, 1.54e-08 1/s
 
 *** Timestep 2:  t=0.832025 seconds, dt=0.546106 seconds

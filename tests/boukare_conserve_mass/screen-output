@@ -25,7 +25,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
 
 
    Postprocessing:
-     RMS, max velocity:                  3.98e-13 m/year, 9.81e-13 m/year
+     RMS, max velocity:                  3.98e-13 m/year, 9.86e-13 m/year
      Temperature min/avg/max:            2510 K, 2510 K, 2510 K
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 1.549e-06 W
      Writing graphical output:           output-boukare_conserve_mass/solution/solution-00000
@@ -86,7 +86,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
 
 
    Postprocessing:
-     RMS, max velocity:                  1.5e-05 m/year, 2.82e-05 m/year
+     RMS, max velocity:                  1.5e-05 m/year, 2.83e-05 m/year
      Temperature min/avg/max:            2510 K, 2510 K, 2510 K
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, -228.4 W
      Writing graphical output:           output-boukare_conserve_mass/solution/solution-00001
@@ -137,7 +137,7 @@ Number of degrees of freedom: 10,058 (2,178+1,057+2,178+289+1,089+1,089+1,089+1,
 
 
    Postprocessing:
-     RMS, max velocity:                  5.23e-06 m/year, 9.81e-06 m/year
+     RMS, max velocity:                  5.23e-06 m/year, 9.94e-06 m/year
      Temperature min/avg/max:            2510 K, 2510 K, 2510 K
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, -79.44 W
      Writing graphical output:           output-boukare_conserve_mass/solution/solution-00002

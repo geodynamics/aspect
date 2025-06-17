@@ -42,7 +42,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
 
    Postprocessing:
-     RMS, max velocity:                               3.35 m/s, 15.8 m/s
+     RMS, max velocity:                               3.35 m/s, 15.9 m/s
      Temperature min/avg/max:                         0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -1 W, 1 W
      Writing graphical output:                        output-tosi_benchmark_gmg_dc_picard_solver/solution/solution-00000
@@ -179,7 +179,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                               6.95 m/s, 34.2 m/s
+     RMS, max velocity:                               6.95 m/s, 34.5 m/s
      Temperature min/avg/max:                         0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -1.005 W, 1 W
      Max, min, and rms velocity along boundary parts: 8.974 m/s, 0.002571 m/s, 4.058 m/s, 7.352 m/s, 0.002484 m/s, 3.345 m/s, 34.47 m/s, 0.701 m/s, 24.34 m/s, 0.09844 m/s, 0.002255 m/s, 0.07055 m/s
@@ -314,7 +314,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                               7.9 m/s, 39.1 m/s
+     RMS, max velocity:                               7.9 m/s, 39.4 m/s
      Temperature min/avg/max:                         0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -1.007 W, 1 W
      Max, min, and rms velocity along boundary parts: 10.39 m/s, 0.002716 m/s, 4.66 m/s, 8.141 m/s, 0.002622 m/s, 3.694 m/s, 39.4 m/s, 0.7814 m/s, 27.8 m/s, 0.1038 m/s, 0.002382 m/s, 0.07445 m/s

@@ -11,7 +11,7 @@ Number of degrees of freedom: 4,080 (1,122+153+561+561+561+561+561)
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                 0.00145 m/year, 0.00325 m/year
+     RMS, max velocity:                                 0.00145 m/year, 0.00328 m/year
      Compositions min/max/mass:                         0/1/1.68e+10 // 0/1/1.825e+10 // 0/1/1.563e+09 // 0/1/1.5e+09
      Pressure min/avg/max:                              -7.922e+06 Pa, 2.837e+09 Pa, 5.671e+09 Pa
      Average density / Average viscosity / Total mass:  3176 kg/m^3, 3.136e+21 Pa s, 2.287e+14 kg

@@ -9,7 +9,7 @@ Number of degrees of freedom: 6,497 (2,187+125+729+1,728+1,728)
 
    Postprocessing:
      Writing particle output:   output-particle_interpolator_bilinear_3d_add_particles/particles/particles-00000
-     RMS, max velocity:         0.00965 m/s, 0.0242 m/s
+     RMS, max velocity:         0.00965 m/s, 0.0237 m/s
      Compositions min/max/mass: 0/1/0.375 // 0/1/0.5
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
 
@@ -20,7 +20,7 @@ Number of degrees of freedom: 6,497 (2,187+125+729+1,728+1,728)
 
    Postprocessing:
      Number of advected particles: 258
-     RMS, max velocity:            0.00965 m/s, 0.0242 m/s
+     RMS, max velocity:            0.00965 m/s, 0.0237 m/s
      Compositions min/max/mass:    0/1/0.375 // 0/1/0.5
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 

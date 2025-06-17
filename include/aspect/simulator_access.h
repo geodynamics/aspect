@@ -80,6 +80,12 @@ namespace aspect
     template <int dim> class Interface;
   }
 
+  namespace BoundaryConvectiveHeating
+  {
+    template <int dim> class Manager;
+    template <int dim> class Interface;
+  }
+
   namespace BoundaryComposition
   {
     template <int dim> class Manager;
@@ -580,13 +586,22 @@ namespace aspect
       bool has_boundary_temperature () const;
 
       /**
-       * Return an reference to the manager of the boundary temperature models.
-       * This can then, for example, be used to get the names of the initial temperature
-       * models used in a computation, or to compute the initial temperature
+       * Return a reference to the manager of the boundary temperature models.
+       * This can then, for example, be used to get the names of the boundary temperature
+       * models used in a computation, or to compute the boundary temperature
        * for a given position.
        */
       const BoundaryTemperature::Manager<dim> &
       get_boundary_temperature_manager () const;
+
+      /**
+       * Return a reference to the manager of the boundary convective heating models.
+       * This can then, for example, be used to get the names of the boundary convective
+       * heating models used in a computation, or to compute the boundary conditions
+       * for a given position.
+       */
+      const BoundaryConvectiveHeating::Manager<dim> &
+      get_boundary_convective_heating_manager () const;
 
       /**
        * Return a reference to the object that describes heat flux
@@ -726,6 +741,13 @@ namespace aspect
        */
       const std::set<types::boundary_id> &
       get_fixed_heat_flux_boundary_indicators () const;
+
+      /**
+       * Return a set of boundary indicators that describes which of the
+       * boundaries have a convective heating, i.e. Robin boundary condition.
+       */
+      const std::set<types::boundary_id> &
+      get_fixed_convective_heating_boundary_indicators () const;
 
       /**
        * Return a set of boundary indicators that describes which of the

@@ -83,7 +83,7 @@ namespace aspect
      * Register a boundary heat flux model so that it can be selected from
      * the parameter file.
      *
-     * @param name A string that identifies the fluid pressure boundary model
+     * @param name A string that identifies the boundary heat flux model
      * @param description A text description of what this model does and that
      * will be listed in the documentation of the parameter file.
      * @param declare_parameters_function A pointer to a function that can be

@@ -10,7 +10,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Writing graphical output: output-sinking_block/solution/solution-00000
-     RMS, max velocity:        0.000923 m/year, 0.00191 m/year
+     RMS, max velocity:        0.000923 m/year, 0.00192 m/year
 
 Termination requested by criterion: end time
 

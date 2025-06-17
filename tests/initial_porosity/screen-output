@@ -79,7 +79,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Postprocessing:
      Writing graphical output:  output-initial_porosity/solution/solution-00000
      Compositions min/max/mass: 0/0.2721/8.939e+10 // 0/0/0
-     RMS, max velocity:         0.279 m/year, 1.38 m/year
+     RMS, max velocity:         0.279 m/year, 1.56 m/year
      Temperature min/avg/max:   293 K, 2136 K, 4200 K
      Writing depth average:     output-initial_porosity/depth_average
 

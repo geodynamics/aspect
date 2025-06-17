@@ -11,7 +11,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      Compositions min/max/mass:                         0.001/0.001/1e+07
      Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
-     RMS, max velocity:                                 0.577 m/year, 0.972 m/year
+     RMS, max velocity:                                 0.577 m/year, 1 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 5.77e+17 Pa s, 3.4e+13 kg
      Writing graphical output:                          output-grain_size_strain_pinned/solution/solution-00000
 
@@ -24,7 +24,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
    Postprocessing:
      Compositions min/max/mass:                         0.0009998/0.0009998/9.998e+06
      Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
-     RMS, max velocity:                                 0.577 m/year, 0.972 m/year
+     RMS, max velocity:                                 0.577 m/year, 1 m/year
      Average density / Average viscosity / Total mass:  3400 kg/m^3, 5.767e+17 Pa s, 3.4e+13 kg
      Writing graphical output:                          output-grain_size_strain_pinned/solution/solution-00001
 

@@ -8,7 +8,7 @@ Number of degrees of freedom: 20,201 (9,490+1,221+4,745+4,745)
    Solving Stokes system (GMG)... 27+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:        0.00391 m/year, 0.0104 m/year
+     RMS, max velocity:        0.00391 m/year, 0.01 m/year
      Writing graphical output: output-merged_chunks_2D/solution/solution-00000
 
 Termination requested by criterion: end time

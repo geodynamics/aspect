@@ -1,0 +1,4 @@
+# input file for cpo olivine cookbook
+
+include $ASPECT_SOURCE_DIR/cookbooks/crystal_preferred_orientation_olivine_fraters_billen_2021/olivineA.prm
+set End time                               = 1.e5

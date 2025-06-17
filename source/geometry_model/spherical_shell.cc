@@ -713,7 +713,7 @@ namespace aspect
     double
     SphericalShell<dim>::maximal_depth() const
     {
-      return R1 + manifold->topo->max_topography() - R0;
+      return R1 + this->get_initial_topography_model().max_topography() - R0;
     }
 
 

@@ -12,7 +12,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
 
    Postprocessing:
-     RMS, max velocity:                               0.179 m/s, 0.251 m/s
+     RMS, max velocity:                               0.179 m/s, 0.254 m/s
      Temperature min/avg/max:                         0 K, 0.5 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -1 W, 1 W
      Writing graphical output:                        output-tosi_benchmark/solution/solution-00000
@@ -102,7 +102,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                               122 m/s, 516 m/s
+     RMS, max velocity:                               122 m/s, 783 m/s
      Temperature min/avg/max:                         0 K, 0.5042 K, 1 K
      Heat fluxes through boundary parts:              0 W, 0 W, -7.803 W, 1.01 W
      Viscous dissipation, rate of work, error:        561 W 6.23 W 9.87 error

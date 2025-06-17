@@ -86,7 +86,7 @@ Number of mesh deformation degrees of freedom: 1,706
 
    Postprocessing:
      Topography min/max: -16.51 m, 53.49 m
-     RMS, max velocity:  0.000438 m/year, 0.00166 m/year
+     RMS, max velocity:  0.000438 m/year, 0.00167 m/year
 
 Number of active cells: 787 (on 5 levels)
 Number of degrees of freedom: 11,035 (6,770+880+3,385)

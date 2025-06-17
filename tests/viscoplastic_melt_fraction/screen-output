@@ -10,7 +10,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
 
    Postprocessing:
      Writing graphical output:    output-viscoplastic_melt_fraction/solution/solution-00000
-     Melt fraction min/total/max: 0, 8.956e+08, 0.3137
+     Melt fraction min/total/max: 0, 8.955e+08, 0.3148
      Pressure min/avg/max:        -0.0007496 Pa, 1.576e+09 Pa, 3.152e+09 Pa
      Compositions min/max/mass:   0/0/0 // 0/0/0
 
@@ -22,7 +22,7 @@ Number of degrees of freedom: 22,214 (9,539+4,225+4,225+4,225)
 
    Postprocessing:
      Writing graphical output:    output-viscoplastic_melt_fraction/solution/solution-00001
-     Melt fraction min/total/max: 0, 8.956e+08, 0.3137
+     Melt fraction min/total/max: 0, 8.955e+08, 0.3148
      Pressure min/avg/max:        -5.817e-05 Pa, 1.576e+09 Pa, 3.152e+09 Pa
      Compositions min/max/mass:   0/0/0 // 0/0/0
 

@@ -63,154 +63,6 @@ namespace aspect
    */
   namespace Utilities
   {
-    namespace internal
-    {
-      namespace MPI
-      {
-        // --------------------------------------------------------------------
-        // The following is copied from deal.II's mpi.templates.h file.
-        // We should instead import it from deal.II's header files directly
-        // if that information is made available via one of the existing .h
-        // files.
-        // --------------------------------------------------------------------
-#ifdef DEAL_II_WITH_MPI
-        /**
-         * Return the corresponding MPI data type id for the argument given.
-         */
-        inline MPI_Datatype
-        mpi_type_id(const bool *)
-        {
-          return MPI_CXX_BOOL;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const char *)
-        {
-          return MPI_CHAR;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const signed char *)
-        {
-          return MPI_SIGNED_CHAR;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const short *)
-        {
-          return MPI_SHORT;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const int *)
-        {
-          return MPI_INT;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const long int *)
-        {
-          return MPI_LONG;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const unsigned char *)
-        {
-          return MPI_UNSIGNED_CHAR;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const unsigned short *)
-        {
-          return MPI_UNSIGNED_SHORT;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const unsigned int *)
-        {
-          return MPI_UNSIGNED;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const unsigned long int *)
-        {
-          return MPI_UNSIGNED_LONG;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const unsigned long long int *)
-        {
-          return MPI_UNSIGNED_LONG_LONG;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const float *)
-        {
-          return MPI_FLOAT;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const double *)
-        {
-          return MPI_DOUBLE;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const long double *)
-        {
-          return MPI_LONG_DOUBLE;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const std::complex<float> *)
-        {
-          return MPI_COMPLEX;
-        }
-
-
-
-        inline MPI_Datatype
-        mpi_type_id(const std::complex<double> *)
-        {
-          return MPI_DOUBLE_COMPLEX;
-        }
-#endif
-      }
-    }
-
-
-
-
-
-
     template <typename T>
     Table<2,T>
     parse_input_table (const std::string &input_string,
@@ -1510,7 +1362,7 @@ namespace aspect
               // setting the file size to an invalid size, then trigger an assert.
               {
                 std::size_t invalid_filesize = numbers::invalid_size_type;
-                const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+                const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
                 AssertThrowMPI(ierr);
               }
               AssertThrow(false,
@@ -1533,7 +1385,7 @@ namespace aspect
                 {
                   // broadcast failure state, then throw
                   std::size_t invalid_filesize = numbers::invalid_size_type;
-                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Could not open file <") + filename + ">."));
@@ -1555,7 +1407,7 @@ namespace aspect
                 {
                   // broadcast failure state, then throw
                   std::size_t invalid_filesize = numbers::invalid_size_type;
-                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Could not read file content from <") + filename + ">."));
@@ -1566,7 +1418,7 @@ namespace aspect
             }
 
           // Distribute data_size and data across processes
-          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
           AssertThrowMPI(ierr);
 
           big_mpi::broadcast(&data_string[0], filesize, 0, comm);
@@ -1575,7 +1427,7 @@ namespace aspect
         {
           // Prepare for receiving data
           std::size_t filesize;
-          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::MPI::mpi_type_id_for_type<std::size_t>, 0, comm);
           AssertThrowMPI(ierr);
           if (filesize == numbers::invalid_size_type)
             throw QuietException();
@@ -1611,14 +1463,14 @@ namespace aspect
                 filestream << content;
 
               bool success = filestream.good();
-              const int ierr = MPI_Bcast(&success, 1, Utilities::internal::MPI::mpi_type_id(&success), 0, comm);
+              const int ierr = MPI_Bcast(&success, 1, Utilities::MPI::mpi_type_id_for_type<bool>, 0, comm);
               AssertThrowMPI(ierr);
             }
           catch (const std::ios::failure &)
             {
               // broadcast failure state, then throw
               bool success = false;
-              const int ierr = MPI_Bcast(&success, 1, Utilities::internal::MPI::mpi_type_id(&success), 0, comm);
+              const int ierr = MPI_Bcast(&success, 1, Utilities::MPI::mpi_type_id_for_type<bool>, 0, comm);
               AssertThrowMPI(ierr);
               AssertThrow (false,
                            ExcMessage (std::string("Could not write content to file <") + filename + ">."));
@@ -1630,7 +1482,7 @@ namespace aspect
         {
           // Check that the file was written successfully
           bool success;
-          int ierr = MPI_Bcast(&success, 1, Utilities::internal::MPI::mpi_type_id(&success), 0, comm);
+          int ierr = MPI_Bcast(&success, 1, Utilities::MPI::mpi_type_id_for_type<bool>, 0, comm);
           AssertThrowMPI(ierr);
           if (success == false)
             throw QuietException();

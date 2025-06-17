@@ -263,7 +263,7 @@ subsection Postprocess
     set Number of grouped files       = 0
     set Output format                 = vtu
     set Time between graphical output = 0
-    set Interpolate output            = true
+    set Interpolate output            = false
 
     subsection Material properties
       set List of material properties = density, viscosity, thermal expansivity

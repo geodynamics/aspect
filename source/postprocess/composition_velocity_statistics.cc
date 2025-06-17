@@ -81,7 +81,7 @@ namespace aspect
       std::vector<double> global_area_integral(local_area_integral.size());
       Utilities::MPI::sum(local_area_integral, this->get_mpi_communicator(), global_area_integral);
 
-      // compute the RMS velocity for each compositional field and for the selected compositonal fields combined
+      // compute the RMS velocity for each compositional field and for the selected compositional fields combined
       std::vector<double> vrms_per_composition(local_area_integral.size(), 0.0);
       double velocity_square_integral_selected_fields = 0., area_integral_selected_fields = 0.;
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)

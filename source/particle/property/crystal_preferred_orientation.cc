@@ -405,6 +405,7 @@ namespace aspect
                                             + std::to_string(rotation_matrix[1][0]) + " " + std::to_string(rotation_matrix[1][1]) + " " + std::to_string(rotation_matrix[1][2]) + "\n"
                                             + std::to_string(rotation_matrix[2][0]) + " " + std::to_string(rotation_matrix[2][1]) + " " + std::to_string(rotation_matrix[2][2])));
                         }
+                    set_rotation_matrix_grains(data_position,data,mineral_i,grain_i,rotation_matrix);
                   }
               }
             ++p;
@@ -705,8 +706,8 @@ namespace aspect
               {
                 const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
                 const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
-                const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
-                bigI[slip_system_i] = scalar_product(slip_cross_product,strain_rate_nondimensional);
+                const Tensor<2,3> slip_outer_product = outer_product(slip_direction_global,slip_normal_global);
+                bigI[slip_system_i] = scalar_product(slip_outer_product,strain_rate_nondimensional);
               }
 
             if (bigI.norm() < 1e-10)
@@ -754,8 +755,8 @@ namespace aspect
                   {
                     const Tensor<1,3> slip_normal_global = rotation_matrix_transposed*slip_normal_reference[slip_system_i];
                     const Tensor<1,3> slip_direction_global = rotation_matrix_transposed*slip_direction_reference[slip_system_i];
-                    const Tensor<2,3> slip_cross_product = outer_product(slip_direction_global,slip_normal_global);
-                    G += 2.0 * beta[slip_system_i] * slip_cross_product;
+                    const Tensor<2,3> slip_outer_product = outer_product(slip_direction_global,slip_normal_global);
+                    G += 2.0 * beta[slip_system_i] * slip_outer_product;
                   }
               }
 

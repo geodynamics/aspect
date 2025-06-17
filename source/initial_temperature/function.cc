@@ -36,6 +36,8 @@ namespace aspect
       function (1)
     {}
 
+
+
     template <int dim>
     double
     Function<dim>::
@@ -46,6 +48,8 @@ namespace aspect
 
       return function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
     }
+
+
 
     template <int dim>
     void
@@ -79,6 +83,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

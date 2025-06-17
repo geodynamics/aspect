@@ -1,0 +1,260 @@
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 268 (162+25+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           100 K, 100 K, 100 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00000
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 1:  t=50000 years, dt=50000 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           104.7 K, 104.7 K, 104.7 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00001
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 2:  t=100000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           109.4 K, 109.4 K, 109.4 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00002
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 3:  t=150000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           114.1 K, 114.1 K, 114.1 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00003
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 4:  t=200000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           118.8 K, 118.8 K, 118.8 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00004
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 5:  t=250000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           123.5 K, 123.5 K, 123.5 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00005
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 6:  t=300000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           128.3 K, 128.3 K, 128.3 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00006
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 7:  t=350000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           133 K, 133 K, 133 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00007
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 8:  t=400000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           137.7 K, 137.7 K, 137.7 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00008
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 9:  t=450000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           142.4 K, 142.4 K, 142.4 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00009
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 10:  t=500000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           147.1 K, 147.1 K, 147.1 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00010
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 11:  t=550000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           151.8 K, 151.8 K, 151.8 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00011
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 12:  t=600000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           156.5 K, 156.5 K, 156.5 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00012
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 13:  t=650000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           161.2 K, 161.2 K, 161.2 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00013
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 14:  t=700000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           165.9 K, 165.9 K, 165.9 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00014
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 15:  t=750000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           170.6 K, 170.6 K, 170.6 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00015
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 16:  t=800000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           175.4 K, 175.4 K, 175.4 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00016
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 17:  t=850000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           180.1 K, 180.1 K, 180.1 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00017
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 18:  t=900000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           184.8 K, 184.8 K, 184.8 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00018
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 19:  t=950000 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           189.5 K, 189.5 K, 189.5 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00019
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+*** Timestep 20:  t=1e+06 years, dt=50000 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system (GMG)... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                                 0 m/year, 0 m/year
+     Temperature min/avg/max:                           194.2 K, 194.2 K, 194.2 K
+     Writing graphical output:                          output-constant_tidal_heating/solution/solution-00020
+     Pressure min/avg/max:                              0 Pa, 0 Pa, 0 Pa
+     Average density / Average viscosity / Total mass:  917 kg/m^3, 1e+14 Pa s, 9.17e+04 kg
+     Heating rate (average/total):                      6.298e-09 W/kg, 0.0005776 W
+
+Termination requested by criterion: end time
+
+
+

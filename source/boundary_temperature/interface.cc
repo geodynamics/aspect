@@ -248,7 +248,7 @@ namespace aspect
                           "",
                           Patterns::MultipleSelection(pattern_of_names),
                           "A comma-separated list of boundary temperature models that "
-                          "will be used to initialize the temperature. "
+                          "will be used as temperature boundary conditions. "
                           "These plugins are loaded in the order given, and modify the "
                           "existing temperature field via the operators listed "
                           "in 'List of model operators'.\n\n"

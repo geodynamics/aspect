@@ -190,6 +190,18 @@ namespace aspect
 
       /**
        * Fill the argument with a set of lateral averages of the current
+       * adiabatic density field. The function fills a vector that contains average
+       * field values over slices of the domain of same depth.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_density_averages(std::vector<double> &values) const;
+
+      /**
+       * Fill the argument with a set of lateral averages of the current
        * temperature field. The function fills a vector that contains average
        * field values over slices of the domain of same depth.
        *

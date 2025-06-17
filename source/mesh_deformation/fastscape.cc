@@ -301,8 +301,8 @@ namespace aspect
       if (dim == 2)
         {
           fastscape_dy = fastscape_dx;
-          fastscape_y_extent = std::round(fastscape_y_extent_2d/fastscape_dy)*fastscape_dy + fastscape_dy * ghost_nodes;
-          fastscape_ny = 1+fastscape_y_extent/fastscape_dy;
+          fastscape_y_extent = (std::round(fastscape_y_extent_2d/fastscape_dy) + ghost_nodes) * fastscape_dy;
+          fastscape_ny = 1+static_cast<int>(std::round(fastscape_y_extent_2d/fastscape_dy)) + ghost_nodes;
         }
       else
         {
@@ -661,7 +661,11 @@ namespace aspect
                             const double index = std::round(indx)+fastscape_nx*ys;
 
                             local_aspect_values[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);
-                            local_aspect_values[1].push_back(index-1);
+
+                            // In local_aspect_values[1], we store integer indices even though the
+                            // type of the left hand side is 'double'. We will have to cast back
+                            // when we read from local_aspect_values[1].
+                            local_aspect_values[1].push_back(static_cast<double>(index-1));
 
                             for (unsigned int d=0; d<dim; ++d)
                               {
@@ -682,6 +686,10 @@ namespace aspect
                         const double index = std::round((indy-1))*fastscape_nx+std::round(indx);
 
                         local_aspect_values[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);   //z component
+
+                        // In local_aspect_values[1], we store integer indices even though the
+                        // type of the left hand side is 'double'. We will have to cast back
+                        // when we read from local_aspect_values[1].
                         local_aspect_values[1].push_back(index-1);
 
                         for (unsigned int d=0; d<dim; ++d)
@@ -707,8 +715,9 @@ namespace aspect
     {
       for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
         {
-
-          unsigned int index = local_aspect_values[1][i];
+          // In get_aspect_values(), we store an integer value in local_aspect_values[1][...].
+          // Explicitly cast it back.
+          const unsigned int index = static_cast<unsigned int>(local_aspect_values[1][i]);
           elevation[index] = local_aspect_values[0][i];
           velocity_x[index] = local_aspect_values[2][i];
           velocity_z[index] = local_aspect_values[dim+1][i];
@@ -739,6 +748,8 @@ namespace aspect
           // Now, place the numbers into the correct place based off the index.
           for (unsigned int i=0; i<local_aspect_values[1].size(); ++i)
             {
+              // In get_aspect_values(), we store an integer value in local_aspect_values[1][...].
+              // Explicitly cast it back.
               const unsigned int index = local_aspect_values[1][i];
               elevation[index] = local_aspect_values[0][i];
               velocity_x[index] = local_aspect_values[2][i];
@@ -1427,7 +1438,7 @@ namespace aspect
               // If we do not average the values, then use a slice near the center.
               if (!average_out_of_plane_surface_topography)
                 {
-                  const unsigned int index = x+fastscape_nx*(std::round((fastscape_ny-use_ghost_nodes)/2));
+                  const unsigned int index = x+fastscape_nx*static_cast<int>(std::round((fastscape_ny-use_ghost_nodes)/2));
 
                   // If we are using the ghost nodes, then the x value locations need to be shifted back 1
                   // e.g., given a 4x4 mesh an index of 5 would correspond to an x of 1 and y of 1 in the loop,

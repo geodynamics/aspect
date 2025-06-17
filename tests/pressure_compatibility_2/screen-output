@@ -7,7 +7,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:       6.6e-05 m/s, 0.000142 m/s
+     RMS, max velocity:       6.6e-05 m/s, 0.000143 m/s
      Pressure min/avg/max:    -0.002306 Pa, 0.4999 Pa, 0.9979 Pa
      Temperature min/avg/max: 0 K, 0.8632 K, 2 K
 
@@ -16,7 +16,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system (GMG)... 10+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:       6.46e-05 m/s, 0.000137 m/s
+     RMS, max velocity:       6.46e-05 m/s, 0.000138 m/s
      Pressure min/avg/max:    -0.00587 Pa, 0.4999 Pa, 0.9934 Pa
      Temperature min/avg/max: 0 K, 0.866 K, 2 K
 

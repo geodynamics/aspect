@@ -11,6 +11,6 @@
 # 11: Average temperature (K)
 # 12: Maximal temperature (K)
 # 13: Average nondimensional temperature (K)
-# 14: Average shear heating rate (W/kg) 
-# 15: Total shear heating rate (W) 
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 1.08012345e+00 1.97182458e+00 0.00000000e+00 5.01351903e-01 1.00000000e+00 5.01351903e-01 2.11139655e+00 2.11111111e+00 
+# 14: Average shear heating rate (W/kg)
+# 15: Total shear heating rate (W)
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 1.08012345e+00 2.00000000e+00 0.00000000e+00 5.01351903e-01 1.00000000e+00 5.01351903e-01 2.11139655e+00 2.11111111e+00 

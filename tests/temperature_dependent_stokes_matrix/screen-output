@@ -23,21 +23,21 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Rayleigh number:                               25000
 
      Writing graphical output: output-temperature_dependent_stokes_matrix/solution/solution-00000
-     RMS, max velocity:        8.94e-09 m/s, 3.08e-08 m/s
+     RMS, max velocity:        8.94e-09 m/s, 3.1e-08 m/s
 
 *** Timestep 1:  t=504307 seconds, dt=504307 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 1.54e-08 m/s, 5.75e-08 m/s
+     RMS, max velocity: 1.54e-08 m/s, 5.76e-08 m/s
 
 *** Timestep 2:  t=775716 seconds, dt=271409 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system (GMG)... 16+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 1.79e-08 m/s, 6.64e-08 m/s
+     RMS, max velocity: 1.79e-08 m/s, 6.65e-08 m/s
 
 *** Timestep 3:  t=1e+06 seconds, dt=224284 seconds
    Solving temperature system... 10 iterations.

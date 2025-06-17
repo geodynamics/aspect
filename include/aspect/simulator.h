@@ -53,6 +53,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/gravity_model/interface.h>
 #include <aspect/boundary_temperature/interface.h>
 #include <aspect/boundary_heat_flux/interface.h>
+#include <aspect/boundary_convective_heating/interface.h>
 #include <aspect/boundary_composition/interface.h>
 #include <aspect/initial_temperature/interface.h>
 #include <aspect/initial_composition/interface.h>
@@ -1131,35 +1132,6 @@ namespace aspect
                                      const bool skip_interior_cells = false) const;
 
       /**
-       * Compute the seismic shear wave speed, Vs anomaly per element. we
-       * compute the anomaly by computing a smoothed (over 200 km or so)
-       * laterally averaged temperature profile and associated seismic
-       * velocity that is then subtracted from the seismic velocity at the
-       * current pressure temperature conditions
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_Vs_anomaly(Vector<float> &values) const;
-
-      /**
-       * Compute the seismic pressure wave speed, Vp anomaly per element. we
-       * compute the anomaly by computing a smoothed (over 200 km or so)
-       * laterally averaged temperature profile and associated seismic
-       * velocity that is then subtracted from the seismic velocity at the
-       * current pressure temperature conditions
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       *
-       * @param values The output vector of depth averaged values. The
-       * function takes the pre-existing size of this vector as the number of
-       * depth slices.
-       */
-      void compute_Vp_anomaly(Vector<float> &values) const;
-
-      /**
        * Adjust the pressure variable (which is only determined up to
        * a constant by the equations, though its value may enter
        * traction boundary conditions) by adding a constant to it in
@@ -1426,7 +1398,9 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void replace_outflow_boundary_ids(const unsigned int boundary_id_offset);
+      void replace_outflow_boundary_ids(const unsigned int boundary_id_offset,
+                                        const bool is_composition,
+                                        const unsigned int composition_index);
 
       /**
        * Undo the offset of the boundary ids done in replace_outflow_boundary_ids
@@ -1836,7 +1810,9 @@ namespace aspect
       const IntermediaryConstructorAction                                    post_geometry_model_creation_action;
       const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;
       const std::unique_ptr<GravityModel::Interface<dim>>                    gravity_model;
+
       BoundaryTemperature::Manager<dim>                                      boundary_temperature_manager;
+      BoundaryConvectiveHeating::Manager<dim>                                boundary_convective_heating_manager;
       BoundaryComposition::Manager<dim>                                      boundary_composition_manager;
       const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
 

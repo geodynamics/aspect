@@ -11,7 +11,7 @@ adding constraint idx= 162 to value= 100
    Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.183 m/s, 0.249 m/s
+     RMS, max velocity:                  0.183 m/s, 0.25 m/s
      Pressure min/avg/max:               76.12 Pa, 155 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          
@@ -33,7 +33,7 @@ adding constraint idx= 162 to value= 100
    Solving Stokes system (GMG)... 18+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.183 m/s, 0.249 m/s
+     RMS, max velocity:                  0.183 m/s, 0.25 m/s
      Pressure min/avg/max:               153 Pa, 230.7 Pa, 5000 Pa
      Mass fluxes through boundary parts: -0.1667 kg/s, 0.1667 kg/s, 0 kg/s, 0 kg/s
                                          

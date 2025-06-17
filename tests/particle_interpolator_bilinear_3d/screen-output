@@ -9,7 +9,7 @@ Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
 
    Postprocessing:
      Number of advected particles: 4096
-     RMS, max velocity:            0.00995 m/s, 0.0252 m/s
+     RMS, max velocity:            0.00995 m/s, 0.0253 m/s
      Compositions min/max/mass:    0/1/0.3984 // 0/1/0.375
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 
@@ -20,7 +20,7 @@ Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
 
    Postprocessing:
      Number of advected particles: 4096
-     RMS, max velocity:            0.00995 m/s, 0.0252 m/s
+     RMS, max velocity:            0.00995 m/s, 0.0253 m/s
      Compositions min/max/mass:    0/1/0.3984 // 0/1/0.375
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 

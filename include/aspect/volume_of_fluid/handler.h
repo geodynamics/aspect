@@ -219,6 +219,23 @@ namespace aspect
       friend class Simulator<dim>;
   };
 
+
+  // Declare the existence of explicit specializations
+  template <>
+  void VolumeOfFluidHandler<2>::update_volume_of_fluid_normals (const VolumeOfFluidField<2> &field,
+                                                                LinearAlgebra::BlockVector &solution);
+  template <>
+  void VolumeOfFluidHandler<3>::update_volume_of_fluid_normals (const VolumeOfFluidField<3> &/*field*/,
+                                                                LinearAlgebra::BlockVector &/*solution*/);
+  template <>
+  void VolumeOfFluidHandler<2>::update_volume_of_fluid_composition (const typename Simulator<2>::AdvectionField &composition_field,
+                                                                    const VolumeOfFluidField<2> &volume_of_fluid_field,
+                                                                    LinearAlgebra::BlockVector &solution);
+  template <>
+  void VolumeOfFluidHandler<3>::update_volume_of_fluid_composition (const Simulator<3>::AdvectionField &/*composition_field*/,
+                                                                    const VolumeOfFluidField<3> &/*volume_of_fluid_field*/,
+                                                                    LinearAlgebra::BlockVector &/*solution*/);
+
 }
 
 #endif

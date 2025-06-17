@@ -37,7 +37,7 @@ Number of mesh deformation degrees of freedom: 336
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  2672 kg/m^3, 1.556e+18 Pa s, 2.338e+12 kg
-     RMS, max velocity:                                 1.88 m/year, 3.91 m/year
+     RMS, max velocity:                                 1.88 m/year, 3.88 m/year
      Topography min/max:                                0 m, 0 m
 
 *** Timestep 1:  t=5 years, dt=5 years
@@ -116,7 +116,7 @@ Number of mesh deformation degrees of freedom: 336
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  2672 kg/m^3, 1.522e+18 Pa s, 2.338e+12 kg
-     RMS, max velocity:                                 2.22 m/year, 4.26 m/year
+     RMS, max velocity:                                 2.22 m/year, 4.25 m/year
      Topography min/max:                                -9.004 m, 17.42 m
 
 Termination requested by criterion: end time

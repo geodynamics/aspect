@@ -353,6 +353,10 @@ namespace aspect
     boundary_temperature_manager.initialize_simulator (*this);
     boundary_temperature_manager.parse_parameters (prm);
 
+    // Create a boundary convective flux manager
+    boundary_convective_heating_manager.initialize_simulator (*this);
+    boundary_convective_heating_manager.parse_parameters (prm);
+
     if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_heat_flux.get()))
       sim->initialize_simulator (*this);
     boundary_heat_flux->parse_parameters (prm);
@@ -693,6 +697,7 @@ namespace aspect
     // If there is a fixed boundary temperature or heat flux,
     // update the temperature boundary condition.
     boundary_temperature_manager.update();
+    boundary_convective_heating_manager.update();
     boundary_heat_flux->update();
 
     // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
@@ -703,7 +708,7 @@ namespace aspect
     // so we want to offset them by 128 and not allow more than 128 boundary ids.
     const unsigned int boundary_id_offset = 128;
     if (!boundary_temperature_manager.allows_fixed_temperature_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset);
+      replace_outflow_boundary_ids(boundary_id_offset, false, numbers::invalid_unsigned_int);
 
     // if using continuous temperature FE, do the same for the temperature variable:
     // evaluate the current boundary temperature and add these constraints as well
@@ -738,40 +743,42 @@ namespace aspect
     // update the composition boundary condition.
     boundary_composition_manager.update();
 
-    // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
-    // use the same trick for marking up outflow boundary conditions for compositional fields
-    // as we did above already for the temperature.
-    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      replace_outflow_boundary_ids(boundary_id_offset);
-
     // now do the same for the composition variables:
     {
       // obtain the boundary indicators that belong to Dirichlet-type
       // composition boundary conditions and interpolate the composition
       // there
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-        if (parameters.use_discontinuous_composition_discretization[c] == false)
-          for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
-            {
-              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-                [&] (const Point<dim> &x) -> double
+        {
+          // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
+          // use the same trick for marking up outflow boundary conditions for compositional fields
+          // as we did above already for the temperature.
+          if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+            replace_outflow_boundary_ids(boundary_id_offset, true, c);
+
+          if (parameters.use_discontinuous_composition_discretization[c] == false)
+            for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
               {
-                return boundary_composition_manager.boundary_composition(p, x, c);
-              },
-              introspection.component_masks.compositional_fields[c].first_selected_component(),
-              introspection.n_components);
+                VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+                  [&] (const Point<dim> &x) -> double
+                {
+                  return boundary_composition_manager.boundary_composition(p, x, c);
+                },
+                introspection.component_masks.compositional_fields[c].first_selected_component(),
+                introspection.n_components);
 
-              VectorTools::interpolate_boundary_values (*mapping,
-                                                        dof_handler,
-                                                        p,
-                                                        vector_function_object,
-                                                        new_current_constraints,
-                                                        introspection.component_masks.compositional_fields[c]);
-            }
+                VectorTools::interpolate_boundary_values (*mapping,
+                                                          dof_handler,
+                                                          p,
+                                                          vector_function_object,
+                                                          new_current_constraints,
+                                                          introspection.component_masks.compositional_fields[c]);
+
+              }
+          if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
+            restore_outflow_boundary_ids(boundary_id_offset);
+        }
     }
-
-    if (!boundary_composition_manager.allows_fixed_composition_on_outflow_boundaries())
-      restore_outflow_boundary_ids(boundary_id_offset);
 
     if (parameters.include_melt_transport)
       melt_handler->add_current_constraints (new_current_constraints);

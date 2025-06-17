@@ -7,7 +7,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system (GMG)... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  488 m/s, 839 m/s
+     RMS, max velocity:                  488 m/s, 841 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
      Temperature min/avg/max:            0 K, 0.5066 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
@@ -17,7 +17,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  488 m/s, 839 m/s
+     RMS, max velocity:                  488 m/s, 841 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
      Temperature min/avg/max:            0 K, 8.687 K, 34.29 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
@@ -27,7 +27,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system (GMG)... 11+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  488 m/s, 839 m/s
+     RMS, max velocity:                  488 m/s, 841 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
      Temperature min/avg/max:            0 K, 16.86 K, 67.83 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
@@ -37,7 +37,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  488 m/s, 839 m/s
+     RMS, max velocity:                  488 m/s, 841 m/s
      Pressure min/avg/max:               -4350 Pa, 0.5 Pa, 6522 Pa
      Temperature min/avg/max:            0 K, 22.53 K, 90.91 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s

@@ -15,7 +15,7 @@ Number of mesh deformation degrees of freedom: 162
      Topography min/max:         0 m, 0 m
      Compositions min/max/mass:  0/1/5.729e+10
      Compositions max depth [m]: 9.375e+04
-     RMS, max velocity:          0.000481 m/year, 0.00148 m/year
+     RMS, max velocity:          0.000481 m/year, 0.0023 m/year
 
 *** Timestep 1:  t=2500 years, dt=2500 years
    Solving mesh displacement system... 4 iterations.
@@ -28,7 +28,7 @@ Number of mesh deformation degrees of freedom: 162
      Topography min/max:         -1.125e-06 m, 1.108e-06 m
      Compositions min/max/mass:  0/1/5.729e+10
      Compositions max depth [m]: 9.375e+04
-     RMS, max velocity:          0.000481 m/year, 0.00148 m/year
+     RMS, max velocity:          0.000481 m/year, 0.0023 m/year
 
 Termination requested by criterion: end time
 

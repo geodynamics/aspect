@@ -23,7 +23,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Reference thermal diffusivity (m^2/s):         1.62e-06
      Rayleigh number:                               10000
 
-     RMS, max velocity:                  3.68e-05 m/year, 5.98e-05 m/year
+     RMS, max velocity:                  3.68e-05 m/year, 6e-05 m/year
      Temperature min/avg/max:            300 K, 1931 K, 3399 K
      Heat fluxes through boundary parts: 0 W, 0 W, 1.547e+04 W, 1.921e+04 W
      Writing graphical output:           output-convection_box_particles/solution/solution-00000

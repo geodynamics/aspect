@@ -41,6 +41,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)
@@ -73,6 +74,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

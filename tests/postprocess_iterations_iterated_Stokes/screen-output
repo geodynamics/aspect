@@ -25,7 +25,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing graphical output:         output-postprocess_iterations_iterated_Stokes/solution/solution-00000.0001
      Writing heat flux map             output-postprocess_iterations_iterated_Stokes/heat_flux.00000.0001
      Temperature min/avg/max:          0 K, 0 K, 0 K
-     RMS, max velocity:                1.05 m/s, 1.09 m/s
+     RMS, max velocity:                1.05 m/s, 1.1 m/s
      Writing depth average:            output-postprocess_iterations_iterated_Stokes/depth_average
      Pressure at top/bottom of domain: -3.469e-17 Pa, 9.652 Pa
      Computing dynamic topography      

@@ -35,34 +35,56 @@ namespace aspect
     std::pair<std::string,std::string>
     VelocityStatistics<dim>::execute (TableHandler &statistics)
     {
-      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
-      const unsigned int n_q_points = quadrature_formula.size();
+      const QIterated<dim> quadrature_formula_for_max (QTrapezoid<1>(),
+                                                       this->get_parameters().stokes_velocity_degree);
+      const unsigned int n_q_points_for_max = quadrature_formula_for_max.size();
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_quadrature_points |
-                               update_JxW_values);
-      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
+      const Quadrature<dim> &quadrature_formula_for_rms = this->introspection().quadratures.velocities;
+      const unsigned int n_q_points_for_rms = quadrature_formula_for_rms.size();
+
+      FEValues<dim> fe_values_for_max (this->get_mapping(),
+                                       this->get_fe(),
+                                       quadrature_formula_for_max,
+                                       update_values   |
+                                       update_quadrature_points |
+                                       update_JxW_values);
+
+      FEValues<dim> fe_values_for_rms (this->get_mapping(),
+                                       this->get_fe(),
+                                       quadrature_formula_for_rms,
+                                       update_values   |
+                                       update_quadrature_points |
+                                       update_JxW_values);
+
+      std::vector<Tensor<1,dim>> velocity_values_for_rms(n_q_points_for_rms);
+      std::vector<Tensor<1,dim>> velocity_values_for_max(n_q_points_for_max);
 
       double local_velocity_square_integral = 0;
       double local_max_velocity = 0;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                        velocity_values);
-            for (unsigned int q = 0; q < n_q_points; ++q)
-              {
-                local_velocity_square_integral += ((velocity_values[q] * velocity_values[q]) *
-                                                   fe_values.JxW(q));
-                local_max_velocity = std::max (std::sqrt(velocity_values[q]*velocity_values[q]),
-                                               local_max_velocity);
-              }
-          }
+        {
+          if (cell->is_locally_owned())
+            {
+              fe_values_for_rms.reinit (cell);
+              fe_values_for_rms[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                  velocity_values_for_rms);
+              fe_values_for_max.reinit (cell);
+              fe_values_for_max[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                  velocity_values_for_max);
+              for (unsigned int q = 0; q < n_q_points_for_rms; ++q)
+                {
+                  local_velocity_square_integral += ((velocity_values_for_rms[q] * velocity_values_for_rms[q]) *
+                                                     fe_values_for_rms.JxW(q));
+                }
+
+              for (unsigned int q = 0; q < n_q_points_for_max; ++q)
+                {
+                  local_max_velocity = std::max (std::sqrt(velocity_values_for_max[q]*velocity_values_for_max[q]),
+                                                 local_max_velocity);
+                }
+            }
+        }
 
       const double global_velocity_square_integral
         = Utilities::MPI::sum (local_velocity_square_integral, this->get_mpi_communicator());

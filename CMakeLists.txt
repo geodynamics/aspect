@@ -164,6 +164,7 @@ find_package(ZLIB)
 if(${ZLIB_FOUND})
   message(STATUS "Using ASPECT_WITH_ZLIB = 'ON'")
   set(ASPECT_WITH_ZLIB ON)
+  list(APPEND ASPECT_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
 else()
   message(STATUS "Using ASPECT_WITH_ZLIB = 'OFF'")
   set(ASPECT_WITH_ZLIB OFF)
@@ -177,6 +178,7 @@ if(ASPECT_WITH_PYTHON)
   find_package(Python3 COMPONENTS Interpreter Development NumPy)
   if(Python3_FOUND)
     message(STATUS "  PYTHON_EXECUTABLE: ${Python3_EXECUTABLE}")
+    list(APPEND ASPECT_INCLUDE_DIRS ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
   else()
     message(FATAL_ERROR "Python not found. Consider disabling ASPECT_WITH_PYTHON.")
   endif()
@@ -189,6 +191,7 @@ find_package(PerpleX QUIET
 if(${PerpleX_FOUND})
   message(STATUS "PerpleX found at ${PerpleX_INCLUDE_DIR}")
   set(ASPECT_WITH_PERPLEX ON)
+  list(APPEND ASPECT_INCLUDE_DIRS ${PerpleX_INCLUDE_DIR})
 else()
   set(ASPECT_WITH_PERPLEX OFF)
 endif()
@@ -200,8 +203,8 @@ message(STATUS "Using ASPECT_WITH_LIBDAP = '${ASPECT_WITH_LIBDAP}'")
 if(ASPECT_WITH_LIBDAP)
   find_package(LIBDAP)
   if(${LIBDAP_FOUND})
-    include_directories(${LIBDAP_INCLUDE_DIRS})
     message(STATUS "LIBDAP found at ${LIBDAP_LIBRARY}\n")
+    list(APPEND ASPECT_INCLUDE_DIRS ${LIBDAP_INCLUDE_DIRS})
   else()
     message(FATAL_ERROR "LIBDAP not found. Disable ASPECT_WITH_LIBDAP or specify a hint to your installation directory with LIBDAP_DIR.")
   endif()
@@ -215,10 +218,10 @@ set(ASPECT_WITH_FASTSCAPE OFF CACHE BOOL
 message(STATUS "Using ASPECT_WITH_FASTSCAPE = '${ASPECT_WITH_FASTSCAPE}'")
 
 if(ASPECT_WITH_FASTSCAPE)
-  find_library(FASTSCAPE NAMES fastscapelib_fortran
+  find_library(FASTSCAPE_LIB_NAME NAMES fastscapelib_fortran
                PATHS $ENV{FASTSCAPE_DIR} ${FASTSCAPE_DIR} PATH_SUFFIXES lib
                NO_DEFAULT_PATH)
-  if(FASTSCAPE)
+  if(FASTSCAPE_LIB_NAME)
      message(STATUS "FastScape library found at ${FASTSCAPE_DIR}")
 
     # Get the fastscape source path so we can check the version further down below.
@@ -262,7 +265,7 @@ if(ASPECT_WITH_FASTSCAPE)
     include(CheckLibraryExists)
     set(_required_libs "${CMAKE_REQUIRED_LIBRARIES}")
     set(CMAKE_REQUIRED_LIBRARIES "gfortran")
-    check_library_exists(${FASTSCAPE} fastscape_named_vtk_ "" ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
+    check_library_exists(${FASTSCAPE_LIB_NAME} fastscape_named_vtk_ "" ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
     if (ASPECT_HAVE_FASTSCAPE_NAMED_VTK)
       message(STATUS "Found fastscape_named_vtk -- enabling its use")
     else()
@@ -285,6 +288,7 @@ if(ASPECT_WITH_NETCDF)
     message(STATUS "  NETCDF_INCLUDE_DIR: ${NETCDF_INCLUDE_DIR}")
     message(STATUS "  NETCDF_LIBRARY: ${NETCDF_LIBRARY}")
     message(STATUS "  NETCDF_VERSION: ${NETCDF_VERSION}")
+    list(APPEND ASPECT_INCLUDE_DIRS ${NETCDF_INCLUDE_DIRS})
   else()
     message(STATUS "NetCDF not found. Disabling ASPECT_WITH_NETCDF. You can specify a hint to your installation directory with NETCDF_DIR.")
     set(ASPECT_WITH_NETCDF OFF CACHE BOOL "" FORCE)
@@ -305,11 +309,13 @@ if(ASPECT_WITH_WORLD_BUILDER)
     set(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
   endif()
 
-  # Add the WorldBuilder include dirs. This includes both the WorldBuilder
-  # header files, as well as where the cmake run we do below puts the
-  # WorldBuilder config.h file.
-  include_directories("${WORLD_BUILDER_SOURCE_DIR}/include/")
-  include_directories("${CMAKE_BINARY_DIR}/world_builder/include")
+  # Add the WorldBuilder include dirs. This covers both the
+  # WorldBuilder header files. The cmake run we do below puts the
+  # WorldBuilder config.h file into directories that are different for
+  # debug and release builds, and so we add these files later when we
+  # describe how to link against the WorldBuilder, specific for each
+  # executable.
+  list(APPEND ASPECT_INCLUDE_DIRS "${WORLD_BUILDER_SOURCE_DIR}/include/")
 
 
   include("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
@@ -369,7 +375,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
     # generate config.cc and include it:
     configure_file("${WORLD_BUILDER_SOURCE_DIR}/include/world_builder/config.h.in"
                     "${CMAKE_BINARY_DIR}/include/world_builder/config.h" @ONLY)
-    include_directories("${CMAKE_BINARY_DIR}/include/")
+    list(APPEND ASPECT_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include/")
     file(REMOVE "${CMAKE_BINARY_DIR}/source/world_builder/config.cc")
 
     # Move some file to the end for unity builds to make sure other file come
@@ -446,6 +452,12 @@ configure_file(${CMAKE_SOURCE_DIR}/include/aspect/revision.h.in
                ${CMAKE_BINARY_DIR}/include/aspect/revision.h @ONLY)
 
 
+
+# ##############################################################################
+# Checking system properties
+# ##############################################################################
+
+
 # Check if we can raise floating point exceptions.
 #
 # Note that some library we link with in ASPECT on some platforms will trigger
@@ -471,6 +483,50 @@ if(ASPECT_USE_FP_EXCEPTIONS)
     message(STATUS "No support for feenableexcept(), disabling runtime floating point exception checks.")
   endif()
 endif()
+
+
+# See if we can use dlopen to load plugin libraries.
+include(CheckCXXSourceCompiles)
+
+set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
+check_cxx_source_compiles("
+#include <cstddef>
+#include <dlfcn.h>
+
+int main()
+{
+  void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
+  return handle == NULL || dlerror();
+}
+" HAVE_DLOPEN)
+set(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
+
+if(NOT HAVE_DLOPEN)
+  message(STATUS "dlopen() test failed, disabling dynamic plugin loading")
+  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+endif()
+
+if(ASPECT_USE_SHARED_LIBS)
+  message(STATUS "Enabling dynamic loading of plugins from the input file")
+else()
+  message(STATUS "Disabling dynamic loading of plugins from the input file")
+endif()
+
+
+# See whether we can verify that every plugin we load is compiled against
+# the same deal.II library
+set(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
+include(CheckIncludeFileCXX)
+check_include_file_cxx("link.h" _HAVE_LINK_H)
+if(NOT _HAVE_LINK_H)
+  set(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
+endif()
+if(ASPECT_HAVE_LINK_H)
+  message(STATUS "Enabling checking of compatible deal.II library when loading plugins")
+endif()
+
+
 
 # Check if we want to precompile header files. This speeds up compile time,
 # but can fail on some machines with old CMake. Starting with CMake 3.16
@@ -529,6 +585,19 @@ list(REMOVE_ITEM  ASPECT_SOURCE_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/source/main
 file(GLOB_RECURSE ASPECT_UNIT_TEST_FILES "unit_tests/*.cc" "contrib/catch/catch.hpp")
 set(ASPECT_MAIN_FILE "source/main.cc")
 
+# Create the combined set of source files that make up the project
+set(ASPECT_ALL_SOURCE_FILES
+    ${ASPECT_MAIN_FILE}
+    ${ASPECT_UNIT_TEST_FILES}
+    ${ASPECT_SOURCE_FILES})
+
+# Add the ASPECT include directories to what we already have from
+# above. Put the ASPECT header files to the front of the list, whereas
+# the 'catch' headers can be preempted by the system
+list(PREPEND ASPECT_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
+list(APPEND  ASPECT_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/contrib/catch)
+
+
 # Special treatment of some files for unity builds. We need to exclude them
 # because otherwise template class instantiations split across several
 # .cc files (for example Simulator<dim> in core.cc, helper_functions.cc,
@@ -536,20 +605,13 @@ set(ASPECT_MAIN_FILE "source/main.cc")
 # lead to errors with duplicate instantiations. The only reliable option
 # is to exclude the files that instantiate the whole class.
 set(UNITY_SEPARATE_FILES
-  "source/simulator/core.cc;source/volume_of_fluid/handler.cc")
+  "source/simulator/core.cc")
 
 foreach(_source_file ${UNITY_SEPARATE_FILES})
   set(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
   set_property(SOURCE ${_full_name} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
 endforeach()
 
-
-
-# Set up include directories. Put the ASPECT header files
-# to the front of the list, whereas the 'catch' headers can
-# be preempted by the system
-include_directories(BEFORE ${CMAKE_BINARY_DIR}/include include)
-include_directories(AFTER  contrib/catch)
 
 # Set the name of the main targets in the form of
 # TARGET_EXE/LIB_DEBUG/RELEASE. Set TARGET_EXE as the debug build,
@@ -571,268 +633,13 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
 endif()
 
 
-message(STATUS "Writing externally readable configuration information")
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-  "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
-  VERSION ${ASPECT_PACKAGE_VERSION}
-  COMPATIBILITY AnyNewerVersion
-)
-
-# Configure a cmake fragment that plugins can use to
-# set up compiler flags, include paths, etc to compile an
-# ASPECT plugin.
-# Config for the build dir:
-set(CONFIG_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/include" "${CMAKE_SOURCE_DIR}/include")
-set(CONFIG_DIR "${CMAKE_BINARY_DIR}")
-configure_file(
-  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
-  ${CMAKE_BINARY_DIR}/AspectConfig.cmake
-  @ONLY
-)
-# Config for the install dir:
-set(CONFIG_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
-set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
-configure_file(
-  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
-  ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake
-  @ONLY
-)
-
-# Next, set up the testsuite
-
-set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
-set(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
-set(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
-
-configure_file(
-  ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
-  ${CMAKE_BINARY_DIR}/CTestCustom.ctest
-  @ONLY
-)
-configure_file(
-  ${CMAKE_SOURCE_DIR}/tests/cmake/print_test_info.sh
-  ${CMAKE_BINARY_DIR}/print_test_info.sh
-  @ONLY
-)
-
-# enable all tests and force a re-run of the cmake configuration in the test/ folder:
-add_custom_target(setup_tests
-  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON . >/dev/null
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  COMMENT "Enabling all tests ...")
-
-set(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING
-  "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
-
-
-# This is an empty target but we will make it depend on tests/ and unit_tests/ next:
-add_custom_target(test)
-
-# Generate CTestTestfile.cmake in the main build folder that lists all subfolders
-# that contain tests. This way you can call "ctest" in the build directory.
-file(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
-  # If we have the unit_tests directory, add it so ctest picks it up and configure
-  # the test project in the subfolder:
-  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unit_tests)\n")
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests)
-  execute_process(
-    COMMAND ${CMAKE_COMMAND}
-        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
-        ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests
-    OUTPUT_FILE setup_unit_tests.log
-    RESULT_VARIABLE test_cmake_result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
-   )
-  if(NOT test_cmake_result EQUAL 0)
-    message(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
-  endif()
-
-  # Finally create a custom target to run the tests:
-  add_custom_target(run_unit_tests
-    COMMAND ${CMAKE_BINARY_DIR}/aspect --test
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
-    DEPENDS ${TARGET_EXE}
-    COMMENT "Running unit_tests ...")
-endif()
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
-  # Hook up the tests:
-  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
-endif()
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
-  AND ${ASPECT_NEED_TEST_CONFIGURE})
-
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
-
-  # set a flag so we don't need to rerun this configuration step every time:
-  set(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
-
-  message(STATUS "Setting up test project, see tests/setup_tests.log for details.")
-  execute_process(
-    COMMAND ${CMAKE_COMMAND} -G ${ASPECT_TEST_GENERATOR}
-        -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
-        -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
-        -D Aspect_DIR=${CMAKE_BINARY_DIR}
-        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests
-    OUTPUT_FILE setup_tests.log
-    RESULT_VARIABLE test_cmake_result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-   )
-  if(NOT test_cmake_result EQUAL 0)
-    message(FATAL_ERROR "ERROR: tests/ project could not be configured.")
-  endif()
-
-  # Finally create a custom target:
-  add_custom_target(run_tests
-    COMMAND ${CMAKE_COMMAND} --build . --target test
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
-    DEPENDS ${TARGET_EXE}
-    COMMENT "Running tests ...")
-endif()
-
-# Provide the "generate_reference_output" target:
-add_custom_target(generate_reference_output
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-
-# Provide "indent" target for indenting all headers and source files
-add_custom_target(indent
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  COMMAND ./contrib/utilities/indent
-  COMMENT "Indenting all ASPECT header and source files..."
-  )
-
-if(CMAKE_GENERATOR MATCHES "Ninja")
-  set(_make_command "$ ninja")
-else()
-  set(_make_command " $ make")
-endif()
-
-# Provide "release" and "debug" targets to switch compile mode
-if(${DEAL_II_BUILD_TYPE} MATCHES "DebugRelease")
-add_custom_target(release
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Release mode. Now recompile with: ${_make_command}"
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to RELEASE mode..."
-  )
-add_custom_target(debug
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug mode. Now recompile with: ${_make_command}"
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to DEBUG mode..."
-  )
-add_custom_target(debugrelease
-  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=DebugRelease .
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug and Release mode. Now recompile with: ${_make_command}"
-  COMMAND ${CMAKE_COMMAND} -E echo "***"
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  VERBATIM
-  COMMENT "switching to DEBUG/RELEASE mode..."
-  )
-endif()
-
-# Provide a "distclean" target (like it is done in deal.II):
-add_custom_target(distclean
-  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
-  COMMAND ${CMAKE_COMMAND} -E remove_directory CMakeFiles
-  COMMAND ${CMAKE_COMMAND} -E remove
-    CMakeCache.txt cmake_install.cmake Makefile
-    build.ninja rules.ninja .ninja_deps .ninja_log
-  COMMENT "distclean invoked"
-  )
-
-
-
-file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
-"message(
-\"###
-#
-#  Project ${TARGET_EXE} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
-#      ${DEAL_II_PATH}
-#
-#  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
-#
-#  You can now run
-#      ${_make_command}                - to compile and link ${TARGET_EXE}
-#      ${_make_command} debug          - to switch the build type to 'Debug'
-#      ${_make_command} release        - to switch the build type to 'Release'
-#      ${_make_command} debugrelease   - to switch the build type to compile both
-#      ${_make_command} clean          - to remove the generated executable as well as
-#                               all intermediate compilation files
-#      ${_make_command} distclean      - to clean the directory from all generated
-#                               files (includes clean, runclean and the removal
-#                               of the generated build system)
-#      ${_make_command} setup_tests    - enable all tests and re-run test detection
-#      ${_make_command} indent         - fix indentation of all source files
-#      ${_make_command} info           - to view this message again
-\")")
-
-# Provide "info" target
-add_custom_target(info
-  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
-  )
-
-
-INCLUDE (CheckCXXSourceCompiles)
-
-set(_backup_libs ${CMAKE_REQUIRED_LIBRARIES})
-list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
-check_cxx_source_compiles("
-#include <cstddef>
-#include <dlfcn.h>
-
-int main()
-{
-  void *handle = dlopen (\"somelib.so\", RTLD_LAZY);
-  return handle == NULL || dlerror();
-}
-" HAVE_DLOPEN)
-set(CMAKE_REQUIRED_LIBRARIES ${_backup_libs})
-
-if(NOT HAVE_DLOPEN)
-  message(STATUS "dlopen() test failed, disabling dynamic plugin loading")
-  set(ASPECT_USE_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-endif()
-
-if(ASPECT_USE_SHARED_LIBS)
-  message(STATUS "Enabling dynamic loading of plugins from the input file")
-else()
-  message(STATUS "Disabling dynamic loading of plugins from the input file")
-endif()
-
-# See whether we can verify that every plugin we load is compiled against
-# the same deal.II library
-set(ASPECT_HAVE_LINK_H ON CACHE BOOL "If ON, link.h exists and is usable.")
-include(CheckIncludeFileCXX)
-check_include_file_cxx("link.h" _HAVE_LINK_H)
-if(NOT _HAVE_LINK_H)
-  set(ASPECT_HAVE_LINK_H OFF CACHE BOOL "" FORCE)
-endif()
-if(ASPECT_HAVE_LINK_H)
-  message(STATUS "Enabling checking of compatible deal.II library when loading plugins")
-endif()
 
 # deal.II versions >=9.5 disable deprecation warnings in user code. Enable
 # the warnings again by removing the flag that disables them.
 string(REPLACE "-Wno-deprecated-declarations" "" DEAL_II_WARNING_FLAGS "${DEAL_II_WARNING_FLAGS}")
 
-set(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
+set(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING
+    "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
 
 if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
   message(STATUS "Appending ASPECT_ADDITIONAL_CXX_FLAGS: '${ASPECT_ADDITIONAL_CXX_FLAGS}':")
@@ -844,20 +651,14 @@ if(NOT ASPECT_ADDITIONAL_CXX_FLAGS STREQUAL "")
 endif()
 
 
-# Create the combined set of source files that make up the project
-set(TARGET_SRC
-    ${ASPECT_MAIN_FILE}
-    ${ASPECT_UNIT_TEST_FILES}
-    ${ASPECT_SOURCE_FILES})
-
-
 
 # Set up targets for ASPECT executables:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-  add_executable(${TARGET_EXE_DEBUG} ${TARGET_SRC})
+  add_executable(${TARGET_EXE_DEBUG} ${ASPECT_ALL_SOURCE_FILES})
   set_property(TARGET ${TARGET_EXE_DEBUG}
                PROPERTY OUTPUT_NAME aspect-debug)
 
+  target_include_directories(${TARGET_EXE_DEBUG} PRIVATE ${ASPECT_INCLUDE_DIRS})
   target_compile_flags(${TARGET_EXE_DEBUG} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
     "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_DEBUG}"
     )
@@ -868,10 +669,11 @@ if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
 endif()
 
 if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-  add_executable(${TARGET_EXE_RELEASE} ${TARGET_SRC})
+  add_executable(${TARGET_EXE_RELEASE} ${ASPECT_ALL_SOURCE_FILES})
   set_property(TARGET ${TARGET_EXE_RELEASE}
                PROPERTY OUTPUT_NAME aspect-release)
 
+  target_include_directories(${TARGET_EXE_RELEASE} PRIVATE ${ASPECT_INCLUDE_DIRS})
   target_compile_flags(${TARGET_EXE_RELEASE} PRIVATE "$<COMPILE_LANGUAGE:CXX>"
     "${DEAL_II_WARNING_FLAGS} ${DEAL_II_CXX_FLAGS} ${DEAL_II_CXX_FLAGS_RELEASE}"
     )
@@ -880,6 +682,12 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
     )
   target_link_libraries(${TARGET_EXE_RELEASE} dealii::dealii_release)
 endif()
+
+# Make sure we have the rpath to our dependencies set:
+foreach(_T ${TARGET_EXECUTABLES})
+  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+endforeach()
+
 
 # Make sure that we have an executable 'aspect' that
 # links to the debug version, or the release version if
@@ -894,8 +702,6 @@ add_custom_target(aspect ALL
                            ${CMAKE_BINARY_DIR}/aspect                    # link name
                   DEPENDS ${TARGET_EXE}
                   COMMENT "Creating symlink from ${TARGET_EXE} to './aspect'")
-install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
-	TYPE BIN)
 
 # This should be done in DEAL_II_SETUP_TARGET, but deal.II 9.5
 # does not do so, so do it here. Remove this when we require deal.II 9.6.
@@ -905,10 +711,11 @@ if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
   endif()
 endif()
 
-# turn on debug checks like invalid element access in c++ standard library:
+# Turn on debug checks like invalid element access in c++ standard library:
 if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
   target_compile_definitions(${TARGET_EXE_DEBUG} PUBLIC "_GLIBCXX_ASSERTIONS")
 endif()
+
 
 
 # ##############################################################################
@@ -918,7 +725,6 @@ endif()
 # zlib
 if(${ZLIB_FOUND})
   message(STATUS "Linking ASPECT against zlib")
-  include_directories(${ZLIB_INCLUDE_DIR})
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${ZLIB_LIBRARY})
   endforeach()
@@ -927,8 +733,6 @@ endif()
 # Python3
 if(${Python3_FOUND})
   message(STATUS "Linking ASPECT against Python3")
-  include_directories(${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
-
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${Python3_LIBRARIES})
   endforeach()
@@ -937,7 +741,6 @@ endif()
 # PerpleX
 if(${PerpleX_FOUND})
   message(STATUS "Linking ASPECT against PerpleX")
-  include_directories(${PerpleX_INCLUDE_DIR})
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${PerpleX_LIBRARIES})
   endforeach()
@@ -946,32 +749,37 @@ endif()
 # libdap
 if(${LIBDAP_FOUND})
   message(STATUS "Linking ASPECT against libdap")
-  include_directories(${LIBDAP_INCLUDE_DIRS})
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${LIBDAP_LIBRARIES})
   endforeach()
 endif()
 
 # Fastscape
-if (FASTSCAPE)
+if (FASTSCAPE_LIB_NAME)
   message(STATUS "Linking ASPECT against Fastscape")
   foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} ${FASTSCAPE})
+    target_link_libraries(${_T} ${FASTSCAPE_LIB_NAME})
   endforeach()
 
-  # Also link against the compiler support library because fastscapelib_fortran
-  # is only a static library that doesn't record that it needs the compiler
-  # support library.
-  message(STATUS "Linking ASPECT against gfortran support library")
-  foreach(_T ${TARGET_EXECUTABLES})
-    target_link_libraries(${_T} gfortran)
-  endforeach()
+  # If fastscapelib_fortran is only a static library, then we also
+  # need to link against the compiler support library because static
+  # libraries don't record their dependencies.
+  #
+  # CMake does not seem to have a good way to determine whether a file is
+  # a shared or static library, but because static libraries end in .a
+  # on both Mac and Unix (and, I think Windows), we can test that:
+  string(REGEX MATCH ".*\\.a$" _res "${FASTSCAPE_LIB_NAME}")
+  if(_res)
+    message(STATUS "Linking ASPECT against gfortran support library")
+    foreach(_T ${TARGET_EXECUTABLES})
+      target_link_libraries(${_T} gfortran)
+    endforeach()
+  endif()
 endif()
 
 # NetCDF
 if(${NETCDF_FOUND})
   message(STATUS "Linking ASPECT against NetCDF")
-  include_directories(${NETCDF_INCLUDE_DIRS})
   foreach(_T ${TARGET_EXECUTABLES})
     target_link_libraries(${_T} ${NETCDF_LIBRARIES})
   endforeach()
@@ -981,12 +789,18 @@ endif()
 if(WORLD_BUILDER_VERSION VERSION_GREATER_EQUAL 0.6.0 AND ASPECT_WITH_WORLD_BUILDER)
   message(STATUS "Linking ASPECT against WorldBuilder")
   if(${ASPECT_BUILD_DEBUG} STREQUAL "ON")
-    target_include_directories(${TARGET_EXE_DEBUG} PUBLIC "${CMAKE_BINARY_DIR}/world_builder/include/")
+    # Add those WorldBuilder include directories to the include
+    # directory list that are specific to the build (debug or
+    # release):
+    target_include_directories(${TARGET_EXE_DEBUG} PRIVATE "${CMAKE_BINARY_DIR}/world_builder/include/")
     target_link_libraries(${TARGET_EXE_DEBUG} WorldBuilderDebug)
   endif()
 
   if(${ASPECT_BUILD_RELEASE} STREQUAL "ON")
-    target_include_directories(${TARGET_EXE_RELEASE} PUBLIC "${CMAKE_BINARY_DIR}/world_builder_release/include/")
+    # Add those WorldBuilder include directories to the include
+    # directory list that are specific to the build (debug or
+    # release):
+    target_include_directories(${TARGET_EXE_RELEASE} PRIVATE "${CMAKE_BINARY_DIR}/world_builder_release/include/")
     target_link_libraries(${TARGET_EXE_RELEASE} WorldBuilderRelease)
   endif()
 endif()
@@ -1038,28 +852,267 @@ else()
 endif()
 
 
-#
-## installation
-#
-# binaries:
+# ##############################################################################
+# Installation
+# ##############################################################################
+
+
+# Binaries:
+install(PROGRAMS ${CMAKE_BINARY_DIR}/aspect
+	TYPE BIN)
+
 install(TARGETS ${TARGET_EXECUTABLES}
-  RUNTIME DESTINATION bin
-  COMPONENT runtime)
+        RUNTIME
+        COMPONENT runtime)
+
+# Headers. We install *all* headers of ASPECT, including the ones that
+# declare our cornucopia of plugins. This seems wrong at first -- one
+# would hope that user-defined plugins really only depend on
+# simulator.h, simulator_access.h, the various */interface.h, and a
+# handful of other files, with the remaining ones then marked as
+# PRIVATE headers. But on second thought, code often asks whether, for
+# example, we use this or that geometry model, or has this or that
+# additional material model output object. For this to work, one
+# actually does need to have access to the declarations of these
+# classes -- in other words, to all of the ASPECT headers.
+install(DIRECTORY
+          include/
+          ${CMAKE_BINARY_DIR}/include/
+        DESTINATION include
+        COMPONENT includes
+        FILES_MATCHING PATTERN "*.h")
+
+message(STATUS "Writing externally readable configuration information")
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_BINARY_DIR}/AspectConfigVersion.cmake"
+  VERSION ${ASPECT_PACKAGE_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+# Configure a cmake fragment that plugins can use to
+# set up compiler flags, include paths, etc. to compile an
+# ASPECT plugin.
+# Config for the build dir:
+set(CONFIG_DIR "${CMAKE_BINARY_DIR}")
+configure_file(
+  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
+  ${CMAKE_BINARY_DIR}/AspectConfig.cmake
+  @ONLY
+)
+
+# Config for the install dir:
+set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/bin")
+configure_file(
+  ${CMAKE_SOURCE_DIR}/cmake/AspectConfig.cmake.in
+  ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake
+  @ONLY
+)
 
 
-# make sure we have the rpath to our dependencies set:
-foreach(_T ${TARGET_EXECUTABLES})
-  set_property(TARGET ${_T} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
-endforeach()
+# ##############################################################################
+# Setting up the testsuite
+# ##############################################################################
 
-# headers:
-install(DIRECTORY include/ ${CMAKE_BINARY_DIR}/include/
-  DESTINATION include
-  COMPONENT includes
-  FILES_MATCHING PATTERN "*.h")
+set(ASPECT_RUN_ALL_TESTS OFF CACHE BOOL "Set up complete test suite to run.")
+set(ASPECT_NEED_TEST_CONFIGURE ON CACHE BOOL "If true, reconfigure test project.")
+set(ASPECT_COMPARE_TEST_RESULTS ON CACHE BOOL "Compare test results with high accuracy.")
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/tests/cmake/CTestCustom.ctest.in
+  ${CMAKE_BINARY_DIR}/CTestCustom.ctest
+  @ONLY
+)
+configure_file(
+  ${CMAKE_SOURCE_DIR}/tests/cmake/print_test_info.sh
+  ${CMAKE_BINARY_DIR}/print_test_info.sh
+  @ONLY
+)
+
+# Define a target to enable all tests and force a re-run of the cmake
+# configuration in the test/ folder:
+add_custom_target(setup_tests
+  COMMAND ${CMAKE_COMMAND} -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_NEED_TEST_CONFIGURE=ON . >/dev/null
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  COMMENT "Enabling all tests ...")
+
+set(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING
+  "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
+
+
+# This is an empty target but we will make it depend on tests/ and unit_tests/ next:
+add_custom_target(test)
+
+# Generate CTestTestfile.cmake in the main build folder that lists all subfolders
+# that contain tests. This way you can call "ctest" in the build directory.
+file(WRITE ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "# auto-generated ctest file\n")
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
+  # If we have the unit_tests directory, add it so ctest picks it up and configure
+  # the test project in the subfolder:
+  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(unit_tests)\n")
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests)
+  execute_process(
+    COMMAND ${CMAKE_COMMAND}
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
+        ${CMAKE_CURRENT_SOURCE_DIR}/unit_tests
+    OUTPUT_FILE setup_unit_tests.log
+    RESULT_VARIABLE test_cmake_result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
+   )
+  if(NOT test_cmake_result EQUAL 0)
+    message(FATAL_ERROR "ERROR: unittest/ project could not be configured.")
+  endif()
+
+  # Finally create a custom target to run the tests:
+  add_custom_target(run_unit_tests
+    COMMAND ${CMAKE_BINARY_DIR}/aspect --test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/unit_tests
+    DEPENDS ${TARGET_EXE}
+    COMMENT "Running unit_tests ...")
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
+  # Hook up the tests:
+  file(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
+   AND
+   ${ASPECT_NEED_TEST_CONFIGURE})
+
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
+
+  # set a flag so we don't need to rerun this configuration step every time:
+  set(ASPECT_NEED_TEST_CONFIGURE OFF CACHE BOOL "" FORCE)
+
+  message(STATUS "Setting up test project, see tests/setup_tests.log for details.")
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -G "${ASPECT_TEST_GENERATOR}"
+        -D ASPECT_RUN_ALL_TESTS=${ASPECT_RUN_ALL_TESTS}
+        -D ASPECT_COMPARE_TEST_RESULTS=${ASPECT_COMPARE_TEST_RESULTS}
+        -D Aspect_DIR=${CMAKE_BINARY_DIR}
+        -D CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -D ASPECT_BINARY=${CMAKE_BINARY_DIR}/aspect
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests
+    OUTPUT_FILE setup_tests.log
+    RESULT_VARIABLE test_cmake_result
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+   )
+  if(NOT test_cmake_result EQUAL 0)
+    message(FATAL_ERROR "ERROR: tests/ project could not be configured.")
+  endif()
+
+  # Finally create a custom target:
+  add_custom_target(run_tests
+    COMMAND ${CMAKE_COMMAND} --build . --target test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+    DEPENDS ${TARGET_EXE}
+    COMMENT "Running tests ...")
+endif()
+
+# Provide the "generate_reference_output" target:
+add_custom_target(generate_reference_output
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_reference_output.sh
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+
+# ####################################################################
+# Set up some other meta-targets (unrelated to actually compiling or
+# running any code
+# ####################################################################
+
+# Provide "indent" target for indenting all headers and source files
+add_custom_target(indent
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMAND ./contrib/utilities/indent
+  COMMENT "Indenting all ASPECT header and source files..."
+  )
+
+# Provide "release" and "debug" targets to switch compile mode
+if(CMAKE_GENERATOR MATCHES "Ninja")
+  set(_make_command "$ ninja")
+else()
+  set(_make_command " $ make")
+endif()
+
+if(${DEAL_II_BUILD_TYPE} MATCHES "DebugRelease")
+add_custom_target(release
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Release .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Release mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to RELEASE mode..."
+  )
+add_custom_target(debug
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=Debug .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to DEBUG mode..."
+  )
+add_custom_target(debugrelease
+  COMMAND ${CMAKE_COMMAND} -D CMAKE_BUILD_TYPE=DebugRelease .
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  COMMAND ${CMAKE_COMMAND} -E echo "*** Switched to Debug and Release mode. Now recompile with: ${_make_command}"
+  COMMAND ${CMAKE_COMMAND} -E echo "***"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  VERBATIM
+  COMMENT "switching to DEBUG/RELEASE mode..."
+  )
+endif()
+
+# Provide a "distclean" target (like it is done in deal.II):
+add_custom_target(distclean
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
+  COMMAND ${CMAKE_COMMAND} -E remove_directory CMakeFiles
+  COMMAND ${CMAKE_COMMAND} -E remove
+    CMakeCache.txt cmake_install.cmake Makefile
+    build.ninja rules.ninja .ninja_deps .ninja_log
+  COMMENT "distclean invoked"
+  )
+
+
+# Provide an "info" target that outputs some summary information and something
+# like "make help".
+file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
+"message(
+\"###
+#
+#  Project ${TARGET_EXE} set up with  ${DEAL_II_PACKAGE_NAME}-${DEAL_II_PACKAGE_VERSION}  found at
+#      ${DEAL_II_PATH}
+#
+#  CMAKE_BUILD_TYPE:          ${CMAKE_BUILD_TYPE}
+#
+#  You can now run
+#      ${_make_command}                - to compile and link ${TARGET_EXE}
+#      ${_make_command} debug          - to switch the build type to 'Debug'
+#      ${_make_command} release        - to switch the build type to 'Release'
+#      ${_make_command} debugrelease   - to switch the build type to compile both
+#      ${_make_command} clean          - to remove the generated executable as well as
+#                               all intermediate compilation files
+#      ${_make_command} distclean      - to clean the directory from all generated
+#                               files (includes clean, runclean and the removal
+#                               of the generated build system)
+#      ${_make_command} setup_tests    - enable all tests and re-run test detection
+#      ${_make_command} indent         - fix indentation of all source files
+#      ${_make_command} info           - to view this message again
+\")")
+
+# Provide "info" target
+add_custom_target(info
+  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake
+  )
+
 
 # examples:
-set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL "If ON all cookbooks and benchmarks will be built and installed.")
+set(ASPECT_INSTALL_EXAMPLES OFF CACHE BOOL
+    "If ON all cookbooks and benchmarks will be built and installed.")
 
 if(ASPECT_INSTALL_EXAMPLES)
   add_subdirectory(benchmarks)
@@ -1086,26 +1139,34 @@ install(FILES ${CMAKE_BINARY_DIR}/forinstall/AspectConfig.cmake ${CMAKE_BINARY_D
 install(FILES ${CMAKE_BINARY_DIR}/include/aspect/revision.h DESTINATION "include/aspect/")
 
 message(STATUS "Writing configuration details into detailed.log...")
-
-
 message(STATUS "")
-MESSAGE(STATUS "===== Configuring ASPECT documentation =============")
+
 
 ###########################################################
-# Having configured most of the compilation phase, now also
-# deal with other parts of the system.
+# Now also deal with other parts of the system.
 ###########################################################
+
+message(STATUS "===== Configuring ASPECT documentation =============")
 
 # Start with the documentation
 
 add_subdirectory(doc)
 
+message(STATUS "")
+message(STATUS "")
+
+###########################################################
+# Finally, print a summary.
+###########################################################
+
 include(cmake/write_config)
 
-# print "info" if run for the first time:
+# Print "info" if run for the first time:
 if(NOT USAGE_PRINTED)
   include(${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/print_usage.cmake)
   set(USAGE_PRINTED TRUE CACHE INTERNAL "")
 else()
   message(STATUS "Run  ${_make_command} info  to print a detailed help message")
 endif()
+
+message(STATUS "")

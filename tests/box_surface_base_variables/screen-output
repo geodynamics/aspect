@@ -20,7 +20,7 @@ Number of degrees of freedom: 1,968 (1,413+84+471)
 
    Postprocessing:
      Writing graphical output: output-box_surface_base_variables/solution/solution-00000
-     RMS, max velocity:        0.0384 m/year, 0.0885 m/year
+     RMS, max velocity:        0.0384 m/year, 0.0902 m/year
      Topography min/max:       2e+04 m, 5.5e+04 m
 
 Termination requested by criterion: end time

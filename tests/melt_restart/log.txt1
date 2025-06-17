@@ -79,7 +79,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Postprocessing:
      Writing graphical output:  output1.tmp/solution/solution-00000
      Compositions min/max/mass: 0/0/0 // 0/0/0
-     RMS, max velocity:         0.00109 m/year, 0.00296 m/year
+     RMS, max velocity:         0.00109 m/year, 0.00389 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
      Writing depth average:     output1.tmp/depth_average
 
@@ -99,7 +99,7 @@ Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
    Postprocessing:
      Writing graphical output:  output1.tmp/solution/solution-00001
      Compositions min/max/mass: 0/0/0 // 0/0/0
-     RMS, max velocity:         0.00109 m/year, 0.00296 m/year
+     RMS, max velocity:         0.00109 m/year, 0.00389 m/year
      Temperature min/avg/max:   293 K, 2023 K, 3700 K
 
 Termination requested by criterion: end time

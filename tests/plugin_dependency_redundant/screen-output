@@ -13,7 +13,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
 
    Postprocessing:
-     RMS, max velocity:             0.00125 m/s, 0.00345 m/s
+     RMS, max velocity:             0.00125 m/s, 0.00365 m/s
      Errors u_L1, p_L1, u_L2, p_L2: 7.964441e-05, 1.174943e-01, 1.069688e-04, 1.192654e-01
 
 Termination requested by criterion: end time

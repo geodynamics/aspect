@@ -133,7 +133,7 @@ Repeating the current time step based on the time stepping manager ...
      Compositions min/max/mass: -1.676e+06/2.648e+06/7.817e+12 // -2.648e+06/1.676e+06/-7.817e+12 // -1.759e+06/3.76e+06/1.154e+17 // -1.676e+06/2.648e+06/1.063e+13 // -2.648e+06/1.676e+06/-1.063e+13 // -1.759e+06/3.76e+06/1.154e+17
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -0.4746 m, 0.7428 m
-     RMS, max velocity:         15 m/year, 39.3 m/year
+     RMS, max velocity:         15 m/year, 41.1 m/year
 
 Number of active cells: 517 (on 3 levels)
 Number of degrees of freedom: 33,522 (4,448+578+578+4,653+4,653+4,653+4,653+4,653+4,653)

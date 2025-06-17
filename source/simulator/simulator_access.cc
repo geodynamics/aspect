@@ -453,6 +453,15 @@ namespace aspect
 
 
   template <int dim>
+  const BoundaryConvectiveHeating::Manager<dim> &
+  SimulatorAccess<dim>::get_boundary_convective_heating_manager () const
+  {
+    return simulator->boundary_convective_heating_manager;
+  }
+
+
+
+  template <int dim>
   const BoundaryHeatFlux::Interface<dim> &
   SimulatorAccess<dim>::get_boundary_heat_flux () const
   {
@@ -486,6 +495,15 @@ namespace aspect
   SimulatorAccess<dim>::get_fixed_temperature_boundary_indicators () const
   {
     return get_boundary_temperature_manager().get_fixed_temperature_boundary_indicators();
+  }
+
+
+
+  template <int dim>
+  const std::set<types::boundary_id> &
+  SimulatorAccess<dim>::get_fixed_convective_heating_boundary_indicators () const
+  {
+    return get_boundary_convective_heating_manager().get_convective_heating_boundary_indicators();
   }
 
 

@@ -8,7 +8,7 @@ Number of degrees of freedom: 740 (450+65+225)
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00000
-     RMS, max velocity:                  8.26e-07 m/year, 1.47e-06 m/year
+     RMS, max velocity:                  8.26e-07 m/year, 1.46e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 1027 W, 1925 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
@@ -22,7 +22,7 @@ Number of degrees of freedom: 2,124 (1,298+177+649)
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00001
-     RMS, max velocity:                  6.2e-07 m/year, 1.16e-06 m/year
+     RMS, max velocity:                  6.2e-07 m/year, 1.15e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
@@ -36,7 +36,7 @@ Number of degrees of freedom: 4,308 (2,642+345+1,321)
 
    Postprocessing:
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00002
-     RMS, max velocity:                  6.2e-07 m/year, 1.16e-06 m/year
+     RMS, max velocity:                  6.2e-07 m/year, 1.15e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
@@ -65,7 +65,7 @@ Number of degrees of freedom: 7,116 (4,370+561+2,185)
      Rayleigh number:                               6.00303
 
      Writing graphical output:           output-minimum_refinement_function_spherical/solution/solution-00003
-     RMS, max velocity:                  6.2e-07 m/year, 1.16e-06 m/year
+     RMS, max velocity:                  6.2e-07 m/year, 1.15e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average

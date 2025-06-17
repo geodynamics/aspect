@@ -1637,7 +1637,8 @@ namespace aspect
             }
           else
             {
-              const int error_code = Utilities::MPI::broadcast(mpi_communicator, error_code, /* root = */ 0);
+              const int dummy = -1;
+              const int error_code = Utilities::MPI::broadcast(mpi_communicator, dummy, /* root = */ 0);
 
               if (error_code != 0)
                 throw QuietException();
@@ -2363,6 +2364,7 @@ namespace aspect
     InitialComposition::Manager<dim>::declare_parameters (prm);
     PrescribedStokesSolution::declare_parameters<dim> (prm);
     BoundaryTemperature::Manager<dim>::declare_parameters (prm);
+    BoundaryConvectiveHeating::Manager<dim>::declare_parameters (prm);
     BoundaryComposition::Manager<dim>::declare_parameters (prm);
     AdiabaticConditions::declare_parameters<dim> (prm);
     BoundaryVelocity::Manager<dim>::declare_parameters (prm);

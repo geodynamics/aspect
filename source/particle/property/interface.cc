@@ -481,10 +481,9 @@ namespace aspect
         particle_properties.reserve(property_information.n_components());
 
         unsigned int property_index = 0;
-        for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-             p = this->plugin_objects.begin(); p!=this->plugin_objects.end(); ++p, ++property_index)
+        for (const auto &p : this->plugin_objects)
           {
-            switch ((*p)->late_initialization_mode())
+            switch (p->late_initialization_mode())
               {
                 case aspect::Particle::Property::initialize_to_zero:
                 {
@@ -495,8 +494,8 @@ namespace aspect
 
                 case aspect::Particle::Property::initialize:
                 {
-                  (*p)->initialize_one_particle_property(particle_location,
-                                                         particle_properties);
+                  p->initialize_one_particle_property(particle_location,
+                                                      particle_properties);
                   break;
                 }
 
@@ -606,7 +605,7 @@ namespace aspect
                       for (unsigned int particle_property_component = 0; particle_property_component < n_property_components; ++particle_property_component)
                         {
                           // Ask the particle property which field index to use to evaluate boundary condition
-                          const AdvectionField field_to_use = (*p)->advection_field_for_boundary_initialization(particle_property_component);
+                          const AdvectionField field_to_use = p->advection_field_for_boundary_initialization(particle_property_component);
 
                           Assert(field_to_use.is_temperature() == false,
                                  ExcMessage("Interpolating temperature boundary conditions to particles is not supported."));
@@ -631,6 +630,8 @@ namespace aspect
                 default:
                   Assert (false, ExcInternalError());
               }
+
+            ++property_index;
           }
 
         Assert (particle_properties.size() == property_information.n_components(), ExcInternalError());
@@ -645,11 +646,9 @@ namespace aspect
       Manager<dim>::update_particles (ParticleUpdateInputs<dim> &inputs,
                                       typename ParticleHandler<dim>::particle_iterator_range &particles) const
       {
-        unsigned int plugin_index = 0;
-        for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
-             p = this->plugin_objects.begin(); p!=this->plugin_objects.end(); ++p,++plugin_index)
+        for (const auto &p : this->plugin_objects)
           {
-            (*p)->update_particle_properties(inputs,particles);
+            p->update_particle_properties(inputs,particles);
           }
       }
 
@@ -824,10 +823,8 @@ namespace aspect
                        "all") != this->plugin_names.end())
           {
             this->plugin_names.clear();
-            for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim>>::PluginInfo>::const_iterator
-                 p = std::get<dim>(registered_plugins).plugins->begin();
-                 p != std::get<dim>(registered_plugins).plugins->end(); ++p)
-              this->plugin_names.push_back (std::get<0>(*p));
+            for (const auto &p : *std::get<dim>(registered_plugins).plugins)
+              this->plugin_names.push_back (std::get<0>(p));
           }
 
         // then go through the list, create objects and let them parse

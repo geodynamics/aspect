@@ -13,7 +13,7 @@ Number of degrees of freedom: 19,352 (5,346+2,617+5,346+697+2,673+2,673)
 
    Postprocessing:
      Topography min/max:        0 m, 0 m
-     RMS, max velocity:         0.00265 m/year, 0.00683 m/year
+     RMS, max velocity:         0.00265 m/year, 0.00669 m/year
      Writing graphical output:  output-melt_velocity_boundary_conditions/solution/solution-00000
      Compositions min/max/mass: 0/0.02/1e+09
 

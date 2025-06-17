@@ -54,6 +54,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Function<dim>::update()
@@ -65,6 +66,7 @@ namespace aspect
       else
         boundary_traction_function.set_time (this->get_time());
     }
+
 
 
     template <int dim>
@@ -98,6 +100,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

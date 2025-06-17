@@ -11,7 +11,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass:     0.001/0.001/1e+07
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     RMS, max velocity:             0.577 m/year, 1 m/year
      Heating rate (average/total):  1.703e-11 W/kg, 578.9 W
 
 *** Timestep 1:  t=3125 years, dt=3125 years
@@ -23,7 +23,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass:     0.0009988/0.0009988/9.988e+06
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     RMS, max velocity:             0.577 m/year, 1 m/year
      Heating rate (average/total):  1.697e-11 W/kg, 576.9 W
 
 *** Timestep 2:  t=6250 years, dt=3125 years
@@ -35,7 +35,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass:     0.0009977/0.0009977/9.977e+06
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     RMS, max velocity:             0.577 m/year, 1 m/year
      Heating rate (average/total):  1.691e-11 W/kg, 575 W
 
 *** Timestep 3:  t=9375 years, dt=3125 years
@@ -47,7 +47,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass:     0.0009966/0.0009966/9.966e+06
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     RMS, max velocity:             0.577 m/year, 1 m/year
      Heating rate (average/total):  1.686e-11 W/kg, 573.2 W
 
 *** Timestep 4:  t=10000 years, dt=625 years
@@ -59,7 +59,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass:     0.0009964/0.0009964/9.964e+06
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     RMS, max velocity:             0.577 m/year, 0.993 m/year
+     RMS, max velocity:             0.577 m/year, 1 m/year
      Heating rate (average/total):  1.685e-11 W/kg, 572.9 W
 
 Termination requested by criterion: end time

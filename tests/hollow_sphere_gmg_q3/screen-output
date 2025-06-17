@@ -14,8 +14,8 @@ Number of degrees of freedom: 11,054 (9,114+970+970)
 
    Postprocessing:
      Writing graphical output:              output-hollow_sphere_gmg_q3/solution/solution-00000
-     RMS, max velocity:                     1.55 m/s, 4.49 m/s
-     Pressure at top/bottom of domain:      -5.481e-15 Pa, 499.9 Pa
+     RMS, max velocity:                     1.55 m/s, 5.02 m/s
+     Pressure at top/bottom of domain:      -5.34e-15 Pa, 499.9 Pa
      Computing dynamic topography           
      Errors u_L1, p_L1, u_L2, p_L2 topo_L2: 4.488957e-02, 1.684940e+00, 1.927885e-02, 1.061151e+00, 1.939583e-03
 
@@ -32,8 +32,8 @@ Number of degrees of freedom: 23,080 (18,924+2,078+2,078)
 
    Postprocessing:
      Writing graphical output:              output-hollow_sphere_gmg_q3/solution/solution-00001
-     RMS, max velocity:                     1.55 m/s, 4.49 m/s
-     Pressure at top/bottom of domain:      4.042e-13 Pa, 499.9 Pa
+     RMS, max velocity:                     1.55 m/s, 5.02 m/s
+     Pressure at top/bottom of domain:      5.112e-14 Pa, 499.9 Pa
      Computing dynamic topography           
      Errors u_L1, p_L1, u_L2, p_L2 topo_L2: 4.815758e-02, 1.735017e+00, 2.038847e-02, 1.098952e+00, 2.387474e-03
 

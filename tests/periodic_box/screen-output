@@ -38,7 +38,7 @@ Number of degrees of freedom: 7,441 (4,568+589+2,284)
    Solving Stokes system (AMG)... 49+0 iterations.
 
    Postprocessing:
-     RMS, max velocity: 0.381 m/year, 0.917 m/year
+     RMS, max velocity: 0.381 m/year, 0.916 m/year
 
 *** Timestep 2:  t=9779.18 years, dt=4860.96 years
    Solving temperature system... 12 iterations.

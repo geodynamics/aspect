@@ -1,0 +1,5 @@
+New: A "current surface" postprocessor was added that stores the
+current surface including mesh deformation. This quantity can be visualized using
+the new 'depth with mesh deformation' postprocessor. This function is
+currently only available for 2D box geometries.
+(Derek Neuharth, 2025/06/13)

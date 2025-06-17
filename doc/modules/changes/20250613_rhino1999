@@ -1,0 +1,4 @@
+Added: A density anomaly visualization postprocessor that can output density
+anomaly from the lateral average density or from the adiabatic density reference profile.
+<br>
+(Qianyi Lu, 2025/06/13)

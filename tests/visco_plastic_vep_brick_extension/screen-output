@@ -26,7 +26,7 @@ Number of mesh deformation degrees of freedom: 252
 
 
    Postprocessing:
-     RMS, max velocity:            0.000832 m/year, 0.00138 m/year
+     RMS, max velocity:            0.000832 m/year, 0.00139 m/year
      Number of advected particles: 400
 
 
@@ -54,7 +54,7 @@ Number of mesh deformation degrees of freedom: 252
 
 
    Postprocessing:
-     RMS, max velocity:            0.000839 m/year, 0.00137 m/year
+     RMS, max velocity:            0.000839 m/year, 0.00139 m/year
      Number of advected particles: 400
 
 
@@ -83,7 +83,7 @@ Number of mesh deformation degrees of freedom: 252
 
 
    Postprocessing:
-     RMS, max velocity:            0.000844 m/year, 0.00137 m/year
+     RMS, max velocity:            0.000844 m/year, 0.00139 m/year
      Number of advected particles: 400
 
 
@@ -112,7 +112,7 @@ Number of mesh deformation degrees of freedom: 252
 
 
    Postprocessing:
-     RMS, max velocity:            0.000848 m/year, 0.00137 m/year
+     RMS, max velocity:            0.000848 m/year, 0.00138 m/year
      Number of advected particles: 400
 
 
@@ -150,7 +150,7 @@ Number of mesh deformation degrees of freedom: 252
 
 
    Postprocessing:
-     RMS, max velocity:            0.000852 m/year, 0.00136 m/year
+     RMS, max velocity:            0.000852 m/year, 0.00138 m/year
      Number of advected particles: 400
 
 
@@ -201,7 +201,7 @@ Number of mesh deformation degrees of freedom: 252
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:            0.000864 m/year, 0.00136 m/year
+     RMS, max velocity:            0.000864 m/year, 0.00137 m/year
      Number of advected particles: 400
 
 

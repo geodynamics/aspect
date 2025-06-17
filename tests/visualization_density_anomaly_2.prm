@@ -1,0 +1,89 @@
+# This is a test for the "reference profile" average density scheme of the 
+# density anomaly postprocessor.
+
+set Output directory                       = output-visualization_density_anomaly_2
+set End time                               = 0
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = false
+
+# Compared to the passive material model, we here make
+# the density composition dependent by letting it depend
+# linearly on the value of the first compositional field.
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity                           = 1e-6
+    set Thermal expansion coefficient                  = 3e-5
+    set Reference specific heat                        = 1
+    set Viscosity                                      = 1
+    set Reference density                              = 1
+    set Reference temperature                          = 0
+  end
+end
+
+# Prescribe the initial temperature. 
+subsection Initial temperature model
+  set List of model names = function
+  
+  subsection Function
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function expression = ( (y>50 && x>50) ? \
+    		 	      (1750) : (y<=50 && x>50) ?\
+			      (1850) : (y<=50 && x<=50) ?\
+                              (1550) : (1600) )
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+  set Fixed temperature boundary indicators   = bottom,top
+end
+
+# generate visualization and statistic files.
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Interpolate output            = false
+    set Output format                 = gnuplot
+    set List of output variables      = density anomaly
+    subsection Density anomaly
+      set Number of depth slices = 2
+      set Average density scheme = lateral average
+    end
+  end
+  
+end
+
+
+# other model setup
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 100
+    set Y extent  = 100
+    set X repetitions  = 1
+    set Y repetitions  = 1
+  end
+end
+
+# Free slip on all boundaries.
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left, right
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+end

@@ -34,7 +34,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
    Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0609 m/year, 0.158 m/year
+     RMS, max velocity:                  0.0609 m/year, 0.254 m/year
      Temperature min/avg/max:            273 K, 2048 K, 3500 K
      Heat fluxes through boundary parts: -9.148e+07 W, 3.063e+06 W
      Writing depth average:              output-burnman_test/depth_average
@@ -44,7 +44,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
    Solving Stokes system (GMG)... 20+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0611 m/year, 0.157 m/year
+     RMS, max velocity:                  0.0611 m/year, 0.253 m/year
      Temperature min/avg/max:            273 K, 2029 K, 3500 K
      Heat fluxes through boundary parts: -8.426e+07 W, 3.243e+06 W
 
@@ -53,7 +53,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
    Solving Stokes system (GMG)... 17+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0611 m/year, 0.157 m/year
+     RMS, max velocity:                  0.0611 m/year, 0.253 m/year
      Temperature min/avg/max:            273 K, 2026 K, 3500 K
      Heat fluxes through boundary parts: -8.485e+07 W, 3.065e+06 W
      Writing depth average:              output-burnman_test/depth_average

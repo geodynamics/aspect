@@ -47,6 +47,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     Function<dim>::update()
@@ -78,6 +79,7 @@ namespace aspect
     {
       return max_temperature;
     }
+
 
 
     template <int dim>
@@ -112,6 +114,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

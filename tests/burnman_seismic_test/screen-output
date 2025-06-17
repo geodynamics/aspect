@@ -28,7 +28,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      Writing graphical output:           output-burnman_seismic_test/solution/solution-00000
-     RMS, max velocity:                  0.504 m/year, 3.08 m/year
+     RMS, max velocity:                  0.504 m/year, 3.12 m/year
      Temperature min/avg/max:            273 K, 2055 K, 3500 K
      Heat fluxes through boundary parts: -4.725e+07 W, 3.896e+07 W
 

@@ -48,7 +48,7 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  2.14e-08 m/s, 2.44e-07 m/s
+     RMS, max velocity:                  2.14e-08 m/s, 2.62e-07 m/s
      Pressure min/avg/max:               -7.28e+10 Pa, 1.519e+09 Pa, 2.899e+11 Pa
      Mass fluxes through boundary parts: -0.03241 kg/s, -0.03241 kg/s, 0 kg/s, 4.106 kg/s
      Writing graphical output:           output-spiegelman_fail_test/solution/solution-00000
@@ -97,7 +97,7 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
    Continuing to the next timestep even though solution is not fully converged.
 
    Postprocessing:
-     RMS, max velocity:                  2.94e-09 m/s, 1.54e-08 m/s
+     RMS, max velocity:                  2.94e-09 m/s, 1.71e-08 m/s
      Pressure min/avg/max:               -2.771e+10 Pa, 3.617e+08 Pa, 6.167e+10 Pa
      Mass fluxes through boundary parts: -0.03241 kg/s, -0.03241 kg/s, 0 kg/s, -0.1108 kg/s
 

@@ -44,7 +44,7 @@ Number of degrees of freedom: 17,184 (6,528+864+3,264+3,264+3,264)
 
    Postprocessing:
      Writing graphical output:           output-entropy_plasticity/solution/solution-00000
-     RMS, max velocity:                  0.0117 m/year, 0.0483 m/year
+     RMS, max velocity:                  0.0117 m/year, 0.0485 m/year
      Temperature min/avg/max:            321 K, 1974 K, 2582 K
      Mass fluxes through boundary parts: -6.708e-07 kg/yr, 2.047e-07 kg/yr
      Compositions min/max/mass:          600/2950/2.228e+17 // 3514/5130/3.853e+17
@@ -88,7 +88,7 @@ Number of degrees of freedom: 17,184 (6,528+864+3,264+3,264+3,264)
 
 
    Postprocessing:
-     RMS, max velocity:                  0.0115 m/year, 0.0485 m/year
+     RMS, max velocity:                  0.0115 m/year, 0.0486 m/year
      Temperature min/avg/max:            321 K, 1973 K, 2582 K
      Mass fluxes through boundary parts: -6.514e-07 kg/yr, 1.937e-07 kg/yr
      Compositions min/max/mass:          600/2950/2.227e+17 // 3516/5130/3.853e+17

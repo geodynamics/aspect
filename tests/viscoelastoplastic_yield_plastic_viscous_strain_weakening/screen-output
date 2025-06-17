@@ -31,7 +31,7 @@ Number of degrees of freedom: 8,644 (882+121+441+900+900+900+900+900+900+900+900
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000707 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
      Writing graphical output:           output-viscoelastoplastic_yield_plastic_viscous_strain_weakening/solution/solution-00000
 
@@ -68,7 +68,7 @@ Number of degrees of freedom: 8,644 (882+121+441+900+900+900+900+900+900+900+900
 
 
    Postprocessing:
-     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     RMS, max velocity:                  0.000408 m/year, 0.000707 m/year
      Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
      Writing graphical output:           output-viscoelastoplastic_yield_plastic_viscous_strain_weakening/solution/solution-00001
 

@@ -11,7 +11,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass: 0.001/0.001/1e+07
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
-     RMS, max velocity:         0.577 m/year, 0.993 m/year
+     RMS, max velocity:         0.577 m/year, 1 m/year
 
 *** Timestep 1:  t=3125 years, dt=3125 years
    Solving temperature system... 0 iterations.
@@ -22,7 +22,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass: 0.0009988/0.0009988/9.988e+06
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
-     RMS, max velocity:         0.577 m/year, 0.993 m/year
+     RMS, max velocity:         0.577 m/year, 1 m/year
 
 *** Timestep 2:  t=5000 years, dt=1875 years
    Solving temperature system... 0 iterations.
@@ -33,7 +33,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass: 0.0009982/0.0009982/9.982e+06
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
-     RMS, max velocity:         0.577 m/year, 0.993 m/year
+     RMS, max velocity:         0.577 m/year, 1 m/year
 
 Termination requested by criterion: end time
 

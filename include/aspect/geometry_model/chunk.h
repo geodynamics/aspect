@@ -119,6 +119,11 @@ namespace aspect
           std::unique_ptr<Manifold<dim,dim>>
           clone() const override;
 
+          /**
+           * Return the topography at a given point
+           */
+          double topography_for_point(const Point<dim> &x_y_z) const;
+
         private:
           /**
            * A pointer to the topography model.
