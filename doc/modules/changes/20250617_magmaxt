@@ -1,4 +1,4 @@
-Added: Generalized CPO algorithm for slip systems 
+Added: Generalized CPO algorithm for slip systems
 that supports additional crystal structure types
 with existing Olivine fabrics benchmarked.
 The monoclinic mineral clinopyroxene is implemented
