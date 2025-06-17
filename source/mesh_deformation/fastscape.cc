@@ -208,7 +208,7 @@ namespace aspect
 
       // Get the deformation type names called for each boundary.
       std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_boundary_indicators_map
-        = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
+                                                          = this->get_mesh_deformation_handler().get_active_mesh_deformation_names();
 
       // Loop over each mesh deformation boundary, and make sure FastScape is only called on the surface.
       for (const types::boundary_id id : mesh_deformation_boundary_ids)
@@ -433,8 +433,8 @@ namespace aspect
           std::uniform_real_distribution<double> random_distribution(-noise_elevation,noise_elevation);
           // read sea level from the user defined function or constant value;
           const double current_sea_level = use_sea_level_function
-              ? sea_level_function.value(Point<1>()) 
-              : sea_level_constant_value;
+                                           ? sea_level_function.value(Point<1>())
+                                           : sea_level_constant_value;
 
           for (unsigned int i=0; i<fastscape_array_size; ++i)
             {
@@ -510,17 +510,17 @@ namespace aspect
                                               &bedrock_deposition_g,
                                               &sediment_deposition_g,
                                               &slope_exponent_p);
-        // Add sediments through marine sedimentation                                   
-        if (use_marine_component)
+          // Add sediments through marine sedimentation
+          if (use_marine_component)
             fastscape_set_marine_parameters_(&current_sea_level,
-                                         &sand_surface_porosity,
-                                         &silt_surface_porosity,
-                                         &sand_efold_depth,
-                                         &silt_efold_depth,
-                                         &sand_silt_ratio,
-                                         &sand_silt_averaging_depth,
-                                         &sand_transport_coefficient,
-                                         &silt_transport_coefficient);
+                                             &sand_surface_porosity,
+                                             &silt_surface_porosity,
+                                             &sand_efold_depth,
+                                             &silt_efold_depth,
+                                             &sand_silt_ratio,
+                                             &sand_silt_averaging_depth,
+                                             &sand_transport_coefficient,
+                                             &silt_transport_coefficient);
 
 
           // Find timestep size, run FastScape, and make visualizations.
@@ -619,7 +619,7 @@ namespace aspect
 
     template <int dim>
     std::vector<std::vector<double>>
-    FastScape<dim>::get_aspect_values() const
+                                  FastScape<dim>::get_aspect_values() const
     {
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");
@@ -814,10 +814,10 @@ namespace aspect
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
 
       const unsigned int current_timestep = this->get_timestep_number ();
-      // Set sea level 
+      // Set sea level
       const double current_sea_level = use_sea_level_function
-          ? sea_level_function.value(Point<1>()) 
-          : sea_level_constant_value;
+                                       ? sea_level_function.value(Point<1>())
+                                       : sea_level_constant_value;
 
       // Initialize FastScape with grid and extent.
       fastscape_init_();
@@ -845,7 +845,7 @@ namespace aspect
                                           &slope_exponent_p);
 
       if (use_marine_component)
-        
+
         fastscape_set_marine_parameters_(&current_sea_level,
                                          &sand_surface_porosity,
                                          &silt_surface_porosity,
@@ -1629,7 +1629,7 @@ namespace aspect
     {
       if (use_sea_level_function)
         {
-          sea_level_function.set_time(this->get_time() / year_in_seconds); 
+          sea_level_function.set_time(this->get_time() / year_in_seconds);
         }
     }
 
@@ -1809,16 +1809,16 @@ namespace aspect
           prm.leave_subsection();
 
           prm.enter_subsection ("Marine parameters");
-          { 
+          {
             // Define sea level as a constant value of time dependent user-defined function
             prm.declare_entry("Use sea level function", "false",
-                  Patterns::Bool(),
-                  "Whether to define sea level using a time-dependent function. "
-                  "If false, a constant value will be used.");
+                              Patterns::Bool(),
+                              "Whether to define sea level using a time-dependent function. "
+                              "If false, a constant value will be used.");
 
             prm.declare_entry("Sea level", "0.0",
-                  Patterns::Double(),
-                  "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. Units: $\\{m}$ ");
+                              Patterns::Double(),
+                              "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. Units: $\\{m}$ ");
 
             prm.enter_subsection ("Sea level function");
             {
@@ -1981,22 +1981,22 @@ namespace aspect
           {
             use_sea_level_function = prm.get_bool("Use sea level function");
             if (use_sea_level_function)
-            {
-              prm.enter_subsection("Sea level function");
               {
-                sea_level_function.parse_parameters(prm);
+                prm.enter_subsection("Sea level function");
+                {
+                  sea_level_function.parse_parameters(prm);
+                }
+                prm.leave_subsection();
+
+                // If using the function description for the sea level, no parts of the code
+                // base should use the sea_level_constant_value variable. Poison it to
+                // make sure it really isn't used anywhere:
+                sea_level_constant_value = numbers::signaling_nan<double>();
               }
-              prm.leave_subsection();
-              
-              // If using the function description for the sea level, no parts of the code
-              // base should use the sea_level_constant_value variable. Poison it to 
-              // make sure it really isn't used anywhere:
-              sea_level_constant_value = numbers::signaling_nan<double>();
-            } 
             else
-            {
-              sea_level_constant_value = prm.get_double("Sea level");
-            }
+              {
+                sea_level_constant_value = prm.get_double("Sea level");
+              }
             sand_surface_porosity = prm.get_double("Sand porosity");
             silt_surface_porosity = prm.get_double("Silt porosity");
             sand_efold_depth = prm.get_double("Sand e-folding depth");
