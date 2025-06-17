@@ -68,4 +68,3 @@ cmake-build-debug/
 build.ninja
 rules.ninja
 .ninja_*
-.DS_Store
