@@ -456,20 +456,25 @@ namespace aspect
 
           // 5. Build the erosion model
           auto spl_eroder = fastscapelib::spl_eroder<FlowGraphType>(
-            fastscapelib::make_spl_eroder(flow_graph, kff, n, m, kdd)
+            // fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
+            fastscapelib::make_spl_eroder(flow_graph, kff, n, m, 1e-5)
           );
           std::cout << "here it works 12" << std::endl;
+
+          //Only for raster grid 
+          //To propose if we add back the raster grid option later 
+          // auto diffusion_eroder = fastscapelib::make_diffusion_adi_eroder(grid, kdd);
 
           // 6. Create data arrays using grid shape
           auto elevation      = xt::adapt(h, shape);
           auto elevation_old  = xt::adapt(h_old, shape);
           auto uplift_rate    = xt::adapt(vz, shape);
 
-          //To fix the borders
-          // auto row_bounds = xt::view(uplift_rate, xt::keep(0, -1), xt::all());
-          // row_bounds = 0.0;
-          // auto col_bounds = xt::view(uplift_rate, xt::all(), xt::keep(0, -1));
-          // col_bounds = 0.0;
+          //To fix the borders for box models
+          auto row_bounds = xt::view(uplift_rate, xt::keep(0, -1), xt::all());
+          row_bounds = 0.0;
+          auto col_bounds = xt::view(uplift_rate, xt::all(), xt::keep(0, -1));
+          col_bounds = 0.0;
 
           xt::xarray<double> drainage_area  = xt::zeros<double>(shape);
           xt::xarray<double> sediment_flux  = xt::zeros<double>(shape);
@@ -541,8 +546,11 @@ namespace aspect
             std::cout << "[DEBUG] spl_erosion max = " << xt::amax(spl_erosion)()
                       << ", min = " << xt::amin(spl_erosion)() << std::endl;
 
+            //Working for raster grid only
+            // auto diff_erosion = diffusion_eroder.erode(uplifted_elevation - spl_erosion, fastscape_timestep_in_years);
+
             sediment_flux = flow_graph.accumulate(spl_erosion);
-            elevation = uplifted_elevation - spl_erosion;
+            elevation = uplifted_elevation - spl_erosion ; //- diff_erosion for raster grid
 
             std::cout << "[DEBUG] updated elevation max = " << xt::amax(elevation)()
                       << ", min = " << xt::amin(elevation)() << std::endl;
