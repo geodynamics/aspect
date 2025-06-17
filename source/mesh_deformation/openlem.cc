@@ -812,7 +812,7 @@ namespace aspect
             openlem::Node *node = grid.getNode(index_x,index_y);
             node->h = local_aspect_values[0][i];
             node->l = 0;
-            node->u = 20000;//1;//local_aspect_values[dim+2][i];
+            node->u = 2000;//1;//local_aspect_values[dim+2][i];
             if (index_x == 5 && index_y == 7)
               std::cout << "Flag fill 1 before = " << node->h << ", " << local_aspect_values[0][i] << ", node_u = " << node->u << std::endl;
             //elevation[index] = local_aspect_values[0][i];
@@ -850,7 +850,7 @@ namespace aspect
                 openlem::Node *node = grid.getNode(index_x,index_y);
                 node->h = local_aspect_values[0][i];
                 node->l = 0;
-                node->u = 100;//local_aspect_values[dim+2][i];
+                node->u = 1000;//local_aspect_values[dim+2][i];
                 if (index_x == 5 && index_y == 7)
                   std::cout << "Flag fill 2 before = " << node->h << ", " << local_aspect_values[0][i] << ", node_u = " << node->u << std::endl;
                 //const unsigned int index = local_aspect_values[1][i];
