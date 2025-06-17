@@ -69,11 +69,21 @@ namespace aspect
                                                                         rotation_matrices_grains,
                                                                         n_samples,
                                                                         this->random_number_generator);
-            const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
-            for (unsigned int i = 0; i < 3; ++i)
-              for (unsigned int j = 0; j < 6; ++j)
-                data.emplace_back(bingham_average[i][j]);
+            if (use_rotmat == true)
+              {
+                const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average<6>(weighted_rotation_matrices);
+                for (unsigned int i = 0; i < 3; ++i)
+                  for (unsigned int j = 0; j < 6; ++j)
+                    data.emplace_back(bingham_average[i][j]);
+              }
+            else
+              {
+                const std::array<std::array<double,4>,3> bingham_average = compute_bingham_average<4>(weighted_rotation_matrices);
+                for (unsigned int i = 0; i < 3; ++i)
+                  for (unsigned int j = 0; j < 4; ++j)
+                    data.emplace_back(bingham_average[i][j]);
+              }
           }
       }
 
@@ -100,13 +110,27 @@ namespace aspect
                   }
 
                 const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
-                std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices);
 
-                for (unsigned int i = 0; i < 3; ++i)
-                  for (unsigned int j = 0; j < 6; ++j)
-                    {
-                      data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
-                    }
+                if (use_rotmat == true)
+                  {
+                    std::array<std::array<double,6>,3> bingham_average = compute_bingham_average<6>(weighted_rotation_matrices);
+
+                    for (unsigned int i = 0; i < 3; ++i)
+                      for (unsigned int j = 0; j < 6; ++j)
+                        {
+                          data[this->data_position + mineral_i*18 + i*6 + j] = bingham_average[i][j];
+                        }
+                  }
+                else
+                  {
+                    std::array<std::array<double,4>,3> bingham_average = compute_bingham_average<4>(weighted_rotation_matrices);
+
+                    for (unsigned int i = 0; i < 3; ++i)
+                      for (unsigned int j = 0; j < 4; ++j)
+                        {
+                          data[this->data_position + mineral_i*12 + i*4 + j] = bingham_average[i][j];
+                        }
+                  }
               }
           }
       }
@@ -114,7 +138,8 @@ namespace aspect
 
 
       template <int dim>
-      std::array<std::array<double,6>,3>
+      template <int array_length>
+      std::array<std::array<double,array_length>,3>
       CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices) const
       {
         SymmetricTensor<2,3> sum_matrix_a;
@@ -170,14 +195,47 @@ namespace aspect
         const double eigenvalue_c2 = eigenvectors_c[1].first/matrices.size();
         const double eigenvalue_c3 = eigenvectors_c[2].first/matrices.size();
 
-        return
-        {
+        const Tensor<1,3,double> eigvec_a = eigenvectors_a[0].second;
+        const Tensor<1,3,double> eigvec_b = eigenvectors_b[0].second;
+        const Tensor<1,3,double> eigvec_c = eigenvectors_c[0].second;
+
+        // build rotation matrix from the eigen vectors
+        Tensor<2,3> R_CPO;
+        R_CPO[0][0] = eigvec_a[0];
+        R_CPO[1][0] = eigvec_a[1];
+        R_CPO[2][0] = eigvec_a[2];
+        R_CPO[0][1] = eigvec_b[0];
+        R_CPO[1][1] = eigvec_b[1];
+        R_CPO[2][1] = eigvec_b[2];
+        R_CPO[0][2] = eigvec_c[0];
+        R_CPO[1][2] = eigvec_c[1];
+        R_CPO[2][2] = eigvec_c[2];
+
+        // convert rotation matrix to euler angles phi1, theta, phi2
+        Tensor<2,3> Rot = transpose(R_CPO);
+        Rot = dealii::project_onto_orthogonal_tensors(Rot);
+        // save euler angles in radians
+        std::array<double,3> EA = Utilities::zxz_euler_angles_from_rotation_matrix(Rot); // in degrees
+        const double phi1 = EA[0]*constants::degree_to_radians;
+        const double theta = EA[1]*constants::degree_to_radians;
+        const double phi2 = EA[2]*constants::degree_to_radians;
+
+        std::array<std::array<double,array_length>,3> results;
+        if constexpr (array_length == 6)
           {
-            {{averaged_a[0],averaged_a[1],averaged_a[2], eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}},
-            {{averaged_b[0],averaged_b[1],averaged_b[2], eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}},
-            {{averaged_c[0],averaged_c[1],averaged_c[2], eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}}
+            AssertThrow(use_rotmat == true, ExcMessage("Must use rotation matrix when array_length == 6"));
+            results[0] = {{averaged_a[0], averaged_a[1], averaged_a[2], eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}};
+            results[1] = {{averaged_b[0], averaged_b[1], averaged_b[1], eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}};
+            results[2] = {{averaged_c[0], averaged_c[1], averaged_c[2], eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}};
           }
-        };
+        else if constexpr (array_length == 4)
+          {
+            AssertThrow(use_rotmat == false, ExcMessage("Must not use rotation matrix when array_length == 4"));
+            results[0] = {{phi1, eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}};
+            results[1] = {{theta, eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}};
+            results[2] = {{phi2, eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}};
+          }
+        return results;
 
       }
 
@@ -207,14 +265,29 @@ namespace aspect
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
         property_information.reserve(6*n_minerals);
-        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+        if (use_rotmat == true)
           {
-            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3);
-            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
-            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3);
-            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
-            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3);
-            property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
+            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+              {
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average a axis",3);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average b axis",3);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " bingham average c axis",3);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
+              }
+          }
+        else
+          {
+            for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
+              {
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " phi1",1);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues a axis",3);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " theta",1);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues b axis",3);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " phi2",1);
+                property_information.emplace_back("cpo mineral " + std::to_string(mineral_i) + " eigenvalues c axis",3);
+              }
           }
 
         return property_information;
@@ -240,6 +313,11 @@ namespace aspect
                              "This determines how many samples are taken when using the random "
                              "draw volume averaging. Setting it to zero means that the number of "
                              "samples is set to be equal to the number of grains.");
+          prm.declare_entry ("Use rotation matrix","true",
+                             Patterns::Bool(),
+                             "This determines whether the orientations will be saved as rotation "
+                             "matrices or Euler angles. Setting it to fause means that the "
+                             "orientations will be saved as Euler angles.");
         }
         prm.leave_subsection ();
       }
@@ -260,6 +338,7 @@ namespace aspect
           n_grains = cpo_particle_property->get_number_of_grains();
           n_minerals = cpo_particle_property->get_number_of_minerals();
           n_samples = prm.get_integer("Number of samples");
+          use_rotmat = prm.get_bool ("Use rotation matrix");
           if (n_samples == 0)
             n_samples = n_grains;
         }
