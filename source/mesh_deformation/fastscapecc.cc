@@ -71,7 +71,6 @@ namespace aspect
 
       //Fastscapelib operates on grid nodes, each of which conceptually represents a cell center
       //and has associated area and neighbor connections.
-      // n_grid_no3des = surface_mesh.n_active_cells();
       // n_grid_nodes = surface_mesh.n_active_cells();
       n_grid_nodes = surface_mesh.n_used_vertices();
     }
@@ -152,9 +151,6 @@ namespace aspect
       else
         AssertThrow(false, ExcMessage("FastScapecc plugin only supports Box or Spherical Shell geometries."));
 
-      // For the interpolation
-      // surface_cache = std::make_shared<dealii::GridTools::Cache<dim-1, dim-1>>(surface_mesh);
-
       // Having create the mesh, now set up the DoFHandlers and constraints objects
       surface_mesh_dof_handler.reinit(surface_mesh);
       surface_mesh_dof_handler.distribute_dofs(surface_fe);
@@ -193,27 +189,24 @@ namespace aspect
       const types::boundary_id top_boundary =
         this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       // std::cout<<"here it works 0a"<<std::endl;
-// TODO: I'm going to suggest the following convention, to make it easier to
-// understand what we are doing: When we are iterating over cells of the ASPECT
-// triangulation/DoFHandler, let's call the object 'volume_cell'. If we are
-// iterating over surface_mesh/surface_mesh_dof_handler, let's call the object
-// surface_cell. This way it's always clear what it is we're currently considering.
-//
-// So, here, we should rename cell->volume_cell
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
+
+      // Use `volume_cell` for volume mesh iterations,
+      // and `surface_cell` for surface mesh iterations,
+
+      for (const auto &volume_cell : this->get_dof_handler().active_cell_iterators())
+        if (volume_cell->is_locally_owned())
           {
-            for (unsigned int face = 0; face < cell->n_faces(); ++face)
+            for (unsigned int face = 0; face < volume_cell->n_faces(); ++face)
               {
-                if (!cell->face(face)->at_boundary() ||
-                    cell->face(face)->boundary_id() != top_boundary)
+                if (!volume_cell->face(face)->at_boundary() ||
+                    volume_cell->face(face)->boundary_id() != top_boundary)
                   continue;
 
-                for (unsigned int v = 0; v < cell->face(face)->n_vertices(); ++v)
+                for (unsigned int v = 0; v < volume_cell->face(face)->n_vertices(); ++v)
                   {
                     // std::cout<<"here it works 0a"<<std::endl;
 
-                    const Point<dim> pos = cell->face(face)->vertex(v);
+                    const Point<dim> pos = volume_cell->face(face)->vertex(v);
                     // std::cout<<"here it works 0b"<<std::endl;
 
                     // Extract the full velocity vector at the vertex
@@ -222,7 +215,7 @@ namespace aspect
                       {
                         // Query velocity Dofs using introspection
                         const unsigned int component_index = this->introspection().component_indices.velocities[d];
-                        velocity[d] = this->get_solution()[cell->face(face)->vertex_dof_index(v, component_index)];
+                        velocity[d] = this->get_solution()[volume_cell->face(face)->vertex_dof_index(v, component_index)];
                       }
                     // std::cout<<"here it works 0c"<<std::endl;
 

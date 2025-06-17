@@ -296,7 +296,7 @@ namespace aspect
         // Grid extent in each direction [min, max]
         // std::array<std::pair<double, double>, 2> grid_extent_surface;
 
-        std::array<std::pair<double,double>,dim> grid_extent;
+        std::array<std::pair<double,double>,dim> box_grid_extent;
 
 
         // Grid resolution (spacing between points)
