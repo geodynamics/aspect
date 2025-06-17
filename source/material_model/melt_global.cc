@@ -77,7 +77,8 @@ namespace aspect
     void
     MeltGlobal<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       double depletion = 0.0;
 
@@ -257,7 +258,8 @@ namespace aspect
       const std::shared_ptr<MeltOutputs<dim>> melt_out
         = out.template get_additional_output_object<MeltOutputs<dim>>();
 
-      if (melt_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
+      if (melt_out != nullptr && in.requests_property(MaterialProperties::additional_outputs) &&
+          this->introspection().compositional_name_exists("porosity"))
         {
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 

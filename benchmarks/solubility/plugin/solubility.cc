@@ -72,9 +72,14 @@ namespace aspect
          * @param in Object that contains the current conditions.
          * @param melt_fractions Vector of doubles that is filled with the
          * allowable free fluid fraction for each given input conditions.
+         * @param out Optional pointer to the material properties provided by the
+         * material model. By default, this variable is a nullptr. If the melt
+         * fractions depend on material model properties, then this parameter
+         * must be set to a valid pointer to a MaterialModelOutputs object.
          */
         void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions) const override;
+                             std::vector<double> &melt_fractions,
+                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         double reference_darcy_coefficient () const override;
 
@@ -357,7 +362,8 @@ namespace aspect
     void
     Volatiles<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         {

@@ -58,46 +58,78 @@ namespace aspect
     void
     ReactiveFluidTransport<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *out) const
     {
-      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
+      const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
+      if (fluid_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
         {
-          const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-          switch (fluid_solid_reaction_scheme)
+          for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
             {
-              case no_reaction:
-              {
-                // No reactions occur between the solid and fluid phases,
-                // and the fluid volume fraction (stored in the melt_fractions
-                // vector) is equal to the porosity.
-                melt_fractions[q] = in.composition[q][porosity_idx];
-                break;
-              }
-              case zero_solubility:
-              {
-                // The fluid volume fraction in equilibrium with the solid
-                // at any point (stored in the melt_fractions vector) is
-                // equal to the sum of the bound fluid content and porosity.
-                const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-                melt_fractions[q] = in.composition[q][bound_fluid_idx] + in.composition[q][porosity_idx];
-                break;
-              }
-              case tian_approximation:
-              {
-                melt_fractions[q] = tian2019_model.melt_fraction(in, porosity_idx, q);
-                break;
-              }
-              case katz2003:
-              {
-                melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
-                                                                 this->get_adiabatic_conditions().pressure(in.position[q]));
-                break;
-              }
-              default:
-              {
-                AssertThrow(false, ExcNotImplemented());
-                break;
-              }
+              const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
+              switch (fluid_solid_reaction_scheme)
+                {
+                  case no_reaction:
+                  {
+                    Assert(out != nullptr,
+                           ExcMessage("The MaterialModelOutputs provided to the No Reactions reaction model is a nullptr."));
+                    const double volume_fraction_porosity = in.composition[q][porosity_idx];
+                    // Melt fractions outputs the mass fraction of equilibrium free water at each quadrature point. However,
+                    // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
+                    // to a mass fraction so that we correctly compare the two values.
+                    const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
+                    const double bulk_density = out->densities[q] * (1.0 - in.composition[q][porosity_idx]) + fluid_out->fluid_densities[q] * in.composition[q][porosity_idx];
+                    const double mass_fraction_porosity = volume_fraction_porosity * fluid_out->fluid_densities[q] / bulk_density;
+                    // No reactions occur between the solid and fluid phases,
+                    // and the fluid mass fraction (stored in the melt_fractions
+                    // vector) is equal to the mass fraction of the porosity.
+                    melt_fractions[q] = mass_fraction_porosity;
+                    break;
+                  }
+                  case zero_solubility:
+                  {
+                    // The fluid volume fraction in equilibrium with the solid
+                    // at any point (stored in the melt_fractions vector) is
+                    // equal to the sum of the bound fluid content and porosity.
+                    Assert(out != nullptr,
+                           ExcMessage("The MaterialModelOutputs provided to the Zero Solubility reaction model is a nullptr."));
+                    const double volume_fraction_porosity = in.composition[q][porosity_idx];
+                    const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
+                    // Melt fractions outputs the mass fraction of equilibrium free water at each quadrature point. However,
+                    // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
+                    // to a mass fraction so that we correctly compare the two values.
+                    const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
+                    const double bulk_density = out->densities[q] * (1.0 - in.composition[q][porosity_idx]) + fluid_out->fluid_densities[q] * in.composition[q][porosity_idx];
+                    const double mass_fraction_porosity = volume_fraction_porosity * fluid_out->fluid_densities[q] / bulk_density;
+                    melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
+                    break;
+                  }
+                  case tian_approximation:
+                  {
+                    Assert(out != nullptr,
+                           ExcMessage("The MaterialModelOutputs provided to the Tian 2019 reaction model is a nullptr."));
+                    // The tian2019_model melt_fraction function requires the mass fraction of free water at each quadrature
+                    // point as an input. However, the free water is stored in the porosity field as a volume fraction.
+                    // We therefore convert the free water to a mass fraction so that we have the correct input.
+                    const double volume_fraction_porosity = in.composition[q][porosity_idx];
+                    const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
+                    const double bulk_density = out->densities[q] * (1.0 - volume_fraction_porosity) + fluid_out->fluid_densities[q] * volume_fraction_porosity;
+                    const double mass_fraction_porosity = volume_fraction_porosity * fluid_out->fluid_densities[q] / bulk_density;
+                    melt_fractions[q] = tian2019_model.melt_fraction(in, mass_fraction_porosity, q);
+                    break;
+                  }
+                  case katz2003:
+                  {
+                    melt_fractions[q] = katz2003_model.melt_fraction(in.temperature[q],
+                                                                     this->get_adiabatic_conditions().pressure(in.position[q]));
+                    break;
+                  }
+                  default:
+                  {
+                    AssertThrow(false, ExcNotImplemented());
+                    break;
+                  }
+                }
             }
         }
     }
@@ -150,6 +182,7 @@ namespace aspect
           const std::shared_ptr<MeltOutputs<dim>> fluid_out
             = out.template get_additional_output_object<MeltOutputs<dim>>();
 
+
           if (fluid_out != nullptr && in.requests_property(MaterialProperties::additional_outputs))
             {
               for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
@@ -160,7 +193,6 @@ namespace aspect
                   fluid_out->permeabilities[q] = reference_permeability * Utilities::fixed_power<3>(porosity) * Utilities::fixed_power<2>(1.0-porosity);
 
                   fluid_out->fluid_densities[q] = reference_rho_f * std::exp(fluid_compressibility * (in.pressure[q] - this->get_surface_pressure()));
-
                   if (in.requests_property(MaterialProperties::viscosity))
                     {
                       const double phi_0 = 0.05;
@@ -176,31 +208,96 @@ namespace aspect
           const std::shared_ptr<ReactionRateOutputs<dim>> reaction_rate_out
             = out.template get_additional_output_object<ReactionRateOutputs<dim>>();
 
-          // Fill reaction rate outputs if the model uses operator splitting.
-          // Specifically, change the porosity (representing the amount of free fluid)
-          // based on the water solubility and the fluid content.
           if (this->get_parameters().use_operator_splitting && reaction_rate_out != nullptr
               && in.requests_property(MaterialProperties::reaction_rates))
             {
+              // Fill reaction rate outputs if the model uses operator splitting.
+              // Specifically, change the porosity (representing the amount of free fluid)
+              // based on the water solubility and the fluid content.
+              double reaction_time_step_size = 1.0;
+
+              if (this->simulator_is_past_initialization())
+                {
+                  const unsigned int number_of_reaction_steps = std::max(static_cast<unsigned int>(this->get_timestep() / this->get_parameters().reaction_time_step),
+                                                                         std::max(this->get_parameters().reaction_steps_per_advection_step,1U));
+                  reaction_time_step_size = this->get_timestep() / static_cast<double>(number_of_reaction_steps);
+                }
               std::vector<double> eq_free_fluid_fractions(out.n_evaluation_points());
-              melt_fractions(in, eq_free_fluid_fractions);
+              melt_fractions(in, eq_free_fluid_fractions, &out);
 
               for (unsigned int q=0; q<out.n_evaluation_points(); ++q)
-                for (unsigned int c=0; c<in.composition[q].size(); ++c)
-                  {
-                    double porosity_change = eq_free_fluid_fractions[q] - in.composition[q][porosity_idx];
-                    // do not allow negative porosity
-                    if (in.composition[q][porosity_idx] + porosity_change < 0)
-                      porosity_change = -in.composition[q][porosity_idx];
+                {
+                  const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
 
-                    const unsigned int bound_fluid_idx = this->introspection().compositional_index_for_name("bound_fluid");
-                    if (c == bound_fluid_idx && this->get_timestep_number() > 0)
-                      reaction_rate_out->reaction_rates[q][c] = - porosity_change / fluid_reaction_time_scale;
-                    else if (c == porosity_idx && this->get_timestep_number() > 0)
-                      reaction_rate_out->reaction_rates[q][c] = porosity_change / fluid_reaction_time_scale;
-                    else
-                      reaction_rate_out->reaction_rates[q][c] = 0.0;
-                  }
+                  const double solid_density = out.densities[q];
+                  const double fluid_density = fluid_out->fluid_densities[q];
+
+                  const double volume_fraction_porosity = in.composition[q][porosity_idx];
+                  const double bulk_density = solid_density * (1.0 - volume_fraction_porosity) +
+                                              fluid_density * volume_fraction_porosity;
+
+                  // We need to convert the porosity, which is a volume fraction, to a mass fraction
+                  // to determine the total mass fraction of water (across both phases). This is then
+                  // used to ensure conservation of water mass during reactions.
+                  const double mass_fraction_porosity = volume_fraction_porosity * fluid_density / bulk_density;
+
+                  // The total mass fraction of water, which must be conserved after the reactions are done.
+                  // This is given by:
+                  // TM = Sm_wt * Sm_mass + Fl_wt * Fl_mass
+                  // Where TM is the total mass of water, Sm_wt is the wt% of water in the solid, Sm_mass is the
+                  // mass fraction of water in the solid, Fl_wt is the wt% of water in the fluid, and Fl_mass is
+                  // the mass fraction of water in the fluid. Fl_wt is always 100%, because the fluid is assumed to
+                  // be composed of only water. The bound_fluid composition gives Sm_wt, and we compute Sm_mass as
+                  // was done when defining mass_frac_porosity.
+                  const double total_mass_fraction_water = in.composition[q][bound_fluid_idx] * (1 - volume_fraction_porosity) * solid_density / bulk_density +
+                                                           mass_fraction_porosity;
+
+                  // Determine the change in the mass fraction of porosity from the equilibrium fluid fraction
+                  // and update the mass fraction of porosity.
+                  const double mass_fraction_porosity_change = (eq_free_fluid_fractions[q] - mass_fraction_porosity);
+                  const double new_mass_fraction_porosity = mass_fraction_porosity + mass_fraction_porosity_change;
+
+                  // Since porosity is a volume fraction, convert the mass fraction change to a volume fraction change
+                  // to update the porosity value. We cannot use the bulk density to do this, because we do not yet know
+                  // the new bulk density of the rock after the reactions have been applied.
+                  const double new_volume_fraction_porosity = solid_density * new_mass_fraction_porosity /
+                                                              (fluid_density + solid_density * new_mass_fraction_porosity - fluid_density * new_mass_fraction_porosity);
+
+                  // Now determine the new bulk density using the new volume fraction of porosity
+                  const double new_bulk_density = solid_density * (1.0 - new_volume_fraction_porosity) +
+                                                  fluid_density * new_volume_fraction_porosity;
+
+                  // Determine the bound fluid mass fraction using the new volume fraction of porosity and the original
+                  // mass fraction of water. We do this by determining the mass fraction of the solid phase:
+                  const double mass_fraction_solid = (1 - new_volume_fraction_porosity) * solid_density / new_bulk_density;
+                  // And now we use the total mass fraction of water determined above to ensure that we are conserving
+                  // mass during the reactions. Sm_mass is then given by:
+                  const double new_bound_fluid_mass_fraction = (total_mass_fraction_water - new_mass_fraction_porosity) /
+                                                               (mass_fraction_solid);
+
+                  // Determine the change in both the bound and free water as a mass fraction and volume fraction, respectively
+                  double bound_fluid_change = new_bound_fluid_mass_fraction - in.composition[q][bound_fluid_idx];
+                  double porosity_change = new_volume_fraction_porosity - volume_fraction_porosity;
+
+                  // Do not allow negative bound water
+                  if (bound_fluid_change + in.composition[q][bound_fluid_idx] < 0)
+                    bound_fluid_change = -in.composition[q][bound_fluid_idx];
+                  // Do not allow negative free water
+                  if (porosity_change + volume_fraction_porosity < 0)
+                    porosity_change = -volume_fraction_porosity;
+                  // Apply the reactions
+                  for (unsigned int c=0; c<in.composition[q].size(); ++c)
+                    {
+                      if (c == bound_fluid_idx && this->get_timestep_number() > 0)
+                        // Apply the mass fraction change to the bound fluid content, which is a mass fraction
+                        reaction_rate_out->reaction_rates[q][c] = bound_fluid_change / reaction_time_step_size;
+                      else if (c == porosity_idx && this->get_timestep_number() > 0)
+                        // Apply the volume fraction change to the porosity, which is a volume fraction
+                        reaction_rate_out->reaction_rates[q][c] = porosity_change / reaction_time_step_size;
+                      else
+                        reaction_rate_out->reaction_rates[q][c] = 0.0;
+                    }
+                }
             }
         }
       else
@@ -390,8 +487,9 @@ namespace aspect
 
           if (fluid_solid_reaction_scheme == tian_approximation)
             {
-              AssertThrow(this->get_parameters().use_operator_splitting,
-                          ExcMessage("The Fluid-reaction scheme tian approximation must be used with operator splitting."));
+              AssertThrow(this->get_parameters().use_operator_splitting && this->get_parameters().reaction_solver_type == Parameters<dim>::ReactionSolverType::fixed_step,
+                          ExcMessage("The Fluid-reaction scheme tian approximation must be used with operator splitting "
+                                     "and 'Reaction solver type = fixed step'."));
             }
 
           if (this->get_parameters().use_operator_splitting)
@@ -454,7 +552,6 @@ namespace aspect
     }
   }
 }
-
 // explicit instantiations
 namespace aspect
 {
