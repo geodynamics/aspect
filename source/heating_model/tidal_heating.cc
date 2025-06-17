@@ -37,13 +37,13 @@ namespace aspect
        * H equation is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099)
        * H= 2*(viscosity)*(time-averaged tidal strain rate)^2/(1+((viscosity)*(tidal frequency)/(elastic shear modulus))^2))
        * viscosity = material_model_outputs.viscosities
-       * time-averaged strain rate = tidal_strain_rate
+       * time-averaged strain rate = constant_tidal_strain_rate
        * tidal frequency = tidal_frequency
        * elastic shear modulus = elastic_shear_modulus
        */
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {
-          heating_model_outputs.heating_source_terms[q] = 2 * material_model_outputs.viscosities[q] * tidal_strain_rate * tidal_strain_rate
+          heating_model_outputs.heating_source_terms[q] = 2 * material_model_outputs.viscosities[q] *constant_tidal_strain_rate * constant_tidal_strain_rate
                                                           / ( 1 + ( (tidal_frequency * material_model_outputs.viscosities[q]) / elastic_shear_modulus ) * ( (tidal_frequency * material_model_outputs.viscosities[q]) / elastic_shear_modulus ) );
           heating_model_outputs.lhs_latent_heat_terms[q] = 0.0;
         }
@@ -80,10 +80,10 @@ namespace aspect
                              "For simplicity, this parameter will be used even if elasticity is set in the material model. "
                              "Default value is for Europa's icy shell. "
                              "Units: Pa.");
-          prm.declare_entry ("Tidal strain rate", "2e-10",
+          prm.declare_entry ("Constant tidal strain rate", "2e-10",
                              Patterns::Double (0),
-                             "Time-averaged strain rate of the diurnal tide. "
-                             "Default value is for the diurnal tide of Europa. "
+                             "Time-averaged strain rate by a lunar diurnal tide that is simplified to be constant regardless of location. "
+                             "Default value is for the diurnal tide of Europa from Tobie et al. (2003). "
                              "Units: 1/s.");
         }
         prm.leave_subsection();
@@ -103,7 +103,7 @@ namespace aspect
         {
           tidal_frequency = prm.get_double ("Tidal frequency");
           elastic_shear_modulus = prm.get_double ("Elastic shear modulus");
-          tidal_strain_rate = prm.get_double ("Tidal strain rate");
+          constant_tidal_strain_rate = prm.get_double ("Constant tidal strain rate");
         }
         prm.leave_subsection();
       }

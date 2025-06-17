@@ -71,13 +71,13 @@ namespace aspect
          * Equation is from Tobie et al. (2003) (https://doi.org/10.1029/2003JE002099)
          * H = 2*(viscosity)*(time-averaged tidal strain rate)^2/(1+((viscosity)*(tidal frequency)/(elastic shear modulus))^2))
          * viscosity (Pa s) = viscosity calculated by the selected material in ASPECT
-         * time-averaged strain rate = tidal_strain_rate
+         * time-averaged strain rate = constant_tidal_strain_rate
          * tidal frequency = tidal_frequency
          * elastic shear modulus = elastic_shear_modulus
          */
         double tidal_frequency;
         double elastic_shear_modulus;
-        double tidal_strain_rate;
+        double constant_tidal_strain_rate;
     };
   }
 }
