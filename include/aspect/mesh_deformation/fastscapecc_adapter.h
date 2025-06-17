@@ -21,9 +21,6 @@
 #ifndef _aspect_mesh_deformation_fastscapecc_adapter_h
 #define _aspect_mesh_deformation_fastscapecc_adapter_h
 
-// #ifndef FASTSCAPELIB_DEALII_GRID_H_
-// #define FASTSCAPELIB_DEALII_GRID_H_
-
 #include <unordered_map>
 #include <vector>
 
