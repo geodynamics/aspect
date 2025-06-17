@@ -1,29 +1,53 @@
-# This is a cookbook which simulates a simple 2D subduction system with
-# a hydrated sediment layer, MORB layer, gabbro layer, and peridotite
-# layer. The layers dehydrate as they are subducted, with the solid-fluid
-# reactions governed by an approximation published by Tian et al., 2018.
+# This parameter file is for a cookbook which simulates fluid migration within a 2D subduction
+# system. The initial conditions (for both temperature and composition) are defined using the
+# Geodynamic WorldBuilder. The initial composition for the world builder is modified to manually
+# increase the bound water content within the subducting plate by 10%, leaving the bound fluid in
+# disequilibrium. However, this cookbook prevents the bound fluid from decreasing within the
+# subducting plate, creating a fixed fluid source that is meant to mimic the steady input of water
+# into the subduction factory by continuous subduction. The free fluid released by the fixed source
+# is advected through the system according to the Darcy velocity, and is allowed to be reabsorbed by
+# the solid phase if the reactions determined by the Tian 2019 reaction model predict that this is 
+# stable.
+# 
+# In this parameter file, when fluid is contained within the solid phase the viscosity is reduced
+# according to a calculated water fugacity term. This water fugacity term assumes a uniform olivine
+# composition of 90% forsterite and 10% fayalite throughout the entire model domain. While this is
+# an oversimplification, it is sufficient for demonstrating the functionaly within the scope of 
+# this cookbook.
 
-set Additional shared libraries                = /Users/danieldouglas/software/aspect/cookbooks/2D_subduction_with_two_phase_flow/plugin/lib2D_subduction_with_two_phase_flow.so
-set World builder file                         = /Users/danieldouglas/software/aspect/cookbooks/2D_subduction_with_two_phase_flow/fixed_slab.wb
-set Adiabatic surface temperature              = 1573
+# Load the plugin library and the world builder file, which are both required for this cookbook
+set Additional shared libraries                = plugin/lib2D_subduction_with_two_phase_flow.so
+set World builder file                         = fixed_slab.wb
 set Nonlinear solver scheme                    = iterated Advection and Stokes
 set Nonlinear solver failure strategy          = continue with next timestep
-set Output directory                           = TEST_SUB_STATIC_FASTER_SLAB_VEL_LOW_PERM
-set Max nonlinear iterations                   = 100 #50
-set Nonlinear solver tolerance                 = 1e-3 # was 6
+set Output directory                           = output-fixed_slab_darcy_fluid_advection
+# Use a loose nonlinear tolerance of 1e-3 so that this cookbook can run with a relatively low
+# computational expense.
+set Max nonlinear iterations                   = 100
+set Nonlinear solver tolerance                 = 1e-3
 set Dimension                                  = 2
 set End time                                   = 1e6
-set CFL number                                 = 0.5
+set CFL number                                 = 0.5 # 0.5 for stability
 set Pressure normalization                     = surface
+set Adiabatic surface temperature              = 1573
 set Surface pressure                           = 0
-set Maximum time step                          = 10000
+
+# Limit the first time step to prevent numerical instabilities
 set Maximum first time step                    = 100
+
+# The Tian 2019 reaction model requires the use of Operator splitting.
 set Use operator splitting                     = true
+# Automatically resume computation, if a restart file is present.
 set Resume computation                         = auto
 
+# We use the block AMG solver instead of block GMG to more directly compare the
+# behaviour of this model with the model that advects the fluid according to the
+# fully coupled McKenzie equations, which does not support the use of block GMG.
+# Additionally, the Tian 2019 reaction model requires operator splitting with a 
+# fixed reaction solver type. 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Stokes solver type                              = block GMG
+    set Stokes solver type                              = block AMG
     set GMRES solver restart length                     = 1000
     set Number of cheap Stokes solver steps             = 20000
     set Use full A block as preconditioner              = true
@@ -31,22 +55,30 @@ subsection Solver parameters
     set Maximum number of expensive Stokes solver steps = 0
   end
   subsection Operator splitting parameters
+    set Reaction solver type                   = fixed
     set Reaction time step                     = 50
-    set Reaction time steps per advection step = 50
   end
 end
 
+# Increase the smoothing parameters beta and cR for numerical stability and 
+# computational efficiency.
 subsection Discretization
   subsection Stabilization parameters
-    set beta  = 0.52 # 0.5
-    set cR    = 1.1 # 1.0
+    set beta  = 0.52
+    set cR    = 1.1
   end
 end
 
+# Checkpoint the model every 50 time steps
 subsection Checkpointing
   set Steps between checkpoint = 50
 end
 
+# The Tian 2019 reaction model requires 6 compositional fields:
+# porosity, bound_fluid, peridotite, gabbro, MORB, and sediment.
+# We want to keep all of the solid compositions static, and only
+# advect the porosity composition, therefore we set the solid field
+# advection methods to static and the porosity to darcy field.
 subsection Compositional fields
   set Number of fields            = 6
   set Names of fields             = porosity,    bound_fluid, peridotite,           gabbro,               MORB,                 sediment
@@ -54,10 +86,15 @@ subsection Compositional fields
   set Types of fields             = porosity,    generic,     chemical composition, chemical composition, chemical composition, chemical composition
 end
 
+# We also want to keep the temperature distribution fixed.
 subsection Temperature field
   set Temperature method = static
 end
 
+# The initial composition is defined using a modified version of the world builder
+# initial composition model compiled for this plugin. The `world builder disequilibrium`
+# initial composition model works exactly like the regular world builder initial composition
+# model, except that it increases the value of the bound_fluid composition by 10%. 
 subsection Initial composition model
   set List of model names = world builder disequilibrium
   subsection World builder
@@ -65,7 +102,14 @@ subsection Initial composition model
   end
 end
 
+# The initial temperature is also defined using the world builder.
+subsection Initial temperature model
+  set Model name = world builder
+end
 
+# The geometry is a very large 2D box, and the cells have an aspect ratio of 1:1.
+# The geometry is large to ensure that the model boundaries are not significantly
+# impacting the velocities within the vicinty of the slab and in the mantle wedge.
 subsection Geometry model
   set Model name = box
   subsection Box
@@ -80,7 +124,7 @@ subsection Geometry model
   end
 end
 
-
+# Downward gravity
 subsection Gravity model
   set Model name = function
   subsection Function
@@ -89,14 +133,12 @@ subsection Gravity model
   end
 end
 
+# The model is incompressible.
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
 
-subsection Initial temperature model
-  set Model name = world builder
-end
-
+# Fix the temperature on the top and the bottom of the model.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set List of model names = box
@@ -109,8 +151,7 @@ end
 
 subsection Material model
 
-  set Model name = reactive fluid transport bound fluid source
-  # set Model name = visco plastic
+  set Model name                                         = reactive fluid transport bound fluid source
   set Material averaging                                 = geometric average only viscosity
 
   subsection Reactive Fluid Transport Model
@@ -124,10 +165,10 @@ subsection Material model
     set Fluid reaction time scale for operator splitting = 1e4
     set Fluid-solid reaction scheme                      = tian approximation
     subsection Tian 2019 model
-      set Maximum weight percent water in peridotite       = 4
-      set Maximum weight percent water in gabbro           = 2
-      set Maximum weight percent water in MORB             = 3
-      set Maximum weight percent water in sediment         = 4
+      set Maximum weight percent water in peridotite     = 4
+      set Maximum weight percent water in gabbro         = 2
+      set Maximum weight percent water in MORB           = 3
+      set Maximum weight percent water in sediment       = 4
     end
   end
 
@@ -147,7 +188,7 @@ subsection Material model
     set Densities                         =   background: 3300,   porosity: 3300,  bound_fluid: 3300,  peridotite: 3300,  gabbro: 3300,  MORB: 3175,  sediment: 3175
 
     set Minimum viscosity   =   background: 2.5e18|2.5e18,  porosity: 2.5e18|2.5e18, bound_fluid: 2.5e18|2.5e18, peridotite: 2.5e18|2.5e18, gabbro: 2.5e18|2.5e18, MORB: 2.5e18|2.5e18, sediment: 9.999e18|2.5e18|2.5e18
-    set Maximum viscosity   =   background: 2.5e24|2.5e23,  porosity: 2.5e23|2.5e23, bound_fluid: 2.5e23|2.5e23, peridotite: 2.5e23|2.5e23, gabbro: 2.5e23|2.5e23, MORB: 2.5e23|2.5e23, sediment: 1.001e19|2.5e23|2.5e23
+    set Maximum viscosity   =   background: 2.5e23|2.5e23,  porosity: 2.5e23|2.5e23, bound_fluid: 2.5e23|2.5e23, peridotite: 2.5e23|2.5e23, gabbro: 2.5e23|2.5e23, MORB: 2.5e23|2.5e23, sediment: 1.001e19|2.5e23|2.5e23
 
 
     set Prefactors for diffusion creep                    = background:  1.577e-21, \
