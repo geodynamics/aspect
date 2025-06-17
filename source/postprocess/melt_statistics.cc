@@ -35,11 +35,11 @@ namespace aspect
     std::pair<std::string,std::string>
     MeltStatistics<dim>::execute (TableHandler &statistics)
     {
-      // create a quadrature formula based on the temperature element alone.
-      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.temperature;
+      // Use a Gauss-Lobatto quadrature formula based on the temperature
+      // degree for computing the min/max, both of which may lie of the
+      // boundaries of the cell.
+      const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.temperature).degree + 2);
       const unsigned int n_q_points = quadrature_formula.size();
-      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),
-                                                            std::vector<double> (n_q_points));
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -64,21 +64,25 @@ namespace aspect
           {
             // fill material model inputs
             fe_values.reinit (cell);
+
             in.reinit(fe_values, cell, this->introspection(), this->get_solution());
 
             // we can only postprocess melt fractions if the material model that is used
             // in the simulation has implemented them
             // otherwise, set them to zero
-            std::vector<double> melt_fractions(n_q_points, 0.0);
+            std::vector<double> melt_fractions(n_q_points, numbers::signaling_nan<double>());
+
             if (MaterialModel::MeltFractionModel<dim>::is_melt_fraction_model(this->get_material_model()))
-              MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-              .melt_fractions(in, melt_fractions);
+              {
+                MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
+                .melt_fractions(in, melt_fractions);
+              }
 
             for (unsigned int q=0; q<n_q_points; ++q)
               {
-                local_melt_integral += melt_fractions[q] * fe_values.JxW(q);
                 local_min_melt       = std::min(local_min_melt, melt_fractions[q]);
                 local_max_melt       = std::max(local_max_melt, melt_fractions[q]);
+                local_melt_integral += melt_fractions[q] * fe_values.JxW(q);
               }
 
           }

@@ -33,15 +33,10 @@ namespace aspect
     std::pair<std::string,std::string>
     PressureStatistics<dim>::execute (TableHandler &statistics)
     {
-      // create a quadrature formula based on the pressure element alone.
-      // we need to compute max and min of the pressure as well, which
-      // may be on the boundary of the cell, so we use an iterated
-      // trapezoidal rule instead of the usual Gauss rule
-      //
-      // iterate it 'degree' times to make sure our evaluation points are
-      // in fact the support points.
-      const QIterated<dim> quadrature_formula (QTrapezoid<1>(),
-                                               this->get_fe().base_element(this->introspection().base_elements.pressure).degree);
+      // Use a Gauss-Lobatto quadrature formula based on the pressure
+      // degree for computing the min/max, both of which may lie of the
+      // boundaries of the cell.
+      const QGaussLobatto<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.pressure).degree + 2);
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -52,6 +47,7 @@ namespace aspect
                                update_JxW_values);
 
       std::vector<double> pressure_values(n_q_points);
+
 
       double local_pressure_integral = 0;
       double local_min_pressure      = std::numeric_limits<double>::max();
@@ -71,9 +67,10 @@ namespace aspect
               {
                 const double value = pressure_values[q];
 
-                local_pressure_integral += value*fe_values.JxW(q);
                 local_min_pressure = std::min (local_min_pressure, value);
                 local_max_pressure = std::max (local_max_pressure, value);
+
+                local_pressure_integral += value*fe_values.JxW(q);
               }
           }
 
