@@ -754,7 +754,7 @@ namespace aspect
       const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
       for (unsigned int i=0; i<fastscape_array_size; ++i)
         {
-          //reset index 
+          //reset index
           const unsigned int ix = i % fastscape_nx;
           const unsigned int iy = i / fastscape_nx;
 
@@ -762,22 +762,22 @@ namespace aspect
           const double x = grid_extent[0].first + (ix - use_ghost_nodes) * fastscape_dx;
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
-          // Update Bedrock transort coefficient kd
+          // Update bedrock transport coefficient kd
           bedrock_transport_coefficient_array[i] =
             (use_kd_distribution_function
-            ?  // update with time scaling
-            time_scaling_factor *kd_distribution_function.value(Point<2>(x, y))
-            : 
-            constant_bedrock_transport_coefficient);
+             ?  // update with time scaling
+             time_scaling_factor * kd_distribution_function.value(Point<2>(x, y))
+             :
+             time_scaling_factor * constant_bedrock_transport_coefficient);
 
           // Update Bedrock river incision rate kf
-          bedrock_river_incision_rate_array[i] = 
+          bedrock_river_incision_rate_array[i] =
             (use_kf_distribution_function)
             ?  // update with time scaling
             time_scaling_factor * kf_distribution_function.value(Point<2>(x, y))
-            : 
-            constant_bedrock_river_incision_rate;
-          
+            :
+            time_scaling_factor * constant_bedrock_river_incision_rate;
+
 
           // If this is a boundary node that is a ghost node then ignore that it
           // has not filled yet as the ghost nodes haven't been set.
@@ -1565,21 +1565,19 @@ namespace aspect
     {
       if (use_kd_distribution_function)
         {
-          // read and update the distribution of Kd 
+          // read and update the distribution of Kd
           const double time = this->get_time();
-          // check if input is year or second 
+          // check if input is year or second
           const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
           kd_distribution_function.set_time(scaled_time);
-          //kd_distribution_function.set_time(this->get_time() / year_in_seconds); 
         }
       if (use_kf_distribution_function)
         {
           // read and update the distribution of Kf
           const double time = this->get_time();
-          // check if input is year or second 
+          // check if input is year or second
           const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
           kf_distribution_function.set_time(scaled_time);
-          //kf_distribution_function.set_time(this->get_time() / year_in_seconds); 
         }
 
       // Set time scaling factor based on time unit
@@ -1729,12 +1727,12 @@ namespace aspect
                               "Deposition coefficient for sediment, -1 sets this to the same as the bedrock deposition coefficient.");
             // Define Bedrock river incision rate (Kf) as a constant value of time dependent user-defined function
             prm.declare_entry("Use kf distribution function", "false",
-                  Patterns::Bool(),
-                  "Whether to define bedrock river incision rate using a distribution function. "
-                  "If false, a constant kf value will be used.");
+                              Patterns::Bool(),
+                              "Whether to define bedrock river incision rate using a distribution function. "
+                              "If false, a constant kf value will be used.");
             prm.declare_entry("Bedrock river incision rate", "1e-5",
                               Patterns::Double(),
-                              "River incision rate for bedrock in the Stream Power Law. Units: $\{m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are $\{m^(1-2drainage_area_exponent)/s}$");
+                              "River incision rate for bedrock in the Stream Power Law. Units: ${m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are $\{m^(1-2drainage_area_exponent)/s}$");
             prm.enter_subsection ("kf distribution function");
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
@@ -1743,12 +1741,12 @@ namespace aspect
             prm.declare_entry("Sediment river incision rate", "-1",
                               Patterns::Double(),
                               "River incision rate for sediment in the Stream Power Law. -1 sets this to the bedrock river incision rate. Units: $m^(1-2drainage_area_exponent)/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are $m^(1-2drainage_area_exponent)/s}$");
-            
+
             // Define Bedrock transport coefficient (Kd) as a constant value of time dependent user-defined function
             prm.declare_entry("Use kd distribution function", "false",
-                  Patterns::Bool(),
-                  "Whether to define Bedrock transport coefficient (diffusivity) using a distribution function. "
-                  "If false, a constant kd value will be used.");
+                              Patterns::Bool(),
+                              "Whether to define Bedrock transport coefficient (diffusivity) using a distribution function. "
+                              "If false, a constant kd value will be used.");
             prm.declare_entry("Bedrock diffusivity", "1e-2",
                               Patterns::Double(),
                               "Transport coefficient (diffusivity) for bedrock. Units: ${m^2/yr}$ if ``Use years instead of seconds in output'' is true; otherwise, the units are ${m^2/s}$.");
@@ -1756,8 +1754,8 @@ namespace aspect
             {
               Functions::ParsedFunction<2>::declare_parameters(prm, 2);
             }
-            prm.leave_subsection();            
-            
+            prm.leave_subsection();
+
             prm.declare_entry("Sediment diffusivity", "-1",
                               Patterns::Double(),
                               "Transport coefficient (diffusivity) for sediment. -1 sets this to the bedrock diffusivity. Units: ${m^2/yr}$");
@@ -1883,12 +1881,12 @@ namespace aspect
           sediment_rain_times = Utilities::string_to_double
                                 (Utilities::split_string_list(prm.get ("Sediment rain time intervals")));
 
-          if (!this->convert_output_to_years())
-            {
-              maximum_fastscape_timestep /= year_in_seconds;
-              for (unsigned int j=0; j<sediment_rain_rates.size(); ++j)
-                sediment_rain_rates[j] *= year_in_seconds;
-            }
+          // if (!this->convert_output_to_years())
+          //   {
+          //     maximum_fastscape_timestep /= year_in_seconds;
+          //     for (unsigned int j=0; j<sediment_rain_rates.size(); ++j)
+          //       sediment_rain_rates[j] *= year_in_seconds;
+          //   }
 
           if (sediment_rain_rates.size() != sediment_rain_times.size()+1)
             AssertThrow(false, ExcMessage("Error: There must be one more sediment rain rate than time interval."));
@@ -1935,40 +1933,40 @@ namespace aspect
             // kf
             use_kf_distribution_function = prm.get_bool("Use kf distribution function");
             if (use_kf_distribution_function)
-            {
-              prm.enter_subsection("kf distribution function");
               {
-                kf_distribution_function.parse_parameters(prm);
+                prm.enter_subsection("kf distribution function");
+                {
+                  kf_distribution_function.parse_parameters(prm);
+                }
+                prm.leave_subsection();
+                // If using the function description for the kf, no parts of the code
+                // base should use the constant_bedrock_river_incision_rate variable. Poison it to
+                // make sure it really isn't used anywhere:
+                constant_bedrock_river_incision_rate = numbers::signaling_nan<double>();
               }
-              prm.leave_subsection();
-              // If using the function description for the kf, no parts of the code
-              // base should use the constant_bedrock_river_incision_rate variable. Poison it to 
-              // make sure it really isn't used anywhere:
-              constant_bedrock_river_incision_rate = numbers::signaling_nan<double>();
-            } 
             else
-            {
-              constant_bedrock_river_incision_rate = prm.get_double("Bedrock river incision rate");
-            }
+              {
+                constant_bedrock_river_incision_rate = prm.get_double("Bedrock river incision rate");
+              }
             sediment_transport_coefficient = prm.get_double("Sediment diffusivity");
-           // kd
+            // kd
             use_kd_distribution_function = prm.get_bool("Use kd distribution function");
             if (use_kd_distribution_function)
-            {
-              prm.enter_subsection("kd distribution function");
               {
-                kd_distribution_function.parse_parameters(prm);
+                prm.enter_subsection("kd distribution function");
+                {
+                  kd_distribution_function.parse_parameters(prm);
+                }
+                prm.leave_subsection();
+                // If using the function description for the kd, no parts of the code
+                // base should use the constant_bedrock_river_incision_rate variable. Poison it to
+                // make sure it really isn't used anywhere:
+                constant_bedrock_transport_coefficient = numbers::signaling_nan<double>();
               }
-              prm.leave_subsection();
-              // If using the function description for the kd, no parts of the code
-              // base should use the constant_bedrock_river_incision_rate variable. Poison it to 
-              // make sure it really isn't used anywhere:
-              constant_bedrock_transport_coefficient = numbers::signaling_nan<double>();
-            } 
             else
-            {
-              constant_bedrock_transport_coefficient = prm.get_double("Bedrock diffusivity");
-            }
+              {
+                constant_bedrock_transport_coefficient = prm.get_double("Bedrock diffusivity");
+              }
             bedrock_deposition_g = prm.get_double("Bedrock deposition coefficient");
             sediment_deposition_g = prm.get_double("Sediment deposition coefficient");
             slope_exponent_p = prm.get_double("Multi-direction slope exponent");
@@ -1978,14 +1976,6 @@ namespace aspect
             wind_barrier_erosional_factor = prm.get_double("Wind barrier factor");
             stack_controls = prm.get_bool("Stack orographic controls");
             use_orographic_controls = prm.get_bool("Flag to use orographic controls");
-
-            if (!this->convert_output_to_years())
-              {
-                constant_bedrock_river_incision_rate *= year_in_seconds;
-                sediment_transport_coefficient *= year_in_seconds;
-                sediment_river_incision_rate *= year_in_seconds;
-                constant_bedrock_transport_coefficient *= year_in_seconds;
-              }
 
             // Wind direction
             if (prm.get ("Wind direction") == "west")
