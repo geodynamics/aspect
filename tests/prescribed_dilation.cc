@@ -36,8 +36,8 @@ namespace aspect
   {
     /**
      * u = cos(y), sin(x)+xy
-     * p = 2/3 eta x
-     * grad p = 2/3 eta
+     * p = -2/3 eta x
+     * grad p = -2/3 eta
      * R = div u = x
      * => grad p and compressibility term cancel
      */
@@ -60,9 +60,8 @@ namespace aspect
                 const double eta)
       {
         const double x = pos[0];
-        //        const double y = pos[1];
 
-        return 2./3.*eta*(x-1.0);
+        return -2./3.*eta*(x-1.0);
       }
 
 
@@ -208,7 +207,8 @@ namespace aspect
                 }
               if (prescribed_dilation)
                 {
-                  prescribed_dilation->dilation[i] = x;
+                  prescribed_dilation->dilation_rhs_term[i] = x;
+                  prescribed_dilation->dilation_lhs_term[i] = 0.;
                 }
 
             }

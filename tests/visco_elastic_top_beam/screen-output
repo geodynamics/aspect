@@ -29,7 +29,7 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
 
 
    Postprocessing:
-     RMS, max velocity:        0.00298 m/year, 0.00918 m/year
+     RMS, max velocity:        0.00298 m/year, 0.00847 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-visco_elastic_top_beam/solution/solution-00000
 
@@ -85,7 +85,7 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
 
 
    Postprocessing:
-     RMS, max velocity:        0.0012 m/year, 0.00328 m/year
+     RMS, max velocity:        0.0012 m/year, 0.00307 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-visco_elastic_top_beam/solution/solution-00001
 
@@ -129,7 +129,7 @@ Number of degrees of freedom: 11,104 (1,302+176+176+1,350+1,350+1,350+1,350+1,35
 
 
    Postprocessing:
-     RMS, max velocity:        0.00139 m/year, 0.00418 m/year
+     RMS, max velocity:        0.00139 m/year, 0.00385 m/year
      Temperature min/avg/max:  293 K, 293 K, 293 K
      Writing graphical output: output-visco_elastic_top_beam/solution/solution-00002
 

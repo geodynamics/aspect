@@ -495,7 +495,8 @@ namespace aspect
     void
     MeltBoukare<dim>::
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
+                    std::vector<double> &melt_fractions,
+                    const MaterialModel::MaterialModelOutputs<dim> *) const
     {
       const unsigned int Fe_solid_idx = this->introspection().compositional_index_for_name("molar_Fe_in_solid");
       unsigned int Fe_melt_idx = numbers::invalid_unsigned_int;

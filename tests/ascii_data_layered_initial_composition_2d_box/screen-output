@@ -8,7 +8,7 @@ Number of degrees of freedom: 10,229 (4,802+625+2,401+2,401)
    Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         6.69e-12 m/year, 1.46e-11 m/year
+     RMS, max velocity:         6.69e-12 m/year, 1.5e-11 m/year
      Temperature min/avg/max:   1000 K, 1000 K, 1000 K
      Writing depth average:     output-ascii_data_layered_initial_composition_2d_box/depth_average
      Compositions min/max/mass: 1/2/1.537e+10

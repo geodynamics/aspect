@@ -13,7 +13,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00000
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0156 m/year, 0.0427 m/year
+     RMS, max velocity:        0.0156 m/year, 0.0457 m/year
 
 *** Timestep 1:  t=4.00722e+06 years, dt=4.00722e+06 years
    Solving mesh displacement system... 0 iterations.
@@ -24,7 +24,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00001
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0156 m/year, 0.0426 m/year
+     RMS, max velocity:        0.0156 m/year, 0.0456 m/year
 
 *** Timestep 2:  t=8.02686e+06 years, dt=4.01964e+06 years
    Solving mesh displacement system... 0 iterations.
@@ -35,7 +35,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00002
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0156 m/year, 0.0425 m/year
+     RMS, max velocity:        0.0156 m/year, 0.0456 m/year
 
 *** Timestep 3:  t=1.20556e+07 years, dt=4.02875e+06 years
    Solving mesh displacement system... 0 iterations.
@@ -46,7 +46,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00003
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0155 m/year, 0.0424 m/year
+     RMS, max velocity:        0.0155 m/year, 0.0455 m/year
 
 *** Snapshot output-checkpoint_07_enable_free_surface_create/restart/01/ created!
 
@@ -59,7 +59,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00004
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0155 m/year, 0.0423 m/year
+     RMS, max velocity:        0.0155 m/year, 0.0454 m/year
 
 *** Timestep 5:  t=2.01433e+07 years, dt=4.04928e+06 years
    Solving mesh displacement system... 0 iterations.
@@ -70,7 +70,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00005
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0154 m/year, 0.0422 m/year
+     RMS, max velocity:        0.0154 m/year, 0.0452 m/year
 
 *** Timestep 6:  t=2.42024e+07 years, dt=4.05905e+06 years
    Solving mesh displacement system... 0 iterations.
@@ -81,7 +81,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00006
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0154 m/year, 0.0421 m/year
+     RMS, max velocity:        0.0154 m/year, 0.0451 m/year
 
 *** Timestep 7:  t=2.82696e+07 years, dt=4.06722e+06 years
    Solving mesh displacement system... 0 iterations.
@@ -92,7 +92,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00007
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0153 m/year, 0.0419 m/year
+     RMS, max velocity:        0.0153 m/year, 0.045 m/year
 
 *** Snapshot output-checkpoint_07_enable_free_surface_create/restart/02/ created!
 
@@ -105,7 +105,7 @@ Number of mesh deformation degrees of freedom: 1,728
    Postprocessing:
      Writing graphical output: output-checkpoint_07_enable_free_surface_create/solution/solution-00008
      Temperature min/avg/max:  1599 K, 1600 K, 1601 K
-     RMS, max velocity:        0.0153 m/year, 0.0419 m/year
+     RMS, max velocity:        0.0153 m/year, 0.0449 m/year
 
 Termination requested by criterion: end time
 

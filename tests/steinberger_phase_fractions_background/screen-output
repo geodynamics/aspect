@@ -9,7 +9,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00000
-     RMS, max velocity:                  0.0299 m/year, 0.0862 m/year
+     RMS, max velocity:                  0.0299 m/year, 0.0859 m/year
      Temperature min/avg/max:            273 K, 2031 K, 4250 K
      Heat fluxes through boundary parts: -2.039e+05 W, -8.437e+04 W, 0 W, 0 W
      Writing depth average:              output-steinberger_phase_fractions_background/depth_average
@@ -21,7 +21,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00001
-     RMS, max velocity:                  0.0309 m/year, 0.094 m/year
+     RMS, max velocity:                  0.0309 m/year, 0.0948 m/year
      Temperature min/avg/max:            273 K, 2031 K, 4250 K
      Heat fluxes through boundary parts: -3.187e+05 W, 2.408e+05 W, 0 W, 0 W
      Writing depth average:              output-steinberger_phase_fractions_background/depth_average

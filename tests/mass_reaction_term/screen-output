@@ -465,7 +465,7 @@ Number of degrees of freedom: 1,985 (486+202+486+82+243+243+243)
 
 
    Postprocessing:
-     RMS, max velocity:        2.2e-11 m/s, 2.42e-11 m/s
+     RMS, max velocity:        2.2e-11 m/s, 2.41e-11 m/s
      Writing graphical output: output-mass_reaction_term/solution/solution-00013
 
 *** Timestep 14:  t=7.20236e+15 seconds, dt=5.17617e+14 seconds

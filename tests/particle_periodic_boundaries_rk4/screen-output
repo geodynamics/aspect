@@ -10,7 +10,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 35+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.000156 m/s, 0.000381 m/s
+     RMS, max velocity:         0.000156 m/s, 0.000383 m/s
      Compositions min/max/mass: 0/1/0.1828
      Writing particle output:   output-particle_periodic_boundaries_rk4/particles/particles-00000
 
@@ -21,7 +21,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 35+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.000357 m/s, 0.000868 m/s
+     RMS, max velocity:            0.000357 m/s, 0.000871 m/s
      Compositions min/max/mass:    -0.002724/1.002/0.1829
      Number of advected particles: 10
 
@@ -32,7 +32,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 34+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.000566 m/s, 0.00143 m/s
+     RMS, max velocity:            0.000566 m/s, 0.00144 m/s
      Compositions min/max/mass:    -0.005727/1.007/0.1829
      Number of advected particles: 10
 
@@ -65,7 +65,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 30+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.00113 m/s, 0.003 m/s
+     RMS, max velocity:            0.00113 m/s, 0.00302 m/s
      Compositions min/max/mass:    -0.01537/1.013/0.1829
      Number of advected particles: 10
 
@@ -109,7 +109,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.00172 m/s, 0.00461 m/s
+     RMS, max velocity:            0.00172 m/s, 0.00463 m/s
      Compositions min/max/mass:    -0.01969/1.015/0.1829
      Number of advected particles: 10
 
@@ -120,7 +120,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.00185 m/s, 0.00492 m/s
+     RMS, max velocity:            0.00185 m/s, 0.00494 m/s
      Compositions min/max/mass:    -0.01757/1.015/0.1829
      Number of advected particles: 10
 
@@ -131,7 +131,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 29+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:            0.00196 m/s, 0.00519 m/s
+     RMS, max velocity:            0.00196 m/s, 0.00521 m/s
      Compositions min/max/mass:    -0.01715/1.015/0.1829
      Number of advected particles: 10
 
@@ -142,7 +142,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system (AMG)... 26+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.00201 m/s, 0.0053 m/s
+     RMS, max velocity:         0.00201 m/s, 0.00533 m/s
      Compositions min/max/mass: -0.01579/1.014/0.1829
      Writing particle output:   output-particle_periodic_boundaries_rk4/particles/particles-00001
 

@@ -35,7 +35,7 @@ Number of degrees of freedom: 4,560 (1,728+240+864+1,728)
    Solving Stokes system (GMG)... 4+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                               1.97 m/s, 3.91 m/s
+     RMS, max velocity:                                                               1.97 m/s, 3.92 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: -2.45e+04 kg*m^2/s, 2.36e+04 kg*m^2, -1.04 1/s, -1.04 1/s
      Pressure at top/bottom of domain:                                                1.281e-16 Pa, 1000 Pa
      Computing dynamic topography                                                     

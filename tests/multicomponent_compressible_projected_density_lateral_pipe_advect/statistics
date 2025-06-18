@@ -1,0 +1,30 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: Average density (kg/m^3)
+# 15: Average viscosity (Pa s)
+# 16: Total mass (kg)
+# 17: Minimal value for composition density_field
+# 18: Maximal value for composition density_field
+# 19: Global mass for composition density_field
+# 20: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 21: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 22: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 23: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+0 0.000000000000e+00 0.000000000000e+00 8 126 72 72 7 0 0 7 13 13 3.30890170e+03 1.00000000e+21 3.30890170e+14 3.30000000e+03 3.32557313e+03 3.30890170e+14 -3.84104627e+07 3.84104627e+07 0.00000000e+00 0.00000000e+00 
+1 4.295704571148e+05 4.295704571148e+05 8 126 72 72 5 4 0 5  9  9 3.30770756e+03 1.00000000e+21 3.30770756e+14 3.29943322e+03 3.32232704e+03 3.30770756e+14 -4.00895285e+07 4.03681696e+07 0.00000000e+00 0.00000000e+00 
+2 8.410721288900e+05 4.115016717752e+05 8 126 72 72 5 4 0 4  7  7 3.30660988e+03 1.00000000e+21 3.30660988e+14 3.29888977e+03 3.31952249e+03 3.30660988e+14 -4.17667517e+07 4.20288060e+07 0.00000000e+00 0.00000000e+00 
+3 1.235981457119e+06 3.949093282288e+05 8 126 72 72 4 3 0 4  7  7 3.30560709e+03 1.00000000e+21 3.30560709e+14 3.29836782e+03 3.31716856e+03 3.30560709e+14 -4.34422865e+07 4.36905281e+07 0.00000000e+00 0.00000000e+00 
+4 1.615601809067e+06 3.796203519479e+05 8 126 72 72 4 3 0 5  8  8 3.30468658e+03 1.00000000e+21 3.30468658e+14 3.29786578e+03 3.31517886e+03 3.30468658e+14 -4.51162786e+07 4.53535140e+07 0.00000000e+00 0.00000000e+00 
+5 1.981083513552e+06 3.654817044852e+05 8 126 72 72 4 3 0 5  8  8 3.30383543e+03 1.00000000e+21 3.30383543e+14 3.29738222e+03 3.31346132e+03 3.30383543e+14 -4.67888375e+07 4.70172506e+07 0.00000000e+00 0.00000000e+00 
+6 2.000000000000e+06 1.891648644806e+04 8 126 72 72 4 3 0 3  5  5 3.30379230e+03 1.00000000e+21 3.30379230e+14 3.29735719e+03 3.31337757e+03 3.30379230e+14 -4.68770734e+07 4.71050695e+07 0.00000000e+00 0.00000000e+00 

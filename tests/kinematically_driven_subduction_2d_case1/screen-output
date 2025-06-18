@@ -14,7 +14,7 @@ Number of degrees of freedom: 47,115 (15,058+1,941+7,529+7,529+7,529+7,529)
 
    Postprocessing:
      Writing graphical output:                                   output-kinematically_driven_subduction_2d_case1/solution/solution-00000
-     RMS, max velocity:                                          0.0197 m/year, 0.0501 m/year
+     RMS, max velocity:                                          0.0197 m/year, 0.0502 m/year
      Heating rate (average/total):                               0 W/kg, 0 W
      Compositions max depth [m]:                                 7.328e+04 // 1.07e+05 // 7.328e+04
      RMS velocity for compositions and combined selected fields: 0.0142 m/year // 0.03851 m/year // 0.03684 m/year // 0.03841 m/year
@@ -28,7 +28,7 @@ Number of degrees of freedom: 47,115 (15,058+1,941+7,529+7,529+7,529+7,529)
    Solving Stokes system (GMG)... 13+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                          0.0197 m/year, 0.0501 m/year
+     RMS, max velocity:                                          0.0197 m/year, 0.0502 m/year
      Heating rate (average/total):                               0 W/kg, 0 W
      Compositions max depth [m]:                                 7.328e+04 // 1.07e+05 // 7.328e+04
      RMS velocity for compositions and combined selected fields: 0.01422 m/year // 0.03849 m/year // 0.03669 m/year // 0.03838 m/year

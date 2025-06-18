@@ -22,7 +22,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_increase_pressure/solution/solution-00000
-     RMS, max velocity:                                 1.54e-24 m/s, 3.59e-24 m/s
+     RMS, max velocity:                                 1.54e-24 m/s, 6.84e-24 m/s
      Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
      Mass fluxes through boundary parts:                0 kg/s, 5.326e-27 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3301 kg/m^3, 1e+20 Pa s, 3.301e+14 kg
@@ -67,7 +67,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
 
    Postprocessing:
      Writing graphical output:                          output-compressibility_lateral_pipe_increase_pressure/solution/solution-00001
-     RMS, max velocity:                                 7.33e-13 m/s, 1.26e-12 m/s
+     RMS, max velocity:                                 7.33e-13 m/s, 1.27e-12 m/s
      Temperature min/avg/max:                           1600 K, 1600 K, 1600 K
      Mass fluxes through boundary parts:                0 kg/s, -0.0004189 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3301 kg/m^3, 1e+20 Pa s, 3.301e+14 kg

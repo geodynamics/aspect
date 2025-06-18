@@ -23,7 +23,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Rayleigh number:                               0
 
      Writing graphical output:           output-adiabatic_conditions_time_change/solution/solution-00000
-     RMS, max velocity:                  2.17e-17 m/s, 1.24e-16 m/s
+     RMS, max velocity:                  2.17e-17 m/s, 1.3e-16 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
      Heat fluxes through boundary parts: 9.377e-18 W, 1.464e-18 W, 0 W, 0 W
 
@@ -33,7 +33,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 
    Postprocessing:
      Writing graphical output:           output-adiabatic_conditions_time_change/solution/solution-00001
-     RMS, max velocity:                  1.48e-19 m/s, 3.86e-19 m/s
+     RMS, max velocity:                  1.49e-19 m/s, 4.2e-19 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
      Heat fluxes through boundary parts: 1.42e-19 W, -4.945e-20 W, 0 W, 0 W
 

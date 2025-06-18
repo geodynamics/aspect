@@ -32,14 +32,6 @@ namespace aspect
   {
     namespace ReactionModel
     {
-
-
-      template <int dim>
-      Katz2003MantleMelting<dim>::Katz2003MantleMelting()
-        = default;
-
-
-
       template <int dim>
       double
       Katz2003MantleMelting<dim>::

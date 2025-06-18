@@ -434,6 +434,17 @@ namespace aspect
           {
             p->set_data_position(property_information.get_position_by_plugin_index(plugin_index));
             p->initialize();
+
+            // Check that each plugin that uses the late initialization mode
+            // interpolate_respect_boundary also implements the
+            // advection_field_for_boundary_initialization function.
+            // The default implementation will throw an exception.
+            if (p->late_initialization_mode() == Property::interpolate_respect_boundary)
+              {
+                const AdvectionField f = p->advection_field_for_boundary_initialization(0);
+                (void) f;
+              }
+
             ++plugin_index;
           }
       }

@@ -57,7 +57,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving Stokes system (AMG)... 61+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.405 m/year, 0.954 m/year
+     RMS, max velocity:  0.405 m/year, 0.953 m/year
      Topography min/max: -641 m, 752.3 m
 
 *** Timestep 3:  t=2468.73 years, dt=941.502 years
@@ -67,7 +67,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving Stokes system (AMG)... 53+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.393 m/year, 0.934 m/year
+     RMS, max velocity:  0.393 m/year, 0.933 m/year
      Topography min/max: -727.3 m, 907.2 m
 
 *** Timestep 4:  t=3442.52 years, dt=973.793 years
@@ -77,7 +77,7 @@ Number of mesh deformation degrees of freedom: 3,246
    Solving Stokes system (AMG)... 50+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:  0.387 m/year, 0.925 m/year
+     RMS, max velocity:  0.387 m/year, 0.923 m/year
      Topography min/max: -773.3 m, 1009 m
 
 Termination requested by criterion: end step

@@ -16,12 +16,12 @@
 # along with ASPECT; see the file LICENSE.  If not see
 # <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.13.4)
+cmake_minimum_required(VERSION 3.13.4)
 
-FIND_PACKAGE(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
+find_package(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
-IF (NOT Aspect_FOUND)
-  MESSAGE(FATAL_ERROR
+if (NOT Aspect_FOUND)
+  message(FATAL_ERROR
           "\n"
           "Could not find a valid ASPECT build/installation directory. "
           "Please specify the directory where you are building ASPECT by passing\n"
@@ -29,12 +29,12 @@ IF (NOT Aspect_FOUND)
           "to cmake or by setting the environment variable ASPECT_DIR in your shell "
           "before calling cmake. See the section 'How to write a plugin' in the "
           "manual for more information.")
-ENDIF ()
+endif ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "anelasticity_temperature")
-PROJECT(${TARGET})
+set(TARGET "anelasticity_temperature")
+project(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED anelasticity_temperature.cc)
+add_library(${TARGET} SHARED anelasticity_temperature.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

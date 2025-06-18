@@ -11,7 +11,7 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_projected_density/solution/solution-00000
-     RMS, max velocity:                  0.581 m/year, 1.11 m/year
+     RMS, max velocity:                  0.581 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 2437 K, 4250 K
      Heat fluxes through boundary parts: 4.857e+05 W, -4.251e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_projected_density/depth_average
@@ -25,7 +25,7 @@ Number of degrees of freedom: 5,223 (1,666+225+833+833+833+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_projected_density/solution/solution-00001
-     RMS, max velocity:                  0.578 m/year, 1.11 m/year
+     RMS, max velocity:                  0.578 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 2435 K, 4250 K
      Heat fluxes through boundary parts: -2.814e+06 W, -1.215e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_projected_density/depth_average

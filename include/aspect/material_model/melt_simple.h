@@ -78,7 +78,8 @@ namespace aspect
                       typename Interface<dim>::MaterialModelOutputs &out) const override;
 
         void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                             std::vector<double> &melt_fractions) const override;
+                             std::vector<double> &melt_fractions,
+                             const MaterialModel::MaterialModelOutputs<dim> *out = nullptr) const override;
 
         /**
          * @name Reference quantities

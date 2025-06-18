@@ -32,7 +32,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
    Postprocessing:
      Temperature min/avg/max: 1.002 K, 1.041 K, 1.097 K
-     RMS, max velocity:       5.58e-09 m/s, 1.39e-08 m/s
+     RMS, max velocity:       5.58e-09 m/s, 1.4e-08 m/s
      Writing particle output: output1.tmp/particles/particles-00002
 
 *** Timestep 3:  t=3.22036e+06 seconds, dt=1.12006e+06 seconds

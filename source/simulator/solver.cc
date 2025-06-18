@@ -265,7 +265,7 @@ namespace aspect
          * @param A_block_is_symmetric A flag indicating whether the matrix $A$ is symmetric.
          * @param A_block_tolerance The tolerance for the CG solver which computes
          *     the inverse of the A block.
-        */
+         */
         InverseVelocityBlock(const TrilinosWrappers::SparseMatrix &matrix,
                              const PreconditionerA &preconditioner,
                              const bool do_solve_A,
@@ -369,7 +369,7 @@ namespace aspect
 
     /**
      * Base class for Schur Complement operators.
-    */
+     */
     class SchurComplementOperator
     {
       public:
@@ -387,7 +387,7 @@ namespace aspect
      * which is known as the weighted BFBT method. Here,
      * C^{-1} and D^{-1} are chosen to be the inverse weighted lumped
      * velocity mass matrix.
-    */
+     */
     template <class PreconditionerMp>
     class WeightedBFBT: public SchurComplementOperator
     {

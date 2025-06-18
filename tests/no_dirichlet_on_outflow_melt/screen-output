@@ -248,7 +248,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  4.93 m/year, 9.59 m/year
+     RMS, max velocity:                  4.93 m/year, 9.84 m/year
      Temperature min/avg/max:            -4.239 K, 1571 K, 1647 K
      Heat fluxes through boundary parts: 0 W, 0 W, -6.945e+07 W, 8.138e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00002
@@ -390,7 +390,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  5.93 m/year, 15.1 m/year
+     RMS, max velocity:                  5.93 m/year, 15 m/year
      Temperature min/avg/max:            0 K, 1566 K, 1677 K
      Heat fluxes through boundary parts: 0 W, 0 W, 2.982e+07 W, 4.694e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00004
@@ -452,7 +452,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  7.39 m/year, 16.5 m/year
+     RMS, max velocity:                  7.39 m/year, 16.6 m/year
      Temperature min/avg/max:            0 K, 1564 K, 1656 K
      Heat fluxes through boundary parts: 0 W, 0 W, 7.024e+07 W, -3.205e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00005
@@ -737,7 +737,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  3.09 m/year, 6.92 m/year
+     RMS, max velocity:                  3.09 m/year, 6.85 m/year
      Temperature min/avg/max:            0 K, 1552 K, 1669 K
      Heat fluxes through boundary parts: 0 W, 0 W, 2.922e+07 W, 2.444e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00008
@@ -897,7 +897,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  5.26 m/year, 10.6 m/year
+     RMS, max velocity:                  5.26 m/year, 10.5 m/year
      Temperature min/avg/max:            24.48 K, 1551 K, 1695 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4.36e+07 W, 5.93e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00010
@@ -959,7 +959,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  6.88 m/year, 12 m/year
+     RMS, max velocity:                  6.88 m/year, 12.2 m/year
      Temperature min/avg/max:            47.3 K, 1551 K, 1697 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.021e+07 W, 1.68e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00011
@@ -1021,7 +1021,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  7.62 m/year, 12.7 m/year
+     RMS, max velocity:                  7.62 m/year, 12.9 m/year
      Temperature min/avg/max:            77.73 K, 1552 K, 1708 K
      Heat fluxes through boundary parts: 0 W, 0 W, -8.289e+07 W, 2.639e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00012
@@ -1092,7 +1092,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  7.16 m/year, 12.2 m/year
+     RMS, max velocity:                  7.16 m/year, 12.3 m/year
      Temperature min/avg/max:            116.4 K, 1552 K, 1714 K
      Heat fluxes through boundary parts: 0 W, 0 W, -7.697e+07 W, 2.921e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00013
@@ -1181,7 +1181,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  5.3 m/year, 9.91 m/year
+     RMS, max velocity:                  5.3 m/year, 9.76 m/year
      Temperature min/avg/max:            163.8 K, 1553 K, 1713 K
      Heat fluxes through boundary parts: 0 W, 0 W, -4.955e+07 W, 2.115e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00014
@@ -1350,7 +1350,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
 
    Postprocessing:
-     RMS, max velocity:                  2.76 m/year, 6.2 m/year
+     RMS, max velocity:                  2.76 m/year, 6.21 m/year
      Temperature min/avg/max:            0 K, 1540 K, 1639 K
      Heat fluxes through boundary parts: 0 W, 0 W, 5.434e+07 W, 1.009e+09 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00016

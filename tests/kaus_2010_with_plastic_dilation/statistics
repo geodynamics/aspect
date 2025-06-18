@@ -1,0 +1,41 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition ve_stress_xx
+# 14: Maximal value for composition ve_stress_xx
+# 15: Global mass for composition ve_stress_xx
+# 16: Minimal value for composition ve_stress_yy
+# 17: Maximal value for composition ve_stress_yy
+# 18: Global mass for composition ve_stress_yy
+# 19: Minimal value for composition ve_stress_xy
+# 20: Maximal value for composition ve_stress_xy
+# 21: Global mass for composition ve_stress_xy
+# 22: Minimal value for composition ve_stress_xx_old
+# 23: Maximal value for composition ve_stress_xx_old
+# 24: Global mass for composition ve_stress_xx_old
+# 25: Minimal value for composition ve_stress_yy_old
+# 26: Maximal value for composition ve_stress_yy_old
+# 27: Global mass for composition ve_stress_yy_old
+# 28: Minimal value for composition ve_stress_xy_old
+# 29: Maximal value for composition ve_stress_xy_old
+# 30: Global mass for composition ve_stress_xy_old
+# 31: Minimal value for composition plastic_strain
+# 32: Maximal value for composition plastic_strain
+# 33: Global mass for composition plastic_strain
+# 34: Minimal value for composition inclusion
+# 35: Maximal value for composition inclusion
+# 36: Global mass for composition inclusion
+# 37: Number of advected particles
+# 38: Particle file name
+# 39: RMS velocity (m/year)
+# 40: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 256 2507 297 18432 2 0 34 35 73 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.11111111e-01 3.47222222e+05 10240 output-kaus_2010_with_plastic_dilation/particles/particles-00000 8.17289302e-04 1.40766238e-03

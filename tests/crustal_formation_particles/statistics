@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Visualization file name
+# 13: Minimal value for composition basalt
+# 14: Maximal value for composition basalt
+# 15: Global mass for composition basalt
+# 16: Minimal value for composition harzburgite
+# 17: Maximal value for composition harzburgite
+# 18: Global mass for composition harzburgite
+# 19: Number of advected particles
+# 20: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 1488 14412 6379 12758 0 40 41 198 output-crustal_formation_particles/solution/solution-00000 0.00000000e+00 2.50000000e-01 1.97628443e+11 0.00000000e+00 5.41158301e-01 3.05268278e+11 148800 output-crustal_formation_particles/particles/particles-00000 
+1 1.000000000000e+06 1.000000000000e+06 1488 14412 6379 12758 8 29 30 147 output-crustal_formation_particles/solution/solution-00001 0.00000000e+00 8.13969143e-01 2.21726617e+11 0.00000000e+00 9.64534064e-01 1.12672230e+12 148800 output-crustal_formation_particles/particles/particles-00001 

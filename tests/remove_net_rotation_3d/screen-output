@@ -7,7 +7,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
    Solving Stokes system (GMG)... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                               0.0867 m/s, 0.185 m/s
+     RMS, max velocity:                                                               0.0867 m/s, 0.186 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 7.12e-08 kg*m^2/s, 1.68 kg*m^2, 4.25e-08 1/s, 1.47e-07 1/s
 
 *** Timestep 1:  t=0.285919 seconds, dt=0.285919 seconds
@@ -15,7 +15,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
    Solving Stokes system (GMG)... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                               0.0214 m/s, 0.0463 m/s
+     RMS, max velocity:                                                               0.0214 m/s, 0.0468 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.09e-08 kg*m^2/s, 1.68 kg*m^2, 1.25e-08 1/s, 1.54e-08 1/s
 
 *** Timestep 2:  t=0.832025 seconds, dt=0.546106 seconds
@@ -23,7 +23,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
    Solving Stokes system (GMG)... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                               0.00531 m/s, 0.013 m/s
+     RMS, max velocity:                                                               0.00531 m/s, 0.0131 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 6.1e-08 kg*m^2/s, 1.68 kg*m^2, 3.64e-08 1/s, 9.26e-08 1/s
 
 *** Timestep 3:  t=1 seconds, dt=0.167975 seconds
@@ -31,7 +31,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
    Solving Stokes system (GMG)... 32+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                                                               0.00329 m/s, 0.00785 m/s
+     RMS, max velocity:                                                               0.00329 m/s, 0.0079 m/s
      Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 9.96e-09 kg*m^2/s, 1.68 kg*m^2, 5.94e-09 1/s, 1.61e-08 1/s
 
 Termination requested by criterion: end time

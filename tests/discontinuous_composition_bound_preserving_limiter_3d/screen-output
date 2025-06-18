@@ -46,7 +46,7 @@ Number of degrees of freedom: 16,911 (7,695+387+2,565+6,264)
    Solving Stokes system (GMG)... 23+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0244 m/year, 0.0856 m/year
+     RMS, max velocity:         0.0244 m/year, 0.086 m/year
      Compositions min/max/mass: -0.0216/1/1.18e+16
 
 *** Timestep 4:  t=500000 years, dt=10608.9 years
@@ -55,7 +55,7 @@ Number of degrees of freedom: 16,911 (7,695+387+2,565+6,264)
    Solving Stokes system (GMG)... 22+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.0243 m/year, 0.0855 m/year
+     RMS, max velocity:         0.0243 m/year, 0.0859 m/year
      Compositions min/max/mass: -0.0216/0.9999/1.18e+16
 
 Number of active cells: 260 (on 4 levels)

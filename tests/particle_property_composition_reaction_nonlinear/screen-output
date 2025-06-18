@@ -1,9 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
 
@@ -19,12 +14,12 @@ Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
    Advecting particles...  done.
    Solving advection_field system ... 0 iterations.
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.63194e-16, 0, 0, 7.43845e-12
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.43845e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.63194e-16, 0, 0, 7.43844e-12
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.43844e-12
 
 
    Postprocessing:
-     RMS, max velocity:         0.000451 m/year, 0.000983 m/year
+     RMS, max velocity:         0.000451 m/year, 0.000984 m/year
      Compositions min/max/mass: 0/1/0.1825 // 0.004373/0.9007/0.4268 // 0/0/0
      Writing particle output:   output-particle_property_composition_reaction_nonlinear/particles/particles-00000
      Writing graphical output:  output-particle_property_composition_reaction_nonlinear/solution/solution-00000
@@ -289,9 +284,4 @@ Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

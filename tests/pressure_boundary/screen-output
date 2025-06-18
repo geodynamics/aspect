@@ -21,7 +21,7 @@ Number of degrees of freedom: 12,176 (7,470+971+3,735)
    Solving Stokes system (GMG)... 19+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                1.26e-09 m/s, 3.73e-09 m/s
+     RMS, max velocity:                1.26e-09 m/s, 3.74e-09 m/s
      Pressure at top/bottom of domain: -4.353e+10 Pa, 5.286e+10 Pa
 
 *** Timestep 2:  t=2.33318e+13 seconds, dt=7.62677e+12 seconds

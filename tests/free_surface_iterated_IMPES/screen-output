@@ -52,7 +52,7 @@ Number of mesh deformation degrees of freedom: 1,466
      Rayleigh number:                               0
 
      Topography min/max: 0 m, 0 m
-     RMS, max velocity:  0.000714 m/year, 0.00231 m/year
+     RMS, max velocity:  0.000714 m/year, 0.00232 m/year
 
 *** Timestep 1:  t=135061 years, dt=135061 years
    Solving mesh displacement system... 5 iterations.
@@ -106,7 +106,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -106.7 m, 83.52 m
-     RMS, max velocity:  0.000689 m/year, 0.0022 m/year
+     RMS, max velocity:  0.000689 m/year, 0.00221 m/year
 
 *** Timestep 3:  t=513209 years, dt=142109 years
    Solving mesh displacement system... 5 iterations.
@@ -177,7 +177,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -14.42 m, 49.01 m
-     RMS, max velocity:  0.000445 m/year, 0.0017 m/year
+     RMS, max velocity:  0.000445 m/year, 0.00171 m/year
 
 
 
@@ -202,7 +202,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -16.63 m, 53.84 m
-     RMS, max velocity:  0.000438 m/year, 0.00166 m/year
+     RMS, max velocity:  0.000438 m/year, 0.00167 m/year
 
 *** Timestep 7:  t=1.26258e+06 years, dt=192472 years
    Solving mesh displacement system... 5 iterations.
@@ -224,7 +224,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -15.64 m, 51.79 m
-     RMS, max velocity:  0.000437 m/year, 0.00164 m/year
+     RMS, max velocity:  0.000437 m/year, 0.00165 m/year
 
 *** Timestep 8:  t=1.45681e+06 years, dt=194226 years
    Solving mesh displacement system... 5 iterations.
@@ -268,7 +268,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -15.97 m, 52.61 m
-     RMS, max velocity:  0.000432 m/year, 0.00159 m/year
+     RMS, max velocity:  0.000432 m/year, 0.0016 m/year
 
 *** Timestep 10:  t=1.85441e+06 years, dt=200086 years
    Solving mesh displacement system... 5 iterations.

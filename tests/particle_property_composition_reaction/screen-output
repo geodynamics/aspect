@@ -9,7 +9,7 @@ Number of degrees of freedom: 6,823 (2,178+289+1,089+1,089+1,089+1,089)
    Solving Stokes system (GMG)... 8+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.000451 m/year, 0.000983 m/year
+     RMS, max velocity:         0.000451 m/year, 0.000984 m/year
      Compositions min/max/mass: 0/1/0.1825 // 0.01729/0.9066/0.4265 // 0/0/0
      Writing particle output:   output-particle_property_composition_reaction/particles/particles-00000
      Writing graphical output:  output-particle_property_composition_reaction/solution/solution-00000

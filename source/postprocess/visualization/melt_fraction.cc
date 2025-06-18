@@ -60,13 +60,14 @@ namespace aspect
                                                        this->introspection());
             MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                          this->n_compositional_fields());
+            MeltHandler<dim>::create_material_model_outputs(out);
 
             // Compute the melt fraction...
             this->get_material_model().evaluate(in, out);
 
             std::vector<double> melt_fractions(n_quadrature_points);
             MaterialModel::MeltFractionModel<dim>::as_melt_fraction_model(this->get_material_model())
-            .melt_fractions(in, melt_fractions);
+            .melt_fractions(in, melt_fractions, &out);
 
             for (unsigned int q=0; q<n_quadrature_points; ++q)
               computed_quantities[q](0) = melt_fractions[q];

@@ -70,7 +70,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  6.28e-05 m/year, 0.000106 m/year
+     RMS, max velocity:                  6.28e-05 m/year, 0.000107 m/year
      Temperature min/avg/max:            1500 K, 1597 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.277e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -123,7 +123,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  9.72e-07 m/year, 1.68e-06 m/year
+     RMS, max velocity:                  9.72e-07 m/year, 1.72e-06 m/year
      Temperature min/avg/max:            1500 K, 1596 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.277e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -176,7 +176,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.94e-07 m/year, 1.55e-06 m/year
+     RMS, max velocity:                  8.94e-07 m/year, 1.61e-06 m/year
      Temperature min/avg/max:            1500 K, 1596 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -229,7 +229,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.59e-07 m/year, 1.49e-06 m/year
+     RMS, max velocity:                  8.59e-07 m/year, 1.55e-06 m/year
      Temperature min/avg/max:            1500 K, 1596 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -273,7 +273,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.48e-07 m/year, 1.47e-06 m/year
+     RMS, max velocity:                  8.48e-07 m/year, 1.53e-06 m/year
      Temperature min/avg/max:            1500 K, 1596 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -317,7 +317,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.42e-07 m/year, 1.46e-06 m/year
+     RMS, max velocity:                  8.42e-07 m/year, 1.52e-06 m/year
      Temperature min/avg/max:            1500 K, 1596 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -361,7 +361,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.38e-07 m/year, 1.45e-06 m/year
+     RMS, max velocity:                  8.38e-07 m/year, 1.51e-06 m/year
      Temperature min/avg/max:            1500 K, 1596 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -405,7 +405,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.14e-07 m/year, 1.41e-06 m/year
+     RMS, max velocity:                  8.14e-07 m/year, 1.46e-06 m/year
      Temperature min/avg/max:            1500 K, 1596 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -449,7 +449,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.04e-07 m/year, 1.39e-06 m/year
+     RMS, max velocity:                  8.04e-07 m/year, 1.45e-06 m/year
      Temperature min/avg/max:            1500 K, 1595 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13
@@ -493,7 +493,7 @@ Number of degrees of freedom: 400 (126+22+63+63+63+63)
 
 
    Postprocessing:
-     RMS, max velocity:                  8.06e-07 m/year, 1.39e-06 m/year
+     RMS, max velocity:                  8.06e-07 m/year, 1.45e-06 m/year
      Temperature min/avg/max:            1500 K, 1595 K, 1600 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
      Compositions min/max/mass:          2450/2534/4.276e+13 // 3363/3379/5.684e+13 // 1500/1600/2.677e+13

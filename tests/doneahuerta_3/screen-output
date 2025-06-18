@@ -10,7 +10,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
    Postprocessing:
      Writing graphical output:      output-doneahuerta_3/solution/solution-00000
-     RMS, max velocity:             0.00777 m/s, 0.0119 m/s
+     RMS, max velocity:             0.00777 m/s, 0.012 m/s
      Errors u_L1, p_L1, u_L2, p_L2: 2.706835e-05, 1.109392e-03, 2.151968e-05, 1.165114e-03
 
 Termination requested by criterion: end time

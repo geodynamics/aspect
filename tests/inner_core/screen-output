@@ -40,7 +40,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00003
-     RMS, max velocity:                  7.39e-05 m/s, 0.000162 m/s
+     RMS, max velocity:                  7.39e-05 m/s, 0.00016 m/s
      Temperature min/avg/max:            0 K, 0.4004 K, 1.001 K
      Heat fluxes through boundary parts: 25.15 W
 
@@ -50,7 +50,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00004
-     RMS, max velocity:                  4.35e-05 m/s, 0.000145 m/s
+     RMS, max velocity:                  4.35e-05 m/s, 0.00014 m/s
      Temperature min/avg/max:            0 K, 0.4 K, 0.9999 K
      Heat fluxes through boundary parts: 25.13 W
 
@@ -60,7 +60,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00005
-     RMS, max velocity:                  0.000111 m/s, 0.000191 m/s
+     RMS, max velocity:                  0.00011 m/s, 0.000201 m/s
      Temperature min/avg/max:            0 K, 0.4 K, 1 K
      Heat fluxes through boundary parts: 25.13 W
 
@@ -70,7 +70,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00006
-     RMS, max velocity:                  8.56e-05 m/s, 0.00017 m/s
+     RMS, max velocity:                  8.56e-05 m/s, 0.000172 m/s
      Temperature min/avg/max:            0 K, 0.4 K, 1 K
      Heat fluxes through boundary parts: 25.13 W
 

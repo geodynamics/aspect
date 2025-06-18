@@ -35,7 +35,7 @@ Number of degrees of freedom: 35,586 (21,840+2,826+10,920)
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00000
-     RMS, max velocity:                  0.0181 m/year, 0.0771 m/year
+     RMS, max velocity:                  0.0181 m/year, 0.0775 m/year
      Temperature min/avg/max:            273 K, 1587 K, 2600 K
      Heat fluxes through boundary parts: -6.56e+05 W, 9.512e+05 W
      Writing depth average:              output-latent_heat_viscosity/depth_average
@@ -46,7 +46,7 @@ Number of degrees of freedom: 35,586 (21,840+2,826+10,920)
 
    Postprocessing:
      Writing graphical output:           output-latent_heat_viscosity/solution/solution-00001
-     RMS, max velocity:                  0.018 m/year, 0.0771 m/year
+     RMS, max velocity:                  0.018 m/year, 0.0775 m/year
      Temperature min/avg/max:            273 K, 1587 K, 2600 K
      Heat fluxes through boundary parts: -7.877e+05 W, 1.464e+06 W
      Writing depth average:              output-latent_heat_viscosity/depth_average

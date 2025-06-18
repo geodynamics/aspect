@@ -23,7 +23,7 @@ Number of degrees of freedom: 368 (224+32+112)
      Rayleigh number:                               7.67836e+10
 
      Writing graphical output:           output-custom_spherical_shell_2d_list/solution/solution-00000
-     RMS, max velocity:                  3.03e-12 m/s, 5.83e-12 m/s
+     RMS, max velocity:                  3.03e-12 m/s, 8.03e-12 m/s
      Temperature min/avg/max:            1000 K, 1501 K, 2000 K
      Heat fluxes through boundary parts: 4.499e+04 W, -4.481e+04 W
 

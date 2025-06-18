@@ -24,7 +24,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
      Temperature min/avg/max:            -6.377e-17 K, 0.005208 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -2.428e-45 W, -7.467e-05 W
-     RMS, max velocity:                  6.4e-12 m/s, 4.17e-11 m/s
+     RMS, max velocity:                  6.4e-12 m/s, 6.54e-11 m/s
 
 *** Timestep 1:  t=2.38851e+06 seconds, dt=2.38851e+06 seconds
    Solving temperature system... 45 iterations.
@@ -33,7 +33,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.04382 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, 5.336e-15 W, -2.02e-05 W
-     RMS, max velocity:                  1.89e-12 m/s, 1.21e-11 m/s
+     RMS, max velocity:                  1.89e-12 m/s, 2.05e-11 m/s
 
 *** Timestep 2:  t=6.95057e+06 seconds, dt=4.56206e+06 seconds
    Solving temperature system... 48 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.08393 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, 2.37e-13 W, -4.943e-06 W
-     RMS, max velocity:                  7.52e-13 m/s, 3.81e-12 m/s
+     RMS, max velocity:                  7.52e-13 m/s, 5.01e-12 m/s
 
 *** Timestep 3:  t=1.56641e+07 seconds, dt=8.71353e+06 seconds
    Solving temperature system... 61 iterations.
@@ -51,7 +51,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1287 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, 4.743e-11 W, -3.421e-06 W
-     RMS, max velocity:                  3.22e-13 m/s, 1.37e-12 m/s
+     RMS, max velocity:                  3.22e-13 m/s, 2.33e-12 m/s
 
 *** Timestep 4:  t=2e+07 seconds, dt=4.3359e+06 seconds
    Solving temperature system... 47 iterations.
@@ -60,7 +60,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      Temperature min/avg/max:            0 K, 0.1443 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, 1.3e-10 W, -3.851e-06 W
-     RMS, max velocity:                  1.83e-13 m/s, 4.91e-13 m/s
+     RMS, max velocity:                  1.83e-13 m/s, 1.01e-12 m/s
 
 Termination requested by criterion: end time
 

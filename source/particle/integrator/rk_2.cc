@@ -80,8 +80,7 @@ namespace aspect
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
 
-        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
-             it != end_particle; ++it, ++velocity, ++old_velocity)
+        for (auto it = begin_particle; it != end_particle; ++it)
           {
             ArrayView<double> properties = it->get_properties();
 
@@ -142,6 +141,9 @@ namespace aspect
                 Assert(false,
                        ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
+
+            ++old_velocity;
+            ++velocity;
           }
       }
 

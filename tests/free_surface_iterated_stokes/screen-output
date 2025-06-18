@@ -46,7 +46,7 @@ Number of mesh deformation degrees of freedom: 1,466
      Rayleigh number:                               0
 
      Topography min/max: 0 m, 0 m
-     RMS, max velocity:  0.000714 m/year, 0.00231 m/year
+     RMS, max velocity:  0.000714 m/year, 0.00232 m/year
 
 *** Timestep 1:  t=135061 years, dt=135061 years
    Solving mesh displacement system... 5 iterations.
@@ -55,7 +55,7 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00144364
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.19526e-11
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.19513e-11
 
 
    Postprocessing:
@@ -69,7 +69,7 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00677651
 
    Solving Stokes system (GMG)... 0+5 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.29903e-10
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.29428e-10
 
 
    Postprocessing:
@@ -83,12 +83,12 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00180906
 
    Solving Stokes system (GMG)... 0+6 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.92922e-10
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.929e-10
 
 
    Postprocessing:
      Topography min/max: -12.75 m, 41.32 m
-     RMS, max velocity:  0.000457 m/year, 0.00177 m/year
+     RMS, max velocity:  0.000457 m/year, 0.00178 m/year
 
 *** Timestep 4:  t=693789 years, dt=180270 years
    Solving mesh displacement system... 5 iterations.
@@ -97,7 +97,7 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000986546
 
    Solving Stokes system (GMG)... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.22893e-10
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.22894e-10
 
 
    Postprocessing:
@@ -111,7 +111,7 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000127171
 
    Solving Stokes system (GMG)... 0+4 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.99369e-11
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.98875e-11
 
 
    Postprocessing:
@@ -128,7 +128,7 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.38079e-05
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.44497e-11
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.44496e-11
 
 
    Postprocessing:
@@ -142,12 +142,12 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.19726e-05
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.37775e-11
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.36567e-11
 
 
    Postprocessing:
      Topography min/max: -15.61 m, 51.62 m
-     RMS, max velocity:  0.000437 m/year, 0.00164 m/year
+     RMS, max velocity:  0.000437 m/year, 0.00165 m/year
 
 *** Timestep 8:  t=1.45909e+06 years, dt=194658 years
    Solving mesh displacement system... 5 iterations.
@@ -156,12 +156,12 @@ Number of mesh deformation degrees of freedom: 1,466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.64857e-05
 
    Solving Stokes system (GMG)... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.30322e-11
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.30233e-11
 
 
    Postprocessing:
      Topography min/max: -16.16 m, 52.84 m
-     RMS, max velocity:  0.000433 m/year, 0.00161 m/year
+     RMS, max velocity:  0.000433 m/year, 0.00162 m/year
 
 *** Timestep 9:  t=1.65703e+06 years, dt=197935 years
    Solving mesh displacement system... 5 iterations.
@@ -183,7 +183,7 @@ Number of mesh deformation degrees of freedom: 1,466
 
    Postprocessing:
      Topography min/max: -16.11 m, 52.85 m
-     RMS, max velocity:  0.000428 m/year, 0.00156 m/year
+     RMS, max velocity:  0.000428 m/year, 0.00157 m/year
 
 
 

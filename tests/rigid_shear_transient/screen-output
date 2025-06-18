@@ -42,7 +42,7 @@ Number of degrees of freedom: 2,988 (1,122+153+561+1,152)
    Solving Stokes system (AMG)... 21+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                     1.3 m/s, 2.09 m/s
+     RMS, max velocity:                     1.3 m/s, 2.1 m/s
      Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 1.693421e-03, 4.110344e-02, 1.086562e-03, 4.119754e-02, 9.205514e-03
 
 *** Timestep 4:  t=0.1 seconds, dt=0.00763701 seconds

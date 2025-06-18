@@ -9,7 +9,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phases_hefesto/solution/solution-00000
-     RMS, max velocity:                  2.2e-10 m/year, 5.18e-10 m/year
+     RMS, max velocity:                  2.2e-10 m/year, 5.38e-10 m/year
      Temperature min/avg/max:            273 K, 2106 K, 4250 K
      Heat fluxes through boundary parts: -8.16e+04 W, 1.325e+05 W, 0 W, 0 W
      Writing depth average:              output-steinberger_phases_hefesto/depth_average
@@ -21,7 +21,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phases_hefesto/solution/solution-00001
-     RMS, max velocity:                  8.57e-12 m/year, 2.25e-11 m/year
+     RMS, max velocity:                  8.56e-12 m/year, 2.46e-11 m/year
      Temperature min/avg/max:            273 K, 2106 K, 4250 K
      Heat fluxes through boundary parts: -9.591e+04 W, 1.574e+05 W, 0 W, 0 W
      Writing depth average:              output-steinberger_phases_hefesto/depth_average

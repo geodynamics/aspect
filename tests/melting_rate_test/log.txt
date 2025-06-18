@@ -8,7 +8,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
    Solving fluid velocity system... 13 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  7.94e-24 m/year, 3.43e-23 m/year
+     RMS, max velocity:                  7.94e-24 m/year, 4.09e-23 m/year
      Temperature min/avg/max:            3400 K, 4200 K, 5000 K
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
      Writing graphical output:           output-melting_rate_test/solution/solution-00000
@@ -17,7 +17,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
    Solving composition reactions... in 10 substep(s).
 
    Postprocessing:
-     RMS, max velocity:                  7.94e-24 m/year, 3.43e-23 m/year
+     RMS, max velocity:                  7.94e-24 m/year, 4.09e-23 m/year
      Temperature min/avg/max:            3400 K, 4200 K, 5000 K
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
      Writing graphical output:           output-melting_rate_test/solution/solution-00001
@@ -26,7 +26,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
    Solving composition reactions... in 10 substep(s).
 
    Postprocessing:
-     RMS, max velocity:                  7.94e-24 m/year, 3.43e-23 m/year
+     RMS, max velocity:                  7.94e-24 m/year, 4.09e-23 m/year
      Temperature min/avg/max:            3400 K, 4200 K, 5000 K
      Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 0 W
      Writing graphical output:           output-melting_rate_test/solution/solution-00002

@@ -20,7 +20,7 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Postprocessing:
      Compositions min/max/mass:   0/0/0 // 0.01/0.01/4e+04
      Melt fraction min/total/max: 0, 0, 0
-     RMS, max velocity:           8.75e-19 m/year, 1.5e-18 m/year
+     RMS, max velocity:           8.75e-19 m/year, 2.44e-18 m/year
 
 *** Timestep 1:  t=10000 years, dt=10000 years
    Solving temperature system... 0 iterations.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 74 (18+7+18+4+9+9+9)
    Postprocessing:
      Compositions min/max/mass:   0/0/0 // 0.01/0.01/4e+04
      Melt fraction min/total/max: 0, 0, 0
-     RMS, max velocity:           7.87e-19 m/year, 1.03e-18 m/year
+     RMS, max velocity:           7.87e-19 m/year, 1.08e-18 m/year
 
 Termination requested by criterion: end time
 

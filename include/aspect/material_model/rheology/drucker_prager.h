@@ -44,9 +44,19 @@ namespace aspect
         double angle_internal_friction;
 
         /**
+         * Dilation angle (psi) for the current composition and phase
+         */
+        double angle_dilation;
+
+        /**
          * Cohesion for the current composition and phase
          */
         double cohesion;
+
+        /**
+         * Prefactor for the yield stress for the current composition and phase
+         */
+        double yield_stress_prefactor;
 
         /**
          * Limit maximum yield stress from drucker prager yield criterion.
@@ -170,6 +180,20 @@ namespace aspect
           compute_derivative (const double angle_internal_friction,
                               const double effective_strain_rate) const;
 
+          /**
+           * Compute the LHS and RHS dilation terms for the Stokes system.
+           * LHS: $\bar\alpha\alpha / \eta^{ve}$;
+           * RHS: $\bar(2\eta^{ve}\varepsilon^{eff} - k) / \eta^{ve}$.
+           * Here $\alpha$ and $\bar\alpha$ correspond to the friction angle
+           * and the dilation angle, respectively, $k$ is cohesion,
+           * $\eta^{ve}$ is the non-yielding viscosity, and $\varepsilon^{eff}$
+           * is the effective viscosity.
+           */
+          std::pair<double,double>
+          compute_dilation_terms_for_stokes_system(const DruckerPragerParameters &drucker_prager_parameters,
+                                                   const double non_yielding_viscosity,
+                                                   const double effective_strain_rate) const;
+
         private:
 
           /**
@@ -184,9 +208,25 @@ namespace aspect
           std::vector<double> angles_internal_friction;
 
           /**
+           * The plastic potential of the Drucker-Prager model is given by
+           * tau_II - 6.0 * pressure * sin_psi / (sqrt(3.0) * (3.0 + sin_psi)) in 3D or
+           * tau_II - pressure * sin_psi in 2D, where tau_II is the second invariant
+           * of the deviatoric stress.
+           * Psi is an angle of dilation, that is input by the user in degrees,
+           * but stored as radians. Note that the dilation angle must not be larger
+           * than the internal friction angle.
+           */
+          std::vector<double> angles_dilation;
+
+          /**
            * The cohesion is provided and stored in Pa.
            */
           std::vector<double> cohesions;
+
+          /**
+           *The prefactors for the yield stress.
+           */
+          std::vector<double> yield_stress_prefactors;
 
           /**
            * The yield stress is limited to a constant value, stored in Pa.

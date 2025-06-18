@@ -29,7 +29,7 @@ Number of mesh deformation degrees of freedom: 1,610
      Writing particle output:   output-particle_fast_evaluate_multiple_compositions/particles/particles-00000
      Writing graphical output:  output-particle_fast_evaluate_multiple_compositions/solution/solution-00000
      Compositions min/max/mass: 2/2/8000 // 5/5/2e+04 // 8/8/3.2e+04
-     RMS, max velocity:         7.17e-27 m/year, 3.27e-26 m/year
+     RMS, max velocity:         7.17e-27 m/year, 3.4e-26 m/year
 
 Termination requested by criterion: end time
 
