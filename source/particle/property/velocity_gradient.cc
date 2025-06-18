@@ -26,7 +26,7 @@ namespace aspect
   {
     namespace Property
     {
-      
+
       template <int dim>
       void
       VelocityGradient<dim>::initialize_one_particle_property(const Point<dim> &,
@@ -74,7 +74,7 @@ namespace aspect
       }
 
 
-      
+
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
       VelocityGradient<dim>::get_property_information() const
