@@ -21,6 +21,8 @@
 #ifndef _aspect_mesh_deformation_fastscapecc_adapter_h
 #define _aspect_mesh_deformation_fastscapecc_adapter_h
 
+#include <aspect/config.h>
+
 #ifdef ASPECT_WITH_FASTSCAPELIB
 
 #include <unordered_map>

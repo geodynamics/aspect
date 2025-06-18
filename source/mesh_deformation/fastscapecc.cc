@@ -18,6 +18,8 @@
   <http://www.gnu.org/licenses/>.
  */
 
+#include <aspect/config.h>
+
 #ifdef ASPECT_WITH_FASTSCAPELIB
 
 #include <iostream>
