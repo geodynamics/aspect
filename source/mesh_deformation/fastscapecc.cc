@@ -485,17 +485,14 @@ namespace aspect
 
       std::vector<double> V(n_grid_nodes);
 
-      // Send local data to rank 0 if not rank 0
+      // Send local data to rank 0 if not rank 0. Utilities::MPI::isend() is
+      // in reality a non-blocking send, but we have nothing to do and so
+      // may as well wait for the results to be send -- this happens
+      // implicitly by ignoring the returned Utilities::MPI::Future object.
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
-      {
-        for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-          MPI_Ssend(&temporary_variables[i][0],
-                    temporary_variables[1].size(),
-                    MPI_DOUBLE,
-                    0,
-                    42,
-                    this->get_mpi_communicator());
-      }
+       Utilities::MPI::isend(temporary_variables, this->get_mpi_communicator(),
+           /* target = */ 0,
+           /* mpi_tag = */ 42);
 
     // Rank 0 gathers and processes everything
     if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -516,50 +513,21 @@ namespace aspect
           p < Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
           ++p)
         {
-          MPI_Status status;
-          MPI_Probe(p, 42, this->get_mpi_communicator(), &status);
-
-          int incoming_size = 0;
-          MPI_Get_count(&status, MPI_DOUBLE, &incoming_size);
-
-          for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-            temporary_variables[i].resize(incoming_size);
-
-          for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-            MPI_Recv(&temporary_variables[i][0],
-                    incoming_size,
-                    MPI_DOUBLE,
-                    p,
-                    42,
-                    this->get_mpi_communicator(),
-                    &status);
+          temporary_variables
+          = Utilities::MPI::irecv<decltype(temporary_variables)> (this->get_mpi_communicator(),
+              /* sender = */ p,
+              /* mpi_tag = */ 42).get();
 
           for (unsigned int i = 0; i < temporary_variables[1].size(); ++i)
             {
-              int index = static_cast<int>(temporary_variables[1][i]);
+              const int index = static_cast<int>(temporary_variables[1][i]);
               h[index] = temporary_variables[0][i];
               vz[index] = temporary_variables[2][i];
             }
         }
-// TODO: If you do the work in the following only of process 0, don't the other processes
-// have to send their data to process 0? I.e., don't we need a 'gather' operation here?
-//
-// Update: On reading further, I see that you actually do that. Let's move the 'else' branch
-// here, doing something like
-//    if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) != 0)
-//      send data to process zero
-// This makes it easier to see that in order for this to work, we first have to send the
-// data before we receive it in the ==0 block.
-  
-
 // TODO: This will then simply be a loop over all elements of the map/multimap above.
 // Note that right now you encounter the same vertex multiple times, and you simply
 // overwrite early content with later content (which is ok).
-
-  
-// TODO: In order to send/receive the std::map or std::multimap mentioned above, you can use
-// Utilities::MPI::isend/irecv. These are easier to use than what you have here because
-// they work on *any* data structure.
 
           // Save the current elevation so that we can later take the difference to
           // the one after calling FastScape:
@@ -874,22 +842,11 @@ namespace aspect
 
 
           std::cout<<"here it works 13"<<std::endl;
+    }
+
 
           // Broadcast V to all other processes
-          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
-        }
-      else
-        {
-// TODO: This is the else branch I mention above
-          for (unsigned int i = 0; i < temporary_variables.size(); ++i)
-            MPI_Ssend(&temporary_variables[i][0], temporary_variables[1].size(), MPI_DOUBLE, 0, 42, this->get_mpi_communicator());
-
-// TODO: This one corresponds to the Bcast at the end of the if-block above and sends all other processes
-// what process 0 has computed. I would move that *after* the if-block in the same
-// way as the two lines above were moved *before* the if-block, as that more clearly
-// communicates the order of communication.
-          MPI_Bcast(&V[0], n_grid_nodes, MPI_DOUBLE, 0, this->get_mpi_communicator());
-        }
+    V = Utilities::MPI::broadcast(this->get_mpi_communicator(), V, /* root= */ 0);
 
       // Maybe this is enough
       // Step 1: Get V ordered
