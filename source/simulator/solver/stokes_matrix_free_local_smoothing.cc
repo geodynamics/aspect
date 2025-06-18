@@ -130,18 +130,6 @@ namespace aspect
     Assert(this->introspection().variable("velocity").block_index==0, ExcNotImplemented());
     Assert(this->introspection().variable("pressure").block_index==1, ExcNotImplemented());
 
-    // We currently only support averaging of the viscosity to a constant or Q1:
-    using avg = MaterialModel::MaterialAveraging::AveragingOperation;
-    if (false)
-      AssertThrow((this->get_parameters().material_averaging &
-                   (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
-                    | avg::pick_largest | avg::project_to_Q1 | avg::log_average
-                    | avg::harmonic_average_only_viscosity | avg::geometric_average_only_viscosity
-                    | avg::project_to_Q1_only_viscosity)) != 0,
-                  ExcMessage("The matrix-free Stokes solver currently only works if material model averaging "
-                             "is enabled. If no averaging is desired, consider using ``project to Q1 only "
-                             "viscosity''."));
-
     // Currently cannot solve compressible flow with implicit reference density
     if (this->get_material_model().is_compressible() == true)
       AssertThrow(this->get_parameters().formulation_mass_conservation !=
