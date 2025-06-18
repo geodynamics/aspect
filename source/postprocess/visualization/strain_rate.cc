@@ -20,6 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/strain_rate.h>
+#include <aspect/utilities.h>
 
 
 
