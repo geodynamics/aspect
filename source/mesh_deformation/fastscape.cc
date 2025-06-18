@@ -431,6 +431,11 @@ namespace aspect
           // In later timesteps, we copy h directly from FastScape.
           std::mt19937 random_number_generator(fastscape_seed);
           std::uniform_real_distribution<double> random_distribution(-noise_elevation,noise_elevation);
+          // read sea level from the user defined function or constant value;
+          const double current_sea_level = use_sea_level_function
+                                           ? sea_level_function.value(Point<1>())
+                                           : sea_level_constant_value;
+
           for (unsigned int i=0; i<fastscape_array_size; ++i)
             {
               elevation_old[i] = elevation[i];
@@ -455,13 +460,13 @@ namespace aspect
                   if (sediment_rain > 0 && use_marine_component)
                     {
                       // Only apply sediment rain to areas below sea level.
-                      if (elevation[i] < sea_level)
+                      if (elevation[i] < current_sea_level)
                         {
                           // If the rain would put us above sea level, set height to sea level.
-                          if (elevation[i] + sediment_rain*aspect_timestep_in_years > sea_level)
-                            elevation[i] = sea_level;
+                          if (elevation[i] + sediment_rain*aspect_timestep_in_years > current_sea_level)
+                            elevation[i] = current_sea_level;
                           else
-                            elevation[i] = std::min(sea_level,elevation[i] + sediment_rain*aspect_timestep_in_years);
+                            elevation[i] = std::min(current_sea_level,elevation[i] + sediment_rain*aspect_timestep_in_years);
                         }
                     }
                 }
@@ -505,6 +510,18 @@ namespace aspect
                                               &bedrock_deposition_g,
                                               &sediment_deposition_g,
                                               &slope_exponent_p);
+          // Add sediments through marine sedimentation
+          if (use_marine_component)
+            fastscape_set_marine_parameters_(&current_sea_level,
+                                             &sand_surface_porosity,
+                                             &silt_surface_porosity,
+                                             &sand_efold_depth,
+                                             &silt_efold_depth,
+                                             &sand_silt_ratio,
+                                             &sand_silt_averaging_depth,
+                                             &sand_transport_coefficient,
+                                             &silt_transport_coefficient);
+
 
           // Find timestep size, run FastScape, and make visualizations.
           execute_fastscape(elevation,
@@ -797,6 +814,10 @@ namespace aspect
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
 
       const unsigned int current_timestep = this->get_timestep_number ();
+      // Set sea level
+      const double current_sea_level = use_sea_level_function
+                                       ? sea_level_function.value(Point<1>())
+                                       : sea_level_constant_value;
 
       // Initialize FastScape with grid and extent.
       fastscape_init_();
@@ -824,7 +845,8 @@ namespace aspect
                                           &slope_exponent_p);
 
       if (use_marine_component)
-        fastscape_set_marine_parameters_(&sea_level,
+
+        fastscape_set_marine_parameters_(&current_sea_level,
                                          &sand_surface_porosity,
                                          &silt_surface_porosity,
                                          &sand_efold_depth,
@@ -1601,6 +1623,15 @@ namespace aspect
       return true;
     }
 
+    template <int dim>
+    void
+    FastScape<dim>::update()
+    {
+      if (use_sea_level_function)
+        {
+          sea_level_function.set_time(this->get_time() / year_in_seconds);
+        }
+    }
 
 
     template <int dim>
@@ -1779,9 +1810,22 @@ namespace aspect
 
           prm.enter_subsection ("Marine parameters");
           {
-            prm.declare_entry("Sea level", "0",
+            // Define sea level as a constant value of time dependent user-defined function
+            prm.declare_entry("Use sea level function", "false",
+                              Patterns::Bool(),
+                              "Whether to define sea level using a time-dependent function. "
+                              "If false, a constant value will be used.");
+
+            prm.declare_entry("Sea level", "0.0",
                               Patterns::Double(),
-                              "Sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. Units: $\\{m}$ ");
+                              "Constant sea level relative to the ASPECT surface, where the maximum Z or Y extent in ASPECT is a sea level of zero. Units: $\\{m}$ ");
+
+            prm.enter_subsection ("Sea level function");
+            {
+              Functions::ParsedFunction<1>::declare_parameters(prm, 1);
+            }
+            prm.leave_subsection();
+
             prm.declare_entry("Sand porosity", "0.0",
                               Patterns::Double(),
                               "Porosity of sand. ");
@@ -1935,7 +1979,24 @@ namespace aspect
 
           prm.enter_subsection("Marine parameters");
           {
-            sea_level = prm.get_double("Sea level");
+            use_sea_level_function = prm.get_bool("Use sea level function");
+            if (use_sea_level_function)
+              {
+                prm.enter_subsection("Sea level function");
+                {
+                  sea_level_function.parse_parameters(prm);
+                }
+                prm.leave_subsection();
+
+                // If using the function description for the sea level, no parts of the code
+                // base should use the sea_level_constant_value variable. Poison it to
+                // make sure it really isn't used anywhere:
+                sea_level_constant_value = numbers::signaling_nan<double>();
+              }
+            else
+              {
+                sea_level_constant_value = prm.get_double("Sea level");
+              }
             sand_surface_porosity = prm.get_double("Sand porosity");
             silt_surface_porosity = prm.get_double("Silt porosity");
             sand_efold_depth = prm.get_double("Sand e-folding depth");
