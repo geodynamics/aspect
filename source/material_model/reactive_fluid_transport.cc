@@ -53,6 +53,25 @@ namespace aspect
         }
     }
 
+    template <int dim>
+    double
+    ReactiveFluidTransport<dim>::
+    compute_bulk_density (const double porosity,
+                          const double solid_density,
+                          const double fluid_density) const
+    {
+      return (1 - porosity) * solid_density + porosity * fluid_density;
+    }
+
+    template <int dim>
+    double
+    ReactiveFluidTransport<dim>::
+    compute_mass_fraction (const double volume_frac,
+                           const double material_density,
+                           const double bulk_density) const
+    {
+      return volume_frac * material_density / bulk_density;
+    }
 
     template <int dim>
     void
@@ -78,8 +97,8 @@ namespace aspect
                     // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
                     // to a mass fraction so that we correctly compare the two values.
                     const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
-                    const double bulk_density = out->densities[q] * (1.0 - in.composition[q][porosity_idx]) + fluid_out->fluid_densities[q] * in.composition[q][porosity_idx];
-                    const double mass_fraction_porosity = volume_fraction_porosity * fluid_out->fluid_densities[q] / bulk_density;
+                    const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
+                    const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
                     // No reactions occur between the solid and fluid phases,
                     // and the fluid mass fraction (stored in the melt_fractions
                     // vector) is equal to the mass fraction of the porosity.
@@ -99,8 +118,8 @@ namespace aspect
                     // the free water is a volume fraction, while the bound water is a mass fraction. Convert the free water
                     // to a mass fraction so that we correctly compare the two values.
                     const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
-                    const double bulk_density = out->densities[q] * (1.0 - in.composition[q][porosity_idx]) + fluid_out->fluid_densities[q] * in.composition[q][porosity_idx];
-                    const double mass_fraction_porosity = volume_fraction_porosity * fluid_out->fluid_densities[q] / bulk_density;
+                    const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);
+                    const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
                     melt_fractions[q] = in.composition[q][bound_fluid_idx] + mass_fraction_porosity;
                     break;
                   }
@@ -113,8 +132,8 @@ namespace aspect
                     // We therefore convert the free water to a mass fraction so that we have the correct input.
                     const double volume_fraction_porosity = in.composition[q][porosity_idx];
                     const std::shared_ptr<const MeltOutputs<dim>> fluid_out = out->template get_additional_output_object<MeltOutputs<dim>>();
-                    const double bulk_density = out->densities[q] * (1.0 - volume_fraction_porosity) + fluid_out->fluid_densities[q] * volume_fraction_porosity;
-                    const double mass_fraction_porosity = volume_fraction_porosity * fluid_out->fluid_densities[q] / bulk_density;
+                    const double bulk_density = compute_bulk_density(volume_fraction_porosity, out->densities[q], fluid_out->fluid_densities[q]);;
+                    const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_out->fluid_densities[q], bulk_density);
                     melt_fractions[q] = tian2019_model.melt_fraction(in, mass_fraction_porosity, q);
                     break;
                   }
@@ -233,13 +252,12 @@ namespace aspect
                   const double fluid_density = fluid_out->fluid_densities[q];
 
                   const double volume_fraction_porosity = in.composition[q][porosity_idx];
-                  const double bulk_density = solid_density * (1.0 - volume_fraction_porosity) +
-                                              fluid_density * volume_fraction_porosity;
+                  const double bulk_density = compute_bulk_density(volume_fraction_porosity, solid_density, fluid_density);
 
                   // We need to convert the porosity, which is a volume fraction, to a mass fraction
                   // to determine the total mass fraction of water (across both phases). This is then
                   // used to ensure conservation of water mass during reactions.
-                  const double mass_fraction_porosity = volume_fraction_porosity * fluid_density / bulk_density;
+                  const double mass_fraction_porosity = compute_mass_fraction(volume_fraction_porosity, fluid_density, bulk_density);
 
                   // The total mass fraction of water, which must be conserved after the reactions are done.
                   // This is given by:
@@ -259,17 +277,19 @@ namespace aspect
 
                   // Since porosity is a volume fraction, convert the mass fraction change to a volume fraction change
                   // to update the porosity value. We cannot use the bulk density to do this, because we do not yet know
-                  // the new bulk density of the rock after the reactions have been applied.
+                  // the new bulk density of the rock after the reactions have been applied. We do this by substituting
+                  // the  new bulk density as a function of the new volume fraction porosity into this equation:
+                  // new_Fl_mass * new_bulk_density = new_volume_frac * fluid_density
+                  // and solving for the new volume fraction. This gives us the following equation:
                   const double new_volume_fraction_porosity = solid_density * new_mass_fraction_porosity /
                                                               (fluid_density + solid_density * new_mass_fraction_porosity - fluid_density * new_mass_fraction_porosity);
 
                   // Now determine the new bulk density using the new volume fraction of porosity
-                  const double new_bulk_density = solid_density * (1.0 - new_volume_fraction_porosity) +
-                                                  fluid_density * new_volume_fraction_porosity;
+                  const double new_bulk_density = compute_bulk_density(new_volume_fraction_porosity, solid_density, fluid_density);
 
                   // Determine the bound fluid mass fraction using the new volume fraction of porosity and the original
                   // mass fraction of water. We do this by determining the mass fraction of the solid phase:
-                  const double mass_fraction_solid = (1 - new_volume_fraction_porosity) * solid_density / new_bulk_density;
+                  const double mass_fraction_solid = compute_mass_fraction(1.0 - new_volume_fraction_porosity, solid_density, new_bulk_density);
                   // And now we use the total mass fraction of water determined above to ensure that we are conserving
                   // mass during the reactions. Sm_mass is then given by:
                   const double new_bound_fluid_mass_fraction = (total_mass_fraction_water - new_mass_fraction_porosity) /

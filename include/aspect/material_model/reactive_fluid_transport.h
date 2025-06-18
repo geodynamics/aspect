@@ -60,6 +60,13 @@ namespace aspect
          * @}
          */
 
+        double compute_bulk_density (const double porosity,
+                                     const double solid_density,
+                                     const double fluid_density) const;
+
+        double compute_mass_fraction (const double porosity,
+                                      const double solid_density,
+                                      const double fluid_density) const;
         /**
          * Compute the free fluid fraction that can be present in the material based on the
          * fluid content of the material and the fluid solubility for the given input conditions.
