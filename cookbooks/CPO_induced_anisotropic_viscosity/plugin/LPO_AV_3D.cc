@@ -811,16 +811,15 @@ namespace aspect
                   double residual = scalar_viscosity;
                   double threshold = 0.0001*scalar_viscosity;
                   SymmetricTensor<2,dim> stress;
-                  stress = scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6; // Use stress in MPa
-                  // std::cout << "Initial stress: " << stress << std::endl;
+                  stress = 2*scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6; // Use stress in MPa //Added *2 2025.06.18.
+                  //std::cout << "Initial stress: " << stress << std::endl;
                   while (std::abs(residual) > threshold && n_iterations < max_iteration)
                     // while (n_iterations < max_iteration)
                     {
                       // std::cout << "n_iterations: " << n_iterations << std::endl;
-                      stress = (1./2.) * (stress + scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6);
-                      // std::cout << "old_stress_strain_director " << old_stress_strain_director << std::endl;
+                      stress = (1./2.) * (stress + 2*scalar_viscosity * V_r4 * deviatoric_strain_rate / 1e6); //Added *2 2025.06.18.
                       // std::cout << "deviatoric_strain_rate " << deviatoric_strain_rate << std::endl;
-                      // std::cout << "Anisotropic stress " << stress << std::endl;
+                      //std::cout << "Anisotropic stress " << stress << std::endl;
 
                       Tensor<2,3> S_CPO=transpose(R)*stress*R;
                       // std::cout << "stress " << stress <<std::endl;
