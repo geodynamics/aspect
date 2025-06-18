@@ -69,7 +69,7 @@ namespace aspect
                                                                         rotation_matrices_grains,
                                                                         n_samples,
                                                                         this->random_number_generator);
-            
+
             if (use_rotmat == true)
               {
                 const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average<6>(weighted_rotation_matrices);
@@ -110,7 +110,7 @@ namespace aspect
                   }
 
                 const std::vector<Tensor<2,3>> weighted_rotation_matrices = Utilities::rotation_matrices_random_draw_volume_weighting(volume_fractions_grains, rotation_matrices_grains, n_samples, this->random_number_generator);
-                
+
                 if (use_rotmat == true)
                   {
                     std::array<std::array<double,6>,3> bingham_average = compute_bingham_average<6>(weighted_rotation_matrices);
@@ -194,7 +194,7 @@ namespace aspect
         const double eigenvalue_c1 = eigenvectors_c[0].first/matrices.size();
         const double eigenvalue_c2 = eigenvectors_c[1].first/matrices.size();
         const double eigenvalue_c3 = eigenvectors_c[2].first/matrices.size();
-        
+
         const Tensor<1,3,double> eigvec_a = eigenvectors_a[0].second;
         const Tensor<1,3,double> eigvec_b = eigenvectors_b[0].second;
         const Tensor<1,3,double> eigvec_c = eigenvectors_c[0].second;
@@ -219,7 +219,7 @@ namespace aspect
         const double phi1 = EA[0]*constants::degree_to_radians;
         const double theta = EA[1]*constants::degree_to_radians;
         const double phi2 = EA[2]*constants::degree_to_radians;
-        
+
         std::array<std::array<double,array_length>,3> results;
         if constexpr (array_length == 6)
           {
@@ -236,7 +236,7 @@ namespace aspect
             results[2] = {{phi2, eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}};
           }
         return results;
-        
+
       }
 
 
