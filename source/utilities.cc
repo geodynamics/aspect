@@ -3306,6 +3306,7 @@ namespace aspect
       }
 
 
+
       template <>
       const Tensor<3,3> &levi_civita<3>()
       {
@@ -3327,6 +3328,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       SymmetricTensor<2,dim> consistent_deviator(const SymmetricTensor<2,dim> &input)
       {
@@ -3338,6 +3340,7 @@ namespace aspect
 
         return output;
       }
+
 
 
       template <int dim>

@@ -8,31 +8,31 @@ Number of degrees of freedom: 2,804 (2,210+297+297)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999814
 
    Solving Stokes system (GMG)... 0+17 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.103034
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.103225
 
    Solving Stokes system (GMG)... 0+18 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0267627
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.0267374
 
    Solving Stokes system (GMG)... 0+10 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0136305
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.0133975
 
    Solving Stokes system (GMG)... 0+8 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0117487
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.0116201
 
    Solving Stokes system (GMG)... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0115315
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.0114459
 
    Solving Stokes system (GMG)... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0117271
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.0116206
 
    Solving Stokes system (GMG)... 0+7 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0126799
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.0122782
 
-   Solving Stokes system (GMG)... 0+13 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.0138451
+   Solving Stokes system (GMG)... 0+12 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.013073
 
-   Solving Stokes system (GMG)... 0+19 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.015363
+   Solving Stokes system (GMG)... 0+17 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0138044
 
 
    WARNING: The nonlinear solver in the current timestep failed to converge.
