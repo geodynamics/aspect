@@ -122,6 +122,10 @@ namespace aspect
               {
                 stiffness_matrix = &stiffness_matrix_clinopyroxene;
               }
+            else if (cpo_particle_property.get_deformation_type(cpo_data_position,data,mineral_i) == DeformationType::olivine_d_0kl)
+              {
+                stiffness_matrix =  &stiffness_matrix_olivine;
+              }
             else
               {
                 AssertThrow(false, ExcMessage("Stiffness matrix not implemented for deformation type "
