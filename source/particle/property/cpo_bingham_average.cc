@@ -72,14 +72,14 @@ namespace aspect
 
             if (use_rotmat == true)
               {
-                const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average<6>(weighted_rotation_matrices);
+                const std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
                 for (unsigned int i = 0; i < 3; ++i)
                   for (unsigned int j = 0; j < 6; ++j)
                     data.emplace_back(bingham_average[i][j]);
               }
             else
               {
-                const std::array<std::array<double,4>,3> bingham_average = compute_bingham_average<4>(weighted_rotation_matrices);
+                const std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
                 for (unsigned int i = 0; i < 3; ++i)
                   for (unsigned int j = 0; j < 4; ++j)
                     data.emplace_back(bingham_average[i][j]);
@@ -113,7 +113,7 @@ namespace aspect
 
                 if (use_rotmat == true)
                   {
-                    std::array<std::array<double,6>,3> bingham_average = compute_bingham_average<6>(weighted_rotation_matrices);
+                    std::array<std::array<double,6>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,6> {});
 
                     for (unsigned int i = 0; i < 3; ++i)
                       for (unsigned int j = 0; j < 6; ++j)
@@ -123,7 +123,7 @@ namespace aspect
                   }
                 else
                   {
-                    std::array<std::array<double,4>,3> bingham_average = compute_bingham_average<4>(weighted_rotation_matrices);
+                    std::array<std::array<double,4>,3> bingham_average = compute_bingham_average(weighted_rotation_matrices, std::integral_constant<int,4> {});
 
                     for (unsigned int i = 0; i < 3; ++i)
                       for (unsigned int j = 0; j < 4; ++j)
@@ -138,10 +138,11 @@ namespace aspect
 
 
       template <int dim>
-      template <int array_length>
-      std::array<std::array<double,array_length>,3>
-      CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices) const
+      std::array<std::array<double,6>,3>
+      CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,6>) const
       {
+        AssertThrow(use_rotmat == true, ExcMessage("Must use rotation matrix when array length == 6"));
+
         SymmetricTensor<2,3> sum_matrix_a;
         SymmetricTensor<2,3> sum_matrix_b;
         SymmetricTensor<2,3> sum_matrix_c;
@@ -195,6 +196,73 @@ namespace aspect
         const double eigenvalue_c2 = eigenvectors_c[1].first/matrices.size();
         const double eigenvalue_c3 = eigenvectors_c[2].first/matrices.size();
 
+        return
+        {
+          {
+            {{averaged_a[0],averaged_a[1],averaged_a[2], eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}},
+            {{averaged_b[0],averaged_b[1],averaged_b[2], eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}},
+            {{averaged_c[0],averaged_c[1],averaged_c[2], eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}}
+          }
+        };
+
+      }
+
+
+
+      template <int dim>
+      std::array<std::array<double,4>,3>
+      CpoBinghamAverage<dim>::compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,4>) const
+      {
+        AssertThrow(use_rotmat == false, ExcMessage("Must not use rotation matrix when array length == 4"));
+
+        SymmetricTensor<2,3> sum_matrix_a;
+        SymmetricTensor<2,3> sum_matrix_b;
+        SymmetricTensor<2,3> sum_matrix_c;
+
+        // extracting the a, b and c orientations from the olivine a matrix
+        // see https://courses.eas.ualberta.ca/eas421/lecturepages/orientation.html
+        const unsigned int n_matrices = matrices.size();
+        for (unsigned int i_grain = 0; i_grain < n_matrices; ++i_grain)
+          {
+            sum_matrix_a[0][0] += matrices[i_grain][0][0] * matrices[i_grain][0][0]; // SUM(l^2)
+            sum_matrix_a[1][1] += matrices[i_grain][0][1] * matrices[i_grain][0][1]; // SUM(m^2)
+            sum_matrix_a[2][2] += matrices[i_grain][0][2] * matrices[i_grain][0][2]; // SUM(n^2)
+            sum_matrix_a[0][1] += matrices[i_grain][0][0] * matrices[i_grain][0][1]; // SUM(l*m)
+            sum_matrix_a[0][2] += matrices[i_grain][0][0] * matrices[i_grain][0][2]; // SUM(l*n)
+            sum_matrix_a[1][2] += matrices[i_grain][0][1] * matrices[i_grain][0][2]; // SUM(m*n)
+
+
+            sum_matrix_b[0][0] += matrices[i_grain][1][0] * matrices[i_grain][1][0]; // SUM(l^2)
+            sum_matrix_b[1][1] += matrices[i_grain][1][1] * matrices[i_grain][1][1]; // SUM(m^2)
+            sum_matrix_b[2][2] += matrices[i_grain][1][2] * matrices[i_grain][1][2]; // SUM(n^2)
+            sum_matrix_b[0][1] += matrices[i_grain][1][0] * matrices[i_grain][1][1]; // SUM(l*m)
+            sum_matrix_b[0][2] += matrices[i_grain][1][0] * matrices[i_grain][1][2]; // SUM(l*n)
+            sum_matrix_b[1][2] += matrices[i_grain][1][1] * matrices[i_grain][1][2]; // SUM(m*n)
+
+
+            sum_matrix_c[0][0] += matrices[i_grain][2][0] * matrices[i_grain][2][0]; // SUM(l^2)
+            sum_matrix_c[1][1] += matrices[i_grain][2][1] * matrices[i_grain][2][1]; // SUM(m^2)
+            sum_matrix_c[2][2] += matrices[i_grain][2][2] * matrices[i_grain][2][2]; // SUM(n^2)
+            sum_matrix_c[0][1] += matrices[i_grain][2][0] * matrices[i_grain][2][1]; // SUM(l*m)
+            sum_matrix_c[0][2] += matrices[i_grain][2][0] * matrices[i_grain][2][2]; // SUM(l*n)
+            sum_matrix_c[1][2] += matrices[i_grain][2][1] * matrices[i_grain][2][2]; // SUM(m*n)
+
+          }
+        const std::array<std::pair<double,Tensor<1,3,double>>, 3> eigenvectors_a = eigenvectors(sum_matrix_a, SymmetricTensorEigenvectorMethod::jacobi);
+        const std::array<std::pair<double,Tensor<1,3,double>>, 3> eigenvectors_b = eigenvectors(sum_matrix_b, SymmetricTensorEigenvectorMethod::jacobi);
+        const std::array<std::pair<double,Tensor<1,3,double>>, 3> eigenvectors_c = eigenvectors(sum_matrix_c, SymmetricTensorEigenvectorMethod::jacobi);
+
+        // eigenvalues of all axes, used in the anisotropic viscosity material model to compute Hill's coefficients
+        const double eigenvalue_a1 = eigenvectors_a[0].first/matrices.size();
+        const double eigenvalue_a2 = eigenvectors_a[1].first/matrices.size();
+        const double eigenvalue_a3 = eigenvectors_a[2].first/matrices.size();
+        const double eigenvalue_b1 = eigenvectors_b[0].first/matrices.size();
+        const double eigenvalue_b2 = eigenvectors_b[1].first/matrices.size();
+        const double eigenvalue_b3 = eigenvectors_b[2].first/matrices.size();
+        const double eigenvalue_c1 = eigenvectors_c[0].first/matrices.size();
+        const double eigenvalue_c2 = eigenvectors_c[1].first/matrices.size();
+        const double eigenvalue_c3 = eigenvectors_c[2].first/matrices.size();
+
         const Tensor<1,3,double> eigvec_a = eigenvectors_a[0].second;
         const Tensor<1,3,double> eigvec_b = eigenvectors_b[0].second;
         const Tensor<1,3,double> eigvec_c = eigenvectors_c[0].second;
@@ -220,22 +288,14 @@ namespace aspect
         const double theta = EA[1]*constants::degree_to_radians;
         const double phi2 = EA[2]*constants::degree_to_radians;
 
-        std::array<std::array<double,array_length>,3> results;
-        if constexpr (array_length == 6)
+        return
+        {
           {
-            AssertThrow(use_rotmat == true, ExcMessage("Must use rotation matrix when array_length == 6"));
-            results[0] = {{averaged_a[0], averaged_a[1], averaged_a[2], eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}};
-            results[1] = {{averaged_b[0], averaged_b[1], averaged_b[1], eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}};
-            results[2] = {{averaged_c[0], averaged_c[1], averaged_c[2], eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}};
+            {{phi1, eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}},
+            {{theta, eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}},
+            {{phi2, eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}}
           }
-        else if constexpr (array_length == 4)
-          {
-            AssertThrow(use_rotmat == false, ExcMessage("Must not use rotation matrix when array_length == 4"));
-            results[0] = {{phi1, eigenvalue_a1, eigenvalue_a2, eigenvalue_a3}};
-            results[1] = {{theta, eigenvalue_b1, eigenvalue_b2, eigenvalue_b3}};
-            results[2] = {{phi2, eigenvalue_c1, eigenvalue_c2, eigenvalue_c3}};
-          }
-        return results;
+        };
 
       }
 

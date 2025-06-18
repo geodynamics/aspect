@@ -137,11 +137,14 @@ namespace aspect
            * with the anology that each vector/pole has a weight on a sphere. This method allows to find
            * the moment of inertia for spinning that sphere. Here we just use it to get three averaged
            * axis associated with the densest clustering of points for each axis. the a to c axis vectors
-           * are stored in the first to last array respectively.
+           * are stored in the first to last array respectively. This function is declared with array
+           * length 6 and 4 for rotation matrix or Euler angle representations.
            */
-          template <int array_length>
-          std::array<std::array<double,array_length>,3>
-          compute_bingham_average(std::vector<Tensor<2,3>> matrices) const;
+          std::array<std::array<double,6>,3>
+          compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,6>) const;
+
+          std::array<std::array<double,4>,3>
+          compute_bingham_average(std::vector<Tensor<2,3>> matrices, std::integral_constant<int,4>) const;
 
           /**
            * Declare the parameters this class takes through input files.
