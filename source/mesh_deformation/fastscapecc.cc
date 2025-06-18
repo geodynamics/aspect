@@ -831,14 +831,9 @@ namespace aspect
       
 
           // Compute erosion velocities
-// TODO: We compute a vertical velocity in meters per year here. But internally, ASPECT
-// computes in meters/second. When you apply these constraints, you'll have to multiple
-// as appropriate. It might be nice to do that here already.
-          const double aspect_timestep_in_seconds = aspect_timestep_in_years * year_in_seconds;
-
           for (unsigned int i = 0; i < n_grid_nodes; ++i)
             {
-              V[i] = (elevation[i] - elevation_old[i]) / aspect_timestep_in_seconds;
+              V[i] = (elevation[i] - elevation_old[i]) / this->get_timestep();    // in m/s
               // std::cout << "grid node: " << i << ", V: " << V[i] << std::endl;
             }
 
@@ -855,6 +850,8 @@ namespace aspect
       auto erosion_function = [&](const Point<dim> &p) -> double
       {
         const unsigned int index = this->vertex_index(p);
+// TODO: The comment in the following line is wrong: V is computed as m/s
+// just a few lines above, not m/year. We need to multiply by year_in_seconds here.
         return V[index]; //meters/year for ASPECT
       };
       std::cout << "here it works 14" << std::endl;
@@ -897,16 +894,19 @@ namespace aspect
       // };
 
 
+// TODO: The way this is defined, it is really a *vertical* velocity field since
+// we put things into the z-component. This will not work for the spherical shell.
       VectorFunctionFromScalarFunctionObject<dim> radial_velocity_field(
         erosion_function,
         dim - 1, // project onto radial component
-        dim      // full space dimension
+        dim      // number of velocity components
       );
       std::cout << "Rank " << Utilities::MPI::this_mpi_process(this->get_mpi_communicator())
                 << ": here it works 15" << std::endl;
 
 
-
+      // Interpolate velocity computed by FastScape onto the boundary nodes of the
+      // volume mesh, and put that into the the output object of this function.
       for (const auto boundary_id : boundary_ids)
         VectorTools::interpolate_boundary_values(
           this->get_mapping(),
