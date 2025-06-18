@@ -26,6 +26,7 @@
 #ifdef ASPECT_WITH_FASTSCAPE
 
 #include <aspect/mesh_deformation/interface.h>
+#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
@@ -51,7 +52,7 @@ namespace aspect
         /**
          * Update input variables for FastScape.
          */
-        void update();
+        void update() override;
 
         /**
          * Destructor for FastScape.
