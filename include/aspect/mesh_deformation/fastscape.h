@@ -278,14 +278,6 @@ namespace aspect
         int fastscape_seed;
 
         /**
-         * The time scaling factor is used to convert between quantities that are provided with units in seconds
-         * and quantities provided with units in years. Internally, ASPECT always uses seconds, whereas FastScape
-         * uses years. This factor is use to scale the quantities "when Use years in output instead of seconds" in
-         * ASPECT is off for FastScape input.
-         */
-        double time_scaling_factor;
-
-        /**
          * Variable to hold ASPECT domain extents.
          */
         std::array<std::pair<double,double>,dim> grid_extent;

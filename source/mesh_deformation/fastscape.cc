@@ -762,6 +762,9 @@ namespace aspect
           const double x = grid_extent[0].first + (ix - use_ghost_nodes) * fastscape_dx;
           const double y = grid_extent[1].first + (iy - use_ghost_nodes) * fastscape_dy;
 
+          // Set time scaling factor based on time unit
+          // This factor is use to scale the quantities when "Use years in output instead of seconds" in ASPECT is off.
+          double time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
           // Update bedrock transport coefficient kd
           bedrock_transport_coefficient_array[i] =
             (use_kd_distribution_function
@@ -1579,10 +1582,6 @@ namespace aspect
           const double scaled_time = this->convert_output_to_years() ? time / year_in_seconds : time;
           kf_distribution_function.set_time(scaled_time);
         }
-
-      // Set time scaling factor based on time unit
-      // If using unit of sound as input, parameter should time year_in_seconds
-      time_scaling_factor = (this->convert_output_to_years() ? 1.0 : year_in_seconds);
     }
 
 
@@ -1881,12 +1880,12 @@ namespace aspect
           sediment_rain_times = Utilities::string_to_double
                                 (Utilities::split_string_list(prm.get ("Sediment rain time intervals")));
 
-          // if (!this->convert_output_to_years())
-          //   {
-          //     maximum_fastscape_timestep /= year_in_seconds;
-          //     for (unsigned int j=0; j<sediment_rain_rates.size(); ++j)
-          //       sediment_rain_rates[j] *= year_in_seconds;
-          //   }
+          if (!this->convert_output_to_years())
+            {
+              maximum_fastscape_timestep /= year_in_seconds;
+              for (unsigned int j=0; j<sediment_rain_rates.size(); ++j)
+                sediment_rain_rates[j] *= year_in_seconds;
+            }
 
           if (sediment_rain_rates.size() != sediment_rain_times.size()+1)
             AssertThrow(false, ExcMessage("Error: There must be one more sediment rain rate than time interval."));
