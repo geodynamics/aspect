@@ -105,6 +105,13 @@ namespace aspect
         get_depth_of_base_of_uppermost_mantle () const;
 
         /**
+         * Return the lithosphere thickness to be used to compute material properties in
+         * the model.
+         */
+        double
+        get_lithosphere_thickness (const Point<dim> &position) const;
+
+        /**
          * Compute the scaling factors for each depth layer such that the laterally
          * averaged viscosiy in that layer is the same as the reference vicosity.
          */
@@ -465,13 +472,6 @@ namespace aspect
          * Parameter that determines the viscosity for cratons.
          */
         double craton_viscosity;
-
-        /**
-         * Approximate lithosphere thickness used to separate the regions of
-         * temperature derived from seismic tomography and linear temperature
-         * gradient.
-         */
-        double lithosphere_thickness;
 
         /**
          * Parameter used to describe the uppermost mantle based on Tutu (2018).
