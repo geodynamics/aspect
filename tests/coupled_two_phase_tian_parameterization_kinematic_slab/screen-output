@@ -52,21 +52,21 @@ Skipping mesh refinement, because the mesh did not change.
    Solving composition reactions... in 100 substep(s).
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
-   Solving bound_fluid system ... 12 iterations.
+   Solving bound_fluid system ... 11 iterations.
    Solving peridotite system ... 7 iterations.
    Solving gabbro system ... 10 iterations.
    Solving MORB system ... 11 iterations.
    Skipping sediment composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system (AMG)... 20+0 iterations.
+   Solving Stokes system (AMG)... 15+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: -2.167e-05/0.00789/1.336e+06 // -0.0001036/0.02/1.534e+06 // 0/1.016/9.907e+09 // -0.1179/1/1.364e+07 // -0.1173/1/5.457e+07 // 0/0/0
+     Compositions min/max/mass: -4.313e-07/0.000157/2.657e+04 // -2.725e-05/0.02/1.95e+06 // 0/1.016/9.907e+09 // -0.1179/1/1.364e+07 // -0.1173/1/5.457e+07 // 0/0/0
      Writing graphical output:  output-coupled_two_phase_tian_parameterization_kinematic_slab/solution/solution-00001
 
-Number of active cells: 64 (on 3 levels)
-Number of degrees of freedom: 3,533 (578+273+578+81+289+289+289+289+289+289+289)
+Number of active cells: 34 (on 3 levels)
+Number of degrees of freedom: 2,070 (340+151+340+49+170+170+170+170+170+170+170)
 
 Termination requested by criterion: end time
 
