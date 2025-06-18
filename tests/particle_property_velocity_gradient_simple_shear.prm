@@ -7,7 +7,7 @@ set Timing output frequency = 5000
 set Dimension                              = 3
 
 set Use years in output instead of seconds = false
-set End time                               = 0.001 #100. #00.0 #0.0125 #5.0
+set End time                               = 0.001
 set Nonlinear solver scheme = single Advection, no Stokes
 
 

@@ -27,7 +27,7 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that sets particle properties to the current velocity.
+       * A class that sets particle properties to the current velocity gradient.
        *
        * @ingroup ParticleProperties
        */
@@ -60,7 +60,6 @@ namespace aspect
                                     const std::vector<Tensor<1,dim>> &gradients,
                                     typename ParticleHandler<dim>::particle_iterator &particle) const override;
 
-
           /**
            * This implementation tells the particle manager that
            * we need to update particle properties over time.
@@ -70,7 +69,7 @@ namespace aspect
 
           /**
            * Return which data has to be provided to update the property.
-           * The velocity particle property needs the values of the velocity
+           * The velocity gradient particle property needs the values of the velocity
            * solution.
            */
           UpdateFlags
