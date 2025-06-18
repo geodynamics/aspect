@@ -53,8 +53,7 @@ namespace aspect
 
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
 
-        for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
-             it != end_particle; ++it, ++old_velocity)
+        for (auto it = begin_particle; it != end_particle; ++it)
           {
 #if DEAL_II_VERSION_GTE(9, 6, 0)
             // Get a reference to the particle location, so that we can update it in-place
@@ -70,6 +69,7 @@ namespace aspect
 #if !DEAL_II_VERSION_GTE(9, 6, 0)
             it->set_location(location);
 #endif
+            ++old_velocity;
           }
       }
 
