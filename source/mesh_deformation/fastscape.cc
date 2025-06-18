@@ -247,24 +247,6 @@ namespace aspect
                                   "Please change it to type generic so that it does not affect material properties."));
         }
 
-      // Initialize parameters for restarting FastScape
-      restart = this->get_parameters().resume_computation;
-
-      // Since we don't open these until we're on one process, we need to check if the
-      // restart files exist beforehand.
-      if (restart)
-        {
-          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-            {
-              AssertThrow(Utilities::fexists(this->get_output_directory() + "fastscape_elevation_restart.txt"),
-                          ExcMessage("Cannot open topography file to restart FastScape."));
-              AssertThrow(Utilities::fexists(this->get_output_directory() + "fastscape_basement_restart.txt"),
-                          ExcMessage("Cannot open basement file to restart FastScape."));
-              AssertThrow(Utilities::fexists(this->get_output_directory() + "fastscape_silt_fraction_restart.txt"),
-                          ExcMessage("Cannot open silt fraction file to restart FastScape."));
-            }
-        }
-
       // The first entry represents the minimum coordinates of the model domain, the second the model extent.
       for (unsigned int d=0; d<dim; ++d)
         {
@@ -369,8 +351,6 @@ namespace aspect
           std::vector<double> velocity_z(fastscape_array_size);
           std::vector<double> bedrock_river_incision_rate_array(fastscape_array_size);
           std::vector<double> bedrock_transport_coefficient_array(fastscape_array_size);
-          std::vector<double> basement(fastscape_array_size);
-          std::vector<double> silt_fraction(fastscape_array_size);
           std::vector<double> elevation_old(fastscape_array_size);
 
           fill_fastscape_arrays(elevation,
@@ -381,13 +361,13 @@ namespace aspect
                                 velocity_z,
                                 local_aspect_values);
 
-          if (current_timestep == 1 || restart)
+          if (current_timestep == 1)
             {
               this->get_pcout() << "   Initializing FastScape... " << (1+maximum_surface_refinement_level+additional_refinement_levels) <<
                                 " levels, cell size: " << fastscape_dx << " m." << std::endl;
 
               // Set ghost nodes before initializing.
-              if (use_ghost_nodes && !restart)
+              if (use_ghost_nodes)
                 set_ghost_nodes(elevation,
                                 velocity_x,
                                 velocity_y,
@@ -395,21 +375,13 @@ namespace aspect
                                 fastscape_timestep_in_years,
                                 true);
 
-              // If we are restarting from a checkpoint, load h values for FastScape instead of using the ASPECT values.
-              if (restart)
-                {
-                  read_restart_files(elevation,
-                                     basement,
-                                     silt_fraction);
-
-                  restart = false;
-                }
-
+              // Initialize fastscape, at this point only the first vector is used,
+              // with the other two being relevant during restarts.
+              std::vector<double> empty_basement, empty_silt_fraction;
               initialize_fastscape(elevation,
-                                   basement,
-                                   bedrock_transport_coefficient_array,
-                                   bedrock_river_incision_rate_array,
-                                   silt_fraction);
+                                   empty_basement,
+                                   empty_silt_fraction,
+                                   false);
             }
           else
             {
@@ -498,7 +470,7 @@ namespace aspect
                                velocity_y.data());
             }
 
-          // Set h to new values, and erosional parameters if there have been changes.
+          // Set elevation to new values, and set erosional/marine parameters.
           fastscape_set_h_(elevation.data());
 
           fastscape_set_erosional_parameters_(bedrock_river_incision_rate_array.data(),
@@ -510,6 +482,7 @@ namespace aspect
                                               &bedrock_deposition_g,
                                               &sediment_deposition_g,
                                               &slope_exponent_p);
+
           // Add sediments through marine sedimentation
           if (use_marine_component)
             fastscape_set_marine_parameters_(&current_sea_level,
@@ -522,7 +495,6 @@ namespace aspect
                                              &sand_transport_coefficient,
                                              &silt_transport_coefficient);
 
-
           // Find timestep size, run FastScape, and make visualizations.
           execute_fastscape(elevation,
                             bedrock_transport_coefficient_array,
@@ -531,19 +503,6 @@ namespace aspect
                             velocity_z,
                             fastscape_timestep_in_years,
                             fastscape_iterations);
-
-          // Write a file to store h, b & step for restarting.
-          // TODO: It would be good to roll this into the general ASPECT checkpointing,
-          // and when we do this needs to be changed.
-          if (((this->get_parameters().checkpoint_time_secs == 0) &&
-               (this->get_parameters().checkpoint_steps > 0) &&
-               ((current_timestep + 1) % this->get_parameters().checkpoint_steps == 0)) ||
-              (this->get_time() == this->get_end_time() && this->get_timestepping_manager().need_checkpoint_on_terminate()))
-            {
-              save_restart_files(elevation,
-                                 basement,
-                                 silt_fraction);
-            }
 
           // Find out our velocities from the change in height.
           // Where mesh_velocity_z is a vector of array size that exists on all processes.
@@ -807,20 +766,14 @@ namespace aspect
     template <int dim>
     void FastScape<dim>::initialize_fastscape(std::vector<double> &elevation,
                                               std::vector<double> &basement,
-                                              std::vector<double> &bedrock_transport_coefficient_array,
-                                              std::vector<double> &bedrock_river_incision_rate_array,
-                                              std::vector<double> &silt_fraction) const
+                                              std::vector<double> &silt_fraction,
+                                              bool restart) const
     {
       Assert (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0, ExcInternalError());
 
-      const unsigned int current_timestep = this->get_timestep_number ();
-      // Set sea level
-      const double current_sea_level = use_sea_level_function
-                                       ? sea_level_function.value(Point<1>())
-                                       : sea_level_constant_value;
-
       // Initialize FastScape with grid and extent.
       fastscape_init_();
+
       fastscape_set_nx_ny_(&fastscape_nx,
                            &fastscape_ny);
       fastscape_setup_();
@@ -830,40 +783,15 @@ namespace aspect
       // Set boundary conditions
       fastscape_set_bc_(&fastscape_boundary_conditions);
 
-      // Initialize topography
       fastscape_init_h_(elevation.data());
 
-      // Set erosional parameters.
-      fastscape_set_erosional_parameters_(bedrock_river_incision_rate_array.data(),
-                                          &sediment_river_incision_rate,
-                                          &drainage_area_exponent_m,
-                                          &slope_exponent_n,
-                                          bedrock_transport_coefficient_array.data(),
-                                          &sediment_transport_coefficient,
-                                          &bedrock_deposition_g,
-                                          &sediment_deposition_g,
-                                          &slope_exponent_p);
-
-      if (use_marine_component)
-
-        fastscape_set_marine_parameters_(&current_sea_level,
-                                         &sand_surface_porosity,
-                                         &silt_surface_porosity,
-                                         &sand_efold_depth,
-                                         &silt_efold_depth,
-                                         &sand_silt_ratio,
-                                         &sand_silt_averaging_depth,
-                                         &sand_transport_coefficient,
-                                         &silt_transport_coefficient);
-
-      // Only set the basement and silt_fraction if it's a restart
-      if (current_timestep != 1)
+      if (restart)
         {
+          // These values are only set on a restart
           fastscape_set_basement_(basement.data());
           if (use_marine_component)
             fastscape_init_f_(silt_fraction.data());
         }
-
     }
 
 
@@ -956,7 +884,6 @@ namespace aspect
         if (this->get_time() >= last_output_time + output_interval || this->get_time() == this->get_end_time())
           {
             write_vtk = true;
-
             if (output_interval > 0)
               {
                 // We need to find the last time output was supposed to be written.
@@ -1501,116 +1428,103 @@ namespace aspect
 
 
     template <int dim>
-    void FastScape<dim>::read_restart_files(std::vector<double> &elevation,
-                                            std::vector<double> &basement,
-                                            std::vector<double> &silt_fraction) const
+    template <class Archive>
+    void FastScape<dim>::serialize (Archive &ar, const unsigned int)
     {
-      this->get_pcout() << "   Loading FastScape restart file... " << std::endl;
-
-      // Create variables for output directory and restart file
-      const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
-      std::string dirname = this->get_output_directory();
-      const std::string restart_filename_elevation = dirname + "fastscape_elevation_restart.txt";
-      const std::string restart_filename_basement = dirname + "fastscape_basement_restart.txt";
-      const std::string restart_filename_silt_fraction = dirname + "fastscape_silt_fraction_restart.txt";
-      const std::string restart_filename_time = dirname + "fastscape_last_output_time.txt";
-
-      // Load in h values.
-      std::ifstream in_elevation(restart_filename_elevation);
-      AssertThrow (in_elevation, ExcIO());
-      {
-        unsigned int line = 0;
-        while (line < fastscape_array_size)
-          {
-            in_elevation >> elevation[line];
-            line++;
-          }
-      }
-
-      // Load in b values.
-      std::ifstream in_basement(restart_filename_basement);
-      AssertThrow (in_basement, ExcIO());
-      {
-        unsigned int line = 0;
-        while (line < fastscape_array_size)
-          {
-            in_basement >> basement[line];
-            line++;
-          }
-      }
-
-      // Load in silt_fraction values if
-      // marine sediment transport and deposition is active.
-      if (use_marine_component)
-        {
-          std::ifstream in_silt_fraction(restart_filename_silt_fraction);
-          AssertThrow (in_silt_fraction, ExcIO());
-
-          if (sand_surface_porosity > 0. || silt_surface_porosity > 0.)
-            this->get_pcout() << "   Restarting runs with nonzero porosity can lead to a different system after restart. " << std::endl;
-          unsigned int line = 0;
-          while (line < fastscape_array_size)
-            {
-              in_silt_fraction >> silt_fraction[line];
-              line++;
-            }
-        }
-
-      // Now load the last output at time of restart.
-      // this allows us to correctly track when to call
-      // FastScape to make new VTK files.
-      std::ifstream in_last_output_time(restart_filename_time);
-      AssertThrow (in_last_output_time, ExcIO());
-      {
-        in_last_output_time >> last_output_time;
-      }
+      ar &last_output_time;
     }
 
+
+
     template <int dim>
-    void FastScape<dim>::save_restart_files(const std::vector<double> &elevation,
-                                            std::vector<double> &basement,
-                                            std::vector<double> &silt_fraction) const
+    void
+    FastScape<dim>::save (std::map<std::string, std::string> &status_strings) const
     {
-      this->get_pcout() << "      Writing FastScape restart file... " << std::endl;
+      // FastScape elevation values for restart.
+      std::vector<double> elevation;
 
-      // Create variables for output directory and restart file
-      const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
-      std::string dirname = this->get_output_directory();
-      const std::string restart_filename_elevation = dirname + "fastscape_elevation_restart.txt";
-      const std::string restart_filename_basement = dirname + "fastscape_basement_restart.txt";
-      const std::string restart_filename_silt_fraction = dirname + "fastscape_silt_fraction_restart.txt";
-      const std::string restart_filename_time = dirname + "fastscape_last_output_time.txt";
+      // FastScape basement values for restart
+      std::vector<double> basement;
 
-      std::ofstream out_elevation(restart_filename_elevation);
-      std::ofstream out_basement(restart_filename_basement);
-      std::ofstream out_silt_fraction(restart_filename_silt_fraction);
-      std::ofstream out_last_output_time(restart_filename_time);
-      std::stringstream buffer_basement;
-      std::stringstream buffer_elevation;
-      std::stringstream buffer_silt_fraction;
-      std::stringstream buffer_time;
+      // FastScape silt fraction values for restart
+      std::vector<double> silt_fraction;
 
-      fastscape_copy_basement_(basement.data());
-
-      // If marine sediment transport and deposition is active,
-      // we also need to store the silt fraction.
-      if (use_marine_component)
-        fastscape_copy_f_(silt_fraction.data());
-
-      out_last_output_time << last_output_time << "\n";
-
-      for (unsigned int i = 0; i < fastscape_array_size; ++i)
+      // If we are on the root processor retrieve from FastScape.
+      // This will only store the data for the root, but as FastScape
+      // is run solely on that process it shouldn't cause issues.
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          buffer_elevation << elevation[i] << "\n";
-          buffer_basement << basement[i] << "\n";
-          if (use_marine_component)
-            buffer_silt_fraction << silt_fraction[i] << "\n";
+          const unsigned int fastscape_array_size = fastscape_nx*fastscape_ny;
+          elevation.resize(fastscape_array_size);
+          fastscape_copy_h_(elevation.data());
+
+          basement.resize(fastscape_array_size);
+          fastscape_copy_h_(basement.data());
+
+          silt_fraction.resize(fastscape_array_size);
+          fastscape_copy_h_(silt_fraction.data());
         }
 
-      out_elevation << buffer_elevation.str();
-      out_basement << buffer_basement.str();
-      if (use_marine_component)
-        out_silt_fraction << buffer_silt_fraction.str();
+      // Serialize into a stringstream. Put the following into a code
+      // block of its own to ensure the destruction of the 'oa'
+      // archive triggers a flush() on the stringstream so we can
+      // query the completed string below.
+      std::ostringstream os;
+      {
+        aspect::oarchive oa (os);
+
+        // Save everything that is a member variable:
+        oa << (*this);
+
+        // We would also have liked to save the state of FastScape
+        // with the << statement above, but there is no appropriate
+        // operator<< for the FastScape object. As a consequence, get
+        // FastScape's state in the form of a number of vectors and
+        // serialize those by hand:
+        if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+          oa << elevation << basement << silt_fraction;
+      }
+
+      status_strings["FastScape"] = os.str();
+    }
+
+
+
+    template <int dim>
+    void
+    FastScape<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // FastScape elevation values for restart.
+      std::vector<double> elevation;
+
+      // FastScape basement values for restart
+      std::vector<double> basement;
+
+      // FastScape silt fraction values for restart
+      std::vector<double> silt_fraction;
+
+      if (status_strings.find("FastScape") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("FastScape")->second);
+          aspect::iarchive ia (is);
+
+          // Read in all of the variables that are members.
+          ia >> (*this);
+
+          // On root, also read in the state of FastScape which we have
+          // explicitly saved separate from the member variables
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+            ia >> elevation >> basement >> silt_fraction;
+        }
+      else
+        AssertThrow (false, ExcMessage("Trying to load data for FastScape from a checkpoint, but no data seems to have been written."));
+
+      // Initialize FastScape on root processor.
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        initialize_fastscape(elevation,
+                             basement,
+                             silt_fraction,
+                             true);
     }
 
 

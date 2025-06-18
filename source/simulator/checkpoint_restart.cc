@@ -593,9 +593,12 @@ namespace aspect
     ar &last_pressure_normalization_adjustment;
     ar &total_walltime_until_last_snapshot;
 
+    ar &statistics;
+
     ar &postprocess_manager;
 
-    ar &statistics;
+    if (parameters.mesh_deformation_enabled)
+      ar &(*mesh_deformation);
 
     // We do not serialize the statistics_last_write_size and
     // statistics_last_hash variables on purpose. This way, upon
