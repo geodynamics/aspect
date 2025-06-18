@@ -530,12 +530,11 @@ namespace aspect
     // This prevents race conditions where some processes will checkpoint and others won't
     if (!write_checkpoint && parameters.checkpoint_time_secs > 0)
       {
-        int global_do_checkpoint = ((std::time(nullptr)-last_checkpoint_time) >=
-                                    parameters.checkpoint_time_secs);
-        const int ierr = MPI_Bcast(&global_do_checkpoint, 1, MPI_INT, 0, mpi_communicator);
-        AssertThrowMPI(ierr);
-
-        if (global_do_checkpoint == 1)
+        const bool global_do_checkpoint = Utilities::MPI::broadcast(mpi_communicator,
+                                                                    (std::time(nullptr)-last_checkpoint_time) >=
+                                                                    parameters.checkpoint_time_secs,
+                                                                    /* root= */0);
+        if (global_do_checkpoint)
           write_checkpoint = true;
       }
 
